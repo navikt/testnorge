@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.nom.domain.NomRessursRequest;
 import no.nav.dolly.bestilling.nom.domain.NomRessursResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -25,6 +26,8 @@ public class NomOpprettRessurs implements Callable<Mono<NomRessursResponse>> {
     @Override
     public Mono<NomRessursResponse> call() {
 
+        log.info("Sender opprett ressurs til NOM for ident {}", request.getPersonident());
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -34,7 +37,11 @@ public class NomOpprettRessurs implements Callable<Mono<NomRessursResponse>> {
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(NomRessursResponse.class)
+                .toBodilessEntity()
+                .map(response -> NomRessursResponse
+                        .builder()
+                        .status(HttpStatus.resolve(response.getStatusCode().value()))
+                        .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable ->
                         Mono.just(NomRessursResponse.of(WebClientError.describe(throwable))));

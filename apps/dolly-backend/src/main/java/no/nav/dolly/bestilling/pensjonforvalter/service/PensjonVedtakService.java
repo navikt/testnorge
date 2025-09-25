@@ -28,6 +28,8 @@ import java.time.Period;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
@@ -36,8 +38,6 @@ import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUti
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_UFORETRYGD;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.getStatus;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.hasVedtak;
-import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
-import static no.nav.dolly.domain.resultset.SystemTyper.PEN_UT;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -119,8 +119,9 @@ public class PensjonVedtakService {
                                                         Flux.fromIterable(response.getStatus())
                                                                 .filter(status -> status.getResponse().isResponse2xx())
                                                                 .flatMap(status ->
-                                                                        pensjonforvalterHelper.saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                                PEN_AP, pensjonRequest))
+                                                                        pensjonforvalterHelper.saveAPTransaksjonId(ident,
+                                                                                status.getMiljo(), bestillingId,
+                                                                                pensjonRequest))
                                                                 .then(Mono.just(response)));
 
                                     } else {
@@ -151,8 +152,9 @@ public class PensjonVedtakService {
                                                         .flatMap(response -> Flux.fromIterable(response.getStatus())
                                                                 .filter(status -> status.getResponse().isResponse2xx())
                                                                 .flatMap(status ->
-                                                                        pensjonforvalterHelper.saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                                PEN_UT, request))
+                                                                        pensjonforvalterHelper.saveUTTransaksjonId(ident,
+                                                                                status.getMiljo(), bestillingId,
+                                                                                request))
                                                                 .then(Mono.just(response))));
 
                                     } else {
@@ -169,7 +171,8 @@ public class PensjonVedtakService {
         }
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAP(ident, miljoe)
+                .flatMap(miljoe -> pensjonforvalterHelper.hentForrigeVedtakAP(ident, miljoe,
+                                pensjondata.getAlderspensjonNyUtaksgrad().getFom())
                         .flatMap(vedtak -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty(ALDERSPENSJON_VEDTAK, vedtak);
@@ -178,37 +181,55 @@ public class PensjonVedtakService {
                                             AlderspensjonNyUtaksgradRequest.class, context))
                                     .zipWith(Mono.just(vedtak));
                         })
-                        .flatMapMany(tuple ->
-                                isValid(tuple.getT1(), tuple.getT2()) ?
-                                        pensjonforvalterConsumer.lagreAPNyUttaksgrad(tuple.getT1())
-                                                .zipWith(Mono.just(tuple.getT1()))
-                                                .flatMap(tuple2 -> Flux.fromIterable(tuple2.getT1().getStatus())
-                                                        .filter(status -> status.getResponse().isResponse2xx())
-                                                        .flatMap(status ->
+                        .flatMapMany(tuple -> {
+                            if (isValid(tuple.getT1(), tuple.getT2())) {
+                                return pensjonforvalterConsumer.lagreAPNyUttaksgrad(tuple.getT1())
+                                        .flatMap(response -> Flux.fromIterable(response.getStatus())
+                                                .filter(status -> status.getResponse().isResponse2xx())
+                                                .flatMap(status ->
+                                                        isNoMatch(tuple.getT2(), tuple.getT1()) ?
                                                                 pensjonforvalterHelper.saveTransaksjonId(ident, status.getMiljo(), bestilling.getId(),
-                                                                                SystemTyper.PEN_AP_NY_UTTAKSGRAD, tuple2.getT2())
-                                                                        .thenReturn(tuple2.getT1()))) :
-                                        miscRevurderingResponse(tuple.getT1(), tuple.getT2(), miljoe, isUpdateEndre)));
+                                                                                SystemTyper.PEN_AP_NY_UTTAKSGRAD, tuple.getT1())
+                                                                        .thenReturn(response) :
+                                                                Mono.just(response)));
+                            } else {
+                                return miscRevurderingResponse(tuple.getT1(), tuple.getT2(), miljoe, isUpdateEndre);
+                            }
+                        }));
+    }
+
+    private static boolean isNoMatch(AlderspensjonVedtakDTO response, AlderspensjonNyUtaksgradRequest request) {
+
+        return !(response.getFom().equals(request.getFom()) &&
+                response.getUttaksgrad().equals(request.getNyUttaksgrad())) &&
+                response.getHistorikk().stream()
+                .noneMatch(historikk ->
+                        historikk.getFom().equals(request.getFom()) &&
+                                historikk.getUttaksgrad().equals(request.getNyUttaksgrad()));
     }
 
     private static boolean isValid(AlderspensjonNyUtaksgradRequest request, AlderspensjonVedtakDTO response) {
 
-        return request.getFom().isAfter(response.getFom()) &&
+        return nonNull(response.getFom()) &&
+                request.getFom().isAfter(response.getFom()) &&
                 (request.getNyUttaksgrad().equals(0) || request.getNyUttaksgrad().equals(100) ||
                         Period.between(response.getDatoForrigeGraderteUttak(), request.getFom()).getYears() >= 1);
     }
 
     private static Mono<PensjonforvalterResponse> miscRevurderingResponse(AlderspensjonNyUtaksgradRequest request,
-                                                                   AlderspensjonVedtakDTO response, String miljoe,
+                                                                          AlderspensjonVedtakDTO response, String miljoe,
                                                                           boolean isUpdateEndre) {
 
         String message;
-         if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
-             message = "Automatisk vedtak av ny uttaksgrad ikke mulig for dato tidligere enn dato på forrige vedtak.";
+        if (isNull(response.getFom())) {
+            message = "Uttaksgrad kan ikke endres da vedtak for alderspensjon mangler.";
 
-         } else if (isUpdateEndre && !request.getNyUttaksgrad().equals(0) && !request.getNyUttaksgrad().equals(100) &&
-                 Period.between(response.getDatoForrigeGraderteUttak(), request.getFom()).getYears() < 1) {
-             message = "Automatisk vedtak med gradert uttak ikke mulig oftere enn hver 12 måned.";
+        }else if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
+            message = "Automatisk vedtak av ny uttaksgrad ikke mulig for dato tidligere enn dato på forrige vedtak.";
+
+        } else if (isUpdateEndre && !request.getNyUttaksgrad().equals(0) && !request.getNyUttaksgrad().equals(100) &&
+                Period.between(response.getDatoForrigeGraderteUttak(), request.getFom()).getYears() < 1) {
+            message = "Automatisk vedtak med gradert uttak ikke mulig oftere enn hver 12 måned.";
 
         } else {
             return Mono.empty();
@@ -222,7 +243,7 @@ public class PensjonVedtakService {
                                         .build())
                                 .message(message)
                                 .build())
-                                .miljo(miljoe)
+                        .miljo(miljoe)
                         .build()))
                 .build());
     }
