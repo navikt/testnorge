@@ -48,6 +48,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.service.excel.ExcelUtil.PERSON_FANE;
 import static no.nav.dolly.service.excel.ExcelUtil.appendHyperlinkRelasjon;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
@@ -141,7 +142,7 @@ public class PersonExcelService {
 
         return (int) ChronoUnit.YEARS.between(
                 DatoFraIdentUtil.getDato(ident),
-                isNull(doedsdato) ? LocalDate.now() : doedsdato.atStartOfDay());
+                isNull(doedsdato) ? LocalDate.now(CET) : doedsdato.atStartOfDay());
     }
 
     private static String getDoedsdato(PdlPerson.Doedsfall doedsfall) {

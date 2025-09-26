@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -71,7 +72,7 @@ public class TestgruppeService {
                 .map(bruker -> Testgruppe.builder()
                         .navn(rsTestgruppe.getNavn())
                         .hensikt(rsTestgruppe.getHensikt())
-                        .datoEndret(LocalDate.now())
+                        .datoEndret(LocalDate.now(CET))
                         .opprettetAvId(bruker.getId())
                         .opprettetAv(bruker)
                         .sistEndretAvId(bruker.getId())
@@ -191,7 +192,7 @@ public class TestgruppeService {
                     tuple.getT1().setNavn(endreGruppe.getNavn());
                     tuple.getT1().setSistEndretAvId(tuple.getT2().getId());
                     tuple.getT1().setSistEndretAv(tuple.getT2());
-                    tuple.getT1().setDatoEndret(LocalDate.now());
+                    tuple.getT1().setDatoEndret(LocalDate.now(CET));
                     return tuple.getT1();
                 })
                 .flatMap(testgruppeRepository::save);
@@ -283,7 +284,7 @@ public class TestgruppeService {
                 .map(tuple -> {
                     tuple.getT1().setSistEndretAvId(tuple.getT2().getId());
                     tuple.getT1().setSistEndretAv(tuple.getT2());
-                    tuple.getT1().setDatoEndret(LocalDate.now());
+                    tuple.getT1().setDatoEndret(LocalDate.now(CET));
                     tuple.getT1().setErLaast(isTrue(lockTestgruppe.getErLaast()));
                     tuple.getT1().setLaastBeskrivelse(isTrue(lockTestgruppe.getErLaast()) ?
                             lockTestgruppe.getLaastBeskrivelse() : null);

@@ -16,8 +16,8 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -126,7 +127,7 @@ public class YrkesskadeClient implements ClientRegister {
                     .bestillingId(bestillingId)
                     .transaksjonId(toJson(request))
                     .ident(request.getSkadelidtIdentifikator())
-                    .datoEndret(LocalDateTime.now())
+                    .datoEndret(LocalDateTime.now(CET))
                     .system(YRKESSKADE.name())
                     .build())
                     .thenReturn(status);

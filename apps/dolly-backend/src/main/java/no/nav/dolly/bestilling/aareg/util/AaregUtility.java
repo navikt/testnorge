@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
@@ -62,7 +63,7 @@ public class AaregUtility {
 
             arbeidsforhold.setArbeidsforholdId(Integer.toString(arbeidsforholdId.incrementAndGet()));
             arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
-                    arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
+                    arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now(CET));
             appendPermisjonPermitteringId(arbeidsforhold, permisjonPermitteringId);
 
         } else {
@@ -73,7 +74,7 @@ public class AaregUtility {
             arbeidsforhold.setNavArbeidsforholdId(eksisterende.getNavArbeidsforholdId());
             arbeidsforhold.setArbeidsforholdId(eksisterende.getArbeidsforholdId());
             arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(eksisterende.getNavArbeidsforholdPeriode()) ?
-                    eksisterende.getNavArbeidsforholdPeriode() : YearMonth.now());
+                    eksisterende.getNavArbeidsforholdPeriode() : YearMonth.now(CET));
             arbeidsforhold.setPermisjonPermitteringer(eksisterende.getPermisjonPermitteringer());
         }
 

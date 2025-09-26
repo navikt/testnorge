@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Component
 public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
@@ -53,7 +54,7 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                         if (isNull(destiasjon.getSistEndretAvNav())) {
                             destiasjon.setSistEndretAvNav(true);
                         }
-                        destiasjon.setSistEndret(ZonedDateTime.now());
+                        destiasjon.setSistEndret(ZonedDateTime.now(CET));
 
                         if (nonNull(destiasjon.getJobboensker()) && isNull(destiasjon.getJobboensker().getActive())) {
                             destiasjon.getJobboensker().setActive(true);
@@ -86,7 +87,7 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                     if ("setUuid".equals(method.getName())) {
                         invoke(artifact, method, UUID.randomUUID().toString());
                     } else if ("setUpdatedAt".equals(method.getName())) {
-                        invoke(artifact, method, LocalDateTime.now());
+                        invoke(artifact, method, LocalDateTime.now(CET));
                     }
                 }));
     }

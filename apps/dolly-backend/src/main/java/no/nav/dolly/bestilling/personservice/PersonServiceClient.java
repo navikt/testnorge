@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -69,7 +70,7 @@ public class PersonServiceClient {
                     var startTime = System.currentTimeMillis();
 
                     return Mono.from(getIdentWithRelasjoner(dollyPerson, progress)
-                            .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(),
+                            .flatMap(status -> getPersonService(LocalTime.now(CET).plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(CET),
                                     new PersonServiceResponse(), status))
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                             .onErrorResume(error -> getError(error, dollyPerson))
@@ -223,7 +224,7 @@ public class PersonServiceClient {
             return Flux.just(1)
                     .delayElements(Duration.ofMillis(TIMEOUT))
                     .flatMap(delayed -> personServiceConsumer.isPerson(ident.getKey(), ident.getValue())
-                            .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(), resultat, ident)));
+                            .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(CET), resultat, ident)));
         }
     }
 }

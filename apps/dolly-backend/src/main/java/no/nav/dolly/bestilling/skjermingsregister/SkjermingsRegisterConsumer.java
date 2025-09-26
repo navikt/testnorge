@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -57,7 +58,7 @@ public class SkjermingsRegisterConsumer extends ConsumerStatus {
                         .map(index -> new SkjermingsregisterPutCommand(webClient,
                                 SkjermingDataRequest.builder()
                                         .personident(identer.get(index))
-                                        .skjermetTil(LocalDateTime.now())
+                                        .skjermetTil(LocalDateTime.now(CET))
                                         .build(),
                                 token.getTokenValue()).call())
                         .flatMap(Flux::from))

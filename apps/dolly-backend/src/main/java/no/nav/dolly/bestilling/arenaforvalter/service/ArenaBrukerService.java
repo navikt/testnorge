@@ -28,6 +28,7 @@ import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.fixFormatUserDef
 import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.toLocalDate;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Service
 @RequiredArgsConstructor
@@ -119,6 +120,6 @@ public class ArenaBrukerService {
         return Stream.of(bruker.getAktiveringsDato(), arbeidssoker.getRegistrertDato())
                 .filter(Objects::nonNull)
                 .max(LocalDate::compareTo)
-                .orElse(LocalDate.now());
+                .orElse(LocalDate.now(CET));
     }
 }

@@ -26,6 +26,8 @@ import org.springframework.web.server.ServerWebExchange;
 
 import java.time.LocalDateTime;
 
+import static no.nav.dolly.util.DateZoneUtil.CET;
+
 @Slf4j
 @ControllerAdvice
 public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
@@ -48,7 +50,7 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
                 .status(status.value())
                 .message(exception.getMessage())
                 .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
-                .timestamp(LocalDateTime.now())
+                .timestamp(LocalDateTime.now(CET))
                 .build();
         log.warn("HttpException: {}", exceptionInfo);
         return exceptionInfo;

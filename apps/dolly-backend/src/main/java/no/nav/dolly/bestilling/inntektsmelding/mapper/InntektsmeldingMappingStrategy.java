@@ -30,6 +30,7 @@ import java.util.Optional;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Avsendertype;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -97,7 +98,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
 
                         if (isNull(inntektsmelding.getAvsendersystem())) {
                             inntektsmelding.setAvsendersystem(RsAvsendersystem.builder()
-                                    .innsendingstidspunkt(LocalDateTime.now())
+                                    .innsendingstidspunkt(LocalDateTime.now(CET))
                                     .build());
                         }
                         inntektsmelding.getAvsendersystem().setSystemnavn("Dolly");

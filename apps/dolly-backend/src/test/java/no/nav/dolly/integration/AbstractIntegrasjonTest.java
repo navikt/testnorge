@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import static java.time.LocalDateTime.now;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Disabled
 @DollySpringBootTest
@@ -54,7 +55,6 @@ public abstract class AbstractIntegrasjonTest {
     }
 
     Mono<Bruker> createTeamBruker() {
-
         return brukerRepository.save(
                 Bruker
                         .builder()
@@ -77,7 +77,7 @@ public abstract class AbstractIntegrasjonTest {
                         .beskrivelse("Testing")
                         .opprettetAvId(personligBruker.getId())
                         .opprettetAv(personligBruker)
-                        .opprettetTidspunkt(now())
+                        .opprettetTidspunkt(now(CET))
                         .build());
     }
 

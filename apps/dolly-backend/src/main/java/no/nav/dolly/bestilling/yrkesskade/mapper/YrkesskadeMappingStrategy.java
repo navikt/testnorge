@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Component
 public class YrkesskadeMappingStrategy implements MappingStrategy {
@@ -77,8 +78,8 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                 .map(PdlPerson.Person::getFoedselsdato)
                 .flatMap(Collection::stream)
                 .map(foedselsdato -> nonNull(foedselsdato.getFoedselsdato()) ?
-                        ChronoUnit.YEARS.between(foedselsdato.getFoedselsdato(), LocalDate.now()) :
-                        LocalDate.now().getYear() - foedselsdato.getFoedselsaar())
+                        ChronoUnit.YEARS.between(foedselsdato.getFoedselsdato(), LocalDate.now(CET)) :
+                        LocalDate.now(CET).getYear() - foedselsdato.getFoedselsaar())
                 .anyMatch(age -> age < 18)) {
 
             verge = persondata.getData().getHentPersonBolk().stream()

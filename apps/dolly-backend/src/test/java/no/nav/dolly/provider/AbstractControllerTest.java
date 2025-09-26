@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @DollySpringBootTest
 @ExtendWith(TestDatabaseConfig.class)
@@ -66,7 +67,7 @@ public abstract class AbstractControllerTest {
                         .opprettetAv(bruker)
                         .sistEndretAv(bruker)
                         .sistEndretAvId(bruker.getId())
-                        .datoEndret(LocalDate.now())
+                        .datoEndret(LocalDate.now(CET))
                         .sistEndretAv(bruker)
                         .build());
     }

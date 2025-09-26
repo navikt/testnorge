@@ -26,6 +26,7 @@ import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.toLocalDate;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger.DAGPENGER_VILKAAR;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.IKVAL;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Slf4j
 @Component
@@ -144,7 +145,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
         arenaNyBruker.setUtenServicebehov(ArenaBrukerUtenServicebehov.builder()
                 .stansDato(nonNull(arenadata.getInaktiveringDato()) ?
                         arenadata.getInaktiveringDato().toLocalDate() :
-                        LocalDate.now())
+                        LocalDate.now(CET))
                 .build());
     }
 }

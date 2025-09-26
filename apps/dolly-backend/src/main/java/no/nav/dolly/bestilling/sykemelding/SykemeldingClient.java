@@ -41,6 +41,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static no.nav.dolly.util.DollyTextUtil.getGenereringStartet;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -188,7 +189,7 @@ public class SykemeldingClient implements ClientRegister {
 
         var aktivitet = rsNySykemelding.getAktivitet().stream()
                 .map(a -> new NySykemeldingRequestDTO.Aktivitet(a.getFom(), a.getTom()))
-                .collect(Collectors.toList());
+                .toList();
 
         NySykemeldingRequestDTO request = new NySykemeldingRequestDTO(ident, aktivitet);
 
@@ -202,7 +203,7 @@ public class SykemeldingClient implements ClientRegister {
                     .ident(response.getIdent())
                     .bestillingId(bestillingId)
                     .transaksjonId(toJson(response.getSykemeldingRequest()))
-                    .datoEndret(LocalDateTime.now())
+                    .datoEndret(LocalDateTime.now(CET))
                     .system(SYKEMELDING.name())
                     .miljoe("q1")
                     .build());
