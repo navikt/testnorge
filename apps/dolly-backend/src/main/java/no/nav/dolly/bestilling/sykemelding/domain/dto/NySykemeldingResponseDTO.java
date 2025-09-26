@@ -21,6 +21,7 @@ public class NySykemeldingResponseDTO {
     private HttpStatus status;
     private String avvik;
     private List<Aktivitet> aktivitet;
+    private NySykemeldingRequestDTO sykemeldingRequest;
     private String ident;
 
     public static Mono<NySykemeldingResponseDTO> of(WebClientError.Description description, String ident) {

@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingRequestDTO;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -29,12 +30,14 @@ public class NySykemeldingPostCommand implements Callable<Mono<NySykemeldingResp
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(NySykemeldingResponseDTO.class)
+                .toEntity(NySykemeldingResponseDTO.class)
                 .map(response -> NySykemeldingResponseDTO.builder()
-                        .status(response.getStatus())
+                        .status(HttpStatus.resolve(response.getStatusCode().value()))
+                        .sykemeldingRequest(request)
                         .ident(request.getIdent())
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> NySykemeldingResponseDTO.of(WebClientError.describe(error), request.getIdent()));
+
     }
 }
