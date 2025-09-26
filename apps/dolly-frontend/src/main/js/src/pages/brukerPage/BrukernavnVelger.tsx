@@ -53,6 +53,7 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 		resolver: yupResolver(validation),
 		mode: 'onChange',
 	})
+
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null as string | null)
 
