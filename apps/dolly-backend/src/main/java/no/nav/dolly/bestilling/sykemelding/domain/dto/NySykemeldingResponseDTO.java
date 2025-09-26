@@ -9,6 +9,9 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,8 +20,8 @@ public class NySykemeldingResponseDTO {
 
     private HttpStatus status;
     private String avvik;
-    private NySykemeldingRequest nySykemeldingRequest;
-    private String msgId;
+    private List<Aktivitet> aktivitet;
+    private NySykemeldingRequestDTO sykemeldingRequest;
     private String ident;
 
     public static Mono<NySykemeldingResponseDTO> of(WebClientError.Description description, String ident) {
@@ -35,9 +38,9 @@ public class NySykemeldingResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class NySykemeldingRequest {
+    public static class Aktivitet {
 
-        private String sykemeldingId;
-        private NySykemeldingRequestDTO nySykemeldingRequestDTO;
+        private LocalDate fom;
+        private LocalDate tom;
     }
 }
