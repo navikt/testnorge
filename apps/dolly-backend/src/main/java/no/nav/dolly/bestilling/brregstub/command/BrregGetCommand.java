@@ -32,6 +32,7 @@ public class BrregGetCommand implements Callable<Mono<RolleoversiktTo>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(RolleoversiktTo.class)
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> RolleoversiktTo.of(WebClientError.describe(throwable)))
                 .doOnError(WebClientError.logTo(log));
     }

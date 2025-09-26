@@ -41,6 +41,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
 import static no.nav.dolly.config.CachingConfig.CACHE_LEGACY_BESTILLING_MAL;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Service
 @Slf4j
@@ -70,7 +71,7 @@ public class MalBestillingService {
                                 .malNavn(malNavn)
                                 .miljoer(bestilling.getMiljoer())
                                 .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
-                                .sistOppdatert(now())
+                                .sistOppdatert(now(CET))
                                 .build())
                         .flatMap(bestillingMalRepository::save))
                 .next()
@@ -101,7 +102,7 @@ public class MalBestillingService {
                                         .malNavn(malNavn)
                                         .miljoer(tuple.getT1().getMiljoer())
                                         .bestKriterier(formatBestillingKriterier(tuple.getT1().getBestKriterier()))
-                                        .sistOppdatert(now())
+                                        .sistOppdatert(now(CET))
                                         .build())
                                 .flatMap(bestillingMalRepository::save))
                         .next()
@@ -155,7 +156,7 @@ public class MalBestillingService {
                                         .malNavn(name)
                                         .miljoer(String.join(",", aggregertRequest.getEnvironments()))
                                         .bestKriterier(toJson(aggregertRequest))
-                                        .sistOppdatert(now())
+                                        .sistOppdatert(now(CET))
                                         .build())
                                 .flatMap(bestillingMalRepository::save))
                         .next()

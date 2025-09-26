@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface BestillingProgressRepository extends ReactiveCrudRepository<BestillingProgress, Long> {
 
-    Flux<BestillingProgress> findByBestillingId(Long bestillingId);
+    Flux<BestillingProgress> findAllByBestillingId(Long bestillingId);
 
     @Modifying
     @Query("""

@@ -44,6 +44,7 @@ public class LagreApRevurderingVedtak implements Callable<Mono<PensjonforvalterR
                 .retrieve()
                 .bodyToMono(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PensjonforvalterResponse
@@ -61,7 +62,8 @@ public class LagreApRevurderingVedtak implements Callable<Mono<PensjonforvalterR
                                                             .status(description.getStatus().value())
                                                             .reasonPhrase(description.getStatus().getReasonPhrase())
                                                             .build())
-                                                    .message(description.getMessage())
+                                                    .message(description.getMessage()
+                                                            .replaceAll("\"timestamp\":\\d+,", ""))
                                                     .path(PENSJON_AP_REVURDERING_VEDTAK_URL)
                                                     .build())
                                             .build())

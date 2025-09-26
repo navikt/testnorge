@@ -76,36 +76,34 @@ public class TpsMessagingClient implements ClientRegister {
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         return miljoerConsumer.getMiljoer()
-                .flatMap(miljoer -> {
-
-                    if (!dollyPerson.isOrdre() && isTpsMessage(bestilling)) {
+                .flatMap(miljoer -> !dollyPerson.isOrdre() && isTpsMessage(bestilling) ?
                         transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
-                                BestillingProgress::setTpsMessagingStatus,
-                                prepTpsMessagingStatus(miljoer), SEP);
-                    }
-
-                    return getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
-                            .flatMap(this::getPersonData)
-                            .collectList()
-                            .flatMapMany(personer -> Flux.concat(
-                                    sendBankkontonummerNorge(bestilling, dollyPerson.getIdent())
-                                            .map(respons -> Map.of("NorskBankkonto", respons)),
-                                    sendBankkontonummerUtenland(bestilling, dollyPerson.getIdent())
-                                            .map(respons -> Map.of("UtenlandskBankkonto", respons)),
-                                    sendEgenansattSlett(bestilling, dollyPerson.getIdent())
-                                            .map(respons -> Map.of("Egenansatt_slett", respons)),
-                                    sendEgenansatt(bestilling, dollyPerson.getIdent())
-                                            .map(respons -> Map.of("Egenansatt_opprett", respons))
-                            ))
-                            .map(respons -> respons.entrySet().stream()
-                                    .map(entry -> getStatus(entry.getKey(), entry.getValue()))
-                                    .toList())
-                            .flatMap(Flux::fromIterable)
-                            .filter(StringUtils::isNotBlank)
-                            .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                            .onErrorResume(error -> getError(error, miljoer))
-                            .collect(Collectors.joining(SEP));
-                })
+                                        BestillingProgress::setTpsMessagingStatus,
+                                        prepTpsMessagingStatus(miljoer), SEP)
+                                .thenReturn(miljoer) :
+                        Mono.just(miljoer))
+                .flatMap(miljoer -> getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
+                        .flatMap(this::getPersonData)
+                        .collectList()
+                        .flatMapMany(personer -> Flux.concat(
+                                sendBankkontonummerNorge(bestilling, dollyPerson.getIdent())
+                                        .map(respons -> Map.of("NorskBankkonto", respons)),
+                                sendBankkontonummerUtenland(bestilling, dollyPerson.getIdent())
+                                        .map(respons -> Map.of("UtenlandskBankkonto", respons)),
+                                sendEgenansattSlett(bestilling, dollyPerson.getIdent())
+                                        .map(respons -> Map.of("Egenansatt_slett", respons)),
+                                sendEgenansatt(bestilling, dollyPerson.getIdent())
+                                        .map(respons -> Map.of("Egenansatt_opprett", respons))
+                        ))
+                        .map(respons -> respons.entrySet().stream()
+                                .map(entry -> getStatus(entry.getKey(), entry.getValue()))
+                                .toList())
+                        .flatMap(Flux::fromIterable)
+                        .filter(StringUtils::isNotBlank)
+                        .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                        .onErrorResume(error -> getError(error, miljoer))
+                        .collect(Collectors.joining(SEP))
+                )
                 .flatMap(status -> oppdaterStatus(dollyPerson, progress, status));
     }
 

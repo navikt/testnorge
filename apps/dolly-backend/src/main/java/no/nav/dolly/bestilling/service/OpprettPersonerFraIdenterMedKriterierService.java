@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -16,20 +17,19 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
-import org.springframework.cache.CacheManager;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -81,51 +81,57 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
-        var bestKriterier = getDollyBestillingRequest(bestilling);
-        if (nonNull(bestKriterier)) {
+        var request = getDollyBestillingRequest(bestilling);
 
-            availCheckService.checkAvailable(bestilling.getOpprettFraIdenter())
-                    .flatMap(avail -> bestillingService.isStoppet(bestilling.getId())
-                            .zipWith(Mono.just(avail)))
-                    .takeWhile(tuple -> isFalse(tuple.getT1()))
-                    .map(Tuple2::getT2)
-                    .filter(AvailCheckService.AvailStatus::isAvailable)
-                    .map(AvailCheckService.AvailStatus::getIdent)
-                    .flatMap(availIdent -> Mono.just(OriginatorUtility.prepOriginator(bestKriterier,
-                                    availIdent, mapperFacade))
-                            .flatMap(originator -> opprettProgress(bestilling, PDLF, availIdent)
-                                    .flatMap(progress -> opprettPerson(originator, progress)
-                                            .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
-                                            .filter(StringUtils::isNotBlank)
-                                            .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
-                                                    .flatMap(dollyPerson -> leggIdentTilGruppe(ident, progress, bestKriterier.getBeskrivelse())
-                                                            .thenReturn(dollyPerson))
-                                                    .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
-                                                    .flatMap(dollyPerson ->
-                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                    fase1Klienter(),
-                                                                    progress, true)
-                                                                    .then(personServiceClient.syncPerson(dollyPerson, progress)
-                                                                            .filter(BestillingProgress::isPdlSync)
-                                                                            .flatMap(pdlSync ->
-                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                            fase2Klienter(),
-                                                                                            progress, true)
-                                                                                            .then(gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                                    fase3Klienter(),
-                                                                                                    progress, true))))
-                                                    )))))
-                    .collectList()
-                    .then(doFerdig(bestilling))
-                    .then(saveBestillingToElasticServer(bestKriterier, bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
+        Mono.just(request)
+                .filter(bestKriterier -> isBlank(bestKriterier.getFeil()))
+                .flatMapMany(bestKriterier ->
+                        availCheckService.checkAvailable(bestilling.getOpprettFraIdenter())
+                                .flatMap(avail -> opprettPerson(bestilling, bestKriterier, avail), 3))
 
-        } else {
+                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                        error -> doFerdig(bestilling).subscribe(),
+                        () -> saveBestillingToElasticServer(request, bestilling)
+                                .then(doFerdig(bestilling))
+                                .subscribe());
 
-            bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            doFerdig(bestilling)
-                    .subscribe();
-        }
+    }
+
+    private Flux<BestillingProgress> opprettPerson(Bestilling bestilling,
+                                                   RsDollyUtvidetBestilling bestKriterier,
+                                                   AvailCheckService.AvailStatus availStatus) {
+
+        return Flux.from(bestillingService.isStoppet(bestilling.getId()))
+                .takeWhile(BooleanUtils::isFalse)
+                .concatMap(ok -> Mono.just(availStatus))
+                .filter(AvailCheckService.AvailStatus::isAvailable)
+                .map(AvailCheckService.AvailStatus::getIdent)
+                .map(availIdent -> OriginatorUtility.prepOriginator(bestKriterier,
+                        availIdent, mapperFacade))
+                .concatMap(originator -> opprettProgress(bestilling, PDLF, originator.getIdent())
+                        .zipWith(Mono.just(originator)))
+                .concatMap(tuple -> opprettPerson(tuple.getT2(), tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT1())))
+                .concatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .filter(tuple -> StringUtils.isNotBlank(tuple.getT1()))
+                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .concatMap(tuple -> leggIdentTilGruppe(tuple.getT1().getIdent(),
+                        tuple.getT2(), bestKriterier.getBeskrivelse())
+                        .thenReturn(tuple))
+                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
+                .concatMap(tuple ->
+                        gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                fase1Klienter(),
+                                tuple.getT2(), true)
+                                .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
+                                        .filter(BestillingProgress::isPdlSync)
+                                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                                fase2Klienter(),
+                                                tuple.getT2(), true)
+                                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                                        fase3Klienter(),
+                                                        tuple.getT2(), true)))));
     }
 }

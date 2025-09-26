@@ -17,6 +17,7 @@ import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupp
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
@@ -39,7 +40,7 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                         pensjonUforetrygdRequest.setUforetidspunkt(
                                 nullcheckSetDefaultValue(uforetrygd.getUforetidspunkt(), getForrigeMaaned()));
                         pensjonUforetrygdRequest.setKravFremsattDato(
-                                nullcheckSetDefaultValue(uforetrygd.getKravFremsattDato(), LocalDate.now()));
+                                nullcheckSetDefaultValue(uforetrygd.getKravFremsattDato(), LocalDate.now(CET)));
                         pensjonUforetrygdRequest.setOnsketVirkningsDato(
                                 nullcheckSetDefaultValue(uforetrygd.getOnsketVirkningsDato(), getNesteMaaned()));
                         pensjonUforetrygdRequest.setNavEnhetId(

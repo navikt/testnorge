@@ -40,6 +40,7 @@ public class PersonHentCommand implements Callable<Flux<PersonMiljoeDTO>> {
                     resultat.setIdent(ident);
                     return resultat;
                 })
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PersonMiljoeDTO

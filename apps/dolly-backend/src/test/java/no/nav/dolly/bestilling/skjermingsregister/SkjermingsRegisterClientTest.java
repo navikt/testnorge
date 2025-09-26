@@ -28,6 +28,7 @@ import java.util.List;
 
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsMessagingEgenansatt;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -78,8 +79,8 @@ class SkjermingsRegisterClientTest {
             when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
             when(mapperFacade.map(any(), eq(SkjermingDataRequest.class), any())).thenReturn(SkjermingDataRequest.builder()
                     .personident("12345678901")
-                    .skjermetFra(LocalDate.now().atStartOfDay())
-                    .skjermetTil(LocalDate.now().plusYears(1).atStartOfDay())
+                    .skjermetFra(LocalDate.now(CET).atStartOfDay())
+                    .skjermetTil(LocalDate.now(CET).plusYears(1).atStartOfDay())
                     .build());
             when(skjermingsRegisterConsumer.oppdaterPerson(any())).thenReturn(Mono.just(new SkjermingDataResponse()));
 

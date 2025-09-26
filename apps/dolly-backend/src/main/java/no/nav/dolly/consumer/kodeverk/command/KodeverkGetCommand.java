@@ -35,6 +35,7 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                     return kodeverket;
                 })
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> {
                     var description = WebClientError.describe(error);
                     return Mono.just(KodeverkDTO.builder()

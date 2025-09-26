@@ -27,6 +27,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.basicAlderspensjonRequestDTO;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.poi.util.StringUtil.isNotBlank;
 
 @Slf4j
@@ -66,7 +67,7 @@ public class PensjonforvalterHelper {
                         .ident(ident)
                         .bestillingId(bestillingId)
                         .transaksjonId(toJson(vedtak))
-                        .datoEndret(LocalDateTime.now())
+                        .datoEndret(LocalDateTime.now(CET))
                         .miljoe(miljoe)
                         .system(type.name())
                         .build());

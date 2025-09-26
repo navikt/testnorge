@@ -43,6 +43,7 @@ public class LagreAPNyUttaksgrad implements Callable<Mono<PensjonforvalterRespon
                 .retrieve()
                 .bodyToMono(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PensjonforvalterResponse
@@ -60,7 +61,8 @@ public class LagreAPNyUttaksgrad implements Callable<Mono<PensjonforvalterRespon
                                                             .status(description.getStatus().value())
                                                             .reasonPhrase(description.getStatus().getReasonPhrase())
                                                             .build())
-                                                    .message(description.getMessage())
+                                                    .message(description.getMessage()
+                                                            .replaceAll("\"timestamp\":\\d+,", ""))
                                                     .path(ALDERSPENSJON_NY_UTTAKSGRAD_URL)
                                                     .build())
                                             .build())

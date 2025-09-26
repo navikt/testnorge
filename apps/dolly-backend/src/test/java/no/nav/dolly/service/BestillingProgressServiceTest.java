@@ -33,7 +33,7 @@ class BestillingProgressServiceTest {
     @Test
     void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() {
 
-        when(bestillingProgressRepository.findByBestillingId(any())).thenReturn(Flux.empty());
+        when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.empty());
 
         StepVerifier.create(progressService.fetchBestillingProgressByBestillingId(1L))
                 .expectError(NotFoundException.class)
@@ -45,7 +45,7 @@ class BestillingProgressServiceTest {
 
         var id = 1L;
         var progress = BestillingProgress.builder().id(id).build();
-        when(bestillingProgressRepository.findByBestillingId(id)).thenReturn(Flux.just(progress));
+        when(bestillingProgressRepository.findAllByBestillingId(id)).thenReturn(Flux.just(progress));
 
         StepVerifier.create(progressService.fetchBestillingProgressByBestillingId(id))
                 .expectNext(progress)

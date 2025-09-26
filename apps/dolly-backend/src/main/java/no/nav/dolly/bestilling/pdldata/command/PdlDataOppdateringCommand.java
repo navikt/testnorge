@@ -50,6 +50,7 @@ public class PdlDataOppdateringCommand implements Callable<Mono<PdlResponse>> {
                         .build())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT of ident %s".formatted(ident)))
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)));
     }
 }

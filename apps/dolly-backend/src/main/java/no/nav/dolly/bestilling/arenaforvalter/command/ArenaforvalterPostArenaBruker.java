@@ -47,6 +47,7 @@ public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBruk
                     return response;
                 })
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
                         ArenaNyeBrukereResponse.of(WebClientError.describe(throwable),
                                 arenaNyeBrukere.getNyeBrukere().getFirst().getMiljoe()));

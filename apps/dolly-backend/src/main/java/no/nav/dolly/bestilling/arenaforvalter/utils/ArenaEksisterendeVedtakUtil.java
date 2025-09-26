@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @UtilityClass
 public class ArenaEksisterendeVedtakUtil {
@@ -113,7 +114,7 @@ public class ArenaEksisterendeVedtakUtil {
 
                     if (!vedtaker.isEmpty() && i < vedtaker.size()) {
 
-                        Stream.of(NullcheckUtil.nullcheckSetDefaultValue(toLocalDate(request1.getTilDato()), LocalDate.now()),
+                        Stream.of(NullcheckUtil.nullcheckSetDefaultValue(toLocalDate(request1.getTilDato()), LocalDate.now(CET)),
                                         vedtaker.get(i).getFraDato().minusDays(1))
                                 .min(LocalDate::compareTo)
                                 .ifPresent(tom::set);
@@ -147,7 +148,7 @@ public class ArenaEksisterendeVedtakUtil {
                             (isNull(vedtaker.get(finalI).getTilDato()) ||
                                     vedtaker.get(finalI).getTilDato().isAfter(arenaPeriode.getFraDato().toLocalDate()))) {
 
-                        Stream.of(NullcheckUtil.nullcheckSetDefaultValue(vedtaker.get(finalI).getTilDato(), LocalDate.now()),
+                        Stream.of(NullcheckUtil.nullcheckSetDefaultValue(vedtaker.get(finalI).getTilDato(), LocalDate.now(CET)),
                                         arenaPeriode.getFraDato().toLocalDate().minusDays(1))
                                 .min(Comparator.comparing(LocalDate::from))
                                 .ifPresent(stansDato -> periode.set(ArenaVedtakOperasjoner.Periode.builder()

@@ -16,7 +16,7 @@ public class BestillingProgressService {
 
     public Flux<BestillingProgress> fetchBestillingProgressByBestillingId(Long bestillingsId) {
 
-        return bestillingProgressRepository.findByBestillingId(bestillingsId)
+        return bestillingProgressRepository.findAllByBestillingId(bestillingsId)
                 .switchIfEmpty(Mono.error(
                         new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingId=" + bestillingsId)));
     }

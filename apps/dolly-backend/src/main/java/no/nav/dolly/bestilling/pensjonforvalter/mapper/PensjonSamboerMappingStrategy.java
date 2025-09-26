@@ -17,6 +17,7 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Component
 public class PensjonSamboerMappingStrategy implements MappingStrategy {
@@ -37,7 +38,7 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
 
                                     var datoTom = nonNull(sivilstandSamboer.getSivilstandsdato()) ?
                                             toLocalDate(sivilstandSamboer.getSivilstandsdato()) :
-                                            LocalDate.now();
+                                            LocalDate.now(CET);
                                     var hovedperson = PensjonSamboerRequest.builder()
                                             .pidBruker(ident)
                                             .pidSamboer(sivilstandSamboer.getRelatertVedSivilstand())

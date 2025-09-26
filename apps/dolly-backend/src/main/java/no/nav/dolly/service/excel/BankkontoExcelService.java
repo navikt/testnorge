@@ -125,7 +125,7 @@ public class BankkontoExcelService {
 
         var start = System.currentTimeMillis();
         return bestillingRepository.findByGruppeId(testgruppe.getId())
-                .flatMap(bestilling -> bestillingProgressRepository.findByBestillingId(bestilling.getId()))
+                .flatMap(bestilling -> bestillingProgressRepository.findAllByBestillingId(bestilling.getId()))
                 .filter(progress -> isNotBlank(progress.getKontoregisterStatus()))
                 .map(BestillingProgress::getIdent)
                 .distinct()

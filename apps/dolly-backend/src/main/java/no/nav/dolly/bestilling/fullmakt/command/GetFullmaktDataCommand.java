@@ -40,12 +40,14 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostRespons
                 .retrieve()
                 .bodyToFlux(FullmaktPostResponse.Fullmakt.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(FullmaktPostResponse.Fullmakt.builder()
                             .status(description.getStatus().getReasonPhrase())
                             .build());
                 })
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Mono.empty());
     }
 }

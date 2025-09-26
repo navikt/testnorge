@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,7 +32,7 @@ class PensjonSamboerMappingStrategyTest {
     private static final String IDENT_2 = "22222222222";
     private static final String IDENT_3 = "33333333333";
     private static final String IDENT_4 = "44444444444";
-    private static final LocalDateTime SIVILSTAND_DATO = LocalDateTime.now();
+    private static final LocalDateTime SIVILSTAND_DATO = LocalDateTime.now(CET);
     private static final LocalDateTime SIVILSTAND_DATO_EARLIEST = LocalDateTime.of(2000, 10, 10, 0, 0);
     private static final LocalDateTime SIVILSTAND_DATO_MIDDLE = LocalDateTime.of(2010, 10, 10, 0, 0);
     private static final LocalDateTime SIVILSTAND_DATO_LATEST = LocalDateTime.of(2020, 10, 10, 0, 0);

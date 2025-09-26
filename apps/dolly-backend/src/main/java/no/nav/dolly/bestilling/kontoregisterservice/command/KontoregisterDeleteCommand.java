@@ -39,6 +39,7 @@ public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterRe
                         .status(HttpStatus.valueOf(value.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> {
                     var description = WebClientError.describe(error);
                     return Mono.just(KontoregisterResponseDTO

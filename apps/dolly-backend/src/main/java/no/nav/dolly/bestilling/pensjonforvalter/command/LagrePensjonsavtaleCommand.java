@@ -39,6 +39,7 @@ public class LagrePensjonsavtaleCommand implements Callable<Flux<Pensjonforvalte
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PensjonforvalterResponse
@@ -56,7 +57,8 @@ public class LagrePensjonsavtaleCommand implements Callable<Flux<Pensjonforvalte
                                                             .status(description.getStatus().value())
                                                             .reasonPhrase(description.getStatus().getReasonPhrase())
                                                             .build())
-                                                    .message(description.getMessage())
+                                                    .message(description.getMessage()
+                                                            .replaceAll("\"timestamp\":\\d+,", ""))
                                                     .path(PENSJONSAVTALE_URL)
                                                     .build())
                                             .build())

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +63,7 @@ public class OrganisasjonBestillingMalService {
                                         .bruker(bruker)
                                         .malNavn(malNavn)
                                         .miljoer(bestilling.getMiljoer())
-                                        .sistOppdatert(LocalDateTime.now())
+                                        .sistOppdatert(LocalDateTime.now(CET))
                                         .build()))
                                 .flatMap(organisasjonBestillingMalRepository::save)));
     }

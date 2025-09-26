@@ -87,7 +87,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                         .zipWith(Mono.just(bestilling)))
                 .takeWhile(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
                 .flatMap(tuple ->
-                        bestillingProgressRepository.findByBestillingId(tuple.getT2().getId())
+                        bestillingProgressRepository.findAllByBestillingId(tuple.getT2().getId())
                                 .collectList()
                                 .map(progress -> {
                                     tuple.getT2().setProgresser(progress);

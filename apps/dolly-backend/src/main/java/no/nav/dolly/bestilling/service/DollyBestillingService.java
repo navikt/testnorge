@@ -34,14 +34,15 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.cache.CacheManager;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -105,7 +106,7 @@ public class DollyBestillingService {
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
 
         try {
-            RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+            var bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
 
             bestKriterier.setId(bestilling.getId());
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
@@ -116,7 +117,11 @@ public class DollyBestillingService {
 
         } catch (JsonProcessingException e) {
             log.error("Feilet å lese JSON {}", e.getMessage(), e);
-            return null;
+
+            var bestKriterier = new RsDollyBestillingRequest();
+            bestKriterier.setFeil("Feil: Kunne ikke mappe bestillingskriterier, se logg!");
+            bestilling.setFeil(bestKriterier.getFeil());
+            return bestKriterier;
         }
     }
 
@@ -145,8 +150,8 @@ public class DollyBestillingService {
     }
 
     protected Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                             GjenopprettSteg steg,
-                                             BestillingProgress progress, boolean isOpprettEndre) {
+                                                           GjenopprettSteg steg,
+                                                           BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)
@@ -196,10 +201,12 @@ public class DollyBestillingService {
                         .build()));
     }
 
+
     protected Mono<Bestilling> doFerdig(Bestilling bestilling) {
 
-        return transactionHelperService.oppdaterBestillingFerdig(bestilling.getId())
-                .doOnNext(bestilling1 -> log.info("Bestilling med id=#{} er ferdig", bestilling1.getId()));
+        return transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(), bestilling.getFeil())
+                .doOnNext(bestilling1 -> log.info("Bestilling med id=#{} er ferdig", bestilling1.getId()))
+                .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
     }
 
     protected Mono<Void> saveBestillingToElasticServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
@@ -211,7 +218,7 @@ public class DollyBestillingService {
 
             var request = mapperFacade.map(bestillingRequest, ElasticBestilling.class);
             request.setId(bestilling.getId());
-            return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+            return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                     .filter(BestillingProgress::isIdentGyldig)
                     .map(BestillingProgress::getIdent)
                     .collectList()
@@ -265,7 +272,11 @@ public class DollyBestillingService {
                                                 errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding()))
                                 .flatMap(bestProgress -> transactionHelperService.persister(progress, BestillingProgress::setIdent,
                                         (forvalterStatus.getStatus().is2xxSuccessful() ?
-                                                forvalterStatus.getIdent() : "?")));
+                                                forvalterStatus.getIdent() : "?")))
+                                .map(bestProgress -> {
+                                    progress.setIdent(forvalterStatus.getIdent());
+                                    return progress;
+                                });
                     }
                     return Mono.just(progress);
                 })
@@ -302,19 +313,6 @@ public class DollyBestillingService {
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())
                         .build());
-    }
-
-    protected Mono<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, Long coBestillingId) {
-
-        return bestillingRepository.findById(coBestillingId)
-                .map(coBestilling -> getDollyBestillingRequest(
-                        Bestilling.builder()
-                                .id(coBestilling.getId())
-                                .bestKriterier(coBestilling.getBestKriterier())
-                                .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
-                                        bestilling.getMiljoer() :
-                                        coBestilling.getMiljoer())
-                                .build()));
     }
 
     protected Mono<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {

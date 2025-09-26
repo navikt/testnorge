@@ -14,9 +14,11 @@ import reactor.netty.http.client.HttpClientRequest;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
+import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                         .build())
                 .httpRequest(httpRequest -> {
                     HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                    reactorRequest.responseTimeout(Duration.ofSeconds(SHORT_REQUEST_DURATION));
                 })
                 .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, callId)
@@ -50,6 +52,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PensjonforvalterResponse
@@ -67,7 +70,8 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                                                             .status(description.getStatus().value())
                                                             .reasonPhrase(description.getStatus().getReasonPhrase())
                                                             .build())
-                                                    .message(description.getMessage())
+                                                    .message(description.getMessage()
+                                                            .replaceAll("\"timestamp\":\\d+,", ""))
                                                     .path(PENSJON_TP_YTELSE_URL)
                                                     .build())
                                             .build())

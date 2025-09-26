@@ -39,6 +39,7 @@ public class SlettePensjonsavtaleCommand implements Callable<Flux<Pensjonforvalt
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }
 

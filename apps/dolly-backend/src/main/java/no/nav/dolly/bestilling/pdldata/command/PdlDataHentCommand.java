@@ -43,6 +43,7 @@ public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on GET of idents %s".formatted(join(",", identer))))
                 .doOnError(WebClientError.logTo(log))
 
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }

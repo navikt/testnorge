@@ -42,6 +42,7 @@ public class NomHentRessurs implements Callable<Mono<NomRessursResponse>> {
                 })
                 .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
                         Mono.just(NomRessursResponse.of(WebClientError.describe(throwable))));
     }

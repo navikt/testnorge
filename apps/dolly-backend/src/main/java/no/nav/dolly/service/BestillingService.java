@@ -51,6 +51,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
+import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -174,7 +175,7 @@ public class BestillingService {
                         .map(tuple2 -> {
                             tuple2.getT1().setStoppet(true);
                             tuple2.getT1().setFerdig(true);
-                            tuple2.getT1().setSistOppdatert(now());
+                            tuple2.getT1().setSistOppdatert(now(CET));
                             tuple2.getT1().setBruker(tuple2.getT2());
                             return tuple2.getT1();
                         })
@@ -195,7 +196,7 @@ public class BestillingService {
 
     public Mono<Bestilling> cleanBestilling(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .flatMap(progress -> Flux.fromArray(progress.getClass().getMethods())
                         .filter(method -> method.getName().contains("get"))
                         .flatMap(metode -> {
@@ -242,7 +243,7 @@ public class BestillingService {
                                         .ident(ident)
                                         .antallIdenter(1)
                                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
-                                        .sistOppdatert(now())
+                                        .sistOppdatert(now(CET))
                                         .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                                         .bruker(tuple.getT2())
                                         .brukerId(tuple.getT2().getId())
@@ -287,7 +288,7 @@ public class BestillingService {
                                         .gruppeId(tuple.getT1().getId())
                                         .antallIdenter(antall)
                                         .navSyntetiskIdent(navSyntetiskIdent)
-                                        .sistOppdatert(now())
+                                        .sistOppdatert(now(CET))
                                         .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                                         .bruker(tuple.getT2())
@@ -339,7 +340,7 @@ public class BestillingService {
                             .gruppeId(tuple.getT1().getGruppeId())
                             .antallIdenter(tuple.getT1().getAntallIdenter())
                             .opprettFraIdenter(tuple.getT1().getOpprettFraIdenter())
-                            .sistOppdatert(now())
+                            .sistOppdatert(now(CET))
                             .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer(), tuple.getT3()))
                             .opprettetFraId(bestillingId)
                             .bestKriterier("{}")
@@ -370,7 +371,7 @@ public class BestillingService {
                         .ident(ident)
                         .antallIdenter(1)
                         .bestKriterier("{}")
-                        .sistOppdatert(now())
+                        .sistOppdatert(now(CET))
                         .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .gjenopprettetFraIdent(ident)
                         .bruker(tuple.getT2())
@@ -406,7 +407,7 @@ public class BestillingService {
                         .gruppeId(gruppeId)
                         .antallIdenter(tuple.getT2().size())
                         .bestKriterier("{}")
-                        .sistOppdatert(now())
+                        .sistOppdatert(now(CET))
                         .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .opprettetFraGruppeId(gruppeId)
                         .bruker(tuple.getT1())
@@ -433,7 +434,7 @@ public class BestillingService {
                         .gruppeId(gruppeId)
                         .kildeMiljoe("PDL")
                         .miljoer(filterAvailable(request.getEnvironments(), tuple.getT2()))
-                        .sistOppdatert(now())
+                        .sistOppdatert(now(CET))
                         .bruker(tuple.getT1())
                         .brukerId(tuple.getT1().getId())
                         .antallIdenter(request.getIdenter().size())
@@ -469,7 +470,8 @@ public class BestillingService {
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
                         .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
-                        .sistOppdatert(now())
+                        .sistOppdatert(now(CET))
+                        .brukerId(tuple.getT1().getId())
                         .bruker(tuple.getT1())
                         .antallIdenter(tuple.getT2())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
@@ -613,7 +615,7 @@ public class BestillingService {
                         .contents(dokument)
                         .bestillingId(bestillingId)
                         .dokumentType(dokumentType)
-                        .sistOppdatert(now())
+                        .sistOppdatert(now(CET))
                         .build())
                 .flatMap(dokumentRepository::save)
                 .map(Dokument::getId);
@@ -666,7 +668,7 @@ public class BestillingService {
 
     private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .collectList();
     }
 }

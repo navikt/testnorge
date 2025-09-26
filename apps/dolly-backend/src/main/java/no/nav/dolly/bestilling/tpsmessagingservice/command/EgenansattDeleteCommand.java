@@ -40,6 +40,7 @@ public class EgenansattDeleteCommand implements Callable<Flux<TpsMeldingResponse
                 .retrieve()
                 .bodyToFlux(TpsMeldingResponseDTO.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO
                         .builder()
                         .status("FEIL")

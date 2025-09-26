@@ -43,6 +43,7 @@ public class NomOpprettRessurs implements Callable<Mono<NomRessursResponse>> {
                         .status(HttpStatus.resolve(response.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
                         Mono.just(NomRessursResponse.of(WebClientError.describe(throwable))));
     }

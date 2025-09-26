@@ -27,9 +27,9 @@ public abstract class ConsumerStatus {
     public Mono<Map<String, TestnavStatusResponse>> checkStatus(WebClient webClient) {
 
         return checkConsumerStatus(
-                        serviceUrl() + LIVENESS_ENDPOINT,
-                        serviceUrl() + READINESS_ENDPOINT,
-                        webClient)
+                serviceUrl() + LIVENESS_ENDPOINT,
+                serviceUrl() + READINESS_ENDPOINT,
+                webClient)
                 .map(consumerResponce -> Map.of(consumerName(), consumerResponce))
                 .flatMap(consumerStatus ->
                         webClient
