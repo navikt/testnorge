@@ -552,6 +552,7 @@ public class BestillingService {
                                     .instdata(request2.getInstdata())
                                     .krrstub(request2.getKrrstub())
                                     .medl(request2.getMedl())
+                                    .nomdata(request2.getNomdata())
                                     .pdldata(request2.getPdldata())
                                     .pensjonforvalter(request2.getPensjonforvalter())
                                     .sigrunstub(request2.getSigrunstub())

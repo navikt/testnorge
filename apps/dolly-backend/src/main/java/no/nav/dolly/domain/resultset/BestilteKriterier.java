@@ -71,4 +71,5 @@ public class BestilteKriterier {
     private List<YrkesskadeRequest> yrkesskader;
     private RsArbeidssoekerregisteret arbeidssoekerregisteret;
     private List<EtterlatteYtelse> etterlatteYtelser;
+    private RsNomData nomdata;
 }

@@ -100,6 +100,9 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and not exists (select *
                             from Bestilling_Progress bp
                             where bp.bestilling_id = :bestillingId)
+            and not exists (select *
+                            from transaksjon_mapping tm
+                            where tm.bestilling_id = :bestillingId)
             """)
     Mono<Void> deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 

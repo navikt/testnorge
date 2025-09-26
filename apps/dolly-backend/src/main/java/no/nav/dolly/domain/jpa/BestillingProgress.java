@@ -127,6 +127,9 @@ public class BestillingProgress implements Serializable {
     @Column("ETTERLATTE_STATUS")
     private  String etterlatteStatus;
 
+    @Column("NOM_STATUS")
+    private String nomStatus;
+
     @Column("master")
     private Master master;
 

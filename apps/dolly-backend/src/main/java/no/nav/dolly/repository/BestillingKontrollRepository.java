@@ -21,9 +21,9 @@ public interface BestillingKontrollRepository extends ReactiveCrudRepository<Bes
     @Modifying
     @Query("""
             delete from bestilling_kontroll bk
-                        where bk.bestilling_id = :bestillingId
-                        and bk.bestilling_id not in (select bp.bestilling_id
-                        from Bestilling_Progress bp where bp.bestilling_id = :bestillingId)
+            where bk.bestilling_id = :bestillingId
+            and bk.bestilling_id not in (select bp.bestilling_id
+                from Bestilling_Progress bp where bp.bestilling_id = :bestillingId)
             """)
     Mono<Void> deleteByBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 }

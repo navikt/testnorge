@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,10 +47,12 @@ public class DokumentService {
                                                 .flatMap(Collection::stream)
                                                 .map(RsDokarkiv.Dokument::getDokumentvarianter)
                                                 .flatMap(Collection::stream)
-                                                .map(RsDokarkiv.Dokument.DokumentVariant::getDokumentReferanse),
+                                                .map(RsDokarkiv.Dokument.DokumentVariant::getDokumentReferanse)
+                                                .filter(Objects::nonNull),
                                         nonNull(kriterier.getHistark()) ?
                                                 kriterier.getHistark().getDokumenter().stream()
-                                                        .map(RsHistark.RsHistarkDokument::getDokumentReferanse) : Stream.empty()
+                                                        .map(RsHistark.RsHistarkDokument::getDokumentReferanse)
+                                                        .filter(Objects::nonNull) : Stream.empty()
                                 )
                                 .collect(Collectors.toSet())
                 )

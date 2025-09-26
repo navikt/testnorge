@@ -77,6 +77,7 @@ import DollyPanic from '@/assets/icons/custom/DollyPanic.svg?raw'
 import TenorLogo from '@/assets/icons/custom/TenorLogo.svg?raw'
 import SlackLogo from '@/assets/icons/custom/SlackLogo.svg?raw'
 import Playwright from '@/assets/img/playwright.png'
+import NavLogo from '@/assets/icons/custom/NavLogo'
 
 import './Icon.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -89,6 +90,7 @@ export const icons = {
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
 	playwright: Playwright,
+	nav: NavLogo,
 	tenor: TenorLogo,
 	slack: SlackLogo,
 

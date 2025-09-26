@@ -66,3 +66,7 @@ consumers:
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
   etterlatte:
     url: https://etterlatte-testdata.intern.dev.nav.no
+  nom-proxy:
+    url: https://testnav-nom-proxy.intern.dev.nav.no
+  testnav-sykemelding-proxy:
+    url: https://testnav-sykemelding-proxy.intern.dev.nav.no

@@ -19,8 +19,13 @@ spring:
         response-timeout: 30s
 
 consumers:
-  sykemelding:
+  syfosmregler:
     name: syfosmregler
     namespace: teamsykmelding
     url: http://syfosmregler.teamsykmelding.svc.cluster.local
+    cluster: dev-gcp
+  tsm-input-dolly:
+    name: tsm-input-dolly
+    namespace: tsm
+    url: http://tsm-input-dolly.tsm.svc.cluster.local
     cluster: dev-gcp

@@ -174,6 +174,7 @@ export const SoekForm = ({ request, setRequest, setMarkertePersoner, mutate }: a
 													'adresser.kommunenummer',
 													'adresser.harAdresseSpesialtegn',
 													'adresser.harBostedsadresse',
+													'avansert.harBostedsadresseHistorikk',
 													'adresser.harOppholdAnnetSted',
 													'adresser.harPostadresseNorge',
 													'adresser.harPostadresseUtland',

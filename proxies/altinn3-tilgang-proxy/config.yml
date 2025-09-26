@@ -9,6 +9,9 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "2400"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "2400"
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   tokenx:

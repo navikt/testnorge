@@ -18,7 +18,13 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
 	const { instdata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } = bestillingsdata
-	if (!instdata && !arenaforvalter && !pensjonforvalter && !sykemelding && !dokarkiv) {
+	if (
+		!instdata &&
+		!arenaforvalter &&
+		!pensjonforvalter &&
+		!sykemelding?.detaljertSykemelding &&
+		!dokarkiv
+	) {
 		return null
 	}
 
@@ -89,7 +95,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						</li>
 					)}
 
-					{sykemelding && <li>Sykemelding: q1</li>}
+					{sykemelding?.detaljertSykemelding && <li>Sykemelding: q1</li>}
 				</ul>
 			</StyledAlert>
 			{pensjonforvalter && bestillingsdata?.environments?.includes('q4') && (

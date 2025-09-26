@@ -18,14 +18,13 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.ClearCacheUtil;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
 
 import java.time.Duration;
@@ -91,7 +90,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             var counterIdentBestilling = new HashMap<String, Boolean>();
             identService.getTestidenterByGruppeId(bestilling.getGruppeId())
-                    .delayElements(Duration.ofMillis(1500))
+                    .delayElements(Duration.ofMillis(2000))
                     .flatMap(testident -> bestillingService.isStoppet(bestilling.getId())
                             .zipWith(Mono.just(testident)))
                     .takeWhile(tuple -> isFalse(tuple.getT1()))
