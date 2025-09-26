@@ -272,7 +272,11 @@ public class DollyBestillingService {
                                                 errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding()))
                                 .flatMap(bestProgress -> transactionHelperService.persister(progress, BestillingProgress::setIdent,
                                         (forvalterStatus.getStatus().is2xxSuccessful() ?
-                                                forvalterStatus.getIdent() : "?")));
+                                                forvalterStatus.getIdent() : "?")))
+                                .map(bestProgress -> {
+                                    progress.setIdent(forvalterStatus.getIdent());
+                                    return progress;
+                                });
                     }
                     return Mono.just(progress);
                 })
@@ -309,19 +313,6 @@ public class DollyBestillingService {
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())
                         .build());
-    }
-
-    protected Mono<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, Long coBestillingId) {
-
-        return bestillingRepository.findById(coBestillingId)
-                .map(coBestilling -> getDollyBestillingRequest(
-                        Bestilling.builder()
-                                .id(coBestilling.getId())
-                                .bestKriterier(coBestilling.getBestKriterier())
-                                .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
-                                        bestilling.getMiljoer() :
-                                        coBestilling.getMiljoer())
-                                .build()));
     }
 
     protected Mono<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {

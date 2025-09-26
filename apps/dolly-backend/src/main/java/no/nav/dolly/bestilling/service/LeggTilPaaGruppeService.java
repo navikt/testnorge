@@ -79,16 +79,17 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     public void executeAsync(Bestilling bestilling) {
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
-        if (nonNull(bestKriterier)) {
 
-            identService.getTestidenterByGruppeId(bestilling.getGruppeId())
-                    .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3)
-                    .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
-                            error -> doFerdig(bestilling).subscribe(),
-                            () -> saveBestillingToElasticServer(bestKriterier, bestilling)
-                                    .then(doFerdig(bestilling))
-                                    .subscribe());
-        }
+        Mono.just(bestKriterier)
+                .filter(request -> isNotBlank(request.getFeil()))
+                .flatMapMany(request ->
+                        identService.getTestidenterByGruppeId(bestilling.getGruppeId())
+                                .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))
+                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                        error -> doFerdig(bestilling).subscribe(),
+                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                                .then(doFerdig(bestilling))
+                                .subscribe());
     }
 
     private Flux<BestillingProgress> leggTilPaaPerson(Bestilling bestilling, RsDollyUtvidetBestilling bestKriterier, Testident testident) {

@@ -27,8 +27,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
+import static org.apache.poi.util.StringUtil.isBlank;
 
 @Slf4j
 @Service
@@ -78,21 +78,17 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
-        if (nonNull(bestKriterier)) {
 
-            Flux.fromArray(bestilling.getPdlImport().split(","))
-                    .flatMap(testnorgeIdent -> opprettPerson(bestilling, bestKriterier, testnorgeIdent), 3)
-                    .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
-                            error -> doFerdig(bestilling).subscribe(),
-                            () -> saveBestillingToElasticServer(bestKriterier, bestilling)
-                                    .then(doFerdig(bestilling))
-                                    .subscribe());
-
-        } else {
-            bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            doFerdig(bestilling)
-                    .subscribe();
-        }
+        Mono.just(bestKriterier)
+                .filter(request -> isBlank(request.getFeil()))
+                .flatMapMany(request ->
+                        Flux.fromArray(bestilling.getPdlImport().split(","))
+                                .flatMap(testnorgeIdent -> opprettPerson(bestilling, bestKriterier, testnorgeIdent), 3))
+                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                        error -> doFerdig(bestilling).subscribe(),
+                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                                .then(doFerdig(bestilling))
+                                .subscribe());
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress) {

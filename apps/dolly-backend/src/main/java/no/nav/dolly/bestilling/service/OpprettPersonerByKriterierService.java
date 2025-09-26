@@ -84,43 +84,43 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         Mono.just(bestKriterier)
                 .filter(request -> isBlank(request.getFeil()))
                 .flatMapMany(request -> Flux.range(0, bestilling.getAntallIdenter())
-                .flatMap(index -> opprettPerson(bestilling, bestKriterier, originator), 3))
+                        .flatMap(index -> opprettPerson(bestilling, bestKriterier, originator), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)
                                 .then(doFerdig(bestilling))
                                 .subscribe());
-}
+    }
 
-private Flux<BestillingProgress> opprettPerson(Bestilling bestilling,
-                                               RsDollyBestillingRequest bestKriterier,
-                                               OriginatorUtility.Originator originator) {
+    private Flux<BestillingProgress> opprettPerson(Bestilling bestilling,
+                                                   RsDollyBestillingRequest bestKriterier,
+                                                   OriginatorUtility.Originator originator) {
 
-    return Flux.from(bestillingService.isStoppet(bestilling.getId()))
-            .takeWhile(BooleanUtils::isFalse)
-            .concatMap(ok -> opprettProgress(bestilling, PDLF))
-            .concatMap(progress -> opprettPerson(originator, progress)
-                    .zipWith(Mono.just(progress)))
-            .concatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
-                    .zipWith(Mono.just(tuple.getT2())))
-            .filter(tuple -> StringUtils.isNotBlank(tuple.getT1()))
-            .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
-                    .zipWith(Mono.just(tuple.getT2())))
-            .concatMap(tuple -> leggIdentTilGruppe(tuple.getT1().getIdent(), tuple.getT2(),
-                    bestKriterier.getBeskrivelse())
-                    .thenReturn(tuple))
-            .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
-            .concatMap(tuple ->
-                    gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                            fase1Klienter(),
-                            tuple.getT2(), true)
-                            .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
-                                    .filter(BestillingProgress::isPdlSync)
-                                    .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                            fase2Klienter(),
-                                            tuple.getT2(), true)
-                                            .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                    fase3Klienter(),
-                                                    tuple.getT2(), true)))));
-}
+        return Flux.from(bestillingService.isStoppet(bestilling.getId()))
+                .takeWhile(BooleanUtils::isFalse)
+                .concatMap(ok -> opprettProgress(bestilling, PDLF))
+                .concatMap(progress -> opprettPerson(originator, progress)
+                        .zipWith(Mono.just(progress)))
+                .concatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .filter(tuple -> StringUtils.isNotBlank(tuple.getT1()))
+                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .concatMap(tuple -> leggIdentTilGruppe(tuple.getT1().getIdent(), tuple.getT2(),
+                        bestKriterier.getBeskrivelse())
+                        .thenReturn(tuple))
+                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
+                .concatMap(tuple ->
+                        gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                fase1Klienter(),
+                                tuple.getT2(), true)
+                                .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
+                                        .filter(BestillingProgress::isPdlSync)
+                                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                                fase2Klienter(),
+                                                tuple.getT2(), true)
+                                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                                        fase3Klienter(),
+                                                        tuple.getT2(), true)))));
+    }
 }

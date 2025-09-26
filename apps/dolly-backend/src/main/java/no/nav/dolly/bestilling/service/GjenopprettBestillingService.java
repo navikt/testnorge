@@ -81,7 +81,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         bestillingRepository.findById(bestilling.getOpprettetFraId())
                 .map(this::getDollyBestillingRequest)
                 .map(bestKriterier -> {
-                    bestilling.setFeil(bestKriterier.getFeil());
                     bestKriterier.setEkskluderEksternePersoner(true);
                     return bestKriterier;
                 })
