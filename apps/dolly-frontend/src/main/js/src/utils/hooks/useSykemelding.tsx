@@ -1,6 +1,7 @@
-import { sykemeldingFetcher } from '@/api'
+import { fetcher, sykemeldingFetcher } from '@/api'
 import { AxiosError } from 'axios'
 import useSWRMutation from 'swr/mutation'
+import useSWR from 'swr'
 
 type RuleHit = {
 	messageForSender: string
@@ -13,6 +14,37 @@ type SykemeldingResponse = {
 	message?: string
 	status?: string
 	ruleHits?: RuleHit[]
+}
+
+type TsmSykemeldingResponse = {
+	sykmeldinger: [
+		{
+			sykmeldingId: string
+			aktivitet: [
+				{
+					fom: any
+					tom: any
+				},
+			]
+			ident: string
+		},
+	]
+}
+
+export const useTsmSykemelding = (ident: string) => {
+	const { data, isLoading, error } = useSWR<TsmSykemeldingResponse, AxiosError<any>>(
+		['/testnav-sykemelding-proxy/tsm/api/sykmelding/ident', ident],
+		([url, _ident]) =>
+			fetcher(url, {
+				'X-ident': ident,
+			}),
+	)
+
+	return {
+		sykemeldinger: data?.sykmeldinger || [],
+		loading: isLoading,
+		error: error,
+	}
 }
 
 export const useSykemeldingValidering = (values: any) => {

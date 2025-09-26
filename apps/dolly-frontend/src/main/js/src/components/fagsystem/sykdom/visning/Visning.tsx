@@ -10,6 +10,8 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { useTsmSykemelding } from '@/utils/hooks/useSykemelding'
+import { NySykemeldingVisning } from '@/components/fagsystem/sykdom/visning/partials/NySykemeldingVisning'
 
 export const sjekkManglerSykemeldingData = (sykemeldingData) => {
 	return (
@@ -33,11 +35,13 @@ const VisningAvBestilling = ({ bestillinger }) => {
 			const syntSykemelding = _.get(bestilling, 'data.sykemelding.syntSykemelding')
 			const detaljertSykemelding = _.get(bestilling, 'data.sykemelding.detaljertSykemelding')
 
-			return syntSykemelding ? (
-				<SyntSykemelding sykemelding={syntSykemelding} idx={idx} key={idx} />
-			) : detaljertSykemelding ? (
-				<DetaljertSykemelding sykemelding={detaljertSykemelding} idx={idx} key={idx} />
-			) : null
+			if (syntSykemelding) {
+				return <SyntSykemelding sykemelding={syntSykemelding} idx={idx} key={idx} />
+			} else if (detaljertSykemelding) {
+				return <DetaljertSykemelding sykemelding={detaljertSykemelding} idx={idx} key={idx} />
+			} else {
+				return null
+			}
 		}
 	})
 }
@@ -79,31 +83,34 @@ const Visning = ({ data }) => {
 
 export const SykemeldingVisning = ({
 	data,
+	ident,
 	loading,
 	bestillingIdListe,
 	tilgjengeligMiljoe,
 	bestillinger,
 }: Sykemelding) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'SYKEMELDING')
+	const { sykemeldinger, loading: nySykemeldingLoading } = useTsmSykemelding(ident?.ident)
 
-	if (loading) {
+	if (loading || nySykemeldingLoading) {
 		return <Loading label="Laster sykemelding-data" />
 	}
 
-	if (!data && !bestillinger) {
+	if (!data && !bestillinger && sykemeldinger?.length === 0) {
 		return null
 	}
 
 	const manglerFagsystemData =
-		sjekkManglerSykemeldingData(data) && sjekkManglerSykemeldingBestilling(bestillinger)
+		sjekkManglerSykemeldingData(data) &&
+		sjekkManglerSykemeldingBestilling(bestillinger) &&
+		sykemeldinger?.length === 0
 
 	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
 	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
-
 	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 
 	const mergeData = () => {
-		const mergeMiljo = []
+		const mergeMiljo: Array<{ data: any[]; miljo: string }> = []
 		data?.forEach((item: any) => {
 			const indexOfMiljo = mergeMiljo.findIndex((sykemelding) => sykemelding?.miljo === item?.miljo)
 			if (indexOfMiljo >= 0) {
@@ -117,30 +124,40 @@ export const SykemeldingVisning = ({
 		})
 		return mergeMiljo
 	}
-	const mergetData = mergeData()
 
+	const mergetData = mergeData()
 	const filteredData =
 		tilgjengeligMiljoe && mergetData?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
+
+	let render: React.ReactNode
+
+	if (manglerFagsystemData) {
+		render = (
+			<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				Fant ikke sykemelding-data på person
+			</Alert>
+		)
+	} else if (sjekkManglerSykemeldingData(data) && sykemeldinger?.length === 0) {
+		render = <VisningAvBestilling bestillinger={bestillinger} />
+	} else if (sykemeldinger?.length > 0) {
+		render = <NySykemeldingVisning ident={ident} />
+	} else {
+		render = (
+			<MiljoTabs
+				bestilteMiljoer={bestilteMiljoer}
+				errorMiljoer={errorMiljoer}
+				forsteMiljo={forsteMiljo}
+				data={filteredData ?? mergetData}
+			>
+				<Visning />
+			</MiljoTabs>
+		)
+	}
 
 	return (
 		<div>
 			<SubOverskrift label="Sykemelding" iconKind="sykdom" isWarning={manglerFagsystemData} />
-			{manglerFagsystemData ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Fant ikke sykemelding-data på person
-				</Alert>
-			) : sjekkManglerSykemeldingData(data) ? (
-				<VisningAvBestilling bestillinger={bestillinger} />
-			) : (
-				<MiljoTabs
-					bestilteMiljoer={bestilteMiljoer}
-					errorMiljoer={errorMiljoer}
-					forsteMiljo={forsteMiljo}
-					data={filteredData ?? mergetData}
-				>
-					<Visning />
-				</MiljoTabs>
-			)}
+			{render}
 		</div>
 	)
 }

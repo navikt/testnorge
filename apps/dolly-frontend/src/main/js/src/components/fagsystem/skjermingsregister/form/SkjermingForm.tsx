@@ -1,18 +1,13 @@
 import React, { useContext } from 'react'
 import { isAfter } from 'date-fns'
-import {
-	BestillingsveilederContext,
-	BestillingsveilederContextType,
-} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
 
-export const SkjermingForm = ({ formMethods }) => {
-	const { personFoerLeggTil } = useContext(
-		BestillingsveilederContext,
-	) as BestillingsveilederContextType
+export const SkjermingForm = () => {
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 
-	const HarAktivSkjerming = () => {
+	const harAktivSkjerming = () => {
 		if (personFoerLeggTil?.skjermingsregister?.skjermetTil) {
 			return personFoerLeggTil?.skjermingsregister?.skjermetFra
 				? isAfter(
@@ -25,7 +20,7 @@ export const SkjermingForm = ({ formMethods }) => {
 		}
 	}
 
-	const harSkjerming = HarAktivSkjerming()
+	const harSkjerming = harAktivSkjerming()
 
 	return (
 		<div className="flexbox--flex-wrap">

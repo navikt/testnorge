@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.sykemelding.domain;
+package no.nav.dolly.bestilling.sykemelding.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public class DetaljertSykemeldingRequest {
+public class DetaljertSykemeldingRequestDTO {
 
     private Arbeidsgiver arbeidsgiver;
     private DollyDiagnose hovedDiagnose;
