@@ -106,7 +106,7 @@ export const Select = ({
 
 	const getPlaceholder = () => {
 		if (isLoading) {
-			return 'Henter verdier ...'
+			return 'Laster ...'
 		} else if (options?.length === 0) {
 			return 'Ingen tilgjengelige verdier'
 		}

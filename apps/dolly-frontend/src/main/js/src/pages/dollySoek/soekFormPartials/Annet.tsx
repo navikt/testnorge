@@ -10,13 +10,19 @@ export const Annet = ({ handleChange }: any) => {
 				name={`${personPath}.harKontaktinformasjonForDoedsbo`}
 				label="Har kontaktinformasjon for dødsbo"
 				onChange={(val: SyntheticEvent) =>
-					handleChange(val.target.checked, 'harKontaktinformasjonForDoedsbo')
+					handleChange(
+						val.target.checked,
+						`${personPath}.harKontaktinformasjonForDoedsbo`,
+						'Har kontaktinformasjon for dødsbo',
+					)
 				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harOpphold`}
 				label="Har opphold"
-				onChange={(val: SyntheticEvent) => handleChange(val.target.checked, 'harOpphold')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(val.target.checked, `${personPath}.harOpphold`, 'Har opphold')
+				}
 			/>
 		</SoekKategori>
 	)

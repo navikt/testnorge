@@ -9,10 +9,13 @@ export const Tjenestepensjonsavtale = ({ handleChange, getValue }: any) => {
 			<FormTextInput
 				name="tjenestepensjonsavtale.pensjonsinnretningOrgnr"
 				label="Pensjonsinnretning (org.nr.)"
-				type="number"
 				// @ts-ignore
 				onBlur={(val: any) =>
-					handleChange(val?.target?.value || null, 'tjenestepensjonsavtale.pensjonsinnretningOrgnr')
+					handleChange(
+						val?.target?.value ?? null,
+						'tjenestepensjonsavtale.pensjonsinnretningOrgnr',
+						`Tjenestepensjonsavtale org.nr.: ${val?.target?.value}`,
+					)
 				}
 				visHvisAvhuket={false}
 			/>
@@ -24,6 +27,7 @@ export const Tjenestepensjonsavtale = ({ handleChange, getValue }: any) => {
 					handleChange(
 						val ? val.toISOString().substring(0, 7) : '',
 						'tjenestepensjonsavtale.periode',
+						`Tjenestepensjonsavtale periode: ${val?.toISOString().substring(0, 7)}`,
 					)
 				}}
 				date={getValue('tjenestepensjonsavtale.periode')}

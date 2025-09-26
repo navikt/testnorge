@@ -13,7 +13,7 @@ dollyTest(
 
 		expect(screen.getByText('Tester kodeverk')).toBeInTheDocument()
 
-		expect(screen.getByText('Henter verdier ...')).toBeInTheDocument()
+		expect(screen.getByText('Laster ...')).toBeInTheDocument()
 
 		worker.use(
 			// override the initial kodeverk request handler to return non-empty list
