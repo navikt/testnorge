@@ -95,7 +95,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .takeWhile(BooleanUtils::isFalse)
-                .map(ignore -> OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
+                .map(ok -> OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                 .concatMap(originator -> opprettProgress(bestilling, originator.getMaster(), originator.getIdent())
                         .zipWith(Mono.just(originator)))
                 .concatMap(tuple -> oppdaterPdlPerson(tuple.getT2(), tuple.getT1(), tuple.getT2().getIdent())

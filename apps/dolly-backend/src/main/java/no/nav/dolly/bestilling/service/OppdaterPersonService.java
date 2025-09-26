@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -75,35 +76,41 @@ public class OppdaterPersonService extends DollyBestillingService {
         request.setId(bestilling.getId());
 
         identService.getTestIdent(bestilling.getIdent())
-                .flatMap(testident -> Mono.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
-                        .zipWith(Mono.just(testident))
-                        .flatMap(tuple -> opprettProgress(bestilling, tuple.getT1().getMaster(), testident.getIdent())
-                                .flatMap(progress ->
-                                        oppdaterPdlPerson(tuple.getT1(), progress)
-                                                .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
-                                                .filter(StringUtils::isNotBlank)
-                                                .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
-                                                        .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(progress.getIdent()) ?
-                                                                updateIdent(dollyPerson, progress) : Mono.just(ident))
-                                                                .doOnNext(nyident -> counterCustomRegistry.invoke(request))
-                                                                .flatMap(nyIdent ->
-                                                                        gjenopprettKlienter(dollyPerson, request,
-                                                                                fase1Klienter(),
-                                                                                progress, true)
-                                                                                .then(personServiceClient.syncPerson(dollyPerson, progress)
-                                                                                        .filter(BestillingProgress::isPdlSync)
-                                                                                        .flatMap(sync ->
-                                                                                                gjenopprettKlienter(dollyPerson, request,
-                                                                                                        fase2Klienter(),
-                                                                                                        progress, true)
-                                                                                                        .then(gjenopprettKlienter(dollyPerson, request,
-                                                                                                                fase3Klienter(),
-                                                                                                                progress, true)))))
-                                                        )))))
+                .flatMap(testident -> oppdaterPerson(bestilling, request, testident))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(request, bestilling)
                                 .then(doFerdig(bestilling))
                                 .subscribe());
+    }
+
+    Mono<BestillingProgress> oppdaterPerson(Bestilling bestilling, RsDollyUpdateRequest request, Testident testident) {
+
+        return Mono.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
+                .flatMap(originator -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
+                        .zipWith(Mono.just(originator)))
+                .flatMap(tuple -> oppdaterPdlPerson(tuple.getT2(), tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT1())))
+                .flatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .filter(tuple -> StringUtils.isNotBlank(tuple.getT1()))
+                .flatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .flatMap(tuple -> (!tuple.getT1().getIdent().equals(tuple.getT2().getIdent()) ?
+                        updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
+                        .thenReturn(tuple))
+                .doOnNext(tuple -> counterCustomRegistry.invoke(request))
+                .flatMap(tuple ->
+                        gjenopprettKlienter(tuple.getT1(), request,
+                                fase1Klienter(),
+                                tuple.getT2(), true)
+                                .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
+                                        .filter(BestillingProgress::isPdlSync)
+                                        .then(gjenopprettKlienter(tuple.getT1(), request,
+                                                fase2Klienter(),
+                                                tuple.getT2(), true)
+                                                .then(gjenopprettKlienter(tuple.getT1(), request,
+                                                        fase3Klienter(),
+                                                        tuple.getT2(), true)))));
     }
 }

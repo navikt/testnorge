@@ -195,7 +195,7 @@ public class BestillingService {
 
     public Mono<Bestilling> cleanBestilling(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .flatMap(progress -> Flux.fromArray(progress.getClass().getMethods())
                         .filter(method -> method.getName().contains("get"))
                         .flatMap(metode -> {
@@ -667,7 +667,7 @@ public class BestillingService {
 
     private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .collectList();
     }
 }
