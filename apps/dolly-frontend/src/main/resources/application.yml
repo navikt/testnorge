@@ -198,6 +198,11 @@ consumers:
     namespace: dolly
     url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
+  testnav-sykemelding-proxy:
+    name: testnav-sykemelding-proxy
+    namespace: dolly
+    url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-histark-proxy:
     name: testnav-histark-proxy
     namespace: dolly

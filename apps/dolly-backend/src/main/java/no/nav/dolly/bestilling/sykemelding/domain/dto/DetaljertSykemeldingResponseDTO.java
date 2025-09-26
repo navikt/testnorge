@@ -1,11 +1,10 @@
-package no.nav.dolly.bestilling.sykemelding.dto;
+package no.nav.dolly.bestilling.sykemelding.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
@@ -14,7 +13,7 @@ import reactor.core.publisher.Mono;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SykemeldingResponse {
+public class DetaljertSykemeldingResponseDTO {
 
     private HttpStatus status;
     private String avvik;
@@ -22,8 +21,8 @@ public class SykemeldingResponse {
     private String msgId;
     private String ident;
 
-    public static Mono<SykemeldingResponse> of(WebClientError.Description description, String ident) {
-        return Mono.just(SykemeldingResponse
+    public static Mono<DetaljertSykemeldingResponseDTO> of(WebClientError.Description description, String ident) {
+        return Mono.just(DetaljertSykemeldingResponseDTO
                 .builder()
                 .ident(ident)
                 .status(description.getStatus())
@@ -39,6 +38,6 @@ public class SykemeldingResponse {
     public static class SykemeldingRequest {
 
         private String sykemeldingId;
-        private DetaljertSykemeldingRequest detaljertSykemeldingRequest;
+        private DetaljertSykemeldingRequestDTO detaljertSykemeldingRequestDTO;
     }
 }

@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sykemelding.command.DetaljertSykemeldingValideringPostCommand;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingRequestDTO;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingResponseDTO;
+import no.nav.dolly.bestilling.sykemelding.command.NySykemeldingDeleteCommand;
+import no.nav.dolly.bestilling.sykemelding.command.NySykemeldingPostCommand;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingRequestDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -19,20 +20,20 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class SykemeldingConsumer extends ConsumerStatus {
+public class NySykemeldingConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final ServerProperties serverProperties;
 
-    public SykemeldingConsumer(
+    public NySykemeldingConsumer(
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
             WebClient webClient) {
 
         this.tokenService = accessTokenService;
-        serverProperties = consumers.getTestnavSykemeldingApi();
+        serverProperties = consumers.getTestnavSykemeldingProxy();
         this.webClient = webClient
                 .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -40,14 +41,22 @@ public class SykemeldingConsumer extends ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
-    public Mono<DetaljertSykemeldingResponseDTO> postDetaljertSykemelding(DetaljertSykemeldingRequestDTO detaljertSykemeldingRequestDTO) {
+    @Timed(name = "providers", tags = { "operation", "nysykemelding_opprett" })
+    public Mono<NySykemeldingResponseDTO> postTsmSykemelding(NySykemeldingRequestDTO nySykemeldingRequestDTO) {
 
-        log.info("Detaljert Sykemelding sendt {}", Json.pretty(detaljertSykemeldingRequestDTO));
+        log.info("Sykemelding sendt til tsm-input-dolly {}", Json.pretty(nySykemeldingRequestDTO));
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new DetaljertSykemeldingValideringPostCommand(webClient, detaljertSykemeldingRequestDTO,
-                        token.getTokenValue()).call());
+                .flatMap(token -> new NySykemeldingPostCommand(webClient, nySykemeldingRequestDTO, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "nysykemelding_delete" })
+    public Mono<Void> deleteTsmSykemeldinger(String ident) {
+
+        log.info("Sletter nye sykemeldinger for ident: {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new NySykemeldingDeleteCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Override
@@ -57,6 +66,6 @@ public class SykemeldingConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-sykemelding-api";
+        return "testnav-sykemelding-proxy";
     }
 }
