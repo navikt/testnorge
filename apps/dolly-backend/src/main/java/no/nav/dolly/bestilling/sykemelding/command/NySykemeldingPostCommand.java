@@ -30,8 +30,11 @@ public class NySykemeldingPostCommand implements Callable<Mono<NySykemeldingResp
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(NySykemeldingResponseDTO.class)
+                .map(response -> NySykemeldingResponseDTO.builder()
+                        .status(response.getStatus())
+                        .ident(request.getIdent())
+                        .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> NySykemeldingResponseDTO.of(WebClientError.describe(error), request.getIdent()));
-
     }
 }
