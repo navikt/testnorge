@@ -86,6 +86,8 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
+    - name: USER_TIMEZONE
+      value: "Europe/Oslo"
   envFrom:
     - secret: user-encryption-dev
   replicas:
