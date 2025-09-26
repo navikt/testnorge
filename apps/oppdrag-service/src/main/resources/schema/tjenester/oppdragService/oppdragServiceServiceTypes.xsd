@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceServiceTypes"
+            version="1.0"
+			xmlns:servicetypes="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceServiceTypes"
+			xmlns:oppdragSkjema="http://nav.no/system/os/entiteter/oppdragSkjema"
+			xmlns:beregningSkjema="http://nav.no/system/os/entiteter/beregningSkjema"
+ 		    xmlns:infomelding="http://nav.no/system/os/entiteter/infomelding"
+			xmlns:typer="http://nav.no/system/os/entiteter/typer/simpleTypes"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:import namespace="http://nav.no/system/os/entiteter/oppdragSkjema"     schemaLocation="../../entiteter/oppdragSkjema.xsd"/>
+  <xsd:import namespace="http://nav.no/system/os/entiteter/beregningSkjema"   schemaLocation="../../entiteter/beregningSkjema.xsd"/>
+  <xsd:import namespace="http://nav.no/system/os/entiteter/infomelding"       schemaLocation="../../entiteter/infomelding.xsd"/>
+  <xsd:import namespace="http://nav.no/system/os/entiteter/typer/simpleTypes" schemaLocation="../../entiteter/typer/simpleTypes.xsd"/>
+
+    <xsd:annotation>
+		<xsd:documentation>Definisjon av request og respons for tjenesten</xsd:documentation>
+		<xsd:documentation>Kan bestå av både standard (gjenbrukbare) entiteter som kan bli gjenbrukt og (komplekse)typer spesifikk for denne tjenesten</xsd:documentation>
+	</xsd:annotation>
+
+  <!--oppdragslinje er forksjellig av definisjon for request og respons. egne types på servicenivå-->
+  <xsd:complexType name="oppdragslinje">
+	<xsd:complexContent>
+		<xsd:extension base="oppdragSkjema:oppdragslinje">
+			<xsd:sequence>
+				<xsd:element ref="oppdragSkjema:refusjonsInfo" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="oppdragSkjema:tekst" minOccurs="0" maxOccurs="50" />
+				<xsd:element ref="oppdragSkjema:enhet" minOccurs="0" maxOccurs="50" />
+				<xsd:element ref="oppdragSkjema:grad" minOccurs="0" maxOccurs="50" />
+				<xsd:element ref="oppdragSkjema:attestant" minOccurs="0" maxOccurs="50" />
+				<xsd:element ref="oppdragSkjema:valuta" minOccurs="0" maxOccurs="50" />
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>
+  </xsd:complexType>
+
+  <!--oppdrag er forksjellig av definisjon for request og respons. egne types på servicenivå-->
+  <xsd:complexType name="oppdrag">
+	<xsd:complexContent>
+		<xsd:extension base="oppdragSkjema:oppdrag">
+			<xsd:sequence>
+				<xsd:element ref="oppdragSkjema:bilagstype" minOccurs="0" maxOccurs="50" />
+				<xsd:element ref="oppdragSkjema:avstemmingsnokkel" minOccurs="0" maxOccurs="50" />
+                <xsd:element ref="oppdragSkjema:ompostering" minOccurs="0" />
+				<xsd:element name="oppdragslinje" type="servicetypes:oppdragslinje" minOccurs="0" maxOccurs="1400" />
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="sendInnOppdragRequest">
+    <xsd:sequence>
+      <xsd:element name="oppdrag" type="servicetypes:oppdrag">
+        <xsd:annotation>
+          <xsd:documentation>Oppdraget for innsending.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="sendInnOppdragResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="oppdrag" type="servicetypes:oppdrag">
+        <xsd:annotation>
+          <xsd:documentation>Oppdraget som er sendt inn og videreutfylt under behandling.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="infomelding" type="infomelding:infomelding">
+        <xsd:annotation>
+          <xsd:documentation>Informasjonsmelding</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="simulerBeregningRequest">
+    <xsd:sequence>
+        <xsd:element name="oppdrag" type="servicetypes:oppdrag">
+          <xsd:annotation>
+             <xsd:documentation>Oppdragetmed underelementer for simuleringsberegning.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+		<xsd:element name="simuleringsPeriode">
+			<xsd:annotation>
+				<xsd:documentation>Entitet Simulering</xsd:documentation>
+				<xsd:documentation>Referanse ID 300</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:element name="datoSimulerFom" type="typer:dato" minOccurs="0" />
+					<xsd:element name="datoSimulerTom" type="typer:dato" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="simulerBeregningResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="simulering" type="beregningSkjema:beregning">
+        <xsd:annotation>
+          <xsd:documentation>Simulert beregningsresultat for gitt periode</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="infomelding" type="infomelding:infomelding">
+        <xsd:annotation>
+          <xsd:documentation>Informasjonsmelding</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>
