@@ -12,6 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
 
 spec:
+  timeZone: Europe/Oslo
   tokenx:
     enabled: true
   accessPolicy:
@@ -86,8 +87,6 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
-    - name: USER_TIMEZONE
-      value: Europe/Oslo
   envFrom:
     - secret: user-encryption-dev
   replicas:
