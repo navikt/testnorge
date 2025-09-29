@@ -38,6 +38,7 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                 .retrieve()
                 .bodyToMono(PensjonSamboerResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 
@@ -52,7 +53,7 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                                 .status(description.getStatus().value())
                                 .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(description.getMessage())
+                        .message(description.getMessage().replaceAll("\"timestamp\":\\d+,", ""))
                         .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();

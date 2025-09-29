@@ -32,6 +32,7 @@ public class BrukerServiceGetTilgangCommand implements Callable<Mono<TilgangDTO>
                 .retrieve()
                 .bodyToMono(TilgangDTO.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(TilgangDTO.builder()
                         .brukere(List.of(brukerId))
                         .build()));

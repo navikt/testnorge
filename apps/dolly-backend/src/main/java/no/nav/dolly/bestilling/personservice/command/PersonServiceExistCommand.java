@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.personservice.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,6 +37,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .exists(resultat.getBody())
                         .build())
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(PersonServiceResponse.builder()
                         .exists(false)
                         .ident(ident)
