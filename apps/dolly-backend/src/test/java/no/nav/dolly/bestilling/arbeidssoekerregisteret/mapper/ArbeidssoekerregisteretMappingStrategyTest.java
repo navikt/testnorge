@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,8 +19,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ExtendWith(MockitoExtension.class)
 class ArbeidssoekerregisteretMappingStrategyTest {
 
-    private static final LocalDate GJELDER_FRA_DATO = LocalDate.now(CET);
-    private static final LocalDate GJELDER_TIL_DATO = LocalDate.now(CET).plusYears(1);
+    private static final LocalDate GJELDER_FRA_DATO = LocalDate.now();
+    private static final LocalDate GJELDER_TIL_DATO = LocalDate.now().plusYears(1);
 
     private MapperFacade mapperFacade;
 

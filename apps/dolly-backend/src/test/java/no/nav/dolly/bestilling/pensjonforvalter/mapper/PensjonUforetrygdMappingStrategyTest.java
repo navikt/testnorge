@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -23,6 +22,8 @@ import static org.hamcrest.Matchers.stringContainsInOrder;
 @ExtendWith(MockitoExtension.class)
 class PensjonUforetrygdMappingStrategyTest {
 
+    private static final String IDENT = "ident";
+    private static final String FNR_1 = "12345678901";
     private static final String PERSONDATA = "persondata";
     private static final LocalDate UFORE_TIDSPUNKT = LocalDate.of(2015, 1, 1);
     private static final String ANSATT = "Z991234";
@@ -42,7 +43,7 @@ class PensjonUforetrygdMappingStrategyTest {
         var resultat = mapperFacade.map(new PensjonData.Uforetrygd(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getOnsketVirkningsDato(), is(equalTo(getNesteMaaned())));
-        assertThat(resultat.getKravFremsattDato(), is(equalTo(LocalDate.now(CET))));
+        assertThat(resultat.getKravFremsattDato(), is(equalTo(LocalDate.now())));
         assertThat(resultat.getUforetidspunkt(), is(equalTo(getForrigeMaaned())));
     }
 
@@ -56,7 +57,7 @@ class PensjonUforetrygdMappingStrategyTest {
                 .build(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getOnsketVirkningsDato(), is(equalTo(UFORE_TIDSPUNKT)));
-        assertThat(resultat.getKravFremsattDato(), is(equalTo(LocalDate.now(CET))));
+        assertThat(resultat.getKravFremsattDato(), is(equalTo(LocalDate.now())));
         assertThat(resultat.getUforetidspunkt(), is(equalTo(getForrigeMaaned())));
     }
 
@@ -86,13 +87,13 @@ class PensjonUforetrygdMappingStrategyTest {
 
     private static LocalDate getForrigeMaaned() {
 
-        var forrigeMaaned = LocalDate.now(CET).minusMonths(1);
+        var forrigeMaaned = LocalDate.now().minusMonths(1);
         return LocalDate.of(forrigeMaaned.getYear(), forrigeMaaned.getMonth(), 1);
     }
 
     private static LocalDate getNesteMaaned() {
 
-        var nesteMaaned = LocalDate.now(CET).plusMonths(1);
+        var nesteMaaned = LocalDate.now().plusMonths(1);
         return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
     }
 }

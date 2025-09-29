@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Objects;
 
 @Data
@@ -32,6 +30,6 @@ public class RsAvsendersystem {
     }
 
     public LocalDateTime getInnsendingstidspunkt() {
-        return Objects.requireNonNullElse(innsendingstidspunkt, LocalDateTime.now(Clock.system(ZoneId.of("Europe/Oslo"))));
+        return Objects.requireNonNullElse(innsendingstidspunkt, LocalDateTime.now());
     }
 }

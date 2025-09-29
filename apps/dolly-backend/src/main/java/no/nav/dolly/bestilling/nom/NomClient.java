@@ -30,7 +30,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.NOM;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -61,7 +60,7 @@ public class NomClient implements ClientRegister {
                     } else if (isNull(ressurs.getSluttDato()) && nonNull(bestilling.getNomdata().getSluttDato())) {
                         return nomConsumer.avsluttRessurs(dollyPerson.getIdent(),
                                 bestilling.getNomdata().getSluttDato().toLocalDate());
-                    } else if (nonNull(ressurs.getSluttDato()) && ressurs.getSluttDato().isBefore(LocalDate.now(CET))) {
+                    } else if (nonNull(ressurs.getSluttDato()) && ressurs.getSluttDato().isBefore(LocalDate.now())) {
                         return mapTilNomRequest(bestilling.getNomdata(), dollyPerson)
                                 .flatMap(nomConsumer::opprettRessurs);
                     } else {
@@ -99,7 +98,7 @@ public class NomClient implements ClientRegister {
     public void release(List<String> identer) {
 
         Flux.fromIterable(identer)
-                .flatMap(ident -> nomConsumer.avsluttRessurs(ident, LocalDate.now(CET)))
+                .flatMap(ident -> nomConsumer.avsluttRessurs(ident, LocalDate.now()))
                 .collectList()
                 .subscribe(result ->
                         log.info("Nom, avsluttet {} identer", identer.size()));

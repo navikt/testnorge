@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
 
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -76,8 +75,8 @@ class PensjonAlderspensjonVedtakMappingStrategyTest {
 
         var target = mapperFacade.map(pensjon, AlderspensjonVedtakRequest.class, context);
 
-        assertThat(target.getKravFremsattDato(), is(equalTo(LocalDate.now(CET))));
-        assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.now(CET)
+        assertThat(target.getKravFremsattDato(), is(equalTo(LocalDate.now())));
+        assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.now()
                 .with(TemporalAdjusters.firstDayOfNextMonth()))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
         assertThat(target.getSaksbehandler(), matchesPattern("Z[0-9]{6}"));

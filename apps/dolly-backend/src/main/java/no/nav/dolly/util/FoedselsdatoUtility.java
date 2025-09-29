@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 
 @UtilityClass
 public class FoedselsdatoUtility {
@@ -36,7 +35,12 @@ public class FoedselsdatoUtility {
 
         var foedselsdato = getFoedselsdato(personBolk);
 
-        return foedselsdato.plusYears(MYNDIGHETSALDER).isBefore(LocalDateTime.now(CET)) ||
-                foedselsdato.toLocalDate().plusYears(MYNDIGHETSALDER).isEqual(LocalDate.now(CET));
+        return foedselsdato.plusYears(MYNDIGHETSALDER).isBefore(LocalDateTime.now()) ||
+                foedselsdato.toLocalDate().plusYears(MYNDIGHETSALDER).isEqual(LocalDate.now());
+    }
+
+    public static LocalDateTime getMyndighetsdato(PdlPersonBolk.PersonBolk personBolk) {
+
+        return getFoedselsdato(personBolk).plusYears(MYNDIGHETSALDER);
     }
 }

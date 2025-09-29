@@ -17,7 +17,6 @@ import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupp
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
@@ -35,7 +34,7 @@ public class PensjonAlderspensjonVedtakMappingStrategy implements MappingStrateg
                         request.setMiljoer((Set<String>) context.getProperty(MILJOER));
 
                         request.setKravFremsattDato(
-                                nullcheckSetDefaultValue(alderspensjon.getKravFremsattDato(), LocalDate.now(CET)));
+                                nullcheckSetDefaultValue(alderspensjon.getKravFremsattDato(), LocalDate.now()));
                         request.setIverksettelsesdato(
                                 nullcheckSetDefaultValue(alderspensjon.getIverksettelsesdato(), getNesteMaaned()));
 

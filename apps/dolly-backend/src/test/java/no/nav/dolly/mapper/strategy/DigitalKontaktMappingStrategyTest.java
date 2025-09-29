@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -30,7 +29,7 @@ class DigitalKontaktMappingStrategyTest {
     private static final boolean RESERVERT = true;
     private static final LocalDate GYLDIG_FRA = LocalDate.of(2018, 1, 1);
     private static final ZonedDateTime Z_GYLDIG_FRA = ZonedDateTime.of(GYLDIG_FRA.atStartOfDay(), ZoneId.of("UTC"));
-    private static final LocalDate DATE_NOW = LocalDate.now(CET);
+    private static final LocalDate DATE_NOW = LocalDate.now();
 
     private MapperFacade mapperFacade;
 

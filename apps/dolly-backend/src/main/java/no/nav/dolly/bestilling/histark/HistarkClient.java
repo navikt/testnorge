@@ -34,7 +34,6 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.HISTARK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Slf4j
@@ -140,7 +139,7 @@ public class HistarkClient implements ClientRegister {
                                                     .dokumentInfoId(histarkId)
                                                     .build())
                                             .toList()))
-                                    .datoEndret(LocalDateTime.now(CET))
+                                    .datoEndret(LocalDateTime.now())
                                     .miljoe("NA")
                                     .system(HISTARK.name())
                                     .build())

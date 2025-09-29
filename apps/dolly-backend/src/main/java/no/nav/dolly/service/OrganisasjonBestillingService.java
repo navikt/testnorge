@@ -38,7 +38,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.FAILED;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -120,7 +119,7 @@ public class OrganisasjonBestillingService {
 
                     orgBestilling.setFeil("Bestilling stoppet");
                     orgBestilling.setFerdig(true);
-                    orgBestilling.setSistOppdatert(now(CET));
+                    orgBestilling.setSistOppdatert(now());
                     return orgBestilling;
                 })
                 .flatMap(organisasjonBestillingRepository::save);
@@ -133,7 +132,7 @@ public class OrganisasjonBestillingService {
                 .map(bruker -> OrganisasjonBestilling.builder()
                         .antall(1)
                         .ferdig(false)
-                        .sistOppdatert(now(CET))
+                        .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))
                         .bruker(bruker)
@@ -165,7 +164,7 @@ public class OrganisasjonBestillingService {
                 .flatMap(bruker -> Mono.just(
                         OrganisasjonBestilling.builder()
                                 .antall(1)
-                                .sistOppdatert(now(CET))
+                                .sistOppdatert(now())
                                 .ferdig(isTrue(status.getFerdig()))
                                 .miljoer(join(",", status.getEnvironments()))
                                 .bestKriterier(toJson(status.getBestilling()))
@@ -181,7 +180,7 @@ public class OrganisasjonBestillingService {
                 .map(bestilling -> {
                     bestilling.setFeil(feil);
                     bestilling.setFerdig(Boolean.TRUE);
-                    bestilling.setSistOppdatert(now(CET));
+                    bestilling.setSistOppdatert(now());
                     return bestilling;
                 })
                 .flatMap(organisasjonBestillingRepository::save)
@@ -239,7 +238,7 @@ public class OrganisasjonBestillingService {
                                 .anyMatch(o -> o.getEnvironment().equals(miljoe)));
 
         bestilling.setFerdig(ferdig);
-        bestilling.setSistOppdatert(now(CET));
+        bestilling.setSistOppdatert(now());
 
         return organisasjonBestillingRepository.save(bestilling);
     }

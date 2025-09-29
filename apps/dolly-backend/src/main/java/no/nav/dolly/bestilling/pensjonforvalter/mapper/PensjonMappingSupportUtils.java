@@ -6,8 +6,6 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Random;
 
-import static no.nav.dolly.util.DateZoneUtil.CET;
-
 @UtilityClass
 public class PensjonMappingSupportUtils {
 
@@ -15,13 +13,13 @@ public class PensjonMappingSupportUtils {
 
     public static LocalDate getForrigeMaaned() {
 
-        var forrigeMaaned = LocalDate.now(CET).minusMonths(1);
+        var forrigeMaaned = LocalDate.now().minusMonths(1);
         return LocalDate.of(forrigeMaaned.getYear(), forrigeMaaned.getMonth(), 1);
     }
 
     public static LocalDate getNesteMaaned() {
 
-        var nesteMaaned = LocalDate.now(CET).plusMonths(1);
+        var nesteMaaned = LocalDate.now().plusMonths(1);
         return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
     }
 

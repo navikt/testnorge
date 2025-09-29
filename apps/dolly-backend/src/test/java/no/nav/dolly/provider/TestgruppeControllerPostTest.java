@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -91,7 +90,7 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
                                 .ansettelsesPeriode(
                                         RsAnsettelsesPeriode
                                                 .builder()
-                                                .fom(LocalDateTime.now(CET))
+                                                .fom(LocalDateTime.now())
                                                 .build())
                                 .arbeidsavtale(
                                         RsArbeidsavtale
@@ -142,7 +141,7 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
                                                 .avsendersystem(
                                                         RsInntektsmelding.RsAvsendersystem
                                                                 .builder()
-                                                                .innsendingstidspunkt(LocalDateTime.now(CET))
+                                                                .innsendingstidspunkt(LocalDateTime.now())
                                                                 .build())
                                                 .ytelse(YtelseType.PLEIEPENGER_BARN)
                                                 .build()))

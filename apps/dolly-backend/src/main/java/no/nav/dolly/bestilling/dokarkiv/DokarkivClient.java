@@ -43,7 +43,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -215,7 +214,7 @@ public class DokarkivClient implements ClientRegister {
                                         .dokumentInfoId(arkiv.getDokumenter().getFirst().getDokumentInfoId())
                                         .build())
                                 .toList()))
-                        .datoEndret(LocalDateTime.now(CET))
+                        .datoEndret(LocalDateTime.now())
                         .miljoe(miljoe)
                         .system(DOKARKIV.name())
                         .build());

@@ -19,7 +19,6 @@ import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.MED_S
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.IKVAL;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.VARIG;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -29,7 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ExtendWith(MockitoExtension.class)
 class ArenaMappingStrategyTest {
 
-    private static final LocalDateTime TIME_NOW = LocalDateTime.now(CET);
+    private static final LocalDateTime TIME_NOW = LocalDateTime.now();
     private static final LocalDateTime OLD_TIMES = LocalDateTime.of(2018, 1, 1, 0, 0);
     private static final LocalDateTime PAST_TIME = LocalDateTime.of(2018, 3, 1, 0, 0);
 

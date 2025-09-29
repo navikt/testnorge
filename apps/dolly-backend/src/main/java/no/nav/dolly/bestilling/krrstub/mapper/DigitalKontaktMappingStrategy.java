@@ -12,7 +12,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.util.DateZoneUtil.CET;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -44,7 +43,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                         kontaktdataRequest.setEpost(isBlank(digitalKontaktdata.getEpost()) ? null : digitalKontaktdata.getEpost());
                         kontaktdataRequest.setSpraak(isBlank(digitalKontaktdata.getSpraak()) ? null : digitalKontaktdata.getSpraak());
 
-                        kontaktdataRequest.setReservertOppdatert(ZonedDateTime.now(CET));
+                        kontaktdataRequest.setReservertOppdatert(ZonedDateTime.now());
                     }
 
                     private String digdirFormatertTlfNummer(String mobil, String landkode) {
@@ -64,7 +63,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                     private ZonedDateTime getDato(RsDigitalKontaktdata digitalKontaktdata) {
                         return nonNull(digitalKontaktdata.getGyldigFra()) ?
                                 digitalKontaktdata.getGyldigFra().atStartOfDay(ZoneId.of("UTC")) :
-                                ZonedDateTime.now(CET);
+                                ZonedDateTime.now();
                     }
                 })
                 .exclude("gyldigFra")
