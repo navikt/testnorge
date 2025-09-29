@@ -84,7 +84,7 @@ export const useDollyInfostriper = () => {
 	)
 
 	return {
-		infostriper: data || [],
+		infostriper: data && Array.isArray(data) ? data : [],
 		loading: isLoading,
 		error,
 		createInfostripe,

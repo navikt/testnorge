@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { InfoStripeType, useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
 import { DollyInfoAlert } from '@/components/infostripe/DollyInfoAlert'
 import Button from '@/components/ui/button/Button'
@@ -35,10 +35,7 @@ export const InfoStripe: React.FC = () => {
 		saveHidden(hiddenIds)
 	}, [hiddenIds])
 
-	const visibleAlerts: InfoStripeType[] = useMemo(
-		() => (alerts || []).filter((a) => !hiddenIds.includes(a.id)),
-		[alerts, hiddenIds],
-	)
+	const visibleAlerts: InfoStripeType[] = alerts.filter?.((a) => !hiddenIds.includes(a.id))
 
 	const hideAlert = useCallback((id: number) => {
 		setHiddenIds((prev) => (prev.includes(id) ? prev : [...prev, id]))
