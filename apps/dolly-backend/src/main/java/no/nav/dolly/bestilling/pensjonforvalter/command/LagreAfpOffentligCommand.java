@@ -45,6 +45,7 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, ident, HttpStatus.valueOf(response.getStatusCode().value())))
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, ident, error)));
     }
 
@@ -77,7 +78,7 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
                                 .status(description.getStatus().value())
                                 .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(description.getMessage())
+                        .message(description.getMessage().replaceAll("\"timestamp\":\\d+,", ""))
                         .path(PEN_AFP_OFFENTLIG_URL.replace("{miljoe}", miljoe).replace("{ident}", ident))
                         .build())
                 .build();

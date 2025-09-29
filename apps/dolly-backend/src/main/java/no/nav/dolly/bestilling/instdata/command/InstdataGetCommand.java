@@ -46,6 +46,7 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
                         .institusjonsopphold(resultat)
                         .build())
                 .doOnError(error -> log.error("Henting av institusjonsopphold feilet", error))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(new InstitusjonsoppholdRespons()));
     }
 }

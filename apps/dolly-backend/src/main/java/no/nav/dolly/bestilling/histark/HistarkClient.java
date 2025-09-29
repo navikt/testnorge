@@ -18,8 +18,8 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DokumentService;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -103,10 +103,10 @@ public class HistarkClient implements ClientRegister {
 
         return saveTransaksjonId(response, ident, bestillingId)
                 .then(Flux.fromIterable(response)
-                .map(status ->
-                        status.isOk() ? "OK: %s".formatted(status.getDokument()) :
-                                "FEIL: %s".formatted(encodeStatus(errorStatusDecoder.getStatusMessage(status.getFeilmelding()))))
-                .collect(Collectors.joining(",")));
+                        .map(status ->
+                                status.isOk() ? "OK: %s".formatted(status.getDokument()) :
+                                        "FEIL: %s".formatted(encodeStatus(errorStatusDecoder.getStatusMessage(status.getFeilmelding()))))
+                        .collect(Collectors.joining(",")));
     }
 
     private Mono<HistarkRequest> buildRequest(RsHistark.RsHistarkDokument dokument, String ident, Long bestillingId) {
@@ -129,20 +129,20 @@ public class HistarkClient implements ClientRegister {
         if (histarkIds.stream().anyMatch(HistarkResponse::isOk)) {
 
             return transaksjonMappingService.save(
-                    TransaksjonMapping.builder()
-                            .ident(ident)
-                            .bestillingId(bestillingId)
-                            .transaksjonId(toJson(histarkIds.stream()
-                                    .filter(HistarkResponse::isOk)
-                                    .map(HistarkResponse::getId)
-                                    .map(histarkId -> HistarkTransaksjon.builder()
-                                            .dokumentInfoId(histarkId)
-                                            .build())
-                                    .toList()))
-                            .datoEndret(LocalDateTime.now())
-                            .miljoe("NA")
-                            .system(HISTARK.name())
-                            .build())
+                            TransaksjonMapping.builder()
+                                    .ident(ident)
+                                    .bestillingId(bestillingId)
+                                    .transaksjonId(toJson(histarkIds.stream()
+                                            .filter(HistarkResponse::isOk)
+                                            .map(HistarkResponse::getId)
+                                            .map(histarkId -> HistarkTransaksjon.builder()
+                                                    .dokumentInfoId(histarkId)
+                                                    .build())
+                                            .toList()))
+                                    .datoEndret(LocalDateTime.now())
+                                    .miljoe("NA")
+                                    .system(HISTARK.name())
+                                    .build())
                     .then();
         } else {
 

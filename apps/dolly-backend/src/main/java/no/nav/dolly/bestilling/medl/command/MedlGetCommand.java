@@ -34,6 +34,7 @@ public class MedlGetCommand implements Callable<Flux<MedlDataResponse>> {
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
 
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Flux.empty());
     }
 

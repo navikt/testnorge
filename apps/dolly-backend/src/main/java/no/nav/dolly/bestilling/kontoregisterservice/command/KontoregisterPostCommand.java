@@ -39,6 +39,7 @@ public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResp
                         .status(HttpStatus.valueOf(value.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(KontoregisterResponseDTO
