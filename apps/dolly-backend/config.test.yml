@@ -12,7 +12,6 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
 
 spec:
-  timeZone: Europe/Oslo
   tokenx:
     enabled: true
   accessPolicy:

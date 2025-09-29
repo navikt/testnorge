@@ -5,4 +5,4 @@ EXPOSE 8080
 
 COPY build/libs/app.jar /my/app.jar
 WORKDIR /my
-ENTRYPOINT ["java", "-Dreactor.bufferSize.small=10000", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "-Dreactor.bufferSize.small=10000", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]

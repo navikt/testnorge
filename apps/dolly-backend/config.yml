@@ -12,7 +12,6 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
 
 spec:
-  timeZone: Europe/Oslo
   tokenx:
     enabled: true
   accessPolicy:
