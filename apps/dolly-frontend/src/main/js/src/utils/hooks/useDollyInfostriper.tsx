@@ -62,8 +62,11 @@ export const useDollyInfostriper = () => {
 				body: JSON.stringify(input),
 			})
 			if (!resp.ok) throw new Error(`Update failed ${resp.status}`)
-			const updated = resp.ok
-			await mutate()
+			const updated = normalize(await resp.json())
+			await mutate((curr) =>
+				curr ? curr.map((c) => (c.id === updated.id ? updated : c)) : [updated],
+				{ revalidate: false }
+			)
 			return updated
 		},
 		[mutate],
