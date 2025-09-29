@@ -31,6 +31,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -81,7 +82,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         var bestKriterier = getDollyBestillingRequest(bestilling);
 
         Mono.just(bestKriterier)
-                .filter(request -> isNotBlank(request.getFeil()))
+                .filter(request -> isBlank(request.getFeil()))
                 .flatMapMany(request ->
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId())
                                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))

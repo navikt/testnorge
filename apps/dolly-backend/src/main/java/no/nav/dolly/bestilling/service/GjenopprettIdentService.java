@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -83,7 +83,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
         var countBestillinger = new AtomicInteger(0);
 
         Mono.just(bestKriterier)
-                .filter(request -> nonNull(request.getFeil()))
+                .filter(request -> isBlank(request.getFeil()))
                 .flatMap(request -> identService.getTestIdent(bestilling.getIdent()))
                 .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                         .zipWith(Mono.just(testident)))
