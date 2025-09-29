@@ -47,7 +47,6 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostRespons
                             .status(description.getStatus().getReasonPhrase())
                             .build());
                 })
-                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Mono.empty());
     }
 }
