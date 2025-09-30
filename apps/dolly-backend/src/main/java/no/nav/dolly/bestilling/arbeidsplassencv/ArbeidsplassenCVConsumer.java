@@ -19,8 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -49,10 +51,12 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_oppdaterCV"})
-    public Mono<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, PAMCVDTO arbeidsplassenCV, String uuid) {
+    public Mono<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, PAMCVDTO arbeidsplassenCV, String uuid,
+                                                      Consumer<Retry.RetrySignal> logRetries) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new ArbeidsplassenPutCVCommand(webClient, ident, arbeidsplassenCV, uuid, token.getTokenValue()).call())
+                .flatMap(token -> new ArbeidsplassenPutCVCommand(webClient, ident, arbeidsplassenCV, uuid,
+                        token.getTokenValue(), logRetries).call())
                 .doOnNext(resultat -> log.info("Oppdatert CV for ident {} {}", ident, resultat));
     }
 

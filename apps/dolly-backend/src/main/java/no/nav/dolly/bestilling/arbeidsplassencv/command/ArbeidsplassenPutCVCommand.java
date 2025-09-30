@@ -8,10 +8,14 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
+import static java.time.Duration.*;
 import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.ARBEIDSPLASSEN_CALL_ID;
 
 @RequiredArgsConstructor
@@ -19,6 +23,7 @@ import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.
 public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenCVStatusDTO>> {
 
     private static final String ARBEIDSPLASSEN_CV_URL = "/rest/v3/cv";
+    private static final String FORBIDDEN_TEXT = "Bruker er ikke under oppfølging";
     private static final String FNR = "fnr";
 
     private final WebClient webClient;
@@ -26,6 +31,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
     private final PAMCVDTO arbeidsplassenCV;
     private final String uuid;
     private final String token;
+    private final Consumer<Retry.RetrySignal> logRetries;
 
     @Override
     public Mono<ArbeidsplassenCVStatusDTO> call() {
@@ -47,9 +53,11 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
                         .uuid(uuid)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-
+                .retryWhen(Retry.fixedDelay(20, ofSeconds(5))
+                        .filter(throwable -> throwable instanceof WebClientResponseException.Forbidden forbidden &&
+                                forbidden.getResponseBodyAsString().contains(FORBIDDEN_TEXT))
+                        .doAfterRetry(logRetries))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));
     }
-
 }

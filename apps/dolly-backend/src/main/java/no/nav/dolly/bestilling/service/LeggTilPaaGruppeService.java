@@ -110,18 +110,11 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .concatMap(tuple -> (!tuple.getT1().getIdent().equals(tuple.getT2().getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
                         .doOnNext(nyident -> counterCustomRegistry.invoke(bestKriterier))
-                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                fase1Klienter(),
-                                tuple.getT2(), true)
+                        .then(gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)
-                                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                fase2Klienter(),
-                                                tuple.getT2(), true)
-                                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                        fase3Klienter(),
-                                                        tuple.getT2(), true))))
-                        ));
+                                        .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
+                                                tuple.getT2(), true)))));
     }
 
     private Mono<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress, String ident) {
