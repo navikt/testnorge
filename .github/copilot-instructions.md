@@ -1,6 +1,6 @@
 ## Purpose
 
-Generate code for a Spring Boot \+ Gradle \+ Java backend and React (TypeScript) frontend.
+Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) frontend.
 
 ## General Style
 
