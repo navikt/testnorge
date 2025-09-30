@@ -95,7 +95,7 @@ export const Personinformasjon = ({ handleChange, setRequest }: any) => {
 			/>
 			<FormCheckbox
 				name={`${personPath}.harSkjerming`}
-				label="Har skjerming / er egen ansatt"
+				label="Har skjerming / er egenansatt"
 				checked={watch('registreRequest')?.includes('SKJERMING')}
 				onChange={(val: SyntheticEvent) => {
 					const registreValues = val.target.checked
