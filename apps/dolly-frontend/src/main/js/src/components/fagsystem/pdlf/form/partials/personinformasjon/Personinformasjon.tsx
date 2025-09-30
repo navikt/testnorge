@@ -21,7 +21,6 @@ import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/V
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
-import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -30,8 +29,6 @@ const nasjonalitetPaths = [
 	'pdldata.person.innflytting',
 	'pdldata.person.utflytting',
 ]
-
-const diversePaths = ['skjerming.egenAnsattDatoFom', 'skjerming.egenAnsattDatoTom']
 
 const alderPaths = [
 	'pdldata.opprettNyPerson.alder',
@@ -53,12 +50,10 @@ const foedselsdatoPath = ['pdldata.person.foedselsdato']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['pdldata.person.vergemaal']
 const sikkerhetstiltakPath = ['pdldata.person.sikkerhetstiltak']
-const fullmaktPath = ['pdldata.person.fullmakt', 'fullmakt']
 
 const panelPaths = [
 	alderPaths,
 	nasjonalitetPaths,
-	diversePaths,
 	innvandringPath,
 	utvandringPath,
 	kjoennPath,
@@ -126,10 +121,6 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Navn" vis={navnPath}>
 					<Navn formMethods={formMethods} />
-				</Kategori>
-
-				<Kategori title="Diverse" vis={diversePaths}>
-					<SkjermingForm formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>

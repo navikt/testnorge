@@ -1,7 +1,7 @@
 spring:
   application:
-    name: testnav-pdl-proxy
-    description: Proxy for pdl som legger på AzureAd sikkerhet og lager en sts token..
+    name: testnav-yrkesskade-proxy
+    description: Proxy for yrkesskade som legger på TokenX sikkerhet ...
   config:
     import: "classpath:dolly-application.yml"
   security:

@@ -9,6 +9,8 @@ import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -18,23 +20,19 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-import reactor.util.function.Tuple2;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -85,50 +83,61 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
-        var bestKriterier = getDollyBestillingRequest(bestilling);
-        if (nonNull(bestKriterier)) {
-            bestKriterier.setEkskluderEksternePersoner(true);
+        Mono.just(getDollyBestillingRequest(bestilling))
+                .map(bestKriterier -> {
+                    bestKriterier.setEkskluderEksternePersoner(true);
+                    return bestKriterier;
+                })
+                .filter(request -> isBlank(request.getFeil()))
+                .flatMapMany(bestKriterier ->
+                        identService.getTestidenterByGruppeId(bestilling.getGruppeId())
+                                .flatMap(testident -> utfoergjenoppretting(bestKriterier, bestilling, testident), 3))
+                .subscribe(progress -> log.info("Fullført gjenoppretting av ident: {}", progress.getIdent()),
+                        error -> doFerdig(bestilling).subscribe(),
+                        () -> doFerdig(bestilling).subscribe());
+    }
 
-            var counterIdentBestilling = new HashMap<String, Boolean>();
-            identService.getTestidenterByGruppeId(bestilling.getGruppeId())
-                    .delayElements(Duration.ofMillis(1500))
-                    .flatMap(testident -> bestillingService.isStoppet(bestilling.getId())
-                            .zipWith(Mono.just(testident)))
-                    .takeWhile(tuple -> isFalse(tuple.getT1()))
-                    .map(Tuple2::getT2)
-                    .doOnNext(testident -> counterIdentBestilling.put(testident.getIdent(), false))
-                    .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
-                            .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
-                                    .ident(testident.getIdent())
-                                    .build())
-                                    .filter(Objects::nonNull)
-                                    .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
-                                            .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
-                                            .flatMap(dollyPerson ->
-                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                            fase1Klienter(),
-                                                            progress, true)
-                                                            .then(personServiceClient.syncPerson(dollyPerson, progress)
-                                                                    .filter(BestillingProgress::isPdlSync))
-                                                            .map(sync -> identRepository.getBestillingerFromGruppe(bestilling.getGruppeId())
-                                                                    .filter(coBestilling -> ident.equals(coBestilling.getIdent()) &&
-                                                                            !"{}".equals(coBestilling.getBestkriterier()) ||
-                                                                            Boolean.FALSE.equals(counterIdentBestilling.replace(testident.getIdent(), true)))
-                                                                    .map(coBestilling -> createBestilling(bestilling, coBestilling))
-                                                                    .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
-                                                                            request.getId(), testident.getIdent()))
-                                                                    .concatMap(bestillingRequest ->
-                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                    fase2Klienter(),
-                                                                                    progress, false)
-                                                                                    .then(gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase3Klienter(),
-                                                                                            progress, false))))))))
-                    .flatMap(Flux::from)
-                    .collectList()
-                    .then(doFerdig(bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
-        }
+    private static PdlResponse buildPdlRequest(String ident) {
+        return PdlResponse.builder().ident(ident).build();
+    }
+
+    private Flux<BestillingProgress> utfoergjenoppretting(RsDollyBestillingRequest bestKriterier, Bestilling bestilling, Testident testident) {
+
+        var counterIdentBestilling = new HashMap<String, Boolean>();
+
+        return Flux.from(bestillingService.isStoppet(bestilling.getId()))
+                .filter(BooleanUtils::isFalse)
+                .doOnNext(ok -> counterIdentBestilling.put(testident.getIdent(), false))
+                .concatMap(ok -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
+                        .zipWith(Mono.just(testident)))
+                .concatMap(tuple ->
+                        sendOrdrePerson(tuple.getT1(), buildPdlRequest(tuple.getT2().getIdent()))
+                                .filter(Objects::nonNull)
+                                .zipWith(Mono.just(tuple.getT1())))
+                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
+                .concatMap(tuple ->
+                        gjenopprettKlienter(tuple.getT1(), bestKriterier, fase1Klienter(), tuple.getT2(), true)
+                                .zipWith(Mono.just(tuple.getT1())))
+                .concatMap(tuple -> personServiceClient.syncPerson(tuple.getT2(), tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .doOnNext(tuple -> log.info("Fullført fase 1 for ident: {}", tuple.getT1()))
+                .filter(tuple -> tuple.getT1().isPdlSync())
+                .concatMap(tuple ->
+                        identRepository.getBestillingerFromGruppe(bestilling.getGruppeId())
+                                .filter(coBestilling -> tuple.getT2().getIdent().equals(coBestilling.getIdent()) &&
+                                        (!"{}".equals(coBestilling.getBestkriterier()) ||
+                                        Boolean.FALSE.equals(counterIdentBestilling.replace(tuple.getT1().getIdent(), true))))
+                                .map(coBestilling -> createBestilling(bestilling, coBestilling))
+                                .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
+                                        request.getId(), tuple.getT1().getIdent()))
+                                .zipWith(Mono.just(tuple)))
+                .concatMap(tuple ->
+                        gjenopprettKlienter(tuple.getT2().getT2(), tuple.getT1(),
+                                fase2Klienter(), tuple.getT2().getT1(), false)
+                                .then(gjenopprettKlienter(tuple.getT2().getT2(), tuple.getT1(),
+                                        fase3Klienter(),
+                                        tuple.getT2().getT1(), false)));
     }
 }

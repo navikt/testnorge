@@ -8,6 +8,8 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+
 @Component
 public class PensjonAfpOffentligMappingStrategy implements MappingStrategy {
 
@@ -19,7 +21,7 @@ public class PensjonAfpOffentligMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PensjonData.AfpOffentlig kilde, AfpOffentligRequest target, MappingContext context) {
 
-                        var ident = (String) context.getProperty("ident");
+                        var ident = (String) context.getProperty(IDENT);
                         target.getMocksvar()
                                 .forEach(mocksvar -> mocksvar.setFnr(ident));
                     }

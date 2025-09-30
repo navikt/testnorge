@@ -86,7 +86,7 @@ public class SplittGruppeService {
                                     return Mono.empty();
                                 })
                                 .collectList()
-                                .then(bestillingProgressRepository.findByBestillingId(bestilling.getId())
+                                .then(bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                                         .flatMap(progress -> {
                                             if (identer.contains(progress.getIdent())) {
                                                 var nyProgress = SerializationUtils.clone(progress);

@@ -21,6 +21,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static io.micrometer.common.util.StringUtils.isNotBlank;
+
 /**
  * Convenience class for handling error situations when using {@link WebClient} instances.
  */
@@ -146,7 +148,9 @@ public class WebClientError {
         private static String resolveMessage(Throwable throwable) {
             switch (throwable) {
                 case WebClientResponseException e -> {
-                    return e.getResponseBodyAsString(StandardCharsets.UTF_8);
+                    return isNotBlank(e.getResponseBodyAsString(StandardCharsets.UTF_8)) ?
+                            e.getResponseBodyAsString(StandardCharsets.UTF_8) :
+                            e.getStatusCode().value() + " " + e.getStatusText();
                 }
                 case WebClientRequestException e -> {
                     switch (e.getCause()) {

@@ -9,6 +9,8 @@ import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -17,20 +19,20 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -78,42 +80,48 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     public void executeAsync(Bestilling bestilling) {
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
-        if (nonNull(bestKriterier)) {
 
-            identService.getTestidenterByGruppeId(bestilling.getGruppeId())
-                    .flatMap(testident -> bestillingService.isStoppet(bestilling.getId())
-                            .zipWith(Mono.just(testident)))
-                    .takeWhile(tuple -> isFalse(tuple.getT1()))
-                    .map(Tuple2::getT2)
-                    .flatMap(testident -> Mono.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
-                            .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
-                                    .flatMap(progress -> oppdaterPdlPerson(originator, progress, testident.getIdent())
-                                            .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
-                                            .filter(StringUtils::isNotBlank)
-                                            .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
-                                                    .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(progress.getIdent()) ?
-                                                            updateIdent(dollyPerson, progress) : Mono.just(ident))
-                                                            .doOnNext(nyident -> counterCustomRegistry.invoke(bestKriterier))
-                                                            .flatMap(nyIdent ->
-                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                            fase1Klienter(),
-                                                                            progress, true)
-                                                                            .then(personServiceClient.syncPerson(dollyPerson, progress)
-                                                                                    .filter(BestillingProgress::isPdlSync)
-                                                                                    .flatMap(pdlSync ->
-                                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                                    fase2Klienter(),
-                                                                                                    progress, true)
-                                                                                                    .then(gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                                            fase3Klienter(),
-                                                                                                            progress, true))))
-                                                            ))))))
-                    .collectList()
-                    .then(doFerdig(bestilling))
-                    .then(saveBestillingToElasticServer(bestKriterier, bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
-        }
+        Mono.just(bestKriterier)
+                .filter(request -> isBlank(request.getFeil()))
+                .flatMapMany(request ->
+                        identService.getTestidenterByGruppeId(bestilling.getGruppeId())
+                                .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))
+                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                        error -> doFerdig(bestilling).subscribe(),
+                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                                .then(doFerdig(bestilling))
+                                .subscribe());
+    }
+
+    private Flux<BestillingProgress> leggTilPaaPerson(Bestilling bestilling, RsDollyUtvidetBestilling bestKriterier, Testident testident) {
+
+        return Flux.from(bestillingService.isStoppet(bestilling.getId()))
+                .takeWhile(BooleanUtils::isFalse)
+                .map(ok -> OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
+                .concatMap(originator -> opprettProgress(bestilling, originator.getMaster(), originator.getIdent())
+                        .zipWith(Mono.just(originator)))
+                .concatMap(tuple -> oppdaterPdlPerson(tuple.getT2(), tuple.getT1(), tuple.getT2().getIdent())
+                        .zipWith(Mono.just(tuple.getT1())))
+                .concatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .filter(tuple -> isNotBlank(tuple.getT1()))
+                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
+                        .zipWith(Mono.just(tuple.getT2())))
+                .concatMap(tuple -> (!tuple.getT1().getIdent().equals(tuple.getT2().getIdent()) ?
+                        updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
+                        .doOnNext(nyident -> counterCustomRegistry.invoke(bestKriterier))
+                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                fase1Klienter(),
+                                tuple.getT2(), true)
+                                .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
+                                        .filter(BestillingProgress::isPdlSync)
+                                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                                fase2Klienter(),
+                                                tuple.getT2(), true)
+                                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                                        fase3Klienter(),
+                                                        tuple.getT2(), true))))
+                        ));
     }
 
     private Mono<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress, String ident) {

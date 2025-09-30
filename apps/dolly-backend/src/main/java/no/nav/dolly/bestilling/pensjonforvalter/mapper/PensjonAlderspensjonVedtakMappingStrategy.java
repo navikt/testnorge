@@ -10,10 +10,13 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getNesteMaaned;
 import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
@@ -27,8 +30,8 @@ public class PensjonAlderspensjonVedtakMappingStrategy implements MappingStrateg
                     @Override
                     public void mapAtoB(PensjonData.Alderspensjon alderspensjon, AlderspensjonVedtakRequest request, MappingContext context) {
 
-                        request.setFnr((String) context.getProperty("ident"));
-                        request.setMiljoer((List<String>) context.getProperty("miljoer"));
+                        request.setFnr((String) context.getProperty(IDENT));
+                        request.setMiljoer((Set<String>) context.getProperty(MILJOER));
 
                         request.setKravFremsattDato(
                                 nullcheckSetDefaultValue(alderspensjon.getKravFremsattDato(), LocalDate.now()));
@@ -37,7 +40,7 @@ public class PensjonAlderspensjonVedtakMappingStrategy implements MappingStrateg
 
                         request.setNavEnhetId(
                                 nullcheckSetDefaultValue(alderspensjon.getNavEnhetId(),
-                                        (String) context.getProperty("navEnhet")));
+                                        (String) context.getProperty(NAV_ENHET)));
 
                         request.setSaksbehandler(nullcheckSetDefaultValue(alderspensjon.getSaksbehandler(), getRandomAnsatt()));
                         request.setAttesterer(nullcheckSetDefaultValue(alderspensjon.getAttesterer(), getRandomAnsatt()));

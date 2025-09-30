@@ -75,7 +75,7 @@ class BestillingServiceTest {
 
         var bestilling = Bestilling.builder().id(BEST_ID).build();
         when(bestillingRepository.findById(any())).thenReturn(Mono.just(bestilling));
-        when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.empty());
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.empty());
         when(brukerService.findById(any())).thenReturn(Mono.just(Bruker.builder().build()));
 
         StepVerifier.create(bestillingService.fetchBestillingById(BEST_ID))
@@ -99,7 +99,7 @@ class BestillingServiceTest {
                 .antallIdenter(antallIdenter)
                 .miljoer("a1,b2,c3,d4")
                 .build()));
-        when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.empty());
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.empty());
 
         StepVerifier.create(bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
                         antallIdenter, null, null, null))
@@ -126,7 +126,7 @@ class BestillingServiceTest {
                 .bestillingId(BEST_ID)
                 .stoppet(true)
                 .build()));
-        when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.empty());
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.empty());
         when(bestillingRepository.save(any())).thenReturn(Mono.just(Bestilling.builder().id(BEST_ID).build()));
 
         StepVerifier.create(bestillingService.cancelBestilling(1L))
@@ -164,7 +164,7 @@ class BestillingServiceTest {
                 .build();
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Mono.just(bestilling));
-        when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.just(BestillingProgress.builder()
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.just(BestillingProgress.builder()
                 .ident("12345678901")
                 .build()));
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
@@ -195,7 +195,7 @@ class BestillingServiceTest {
                 .build();
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Mono.just(bestilling));
-        when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.just(BestillingProgress.builder()
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.just(BestillingProgress.builder()
                 .ident("12345678901")
                 .build()));
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
@@ -219,7 +219,7 @@ class BestillingServiceTest {
                 .build();
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Mono.just(bestilling));
-        when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.empty());
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.empty());
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
         when(brukerService.findById(any())).thenReturn(Mono.just(Bruker.builder().build()));

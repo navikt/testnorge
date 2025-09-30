@@ -59,6 +59,7 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktPostRespon
                        WebClientError.logTo(log).accept(throwable);
                     }
                 })
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(FullmaktPostResponse.builder()

@@ -195,7 +195,7 @@ public class BestillingService {
 
     public Mono<Bestilling> cleanBestilling(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .flatMap(progress -> Flux.fromArray(progress.getClass().getMethods())
                         .filter(method -> method.getName().contains("get"))
                         .flatMap(metode -> {
@@ -470,6 +470,7 @@ public class BestillingService {
                         .gruppeId(gruppeId)
                         .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                         .sistOppdatert(now())
+                        .brukerId(tuple.getT1().getId())
                         .bruker(tuple.getT1())
                         .antallIdenter(tuple.getT2())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
@@ -552,6 +553,7 @@ public class BestillingService {
                                     .instdata(request2.getInstdata())
                                     .krrstub(request2.getKrrstub())
                                     .medl(request2.getMedl())
+                                    .nomdata(request2.getNomdata())
                                     .pdldata(request2.getPdldata())
                                     .pensjonforvalter(request2.getPensjonforvalter())
                                     .sigrunstub(request2.getSigrunstub())
@@ -665,7 +667,7 @@ public class BestillingService {
 
     private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .collectList();
     }
 }

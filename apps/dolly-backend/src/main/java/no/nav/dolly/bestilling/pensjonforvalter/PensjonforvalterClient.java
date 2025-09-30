@@ -12,8 +12,8 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -72,9 +72,14 @@ public class PensjonforvalterClient implements ClientRegister {
                             .flatMap(bestilling1 -> pensjonPdlPersonService.getUtvidetPersondata(dollyPerson.getIdent())
                                     .flatMapMany(utvidetPersondata ->
                                             Flux.concat(
-                                                    pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(), utvidetPersondata.getT1(), tilgjengeligeMiljoer),
-                                                    pensjonPensjonsdataService.lagrePensjonsdata(bestilling1, dollyPerson.getIdent(), bestilteMiljoer.get()),
-                                                    pensjonVedtakService.lagrePensjonVedtak(bestilling1, dollyPerson.getIdent(), utvidetPersondata, bestilteMiljoer.get())
+                                                    pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(),
+                                                            utvidetPersondata.getT1(), bestilling, utvidetPersondata.getT2(),
+                                                            tilgjengeligeMiljoer, isOpprettEndre),
+                                                    pensjonPensjonsdataService.lagrePensjonsdata(bestilling1,
+                                                            dollyPerson.getIdent(), bestilteMiljoer.get()),
+                                                    pensjonVedtakService.lagrePensjonVedtak(bestilling1,
+                                                            dollyPerson.getIdent(), utvidetPersondata,
+                                                            bestilteMiljoer.get(), isOpprettEndre)
                                             )))
 
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
@@ -88,7 +93,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<String> getErrors(Set<String> miljoer, Throwable throwable) {
 
         return Flux.fromIterable(miljoer)
-                .map(miljo -> "%s%s:Feil= %s" .formatted(ANNET, miljo,
+                .map(miljo -> "%s%s:Feil= %s".formatted(ANNET, miljo,
                         encodeStatus(WebClientError.describe(throwable).getMessage())));
     }
 

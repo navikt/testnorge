@@ -35,6 +35,7 @@ public class GetOrganisasjonCommand implements Callable<Flux<OrganisasjonDetalje
                 .bodyToFlux(OrganisasjonDetaljer.class)
                 .doOnError(WebClientError.logTo(log))
 
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Flux.empty());
     }
 

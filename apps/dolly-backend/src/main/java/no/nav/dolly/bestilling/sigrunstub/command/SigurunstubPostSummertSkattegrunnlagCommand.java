@@ -50,6 +50,7 @@ public class SigurunstubPostSummertSkattegrunnlagCommand implements Callable<Mon
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> SigrunstubResponse.of(WebClientError.describe(error), null));
     }
 }

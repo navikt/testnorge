@@ -6,12 +6,15 @@ import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { DetaljertSykemelding } from '@/components/fagsystem/sykdom/form/partials/DetaljertSykemelding'
 import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useDollyOrganisasjoner'
+import { NySykemelding } from '@/components/fagsystem/sykdom/form/partials/NySykemelding'
 
-export const sykdomAttributt = 'sykemelding'
+export const sykemeldingAttributt = 'sykemelding.detaljertSykemelding'
+export const nySykemeldingAttributt = 'sykemelding.nySykemelding'
 
 const SykdomForm = () => {
 	const formMethods = useFormContext()
-	const detaljertSykemelding = formMethods.watch(`${sykdomAttributt}.detaljertSykemelding`)
+	const detaljertSykemelding = formMethods.watch(sykemeldingAttributt)
+	const nySykemelding = formMethods.watch(nySykemeldingAttributt)
 
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 
@@ -20,11 +23,8 @@ const SykdomForm = () => {
 			const valgtOrg = organisasjoner?.find(
 				(org) => org.orgnummer === detaljertSykemelding.mottaker.orgNr,
 			)
-			formMethods.setValue(
-				`${sykdomAttributt}.detaljertSykemelding.arbeidsgiver.navn`,
-				valgtOrg?.navn,
-			)
-			formMethods.setValue(`${sykdomAttributt}.detaljertSykemelding.mottaker`, {
+			formMethods.setValue(`${sykemeldingAttributt}.arbeidsgiver.navn`, valgtOrg?.navn)
+			formMethods.setValue(`${sykemeldingAttributt}.mottaker`, {
 				navn: valgtOrg?.navn || null,
 				orgNr: valgtOrg?.orgnummer || null,
 				adresse: {
@@ -34,20 +34,24 @@ const SykdomForm = () => {
 					postnummer: valgtOrg?.forretningsAdresse?.postnr || null,
 				},
 			})
-			formMethods.trigger(`${sykdomAttributt}.detaljertSykemelding`)
+			formMethods.trigger(sykemeldingAttributt)
 		}
 	}, [organisasjoner])
 
 	return (
 		// @ts-ignore
-		<Vis attributt={sykdomAttributt}>
+		<Vis attributt={[sykemeldingAttributt, nySykemeldingAttributt]}>
 			<Panel
 				heading="Sykemelding"
-				hasErrors={panelError(sykdomAttributt)}
+				hasErrors={panelError([sykemeldingAttributt, nySykemeldingAttributt])}
 				iconType="sykdom"
-				startOpen={erForsteEllerTest(formMethods.getValues(), [sykdomAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [
+					sykemeldingAttributt,
+					nySykemeldingAttributt,
+				])}
 			>
-				<DetaljertSykemelding formMethods={formMethods} />
+				{detaljertSykemelding && <DetaljertSykemelding formMethods={formMethods} />}
+				{nySykemelding && <NySykemelding />}
 			</Panel>
 		</Vis>
 	)

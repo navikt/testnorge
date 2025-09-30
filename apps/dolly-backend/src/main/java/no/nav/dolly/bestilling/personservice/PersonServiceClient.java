@@ -25,7 +25,13 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -169,17 +175,17 @@ public class PersonServiceClient {
     private Mono<BestillingProgress> oppdaterStatus(DollyPerson dollyPerson, BestillingProgress progress,
                                                     List<PersonServiceResponse> status) {
 
-                return Flux.fromIterable(status)
-                        .filter(entry -> dollyPerson.getIdent().equals(entry.getIdent()))
-                        .flatMap(entry -> {
-                            progress.setPdlSync(entry.getStatus().is2xxSuccessful() && isTrue(entry.getExists()));
-                            if (!dollyPerson.isOrdre()) {
-                                return transactionHelperService.persister(progress, no.nav.dolly.domain.jpa.BestillingProgress::setPdlPersonStatus, entry.getFormattertMelding());
-                            }
-                            return Mono.just(progress);
-                        })
-                        .collectList()
-                        .thenReturn(progress);
+        return Flux.fromIterable(status)
+                .filter(entry -> dollyPerson.getIdent().equals(entry.getIdent()))
+                .flatMap(entry -> {
+                    progress.setPdlSync(entry.getStatus().is2xxSuccessful() && isTrue(entry.getExists()));
+                    if (!dollyPerson.isOrdre()) {
+                        return transactionHelperService.persister(progress, no.nav.dolly.domain.jpa.BestillingProgress::setPdlPersonStatus, entry.getFormattertMelding());
+                    }
+                    return Mono.just(progress);
+                })
+                .collectList()
+                .thenReturn(progress);
     }
 
     private void logStatus(PersonServiceResponse status, long startTime) {
@@ -200,15 +206,16 @@ public class PersonServiceClient {
                     status.getIdent(), System.currentTimeMillis() - startTime,
                     errorStatusDecoder.getErrorText(status.getStatus(),
                             status.getFeilmelding()));
-            status.setFormattertMelding("Feil: Synkronisering mot PDL gitt opp etter %d sekunder."
-                    .formatted(applicationConfig.getClientTimeout()));
+            status.setFormattertMelding("Feil: Synkronisering mot PDL gitt på grunn av %s."
+                    .formatted(status.getStatus()));
         }
     }
 
-    private Flux<PersonServiceResponse> getPersonService(LocalTime tidSlutt, LocalTime tidNo, PersonServiceResponse
-            response, Map.Entry<String, Set<String>> ident) {
+    private Flux<PersonServiceResponse> getPersonService(LocalTime tidSlutt, LocalTime tidNaa,
+                                                         PersonServiceResponse response,
+                                                         Map.Entry<String, Set<String>> ident) {
 
-        if (isTrue(response.getExists()) || tidNo.isAfter(tidSlutt) ||
+        if (isTrue(response.getExists()) || tidNaa.isAfter(tidSlutt) ||
                 nonNull(response.getStatus()) && !response.getStatus().is2xxSuccessful()) {
             return Flux.just(response);
 
