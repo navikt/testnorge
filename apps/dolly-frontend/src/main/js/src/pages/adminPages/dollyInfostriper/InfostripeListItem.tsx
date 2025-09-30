@@ -36,7 +36,8 @@ export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 						{stripe.type.toUpperCase()}
 					</Tag>
 					<BodyShort size="small">
-						{new Date(stripe.start).toLocaleString()} → {new Date(stripe.expires).toLocaleString()}
+						{new Date(stripe.start).toLocaleString()} →{' '}
+						{stripe.expires ? new Date(stripe.expires).toLocaleString() : 'Ingen sluttdato'}
 					</BodyShort>
 				</div>
 				<div style={{ marginTop: '.5rem', whiteSpace: 'pre-wrap' }}>{stripe.message}</div>
