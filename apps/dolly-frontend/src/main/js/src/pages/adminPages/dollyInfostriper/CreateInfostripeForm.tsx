@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { Alert, Box, Button, Textarea } from '@navikt/ds-react'
+import { Controller, FormProvider, useForm } from 'react-hook-form'
+import { Alert, Button, Textarea } from '@navikt/ds-react'
 import { useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -32,9 +32,8 @@ export const CreateInfostripeForm: React.FC = () => {
 	const [serverError, setServerError] = useState<string | null>(null)
 	const [success, setSuccess] = useState<boolean>(false)
 
-	const formMethods = useForm<InfostripeFormValues>({
-		defaultValues: defaultValues,
-	})
+	const formMethods = useForm<InfostripeFormValues>({ defaultValues })
+	const { handleSubmit, reset, control, formState } = formMethods
 
 	const onSubmit = async (data: InfostripeFormValues) => {
 		setServerError(null)
@@ -42,7 +41,7 @@ export const CreateInfostripeForm: React.FC = () => {
 		try {
 			await createInfostripe(data)
 			setSuccess(true)
-			formMethods.reset(defaultValues)
+			reset(defaultValues)
 		} catch (e: any) {
 			setServerError(e.message || 'Ukjent feil')
 		}
@@ -50,7 +49,7 @@ export const CreateInfostripeForm: React.FC = () => {
 
 	return (
 		<FormProvider {...formMethods}>
-			<Box as="form" onSubmit={formMethods.handleSubmit(onSubmit)}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<h2>Opprett ny infostripe</h2>
 				{success && <Alert variant="success">Infostripe opprettet</Alert>}
 				{serverError && <Alert variant="error">{serverError}</Alert>}
@@ -58,35 +57,47 @@ export const CreateInfostripeForm: React.FC = () => {
 				<DollySelect
 					isClearable={false}
 					label="Type"
-					size={'medium'}
-					name={'type'}
+					size="medium"
+					name="type"
 					options={infostripeTypeOptions}
 				/>
-				<Textarea
-					label="Melding"
-					maxLength={500}
-					{...formMethods.register('message', { required: 'Påkrevd' })}
-					error={formMethods.formState?.errors?.message?.message}
+
+				<Controller
+					name="message"
+					control={control}
+					rules={{
+						required: 'Påkrevd',
+						maxLength: { value: 500, message: 'Maks 500 tegn' },
+					}}
+					render={({ field, fieldState }) => (
+						<Textarea
+							{...field}
+							label="Melding"
+							maxLength={500}
+							error={fieldState.error?.message}
+						/>
+					)}
 				/>
+
 				<div style={{ display: 'flex', marginTop: '10px' }}>
-					<DollyDatepicker label="Start" name={'start'} />
-					<DollyDatepicker label="Slutt" name={'expires'} />
+					<DollyDatepicker label="Start" name="start" />
+					<DollyDatepicker label="Slutt" name="expires" />
 				</div>
 
 				<div style={{ display: 'flex', gap: '0.5rem' }}>
-					<Button type="submit" loading={formMethods.formState.isSubmitting}>
+					<Button type="submit" loading={formState.isSubmitting}>
 						Opprett
 					</Button>
 					<Button
 						type="button"
 						variant="secondary"
-						disabled={formMethods.formState.isSubmitting}
-						onClick={() => formMethods.reset()}
+						disabled={formState.isSubmitting}
+						onClick={() => reset(defaultValues)}
 					>
 						Nullstill
 					</Button>
 				</div>
-			</Box>
+			</form>
 		</FormProvider>
 	)
 }

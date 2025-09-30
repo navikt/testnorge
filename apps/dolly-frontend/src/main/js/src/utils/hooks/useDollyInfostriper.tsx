@@ -23,14 +23,6 @@ export interface UpdateInfostripeInput extends CreateInfostripeInput {
 
 const INFOSTRIPE_URL = '/dolly-backend/api/v1/infostripe'
 
-const normalize = (raw: any): InfoStripeType => ({
-	id: raw.id,
-	message: raw.message,
-	type: raw.type.toLowerCase(),
-	start: new Date(raw.start),
-	expires: new Date(raw.expires),
-})
-
 export const useDollyInfostriper = () => {
 	const { data, isLoading, error, mutate } = useSWR<InfoStripeType[], Error>(
 		INFOSTRIPE_URL,
@@ -46,9 +38,7 @@ export const useDollyInfostriper = () => {
 				body: JSON.stringify(input),
 			})
 			if (!resp.ok) throw new Error(`Create failed ${resp.status}`)
-			const created = normalize(await resp.json())
-			await mutate((curr) => (curr ? [...curr, created] : [created]), { revalidate: false })
-			return created
+			return mutate()
 		},
 		[mutate],
 	)
@@ -62,12 +52,7 @@ export const useDollyInfostriper = () => {
 				body: JSON.stringify(input),
 			})
 			if (!resp.ok) throw new Error(`Update failed ${resp.status}`)
-			const updated = normalize(await resp.json())
-			await mutate((curr) =>
-				curr ? curr.map((c) => (c.id === updated.id ? updated : c)) : [updated],
-				{ revalidate: false }
-			)
-			return updated
+			return mutate()
 		},
 		[mutate],
 	)
