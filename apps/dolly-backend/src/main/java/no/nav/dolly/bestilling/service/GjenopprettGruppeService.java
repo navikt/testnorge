@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static java.lang.Boolean.FALSE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -118,26 +119,22 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                         .zipWith(Mono.just(tuple.getT2())))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT1(), bestKriterier, fase1Klienter(), tuple.getT2(), true)
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .zipWith(Mono.just(tuple.getT1())))
                 .concatMap(tuple -> personServiceClient.syncPerson(tuple.getT2(), tuple.getT1())
                         .zipWith(Mono.just(tuple.getT2())))
-                .doOnNext(tuple -> log.info("Fullført fase 1 for ident: {}", tuple.getT1()))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .concatMap(tuple ->
                         identRepository.getBestillingerFromGruppe(bestilling.getGruppeId())
                                 .filter(coBestilling -> tuple.getT2().getIdent().equals(coBestilling.getIdent()) &&
                                         (!"{}".equals(coBestilling.getBestkriterier()) ||
-                                        Boolean.FALSE.equals(counterIdentBestilling.replace(tuple.getT1().getIdent(), true))))
+                                                FALSE.equals(counterIdentBestilling.replace(tuple.getT1().getIdent(), true))))
                                 .map(coBestilling -> createBestilling(bestilling, coBestilling))
                                 .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                         request.getId(), tuple.getT1().getIdent()))
                                 .zipWith(Mono.just(tuple)))
                 .concatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT2().getT2(), tuple.getT1(),
-                                fase2Klienter(), tuple.getT2().getT1(), false)
-                                .then(gjenopprettKlienter(tuple.getT2().getT2(), tuple.getT1(),
-                                        fase3Klienter(),
-                                        tuple.getT2().getT1(), false)));
+                        gjenopprettKlienterFerdigstill(tuple.getT2().getT2(), tuple.getT1(),
+                                tuple.getT2().getT1(), false));
     }
 }

@@ -108,13 +108,11 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                         .zipWith(Mono.just(progress)))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT1(), bestKriterier, fase1Klienter(), tuple.getT2(), false)
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), false)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .doOnNext(progress1 -> log.info("Status på progress {}", progress1))
                                         .filter(BestillingProgress::isPdlSync)
-                                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                fase2Klienter(), tuple.getT2(), false)
-                                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                        fase3Klienter(), tuple.getT2(), false)))));
+                                        .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
+                                            tuple.getT2(), false))));
     }
 }
