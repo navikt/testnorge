@@ -51,6 +51,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
   readiness:
     path: /internal/health/readiness
     initialDelay: 20
