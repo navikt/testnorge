@@ -19,6 +19,9 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { isAfter } from 'date-fns'
+import { formatDate } from '@/utils/DataFormatter'
 
 interface SivilstandFormTypes {
 	formMethods: UseFormReturn
@@ -128,27 +131,56 @@ export const SivilstandForm = ({
 
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	// @ts-ignore
-	const { identtype, identMaster } = useContext(
+	const { identtype, identMaster, personFoerLeggTil } = useContext(
 		BestillingsveilederContext,
 	) as BestillingsveilederContextType
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
+	const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')
+
+	const getAlderspensjonAlert = () => {
+		const harAlderspensjon = personFoerLeggTil?.alderspensjon?.length > 0
+		const harSivilstanddato = sivilstandListe?.some(
+			(sivilstand) => sivilstand.sivilstandsdato || sivilstand.bekreftelsesdato,
+		)
+		if (harAlderspensjon && !harSivilstanddato) {
+			return 'Personen har registrert alderspensjon. For automatisk revurderingsvedtak må dato for endring av sivilstand settes.'
+		}
+		const alderspensjonIverksettelsesdato = personFoerLeggTil?.alderspensjon?.find(
+			(ap) => ap?.data?.iverksettelsesdato,
+		)?.data?.iverksettelsesdato
+		const harGyldigSivilstanddato = sivilstandListe?.some((sivilstand) =>
+			isAfter(new Date(sivilstand.sivilstandsdato), new Date(alderspensjonIverksettelsesdato)),
+		)
+		if (harAlderspensjon && harSivilstanddato && !harGyldigSivilstanddato) {
+			return `Personen har registrert alderspensjon. For automatisk revurderingsvedtak må dato for endring av sivilstand settes til etter ${formatDate(alderspensjonIverksettelsesdato)}`
+		}
+		return null
+	}
+	const alderspensjonAlert = getAlderspensjonAlert()
+
 	const handleRemoveEntry = (idx: number) => {
-		const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')
 		const filterSivilstandListe = sivilstandListe?.filter((_, index) => index !== idx)
 		formMethods.setValue('pdldata.person.sivilstand', filterSivilstandListe)
 		formMethods.trigger('pdldata.person.sivilstand')
 	}
 
 	return (
-		<FormDollyFieldArray
-			name="pdldata.person.sivilstand"
-			header="Sivilstand"
-			newEntry={getInitialSivilstand(initiellMaster)}
-			canBeEmpty={false}
-			handleRemoveEntry={handleRemoveEntry}
-		>
-			{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
-		</FormDollyFieldArray>
+		<>
+			{alderspensjonAlert && (
+				<StyledAlert variant={'info'} size={'small'}>
+					{alderspensjonAlert}
+				</StyledAlert>
+			)}
+			<FormDollyFieldArray
+				name="pdldata.person.sivilstand"
+				header="Sivilstand"
+				newEntry={getInitialSivilstand(initiellMaster)}
+				canBeEmpty={false}
+				handleRemoveEntry={handleRemoveEntry}
+			>
+				{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
+			</FormDollyFieldArray>
+		</>
 	)
 }

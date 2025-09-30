@@ -438,6 +438,9 @@ export default ({
 								if (arenaData) {
 									personData.arenaforvalteren = arenaData
 								}
+								if (apData) {
+									personData.alderspensjon = apData
+								}
 								leggTilPaaPerson(
 									personData,
 									bestillingListe,

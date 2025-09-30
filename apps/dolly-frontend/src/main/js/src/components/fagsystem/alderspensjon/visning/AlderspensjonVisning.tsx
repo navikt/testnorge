@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import { codeToNorskLabel, formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -10,19 +10,31 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { useTransaksjonIdData } from '@/utils/hooks/useFagsystemer'
 
 export const sjekkManglerApData = (apData) => {
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
 }
 
+const getNavEnhetLabel = (navEnheter, navEnhetId) => {
+	return navEnheter?.find((enhet) => enhet.value === navEnhetId?.toString())?.label ?? navEnhetId
+}
+
 const DataVisning = ({ data, miljo }) => {
 	const { navEnheter } = useNavEnheter()
-	const navEnhetLabel = navEnheter?.find(
-		(enhet) => enhet.value === data?.navEnhetId?.toString(),
-	)?.label
 
 	const { vedtakData, loading } = usePensjonVedtak(data?.fnr, miljo)
 	const vedtakAP = vedtakData?.find((vedtak) => vedtak?.sakType === 'AP')
+
+	// TODO: Person med merkelig vedtaksstatus: 31504344021
+
+	const { loading: loadingApRevurderingData, data: apRevurderingData } = useTransaksjonIdData(
+		data.fnr,
+		'PEN_AP_REVURDERING',
+		true,
+		[miljo],
+	)
+	const revurdering = apRevurderingData?.find((revurdering) => revurdering?.miljo === miljo)?.data
 
 	return (
 		<>
@@ -45,7 +57,7 @@ const DataVisning = ({ data, miljo }) => {
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
 				<TitleValue title="Attesterer" value={data?.attesterer} />
 				<TitleValue title="Uttaksgrad" value={`${data?.uttaksgrad}%`} />
-				<TitleValue title="NAV-kontor" value={navEnhetLabel || data?.navEnhetId} />
+				<TitleValue title="Nav-kontor" value={getNavEnhetLabel(navEnheter, data?.navEnhetId)} />
 
 				<TitleValue
 					title="Ektefelle/partners inntekt"
@@ -56,6 +68,25 @@ const DataVisning = ({ data, miljo }) => {
 					title="AFP privat resultat"
 					value={showLabel('afpPrivatResultat', data?.afpPrivatResultat)}
 				/>
+				{revurdering && (
+					<div className="person-visning_content">
+						<h4>Revurdering</h4>
+						<div className="person-visning_content">
+							{/*TODO: Vis vedtaksstatus?*/}
+							<TitleValue
+								title="Revurderingsårsak"
+								value={codeToNorskLabel(revurdering.revurderingArsakType)}
+							/>
+							<TitleValue title="Dato f.o.m." value={formatDate(revurdering.fom)} />
+							<TitleValue title="Saksbehandler" value={revurdering.saksbehandler} />
+							<TitleValue title="Attesterer" value={revurdering.attesterer} />
+							<TitleValue
+								title="Nav-kontor"
+								value={getNavEnhetLabel(navEnheter, revurdering.navEnhetId)}
+							/>
+						</div>
+					</div>
+				)}
 			</div>
 		</>
 	)
