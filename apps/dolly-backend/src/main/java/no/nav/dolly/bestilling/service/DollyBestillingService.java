@@ -137,8 +137,7 @@ public class DollyBestillingService {
                 KontoregisterClient.class,
                 PensjonforvalterClient.class,
                 AaregClient.class,
-                InntektstubClient.class,
-                ArbeidssoekerregisteretClient.class);
+                InntektstubClient.class);
 
         return register -> klienter.stream()
                 .anyMatch(client -> client.isInstance(register));
@@ -146,15 +145,19 @@ public class DollyBestillingService {
 
     private GjenopprettSteg fase3Klienter() {
 
-        return ArenaForvalterClient.class::isInstance;
+        var klienter = List.of(ArenaForvalterClient.class,
+                ArbeidssoekerregisteretClient.class);
+
+        return register -> klienter.stream()
+                .anyMatch(client -> client.isInstance(register));
     }
 
     private GjenopprettSteg fase4Klienter() {
 
         return register ->
                 !fase1Klienter().apply(register) &&
-                !fase2Klienter().apply(register) &&
-                !fase3Klienter().apply(register);
+                        !fase2Klienter().apply(register) &&
+                        !fase3Klienter().apply(register);
     }
 
     private List<GjenopprettSteg> remainingFaser() {
