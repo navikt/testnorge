@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
-import no.nav.dolly.bestilling.arbeidssoekerregisteret.ArbeidssoekerregisteretClient;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterClient;
 import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterClient;
@@ -126,7 +125,7 @@ public class DollyBestillingService {
         }
     }
 
-    public GjenopprettSteg fase1Klienter() {
+    private GjenopprettSteg fase1Klienter() {
 
         return TagsHendelseslagerClient.class::isInstance;
     }
@@ -145,11 +144,7 @@ public class DollyBestillingService {
 
     private GjenopprettSteg fase3Klienter() {
 
-        var klienter = List.of(ArenaForvalterClient.class,
-                ArbeidssoekerregisteretClient.class);
-
-        return register -> klienter.stream()
-                .anyMatch(client -> client.isInstance(register));
+        return ArenaForvalterClient.class::isInstance;
     }
 
     private GjenopprettSteg fase4Klienter() {
@@ -162,20 +157,29 @@ public class DollyBestillingService {
 
     private List<GjenopprettSteg> remainingFaser() {
 
-        return List.of(fase2Klienter(), fase3Klienter(), fase4Klienter());
+        return List.of(fase2Klienter(),
+                fase3Klienter(),
+                fase4Klienter());
     }
 
-    protected Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                                           BestillingProgress progress, boolean isOpprettEndre) {
+    protected Mono<BestillingProgress> gjenopprettKlienterStart(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+                                                                BestillingProgress progress, boolean isOpprettEndre) {
+
+        return gjenopprettKlienter(dollyPerson, bestKriterier, fase1Klienter(), progress, isOpprettEndre)
+                .then(Mono.just(progress));
+    }
+
+    protected Mono<BestillingProgress> gjenopprettKlienterFerdigstill(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+                                                                      BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.fromIterable(remainingFaser())
                 .concatMap(steg -> gjenopprettKlienter(dollyPerson, bestKriterier, steg, progress, isOpprettEndre))
                 .then(Mono.just(progress));
     }
 
-    protected Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                                           GjenopprettSteg steg,
-                                                           BestillingProgress progress, boolean isOpprettEndre) {
+    private Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+                                                                GjenopprettSteg steg,
+                                                                BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)

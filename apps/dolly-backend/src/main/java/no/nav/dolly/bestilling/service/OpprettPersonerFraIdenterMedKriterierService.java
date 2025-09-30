@@ -122,12 +122,10 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                         .thenReturn(tuple))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                fase1Klienter(),
-                                tuple.getT2(), true)
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)
-                                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
+                                        .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
                                                 tuple.getT2(), true))));
     }
 }

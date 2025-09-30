@@ -118,11 +118,10 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                         .zipWith(Mono.just(tuple.getT2())))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT1(), bestKriterier, fase1Klienter(), tuple.getT2(), true)
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .zipWith(Mono.just(tuple.getT1())))
                 .concatMap(tuple -> personServiceClient.syncPerson(tuple.getT2(), tuple.getT1())
                         .zipWith(Mono.just(tuple.getT2())))
-                .doOnNext(tuple -> log.info("Fullført fase 1 for ident: {}", tuple.getT1()))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .concatMap(tuple ->
                         identRepository.getBestillingerFromGruppe(bestilling.getGruppeId())
@@ -134,7 +133,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                         request.getId(), tuple.getT1().getIdent()))
                                 .zipWith(Mono.just(tuple)))
                 .concatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT2().getT2(), tuple.getT1(),
+                        gjenopprettKlienterFerdigstill(tuple.getT2().getT2(), tuple.getT1(),
                                 tuple.getT2().getT1(), false));
     }
 }
