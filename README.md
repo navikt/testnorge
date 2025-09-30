@@ -53,7 +53,7 @@ Evt. i PowerShell:
 > $env:JWK=(Get-Content -Path ./mocks/jwk.json -Raw) ; docker compose up --build
 ```
 
-Deretter kan itegrasjonstester kjøres med kommandoen:
+Deretter kan integrasjonstester kjøres med kommandoen:
 
 ```
 > ./gradlew iTest
