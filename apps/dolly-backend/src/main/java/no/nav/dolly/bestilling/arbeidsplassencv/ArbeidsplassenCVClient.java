@@ -9,14 +9,16 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
@@ -59,13 +61,31 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                                     }
                                 })
                                 .flatMap(response4 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
-                                        .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request, uuid)
+                                        .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
+                                                        request, uuid, logRetries(progress))
                                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
                                                         String.format("%s UUID: %s",
                                                                 errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
                                                                         status.getFeilmelding()),
                                                                 status.getUuid())))
                                         .flatMap(resultat -> oppdaterStatus(progress, resultat)))));
+    }
+
+    private Consumer<Retry.RetrySignal> logRetries(BestillingProgress progress) {
+
+        return retrySignal -> {
+
+            var retryStatus = new StringBuilder(getInfoVenter("Arbeidsplassen"))
+                    .append(' ');
+
+            for (var i = 0; i < retrySignal.totalRetries(); i++) {
+                retryStatus.append("--");
+            }
+            retryStatus.append("-->");
+
+            oppdaterStatus(progress, retryStatus.toString())
+                    .subscribe();
+        };
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

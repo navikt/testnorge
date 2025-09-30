@@ -110,11 +110,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                         request.getId(), tuple.getT1().getIdent()))
                                         .concatMap(bestillingRequest ->
                                                 gjenopprettKlienter(tuple.getT1(), bestillingRequest,
-                                                        fase2Klienter(),
-                                                        tuple.getT2(), false)
-                                                        .then(gjenopprettKlienter(tuple.getT1(), bestillingRequest,
-                                                                fase3Klienter(),
-                                                                tuple.getT2(), false)))
+                                                        tuple.getT2(), false))
                                         .collectList()))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", bestilling.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),

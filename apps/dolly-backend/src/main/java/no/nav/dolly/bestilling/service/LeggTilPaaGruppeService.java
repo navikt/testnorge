@@ -116,12 +116,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)
                                         .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                fase2Klienter(),
-                                                tuple.getT2(), true)
-                                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                        fase3Klienter(),
-                                                        tuple.getT2(), true))))
-                        ));
+                                                tuple.getT2(), true)))));
     }
 
     private Mono<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress, String ident) {

@@ -113,8 +113,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                         .doOnNext(progress1 -> log.info("Status på progress {}", progress1))
                                         .filter(BestillingProgress::isPdlSync)
                                         .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                fase2Klienter(), tuple.getT2(), false)
-                                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                        fase3Klienter(), tuple.getT2(), false)))));
+                                            tuple.getT2(), false))));
     }
 }
