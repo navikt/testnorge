@@ -101,16 +101,10 @@ public class OppdaterPersonService extends DollyBestillingService {
                         .thenReturn(tuple))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(request))
                 .flatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT1(), request,
-                                fase1Klienter(),
-                                tuple.getT2(), true)
+                        gjenopprettKlienterStart(tuple.getT1(), request, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)
-                                        .then(gjenopprettKlienter(tuple.getT1(), request,
-                                                fase2Klienter(),
-                                                tuple.getT2(), true)
-                                                .then(gjenopprettKlienter(tuple.getT1(), request,
-                                                        fase3Klienter(),
-                                                        tuple.getT2(), true)))));
+                                        .then(gjenopprettKlienterFerdigstill(tuple.getT1(), request,
+                                                tuple.getT2(), true))));
     }
 }

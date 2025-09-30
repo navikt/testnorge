@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
+import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterClient;
 import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
-import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -125,16 +125,15 @@ public class DollyBestillingService {
         }
     }
 
-    public GjenopprettSteg fase1Klienter() {
+    private GjenopprettSteg fase1Klienter() {
 
         return TagsHendelseslagerClient.class::isInstance;
     }
 
-    public GjenopprettSteg fase2Klienter() {
+    private GjenopprettSteg fase2Klienter() {
 
         var klienter = List.of(
                 KontoregisterClient.class,
-                TpsMessagingClient.class,
                 PensjonforvalterClient.class,
                 AaregClient.class,
                 InntektstubClient.class);
@@ -143,15 +142,44 @@ public class DollyBestillingService {
                 .anyMatch(client -> client.isInstance(register));
     }
 
-    public GjenopprettSteg fase3Klienter() {
+    private GjenopprettSteg fase3Klienter() {
 
-        return register -> !fase1Klienter().apply(register) &&
-                !fase2Klienter().apply(register);
+        return ArenaForvalterClient.class::isInstance;
     }
 
-    protected Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                                           GjenopprettSteg steg,
-                                                           BestillingProgress progress, boolean isOpprettEndre) {
+    private GjenopprettSteg fase4Klienter() {
+
+        return register ->
+                !fase1Klienter().apply(register) &&
+                        !fase2Klienter().apply(register) &&
+                        !fase3Klienter().apply(register);
+    }
+
+    private List<GjenopprettSteg> remainingFaser() {
+
+        return List.of(fase2Klienter(),
+                fase3Klienter(),
+                fase4Klienter());
+    }
+
+    protected Mono<BestillingProgress> gjenopprettKlienterStart(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+                                                                BestillingProgress progress, boolean isOpprettEndre) {
+
+        return gjenopprettKlienter(dollyPerson, bestKriterier, fase1Klienter(), progress, isOpprettEndre)
+                .then(Mono.just(progress));
+    }
+
+    protected Mono<BestillingProgress> gjenopprettKlienterFerdigstill(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+                                                                      BestillingProgress progress, boolean isOpprettEndre) {
+
+        return Flux.fromIterable(remainingFaser())
+                .concatMap(steg -> gjenopprettKlienter(dollyPerson, bestKriterier, steg, progress, isOpprettEndre))
+                .then(Mono.just(progress));
+    }
+
+    private Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+                                                                GjenopprettSteg steg,
+                                                                BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)

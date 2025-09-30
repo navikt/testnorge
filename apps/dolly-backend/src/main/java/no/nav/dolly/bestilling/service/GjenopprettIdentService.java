@@ -95,9 +95,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                         .zipWith(Mono.just(tuple.getT2())))
                 .doOnNext(tuple2 -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(tuple ->
-                        gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                fase1Klienter(),
-                                tuple.getT2(), true)
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)
                                         .flatMapMany(pdlSync ->
@@ -109,12 +107,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                 log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                         request.getId(), tuple.getT1().getIdent()))
                                         .concatMap(bestillingRequest ->
-                                                gjenopprettKlienter(tuple.getT1(), bestillingRequest,
-                                                        fase2Klienter(),
-                                                        tuple.getT2(), false)
-                                                        .then(gjenopprettKlienter(tuple.getT1(), bestillingRequest,
-                                                                fase3Klienter(),
-                                                                tuple.getT2(), false)))
+                                                gjenopprettKlienterFerdigstill(tuple.getT1(), bestillingRequest,
+                                                        tuple.getT2(), false))
                                         .collectList()))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", bestilling.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
