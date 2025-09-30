@@ -31,7 +31,6 @@ spec:
     outbound:
       rules:
         - application: dolly-backend-dev
-        - application: dolly-dev-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
         - application: testnav-amelding-service
