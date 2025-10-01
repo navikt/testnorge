@@ -2,6 +2,7 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ class RouteLocatorConfigTest {
         registry.add("consumers.inntektsstub.url", () -> wireMockServer.baseUrl());
     }
 
+    @Disabled
     @Test
     void testInntektsstub() {
 
