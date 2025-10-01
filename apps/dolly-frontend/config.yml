@@ -34,7 +34,6 @@ spec:
     outbound:
       rules:
         - application: dolly-backend
-        - application: dolly-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
         - application: testnav-arbeidsplassencv-proxy

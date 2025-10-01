@@ -113,16 +113,12 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 .concatMap(tuple -> leggIdentTilGruppe(tuple.getT2(), bestKriterier.getBeskrivelse())
                         .thenReturn(tuple))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
-                .concatMap(tuple -> gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                        fase1Klienter(), tuple.getT2(), true)
-                        .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
-                                .filter(BestillingProgress::isPdlSync)
-                                .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                        fase2Klienter(),
-                                        tuple.getT2(), true)
-                                        .then(gjenopprettKlienter(tuple.getT1(), bestKriterier,
-                                                fase3Klienter(),
-                                                tuple.getT2(), true)))
-                                .then(oppdaterStatus(tuple.getT2()))));
+                .concatMap(tuple ->
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
+                                .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
+                                        .filter(BestillingProgress::isPdlSync)
+                                        .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
+                                                tuple.getT2(), true))
+                                        .then(oppdaterStatus(tuple.getT2()))));
     }
 }

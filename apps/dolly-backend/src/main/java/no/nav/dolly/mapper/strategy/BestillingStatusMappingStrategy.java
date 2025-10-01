@@ -92,10 +92,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, objectMapper));
                         bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildNomStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildEtterlatteStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(progresser));
@@ -110,11 +110,11 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildHistarkStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildYrkesskadeStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildArbeidssoekerregisteretStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                     }
                 })

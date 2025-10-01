@@ -61,7 +61,7 @@ public class BestillingService {
 
     private static final String FINNES_IKKE = "Finner ikke gruppe med id %d";
     private static final String SEARCH_STRING = "info:";
-    private static final String DEFAULT_VALUE = null;
+    private static final String DEFAULT_VALUE = "";
 
     private final BestillingElasticRepository elasticRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
@@ -205,14 +205,13 @@ public class BestillingService {
                                         isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
                                     var oppdaterMetode = progress.getClass()
                                             .getMethod("set" + metode.getName().substring(3), String.class);
-                                    return Mono.just((BestillingProgress) oppdaterMetode.invoke(progress, DEFAULT_VALUE));
-                                } else {
-                                    return Mono.empty();
+                                    oppdaterMetode.invoke(progress, DEFAULT_VALUE);
                                 }
+                                return Mono.just(progress);
                             } catch (NoSuchMethodException |
                                      IllegalAccessException |
                                      InvocationTargetException e) {
-                                log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
+                                log.error("Oppdatering av bestilling {} feilet ved cleanBestilling {}",
                                         bestilling.getId(), e.getMessage(), e);
                                 return Mono.empty();
                             }
