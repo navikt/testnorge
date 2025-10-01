@@ -25,7 +25,7 @@ export const ArbeidsplassenForm = () => {
 	return (
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel
-				heading="Arbeidsplassen (CV)"
+				heading="Nav CV"
 				hasErrors={panelError(arbeidsplassenAttributt)}
 				iconType="cv"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
