@@ -44,9 +44,6 @@ spring:
       include-source-in-location: true
   codec:
     max-in-memory-size: 10MB
-  reactor:
-    buffer:
-      max-size: 10MB
 
 springdoc:
   swagger-ui:
