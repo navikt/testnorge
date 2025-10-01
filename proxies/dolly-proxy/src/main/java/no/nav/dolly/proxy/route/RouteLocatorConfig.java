@@ -12,6 +12,7 @@ class RouteLocatorConfig {
 
     //private final Inntektsstub inntektsstub;
 
+    /*
     @Bean
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
@@ -21,5 +22,6 @@ class RouteLocatorConfig {
                 .build();
 
     }
+    */
 
 }
