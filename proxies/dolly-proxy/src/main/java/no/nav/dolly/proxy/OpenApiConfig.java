@@ -10,7 +10,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import java.net.URI;
 
 @Configuration
-@Profile("local")
 class OpenApiConfig {
 
     @Bean

@@ -1,20 +1,3 @@
 spring:
-  application:
-    name: dolly-proxy
   config:
     import: "sm://"
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-  main:
-    web-application-type: reactive
-
-springdoc:
-  swagger-ui:
-    urls:
-      - name: altinn3-tilgang-service
-        url: /altinn3/v3/api-docs
-    urls-primary-name: Downstream Services

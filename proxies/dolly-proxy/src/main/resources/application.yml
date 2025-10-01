@@ -1,8 +1,18 @@
 spring:
   application:
     name: dolly-proxy
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      httpclient:
+        response-timeout: 1200s
   config:
     import: "dolly-application.yml"
+  main:
+    web-application-type: reactive
   security:
     oauth2:
       resourceserver:
@@ -12,10 +22,13 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-  cloud:
-    gateway:
-      httpclient:
-        response-timeout: 1200s
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: altinn3-tilgang-service
+        url: /altinn3/v3/api-docs
+    urls-primary-name: Downstream Services
 
 consumers:
   inntektsstub:
