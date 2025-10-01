@@ -75,15 +75,11 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
         return retrySignal -> {
 
-            var retryStatus = new StringBuilder(getInfoVenter("Arbeidsplassen"))
-                    .append(' ');
+            String retryStatus = "%s (antall forsøk: %d)".formatted(
+                            getInfoVenter("Arbeidsplassen"),
+                            retrySignal.totalRetries() + 2);
 
-            for (var i = 0; i < retrySignal.totalRetries(); i++) {
-                retryStatus.append("--");
-            }
-            retryStatus.append("-->");
-
-            oppdaterStatus(progress, retryStatus.toString())
+            oppdaterStatus(progress, retryStatus)
                     .subscribe();
         };
     }

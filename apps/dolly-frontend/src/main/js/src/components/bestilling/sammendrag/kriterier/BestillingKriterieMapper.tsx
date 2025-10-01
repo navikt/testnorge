@@ -1278,7 +1278,7 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 
 	if (CVKriterier) {
 		const arbeidsplassenCV = {
-			header: 'Arbeidsplassen (CV)',
+			header: 'Nav CV',
 			items: [],
 			itemRows: [],
 		}
