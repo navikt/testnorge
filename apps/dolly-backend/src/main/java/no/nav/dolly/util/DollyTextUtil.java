@@ -7,7 +7,6 @@ public class DollyTextUtil {
 
     private static final String INFO_STARTET = "Oppretting startet";
     private static final String INFO_VENTER_SYSTEM = "Info: " + INFO_STARTET + " mot %s ...";
-    private static final String SYNC_START = "Info: Synkronisering mot %s startet ... %d ms";
     private static final String INFO_GENERERING_STARTET = "Info: Venter på generering av sykemelding ...";
 
     public static String getInfoTextSystem(String system) {
@@ -19,11 +18,6 @@ public class DollyTextUtil {
 
         return text.contains(INFO_STARTET) ||
                 text.contains(INFO_GENERERING_STARTET);
-    }
-
-    public static String getSyncTextSystem(String system, Long millis) {
-
-        return SYNC_START.formatted(system, millis);
     }
 
     public static String getGenereringStartet() {

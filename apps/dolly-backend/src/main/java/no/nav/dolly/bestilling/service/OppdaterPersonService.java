@@ -19,7 +19,6 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -89,13 +88,11 @@ public class OppdaterPersonService extends DollyBestillingService {
         return Mono.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
                 .flatMap(originator -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                         .zipWith(Mono.just(originator)))
-                .flatMap(tuple -> oppdaterPdlPerson(tuple.getT2(), tuple.getT1())
-                        .zipWith(Mono.just(tuple.getT1())))
-                .flatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
-                        .zipWith(Mono.just(tuple.getT2())))
-                .filter(tuple -> StringUtils.isNotBlank(tuple.getT1()))
-                .flatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
-                        .zipWith(Mono.just(tuple.getT2())))
+                .flatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
+                .flatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .flatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                        .zipWith(Mono.just(progress)))
                 .flatMap(tuple -> (!tuple.getT1().getIdent().equals(tuple.getT2().getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
                         .thenReturn(tuple))

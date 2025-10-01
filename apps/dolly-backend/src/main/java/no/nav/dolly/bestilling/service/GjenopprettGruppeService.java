@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -30,7 +29,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static java.lang.Boolean.FALSE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -98,10 +96,6 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                         () -> doFerdig(bestilling).subscribe());
     }
 
-    private static PdlResponse buildPdlRequest(String ident) {
-        return PdlResponse.builder().ident(ident).build();
-    }
-
     private Flux<BestillingProgress> utfoergjenoppretting(RsDollyBestillingRequest bestKriterier, Bestilling bestilling, Testident testident) {
 
         var counterIdentBestilling = new HashMap<String, Boolean>();
@@ -109,14 +103,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .filter(BooleanUtils::isFalse)
                 .doOnNext(ok -> counterIdentBestilling.put(testident.getIdent(), false))
-                .concatMap(ok -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
-                        .zipWith(Mono.just(testident)))
-                .concatMap(tuple ->
-                        sendOrdrePerson(tuple.getT1(), buildPdlRequest(tuple.getT2().getIdent()))
-                                .filter(Objects::nonNull)
-                                .zipWith(Mono.just(tuple.getT1())))
-                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
-                        .zipWith(Mono.just(tuple.getT2())))
+                .concatMap(ok -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent()))
+                .concatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                        .zipWith(Mono.just(progress)))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)

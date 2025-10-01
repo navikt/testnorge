@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -85,15 +83,12 @@ public class GjenopprettIdentService extends DollyBestillingService {
         Mono.just(bestKriterier)
                 .filter(request -> isBlank(request.getFeil()))
                 .flatMap(request -> identService.getTestIdent(bestilling.getIdent()))
-                .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
-                        .zipWith(Mono.just(testident)))
-                .flatMap(tuple -> sendOrdrePerson(tuple.getT1(),
-                        PdlResponse.builder().ident(tuple.getT2().getIdent()).build())
-                        .zipWith(Mono.just(tuple.getT1())))
-                .filter(tuple -> isNotBlank(tuple.getT1()))
-                .flatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
-                        .zipWith(Mono.just(tuple.getT2())))
-                .doOnNext(tuple2 -> counterCustomRegistry.invoke(bestKriterier))
+                .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent()))
+                .flatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .flatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                        .zipWith(Mono.just(progress)))
+                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
