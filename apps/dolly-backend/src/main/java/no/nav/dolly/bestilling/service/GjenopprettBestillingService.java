@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -101,10 +100,9 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .takeWhile(BooleanUtils::isFalse)
                 .concatMap(tuple -> opprettProgress(bestilling, master, ident))
-                .concatMap(progress -> sendOrdrePerson(progress,
-                        PdlResponse.builder().ident(progress.getIdent()).build())
-                        .thenReturn(progress))
-                .concatMap(progress -> opprettDollyPerson(ident, progress, bestilling.getBruker())
+                .concatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
                 .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->

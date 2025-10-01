@@ -19,7 +19,6 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -99,13 +98,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .takeWhile(BooleanUtils::isFalse)
                 .concatMap(ok -> opprettProgress(bestilling, PDLF))
-                .concatMap(progress -> opprettPerson(originator, progress)
+                .concatMap(progress -> opprettPerson(originator, progress))
+                .concatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
-                .concatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
-                        .zipWith(Mono.just(tuple.getT2())))
-                .filter(tuple -> StringUtils.isNotBlank(tuple.getT1()))
-                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
-                        .zipWith(Mono.just(tuple.getT2())))
                 .concatMap(tuple -> leggIdentTilGruppe(tuple.getT1().getIdent(), tuple.getT2(),
                         bestKriterier.getBeskrivelse())
                         .thenReturn(tuple))
