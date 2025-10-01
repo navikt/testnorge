@@ -273,7 +273,7 @@ public class DollyBestillingService {
 
     protected Mono<BestillingProgress> opprettPerson(OriginatorUtility.Originator originator, BestillingProgress bestillingProgress) {
 
-        bestillingProgress.setPdlForvalterStatus("Info: Opprettelse av person startet ...");
+        bestillingProgress.setPdlForvalterStatus("Info: Oppretting av person startet ...");
         return endrePerson(() -> pdlDataConsumer.opprettPdl(originator.getPdlBestilling()), bestillingProgress)
                 .doOnNext(response -> log.info("Opprettet person med ident ... {}", response));
     }
@@ -294,7 +294,7 @@ public class DollyBestillingService {
         }
     }
 
-    protected Mono<BestillingProgress> endrePerson(Supplier<Mono<PdlResponse>> operasjon, BestillingProgress bestillingProgress) {
+    private Mono<BestillingProgress> endrePerson(Supplier<Mono<PdlResponse>> operasjon, BestillingProgress bestillingProgress) {
 
         return transactionHelperService.persister(bestillingProgress, BestillingProgress::setPdlForvalterStatus,
                         bestillingProgress.getPdlForvalterStatus())
