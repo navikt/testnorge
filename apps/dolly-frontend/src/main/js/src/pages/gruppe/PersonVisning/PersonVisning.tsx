@@ -182,6 +182,7 @@ export default ({
 	const { loading: loadingUdistub, udistub } = useUdistub(
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harUdistubBestilling(bestillingerFagsystemer) ? 8 : 0,
 	)
 
 	const {
@@ -190,12 +191,14 @@ export default ({
 	} = usePensjonsgivendeInntekt(
 		ident.ident,
 		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) ? 8 : 0,
 	)
 
 	const { loading: loadingSigrunstubSummertSkattegrunnlag, data: sigrunstubSummertSkattegrunnlag } =
 		useSummertSkattegrunnlag(
 			ident.ident,
 			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) || ident?.master === 'PDL',
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) ? 8 : 0,
 		)
 
 	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(

@@ -90,7 +90,10 @@ export const SykemeldingVisning = ({
 	bestillinger,
 }: Sykemelding) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'SYKEMELDING')
-	const { sykemeldinger, loading: nySykemeldingLoading } = useTsmSykemelding(ident?.ident)
+	const { sykemeldinger, loading: nySykemeldingLoading } = useTsmSykemelding(
+		ident?.ident,
+		bestillinger ? 8 : 0,
+	)
 
 	if (loading || nySykemeldingLoading) {
 		return <Loading label="Laster sykemelding-data" />
