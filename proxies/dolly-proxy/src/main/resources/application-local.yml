@@ -1,3 +1,10 @@
 spring:
   config:
     import: "sm://"
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: altinn3-tilgang-service
+        url: /altinn3/v3/api-docs
+    urls-primary-name: Downstream Services
