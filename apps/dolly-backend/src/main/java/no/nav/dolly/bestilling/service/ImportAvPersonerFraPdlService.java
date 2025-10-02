@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -16,20 +17,18 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.poi.util.StringUtil.isBlank;
 
 @Slf4j
 @Service
@@ -79,48 +78,46 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
-        if (nonNull(bestKriterier)) {
 
-            Flux.fromArray(bestilling.getPdlImport().split(","))
-                    .flatMap(testnorgeIdent -> bestillingService.isStoppet(bestilling.getId())
-                            .zipWith(Mono.just(testnorgeIdent)))
-                    .takeWhile(tuple -> isFalse(tuple.getT1()))
-                    .map(Tuple2::getT2)
-                    .flatMap(testnorgeIdent -> Mono.just(OriginatorUtility.prepOriginator(bestKriterier, testnorgeIdent, mapperFacade)))
-                    .flatMap(originator -> opprettProgress(bestilling, PDL, originator.getIdent())
-                            .flatMap(progress -> oppdaterPdlPerson(originator, progress)
-                                    .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)
-                                            .flatMap(testnorgeIdent -> opprettDollyPerson(progress, bestilling.getBruker())
-                                                    .flatMap(dollyPerson -> leggIdentTilGruppe(progress, bestKriterier.getBeskrivelse())
-                                                            .thenReturn(dollyPerson))
-                                                    .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
-                                                    .flatMap(dollyPerson -> gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                            fase1Klienter(), progress, true)
-                                                            .then(personServiceClient.syncPerson(dollyPerson, progress)
-                                                                    .filter(BestillingProgress::isPdlSync)
-                                                                    .flatMap(sync -> gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                            fase2Klienter(),
-                                                                            progress, true)
-                                                                            .then(gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                    fase3Klienter(),
-                                                                                    progress, true)))
-                                                                    .then(oppdaterStatus(progress))))
-                                            ))))
-                    .collectList()
-                    .then(doFerdig(bestilling))
-                    .then(saveBestillingToElasticServer(bestKriterier, bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
-
-        } else {
-            bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            doFerdig(bestilling)
-                    .subscribe();
-        }
+        Mono.just(bestKriterier)
+                .filter(request -> isBlank(request.getFeil()))
+                .flatMapMany(request ->
+                        Flux.fromArray(bestilling.getPdlImport().split(","))
+                                .flatMap(testnorgeIdent -> opprettPerson(bestilling, bestKriterier, testnorgeIdent), 3))
+                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                        error -> doFerdig(bestilling).subscribe(),
+                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                                .then(doFerdig(bestilling))
+                                .subscribe());
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress) {
 
         return transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
+    }
+
+    private Flux<BestillingProgress> opprettPerson(Bestilling bestilling, RsDollyUtvidetBestilling bestKriterier, String ident) {
+
+        return Flux.from(bestillingService.isStoppet(bestilling.getId()))
+                .takeWhile(BooleanUtils::isFalse)
+                .concatMap(ok -> Mono.just(ident))
+                .concatMap(testnorgeIdent -> Mono.just(OriginatorUtility.prepOriginator(bestKriterier, testnorgeIdent, mapperFacade)))
+                .concatMap(originator -> opprettProgress(bestilling, PDL, originator.getIdent())
+                        .zipWith(Mono.just(originator)))
+                .concatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
+                .concatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                        .zipWith(Mono.just(progress)))
+                .concatMap(tuple -> leggIdentTilGruppe(tuple.getT2(), bestKriterier.getBeskrivelse())
+                        .thenReturn(tuple))
+                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
+                .concatMap(tuple ->
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
+                                .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
+                                        .filter(BestillingProgress::isPdlSync)
+                                        .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
+                                                tuple.getT2(), true))
+                                        .then(oppdaterStatus(tuple.getT2()))));
     }
 }

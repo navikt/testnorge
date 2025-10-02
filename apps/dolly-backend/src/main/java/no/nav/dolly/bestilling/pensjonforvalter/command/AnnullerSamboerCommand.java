@@ -43,6 +43,7 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, periodeId, HttpStatus.valueOf(response.getStatusCode().value())))
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, periodeId, error)));
     }
 

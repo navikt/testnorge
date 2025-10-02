@@ -31,13 +31,14 @@ type TsmSykemeldingResponse = {
 	]
 }
 
-export const useTsmSykemelding = (ident: string) => {
+export const useTsmSykemelding = (ident: string, retryCount = 8) => {
 	const { data, isLoading, error } = useSWR<TsmSykemeldingResponse, AxiosError<any>>(
 		['/testnav-sykemelding-proxy/tsm/api/sykmelding/ident', ident],
 		([url, _ident]) =>
 			fetcher(url, {
 				'X-ident': ident,
 			}),
+		{ errorRetryCount: retryCount },
 	)
 
 	return {

@@ -70,6 +70,8 @@ export const DateInput = ({
 	useEffect(() => {
 		if (!fieldValue) {
 			setFormattedValue('')
+		} else {
+			setFormattedValue(formatDate(fieldValue))
 		}
 	}, [fieldValue])
 

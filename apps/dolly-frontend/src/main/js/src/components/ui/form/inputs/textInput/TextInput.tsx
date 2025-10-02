@@ -95,9 +95,7 @@ export const TextInput = ({
 			setFieldValue(formValue || '')
 		} else if (!useControlled) {
 			const propValue = value
-			if (propValue !== undefined) {
-				setFieldValue(propValue || '')
-			}
+			setFieldValue(propValue || '')
 		}
 	}, [value, formValue, useControlled])
 

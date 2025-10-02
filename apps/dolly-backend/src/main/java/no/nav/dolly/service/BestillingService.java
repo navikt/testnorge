@@ -61,7 +61,7 @@ public class BestillingService {
 
     private static final String FINNES_IKKE = "Finner ikke gruppe med id %d";
     private static final String SEARCH_STRING = "info:";
-    private static final String DEFAULT_VALUE = null;
+    private static final String DEFAULT_VALUE = "";
 
     private final BestillingElasticRepository elasticRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
@@ -195,7 +195,7 @@ public class BestillingService {
 
     public Mono<Bestilling> cleanBestilling(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .flatMap(progress -> Flux.fromArray(progress.getClass().getMethods())
                         .filter(method -> method.getName().contains("get"))
                         .flatMap(metode -> {
@@ -205,14 +205,13 @@ public class BestillingService {
                                         isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
                                     var oppdaterMetode = progress.getClass()
                                             .getMethod("set" + metode.getName().substring(3), String.class);
-                                    return Mono.just((BestillingProgress) oppdaterMetode.invoke(progress, DEFAULT_VALUE));
-                                } else {
-                                    return Mono.empty();
+                                    oppdaterMetode.invoke(progress, DEFAULT_VALUE);
                                 }
+                                return Mono.just(progress);
                             } catch (NoSuchMethodException |
                                      IllegalAccessException |
                                      InvocationTargetException e) {
-                                log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
+                                log.error("Oppdatering av bestilling {} feilet ved cleanBestilling {}",
                                         bestilling.getId(), e.getMessage(), e);
                                 return Mono.empty();
                             }
@@ -470,6 +469,7 @@ public class BestillingService {
                         .gruppeId(gruppeId)
                         .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                         .sistOppdatert(now())
+                        .brukerId(tuple.getT1().getId())
                         .bruker(tuple.getT1())
                         .antallIdenter(tuple.getT2())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
@@ -666,7 +666,7 @@ public class BestillingService {
 
     private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
 
-        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .collectList();
     }
 }

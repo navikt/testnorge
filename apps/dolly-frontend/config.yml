@@ -34,7 +34,6 @@ spec:
     outbound:
       rules:
         - application: dolly-backend
-        - application: dolly-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
         - application: testnav-arbeidsplassencv-proxy
@@ -91,6 +90,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

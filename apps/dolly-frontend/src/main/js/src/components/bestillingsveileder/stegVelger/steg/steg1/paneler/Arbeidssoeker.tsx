@@ -35,7 +35,7 @@ export const ArbeidssoekerPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title="Arbeidssøkerregisteret" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.arbeidssoekerregisteret} />
 			</AttributtKategori>
-			<AttributtKategori title="Arbeidsplassen (CV)" attr={sm.attrs}>
+			<AttributtKategori title="Nav CV" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.jobboensker} />
 				<Attributt attr={sm.attrs.utdanning} />
 				<Attributt attr={sm.attrs.fagbrev} />

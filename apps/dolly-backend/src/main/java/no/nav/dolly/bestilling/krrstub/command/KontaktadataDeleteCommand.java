@@ -50,6 +50,7 @@ public class KontaktadataDeleteCommand implements Callable<Mono<DigitalKontaktda
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> DigitalKontaktdataResponse.of(WebClientError.describe(throwable)));
     }
 }

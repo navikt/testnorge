@@ -600,7 +600,7 @@ const selectOptions = {
 		{ value: 12, label: 'Desember' },
 	],
 
-	// Arbeidsplassen:
+	// Arbeidsplassen / Nav CV:
 	nusKoder: [
 		{ value: '2', label: 'Grunnskole' },
 		{ value: '3', label: 'Folkehøgskole' },
