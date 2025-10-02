@@ -126,6 +126,8 @@ const getIdenttype = (ident) => {
 	}
 }
 
+export const DEFAULT_RETRY_COUNT = 8
+
 export default ({
 	fetchDataFraFagsystemer,
 	data,
@@ -182,7 +184,7 @@ export default ({
 	const { loading: loadingUdistub, udistub } = useUdistub(
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
-		harUdistubBestilling(bestillingerFagsystemer) ? 8 : 0,
+		harUdistubBestilling(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const {
@@ -191,14 +193,14 @@ export default ({
 	} = usePensjonsgivendeInntekt(
 		ident.ident,
 		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) || ident?.master === 'PDL',
-		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) ? 8 : 0,
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const { loading: loadingSigrunstubSummertSkattegrunnlag, data: sigrunstubSummertSkattegrunnlag } =
 		useSummertSkattegrunnlag(
 			ident.ident,
 			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) || ident?.master === 'PDL',
-			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) ? 8 : 0,
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 		)
 
 	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
