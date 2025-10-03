@@ -1,10 +1,6 @@
 name: Deploy Valkey (valkey-dolly-session-dev)
 
 on:
-  push:
-    paths:
-      - .github/workflows/valkey-dolly-session-dev.yml
-      - .nais/valkey-dolly-session-dev.yml
   workflow_dispatch:
 
 jobs:
