@@ -25,28 +25,27 @@ import { actions } from '@/ducks/gruppe'
 import { createLoadingSelector } from '@/ducks/loading'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { EndreTilknytning } from '@/pages/gruppe/EndreTilknytning/EndreTilknytning'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 
 const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
 const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
 const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
-const loadingSelectorGetExcel = createLoadingSelector(actions.getGruppeExcelFil)
 
 type GruppeHeaderProps = {
 	gruppeId: string
 }
 
 const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
-	const dispatch = useDispatch()
+	const dispatch = useDispatch<any>()
+	const matchMutate = useMatchMutate()
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
-	const {
-		currentBruker: { brukertype },
-	} = useCurrentBruker()
+	const { currentBruker } = useCurrentBruker()
+	const brukertype = currentBruker?.brukertype
 
 	const isDeletingGruppe = useSelector((state: any) => loadingSelectorSlettGruppe(state))
 	const isSendingTags = useSelector((state: any) => loadingSelectorSendTags(state))
 	const isLockingGruppe = useSelector((state: any) => loadingSelectorLaasGruppe(state))
-	const isFetchingExcel = useSelector((state: any) => loadingSelectorGetExcel(state))
 
 	const { gruppe, error } = useGruppeById(gruppeId)
 
@@ -57,11 +56,13 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 		return <Loading label={'Laster gruppe...'} />
 	}
 
-	const laasGruppe = (id: number) => {
-		dispatch(actions.laas(id, { erLaast: true, laastBeskrivelse: 'Låst gruppe' }))
+	const laasGruppe = async (id: number) => {
+		await dispatch(actions.laas(id, { erLaast: true, laastBeskrivelse: 'Låst gruppe' }))
+		await matchMutate(REGEX_BACKEND_GRUPPER)
 	}
-	const deleteGruppe = (id: number) => {
-		dispatch(actions.remove(id))
+	const deleteGruppe = async (id: number) => {
+		await dispatch(actions.remove(id))
+		await matchMutate(REGEX_BACKEND_GRUPPER)
 	}
 
 	const erLaast = gruppe.erLaast
@@ -71,9 +72,13 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 	const antallPersoner = gruppe.antallIdenter
 
 	const brukerNavn =
-		gruppe.opprettetAv?.brukertype === 'TEAM'
+		(gruppe.opprettetAv as any)?.brukertype === 'TEAM'
 			? gruppe.opprettetAv?.brukernavn + ' (team)'
 			: formatBrukerNavn(gruppe.opprettetAv?.brukernavn)
+
+	const tagsValue = gruppe.tags
+		? arrayToString(gruppe.tags.length > 1 ? [...gruppe.tags].sort() : gruppe.tags)
+		: ''
 
 	return (
 		<Fragment>
@@ -97,17 +102,10 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							<Icon kind={iconType} fontSize={'2.5rem'} />
 						</div>
 						<Header.TitleValue title="Eier" value={brukerNavn ?? gruppe.opprettetAv?.navIdent} />
-						<Header.TitleValue title="Antall personer" value={antallPersoner} />
+						<Header.TitleValue title="Antall personer" value={antallPersoner.toString()} />
 						<Header.TitleValue title="Sist endret" value={formatStringDates(gruppe.datoEndret)} />
-						<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
-						{gruppe.tags && (
-							<Header.TitleValue
-								title="Tags"
-								value={arrayToString(
-									gruppe.tags?.length > 1 ? [...gruppe.tags].sort() : gruppe.tags,
-								)}
-							/>
-						)}
+						<Header.TitleValue title="Hensikt" value={String(gruppe.hensikt ?? '')} />
+						{gruppe.tags && <Header.TitleValue title="Tags" value={tagsValue} />}
 					</div>
 					<div className="gruppe-header__border" />
 					<div className="gruppe-header__actions">
@@ -128,12 +126,17 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							onClick={visGjenopprettModal}
 							kind="synchronize"
 							disabled={antallPersoner < 1}
-							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
+							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : undefined}
 						>
 							GJENOPPRETT
 						</Button>
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<LaasButton gruppeId={gruppe.id} action={laasGruppe} loading={isLockingGruppe}>
+							<LaasButton
+								autoMutate={false}
+								gruppeId={gruppe.id}
+								action={laasGruppe}
+								loading={isLockingGruppe}
+							>
 								Er du sikker på at du vil låse denne gruppen? <br />
 								En gruppe som er låst kan ikke endres, og blir heller ikke <br />
 								påvirket av prodlast i samhandlermiljøet (Q1). <br />
@@ -143,6 +146,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 						)}
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<SlettButton
+								autoMutate={false}
 								gruppeId={gruppe.id}
 								action={deleteGruppe}
 								loading={isDeletingGruppe}
