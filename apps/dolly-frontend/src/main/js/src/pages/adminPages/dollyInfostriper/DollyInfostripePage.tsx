@@ -7,12 +7,13 @@ import { InfostripeListItem } from '@/pages/adminPages/dollyInfostriper/Infostri
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export default function DollyInfostripePage() {
-	const { infostriper, loading, error } = useDollyInfostriper()
+	const { infostriper, loading, error } = useDollyInfostriper(true)
 
 	return (
 		<>
 			<h1>Infostripe-oversikt</h1>
 			<p>Her finner du en oversikt over alle eksisterende infostriper som vises i Dolly.</p>
+			<ActionMenu.Divider style={{ marginTop: '20px' }} />
 			<CreateInfostripeForm />
 			{loading && (
 				<div data-testid={TestComponentSelectors.LOADING_INFOSTRIPER}>
@@ -22,7 +23,7 @@ export default function DollyInfostripePage() {
 			{error && <Alert variant="warning">{`Feil ved henting av data: ${error.message}`}</Alert>}
 			{infostriper?.length > 0 && (
 				<>
-					<ActionMenu.Divider />
+					<ActionMenu.Divider style={{ marginTop: '20px' }} />
 					<h2>Aktive infostriper</h2>
 					<Box background="surface-default" padding="4" style={{ marginTop: '1.5rem' }}>
 						<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
