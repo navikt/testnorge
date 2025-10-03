@@ -2,7 +2,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { SyntheticEvent } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { usePersonerTyper } from '@/utils/hooks/useDollySearch'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 
 export const Fagsystemer = ({ handleChangeList }: any) => {
 	const { typer, loading: loadingTyper } = usePersonerTyper()

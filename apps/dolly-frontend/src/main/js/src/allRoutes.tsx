@@ -11,7 +11,6 @@ const NyansettelserPage = lazyWithPreload(() => import('@/pages/nyansettelser/Ny
 const GruppeOversikt = lazyWithPreload(() => import('@/pages/gruppeOversikt/GruppeOversikt'))
 const Organisasjon = lazyWithPreload(() => import('@/pages/organisasjoner/Organisasjoner'))
 const MinSide = lazyWithPreload(() => import('@/pages/minSide/MinSide'))
-const UI = lazyWithPreload(() => import('@/pages/ui/index'))
 const Endringsmelding = lazyWithPreload(() => import('@/pages/endringsmelding/Endringsmelding'))
 const DollySoekPage = lazyWithPreload(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazyWithPreload(() => import('@/pages/tenorSoek/TenorSoekPage'))
@@ -85,7 +84,6 @@ const allRoutes = [
 		element: Bestillingsveileder,
 	},
 	{ path: '/minside', handle: { crumb: () => 'Min side' }, element: MinSide },
-	{ path: '/ui', handle: { crumb: () => 'UI demo' }, element: UI },
 	{
 		path: '/dollysoek',
 		handle: { crumb: () => 'Søk i Dolly' },

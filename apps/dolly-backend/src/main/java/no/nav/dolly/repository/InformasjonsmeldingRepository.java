@@ -15,5 +15,12 @@ public interface InformasjonsmeldingRepository extends ReactiveCrudRepository<In
             (i.expires is null or i.expires >= current_timestamp)
             order by i.id desc
             """)
-    Flux<InfoStripe> findGyldigMeldinger();
+    Flux<InfoStripe> findGjeldendeMeldinger();
+
+    @Query("""
+            select * from info_stripe i where
+            (i.expires is null or i.expires >= current_timestamp)
+            order by i.id desc
+            """)
+    Flux<InfoStripe> findGjeldendeOgFremtidigeMeldinger();
 }

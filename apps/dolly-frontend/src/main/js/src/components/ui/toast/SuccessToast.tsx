@@ -3,14 +3,13 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 type Props = {
-	applicationError: string | null
+	message: string | null
 }
 
-export const ErrorToast = ({ applicationError }: Props) => {
+export const SuccessToast = ({ message }: Props) => {
 	useEffect(() => {
-		if (!applicationError) return
-		const feilmelding = applicationError.replace(/\?\S*/, '')
-		toast.error(feilmelding, {
+		if (!message) return
+		toast.success(message, {
 			position: 'bottom-right',
 			autoClose: 5000,
 			closeOnClick: true,
@@ -18,6 +17,6 @@ export const ErrorToast = ({ applicationError }: Props) => {
 			draggable: true,
 			containerId: 'global-toast',
 		})
-	}, [applicationError])
+	}, [message])
 	return null
 }

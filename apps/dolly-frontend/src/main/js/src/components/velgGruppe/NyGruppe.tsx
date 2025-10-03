@@ -72,6 +72,7 @@ export default () => {
 		<div className={'ny-gruppe'}>
 			<div className="flexbox--flex-wrap">
 				<DollyTextInput
+					useControlled
 					name={'gruppeNavn'}
 					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_NAVN}
 					onChange={(event) => {
@@ -83,6 +84,7 @@ export default () => {
 					manualError={navnError}
 				/>
 				<DollyTextInput
+					useControlled
 					name={'gruppeHensikt'}
 					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_HENSIKT}
 					onChange={(event) => {
