@@ -116,6 +116,7 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 			>
 				<div className="fields">
 					<DollyTextInput
+						useControlled
 						data-testid={TestComponentSelectors.INPUT_NAVN}
 						name="navn"
 						label="NAVN"
@@ -123,6 +124,7 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 						autoFocus
 					/>
 					<DollyTextInput
+						useControlled
 						data-testid={TestComponentSelectors.INPUT_HENSIKT}
 						name="hensikt"
 						label="HENSIKT"
