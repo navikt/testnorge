@@ -26,9 +26,7 @@ generate new token (må ha read:packages og repo tilgang)
 
 ### Kjøre Valkey lokalt
 
-Se dokumentasjon på [Docker Hub](https://hub.docker.com/r/valkey/valkey).
-
-Dersom du setter opp Valkey for lokal kjøring så kan du med fordel lage en `docker-compose.yml` til glede for andre.
+Local profile bruker p.t. ikke Valkey for sessions, men dersom det er ønskelig er det mulig å bruke [docker-compose.yml](./docker-compose.yml) for lokal testing.
 
 ### Playwright - E2E testing
 
