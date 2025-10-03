@@ -45,6 +45,7 @@ export const DollyDatepicker = ({
 		fromDate: minDate,
 		toDate: maxDate,
 		disabled: excludeDates,
+		defaultSelected: convertInputToDate(existingValue)?.toDate?.() ?? undefined,
 	})
 
 	useEffect(() => {

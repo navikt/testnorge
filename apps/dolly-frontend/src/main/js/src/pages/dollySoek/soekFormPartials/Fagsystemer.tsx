@@ -18,7 +18,7 @@ export const Fagsystemer = ({ handleChangeList }: any) => {
 					isMulti={true}
 					size="grow"
 					onChange={(val: SyntheticEvent) => {
-						handleChangeList(val, 'registreRequest')
+						handleChangeList(val, 'registreRequest', 'Fagsystem')
 					}}
 				/>
 			</div>
@@ -31,7 +31,7 @@ export const Fagsystemer = ({ handleChangeList }: any) => {
 					isMulti={true}
 					size="large"
 					onChange={(val: SyntheticEvent) => {
-						handleChangeList(val, 'miljoer')
+						handleChangeList(val, 'miljoer', 'Miljø')
 					}}
 				/>
 			</div>

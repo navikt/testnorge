@@ -53,7 +53,7 @@ public class KodeverkConsumer {
 
         return hentKodeverk(LANDKODER)
                 .map(landkoder -> landkoder.keySet().stream()
-                        .filter(landkode -> !landkode.equals("9999") && !landkode.equals("???"))
+                        .filter(landkode -> !landkode.equals("9999") && !landkode.contains("???"))
                         .toList())
                 .map(list -> list.get(random.nextInt(list.size())))
                 .block();

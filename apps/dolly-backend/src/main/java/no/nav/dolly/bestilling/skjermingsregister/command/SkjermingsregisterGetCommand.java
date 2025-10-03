@@ -31,6 +31,7 @@ public class SkjermingsregisterGetCommand implements Callable<Mono<SkjermingData
                 .header(PERSONIDENT_HEADER, ident)
                 .retrieve()
                 .bodyToMono(SkjermingDataResponse.class)
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance,
                         error -> Mono.just(SkjermingDataResponse.builder()
                                 .eksistererIkke(true)

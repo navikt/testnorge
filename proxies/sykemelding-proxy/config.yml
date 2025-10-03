@@ -19,6 +19,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: {{image}}
   port: 8080
   tokenx:
@@ -33,19 +36,19 @@ spec:
       rules:
         - application: team-dolly-lokal-app
         - application: dolly-frontend
-        - application: dolly-idporten
         - application: dolly-frontend-dev
+        - application: dolly-idporten
         - application: dolly-backend
         - application: dolly-backend-dev
         - application: testnav-sykemelding-api
         - application: testnav-sykemelding-api-dev
         - application: testnav-oversikt-frontend
-        - application: testnav-sykemelding-api-dev
-        - application: testnav-sykemelding-api
     outbound:
       rules:
         - application: syfosmregler
           namespace: teamsykmelding
+        - application: tsm-input-dolly
+          namespace: tsm
         - application: logging
           namespace: nais-system
   liveness:
@@ -57,6 +60,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

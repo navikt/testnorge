@@ -125,6 +125,7 @@ public class TransactionHelperService {
                                                 .doOnNext(best -> {
                                                     bestilling.setId(bestillingId);
                                                     best.setBestKriterier(kriterier);
+                                                    best.setFeil(best.getFeil());
                                                 })
                                                 .flatMap(bestillingRepository::save)))
                 .collectList()
@@ -132,7 +133,7 @@ public class TransactionHelperService {
     }
 
     @Retryable
-    public Mono<Bestilling> oppdaterBestillingFerdig(Long id) {
+    public Mono<Bestilling> oppdaterBestillingFerdig(Long id, String feil) {
 
         return transactionalOperator.execute(status ->
 
@@ -140,6 +141,7 @@ public class TransactionHelperService {
                     .flatMap(bestilling -> {
                         bestilling.setSistOppdatert(now());
                         bestilling.setFerdig(true);
+                        bestilling.setFeil(feil);
                         return bestillingService.cleanBestilling(bestilling)
                                 .flatMap(bestillingRepository::save)
                                 .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());

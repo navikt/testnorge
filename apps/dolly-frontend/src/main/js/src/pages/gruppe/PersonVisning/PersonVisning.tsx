@@ -113,6 +113,8 @@ import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregi
 import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 import { usePensjonsgivendeInntekt, useSummertSkattegrunnlag } from '@/utils/hooks/useSigrunstub'
 import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/visning/Visning'
+import { useNomData } from '@/utils/hooks/useNom'
+import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -123,6 +125,8 @@ const getIdenttype = (ident) => {
 		return 'FNR'
 	}
 }
+
+export const DEFAULT_RETRY_COUNT = 8
 
 export default ({
 	fetchDataFraFagsystemer,
@@ -180,6 +184,7 @@ export default ({
 	const { loading: loadingUdistub, udistub } = useUdistub(
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harUdistubBestilling(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const {
@@ -188,12 +193,14 @@ export default ({
 	} = usePensjonsgivendeInntekt(
 		ident.ident,
 		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const { loading: loadingSigrunstubSummertSkattegrunnlag, data: sigrunstubSummertSkattegrunnlag } =
 		useSummertSkattegrunnlag(
 			ident.ident,
 			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) || ident?.master === 'PDL',
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 		)
 
 	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
@@ -295,6 +302,8 @@ export default ({
 	const { person: tenorData, loading: loadingTenorData } = useTenorIdent(
 		ident?.master === 'PDL' ? ident.ident : null,
 	)
+
+	const { nomData, loading: loadingNom } = useNomData(ident.ident)
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -406,7 +415,12 @@ export default ({
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
 
-	const isLoadingFagsystemer = loadingAareg || loadingArbeidsplassencvData || loadingArenaData
+	const isLoadingFagsystemer =
+		loadingNom ||
+		loadingAareg ||
+		loadingArbeidssoekerregisteret ||
+		loadingArbeidsplassencvData ||
+		loadingArenaData
 
 	return (
 		<ErrorBoundary>
@@ -422,8 +436,14 @@ export default ({
 								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
 									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
 								}
+								if (nomData) {
+									personData.nomdata = nomData
+								}
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
+								}
+								if (arbeidssoekerregisteretData) {
+									personData.arbeidssoekerregisteret = arbeidssoekerregisteretData
 								}
 								if (arbeidsplassencvData) {
 									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
@@ -483,6 +503,11 @@ export default ({
 				{ident.master === 'PDL' && (
 					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
+				<NavAnsattVisning
+					nomData={nomData}
+					nomLoading={loadingNom}
+					skjermingData={data.skjermingsregister}
+				/>
 				{visArbeidsforhold && (
 					<AaregVisning
 						liste={arbeidsforhold}
@@ -567,6 +592,7 @@ export default ({
 					harArenaBestilling={harArenaBestilling(bestillingerFagsystemer)}
 				/>
 				<SykemeldingVisning
+					ident={ident}
 					data={sykemeldingData}
 					loading={loadingSykemeldingData}
 					bestillingIdListe={bestillingIdListe}

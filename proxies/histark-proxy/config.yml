@@ -10,6 +10,9 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   webproxy: true
@@ -48,6 +51,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

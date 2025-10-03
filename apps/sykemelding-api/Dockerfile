@@ -1,7 +1,8 @@
-FROM ghcr.io/navikt/baseimages/temurin:21
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/jre:openjdk-21
+
 LABEL maintainer="Team Dolly"
-
-ENV JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"
-COPY /build/libs/app.jar /app/app.jar
-
 EXPOSE 8080
+
+COPY build/libs/app.jar /my/app.jar
+WORKDIR /my
+ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]

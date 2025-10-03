@@ -50,6 +50,7 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
                         .miljoe(miljoe)
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
                         .miljoe(miljoe)
                         .error(error)

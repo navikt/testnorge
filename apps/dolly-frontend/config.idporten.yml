@@ -26,7 +26,6 @@ spec:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
-        - application: dolly-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
         - application: testnav-amelding-service
@@ -52,8 +51,10 @@ spec:
         - application: testnorge-profil-api
         - application: testnorge-tilbakemelding-api
         - application: testnav-yrkesskade-proxy
+        - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-sykemelding-proxy
         - application: testnav-api-oversikt-service
         - application: logging
           namespace: nais-system
@@ -82,6 +83,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

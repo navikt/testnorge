@@ -1,12 +1,15 @@
 package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakDTO;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.PdlPersonBolk;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.apache.poi.util.StringUtil.isNotBlank;
 
@@ -16,13 +19,15 @@ public class PensjonforvalterUtils {
     public static final String SEP = "$";
     public static final String IDENT = "ident";
     public static final String MILJOER = "miljoer";
-    public static final String NAV_ENHET = "navEnhet";
+    public static final String NAV_ENHET = "navEnhetId";
     public static final String SYSTEM = "PESYS";
     public static final String PENSJON_FORVALTER = "PensjonForvalter#";
     public static final String SAMBOER_REGISTER = "Samboer#";
     public static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     public static final String TP_FORHOLD = "TpForhold#";
     public static final String PEN_ALDERSPENSJON = "AP#";
+    public static final String PEN_REVURDERING_AP = "RevurderingAP#";
+    public static final String PEN_NY_UTTAKSGRAD_AP = "NyUttaksgradAP#";
     public static final String PEN_UFORETRYGD = "Ufoer#";
     public static final String PEN_PENSJONSAVTALE = "Pensjonsavtale#";
     public static final String PEN_AFP_OFFENTLIG = "AfpOffentlig#";
@@ -69,4 +74,19 @@ public class PensjonforvalterUtils {
         }
     }
 
+    public static AlderspensjonVedtakRequest basicAlderspensjonRequest(String ident, Set<String> miljoer) {
+
+        return AlderspensjonVedtakRequest.builder()
+                .fnr(ident)
+                .miljoer(miljoer)
+                .build();
+    }
+
+    public static AlderspensjonVedtakDTO basicAlderspensjonRequestDTO(String ident, Set<String> miljoer) {
+
+        return AlderspensjonVedtakDTO.builder()
+                .fnr(ident)
+                .miljoer(miljoer)
+                .build();
+    }
 }

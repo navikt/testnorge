@@ -28,8 +28,6 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-        - application: testnav-arbeidsplassencv-proxy
-        - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-bruker-service
         - application: testnav-inntektsmelding-service
         - application: testnav-kodeverk-service
@@ -42,12 +40,16 @@ spec:
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
-        - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api
         - application: etterlatte-testdata
           namespace: etterlatte
         - application: logging
           namespace: nais-system
+        - application: testnav-yrkesskade-proxy
+        - application: testnav-nom-proxy
+        - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-sykemelding-proxy
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -100,6 +102,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   tokenx:
     enabled: true
   azure:
@@ -41,6 +44,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

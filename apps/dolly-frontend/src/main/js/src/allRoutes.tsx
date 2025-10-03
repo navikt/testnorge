@@ -18,10 +18,13 @@ const OrgtilgangPage = lazyWithPreload(() => import('@/pages/adminPages/Orgtilga
 const LevendeArbeidsforholdPage = lazyWithPreload(
 	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
 )
+const InfostripePage = lazyWithPreload(
+	() => import('@/pages/adminPages/dollyInfostriper/DollyInfostripePage'),
+)
 const ApiOversiktPage = lazyWithPreload(() => import('@/pages/apiOversikt/ApiOversiktPage'))
 const TeamOversiktPage = lazyWithPreload(() => import('@/pages/teamOversikt/TeamOversiktPage'))
 
-const GruppeBreadcrumb = (props) => <span>Gruppe #{props.params?.gruppeId}</span>
+const GruppeBreadcrumb = (props: any) => <span>Gruppe #{props.params?.gruppeId}</span>
 
 const allRoutes = [
 	{
@@ -115,6 +118,11 @@ const allRoutes = [
 		path: '/admin/levendearbeidsforhold',
 		handle: { crumb: () => 'Levende arbeidsforhold' },
 		element: LevendeArbeidsforholdPage,
+	},
+	{
+		path: '/admin/infostriper',
+		handle: { crumb: () => 'Dolly infostriper' },
+		element: InfostripePage,
 	},
 	{
 		path: '/nyansettelser',

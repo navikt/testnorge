@@ -165,6 +165,10 @@ export default {
 		return Request.delete(Endpoints.fjernRepresentererTeam())
 	},
 
+	lagreSoek(data, soekType) {
+		return Request.post(Endpoints.lagreSoek(soekType), data)
+	},
+
 	//* Organisasjoner
 
 	createOrganisasjonBestilling(data) {

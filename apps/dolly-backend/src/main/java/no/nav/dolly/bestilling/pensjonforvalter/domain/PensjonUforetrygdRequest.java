@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PensjonUforetrygdRequest {
+public class PensjonUforetrygdRequest implements PensjonTransaksjonId {
 
     private String fnr;
     private LocalDate kravFremsattDato;

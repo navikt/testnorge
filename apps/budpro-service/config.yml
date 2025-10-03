@@ -23,6 +23,9 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   ingresses:
     - "https://testnav-budpro-service.intern.dev.nav.no"
@@ -39,6 +42,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
   readiness:
     initialDelay: 45
     path: /internal/health/readiness

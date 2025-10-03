@@ -39,10 +39,17 @@ export const validation = {
 	sykemelding: ifPresent(
 		'$sykemelding',
 		Yup.object({
-			syntSykemelding: ifPresent(
-				'$sykemelding.syntSykemelding',
+			nySykemelding: ifPresent(
+				'$sykemelding.nySykemelding',
 				Yup.object({
-					startDato: requiredDate,
+					aktivitet: Yup.array()
+						.min(1, 'Må ha minst én aktivitet')
+						.of(
+							Yup.object({
+								fom: testDatoFom(requiredDate, 'tom'),
+								tom: testDatoTom(requiredDate, 'fom'),
+							}),
+						),
 					orgnummer: testHarArbeidsforhold(Yup.string().nullable()),
 				}),
 			),

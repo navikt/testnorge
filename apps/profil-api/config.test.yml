@@ -11,6 +11,8 @@ spec:
       value: testnav-altinn3-tilgang-service
     - name: ALTINN3_TILGANG_URL
       value: https://testnav-altinn3-tilgang-service.intern.dev.nav.no
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   tokenx:
     enabled: true
@@ -47,6 +49,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

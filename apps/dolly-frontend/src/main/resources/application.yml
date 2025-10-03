@@ -198,6 +198,11 @@ consumers:
     namespace: dolly
     url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
+  testnav-sykemelding-proxy:
+    name: testnav-sykemelding-proxy
+    namespace: dolly
+    url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-histark-proxy:
     name: testnav-histark-proxy
     namespace: dolly
@@ -248,6 +253,11 @@ consumers:
     namespace: dolly
     name: testnav-api-oversikt-service
     url: http://testnav-api-oversikt-service.dolly.svc.cluster.local
+  testnav-nom-proxy:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-nom-proxy
+    url: http://testnav-nom-proxy.dolly.svc.cluster.local
 
 server:
   max-http-request-header-size: 128KB

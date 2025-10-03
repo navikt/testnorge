@@ -5,7 +5,7 @@ import { createOptions } from '@/pages/tenorSoek/utils'
 import React from 'react'
 
 export const FolkeregisteretHendelser = ({ handleChange }: any) => {
-	const { domain: hendelseOptions } = useTenorDomain('Hendelse')
+	const { domain: hendelseOptions, loading: loadingHendelse } = useTenorDomain('Hendelse')
 
 	return (
 		<SoekKategori>
@@ -14,14 +14,24 @@ export const FolkeregisteretHendelser = ({ handleChange }: any) => {
 				options={createOptions(hendelseOptions?.data, true)}
 				size="large"
 				label="Har hatt hendelse"
-				onChange={(val: any) => handleChange(val?.value || null, 'hendelser.hendelse')}
+				onChange={(val: any) =>
+					handleChange(val?.value || null, 'hendelser.hendelse', `Har hatt hendelse: ${val?.label}`)
+				}
+				isLoading={loadingHendelse}
 			/>
 			<FormSelect
 				name="hendelser.sisteHendelse"
 				options={createOptions(hendelseOptions?.data, true)}
 				size="large"
 				label="Siste hendelse"
-				onChange={(val: any) => handleChange(val?.value || null, 'hendelser.sisteHendelse')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'hendelser.sisteHendelse',
+						`Siste hendelse: ${val?.label}`,
+					)
+				}
+				isLoading={loadingHendelse}
 			/>
 		</SoekKategori>
 	)

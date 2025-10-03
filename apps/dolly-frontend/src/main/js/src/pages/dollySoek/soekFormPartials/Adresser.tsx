@@ -5,8 +5,9 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { adressePath } from '../SoekForm'
+import { codeToNorskLabel } from '@/utils/DataFormatter'
 
-export const Adresser = ({ handleChangeAdresse }: any) => {
+export const Adresser = ({ handleChange }: any) => {
 	return (
 		<SoekKategori>
 			<div className="flexbox--full-width">
@@ -17,7 +18,11 @@ export const Adresser = ({ handleChangeAdresse }: any) => {
 						size="large"
 						placeholder="Velg kommunenummer ..."
 						onChange={(val: SyntheticEvent) =>
-							handleChangeAdresse(val?.value || null, 'kommunenummer')
+							handleChange(
+								val?.value || null,
+								`${adressePath}.kommunenummer`,
+								`Kommunenummer: ${val?.value}`,
+							)
 						}
 					/>
 					<FormSelect
@@ -26,7 +31,11 @@ export const Adresser = ({ handleChangeAdresse }: any) => {
 						size="large"
 						placeholder="Velg postnummer ..."
 						onChange={(val: SyntheticEvent) =>
-							handleChangeAdresse(val?.value || null, 'postnummer')
+							handleChange(
+								val?.value || null,
+								`${adressePath}.postnummer`,
+								`Postnummer: ${val?.value}`,
+							)
 						}
 					/>
 					<FormSelect
@@ -35,7 +44,11 @@ export const Adresser = ({ handleChangeAdresse }: any) => {
 						size="large"
 						placeholder="Velg bydelsnummer ..."
 						onChange={(val: SyntheticEvent) =>
-							handleChangeAdresse(val?.value || null, 'bydelsnummer')
+							handleChange(
+								val?.value || null,
+								`${adressePath}.bydelsnummer`,
+								`Bydelsnummer: ${val?.value}`,
+							)
 						}
 					/>
 					<FormSelect
@@ -44,7 +57,11 @@ export const Adresser = ({ handleChangeAdresse }: any) => {
 						size="xlarge"
 						placeholder="Velg adressebeskyttelse (kode 6/7) ..."
 						onChange={(val: SyntheticEvent) =>
-							handleChangeAdresse(val?.value || null, 'addressebeskyttelse')
+							handleChange(
+								val?.value || null,
+								`${adressePath}.addressebeskyttelse`,
+								`Adressebeskyttelse: ${codeToNorskLabel(val?.value)}`,
+							)
 						}
 					/>
 				</div>
@@ -53,21 +70,25 @@ export const Adresser = ({ handleChangeAdresse }: any) => {
 				name={`${adressePath}.harBostedsadresse`}
 				label="Har bostedsadresse"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeAdresse(val.target.checked, 'harBostedsadresse')
+					handleChange(val.target.checked, `${adressePath}.harBostedsadresse`, 'Har bostedsadresse')
 				}
 			/>
 			<FormCheckbox
 				name={`${adressePath}.harOppholdsadresse`}
 				label="Har oppholdsadresse"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeAdresse(val.target.checked, 'harOppholdsadresse')
+					handleChange(
+						val.target.checked,
+						`${adressePath}.harOppholdsadresse`,
+						'Har oppholdsadresse',
+					)
 				}
 			/>
 			<FormCheckbox
 				name={`${adressePath}.harKontaktadresse`}
 				label="Har kontaktadresse"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeAdresse(val.target.checked, 'harKontaktadresse')
+					handleChange(val.target.checked, `${adressePath}.harKontaktadresse`, 'Har kontaktadresse')
 				}
 			/>
 			{/*//Soek paa matrikkeladresse fungerer for tiden ikke*/}
@@ -82,21 +103,25 @@ export const Adresser = ({ handleChangeAdresse }: any) => {
 				name={`${adressePath}.harUtenlandsadresse`}
 				label="Har utenlandsadresse"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeAdresse(val.target.checked, 'harUtenlandsadresse')
+					handleChange(
+						val.target.checked,
+						`${adressePath}.harUtenlandsadresse`,
+						'Har utenlandsadresse',
+					)
 				}
 			/>
 			<FormCheckbox
 				name={`${adressePath}.harUkjentAdresse`}
 				label="Har ukjent adresse"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeAdresse(val.target.checked, 'harUkjentAdresse')
+					handleChange(val.target.checked, `${adressePath}.harUkjentAdresse`, 'Har ukjent adresse')
 				}
 			/>
 			<FormCheckbox
 				name={`${adressePath}.harBydelsnummer`}
 				label="Har bydelsnummer"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeAdresse(val.target.checked, 'harBydelsnummer')
+					handleChange(val.target.checked, `${adressePath}.harBydelsnummer`, 'Har bydelsnummer')
 				}
 			/>
 		</SoekKategori>

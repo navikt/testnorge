@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   port: 8080
   azure:
     application:
@@ -25,6 +28,7 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java

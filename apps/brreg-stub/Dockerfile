@@ -1,9 +1,8 @@
-FROM ghcr.io/navikt/baseimages/temurin:21
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/jre:openjdk-21
+
 LABEL maintainer="Team Dolly"
-
-ENV JAVA_OPTS="-Dspring.profiles.active=prod"
-
-COPY /99-dolly-set-vault-token.sh /init-scripts/
-COPY /build/libs/app.jar app.jar
-
 EXPOSE 8080
+
+COPY build/libs/app.jar /my/app.jar
+WORKDIR /my
+ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "-jar", "app.jar"]

@@ -14,7 +14,13 @@ export const Identifikasjon = ({ handleChange }: any) => {
 				name={`${personPath}.ident`}
 				placeholder="Skriv inn ident ..."
 				size="large"
-				onBlur={(val: SyntheticEvent) => handleChange(val?.target?.value || null, 'ident')}
+				onBlur={(val: SyntheticEvent) =>
+					handleChange(
+						val?.target?.value || null,
+						`${personPath}.ident`,
+						`Ident: ${val?.target?.value}`,
+					)
+				}
 			/>
 			<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '5px' }}>
 				<Hjelpetekst>
@@ -26,24 +32,34 @@ export const Identifikasjon = ({ handleChange }: any) => {
 				options={Options('identtype')}
 				size="small"
 				placeholder="Velg identtype ..."
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'identtype')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(val?.value || null, `${personPath}.identtype`, `Identtype: ${val?.value}`)
+				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harFalskIdentitet`}
 				label="Har falsk identitet"
-				onChange={(val: SyntheticEvent) => handleChange(val.target.checked, 'harFalskIdentitet')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(val.target.checked, `${personPath}.harFalskIdentitet`, 'Har falsk identitet')
+				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harUtenlandskIdentifikasjonsnummer`}
 				label="Har utenlandsk identitet"
 				onChange={(val: SyntheticEvent) =>
-					handleChange(val.target.checked, 'harUtenlandskIdentifikasjonsnummer')
+					handleChange(
+						val.target.checked,
+						`${personPath}.harUtenlandskIdentifikasjonsnummer`,
+						'Har utenlandsk identifikasjonsnummer',
+					)
 				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harNyIdentitet`}
 				label="Har ny identitet"
-				onChange={(val: SyntheticEvent) => handleChange(val.target.checked, 'harNyIdentitet')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(val.target.checked, `${personPath}.harNyIdentitet`, 'Har ny identitet')
+				}
 			/>
 		</SoekKategori>
 	)

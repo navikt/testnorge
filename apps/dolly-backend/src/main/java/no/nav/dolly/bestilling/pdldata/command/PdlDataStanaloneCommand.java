@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.net.http.HttpTimeoutException;
@@ -35,6 +36,8 @@ public class PdlDataStanaloneCommand implements Callable<Mono<String>> {
                 .toBodilessEntity()
                 .map(response -> "OK")
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT for ident %s".formatted(ident)))
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.just(ident))
                 .doOnError(WebClientError.logTo(log));
     }
 }

@@ -2,7 +2,11 @@ package no.nav.dolly.domain.resultset.sykemelding;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -23,11 +27,51 @@ import static java.util.Objects.nonNull;
 public class RsSykemelding {
 
     private RsDetaljertSykemelding detaljertSykemelding;
+    private RsNySykemelding nySykemelding;
 
     @JsonIgnore
     public boolean hasDetaljertSykemelding() {
 
         return nonNull(detaljertSykemelding);
+    }
+
+    @JsonIgnore
+    public boolean hasNySykemelding() {
+
+        return nonNull(nySykemelding);
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class RsNySykemelding {
+
+        private List<Aktivitet> aktivitet;
+
+        public List<Aktivitet> getAktivitet() {
+            if (isNull(aktivitet)) {
+                aktivitet = new ArrayList<>();
+            }
+            return aktivitet;
+        }
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class Aktivitet {
+
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+            private LocalDate fom;
+
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+            private LocalDate tom;
+        }
     }
 
     @Getter

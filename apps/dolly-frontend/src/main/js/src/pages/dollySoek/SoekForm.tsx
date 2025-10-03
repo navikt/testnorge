@@ -4,7 +4,7 @@ import { Button, Table } from '@navikt/ds-react'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { Form, FormProvider } from 'react-hook-form'
 import {
 	Buttons,
 	Header,
@@ -32,28 +32,23 @@ export const dollySoekLocalStorageKey = 'dollySoek'
 export const personPath = 'personRequest'
 export const adressePath = 'personRequest.adresse'
 
-export const SoekForm = () => {
-	const localStorageValue = localStorage.getItem(dollySoekLocalStorageKey)
-	const initialValues = localStorageValue ? JSON.parse(localStorageValue) : dollySoekInitialValues
-
-	const [formRequest, setFormRequest] = useState(initialValues)
+export const SoekForm = ({
+	formMethods,
+	localStorageValue,
+	handleChange,
+	handleChangeList,
+	setRequest,
+	formRequest,
+	lagreSoekRequest,
+	setLagreSoekRequest,
+}) => {
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
 	const [soekError, setSoekError] = useState(null)
 	const [visAntall, setVisAntall] = useState(10)
 
-	const setRequest = (request: any) => {
-		localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(request))
-		setFormRequest(request)
-	}
-
 	const maxTotalHits = 10000
 
-	const initialValuesClone = _.cloneDeep(initialValues)
-	const formMethods = useForm({
-		mode: 'onChange',
-		defaultValues: initialValuesClone,
-	})
 	const { watch, reset, control, getValues, setValue } = formMethods
 	const values = watch()
 
@@ -80,32 +75,6 @@ export const SoekForm = () => {
 		})
 	}, [formRequest])
 
-	const handleChange = (value: any, path: string) => {
-		const updatedPersonRequest = { ...values.personRequest, [path]: value }
-		const updatedRequest = { ...values, personRequest: updatedPersonRequest, side: 0, seed: null }
-		reset(updatedRequest)
-		setRequest(updatedRequest)
-	}
-
-	const handleChangeAdresse = (value: any, path: string) => {
-		const updatedAdresseRequest = { ...values.personRequest.adresse, [path]: value }
-		const updatedRequest = {
-			...values,
-			side: 0,
-			seed: null,
-		}
-		_.set(updatedRequest, 'personRequest.adresse', updatedAdresseRequest)
-		reset(updatedRequest)
-		setRequest(updatedRequest)
-	}
-
-	const handleChangeList = (value: any, path: string) => {
-		const list = value.map((item: any) => item.value)
-		const updatedRequest = { ...values, [path]: list, side: 0, seed: null }
-		reset(updatedRequest)
-		setRequest(updatedRequest)
-	}
-
 	const handleChangeSide = (side: number) => {
 		const updatedRequest = { ...values, side: side - 1, seed: result?.seed }
 		setRequest(updatedRequest)
@@ -120,29 +89,40 @@ export const SoekForm = () => {
 
 	const emptyCategory = (paths: string[]) => {
 		const requestClone = { ...values }
+		const lagreSoekRequestClone = { ...lagreSoekRequest }
 		paths.forEach((path) => {
 			if (path === 'personRequest.alderFom') {
 				setValue(path, undefined)
 				reset()
 			}
 			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
+			delete lagreSoekRequestClone[path]
 			if (path === 'personRequest.harSkjerming') {
 				_.set(
 					requestClone,
 					'registreRequest',
 					watch('registreRequest')?.filter((item: string) => item !== 'SKJERMING'),
 				)
+				_.set(
+					lagreSoekRequestClone,
+					'registreRequest',
+					lagreSoekRequestClone.registreRequest?.filter(
+						(item: string) => item.value !== 'SKJERMING',
+					),
+				)
 			}
 		})
 		const updatedRequest = { ...requestClone, side: 0, seed: null }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
+		setLagreSoekRequest(lagreSoekRequestClone)
 	}
 
 	const emptySearch = () => {
 		setVisAntall(10)
 		reset(dollySoekInitialValues)
 		setRequest(dollySoekInitialValues)
+		setLagreSoekRequest({})
 	}
 
 	const getNewResult = () => {
@@ -189,7 +169,14 @@ export const SoekForm = () => {
 											</Table.HeaderCell>
 										</Table.ExpandableRow>
 										<Table.ExpandableRow
-											content={<Personinformasjon handleChange={handleChange} />}
+											content={
+												<Personinformasjon
+													handleChange={handleChange}
+													setRequest={setRequest}
+													lagreSoekRequest={lagreSoekRequest}
+													setLagreSoekRequest={setLagreSoekRequest}
+												/>
+											}
 											data-testid={TestComponentSelectors.EXPANDABLE_PERSONINFORMASJON}
 											expandOnRowClick={runningE2ETest()}
 										>
@@ -203,9 +190,7 @@ export const SoekForm = () => {
 												/>
 											</Table.HeaderCell>
 										</Table.ExpandableRow>
-										<Table.ExpandableRow
-											content={<Adresser handleChangeAdresse={handleChangeAdresse} />}
-										>
+										<Table.ExpandableRow content={<Adresser handleChange={handleChange} />}>
 											<Table.HeaderCell>
 												<Header
 													title="Adresser"
@@ -217,12 +202,7 @@ export const SoekForm = () => {
 											</Table.HeaderCell>
 										</Table.ExpandableRow>
 										<Table.ExpandableRow
-											content={
-												<Familierelasjoner
-													handleChange={handleChange}
-													handleChangeAdresse={handleChangeAdresse}
-												/>
-											}
+											content={<Familierelasjoner handleChange={handleChange} />}
 										>
 											<Table.HeaderCell>
 												<Header

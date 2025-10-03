@@ -35,7 +35,7 @@ import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
-import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
+import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon' // TODO: Flytte til selector?
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -961,10 +961,23 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 	}
 }
 
-const mapTpsMessaging = (bestillingData, data) => {
+const mapNomData = (bestillingData, data) => {
+	if (bestillingData?.nomdata) {
+		const { startDato, sluttDato } = bestillingData.nomdata
+		const nomdata = {
+			header: 'Nav-ansatt (NOM)',
+			items:
+				!startDato && !sluttDato
+					? [obj('Nav-ansatt', 'Ingen verdier satt')]
+					: [obj('Startdato', formatDate(startDato)), obj('Sluttdato', formatDate(sluttDato))],
+		}
+		data.push(nomdata)
+	}
+}
+
+const mapSkjermingData = (bestillingData, data) => {
 	const tpsMessaging = _.get(bestillingData, 'tpsMessaging')
 	const skjerming = _.get(bestillingData, 'skjerming')
-	const bankkonto = _.get(bestillingData, 'bankkonto')
 
 	if (
 		skjerming?.egenAnsattDatoFom ||
@@ -972,8 +985,8 @@ const mapTpsMessaging = (bestillingData, data) => {
 		skjerming?.egenAnsattDatoTom ||
 		tpsMessaging?.egenAnsattDatoTom
 	) {
-		const tpsMessagingData = {
-			header: 'Personinformasjon',
+		const skjermingData = {
+			header: 'Skjerming',
 			items: [
 				obj(
 					'Skjerming fra',
@@ -985,8 +998,12 @@ const mapTpsMessaging = (bestillingData, data) => {
 				),
 			],
 		}
-		data.push(tpsMessagingData)
+		data.push(skjermingData)
 	}
+}
+
+const mapBankkonto = (bestillingData, data) => {
+	const bankkonto = _.get(bestillingData, 'bankkonto')
 
 	if (bankkonto?.norskBankkonto || bankkonto?.utenlandskBankkonto) {
 		if (bankkonto.norskBankkonto) {
@@ -1261,7 +1278,7 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 
 	if (CVKriterier) {
 		const arbeidsplassenCV = {
-			header: 'Arbeidsplassen (CV)',
+			header: 'Nav CV',
 			items: [],
 			itemRows: [],
 		}
@@ -1503,7 +1520,7 @@ const mapSykemelding = (bestillingData, data) => {
 	if (sykemeldingKriterier) {
 		const sykemelding = {
 			header: 'Sykemelding',
-			items: null,
+			items: [] as any,
 		}
 		if (sykemeldingKriterier.syntSykemelding) {
 			sykemelding.items = [
@@ -1511,6 +1528,13 @@ const mapSykemelding = (bestillingData, data) => {
 				obj('Organisasjonsnummer', sykemeldingKriterier.syntSykemelding.orgnummer),
 				obj('Arbeidsforhold-ID', sykemeldingKriterier.syntSykemelding.arbeidsforholdId),
 			]
+		} else if (sykemeldingKriterier.nySykemelding) {
+			sykemeldingKriterier.nySykemelding.aktivitet?.forEach((aktivitet: any) => {
+				sykemelding.items.push(
+					obj('Startdato', formatDate(aktivitet.fom)),
+					obj('Sluttdato', formatDate(aktivitet.tom)),
+				)
+			})
 		} else if (sykemeldingKriterier.detaljertSykemelding) {
 			sykemelding.items = [
 				obj('Startdato', formatDate(sykemeldingKriterier.detaljertSykemelding.startDato)),
@@ -2468,7 +2492,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	}
 
 	mapFullmakt(bestillingData, data)
-	mapTpsMessaging(bestillingData, data)
+	mapNomData(bestillingData, data)
+	mapSkjermingData(bestillingData, data)
+	mapBankkonto(bestillingData, data)
 	mapAareg(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)
 	mapSigrunstubSummertSkattegrunnlag(bestillingData, data)
