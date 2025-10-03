@@ -53,7 +53,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
                         .uuid(uuid)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(Retry.fixedDelay(20, ofSeconds(5))
+                .retryWhen(Retry.fixedDelay(25, ofSeconds(5))
                         .filter(throwable -> throwable instanceof WebClientResponseException.Forbidden forbidden &&
                                 forbidden.getResponseBodyAsString().contains(FORBIDDEN_TEXT))
                         .doAfterRetry(logRetries))

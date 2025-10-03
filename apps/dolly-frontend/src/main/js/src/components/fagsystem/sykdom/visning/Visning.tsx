@@ -12,6 +12,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useTsmSykemelding } from '@/utils/hooks/useSykemelding'
 import { NySykemeldingVisning } from '@/components/fagsystem/sykdom/visning/partials/NySykemeldingVisning'
+import { DEFAULT_RETRY_COUNT } from '@/pages/gruppe/PersonVisning/PersonVisning'
 
 export const sjekkManglerSykemeldingData = (sykemeldingData) => {
 	return (
@@ -90,7 +91,10 @@ export const SykemeldingVisning = ({
 	bestillinger,
 }: Sykemelding) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'SYKEMELDING')
-	const { sykemeldinger, loading: nySykemeldingLoading } = useTsmSykemelding(ident?.ident)
+	const { sykemeldinger, loading: nySykemeldingLoading } = useTsmSykemelding(
+		ident?.ident,
+		bestillinger ? DEFAULT_RETRY_COUNT : 0,
+	)
 
 	if (loading || nySykemeldingLoading) {
 		return <Loading label="Laster sykemelding-data" />

@@ -30,11 +30,12 @@ export const usePensjonsgivendeInntektSkatteordning = () => {
 	}
 }
 
-export const usePensjonsgivendeInntekt = (ident, harPensjonsgivendeInntekt) => {
+export const usePensjonsgivendeInntekt = (ident, harPensjonsgivendeInntekt, retryCount = 8) => {
 	const endpoint = `${getSigrunstubBaseUrl()}/v1/pensjonsgivendeinntektforfolketrygden`
 	const { data, error, isLoading } = useSWR(
 		ident && harPensjonsgivendeInntekt ? [endpoint, { norskident: ident }] : null,
 		([url, params]) => fetcher(url, params),
+		{ errorRetryCount: retryCount },
 	)
 
 	return {
@@ -44,11 +45,12 @@ export const usePensjonsgivendeInntekt = (ident, harPensjonsgivendeInntekt) => {
 	}
 }
 
-export const useSummertSkattegrunnlag = (ident, harSummertSkattegrunnlag) => {
+export const useSummertSkattegrunnlag = (ident, harSummertSkattegrunnlag, retryCount = 8) => {
 	const endpoint = `${getSigrunstubBaseUrl()}/v2/summertskattegrunnlag`
 	const { data, error, isLoading } = useSWR(
 		ident && harSummertSkattegrunnlag ? [endpoint, { personIdentifikator: ident }] : null,
 		([url, params]) => fetcher(url, params),
+		{ errorRetryCount: retryCount },
 	)
 
 	return {

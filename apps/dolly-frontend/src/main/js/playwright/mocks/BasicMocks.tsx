@@ -2411,6 +2411,6 @@ export const fagsystemTyperMock = [
 	},
 	{
 		type: 'ARBEIDSPLASSENCV',
-		beskrivelse: 'Arbeidsplassen CV',
+		beskrivelse: 'Nav CV',
 	},
 ]

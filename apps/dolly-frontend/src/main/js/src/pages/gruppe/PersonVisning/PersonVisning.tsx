@@ -126,6 +126,8 @@ const getIdenttype = (ident) => {
 	}
 }
 
+export const DEFAULT_RETRY_COUNT = 8
+
 export default ({
 	fetchDataFraFagsystemer,
 	data,
@@ -182,6 +184,7 @@ export default ({
 	const { loading: loadingUdistub, udistub } = useUdistub(
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harUdistubBestilling(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const {
@@ -190,12 +193,14 @@ export default ({
 	} = usePensjonsgivendeInntekt(
 		ident.ident,
 		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const { loading: loadingSigrunstubSummertSkattegrunnlag, data: sigrunstubSummertSkattegrunnlag } =
 		useSummertSkattegrunnlag(
 			ident.ident,
 			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) || ident?.master === 'PDL',
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 		)
 
 	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
@@ -410,7 +415,12 @@ export default ({
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
 
-	const isLoadingFagsystemer = loadingAareg || loadingArbeidsplassencvData || loadingArenaData
+	const isLoadingFagsystemer =
+		loadingNom ||
+		loadingAareg ||
+		loadingArbeidssoekerregisteret ||
+		loadingArbeidsplassencvData ||
+		loadingArenaData
 
 	return (
 		<ErrorBoundary>
@@ -431,6 +441,9 @@ export default ({
 								}
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
+								}
+								if (arbeidssoekerregisteretData) {
+									personData.arbeidssoekerregisteret = arbeidssoekerregisteretData
 								}
 								if (arbeidsplassencvData) {
 									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
