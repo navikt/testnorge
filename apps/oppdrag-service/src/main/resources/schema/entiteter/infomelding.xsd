@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nav.no/system/os/entiteter/infomelding"
+           version="1.0"
+           xmlns:infomelding="http://nav.no/system/os/entiteter/infomelding"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+    <xs:annotation>
+        <xs:documentation>Entitet for infomelding</xs:documentation>
+        <xs:documentation>Tilsvarende baksystemets FE469-RTV-LOGG databasetabell</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType name="infomelding">
+        <xs:annotation>
+            <xs:documentation>Entitet for infomelding.</xs:documentation>
+            <xs:documentation>Brukes for å eksponere advarsler/infomelding fra tjenesten.</xs:documentation>
+            <xs:documentation>Informasjonsmelding hentes fra ID 469MMEL</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="beskrMelding">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="75" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
