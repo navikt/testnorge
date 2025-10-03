@@ -7,7 +7,9 @@ metadata:
   name: valkey-dolly-session
   namespace: dolly
 spec:
-  plan: startup-4
+  plan:
+    size: "RAM_4GB"
+    tier: "SINGLE_NODE"
   project: nav-dev
 ---
 apiVersion: aiven.io/v1alpha1
