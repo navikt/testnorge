@@ -2089,6 +2089,26 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			data.push(pensjonforvalterAlderspensjon)
 		}
 
+		if (pensjonKriterier.alderspensjonNyUtaksgrad) {
+			const apNy = pensjonKriterier.alderspensjonNyUtaksgrad
+
+			const navEnhetLabel = navEnheter?.find(
+				(enhet) => enhet.value === apNy.navEnhetId?.toString(),
+			)?.label
+
+			const pensjonforvalterAlderspensjonNyUtaksgrad = {
+				header: 'Alderspensjon ny uttaksgrad',
+				items: [
+					obj('Uttaksgrad', `${apNy.nyUttaksgrad}%`),
+					obj('Dato f.o.m.', formatDate(apNy.fom)),
+					obj('Saksbehandler', apNy.saksbehandler),
+					obj('Attesterer', apNy.attesterer),
+					obj('NAV-kontor', navEnhetLabel || apNy.navEnhetId),
+				],
+			}
+			data.push(pensjonforvalterAlderspensjonNyUtaksgrad)
+		}
+
 		if (pensjonKriterier.uforetrygd) {
 			const uforetrygd = pensjonKriterier.uforetrygd
 
