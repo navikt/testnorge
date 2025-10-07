@@ -11,9 +11,9 @@ type OrganisasjonKriterierProps = {
 export const OrganisasjonKriterier = ({ data, render }: OrganisasjonKriterierProps) => {
 	const [selectedId, setSelectedId] = useState('0')
 
-	if (!data) {
-		return null
-	}
+	// if (!data) {
+	// 	return null
+	// }
 
 	const orgTree = new OrgTree(data, '0')
 

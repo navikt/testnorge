@@ -2419,15 +2419,15 @@ const mapOrganisasjon = (bestillingData, data) => {
 }
 
 export function mapBestillingData(bestillingData, bestillingsinformasjon, firstIdent) {
+	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const { navEnheter } = useNavEnheter()
+
 	if (!bestillingData) {
 		return null
 	}
 
 	const data: any[] = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
-
-	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const { navEnheter } = useNavEnheter()
 
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype, firstIdent)
 	mapPdlNyPerson(bestillingData, data, bestilling)

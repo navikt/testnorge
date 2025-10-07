@@ -62,6 +62,7 @@ export const TextInput = ({
 	useControlled = false,
 	...props
 }: TextInputProps) => {
+	'use no memo' // Skip compilation for this component
 	const { register, formState, setValue, watch } = useFormContext() || {}
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
@@ -90,10 +91,10 @@ export const TextInput = ({
 	const shouldShowError = (error && (showError || isTouched || hasSubmitted)) || !!props.manualError
 
 	useEffect(() => {
-		if (useControlled && formValue !== undefined) {
+		if (formValue !== undefined) {
 			setFieldValue(formValue || '')
 		}
-	}, [value, formValue, useControlled])
+	}, [value, formValue])
 
 	const handleChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
