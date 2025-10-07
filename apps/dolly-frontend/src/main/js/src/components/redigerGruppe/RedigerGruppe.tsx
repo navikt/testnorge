@@ -27,6 +27,7 @@ const validation = Yup.object().shape({
 })
 
 export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
+	'use no memo' // Skip compilation for this component
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
 	const erRedigering = gruppeId !== undefined
@@ -41,7 +42,7 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 
 	const mutate = useMatchMutate()
 	const formMethods = useForm({
-		mode: 'all',
+		mode: 'onChange',
 		defaultValues: initialValues,
 		resolver: yupResolver(validation),
 	})
@@ -116,7 +117,6 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 			>
 				<div className="fields">
 					<DollyTextInput
-						useControlled
 						data-testid={TestComponentSelectors.INPUT_NAVN}
 						name="navn"
 						label="NAVN"
@@ -124,7 +124,6 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 						autoFocus
 					/>
 					<DollyTextInput
-						useControlled
 						data-testid={TestComponentSelectors.INPUT_HENSIKT}
 						name="hensikt"
 						label="HENSIKT"
