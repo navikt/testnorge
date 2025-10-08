@@ -32,7 +32,7 @@ const miljoeavhengig = [
 	'pensjonforvalter',
 	'inntektsmelding',
 	'arenaforvalter',
-	'sykemelding.detaljertSykemelding',
+	'sykemelding',
 	'instdata',
 	'dokarkiv',
 	'organisasjon',

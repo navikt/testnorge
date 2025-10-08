@@ -5,11 +5,6 @@ import {
 	nySykemeldingAttributt,
 	sykemeldingAttributt,
 } from '@/components/fagsystem/sykdom/form/Form'
-import { useContext } from 'react'
-import {
-	BestillingsveilederContext,
-	BestillingsveilederContextType,
-} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialYrkesskade } from '@/components/fagsystem/yrkesskader/initialValues'
 import { yrkesskaderAttributt } from '@/components/fagsystem/yrkesskader/form/Form'
 import {
@@ -19,14 +14,6 @@ import {
 
 export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-
-	const harGyldigSykemeldingBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
-		bestilling.status?.some(
-			(status) =>
-				status.id === 'SYKEMELDING' && status.statuser?.some((item) => item?.melding === 'OK'),
-		),
-	)
 
 	return (
 		// @ts-ignore
@@ -42,11 +29,7 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 			])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
-				<Attributt
-					attr={sm.attrs.sykemelding}
-					disabled={harGyldigSykemeldingBestilling || sm.attrs.nySykemelding.checked}
-					title={harGyldigSykemeldingBestilling ? 'Personen har allerede sykemelding' : null}
-				/>
+				<Attributt attr={sm.attrs.sykemelding} disabled={sm.attrs.nySykemelding.checked} />
 				<Attributt
 					attr={sm.attrs.nySykemelding}
 					disabled={sm.attrs.sykemelding.checked}
