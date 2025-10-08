@@ -2097,9 +2097,9 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			)?.label
 
 			const pensjonforvalterAlderspensjonNyUtaksgrad = {
-				header: 'Alderspensjon ny uttaksgrad',
+				header: 'Alderspensjon: Ny uttaksgrad',
 				items: [
-					obj('Uttaksgrad', `${apNy.nyUttaksgrad}%`),
+					obj('Ny uttaksgrad', `${apNy.nyUttaksgrad}%`),
 					obj('Dato f.o.m.', formatDate(apNy.fom)),
 					obj('Saksbehandler', apNy.saksbehandler),
 					obj('Attesterer', apNy.attesterer),

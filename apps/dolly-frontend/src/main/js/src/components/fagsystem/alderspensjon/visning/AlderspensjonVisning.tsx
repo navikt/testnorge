@@ -11,6 +11,7 @@ import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { useTransaksjonIdData } from '@/utils/hooks/useFagsystemer'
+import styled from 'styled-components'
 
 export const sjekkManglerApData = (apData) => {
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
@@ -20,13 +21,35 @@ const getNavEnhetLabel = (navEnheter, navEnhetId) => {
 	return navEnheter?.find((enhet) => enhet.value === navEnhetId?.toString())?.label ?? navEnhetId
 }
 
-const DataVisning = ({ data, miljo }) => {
+const StyledApVisning = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	margin-bottom: 10px;
+
+	&& {
+		.title-value_small {
+			flex: 0 1 149px;
+		}
+	}
+`
+
+const DataVisning = ({ data, miljo, ident }) => {
 	const { navEnheter } = useNavEnheter()
 
-	const { vedtakData, loading } = usePensjonVedtak(data?.fnr, miljo)
-	const vedtakAP = vedtakData?.find((vedtak) => vedtak?.sakType === 'AP')
+	const { vedtakData, loading } = usePensjonVedtak(ident, miljo)
+	const vedtakAP = vedtakData?.find(
+		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'FORSTEGANGSBEHANDLING',
+	)
+	const vedtakNyUttaksgrad = vedtakData?.find(
+		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'UTTAKSGRADSENDRING',
+	)
+	const vedtakRevurdering = vedtakData?.find(
+		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'SIVILSTANDENDRING',
+	)
 
-	// TODO: Person med merkelig vedtaksstatus: 31504344021
+	const getVedtakStatus = (vedtak) =>
+		vedtak?.sisteOppdatering?.includes('opprettet') ? 'Iverksatt' : vedtak?.sisteOppdatering
 
 	const { loading: loadingApRevurderingData, data: apRevurderingData } = useTransaksjonIdData(
 		data.fnr,
@@ -36,6 +59,14 @@ const DataVisning = ({ data, miljo }) => {
 	)
 	const revurdering = apRevurderingData?.find((revurdering) => revurdering?.miljo === miljo)?.data
 
+	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } = useTransaksjonIdData(
+		data.fnr,
+		'PEN_AP_NY_UTTAKSGRAD',
+		true,
+		[miljo],
+	)
+	const nyUttaksgrad = apNyUttaksgradData?.find((uttaksgrad) => uttaksgrad?.miljo === miljo)?.data
+
 	return (
 		<>
 			{!vedtakAP && !loading && (
@@ -44,15 +75,8 @@ const DataVisning = ({ data, miljo }) => {
 					klar ennå, eller at opprettelse av alderspensjon har feilet.
 				</StyledAlert>
 			)}
-			<div className="person-visning_content">
-				<TitleValue
-					title="Vedtaksstatus"
-					value={
-						vedtakAP?.sisteOppdatering?.includes('opprettet')
-							? 'Iverksatt'
-							: vedtakAP?.sisteOppdatering
-					}
-				/>
+			<StyledApVisning>
+				<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakAP)} />
 				<TitleValue title="Iverksettelsesdato" value={formatDate(data?.iverksettelsesdato)} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
 				<TitleValue title="Attesterer" value={data?.attesterer} />
@@ -69,10 +93,10 @@ const DataVisning = ({ data, miljo }) => {
 					value={showLabel('afpPrivatResultat', data?.afpPrivatResultat)}
 				/>
 				{revurdering && (
-					<div className="person-visning_content">
+					<div className="person-visning_content" style={{ marginBottom: 0 }}>
 						<h4>Revurdering</h4>
-						<div className="person-visning_content">
-							{/*TODO: Vis vedtaksstatus?*/}
+						<div className="person-visning_content" style={{ marginBottom: 0 }}>
+							<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakRevurdering)} />
 							<TitleValue
 								title="Revurderingsårsak"
 								value={codeToNorskLabel(revurdering.revurderingArsakType)}
@@ -87,12 +111,34 @@ const DataVisning = ({ data, miljo }) => {
 						</div>
 					</div>
 				)}
-			</div>
+				{nyUttaksgrad && (
+					<div className="person-visning_content" style={{ marginBottom: 0 }}>
+						<h4>Ny uttaksgrad</h4>
+						<div className="person-visning_content" style={{ marginBottom: 0 }}>
+							<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakNyUttaksgrad)} />
+							<TitleValue title="Ny uttaksgrad" value={nyUttaksgrad.nyUttaksgrad + '%'} />
+							<TitleValue title="Dato f.o.m." value={formatDate(nyUttaksgrad.fom)} />
+							<TitleValue title="Saksbehandler" value={nyUttaksgrad.saksbehandler} />
+							<TitleValue title="Attesterer" value={nyUttaksgrad.attesterer} />
+							<TitleValue
+								title="Nav-kontor"
+								value={getNavEnhetLabel(navEnheter, nyUttaksgrad.navEnhetId)}
+							/>
+						</div>
+					</div>
+				)}
+			</StyledApVisning>
 		</>
 	)
 }
 
-export const AlderspensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
+export const AlderspensjonVisning = ({
+	data,
+	loading,
+	bestillingIdListe,
+	tilgjengeligMiljoe,
+	ident,
+}) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'PEN_AP')
 
 	if (loading) {
@@ -127,7 +173,7 @@ export const AlderspensjonVisning = ({ data, loading, bestillingIdListe, tilgjen
 					forsteMiljo={forsteMiljo}
 					data={filteredData ? filteredData : data}
 				>
-					<DataVisning />
+					<DataVisning ident={ident} />
 				</MiljoTabs>
 			)}
 		</ErrorBoundary>

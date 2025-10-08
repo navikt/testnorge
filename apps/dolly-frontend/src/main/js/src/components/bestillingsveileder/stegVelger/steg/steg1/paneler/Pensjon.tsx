@@ -153,7 +153,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			remove: () => del(paths.alderspensjon),
 		},
 		alderspensjonNyUttaksgrad: {
-			label: 'Har alderspensjon ny uttaksgrad',
+			label: 'Har ny uttaksgrad',
 			checked: has(paths.alderspensjonNyUttaksgrad),
 			add: () => {
 				set(paths.alderspensjonNyUttaksgrad, getInitialAlderspensjonNyUttaksgrad)

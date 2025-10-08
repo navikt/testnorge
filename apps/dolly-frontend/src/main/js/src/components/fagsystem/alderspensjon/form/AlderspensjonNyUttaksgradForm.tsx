@@ -29,7 +29,7 @@ export const AlderspensjonNyUttaksgradForm = () => {
 	return (
 		<Vis attributt={alderspensjonNyUttaksgradPath}>
 			<Panel
-				heading="Alderspensjon ny uttaksgrad"
+				heading="Alderspensjon: Ny uttaksgrad"
 				hasErrors={panelError(alderspensjonNyUttaksgradPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [alderspensjonNyUttaksgradPath])}
@@ -37,7 +37,7 @@ export const AlderspensjonNyUttaksgradForm = () => {
 				<div className="flexbox--flex-wrap">
 					<FormSelect
 						name={`${alderspensjonNyUttaksgradPath}.nyUttaksgrad`}
-						label="Uttaksgrad"
+						label="Ny uttaksgrad"
 						options={Options('apUttaksgrad')}
 						isClearable={false}
 					/>

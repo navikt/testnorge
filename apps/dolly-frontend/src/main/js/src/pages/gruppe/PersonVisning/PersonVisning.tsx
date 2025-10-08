@@ -573,6 +573,7 @@ export default ({
 					loading={loadingApData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					ident={ident.ident}
 				/>
 				<UforetrygdVisning
 					data={uforetrygdData}

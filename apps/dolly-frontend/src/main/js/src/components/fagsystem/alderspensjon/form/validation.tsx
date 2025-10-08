@@ -31,3 +31,5 @@ export const validation = {
 		}),
 	),
 }
+
+//TODO: Validering av ny uttaksgrad
