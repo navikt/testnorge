@@ -9,7 +9,7 @@ public class BestillingMapper {
     public Bestilling shallowCopyBestilling(Bestilling bestilling) {
 
         return Bestilling.builder()
-                .bruker(bestilling.getBruker())
+                .brukerId(bestilling.getBrukerId())
                 .id(bestilling.getId())
                 .gruppeId(bestilling.getGruppeId())
                 .antallIdenter(bestilling.getAntallIdenter())
