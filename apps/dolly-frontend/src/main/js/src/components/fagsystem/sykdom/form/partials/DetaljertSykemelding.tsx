@@ -103,9 +103,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	}
 
 	const [selectedOrgnummer, setSelectedOrgnummer] = useState<string | undefined>(undefined)
-	const { organisasjoner, loading, error, hasBeenCalled } = useOrganisasjonForvalter([
-		selectedOrgnummer,
-	])
+	const { organisasjoner, loading, hasBeenCalled } = useOrganisasjonForvalter([selectedOrgnummer])
 	const lastAppliedOrg = useRef<string | undefined>(undefined)
 
 	const mapForvalterOrganisasjon = (org: any) => {

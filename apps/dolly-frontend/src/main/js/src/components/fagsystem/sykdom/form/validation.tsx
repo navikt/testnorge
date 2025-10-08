@@ -8,6 +8,8 @@ const testHarArbeidsforhold = (val) => {
 		if (!selected) {
 			return true
 		}
+		const opts = testContext.options as any
+		const personFoerLeggTil = opts?.context?.personFoerLeggTil
 		const detaljertSykemelding = fullForm?.sykemelding?.detaljertSykemelding
 
 		const valgtArbeidsgiver = detaljertSykemelding
@@ -16,7 +18,7 @@ const testHarArbeidsforhold = (val) => {
 
 		const arbeidsgivere = fullForm?.aareg?.map((arbforh) => arbforh?.arbeidsgiver?.orgnummer) || []
 
-		fullForm?.personFoerLeggTil?.aareg?.forEach((miljo) => {
+		personFoerLeggTil?.aareg?.forEach((miljo) => {
 			miljo?.data?.forEach((arbforh) => {
 				const orgnr = arbforh?.arbeidsgiver?.organisasjonsnummer
 				if (orgnr && !arbeidsgivere?.includes(orgnr?.toString())) {
