@@ -1,15 +1,36 @@
-== Test-Norge Dolly
+[[dolly_testnorge]]
+== Test-Norge
 
-Oversikt over hvordan Dolly integrerer med Test-Norge.
+Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i forbindelse med nytt folkeregister. Populasjonen er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv. Populasjonen har syntetiske fnr/dnr hvor det er lagt til 80 på måned. Hele Test-Norge populasjonen er tilgjengelig i PDL.
 
-=== Formål
-Beskrivelse av hva Test-Norge gir Dolly.
+[[dolly_testnorge_sok_import]]
+=== Søk og import
 
-=== Dataflyt
-Kort om dataflyt mellom systemene.
+Under Test-Norge fanen i Dolly er det mulig å søke opp Test-Norge identiteter i Dolly, velge identiteter man ønsker å ta i bruk, velge ekstra informasjon som skal legges til og importere dem inn i en ønsket gruppe i Dolly. Videoen under viser en demo.
 
-=== Tilganger
-Nødvendige roller og tilganger.
+++++
+<video src="https://user-images.githubusercontent.com/58416744/174292316-cc1b2c47-b855-4390-b77f-66bc8e426a39.mov" controls="controls" style="max-width: 730px;"></video>
+++++
 
-=== Videre lesing
-xref:applications/dolly/brukerveiledning.adoc[Brukerveiledning]
+For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor brukes: https://www.skatteetaten.no/skjema/testdata
+Tenor er ikke koblet opp mot Dolly, men identiteter funnet i Tenor kan søkes opp i Dolly og importeres til en ønsket gruppe.
+
+[[dolly_testnorge_import_partner]]
+=== Import av partner
+
+Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd. Hvis valgt person har en partner som ikke allerede er valgt kan man huke av for IMPORT MED PARTNER for å inkludere den. Bildet under viser et tilfelle hvor import av partner er valgt.
+
+image::dolly/import_partner.png[Import med partner]
+
+Det er også mulig å importere partner etter opprinnelig import. Dette kan gjøres direkte i personvisning. Videoen under viser en demo.
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/169964561-975783ea-3279-467b-8448-7aba3fecbac0.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
+
+[[dolly_testnorge_idporten]]
+=== ID-Porten
+
+Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident.

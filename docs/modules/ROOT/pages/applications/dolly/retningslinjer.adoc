@@ -1,16 +1,129 @@
+[[dolly_retningslinjer]]
 == Retningslinjer Dolly
 
-Retningslinjer for bruk og forvaltning av Dolly.
+Retningslinjer for bruk og forvaltning av Dolly, basert på overordnede retningslinjer for syntetiske testdata i NAV.
 
-=== Formål
-Hva Dolly skal brukes til.
+[[dolly_retningslinjer_hensikt]]
+=== Hensikt, målgrupper og ansvar
 
-=== Personvern
-Retningslinjer for håndtering av data.
+Syntetiske testdata skal brukes i utvikling og forvaltning av NAVs IT-løsninger. Ved unntaksvis bruk av produksjonsdata gjelder spesielle sikkerhetstiltak. Disse føringene er sentrale for å minimere og sikre kontroll med bruken av persondata:
 
-=== Sikkerhet
-Tiltak og ansvar.
+* Syntetiske testdata kan ikke kobles til reelle personer og er ikke personopplysninger
+* Produksjonsdata kan direkte eller indirekte knyttes til en enkeltperson og må håndteres som personopplysninger som må beskyttes gjennom tilgangskontroll, maskering, logging m.m.
 
-=== Kodekvalitet
-Krav til endringer og PR-er.
+Retningslinjene gjelder for alle ansatte og eksterne som er involvert i utvikling av NAVs IT‑løsninger. Følgende har et spesielt ansvar:
 
+* Teamleder i produktteam har ansvaret for at retningslinjene følges av interne og eksterne ressurser i teamet
+* IT Data og Innsikt har ansvaret for basisløsninger for syntetiske testdata
+* Sikkerhetsseksjonen har overordnet ansvar for bruk av testdata og informasjonssikkerhet
+
+Retningslinjene er operative rutiner til styringssystem for både sikkerhet og personvern. Sikkerhetsseksjonen har ansvaret for vedlikehold; endringsbehov kan meldes dit.
+
+Avgrensning (historisk):
+
+* NAV utviklet løsning for syntetiske testdata i 2018–2019. Syntetiske data blir gradvis tilgjengelig pr område/system. For områder der syntetiske data ikke er tilgjengelig vil sikkerhetsregler for unntak gjelde
+* Ny løsning for tilgangskontroll ved unntaksvis bruk av produksjonsdata vurderes av personvernprosjekter
+
+[[dolly_retningslinjer_bruk_syntetiske]]
+=== Bruk av syntetiske testdata i NAV
+
+Syntetiske testdata skal brukes til utvikling og forvaltning, og er tilgjengelig som:
+
+* Mini‑Norge (befolkningsutvalg) i syntetiske utviklings-/testmiljøer
+* Egendefinerte data fra Dolly selvbetjening (randtilfeller og spesielle testbehov). Dolly sikrer at personer og egenskaper er syntetiske
+* Syntetiske datasett for integrasjonstest med eksterne samhandlere
+* Tekniske stubber som simulerer eksterne kilder til volum- og basistesting
+
+Syntetiske testdata er ikke personopplysninger og kan brukes uten ekstra sikkerhetstiltak.
+
+Kvalitetskontroller for å hindre reelle data i syntetiske miljøer:
+
+* Navnepool med fiktive navn
+* Identpool med identer som teknisk sjekkes mot reelle identiteter i Folkeregisteret
+* Jevnlige tekniske sjekker av syntetiske miljøer (fiktive navn og identer)
+* Manuelle stikkprøver av testdata fra eksterne samhandlere
+* Miljøoppsett som hindrer krysskobling mellom syntetiske og produksjonsnære miljøer
+
+[[dolly_retningslinjer_prinsipper_dolly]]
+=== Prinsipper for å lage egne testdata i Dolly
+
+Dolly brukes for å lage egne data til randtilfeller og spesialbehov. Brukere må følge disse prinsippene:
+
+* Ikke ta utgangspunkt i reelle personer – alle verdier må velges uavhengig og tilfeldig
+* Ikke gjør endringer eller slett andres grupper/personer uten avtale
+* Del aldri påloggingsinformasjon
+* Kontakt oss på Slack‑kanalen #dolly for innspill, ønsker eller feil
+
+[[dolly_retningslinjer_unntak_produksjon]]
+=== Unntak og sikkerhetstiltak ved bruk av produksjonsdata
+
+Unntaksvis må produksjonsdata brukes. For å redusere risiko gjelder spesielle sikkerhetstiltak.
+
+==== Unntak fra bruk av syntetiske testdata
+
+Unntak vurderes pr produktteam i samarbeid med behandlingsansvarlig og gjelder typisk:
+
+* Kritiske produksjonsfeil der produksjonsdata er nødvendig for rekonstruksjon
+* Korrigering av datakvalitet
+* Spesialtester/engangstilfeller med komplekse verdikjeder
+* Større datakonvertering
+* System/område som snart skal saneres eller moderniseres
+
+==== Oversikt over sikkerhetstiltak
+
+===== Begrensning i kopiering og bruk av produksjonsdata
+
+* Diskresjonskode 6 og 7 fjernes alltid ved kopi/uttrekk
+* Ansatte i NAV fjernes alltid
+* For Bisys: brukere bosatt i utlandet og dekket av paragraf 19 tas ut manuelt
+* Maskering brukes i overgangsperioder
+
+Ansvar produktteam:
+
+* Teknisk støtte for å fjerne kode 6/7 og ansatte ved kopi
+* Rutiner for maskering i overgangsperiode
+* Rutiner som hindrer bruk av egne eller familiemedlemmers data
+
+===== Midlertidig lagring og tilgangskontroll (ekstraordinære kopier)
+
+* Kopier utføres av dedikerte IT‑ressurser med logging
+* Kopier lagres på egne områder med tidsbegrenset tilgang
+* Filer lagres i filarkiv med tilgangskontroll (tidsbegrenset)
+* Ved distribusjon (e‑post, minnepinne) skal innhold krypteres og avgrenses
+
+Ansvar produktteam:
+
+* Behov vurderes per sak med behandlingsansvarlig
+* Bestiller kopi via dedikerte roller
+* Har felles filarkiv med tidsbegrenset lagring (normalt maks 30 dager)
+* Teamleder gir tilgang etter behov
+
+===== Tilgangskontroll og logging i skyggemiljøer
+
+* Fagsystemtilganger som testbrukere via IDA
+* Systemtilganger følger produksjonsrutiner
+* Logging på både fagsystem og systembrukere
+
+Ansvar produktteam:
+
+* Teamleder gir føringer for bruk av tilganger
+* Teamleder har oversikt over hvem som har tilgang
+* Taushetserklæringer gjelder alle
+
+===== Kontroll av data fra eksterne samhandlere
+
+Integrasjonstester skal kun bruke syntetiske testdata. Andre tester skal bruke syntetiske stubber.
+
+Ansvar produktteam:
+
+* Avtaler med eksterne samhandlere om miljø og testdata
+* Faste syntetiske datasett for integrasjonstester
+* Jevnlige stikkprøver av data fra eksterne samhandlere
+
+[[dolly_retningslinjer_hendelser]]
+=== Håndtering av hendelser og avvik
+
+Avvik (brudd på regler for testdata eller sikkerhetstiltak) håndteres slik:
+
+. Følg prosess for håndtering av hendelser
+. Meld brudd på informasjonssikkerhet og personvern i ASYS for videre oppfølging

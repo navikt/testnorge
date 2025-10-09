@@ -1,13 +1,19 @@
+[[dolly_github]]
 == Åpen kildekode Dolly
 
-Prosjektet Dolly er åpen kildekode.
+Dolly er åpen kildekode og lagret i GitHub.
 
+[[dolly_github_repos]]
 === Repos
-Liste over relevante repos.
+Se kildekode og relaterte prosjekter:
 
+https://github.com/navikt/testnorge/tree/master/apps/dolly-frontend/
+
+[[dolly_github_bidra]]
 === Bidra
-Pull requests er velkomne.
+Pull requests er velkomne. Opprett gjerne issue med forslag eller feil før PR.
 
+[[dolly_github_referanser]]
 === Referanser
 xref:applications/dolly/brukerveiledning.adoc[Brukerveiledning]
 

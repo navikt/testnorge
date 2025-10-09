@@ -1,6 +1,6 @@
 = Testnav Dokumentasjon (Single Page)
-:toc: left
-:toclevels: 3
+:toc: macro
+:toclevels: 5
 :sectnums:
 :sectanchors:
 
@@ -12,31 +12,29 @@ include::index.adoc[leveloffset=+1]
 [[applikasjoner]]
 == Applikasjoner
 
-include::applications/index.adoc[leveloffset=+1]
+Oversikt over tilgjengelige applikasjoner i Testnav.
 
 [[dolly]]
 === Dolly
 
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
+
 [[brukerveiledning]]
-include::applications/dolly/brukerveiledning.adoc[leveloffset=+2]
+include::applications/dolly/brukerveiledning.adoc[leveloffset=+3]
 
 [[retningslinjer]]
-include::applications/dolly/retningslinjer.adoc[leveloffset=+2]
+include::applications/dolly/retningslinjer.adoc[leveloffset=+3]
 
 [[github]]
-include::applications/dolly/github.adoc[leveloffset=+2]
+include::applications/dolly/github.adoc[leveloffset=+3]
 
 [[testnorge]]
-include::applications/dolly/testnorge.adoc[leveloffset=+2]
+include::applications/dolly/testnorge.adoc[leveloffset=+3]
 
 [[endringsmelding]]
-=== Endringsmelding
-
 include::applications/endringsmelding.adoc[leveloffset=+2]
 
 [[oppsummeringsdokument]]
-=== Oppsummeringsdokument
-
 include::applications/oppsummeringsdokument.adoc[leveloffset=+2]
 
 [[lokal_utvikling]]
