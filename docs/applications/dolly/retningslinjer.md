@@ -2,9 +2,10 @@
 title: Retningslinjer for bruk av testdata i NAV
 layout: default
 parent: Dolly
+nav_order: 2
 ---
 
-# {{ page.title }}
+[← Til Dolly oversikt](index)
 
 ## Hensikt, målgrupper og ansvar
 
@@ -146,4 +147,3 @@ Avvik, dvs hendelser som bryter regler for bruk av testdata eller sikkerhetstilt
 2. Brudd på informasjonssikkerhet og personvern meldes i tillegg i ASYS (system for avviksrapportering) - for videre oppfølging av Sikkerhetsseksjonen og Personvernombudet.
 
 ---
-

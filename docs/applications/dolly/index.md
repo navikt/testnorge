@@ -1,9 +1,15 @@
 ---
 title: Dolly
 layout: default
-nav_order: 2
+parent: Applikasjoner
+nav_order: 1
 has_children: true
 ---
 
-# {{ page.title }}
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
+
+## Innhold
+- [Brukerveiledning](brukerveiledning)
+- [Retningslinjer for bruk av testdata i NAV](retningslinjer)
+- [Åpen kildekode](github)
+- [Test-Norge](testnorge)
