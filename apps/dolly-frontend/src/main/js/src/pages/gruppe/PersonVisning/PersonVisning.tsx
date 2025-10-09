@@ -261,6 +261,20 @@ export default ({
 		pensjonEnvironments,
 	)
 
+	const { loading: loadingApRevurderingData, data: apRevurderingData } = useTransaksjonIdData(
+		ident.ident,
+		'PEN_AP_REVURDERING',
+		harApBestilling(bestillingerFagsystemer),
+		pensjonEnvironments,
+	)
+
+	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } = useTransaksjonIdData(
+		ident.ident,
+		'PEN_AP_NY_UTTAKSGRAD',
+		harApBestilling(bestillingerFagsystemer),
+		pensjonEnvironments,
+	)
+
 	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
 		ident.ident,
 		'PEN_UT',
@@ -420,7 +434,10 @@ export default ({
 		loadingAareg ||
 		loadingArbeidssoekerregisteret ||
 		loadingArbeidsplassencvData ||
-		loadingArenaData
+		loadingArenaData ||
+		loadingApData ||
+		loadingApRevurderingData ||
+		loadingApNyUttaksgradData
 
 	return (
 		<ErrorBoundary>
@@ -453,6 +470,12 @@ export default ({
 								}
 								if (apData) {
 									personData.alderspensjon = apData
+								}
+								if (apRevurderingData) {
+									personData.alderspensjonRevurdering = apRevurderingData
+								}
+								if (apNyUttaksgradData) {
+									personData.alderspensjonNyUttaksgrad = apNyUttaksgradData
 								}
 								leggTilPaaPerson(
 									personData,
@@ -570,6 +593,8 @@ export default ({
 				/>
 				<AlderspensjonVisning
 					data={apData}
+					apRevurderingData={apRevurderingData}
+					apNyUttaksgradData={apNyUttaksgradData}
 					loading={loadingApData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}

@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { validationNyUttaksgrad } from '@/components/fagsystem/alderspensjon/form/validation'
 
 export const alderspensjonNyUttaksgradPath = 'pensjonforvalter.alderspensjonNyUtaksgrad'
 
@@ -73,3 +74,5 @@ export const AlderspensjonNyUttaksgradForm = () => {
 		</Vis>
 	)
 }
+
+AlderspensjonNyUttaksgradForm.validation = validationNyUttaksgrad

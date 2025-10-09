@@ -10,7 +10,6 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import { useTransaksjonIdData } from '@/utils/hooks/useFagsystemer'
 import styled from 'styled-components'
 
 export const sjekkManglerApData = (apData) => {
@@ -34,7 +33,7 @@ const StyledApVisning = styled.div`
 	}
 `
 
-const DataVisning = ({ data, miljo, ident }) => {
+const DataVisning = ({ data, miljo, apRevurderingData, apNyUttaksgradData, ident }) => {
 	const { navEnheter } = useNavEnheter()
 
 	const { vedtakData, loading } = usePensjonVedtak(ident, miljo)
@@ -51,20 +50,7 @@ const DataVisning = ({ data, miljo, ident }) => {
 	const getVedtakStatus = (vedtak) =>
 		vedtak?.sisteOppdatering?.includes('opprettet') ? 'Iverksatt' : vedtak?.sisteOppdatering
 
-	const { loading: loadingApRevurderingData, data: apRevurderingData } = useTransaksjonIdData(
-		data.fnr,
-		'PEN_AP_REVURDERING',
-		true,
-		[miljo],
-	)
 	const revurdering = apRevurderingData?.find((revurdering) => revurdering?.miljo === miljo)?.data
-
-	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } = useTransaksjonIdData(
-		data.fnr,
-		'PEN_AP_NY_UTTAKSGRAD',
-		true,
-		[miljo],
-	)
 	const nyUttaksgrad = apNyUttaksgradData?.find((uttaksgrad) => uttaksgrad?.miljo === miljo)?.data
 
 	return (
@@ -92,6 +78,22 @@ const DataVisning = ({ data, miljo, ident }) => {
 					title="AFP privat resultat"
 					value={showLabel('afpPrivatResultat', data?.afpPrivatResultat)}
 				/>
+				{nyUttaksgrad && (
+					<div className="person-visning_content" style={{ marginBottom: 0 }}>
+						<h4>Ny uttaksgrad</h4>
+						<div className="person-visning_content" style={{ marginBottom: 0 }}>
+							<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakNyUttaksgrad)} />
+							<TitleValue title="Ny uttaksgrad" value={nyUttaksgrad.nyUttaksgrad + '%'} />
+							<TitleValue title="Dato f.o.m." value={formatDate(nyUttaksgrad.fom)} />
+							<TitleValue title="Saksbehandler" value={nyUttaksgrad.saksbehandler} />
+							<TitleValue title="Attesterer" value={nyUttaksgrad.attesterer} />
+							<TitleValue
+								title="Nav-kontor"
+								value={getNavEnhetLabel(navEnheter, nyUttaksgrad.navEnhetId)}
+							/>
+						</div>
+					</div>
+				)}
 				{revurdering && (
 					<div className="person-visning_content" style={{ marginBottom: 0 }}>
 						<h4>Revurdering</h4>
@@ -111,22 +113,6 @@ const DataVisning = ({ data, miljo, ident }) => {
 						</div>
 					</div>
 				)}
-				{nyUttaksgrad && (
-					<div className="person-visning_content" style={{ marginBottom: 0 }}>
-						<h4>Ny uttaksgrad</h4>
-						<div className="person-visning_content" style={{ marginBottom: 0 }}>
-							<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakNyUttaksgrad)} />
-							<TitleValue title="Ny uttaksgrad" value={nyUttaksgrad.nyUttaksgrad + '%'} />
-							<TitleValue title="Dato f.o.m." value={formatDate(nyUttaksgrad.fom)} />
-							<TitleValue title="Saksbehandler" value={nyUttaksgrad.saksbehandler} />
-							<TitleValue title="Attesterer" value={nyUttaksgrad.attesterer} />
-							<TitleValue
-								title="Nav-kontor"
-								value={getNavEnhetLabel(navEnheter, nyUttaksgrad.navEnhetId)}
-							/>
-						</div>
-					</div>
-				)}
 			</StyledApVisning>
 		</>
 	)
@@ -134,6 +120,8 @@ const DataVisning = ({ data, miljo, ident }) => {
 
 export const AlderspensjonVisning = ({
 	data,
+	apRevurderingData,
+	apNyUttaksgradData,
 	loading,
 	bestillingIdListe,
 	tilgjengeligMiljoe,
@@ -173,7 +161,11 @@ export const AlderspensjonVisning = ({
 					forsteMiljo={forsteMiljo}
 					data={filteredData ? filteredData : data}
 				>
-					<DataVisning ident={ident} />
+					<DataVisning
+						apRevurderingData={apRevurderingData}
+						apNyUttaksgradData={apNyUttaksgradData}
+						ident={ident}
+					/>
 				</MiljoTabs>
 			)}
 		</ErrorBoundary>

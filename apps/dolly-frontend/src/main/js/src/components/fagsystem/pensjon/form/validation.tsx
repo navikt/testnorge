@@ -6,6 +6,7 @@ import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/For
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
 import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
+import { AlderspensjonNyUttaksgradForm } from '@/components/fagsystem/alderspensjon/form/AlderspensjonNyUttaksgradForm'
 
 interface RootValues {
 	pdldata?: any
@@ -165,6 +166,7 @@ export const validation = {
 			...PensjonsavtaleForm.validation,
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
+			...AlderspensjonNyUttaksgradForm.validation,
 			...UforetrygdForm.validation,
 			...AfpOffentligForm.validation,
 		}),
