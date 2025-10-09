@@ -42,7 +42,7 @@ const validFomDateTest = (schema: Yup.DateSchema<Date, Yup.AnyObject>) =>
 		)
 		const apNyUttaksgradDates =
 			context?.options?.context?.personFoerLeggTil?.alderspensjonNyUttaksgrad?.map(
-				(ap: any) => ap.data?.fom,
+				(ap: any) => ap.transaksjonId?.fom,
 			)
 		const allDates = apDates.concat(apNyUttaksgradDates)?.map((dateString) => new Date(dateString))
 		const sisteVedtak = Math.max(...allDates)

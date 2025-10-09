@@ -36,6 +36,7 @@ import {
 	usePoppData,
 	useTpDataForhold,
 	useTransaksjonIdData,
+	useTransaksjonIdDataUtenMiljoe,
 } from '@/utils/hooks/useFagsystemer'
 import {
 	sjekkManglerTpData,
@@ -261,19 +262,19 @@ export default ({
 		pensjonEnvironments,
 	)
 
-	const { loading: loadingApRevurderingData, data: apRevurderingData } = useTransaksjonIdData(
-		ident.ident,
-		'PEN_AP_REVURDERING',
-		harApBestilling(bestillingerFagsystemer),
-		pensjonEnvironments,
-	)
+	const { loading: loadingApRevurderingData, data: apRevurderingData } =
+		useTransaksjonIdDataUtenMiljoe(
+			ident.ident,
+			'PEN_AP_REVURDERING',
+			harApBestilling(bestillingerFagsystemer),
+		)
 
-	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } = useTransaksjonIdData(
-		ident.ident,
-		'PEN_AP_NY_UTTAKSGRAD',
-		harApBestilling(bestillingerFagsystemer),
-		pensjonEnvironments,
-	)
+	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } =
+		useTransaksjonIdDataUtenMiljoe(
+			ident.ident,
+			'PEN_AP_NY_UTTAKSGRAD',
+			harApBestilling(bestillingerFagsystemer),
+		)
 
 	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
 		ident.ident,

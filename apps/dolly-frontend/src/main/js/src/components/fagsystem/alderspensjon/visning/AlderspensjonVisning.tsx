@@ -11,6 +11,8 @@ import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import styled from 'styled-components'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { isSameDay } from 'date-fns'
 
 export const sjekkManglerApData = (apData) => {
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
@@ -28,7 +30,7 @@ const StyledApVisning = styled.div`
 
 	&& {
 		.title-value_small {
-			flex: 0 1 149px;
+			flex: 0 1 141px;
 		}
 	}
 `
@@ -40,18 +42,18 @@ const DataVisning = ({ data, miljo, apRevurderingData, apNyUttaksgradData, ident
 	const vedtakAP = vedtakData?.find(
 		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'FORSTEGANGSBEHANDLING',
 	)
-	const vedtakNyUttaksgrad = vedtakData?.find(
+	const vedtakNyUttaksgrad = vedtakData?.filter(
 		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'UTTAKSGRADSENDRING',
 	)
-	const vedtakRevurdering = vedtakData?.find(
+	const vedtakRevurdering = vedtakData?.filter(
 		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'SIVILSTANDENDRING',
 	)
 
 	const getVedtakStatus = (vedtak) =>
 		vedtak?.sisteOppdatering?.includes('opprettet') ? 'Iverksatt' : vedtak?.sisteOppdatering
 
-	const revurdering = apRevurderingData?.find((revurdering) => revurdering?.miljo === miljo)?.data
-	const nyUttaksgrad = apNyUttaksgradData?.find((uttaksgrad) => uttaksgrad?.miljo === miljo)?.data
+	const revurdering = apRevurderingData?.filter((revurdering) => revurdering?.miljoe === miljo)
+	const nyUttaksgrad = apNyUttaksgradData?.filter((uttaksgrad) => uttaksgrad?.miljoe == miljo)
 
 	return (
 		<>
@@ -78,40 +80,60 @@ const DataVisning = ({ data, miljo, apRevurderingData, apNyUttaksgradData, ident
 					title="AFP privat resultat"
 					value={showLabel('afpPrivatResultat', data?.afpPrivatResultat)}
 				/>
-				{nyUttaksgrad && (
-					<div className="person-visning_content" style={{ marginBottom: 0 }}>
-						<h4>Ny uttaksgrad</h4>
-						<div className="person-visning_content" style={{ marginBottom: 0 }}>
-							<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakNyUttaksgrad)} />
-							<TitleValue title="Ny uttaksgrad" value={nyUttaksgrad.nyUttaksgrad + '%'} />
-							<TitleValue title="Dato f.o.m." value={formatDate(nyUttaksgrad.fom)} />
-							<TitleValue title="Saksbehandler" value={nyUttaksgrad.saksbehandler} />
-							<TitleValue title="Attesterer" value={nyUttaksgrad.attesterer} />
-							<TitleValue
-								title="Nav-kontor"
-								value={getNavEnhetLabel(navEnheter, nyUttaksgrad.navEnhetId)}
-							/>
-						</div>
-					</div>
+				{nyUttaksgrad?.length > 0 && (
+					<DollyFieldArray data={nyUttaksgrad} header="Ny uttaksgrad" nested>
+						{(nyUttaksgradItem, idx) => {
+							const transaksjonId = nyUttaksgradItem.transaksjonId
+							const vedtakNyUttaksgradItem = vedtakNyUttaksgrad?.find((v) =>
+								isSameDay(new Date(v?.fom), new Date(transaksjonId?.fom)),
+							)
+							return (
+								<div className="person-visning_content" style={{ marginBottom: 0 }} key={idx}>
+									<TitleValue
+										title="Vedtaksstatus"
+										value={getVedtakStatus(vedtakNyUttaksgradItem)}
+									/>
+									<TitleValue title="Ny uttaksgrad" value={transaksjonId.nyUttaksgrad + '%'} />
+									<TitleValue title="Dato f.o.m." value={formatDate(transaksjonId.fom)} />
+									<TitleValue title="Saksbehandler" value={transaksjonId.saksbehandler} />
+									<TitleValue title="Attesterer" value={transaksjonId.attesterer} />
+									<TitleValue
+										title="Nav-kontor"
+										value={getNavEnhetLabel(navEnheter, transaksjonId.navEnhetId)}
+									/>
+								</div>
+							)
+						}}
+					</DollyFieldArray>
 				)}
-				{revurdering && (
-					<div className="person-visning_content" style={{ marginBottom: 0 }}>
-						<h4>Revurdering</h4>
-						<div className="person-visning_content" style={{ marginBottom: 0 }}>
-							<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakRevurdering)} />
-							<TitleValue
-								title="Revurderingsårsak"
-								value={codeToNorskLabel(revurdering.revurderingArsakType)}
-							/>
-							<TitleValue title="Dato f.o.m." value={formatDate(revurdering.fom)} />
-							<TitleValue title="Saksbehandler" value={revurdering.saksbehandler} />
-							<TitleValue title="Attesterer" value={revurdering.attesterer} />
-							<TitleValue
-								title="Nav-kontor"
-								value={getNavEnhetLabel(navEnheter, revurdering.navEnhetId)}
-							/>
-						</div>
-					</div>
+				{revurdering?.length > 0 && (
+					<DollyFieldArray data={revurdering} header="Revurdering" nested>
+						{(revurderingItem, idx) => {
+							const transaksjonId = revurderingItem.transaksjonId
+							const vedtakRevurderingItem = vedtakRevurdering?.find((r) =>
+								isSameDay(new Date(r?.fom), new Date(transaksjonId?.fom)),
+							)
+							return (
+								<div className="person-visning_content" style={{ marginBottom: 0 }} key={idx}>
+									<TitleValue
+										title="Vedtaksstatus"
+										value={getVedtakStatus(vedtakRevurderingItem)}
+									/>
+									<TitleValue
+										title="Revurderingsårsak"
+										value={codeToNorskLabel(transaksjonId.revurderingArsakType)}
+									/>
+									<TitleValue title="Dato f.o.m." value={formatDate(transaksjonId.fom)} />
+									<TitleValue title="Saksbehandler" value={transaksjonId.saksbehandler} />
+									<TitleValue title="Attesterer" value={transaksjonId.attesterer} />
+									<TitleValue
+										title="Nav-kontor"
+										value={getNavEnhetLabel(navEnheter, transaksjonId.navEnhetId)}
+									/>
+								</div>
+							)
+						}}
+					</DollyFieldArray>
 				)}
 			</StyledApVisning>
 		</>
