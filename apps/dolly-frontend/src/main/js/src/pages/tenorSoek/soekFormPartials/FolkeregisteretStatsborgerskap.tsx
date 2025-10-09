@@ -1,7 +1,7 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React from 'react'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { oversettBoolean } from '@/utils/DataFormatter'
 
 export const FolkeregisteretStatsborgerskap = ({ handleChange }: any) => {

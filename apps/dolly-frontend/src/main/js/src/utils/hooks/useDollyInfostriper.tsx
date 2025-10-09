@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
-import useSWR from 'swr'
-import { fetcher } from '@/api'
+import useSWR, { mutate as globalMutate } from 'swr'
 
 export interface InfoStripeType {
 	id: number
@@ -22,13 +21,25 @@ export interface UpdateInfostripeInput extends CreateInfostripeInput {
 }
 
 const INFOSTRIPE_URL = '/dolly-backend/api/v1/infostripe'
+const FUTURE_KEY = `${INFOSTRIPE_URL}?inkluderFremtidige=true`
 
-export const useDollyInfostriper = () => {
+export const useDollyInfostriper = (inkluderFremtidige = false) => {
+	const listUrl = inkluderFremtidige ? FUTURE_KEY : INFOSTRIPE_URL
+
 	const { data, isLoading, error, mutate } = useSWR<InfoStripeType[], Error>(
-		INFOSTRIPE_URL,
-		fetcher,
+		listUrl,
+		async (url: string) => {
+			const resp = await fetch(url)
+			if (!resp.ok) throw new Error(`Failed ${resp.status}`)
+			return resp.json()
+		},
 		{ refreshInterval: 60000, dedupingInterval: 60000 },
 	)
+
+	const revalidateAll = useCallback(async () => {
+		await mutate()
+		await globalMutate(FUTURE_KEY)
+	}, [mutate])
 
 	const createInfostripe = useCallback(
 		async (input: CreateInfostripeInput) => {
@@ -38,9 +49,9 @@ export const useDollyInfostriper = () => {
 				body: JSON.stringify(input),
 			})
 			if (!resp.ok) throw new Error(`Create failed ${resp.status}`)
-			return mutate()
+			await revalidateAll()
 		},
-		[mutate],
+		[revalidateAll],
 	)
 
 	const updateInfostripe = useCallback(
@@ -52,27 +63,28 @@ export const useDollyInfostriper = () => {
 				body: JSON.stringify(input),
 			})
 			if (!resp.ok) throw new Error(`Update failed ${resp.status}`)
-			return mutate()
+			await revalidateAll()
 		},
-		[mutate],
+		[revalidateAll],
 	)
 
 	const deleteInfostripe = useCallback(
 		async (id: number) => {
 			const url = `${INFOSTRIPE_URL}/${id}`
-			const prev = data
+			const previous = data
 			await mutate((curr) => (curr ? curr.filter((c) => c.id !== id) : curr), { revalidate: false })
 			const resp = await fetch(url, { method: 'DELETE' })
 			if (!resp.ok) {
-				await mutate(prev, { revalidate: false })
+				await mutate(previous, { revalidate: false })
 				throw new Error(`Delete failed ${resp.status}`)
 			}
+			await revalidateAll()
 		},
-		[data, mutate],
+		[data, mutate, revalidateAll],
 	)
 
 	return {
-		infostriper: data && Array.isArray(data) ? data : [],
+		infostriper: Array.isArray(data) ? data : [],
 		loading: isLoading,
 		error,
 		createInfostripe,

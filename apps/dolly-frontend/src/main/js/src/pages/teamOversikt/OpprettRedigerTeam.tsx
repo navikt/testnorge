@@ -106,12 +106,14 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 				<h1>{team ? `Rediger team ${team.navn}` : 'Opprett team'}</h1>
 				<div className="flexbox--flex-wrap" style={{ marginTop: '15px' }}>
 					<FormTextInput
+						useControlled
 						name="navn"
 						label="Navn på teamet"
 						size="large"
 						data-testid={TestComponentSelectors.INPUT_TEAM_NAVN}
 					/>
 					<FormTextInput
+						useControlled
 						name="beskrivelse"
 						label="Beskrivelse av teamet"
 						size="xlarge"

@@ -9,7 +9,6 @@ import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Icon from '@/components/ui/icon/Icon'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
-import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
@@ -63,6 +62,7 @@ export const TextInput = ({
 	useControlled = false,
 	...props
 }: TextInputProps) => {
+	'use no memo' // Skip compilation for this component
 	const { register, formState, setValue, watch } = useFormContext() || {}
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
@@ -91,13 +91,10 @@ export const TextInput = ({
 	const shouldShowError = (error && (showError || isTouched || hasSubmitted)) || !!props.manualError
 
 	useEffect(() => {
-		if (useControlled && formValue !== undefined) {
+		if (formValue !== undefined) {
 			setFieldValue(formValue || '')
-		} else if (!useControlled) {
-			const propValue = value
-			setFieldValue(propValue || '')
 		}
-	}, [value, formValue, useControlled])
+	}, [value, formValue])
 
 	const handleChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,8 +195,8 @@ export const DollyTextInput = (props: TextInputProps) => (
 export const FormTextInput = ({ visHvisAvhuket = true, ...props }: TextInputProps) =>
 	visHvisAvhuket ? (
 		<Vis attributt={props.name}>
-			<FormFieldInput {...props} />
+			<DollyTextInput {...props} />
 		</Vis>
 	) : (
-		<FormFieldInput {...props} />
+		<DollyTextInput {...props} />
 	)

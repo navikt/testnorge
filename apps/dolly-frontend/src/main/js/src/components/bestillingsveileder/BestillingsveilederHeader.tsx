@@ -4,6 +4,7 @@ import { arrayToString } from '@/utils/DataFormatter'
 import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { BestillingsveilederContextType } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const BestillingsveilederHeader = ({
 	context,

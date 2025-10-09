@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @RestController
@@ -34,11 +37,14 @@ public class InfostripeController {
     private final MapperFacade mapperFacade;
 
     @GetMapping
-    @Operation(description = "Hent alle gyldige informasjonsmeldinger")
-    public Flux<InfostripeMelding> hentAlle() {
+    @Operation(description = "Hent alle gjeldende informasjonsmeldinger")
+    public Flux<InfostripeMelding> hentAlle(@RequestParam(required = false, defaultValue = "false", name = "inkluderFremtidige") boolean inkluderFremtidige) {
 
-        return informasjonsmeldingRepository.findGyldigMeldinger()
-                .map(melding -> mapperFacade.map(melding, InfostripeMelding.class));
+        return isTrue(inkluderFremtidige) ?
+                informasjonsmeldingRepository.findGjeldendeOgFremtidigeMeldinger()
+                        .map(melding -> mapperFacade.map(melding, InfostripeMelding.class)) :
+                informasjonsmeldingRepository.findGjeldendeMeldinger()
+                        .map(melding -> mapperFacade.map(melding, InfostripeMelding.class));
     }
 
     @PostMapping

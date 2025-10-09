@@ -111,19 +111,19 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 
 				<Selector>
 					<DollyTextInput
+						useControlled
 						name="brukernavn"
 						label="Navn"
 						size="large"
 						defaultValue={eksisterendeBrukernavn}
 						isDisabled={loading || !!eksisterendeBrukernavn}
-						useControlled
 					/>
 					<DollyTextInput
+						useControlled
 						name="epost"
 						label="Epost"
 						size="large"
 						isDisabled={loading}
-						useControlled
 					/>
 					<ButtonDiv>
 						<NavButton

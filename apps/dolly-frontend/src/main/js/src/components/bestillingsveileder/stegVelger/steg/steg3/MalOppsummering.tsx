@@ -76,6 +76,7 @@ export const MalOppsummering = ({
 					/>
 				) : (
 					<FormTextInput
+						useControlled
 						data-testid={TestComponentSelectors.INPUT_BESTILLING_MALNAVN}
 						name="malBestillingNavn"
 						size={'xlarge'}

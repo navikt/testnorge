@@ -134,7 +134,6 @@ export const FlyttPersonForm = ({
 					title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 					fraGruppe={gruppeId}
 				/>
-				<StyledErrorMessageWithFocus name="gruppeId" />
 			</GruppeVelger>
 			<PersonVelger>
 				<PersonKolonne>

@@ -2,7 +2,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import React, { SyntheticEvent } from 'react'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { adressePath, personPath } from '@/pages/dollySoek/SoekForm'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
 

@@ -1,4 +1,4 @@
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import React, { SyntheticEvent } from 'react'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
