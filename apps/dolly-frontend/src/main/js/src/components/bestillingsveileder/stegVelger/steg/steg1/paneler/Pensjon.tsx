@@ -55,6 +55,9 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 		if (harGyldigUforetrygdBestilling) {
 			ignoreKeys.push('uforetrygd')
 		}
+		if (!harGyldigApBestilling) {
+			ignoreKeys.push('alderspensjonNyUttaksgrad')
+		}
 		return ignoreKeys
 	}
 
