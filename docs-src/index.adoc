@@ -1,0 +1,33 @@
+= Testnav Dokumentasjon
+:doctype: book
+:toc: left
+:toclevels: 2
+:sectnums:
+:sectanchors:
+:icons: font
+:revdate: {docdate}
+
+== Overordnet
+
+include::temaer/overordnet/introduksjon.adoc[leveloffset=+1]
+
+== Data
+
+include::temaer/data/oversikt.adoc[leveloffset=+1]
+
+== Opplysningstyper
+
+include::temaer/opplysningstyper/oversikt.adoc[leveloffset=+1]
+
+== Integrasjon
+
+include::temaer/integrasjon/oversikt.adoc[leveloffset=+1]
+
+== Web
+
+include::temaer/web/oversikt.adoc[leveloffset=+1]
+
+== Appendix
+
+include::temaer/appendix/ressurser.adoc[leveloffset=+1]
+

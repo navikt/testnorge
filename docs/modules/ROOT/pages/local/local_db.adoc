@@ -1,0 +1,55 @@
+= Hvordan sette opp en lokal PSQL for egen testing
+
+Dette er en kort beskrivelse p hvordan du setter opp PSQL i Docker og fyller den med innhold hentet fra enten GCP eller FSS.
+
+pg_dump does not block other users accessing the database (readers or writers).
+
+== Eksportere fra GCP
+
+Eksempel: dolly-backend. Vi bruker NAIS CLI som avhenger av gcloud CLI. Eksport gjres med pg_dump.
+
+Logg inn:
+
+----
+gcloud auth login --update-adc
+----
+
+Sett opp proxy mot databasen definert i applikasjonen dolly-backend. La proxy kjre i eget vindu.
+
+----
+nais postgres proxy dolly-backend
+----
+
+Eksporter:
+
+----
+pg_dump --username=YOUR_NAV_EMAIL_ADDRESS --clean --create --no-owner --no-privileges --verbose --file=~/dump.sql testnav-dolly-backend
+----
+
+Flaggene clean create no-owner no-privileges gjr at skriptet kan kjres lokalt med postgres som eier.
+
+== Eksportere fra FSS
+
+Eksempel: dolly-backend-dev. Databasen definert i config.test.yml.
+
+----
+pg_dump --host=dev-pg.intern.nav.no --username=USERNAME_FROM_VAULT --clean --create --no-owner --no-privileges --verbose --exclude-table=idents_from_* --exclude-table=diff_idents --exclude-table=test --file=~/dump.sql dolly-test
+----
+
+Brukernavn og passord hentes fra Vault.
+
+== Sette opp PSQL i Docker (engangs)
+
+----
+docker run --name postgres -e POSTGRES_HOST_AUTH_METHOD=trust -p 5432:5432 postgres
+----
+
+Kan kjres uten --detach for  se logger.
+
+== Importere i PSQL
+
+Import med psql. Eksisterende database blir erstattet. Du kan ha flere databaser samtidig (testnav-dolly-backend og dolly-test).
+
+----
+psql --username=postgres --file=~/dump.sql
+----

@@ -1,0 +1,16 @@
+== Åpen kildekode Dolly
+
+Prosjektet Dolly er åpen kildekode.
+
+=== Repos
+Liste over relevante repos.
+
+=== Bidra
+Pull requests er velkomne.
+
+=== Referanser
+xref:applications/dolly/brukerveiledning.adoc[Brukerveiledning]
+
+xref:applications/dolly/retningslinjer.adoc[Retningslinjer]
+
+xref:applications/dolly/testnorge.adoc[Test-Norge]

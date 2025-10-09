@@ -1,0 +1,16 @@
+== Brukerveiledning Dolly
+
+Introduksjon til hvordan man bruker Dolly for testdatahåndtering.
+
+=== Pålogging
+Beskrivelse av pålogging.
+
+=== Opprette testdatagruppe
+Slik opprettes en ny gruppe.
+
+=== Bestille data
+Steg for å bestille data.
+
+=== Feilsøking
+Vanlige feil og løsninger.
+

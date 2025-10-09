@@ -1,0 +1,16 @@
+== Retningslinjer Dolly
+
+Retningslinjer for bruk og forvaltning av Dolly.
+
+=== Formål
+Hva Dolly skal brukes til.
+
+=== Personvern
+Retningslinjer for håndtering av data.
+
+=== Sikkerhet
+Tiltak og ansvar.
+
+=== Kodekvalitet
+Krav til endringer og PR-er.
+

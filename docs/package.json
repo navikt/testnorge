@@ -1,0 +1,19 @@
+{
+  "name": "testnav-docs",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Dokumentasjon bygget med Antora og Lunr-søk",
+  "scripts": {
+    "build": "antora antora-playbook.yml",
+    "clean": "rm -rf build/docs .antora-cache ui-bundle.zip",
+    "build:clean": "npm run clean && npm run build"
+  },
+  "dependencies": {
+    "@antora/cli": "^3.1.14",
+    "@antora/site-generator": "^3.1.14",
+    "@antora/lunr-extension": "^1.0.0-alpha.10"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

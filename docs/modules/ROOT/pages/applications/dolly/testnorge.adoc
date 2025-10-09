@@ -1,0 +1,15 @@
+== Test-Norge Dolly
+
+Oversikt over hvordan Dolly integrerer med Test-Norge.
+
+=== Formål
+Beskrivelse av hva Test-Norge gir Dolly.
+
+=== Dataflyt
+Kort om dataflyt mellom systemene.
+
+=== Tilganger
+Nødvendige roller og tilganger.
+
+=== Videre lesing
+xref:applications/dolly/brukerveiledning.adoc[Brukerveiledning]

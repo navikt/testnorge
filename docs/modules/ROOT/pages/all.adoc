@@ -1,0 +1,49 @@
+= Testnav Dokumentasjon (Single Page)
+:toc: left
+:toclevels: 3
+:sectnums:
+:sectanchors:
+
+[[introduksjon]]
+== Introduksjon
+
+include::index.adoc[leveloffset=+1]
+
+[[applikasjoner]]
+== Applikasjoner
+
+include::applications/index.adoc[leveloffset=+1]
+
+[[dolly]]
+=== Dolly
+
+[[brukerveiledning]]
+include::applications/dolly/brukerveiledning.adoc[leveloffset=+2]
+
+[[retningslinjer]]
+include::applications/dolly/retningslinjer.adoc[leveloffset=+2]
+
+[[github]]
+include::applications/dolly/github.adoc[leveloffset=+2]
+
+[[testnorge]]
+include::applications/dolly/testnorge.adoc[leveloffset=+2]
+
+[[endringsmelding]]
+=== Endringsmelding
+
+include::applications/endringsmelding.adoc[leveloffset=+2]
+
+[[oppsummeringsdokument]]
+=== Oppsummeringsdokument
+
+include::applications/oppsummeringsdokument.adoc[leveloffset=+2]
+
+[[lokal_utvikling]]
+== Lokal utvikling
+
+include::local/gcp_db.adoc[leveloffset=+2]
+include::local/local_db.adoc[leveloffset=+2]
+include::local/local_general.adoc[leveloffset=+2]
+include::local/local_opensearch.adoc[leveloffset=+2]
+include::local/local_secretmanager.adoc[leveloffset=+2]

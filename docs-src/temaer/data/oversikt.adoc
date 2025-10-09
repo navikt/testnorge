@@ -1,0 +1,15 @@
+=== Dataoversikt
+
+Denne delen beskriver datadomener og struktur knyttet til syntetiske testdata.
+
+==== Domener
+
+* Person
+* Organisasjon
+* Arbeidsforhold
+* Inntekt
+
+==== Retningslinjer
+
+Data skal være konsistente på tvers av tjenester og miljøer.
+

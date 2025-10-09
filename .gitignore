@@ -10,11 +10,15 @@
 *__screenshots__/
 
 # dependencies
-*node_modules/
+node_modules/
+docs/node_modules/
 
 # production
 *frontend/build/
 navikt/*/lib/
+
+docs/.antora-cache/
+docs/build/
 
 *.DS_Store
 
