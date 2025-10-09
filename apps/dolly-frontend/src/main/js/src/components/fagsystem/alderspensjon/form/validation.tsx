@@ -48,11 +48,13 @@ const validFomDateTest = (schema: Yup.DateSchema<Date, Yup.AnyObject>) =>
 		const sisteVedtak = Math.max(...allDates)
 		const sisteVedtakDato = new Date(sisteVedtak)
 		const nyUttaksgrad = context?.parent?.nyUttaksgrad
+
 		if (isBefore(valgtDato, sisteVedtakDato)) {
 			return context.createError({
 				message: `Automatisk vedtak av ny uttaksgrad ikke mulig for dato tidligere enn dato på forrige vedtak (${formatDate(sisteVedtakDato)}).`,
 			})
 		}
+
 		if (
 			differenceInCalendarMonths(valgtDato, sisteVedtakDato) < 12 &&
 			nyUttaksgrad !== 100 &&
