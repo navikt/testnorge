@@ -2,6 +2,7 @@ title: Testnav
 remote_theme: pmarsceill/just-the-docs
 logo: "assets/logo.ico"
 search_enabled: true
+baseurl: /testnorge
 aux_links:
   GitHub repository: https://github.com/navikt/testnorge
   Dolly selvbetjening: https://dolly.ekstern.dev.nav.no/

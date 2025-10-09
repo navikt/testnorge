@@ -140,7 +140,7 @@ opp av deg selv eller andre, og vil gi deg en ferdigutfylt bestilling med de sam
 For å lage en mal av en bestilling huker du av for «Lagre som mal» på siste steg i bestillingsprosessen. Gi malen et
 beskrivende navn, så den er lett å finne tilbake til senere.
 
-![Opprtte mal](assets/opprette_mal.png)
+![Opprette mal](assets/opprette_mal.png)
 
 For å bruke en mal, velger du dette i første steg når du oppretter personer. Huk av for «Maler», og velg om du ønsker å
 bruke en av dine egne maler eller en annen brukers mal. Du vil da få opp en liste med alle malene denne brukeren har
