@@ -114,8 +114,7 @@ public class PensjonforvalterHelper {
     public Mono<AlderspensjonVedtakDTO> hentForrigeVedtakAP(String ident, String miljoe, LocalDate fomDato) {
 
         return transaksjonMappingService.getTransaksjonMapping(ident, miljoe)
-                .filter(transaksjonMapping -> transaksjonMapping.getSystem().contains("AP") &&
-                        !transaksjonMapping.getSystem().contains("REVURDERING"))
+                .filter(transaksjonMapping -> transaksjonMapping.getSystem().contains("AP"))
                 .sort(Comparator.comparing(TransaksjonMapping::getDatoEndret))
                 .map(mapping -> {
                     try {
@@ -138,7 +137,8 @@ public class PensjonforvalterHelper {
 
                     var datoGradertUttak = new AtomicReference<>(vedtaker.getFirst().getFom());
                     vedtaker.stream()
-                            .filter(vedtak -> !vedtak.getUttaksgrad().equals(0) &&
+                            .filter(vedtak -> nonNull(vedtak.getUttaksgrad()) &&
+                                    !vedtak.getUttaksgrad().equals(0) &&
                                     !vedtak.getUttaksgrad().equals(100))
                             .forEach(vedtak -> datoGradertUttak.set(vedtak.getFom()));
 
