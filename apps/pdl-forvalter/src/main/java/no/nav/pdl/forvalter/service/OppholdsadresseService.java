@@ -112,14 +112,14 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         if (nonNull(oppholdsadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
-            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(oppholdsadresse, person.getIdent()) ?
-                    vegadresse.getMatrikkelId() : null);
+            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(),
+                    vegadresse.getMatrikkelId()));
             mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
             var matrikkeladresse =
                     adresseServiceConsumer.getMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
-            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(oppholdsadresse, person.getIdent()) ? matrikkeladresse.getMatrikkelId() : null);
+            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
             mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
