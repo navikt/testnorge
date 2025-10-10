@@ -1,12 +1,12 @@
-[[dolly_brukerveiledning]]
-== Brukerveiledning
+[[brukerveiledning]]
+==== Brukerveiledning
 
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data. I Dolly kan du opprette syntetiske personer med forskjellige egenskaper, og tilgjengeliggjøre dataene i valgte testmiljøer.
 
 Link til Dolly: https://dolly.ekstern.dev.nav.no/
 
-[[dolly_palogging]]
-=== Pålogging
+[[palogging]]
+===== Pålogging
 
 Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet. Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
 
@@ -18,8 +18,8 @@ Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f
 
 image::dolly/varslinger.png[Varslinger]
 
-[[dolly_opprette_gruppe]]
-=== Opprette en ny gruppe
+[[opprette_gruppe]]
+===== Opprette en ny gruppe
 
 For å opprette nye syntetiske personer i Dolly kan du enten lage en ny gruppe eller legge til personer i en eksisterende gruppe. En gruppe inneholder personer du eller teamet har opprettet.
 
@@ -48,8 +48,8 @@ image::dolly/opprettelse_prossess.png[Opprettelse prosess]
 . Angi verdier på egenskapene du valgte i steg 1.
 . Oppsummering og valg av hvilke testmiljø personene skal sendes til.
 
-[[dolly_velg_egenskaper]]
-==== Velg egenskaper
+[[velg_egenskaper]]
+====== Velg egenskaper
 
 image::dolly/velg_egenskaper.png[Velg egenskaper]
 
@@ -59,7 +59,7 @@ I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av f
 
 image::dolly/valgt_egenskap.png[Valgt egenskap]
 
-Team Dolly videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende. Savner du noe, meld inn på Slack-kanalen #Dolly.
+Team Dolly videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende. Savner du noe, meld inn på Slack-kanalen link:https://nav-it.slack.com/archives/CA3P9NGA2[#dolly].
 
 Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
 
@@ -73,34 +73,37 @@ image::dolly/opprettet_gruppe.png[Opprettet gruppe]
 
 Gruppen har fått nye personer og du kan jobbe med disse i relevante fagsystemer. Trykk på pil ned til høyre på raden for detaljinformasjon per person.
 
-[[dolly_leggtil_endre_person]]
-=== Legg til eller endre person
+[[leggtil_endre_person]]
+===== Legg til eller endre person
 
 For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisning for personen, trykk LEGG TIL/ENDRE og velg egenskaper.
 
-[[dolly_demo]]
-=== Demo
+[[demo]]
+===== Demo
 
-==== Opprette personer med tilfeldige verdier
+[[demo_opprette_tilfeldige]]
+====== Opprette personer med tilfeldige verdier
 
 ++++
 <video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov" controls="controls" style="max-width: 730px;"></video>
 ++++
 
-==== Opprette person med ønskede verdier
+[[demo_opprette_onskede]]
+====== Opprette person med ønskede verdier
 
 ++++
 <video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov" controls="controls" style="max-width: 730px;"></video>
 ++++
 
-==== Legg til eller endre person
+[[demo_endre_person]]
+====== Legg til eller endre person
 
 ++++
 <video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov" controls="controls" style="max-width: 730px;"></video>
 ++++
 
-[[dolly_maler]]
-=== Opprette og bruke maler
+[[maler]]
+===== Opprette og bruke maler
 
 Når du oppretter en ny person i Dolly kan du velge å lagre bestillingen som en mal. Malen kan senere hentes av deg selv eller andre og gir en ferdigutfylt bestilling.
 
@@ -114,14 +117,15 @@ image::dolly/bruk_mal.png[Bruk mal]
 
 Du kan endre verdier før innsending.
 
-==== Demo
+[[demo_maler]]
+====== Demo
 
 ++++
 <video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" controls="controls" style="max-width: 730px;"></video>
 ++++
 
-[[dolly_endringsmelding_seksjon]]
-=== Endringsmelding (status)
+[[endringsmelding_status]]
+==== Endringsmelding (status)
 
 Øverst i menyen kan du velge endringsmelding. Her kan du sende inn fødselsmelding eller dødsmelding til ønsket testmiljø. Dette er en separat applikasjon med egne tilganger.
 
@@ -134,15 +138,15 @@ For personer som ikke eksisterer i Dolly: Opprett person, velg Eksisterende pers
 
 image::dolly/endringsmelding.png[Endringsmelding]
 
-[[dolly_api_dok]]
-=== API-dokumentasjon
+[[api_dok]]
+==== API-dokumentasjon
 
 Øverst i menyen ligger en lenke til API dokumentasjon (Swagger) for tilgjengelige API-er.
 
 image::dolly/api_dok.png[API dok]
 
-[[dolly_feil_innlogging]]
-=== Feil ved innlogging
+[[feil_innlogging]]
+==== Feil ved innlogging
 
 image::dolly/logged_out_error.png[Tvungen utlogging]
 

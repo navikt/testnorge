@@ -1,10 +1,10 @@
 [[dolly_retningslinjer]]
-== Retningslinjer Dolly
+==== Retningslinjer Dolly
 
 Retningslinjer for bruk og forvaltning av Dolly, basert på overordnede retningslinjer for syntetiske testdata i NAV.
 
 [[dolly_retningslinjer_hensikt]]
-=== Hensikt, målgrupper og ansvar
+===== Hensikt, målgrupper og ansvar
 
 Syntetiske testdata skal brukes i utvikling og forvaltning av NAVs IT-løsninger. Ved unntaksvis bruk av produksjonsdata gjelder spesielle sikkerhetstiltak. Disse føringene er sentrale for å minimere og sikre kontroll med bruken av persondata:
 
@@ -25,7 +25,7 @@ Avgrensning (historisk):
 * Ny løsning for tilgangskontroll ved unntaksvis bruk av produksjonsdata vurderes av personvernprosjekter
 
 [[dolly_retningslinjer_bruk_syntetiske]]
-=== Bruk av syntetiske testdata i NAV
+===== Bruk av syntetiske testdata i NAV
 
 Syntetiske testdata skal brukes til utvikling og forvaltning, og er tilgjengelig som:
 
@@ -45,7 +45,7 @@ Kvalitetskontroller for å hindre reelle data i syntetiske miljøer:
 * Miljøoppsett som hindrer krysskobling mellom syntetiske og produksjonsnære miljøer
 
 [[dolly_retningslinjer_prinsipper_dolly]]
-=== Prinsipper for å lage egne testdata i Dolly
+===== Prinsipper for å lage egne testdata i Dolly
 
 Dolly brukes for å lage egne data til randtilfeller og spesialbehov. Brukere må følge disse prinsippene:
 
@@ -54,12 +54,8 @@ Dolly brukes for å lage egne data til randtilfeller og spesialbehov. Brukere m�
 * Del aldri påloggingsinformasjon
 * Kontakt oss på Slack‑kanalen #dolly for innspill, ønsker eller feil
 
-[[dolly_retningslinjer_unntak_produksjon]]
-=== Unntak og sikkerhetstiltak ved bruk av produksjonsdata
-
-Unntaksvis må produksjonsdata brukes. For å redusere risiko gjelder spesielle sikkerhetstiltak.
-
-==== Unntak fra bruk av syntetiske testdata
+[[dolly_retningslinjer_unntak]]
+===== Unntak fra bruk av syntetiske testdata
 
 Unntak vurderes pr produktteam i samarbeid med behandlingsansvarlig og gjelder typisk:
 
@@ -69,9 +65,10 @@ Unntak vurderes pr produktteam i samarbeid med behandlingsansvarlig og gjelder t
 * Større datakonvertering
 * System/område som snart skal saneres eller moderniseres
 
-==== Oversikt over sikkerhetstiltak
+[[dolly_retningslinjer_oversikt]]
+===== Oversikt over sikkerhetstiltak
 
-===== Begrensning i kopiering og bruk av produksjonsdata
+*Begrensning i kopiering og bruk av produksjonsdata*
 
 * Diskresjonskode 6 og 7 fjernes alltid ved kopi/uttrekk
 * Ansatte i NAV fjernes alltid
@@ -84,7 +81,7 @@ Ansvar produktteam:
 * Rutiner for maskering i overgangsperiode
 * Rutiner som hindrer bruk av egne eller familiemedlemmers data
 
-===== Midlertidig lagring og tilgangskontroll (ekstraordinære kopier)
+*Midlertidig lagring og tilgangskontroll (ekstraordinære kopier)*
 
 * Kopier utføres av dedikerte IT‑ressurser med logging
 * Kopier lagres på egne områder med tidsbegrenset tilgang
@@ -98,7 +95,7 @@ Ansvar produktteam:
 * Har felles filarkiv med tidsbegrenset lagring (normalt maks 30 dager)
 * Teamleder gir tilgang etter behov
 
-===== Tilgangskontroll og logging i skyggemiljøer
+*Tilgangskontroll og logging i skyggemiljøer*
 
 * Fagsystemtilganger som testbrukere via IDA
 * Systemtilganger følger produksjonsrutiner
@@ -110,7 +107,7 @@ Ansvar produktteam:
 * Teamleder har oversikt over hvem som har tilgang
 * Taushetserklæringer gjelder alle
 
-===== Kontroll av data fra eksterne samhandlere
+*Kontroll av data fra eksterne samhandlere*
 
 Integrasjonstester skal kun bruke syntetiske testdata. Andre tester skal bruke syntetiske stubber.
 
@@ -121,7 +118,7 @@ Ansvar produktteam:
 * Jevnlige stikkprøver av data fra eksterne samhandlere
 
 [[dolly_retningslinjer_hendelser]]
-=== Håndtering av hendelser og avvik
+===== Håndtering av hendelser og avvik
 
 Avvik (brudd på regler for testdata eller sikkerhetstiltak) håndteres slik:
 
