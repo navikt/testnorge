@@ -15,7 +15,7 @@ function hentSkjermingData(skjermingPath) {
 			{skjermingPath.egenAnsattDatoFom && (
 				<>
 					<TitleValue
-						title="Har skjerming (egen ansatt)"
+						title="Har skjerming (egenansatt)"
 						value={
 							skjermingPath.egenAnsattDatoTom &&
 							isBefore(new Date(skjermingPath.egenAnsattDatoTom), addDays(new Date(), -1))

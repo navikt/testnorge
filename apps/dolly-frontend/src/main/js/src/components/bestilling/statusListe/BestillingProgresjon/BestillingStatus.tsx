@@ -52,7 +52,7 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljost
 			statuser.some(
 				(status) =>
 					status?.melding?.toLowerCase()?.includes('tidsavbrudd') ||
-				    status?.melding?.toLowerCase()?.includes('avvik'),
+					status?.melding?.toLowerCase()?.includes('avvik'),
 			)
 		) {
 			return IconTypes.avvik

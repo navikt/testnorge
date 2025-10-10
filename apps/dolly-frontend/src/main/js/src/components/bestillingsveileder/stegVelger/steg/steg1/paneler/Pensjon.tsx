@@ -8,7 +8,10 @@ import {
 } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
-import { genInitialAlderspensjonVedtak } from '@/components/fagsystem/alderspensjon/form/initialValues'
+import {
+	genInitialAlderspensjonVedtak,
+	getInitialAlderspensjonNyUttaksgrad,
+} from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
@@ -52,6 +55,9 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 		if (harGyldigUforetrygdBestilling) {
 			ignoreKeys.push('uforetrygd')
 		}
+		if (!harGyldigApBestilling) {
+			ignoreKeys.push('alderspensjonNyUttaksgrad')
+		}
 		return ignoreKeys
 	}
 
@@ -88,6 +94,15 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 					disabled={harGyldigApBestilling}
 					title={harGyldigApBestilling ? 'Personen har allerede alderspensjon' : null}
 				/>
+				<Attributt
+					attr={sm.attrs.alderspensjonNyUttaksgrad}
+					disabled={!harGyldigApBestilling}
+					title={
+						!harGyldigApBestilling
+							? 'Personen må først ha fått innvilget alderspensjon for å kunne få ny uttaksgrad'
+							: null
+					}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
 				<Attributt
@@ -111,6 +126,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 		generertInntekt: 'pensjonforvalter.generertInntekt',
 		tp: 'pensjonforvalter.tp',
 		alderspensjon: 'pensjonforvalter.alderspensjon',
+		alderspensjonNyUttaksgrad: 'pensjonforvalter.alderspensjonNyUtaksgrad',
 		uforetrygd: 'pensjonforvalter.uforetrygd',
 		pensjonsavtale: 'pensjonforvalter.pensjonsavtale',
 		afpOffentlig: 'pensjonforvalter.afpOffentlig',
@@ -138,6 +154,14 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 				set(paths.alderspensjon, genInitialAlderspensjonVedtak)
 			},
 			remove: () => del(paths.alderspensjon),
+		},
+		alderspensjonNyUttaksgrad: {
+			label: 'Har ny uttaksgrad',
+			checked: has(paths.alderspensjonNyUttaksgrad),
+			add: () => {
+				set(paths.alderspensjonNyUttaksgrad, getInitialAlderspensjonNyUttaksgrad)
+			},
+			remove: () => del(paths.alderspensjonNyUttaksgrad),
 		},
 		uforetrygd: {
 			label: 'Har uføretrygd',

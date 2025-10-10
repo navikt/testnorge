@@ -190,6 +190,19 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 	}
 }
 
+export const useTransaksjonIdDataUtenMiljoe = (ident, system, harBestilling) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
+		fetcher,
+	)
+
+	return {
+		data: data,
+		loading: isLoading,
+		error: error,
+	}
+}
+
 export const useInstData = (ident, harInstBestilling) => {
 	const { instEnvironments } = useInstEnvironments()
 

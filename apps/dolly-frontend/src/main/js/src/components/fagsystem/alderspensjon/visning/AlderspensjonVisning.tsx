@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import { codeToNorskLabel, formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -10,19 +10,50 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import styled from 'styled-components'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { isSameDay } from 'date-fns'
 
 export const sjekkManglerApData = (apData) => {
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
 }
 
-const DataVisning = ({ data, miljo }) => {
-	const { navEnheter } = useNavEnheter()
-	const navEnhetLabel = navEnheter?.find(
-		(enhet) => enhet.value === data?.navEnhetId?.toString(),
-	)?.label
+const getNavEnhetLabel = (navEnheter, navEnhetId) => {
+	return navEnheter?.find((enhet) => enhet.value === navEnhetId?.toString())?.label ?? navEnhetId
+}
 
-	const { vedtakData, loading } = usePensjonVedtak(data?.fnr, miljo)
-	const vedtakAP = vedtakData?.find((vedtak) => vedtak?.sakType === 'AP')
+const StyledApVisning = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	margin-bottom: 10px;
+
+	&& {
+		.title-value_small {
+			flex: 0 1 141px;
+		}
+	}
+`
+
+const DataVisning = ({ data, miljo, apRevurderingData, apNyUttaksgradData, ident }) => {
+	const { navEnheter } = useNavEnheter()
+
+	const { vedtakData, loading } = usePensjonVedtak(ident, miljo)
+	const vedtakAP = vedtakData?.find(
+		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'FORSTEGANGSBEHANDLING',
+	)
+	const vedtakNyUttaksgrad = vedtakData?.filter(
+		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'UTTAKSGRADSENDRING',
+	)
+	const vedtakRevurdering = vedtakData?.filter(
+		(vedtak) => vedtak?.sakType === 'AP' && vedtak.kravtype === 'SIVILSTANDENDRING',
+	)
+
+	const getVedtakStatus = (vedtak) =>
+		vedtak?.sisteOppdatering?.includes('opprettet') ? 'Iverksatt' : vedtak?.sisteOppdatering
+
+	const revurdering = apRevurderingData?.filter((revurdering) => revurdering?.miljoe === miljo)
+	const nyUttaksgrad = apNyUttaksgradData?.filter((uttaksgrad) => uttaksgrad?.miljoe === miljo)
 
 	return (
 		<>
@@ -32,20 +63,13 @@ const DataVisning = ({ data, miljo }) => {
 					klar ennå, eller at opprettelse av alderspensjon har feilet.
 				</StyledAlert>
 			)}
-			<div className="person-visning_content">
-				<TitleValue
-					title="Vedtaksstatus"
-					value={
-						vedtakAP?.sisteOppdatering?.includes('opprettet')
-							? 'Iverksatt'
-							: vedtakAP?.sisteOppdatering
-					}
-				/>
+			<StyledApVisning>
+				<TitleValue title="Vedtaksstatus" value={getVedtakStatus(vedtakAP)} />
 				<TitleValue title="Iverksettelsesdato" value={formatDate(data?.iverksettelsesdato)} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
 				<TitleValue title="Attesterer" value={data?.attesterer} />
 				<TitleValue title="Uttaksgrad" value={`${data?.uttaksgrad}%`} />
-				<TitleValue title="NAV-kontor" value={navEnhetLabel || data?.navEnhetId} />
+				<TitleValue title="Nav-kontor" value={getNavEnhetLabel(navEnheter, data?.navEnhetId)} />
 
 				<TitleValue
 					title="Ektefelle/partners inntekt"
@@ -56,12 +80,75 @@ const DataVisning = ({ data, miljo }) => {
 					title="AFP privat resultat"
 					value={showLabel('afpPrivatResultat', data?.afpPrivatResultat)}
 				/>
-			</div>
+				{nyUttaksgrad?.length > 0 && (
+					<DollyFieldArray data={nyUttaksgrad} header="Ny uttaksgrad" nested>
+						{(nyUttaksgradItem, idx) => {
+							const transaksjonId = nyUttaksgradItem.transaksjonId
+							const vedtakNyUttaksgradItem = vedtakNyUttaksgrad?.find((v) =>
+								isSameDay(new Date(v?.fom), new Date(transaksjonId?.fom)),
+							)
+							return (
+								<div className="person-visning_content" style={{ marginBottom: 0 }} key={idx}>
+									<TitleValue
+										title="Vedtaksstatus"
+										value={getVedtakStatus(vedtakNyUttaksgradItem)}
+									/>
+									<TitleValue title="Ny uttaksgrad" value={transaksjonId.nyUttaksgrad + '%'} />
+									<TitleValue title="Dato f.o.m." value={formatDate(transaksjonId.fom)} />
+									<TitleValue title="Saksbehandler" value={transaksjonId.saksbehandler} />
+									<TitleValue title="Attesterer" value={transaksjonId.attesterer} />
+									<TitleValue
+										title="Nav-kontor"
+										value={getNavEnhetLabel(navEnheter, transaksjonId.navEnhetId)}
+									/>
+								</div>
+							)
+						}}
+					</DollyFieldArray>
+				)}
+				{revurdering?.length > 0 && (
+					<DollyFieldArray data={revurdering} header="Revurdering" nested>
+						{(revurderingItem, idx) => {
+							const transaksjonId = revurderingItem.transaksjonId
+							const vedtakRevurderingItem = vedtakRevurdering?.find((r) =>
+								isSameDay(new Date(r?.fom), new Date(transaksjonId?.fom)),
+							)
+							return (
+								<div className="person-visning_content" style={{ marginBottom: 0 }} key={idx}>
+									<TitleValue
+										title="Vedtaksstatus"
+										value={getVedtakStatus(vedtakRevurderingItem)}
+									/>
+									<TitleValue
+										title="Revurderingsårsak"
+										value={codeToNorskLabel(transaksjonId.revurderingArsakType)}
+									/>
+									<TitleValue title="Dato f.o.m." value={formatDate(transaksjonId.fom)} />
+									<TitleValue title="Saksbehandler" value={transaksjonId.saksbehandler} />
+									<TitleValue title="Attesterer" value={transaksjonId.attesterer} />
+									<TitleValue
+										title="Nav-kontor"
+										value={getNavEnhetLabel(navEnheter, transaksjonId.navEnhetId)}
+									/>
+								</div>
+							)
+						}}
+					</DollyFieldArray>
+				)}
+			</StyledApVisning>
 		</>
 	)
 }
 
-export const AlderspensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
+export const AlderspensjonVisning = ({
+	data,
+	apRevurderingData,
+	apNyUttaksgradData,
+	loading,
+	bestillingIdListe,
+	tilgjengeligMiljoe,
+	ident,
+}) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'PEN_AP')
 
 	if (loading) {
@@ -96,7 +183,11 @@ export const AlderspensjonVisning = ({ data, loading, bestillingIdListe, tilgjen
 					forsteMiljo={forsteMiljo}
 					data={filteredData ? filteredData : data}
 				>
-					<DataVisning />
+					<DataVisning
+						apRevurderingData={apRevurderingData}
+						apNyUttaksgradData={apNyUttaksgradData}
+						ident={ident}
+					/>
 				</MiljoTabs>
 			)}
 		</ErrorBoundary>

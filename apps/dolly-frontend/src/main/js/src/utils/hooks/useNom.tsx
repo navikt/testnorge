@@ -14,7 +14,7 @@ export const useNomData = (ident: string) => {
 			})
 			return res.data
 		},
-		{ errorRetryCount: 1, revalidateOnFocus: false },
+		{ errorRetryCount: 0, revalidateOnFocus: false },
 	)
 
 	return {

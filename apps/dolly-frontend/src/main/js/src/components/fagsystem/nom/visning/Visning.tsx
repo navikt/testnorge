@@ -29,7 +29,7 @@ export const NavAnsattVisning = ({ nomData, nomLoading, skjermingData }) => {
 				)}
 				{skjermingData && (
 					<>
-						<h4 style={{ marginTop: nomData ? '15px' : '0px' }}>Skjerming (egen ansatt)</h4>
+						<h4 style={{ marginTop: nomData ? '15px' : '0px' }}>Skjerming (egenansatt)</h4>
 						<div className="person-visning_content">
 							<SkjermingVisning data={skjermingData} />
 						</div>

@@ -1,6 +1,7 @@
-import { ifPresent, messages, requiredNumber } from '@/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredNumber } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import { isAfter } from 'date-fns'
+import { differenceInCalendarMonths, isAfter, isBefore } from 'date-fns'
+import { formatDate } from '@/utils/DataFormatter'
 
 export const validation = {
 	alderspensjon: ifPresent(
@@ -28,6 +29,53 @@ export const validation = {
 			),
 			inkluderAfpPrivat: Yup.boolean().nullable(),
 			afpPrivatResultat: Yup.string().nullable(),
+		}),
+	),
+}
+
+const validFomDateTest = (schema: Yup.DateSchema<Date, Yup.AnyObject>) =>
+	schema.test('gyldig-fom-dato', 'Feil', (value, context) => {
+		if (value == null) return true
+		const valgtDato = new Date(value)
+		const apDates = context?.options?.context?.personFoerLeggTil?.alderspensjon?.map(
+			(ap: any) => ap.data?.iverksettelsesdato,
+		)
+		const apNyUttaksgradDates =
+			context?.options?.context?.personFoerLeggTil?.alderspensjonNyUttaksgrad?.map(
+				(ap: any) => ap.transaksjonId?.fom,
+			)
+		const allDates = apDates.concat(apNyUttaksgradDates)?.map((dateString) => new Date(dateString))
+		const sisteVedtak = Math.max(...allDates)
+		const sisteVedtakDato = new Date(sisteVedtak)
+		const nyUttaksgrad = context?.parent?.nyUttaksgrad
+
+		if (isBefore(valgtDato, sisteVedtakDato)) {
+			return context.createError({
+				message: `Automatisk vedtak av ny uttaksgrad ikke mulig for dato tidligere enn dato på forrige vedtak (${formatDate(sisteVedtakDato)}).`,
+			})
+		}
+
+		if (
+			differenceInCalendarMonths(valgtDato, sisteVedtakDato) < 12 &&
+			nyUttaksgrad !== 100 &&
+			nyUttaksgrad !== 0
+		) {
+			return context.createError({
+				message: `Automatisk vedtak med gradert uttak ikke mulig oftere enn hver 12 måned. Dato forrige vedtak: ${formatDate(sisteVedtakDato)}.`,
+			})
+		}
+		return true
+	})
+
+export const validationNyUttaksgrad = {
+	alderspensjonNyUtaksgrad: ifPresent(
+		'$pensjonforvalter.alderspensjonNyUtaksgrad',
+		Yup.object({
+			nyUttaksgrad: requiredNumber.typeError(messages.required),
+			fom: validFomDateTest(requiredDate),
+			saksbehandler: Yup.string().nullable(),
+			attesterer: Yup.string().nullable(),
+			navEnhetId: Yup.string().nullable(),
 		}),
 	),
 }
