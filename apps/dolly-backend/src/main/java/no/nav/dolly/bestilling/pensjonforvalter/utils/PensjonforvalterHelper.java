@@ -114,7 +114,8 @@ public class PensjonforvalterHelper {
     public Mono<AlderspensjonVedtakDTO> hentForrigeVedtakAP(String ident, String miljoe, LocalDate fomDato) {
 
         return transaksjonMappingService.getTransaksjonMapping(ident, miljoe)
-                .filter(transaksjonMapping -> transaksjonMapping.getSystem().contains("AP"))
+                .filter(transaksjonMapping -> transaksjonMapping.getSystem().contains("AP") &&
+                        !transaksjonMapping.getSystem().contains("REVURDERING"))
                 .sort(Comparator.comparing(TransaksjonMapping::getDatoEndret))
                 .map(mapping -> {
                     try {

@@ -176,9 +176,6 @@ public class PensjonPersondataService {
         if (isUpdateEndre && isNull(request.getFom())) {
             message = "Automatisk revurderingsvedtak ikke mulig når dato for sivilstandsendring mangler.";
 
-        } else if (isUpdateEndre && isNull(response.getFom())) {
-            message = "Automatisk revurderingsvedtak ikke mulig da tidligere vedtak ikke funnet.";
-
         } else if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
             message = "Automatisk revurderingsvedtak ikke mulig når dato for sivilstandsendring er før dato på forrige vedtak.";
 
