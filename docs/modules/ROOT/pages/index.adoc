@@ -1,14 +1,375 @@
-= Testnav Monorepo
+= Testnav Dokumentasjon
+:sectnums:
+:sectanchors:
+:sectnumlevels: 4
+
+[[introduksjon]]
+== Introduksjon
 
 Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjoner som støtter tjenester knyttet til Dolly og syntetiske testdata.
 
-== Hurtiglenker
+=== Om
 
-* xref:applications/dolly/brukerveiledning.adoc[Brukerveiledning]
-* xref:applications/dolly/retningslinjer.adoc[Retningslinjer]
-* xref:applications/dolly/github.adoc[Åpen kildekode]
-* xref:applications/dolly/testnorge.adoc[Test-Norge]
+Dette er en samlet dokumentasjon for applikasjoner, retningslinjer og støtteverktøy relatert til syntetiske testdata i NAV. Spesisfikke søke kan gjøres i søkefelt øverst til høyre.
 
-== Om
+[[dolly]]
+== Dolly
 
-Dette området samler dokumentasjon for applikasjoner, retningslinjer og støtteverktøy relatert til syntetiske testdata i NAV.
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
+
+[[brukerveiledning]]
+=== Brukerveiledning
+
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data. I Dolly kan du opprette syntetiske personer med forskjellige egenskaper, og tilgjengeliggjøre dataene i valgte testmiljøer.
+
+Link til Dolly: https://dolly.ekstern.dev.nav.no/
+
+[[palogging]]
+==== Pålogging
+
+Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet. Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
+
+Det første som møter deg når du har logget inn er en startside med noen menyvalg. Siden åpnes automatisk med en oversikt over dine grupper.
+
+image::dolly/startside.png[Startside]
+
+Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter. Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
+
+image::dolly/varslinger.png[Varslinger]
+
+[[opprette_gruppe]]
+==== Opprette en ny gruppe
+
+For å opprette nye syntetiske personer i Dolly kan du enten lage en ny gruppe eller legge til personer i en eksisterende gruppe. En gruppe inneholder personer du eller teamet har opprettet.
+
+Under Mine vises grupper opprettet av deg selv. Under Alle vises dine og andres grupper. En god regel er at du ikke endrer andres grupper uten avtale med eieren.
+
+Trykk på Ny gruppe og velg navn og beskriv hensikten med gruppen. Når hensikten er beskrevet er det enklere for både deg selv og eventuelt andre du samarbeider med å forstå hva denne gruppen brukes til. Trykk Opprett og gå til gruppe.
+
+image::dolly/testdatagrupper.png[Testdatagrupper]
+
+Inne på gruppen har du en oversikt over alle personene som tilhører gruppen og hvilke egenskaper de har. Her kan du også legge til nye personer.
+
+image::dolly/ny_testdatagruppe.png[Ny testdatagruppe]
+
+Det kommer opp en boks der du får to valg:
+
+. Opprette helt nye personer (Dolly finner et ubrukt fnr, dnr eller bost)
+. Opprette fra eksisterende fnr, dnr eller bost (identen kan ikke finnes i prod eller i Dolly)
+
+Vi velger å opprette nye og angir at vi ønsker 10 personer i bestillingen.
+
+Opprettelse av personer følger en prosess med tre steg:
+
+image::dolly/opprettelse_prossess.png[Opprettelse prosess]
+
+. Velg hvilke egenskaper du selv ønsker å bestemme. De resterende egenskapene vil systemet sette.
+. Angi verdier på egenskapene du valgte i steg 1.
+. Oppsummering og valg av hvilke testmiljø personene skal sendes til.
+
+[[velg_egenskaper]]
+===== Velg egenskaper
+
+image::dolly/velg_egenskaper.png[Velg egenskaper]
+
+Det finnes en lang rekke områder med egenskaper du kan velge. Trykk på pil ned til høyre i boksen for å ekspandere hvert område. I de fleste tilfeller er det kun et utvalg egenskaper som er nødvendig å definere for testscenariene dine. Dolly tildeler verdier til egenskaper du ikke krysser av for.
+
+I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av for følgende egenskaper:
+
+image::dolly/valgt_egenskap.png[Valgt egenskap]
+
+Team Dolly videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende. Savner du noe, meld inn på Slack-kanalen link:https://nav-it.slack.com/archives/CA3P9NGA2[#dolly].
+
+Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
+
+For mer informasjon om NAVs testmiljøer se: https://confluence.adeo.no/pages/viewpage.action?pageId=305341700
+
+image::dolly/miljoe_valg.png[Miljøvalg]
+
+Velg miljø og trykk Opprett.
+
+image::dolly/opprettet_gruppe.png[Opprettet gruppe]
+
+Gruppen har fått nye personer og du kan jobbe med disse i relevante fagsystemer. Trykk på pil ned til høyre på raden for detaljinformasjon per person.
+
+[[leggtil_endre_person]]
+==== Legg til eller endre person
+
+For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisning for personen, trykk LEGG TIL/ENDRE og velg egenskaper.
+
+[[demo]]
+==== Demo
+
+[[demo_opprette_tilfeldige]]
+===== Opprette personer med tilfeldige verdier
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[demo_opprette_onskede]]
+===== Opprette person med ønskede verdier
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[demo_endre_person]]
+===== Legg til eller endre person
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[maler]]
+==== Opprette og bruke maler
+
+Når du oppretter en ny person i Dolly kan du velge å lagre bestillingen som en mal. Malen kan senere hentes av deg selv eller andre og gir en ferdigutfylt bestilling.
+
+For å lage en mal huk av for Lagre som mal på siste steg i prosessen. Gi malen et beskrivende navn.
+
+image::dolly/opprette_mal.png[Opprette mal]
+
+For å bruke en mal: i første steg huk av for Maler, velg bruker (deg selv eller annen) og deretter ønsket mal.
+
+image::dolly/bruk_mal.png[Bruk mal]
+
+Du kan endre verdier før innsending.
+
+[[demo_maler]]
+===== Demo
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[endringsmelding_status]]
+=== Endringsmelding (status)
+
+Øverst i menyen kan du velge endringsmelding. Her kan du sende inn fødselsmelding eller dødsmelding til ønsket testmiljø. Dette er en separat applikasjon med egne tilganger.
+
+Merk: Kun én person per melding. Funksjonaliteten vil bli erstattet; bruk Dolly-funksjonene for fødsels- og dødsmeldinger:
+
+* Fødselsmelding: Gå til gruppe, finn forelder, velg Legg til/endre og kryss av Barn eller bruk Legg til relasjoner.
+* Dødsmelding: Gå til gruppe, velg Legg til/endre og kryss av Dødsdato.
+
+For personer som ikke eksisterer i Dolly: Opprett person, velg Eksisterende person og skriv inn ident.
+
+image::dolly/endringsmelding.png[Endringsmelding]
+
+[[api_dok]]
+=== API-dokumentasjon
+
+Øverst i menyen ligger en lenke til API dokumentasjon (Swagger) for tilgjengelige API-er.
+
+image::dolly/api_dok.png[API dok]
+
+[[feil_innlogging]]
+=== Feil ved innlogging
+
+image::dolly/logged_out_error.png[Tvungen utlogging]
+
+Hvis du gjentatte ganger blir logget ut eller ikke kommer inn kan det skyldes cookies.
+
+* Manuell logout: https://dolly.intern.dev.nav.no/oauth2/logout
+* Tøm cookies i nettleser (se video under)
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/159910685-f4bcbe86-c856-459c-a220-b242c46a59cd.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[dolly_retningslinjer]]
+=== Retningslinjer Dolly
+
+Retningslinjer for bruk og forvaltning av Dolly, basert på overordnede retningslinjer for syntetiske testdata i NAV.
+
+[[dolly_retningslinjer_hensikt]]
+==== Hensikt, målgrupper og ansvar
+
+Syntetiske testdata skal brukes i utvikling og forvaltning av NAVs IT-løsninger. Ved unntaksvis bruk av produksjonsdata gjelder spesielle sikkerhetstiltak. Disse føringene er sentrale for å minimere og sikre kontroll med bruken av persondata:
+
+* Syntetiske testdata kan ikke kobles til reelle personer og er ikke personopplysninger
+* Produksjonsdata kan direkte eller indirekte knyttes til en enkeltperson og må håndteres som personopplysninger som må beskyttes gjennom tilgangskontroll, maskering, logging m.m.
+
+Retningslinjene gjelder for alle ansatte og eksterne som er involvert i utvikling av NAVs IT‑løsninger. Følgende har et spesielt ansvar:
+
+* Teamleder i produktteam har ansvaret for at retningslinjene følges av interne og eksterne ressurser i teamet
+* IT Data og Innsikt har ansvaret for basisløsninger for syntetiske testdata
+* Sikkerhetsseksjonen har overordnet ansvar for bruk av testdata og informasjonssikkerhet
+
+Retningslinjene er operative rutiner til styringssystem for både sikkerhet og personvern. Sikkerhetsseksjonen har ansvaret for vedlikehold; endringsbehov kan meldes dit.
+
+Avgrensning (historisk):
+
+* NAV utviklet løsning for syntetiske testdata i 2018–2019. Syntetiske data blir gradvis tilgjengelig pr område/system. For områder der syntetiske data ikke er tilgjengelig vil sikkerhetsregler for unntak gjelde
+* Ny løsning for tilgangskontroll ved unntaksvis bruk av produksjonsdata vurderes av personvernprosjekter
+
+[[dolly_retningslinjer_bruk_syntetiske]]
+==== Bruk av syntetiske testdata i NAV
+
+Syntetiske testdata skal brukes til utvikling og forvaltning, og er tilgjengelig som:
+
+* Mini‑Norge (befolkningsutvalg) i syntetiske utviklings-/testmiljøer
+* Egendefinerte data fra Dolly selvbetjening (randtilfeller og spesielle testbehov). Dolly sikrer at personer og egenskaper er syntetiske
+* Syntetiske datasett for integrasjonstest med eksterne samhandlere
+* Tekniske stubber som simulerer eksterne kilder til volum- og basistesting
+
+Syntetiske testdata er ikke personopplysninger og kan brukes uten ekstra sikkerhetstiltak.
+
+Kvalitetskontroller for å hindre reelle data i syntetiske miljøer:
+
+* Navnepool med fiktive navn
+* Identpool med identer som teknisk sjekkes mot reelle identiteter i Folkeregisteret
+* Jevnlige tekniske sjekker av syntetiske miljøer (fiktive navn og identer)
+* Manuelle stikkprøver av testdata fra eksterne samhandlere
+* Miljøoppsett som hindrer krysskobling mellom syntetiske og produksjonsnære miljøer
+
+[[dolly_retningslinjer_prinsipper_dolly]]
+==== Prinsipper for å lage egne testdata i Dolly
+
+Dolly brukes for å lage egne data til randtilfeller og spesialbehov. Brukere må følge disse prinsippene:
+
+* Ikke ta utgangspunkt i reelle personer – alle verdier må velges uavhengig og tilfeldig
+* Ikke gjør endringer eller slett andres grupper/personer uten avtale
+* Del aldri påloggingsinformasjon
+* Kontakt oss på Slack‑kanalen #dolly for innspill, ønsker eller feil
+
+[[dolly_retningslinjer_unntak]]
+==== Unntak fra bruk av syntetiske testdata
+
+Unntak vurderes pr produktteam i samarbeid med behandlingsansvarlig og gjelder typisk:
+
+* Kritiske produksjonsfeil der produksjonsdata er nødvendig for rekonstruksjon
+* Korrigering av datakvalitet
+* Spesialtester/engangstilfeller med komplekse verdikjeder
+* Større datakonvertering
+* System/område som snart skal saneres eller moderniseres
+
+[[dolly_retningslinjer_oversikt]]
+==== Oversikt over sikkerhetstiltak
+
+*Begrensning i kopiering og bruk av produksjonsdata*
+
+* Diskresjonskode 6 og 7 fjernes alltid ved kopi/uttrekk
+* Ansatte i NAV fjernes alltid
+* For Bisys: brukere bosatt i utlandet og dekket av paragraf 19 tas ut manuelt
+* Maskering brukes i overgangsperioder
+
+Ansvar produktteam:
+
+* Teknisk støtte for å fjerne kode 6/7 og ansatte ved kopi
+* Rutiner for maskering i overgangsperiode
+* Rutiner som hindrer bruk av egne eller familiemedlemmers data
+
+*Midlertidig lagring og tilgangskontroll (ekstraordinære kopier)*
+
+* Kopier utføres av dedikerte IT‑ressurser med logging
+* Kopier lagres på egne områder med tidsbegrenset tilgang
+* Filer lagres i filarkiv med tilgangskontroll (tidsbegrenset)
+* Ved distribusjon (e‑post, minnepinne) skal innhold krypteres og avgrenses
+
+Ansvar produktteam:
+
+* Behov vurderes per sak med behandlingsansvarlig
+* Bestiller kopi via dedikerte roller
+* Har felles filarkiv med tidsbegrenset lagring (normalt maks 30 dager)
+* Teamleder gir tilgang etter behov
+
+*Tilgangskontroll og logging i skyggemiljøer*
+
+* Fagsystemtilganger som testbrukere via IDA
+* Systemtilganger følger produksjonsrutiner
+* Logging på både fagsystem og systembrukere
+
+Ansvar produktteam:
+
+* Teamleder gir føringer for bruk av tilganger
+* Teamleder har oversikt over hvem som har tilgang
+* Taushetserklæringer gjelder alle
+
+*Kontroll av data fra eksterne samhandlere*
+
+Integrasjonstester skal kun bruke syntetiske testdata. Andre tester skal bruke syntetiske stubber.
+
+Ansvar produktteam:
+
+* Avtaler med eksterne samhandlere om miljø og testdata
+* Faste syntetiske datasett for integrasjonstester
+* Jevnlige stikkprøver av data fra eksterne samhandlere
+
+[[dolly_retningslinjer_hendelser]]
+==== Håndtering av hendelser og avvik
+
+Avvik (brudd på regler for testdata eller sikkerhetstiltak) håndteres slik:
+
+. Følg prosess for håndtering av hendelser
+. Meld brudd på informasjonssikkerhet og personvern i ASYS for videre oppfølging
+
+[[dolly_github]]
+=== Åpen kildekode Dolly
+
+Dolly er åpen kildekode og lagret i GitHub.
+
+[[dolly_github_repos]]
+==== Repos
+Se kildekode og relaterte prosjekter:
+
+https://github.com/navikt/testnorge/tree/master/apps/dolly-frontend/
+
+[[dolly_github_bidra]]
+==== Bidra
+Pull requests er velkomne. Opprett gjerne issue med forslag eller feil før PR.
+
+[[dolly_github_referanser]]
+==== Referanser
+xref:index.adoc#brukerveiledning[Brukerveiledning]
+
+xref:index.adoc#dolly_retningslinjer[Retningslinjer]
+
+xref:index.adoc#dolly_testnorge[Test-Norge]
+
+[[dolly_testnorge]]
+=== Test-Norge
+
+Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i forbindelse med nytt folkeregister. Populasjonen er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv. Populasjonen har syntetiske fnr/dnr hvor det er lagt til 80 på måned. Hele Test-Norge populasjonen er tilgjengelig i PDL.
+
+[[dolly_testnorge_sok_import]]
+==== Søk og import
+
+Under Test-Norge fanen i Dolly er det mulig å søke opp Test-Norge identiteter i Dolly, velge identiteter man ønsker å ta i bruk, velge ekstra informasjon som skal legges til og importere dem inn i en ønsket gruppe i Dolly. Videoen under viser en demo.
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/174292316-cc1b2c47-b855-4390-b77f-66bc8e426a39.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor brukes: https://www.skatteetaten.no/skjema/testdata
+Tenor er ikke koblet opp mot Dolly, men identiteter funnet i Tenor kan søkes opp i Dolly og importeres til en ønsket gruppe.
+
+[[dolly_testnorge_import_partner]]
+==== Import av partner
+
+Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd. Hvis valgt person har en partner som ikke allerede er valgt kan man huke av for IMPORT MED PARTNER for å inkludere den. Bildet under viser et tilfelle hvor import av partner er valgt.
+
+image::dolly/import_partner.png[Import med partner]
+
+Det er også mulig å importere partner etter opprinnelig import. Dette kan gjøres direkte i personvisning. Videoen under viser en demo.
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/169964561-975783ea-3279-467b-8448-7aba3fecbac0.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
+
+[[dolly_testnorge_idporten]]
+==== ID-Porten
+
+Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident.
+
+[[lokal_utvikling]]
+== Lokal utvikling
+
+include::local/gcp_db.adoc[leveloffset=+2]
+include::local/local_db.adoc[leveloffset=+2]
+include::local/local_general.adoc[leveloffset=+2]
+include::local/local_opensearch.adoc[leveloffset=+2]
+include::local/local_secretmanager.adoc[leveloffset=+2]

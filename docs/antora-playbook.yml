@@ -1,6 +1,6 @@
 site:
   title: Testnav Dokumentasjon
-  start_page: testnav::all.adoc
+  start_page: testnav::index.adoc
 content:
   sources:
     - url: ..

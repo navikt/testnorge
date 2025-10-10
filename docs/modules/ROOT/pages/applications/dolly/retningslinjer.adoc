@@ -124,3 +124,5 @@ Avvik (brudd på regler for testdata eller sikkerhetstiltak) håndteres slik:
 
 . Følg prosess for håndtering av hendelser
 . Meld brudd på informasjonssikkerhet og personvern i ASYS for videre oppfølging
+
+// Flyttet til index.adoc

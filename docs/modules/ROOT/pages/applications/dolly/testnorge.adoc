@@ -34,3 +34,8 @@ NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eve
 ===== ID-Porten
 
 Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident.
+
+[[dolly_testnorge_eksterne_tjenester]]
+===== Eksterne tjenester
+
+Flyttet til index.adoc

@@ -1,34 +1,3 @@
-= Testnav Dokumentasjon (Single Page)
-:toc: macro
-:toclevels: 6
-:sectnums:
-:sectanchors:
+= Testnav Dokumentasjon
 
-// Page-level TOC rendered inline (optional)
-toc::[]
-
-[[introduksjon]]
-== Introduksjon
-
-include::index.adoc[leveloffset=+2]
-
-[[dolly]]
-== Dolly
-
-Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
-
-include::applications/dolly/brukerveiledning.adoc[leveloffset=-1]
-include::applications/dolly/retningslinjer.adoc[leveloffset=-1]
-
-include::applications/dolly/github.adoc[leveloffset=-1]
-
-include::applications/dolly/testnorge.adoc[leveloffset=-1]
-
-[[lokal_utvikling]]
-== Lokal utvikling
-
-include::local/gcp_db.adoc[leveloffset=+2]
-include::local/local_db.adoc[leveloffset=+2]
-include::local/local_general.adoc[leveloffset=+2]
-include::local/local_opensearch.adoc[leveloffset=+2]
-include::local/local_secretmanager.adoc[leveloffset=+2]
+Denne siden er flyttet. Bruk xref:index.adoc[Testnav Dokumentasjon].

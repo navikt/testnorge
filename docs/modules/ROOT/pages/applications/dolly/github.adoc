@@ -20,3 +20,6 @@ xref:applications/dolly/brukerveiledning.adoc[Brukerveiledning]
 xref:applications/dolly/retningslinjer.adoc[Retningslinjer]
 
 xref:applications/dolly/testnorge.adoc[Test-Norge]
+
+
+// Flyttet til index.adoc

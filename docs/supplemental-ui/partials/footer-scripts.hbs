@@ -1,0 +1,51 @@
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  function normalizeId(id){return id?id.replace(/^#/,''):''}
+  function findInitialTargetId(){
+    var hash=normalizeId(location.hash)
+    if(hash) return hash
+    var firstH2=document.querySelector('.doc h2[id]')
+    if(firstH2) return firstH2.id
+    var firstAnchor=document.querySelector('.doc [id]')
+    return firstAnchor?firstAnchor.id:''
+  }
+  function clearClasses(){
+    document.querySelectorAll('.nav .nav-link.is-active-leaf').forEach(function(el){el.classList.remove('is-active-leaf')})
+    document.querySelectorAll('.nav .nav-item.is-active-temp').forEach(function(el){el.classList.remove('is-active-temp','is-active')})
+  }
+  function expandAncestors(li){
+    while(li){
+      if(!li.classList.contains('is-active')) li.classList.add('is-active','is-active-temp')
+      li=li.parentElement?li.parentElement.closest('.nav-item'):null
+    }
+  }
+  function activate(id){
+    clearClasses()
+    if(!id) return
+    var link=document.querySelector('.nav .nav-link[href="#'+CSS.escape(id)+'"]')
+    if(!link){return}
+    link.classList.add('is-active-leaf')
+    var li=link.closest('.nav-item')
+    expandAncestors(li)
+  }
+  function syncNumbers(){
+    document.querySelectorAll('.nav .nav-link[href^="#"]').forEach(function(a){
+      var id=normalizeId(a.getAttribute('href'))
+      if(!id) return
+      var h=document.getElementById(id)
+      if(!h) return
+      var txt=h.textContent.trim()
+      if(/^[0-9]+(\.[0-9]+)*\./.test(txt)) a.textContent=txt
+    })
+  }
+  syncNumbers()
+  activate(findInitialTargetId())
+  window.addEventListener('hashchange',function(){activate(normalizeId(location.hash))})
+  document.querySelectorAll('.nav .nav-link[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var id=normalizeId(a.getAttribute('href'))
+      if(id){setTimeout(function(){activate(id)},0)}
+    })
+  })
+})
+</script>

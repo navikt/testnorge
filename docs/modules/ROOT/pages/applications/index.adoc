@@ -1,12 +1,12 @@
 = Applikasjoner
 
-Oversikt over tilgjengelige applikasjoner i Testnav.
+Denne siden er forenklet. Full oversikt finnes på xref:index.adoc[Testnav Dokumentasjon].
 
 == Dolly
 
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
 
 * xref:applications/dolly/brukerveiledning.adoc[Brukerveiledning]
-* xref:applications/dolly/retningslinjer.adoc[Retningslinjer for bruk av testdata i NAV]
+* xref:applications/dolly/retningslinjer.adoc[Retningslinjer]
 * xref:applications/dolly/github.adoc[Åpen kildekode]
 * xref:applications/dolly/testnorge.adoc[Test-Norge]
