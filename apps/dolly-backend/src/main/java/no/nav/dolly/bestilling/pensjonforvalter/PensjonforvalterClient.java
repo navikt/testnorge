@@ -92,6 +92,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Flux<String> getErrors(Set<String> miljoer, Throwable throwable) {
 
+        log.error("Feil ved kall til Pensjonforvalter: {}", throwable.getMessage(), throwable);
         return Flux.fromIterable(miljoer)
                 .map(miljo -> "%s%s:Feil= %s".formatted(ANNET, miljo,
                         encodeStatus(WebClientError.describe(throwable).getMessage())));
