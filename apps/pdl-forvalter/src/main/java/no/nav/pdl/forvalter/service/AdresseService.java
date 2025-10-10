@@ -42,7 +42,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
     }
 
     protected static void validateBruksenhet(String bruksenhet) {
-        if (!bruksenhet.matches("[HULK][0-9]{4}")) {
+        if (!bruksenhet.matches("[HULK]\\d{4}")) {
             throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
         }
     }
@@ -161,8 +161,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         return OUT_OF_BOUND;
     }
 
-    protected boolean isIdSupported(AdresseDTO adresse, String ident) {
+    protected String getMatrikkelId(AdresseDTO adresse, String ident, String matrikkelId) {
 
-        return isNotNpidIdent(ident) && !isTestnorgeIdent(ident) && !adresse.isPdlMaster();
+        return isNotNpidIdent(ident) && !isTestnorgeIdent(ident) && !adresse.isPdlMaster() ? matrikkelId : null;
     }
 }
