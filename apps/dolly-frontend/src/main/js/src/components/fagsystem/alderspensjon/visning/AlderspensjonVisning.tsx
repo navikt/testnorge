@@ -53,7 +53,7 @@ const DataVisning = ({ data, miljo, apRevurderingData, apNyUttaksgradData, ident
 		vedtak?.sisteOppdatering?.includes('opprettet') ? 'Iverksatt' : vedtak?.sisteOppdatering
 
 	const revurdering = apRevurderingData?.filter((revurdering) => revurdering?.miljoe === miljo)
-	const nyUttaksgrad = apNyUttaksgradData?.filter((uttaksgrad) => uttaksgrad?.miljoe == miljo)
+	const nyUttaksgrad = apNyUttaksgradData?.filter((uttaksgrad) => uttaksgrad?.miljoe === miljo)
 
 	return (
 		<>

@@ -131,9 +131,7 @@ export const SivilstandForm = ({
 
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	// @ts-ignore
-	const { identtype, identMaster, personFoerLeggTil } = useContext(
-		BestillingsveilederContext,
-	) as BestillingsveilederContextType
+	const { identtype, identMaster, personFoerLeggTil } = useContext(BestillingsveilederContext)
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')

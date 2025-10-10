@@ -27,6 +27,8 @@ export const AlderspensjonNyUttaksgradForm = () => {
 		setRandomSaksbehandlere(genererTilfeldigeNavPersonidenter(saksbehandler))
 	}, [])
 
+	const uttaksgradOptions = Options('apUttaksgrad')?.concat([{ value: 0, label: '0%' }])
+
 	return (
 		<Vis attributt={alderspensjonNyUttaksgradPath}>
 			<Panel
@@ -39,7 +41,7 @@ export const AlderspensjonNyUttaksgradForm = () => {
 					<FormSelect
 						name={`${alderspensjonNyUttaksgradPath}.nyUttaksgrad`}
 						label="Ny uttaksgrad"
-						options={Options('apUttaksgrad')}
+						options={uttaksgradOptions}
 						isClearable={false}
 					/>
 					<Monthpicker
