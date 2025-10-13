@@ -19,6 +19,7 @@ navikt/*/lib/
 
 docs/.antora-cache/
 docs/build/
+docs/public/
 
 *.DS_Store
 

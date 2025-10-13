@@ -1,6 +1,7 @@
 site:
   title: Testnav Dokumentasjon
   start_page: testnav::index.adoc
+  url: https://navikt.github.io/testnorge/
 content:
   sources:
     - url: ..
@@ -14,7 +15,7 @@ ui:
   supplemental_files: ./supplemental-ui
 output:
   clean: true
-  dir: build/docs
+  dir: public
 runtime:
   cache_dir: ./.antora-cache
   fetch: false

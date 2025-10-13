@@ -2,6 +2,7 @@ name: GitHub Pages
 
 on:
   push:
+    branches: [ main, master ]
     paths:
       - 'docs/**'
   workflow_dispatch:
@@ -21,25 +22,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
           cache-dependency-path: docs/package-lock.json
+      - name: Cache Antora
+        uses: actions/cache@v4
+        with:
+          path: docs/.antora-cache
+          key: ${{ runner.os }}-antora-${{ hashFiles('docs/antora-playbook.yml', 'docs/antora.yml', 'docs/modules/**', 'docs/supplemental-ui/**') }}
+          restore-keys: |
+            ${{ runner.os }}-antora-
+      - name: Clean previous output
+        run: rm -rf docs/public docs/build
       - name: Install dependencies
         working-directory: docs
         run: npm ci --no-audit --no-fund
       - name: Build Antora site
         working-directory: docs
         run: npm run build
+      - name: Verify site output
+        run: test -f docs/public/index.html && echo OK || (echo 'Missing docs/public/index.html' && exit 1)
       - name: Add .nojekyll
-        working-directory: docs
-        run: cp .nojekyll build/docs/.nojekyll || true
+        run: echo > docs/public/.nojekyll
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/build/docs
+          path: docs/public
   deploy:
     environment:
       name: github-pages

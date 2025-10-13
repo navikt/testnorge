@@ -5,7 +5,7 @@
   "description": "Dokumentasjon bygget med Antora og Lunr-søk",
   "scripts": {
     "build": "antora antora-playbook.yml",
-    "clean": "rm -rf build/docs .antora-cache ui-bundle.zip",
+    "clean": "rm -rf public build/site build/docs .antora-cache ui-bundle.zip",
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
