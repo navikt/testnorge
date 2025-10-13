@@ -35,7 +35,6 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 	const rowsPerPage = 10
 
 	const [showData, setShowData] = useState([])
-
 	const [searchText, setSearchText] = useState('')
 
 	const filteredData = organisasjonTilgang?.filter(
