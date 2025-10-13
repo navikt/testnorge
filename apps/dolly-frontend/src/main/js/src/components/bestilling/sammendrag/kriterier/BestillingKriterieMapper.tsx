@@ -10,14 +10,9 @@ import {
 	oversettBoolean,
 	showLabel,
 	toTitleCase,
-	uppercaseAndUnderscoreToCapitalized,
+	uppercaseAndUnderscoreToCapitalized
 } from '@/utils/DataFormatter'
-import {
-	AdresseKodeverk,
-	ArbeidKodeverk,
-	PersoninformasjonKodeverk,
-	VergemaalKodeverk,
-} from '@/config/kodeverk'
+import { AdresseKodeverk, ArbeidKodeverk, PersoninformasjonKodeverk, VergemaalKodeverk } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
@@ -26,14 +21,14 @@ import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgiv
 import { useContext } from 'react'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType,
+	BestillingsveilederContextType
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 import {
 	kategoriKodeverk,
-	tekniskNavnKodeverk,
+	tekniskNavnKodeverk
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
 import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon' // TODO: Flytte til selector?
 
@@ -2089,6 +2084,26 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			data.push(pensjonforvalterAlderspensjon)
 		}
 
+		if (pensjonKriterier.alderspensjonNyUtaksgrad) {
+			const apNy = pensjonKriterier.alderspensjonNyUtaksgrad
+
+			const navEnhetLabel = navEnheter?.find(
+				(enhet) => enhet.value === apNy.navEnhetId?.toString(),
+			)?.label
+
+			const pensjonforvalterAlderspensjonNyUtaksgrad = {
+				header: 'Alderspensjon: Ny uttaksgrad',
+				items: [
+					obj('Ny uttaksgrad', `${apNy.nyUttaksgrad}%`),
+					obj('Dato f.o.m.', formatDate(apNy.fom)),
+					obj('Saksbehandler', apNy.saksbehandler),
+					obj('Attesterer', apNy.attesterer),
+					obj('NAV-kontor', navEnhetLabel || apNy.navEnhetId),
+				],
+			}
+			data.push(pensjonforvalterAlderspensjonNyUtaksgrad)
+		}
+
 		if (pensjonKriterier.uforetrygd) {
 			const uforetrygd = pensjonKriterier.uforetrygd
 
@@ -2418,16 +2433,19 @@ const mapOrganisasjon = (bestillingData, data) => {
 	}
 }
 
-export function mapBestillingData(bestillingData, bestillingsinformasjon, firstIdent) {
+function buildBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+	bestilling?: BestillingsveilederContextType,
+	navEnheter?: any,
+) {
 	if (!bestillingData) {
 		return null
 	}
 
 	const data: any[] = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
-
-	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const { navEnheter } = useNavEnheter()
 
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype, firstIdent)
 	mapPdlNyPerson(bestillingData, data, bestilling)
@@ -2517,4 +2535,36 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapOrganisasjon(bestillingData, data)
 
 	return data
+}
+
+export function useBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+) {
+	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const { navEnheter } = useNavEnheter()
+	return buildBestillingData(
+		bestillingData,
+		bestillingsinformasjon,
+		firstIdent,
+		bestilling,
+		navEnheter,
+	)
+}
+
+export function mapBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+	bestilling?: BestillingsveilederContextType,
+	navEnheter?: any,
+) {
+	return buildBestillingData(
+		bestillingData,
+		bestillingsinformasjon,
+		firstIdent,
+		bestilling,
+		navEnheter,
+	)
 }

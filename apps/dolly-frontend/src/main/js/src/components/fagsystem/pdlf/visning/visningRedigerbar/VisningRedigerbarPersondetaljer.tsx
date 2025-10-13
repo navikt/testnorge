@@ -371,7 +371,7 @@ export const VisningRedigerbarPersondetaljer = ({
 										})
 									}}
 								>
-									Skjerming (egen ansatt)
+									Skjerming (egenansatt)
 								</Checkbox>
 							)}
 						</div>

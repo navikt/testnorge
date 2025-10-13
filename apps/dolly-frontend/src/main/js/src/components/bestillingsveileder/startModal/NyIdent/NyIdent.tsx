@@ -6,7 +6,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Option } from '@/service/SelectOptionsOppslag'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType,
+	BestillingsveilederContextType
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { BVOptions } from '@/components/bestillingsveileder/options/options'
@@ -40,6 +40,7 @@ export function NyIdent({ gruppeId }: any) {
 						isClearable={false}
 					/>
 					<FormTextInput
+						useControlled
 						name="antall"
 						label="Antall"
 						type="number"

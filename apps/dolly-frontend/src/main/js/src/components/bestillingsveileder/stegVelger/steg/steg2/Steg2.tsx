@@ -42,6 +42,10 @@ import {
 	SigrunstubSummertSkattegrunnlagForm,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 import { NavAnsatt } from '@/components/fagsystem/nom/form/NavAnsattForm'
+import {
+	AlderspensjonNyUttaksgradForm,
+	alderspensjonNyUttaksgradPath,
+} from '@/components/fagsystem/alderspensjon/form/AlderspensjonNyUttaksgradForm'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
@@ -97,6 +101,7 @@ const Steg2: React.FC = () => {
 			{getValues(avtalePath) && <PensjonsavtaleForm />}
 			{getValues(tpPath) && <TjenestepensjonForm />}
 			{getValues(alderspensjonPath) && <AlderspensjonForm />}
+			{getValues(alderspensjonNyUttaksgradPath) && <AlderspensjonNyUttaksgradForm />}
 			{getValues(uforetrygdPath) && <UforetrygdForm />}
 			{getValues(afpOffentligPath) && <AfpOffentligForm />}
 			{getValues('arenaforvalter') && <ArenaForm />}

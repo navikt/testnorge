@@ -2,7 +2,7 @@ import { Form, FormProvider } from 'react-hook-form'
 import styled from 'styled-components'
 import { Table } from '@navikt/ds-react'
 import React from 'react'
-import { Header } from '@/components/ui/soekForm/SoekForm'
+import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
 import { FolkeregisteretIdentifikasjonStatus } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretIdentifikasjonStatus'
 import { FolkeregisteretStatsborgerskap } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretStatsborgerskap'
@@ -33,6 +33,7 @@ const Soekefelt = styled.div`
 `
 
 export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCategory }: any) => {
+	'use no memo' // Skip compilation for this component
 	const { getValues, control, watch }: any = formMethods
 
 	const devEnabled =

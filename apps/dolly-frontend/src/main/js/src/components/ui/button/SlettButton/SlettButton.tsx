@@ -1,4 +1,3 @@
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Button from '@/components/ui/button/Button'
@@ -13,6 +12,7 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import React from 'react'
+import NavButton from '../NavButton/NavButton'
 
 type Props = {
 	action: Function
@@ -23,6 +23,7 @@ type Props = {
 	disabled?: boolean
 	title?: string
 	navigateHome?: boolean
+	autoMutate?: boolean
 }
 
 export const SlettButton = ({
@@ -34,6 +35,7 @@ export const SlettButton = ({
 	disabled = false,
 	title,
 	navigateHome = false,
+	autoMutate = true,
 }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const navigate = useNavigate()
@@ -70,12 +72,15 @@ export const SlettButton = ({
 						<NavButton
 							onClick={() => {
 								closeModal()
-								slettMedId
-									? action(slettMedId)?.then(() => {
+								const run = slettMedId ? action(slettMedId) : action()
+								run?.then(() => {
+									if (autoMutate) {
+										if (slettMedId) {
 											mutate(REGEX_BACKEND_BESTILLINGER)
-											return mutate(REGEX_BACKEND_GRUPPER)
-										})
-									: action()?.then(() => mutate(REGEX_BACKEND_GRUPPER))
+										}
+										return mutate(REGEX_BACKEND_GRUPPER)
+									}
+								})
 								navigateHome && navigate('/')
 							}}
 							variant={'primary'}

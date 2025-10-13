@@ -6,7 +6,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { personPath } from '../SoekForm'
 import { useFormContext } from 'react-hook-form'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
@@ -31,7 +31,7 @@ export const Personinformasjon = ({
 				placeholder="Velg kjønn ..."
 				onChange={(val: SyntheticEvent) =>
 					handleChange(
-						val?.value || null,
+						(val as any)?.value || null,
 						`${personPath}.kjoenn`,
 						`Kjønn: ${codeToNorskLabel(val?.value)}`,
 					)
@@ -43,8 +43,7 @@ export const Personinformasjon = ({
 				size="large"
 				placeholder="Velg statsborgerskap ..."
 				onChange={(val: SyntheticEvent) =>
-					handleChange(
-						val?.value || null,
+					handleChange((val as any)?.value || null,
 						`${personPath}.statsborgerskap`,
 						`Statsborgerskap: ${val?.value}`,
 					)
@@ -56,8 +55,7 @@ export const Personinformasjon = ({
 				size="medium"
 				placeholder="Velg personstatus ..."
 				onChange={(val: SyntheticEvent) =>
-					handleChange(
-						val?.value || null,
+					handleChange((val as any)?.value || null,
 						`${personPath}.personStatus`,
 						`Personstatus: ${codeToNorskLabel(val?.value)}`,
 					)
@@ -65,9 +63,9 @@ export const Personinformasjon = ({
 			/>
 			<FormTextInput
 				name={`${personPath}.alderFom`}
+				useControlled={true}
 				placeholder="Skriv inn alder f.o.m ..."
 				type="number"
-				value={watch(`${personPath}.alderFom`)}
 				onBlur={(val: SyntheticEvent) =>
 					handleChange(
 						val?.target?.value || null,
@@ -80,8 +78,7 @@ export const Personinformasjon = ({
 				name={`${personPath}.alderTom`}
 				placeholder="Skriv inn alder t.o.m ..."
 				type="number"
-				value={watch(`${personPath}.alderTom`)}
-				onBlur={(val: SyntheticEvent) =>
+				onBlur={(val: any) =>
 					handleChange(
 						val?.target?.value || null,
 						`${personPath}.alderTom`,
@@ -92,7 +89,7 @@ export const Personinformasjon = ({
 			<FormCheckbox
 				name={`${personPath}.erLevende`}
 				label="Er levende"
-				onChange={(val: SyntheticEvent) =>
+				onChange={(val: any) =>
 					handleChange(val.target.checked, `${personPath}.erLevende`, 'Er levende')
 				}
 				disabled={watch(`${personPath}.erDoed`)}
@@ -100,7 +97,7 @@ export const Personinformasjon = ({
 			<FormCheckbox
 				name={`${personPath}.erDoed`}
 				label="Er død"
-				onChange={(val: SyntheticEvent) =>
+				onChange={(val: any) =>
 					handleChange(val.target.checked, `${personPath}.erDoed`, 'Er død')
 				}
 				disabled={watch(`${personPath}.erLevende`)}
@@ -109,28 +106,28 @@ export const Personinformasjon = ({
 				data-testid={TestComponentSelectors.TOGGLE_HAR_VERGE}
 				name={`${personPath}.harVerge`}
 				label="Har verge"
-				onChange={(val: SyntheticEvent) =>
+				onChange={(val: any) =>
 					handleChange(val.target.checked, `${personPath}.harVerge`, 'Har verge')
 				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harInnflytting`}
 				label="Har innflytting"
-				onChange={(val: SyntheticEvent) =>
+				onChange={(val: any) =>
 					handleChange(val.target.checked, `${personPath}.harInnflytting`, 'Har innflytting')
 				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harUtflytting`}
 				label="Har utflytting"
-				onChange={(val: SyntheticEvent) =>
+				onChange={(val: any) =>
 					handleChange(val.target.checked, `${personPath}.harUtflytting`, 'Har utflytting')
 				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harSikkerhetstiltak`}
 				label="Har sikkerhetstiltak"
-				onChange={(val: SyntheticEvent) =>
+				onChange={(val: any) =>
 					handleChange(
 						val.target.checked,
 						`${personPath}.harSikkerhetstiltak`,
@@ -141,19 +138,15 @@ export const Personinformasjon = ({
 			<FormCheckbox
 				name={`${personPath}.harTilrettelagtKommunikasjon`}
 				label="Har tilrettelagt kommunikasjon"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(
-						val.target.checked,
-						`${personPath}.harTilrettelagtKommunikasjon`,
+				onChange={(val: any) => handleChange(val.target.checked, `${personPath}.harTilrettelagtKommunikasjon`,
 						'Har tilrettelagt kommunikasjon',
-					)
-				}
+					)}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harSkjerming`}
-				label="Har skjerming / er egen ansatt"
+				label="Har skjerming / er egenansatt"
 				checked={watch('registreRequest')?.includes('SKJERMING')}
-				onChange={(val: SyntheticEvent) => {
+				onChange={(val: any) => {
 					const registreValues = val.target.checked
 						? [...watch('registreRequest'), 'SKJERMING']
 						: watch('registreRequest')?.filter((item: string) => item !== 'SKJERMING')

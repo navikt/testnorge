@@ -1,5 +1,5 @@
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import React, { SyntheticEvent } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
