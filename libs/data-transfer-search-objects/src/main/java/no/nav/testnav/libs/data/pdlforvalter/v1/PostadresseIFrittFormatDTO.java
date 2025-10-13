@@ -35,7 +35,7 @@ public class PostadresseIFrittFormatDTO implements Serializable {
     @JsonIgnore
     public boolean isEmpty() {
 
-        return adresselinjer.stream().allMatch(StringUtils::isBlank);
+        return getAdresselinjer().stream().allMatch(StringUtils::isBlank);
     }
 }
 

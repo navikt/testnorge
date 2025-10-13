@@ -38,7 +38,7 @@ public class UtenlandskAdresseIFrittFormatDTO implements Serializable {
     @JsonIgnore
     public boolean isEmpty() {
 
-        return adresselinjer.stream().allMatch(StringUtils::isBlank) &&
+        return getAdresselinjer().stream().allMatch(StringUtils::isBlank) &&
                 isBlank(postkode) && isBlank(byEllerStedsnavn);
     }
 }
