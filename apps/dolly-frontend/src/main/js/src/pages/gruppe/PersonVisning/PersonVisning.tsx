@@ -36,6 +36,7 @@ import {
 	usePoppData,
 	useTpDataForhold,
 	useTransaksjonIdData,
+	useTransaksjonIdDataUtenMiljoe,
 } from '@/utils/hooks/useFagsystemer'
 import {
 	sjekkManglerTpData,
@@ -261,6 +262,20 @@ export default ({
 		pensjonEnvironments,
 	)
 
+	const { loading: loadingApRevurderingData, data: apRevurderingData } =
+		useTransaksjonIdDataUtenMiljoe(
+			ident.ident,
+			'PEN_AP_REVURDERING',
+			harApBestilling(bestillingerFagsystemer),
+		)
+
+	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } =
+		useTransaksjonIdDataUtenMiljoe(
+			ident.ident,
+			'PEN_AP_NY_UTTAKSGRAD',
+			harApBestilling(bestillingerFagsystemer),
+		)
+
 	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
 		ident.ident,
 		'PEN_UT',
@@ -420,7 +435,10 @@ export default ({
 		loadingAareg ||
 		loadingArbeidssoekerregisteret ||
 		loadingArbeidsplassencvData ||
-		loadingArenaData
+		loadingArenaData ||
+		loadingApData ||
+		loadingApRevurderingData ||
+		loadingApNyUttaksgradData
 
 	return (
 		<ErrorBoundary>
@@ -450,6 +468,15 @@ export default ({
 								}
 								if (arenaData) {
 									personData.arenaforvalteren = arenaData
+								}
+								if (apData) {
+									personData.alderspensjon = apData
+								}
+								if (apRevurderingData) {
+									personData.alderspensjonRevurdering = apRevurderingData
+								}
+								if (apNyUttaksgradData) {
+									personData.alderspensjonNyUttaksgrad = apNyUttaksgradData
 								}
 								leggTilPaaPerson(
 									personData,
@@ -567,9 +594,12 @@ export default ({
 				/>
 				<AlderspensjonVisning
 					data={apData}
+					apRevurderingData={apRevurderingData}
+					apNyUttaksgradData={apNyUttaksgradData}
 					loading={loadingApData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					ident={ident.ident}
 				/>
 				<UforetrygdVisning
 					data={uforetrygdData}

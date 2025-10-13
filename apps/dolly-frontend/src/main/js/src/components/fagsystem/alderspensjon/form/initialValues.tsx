@@ -17,3 +17,11 @@ export const genInitialAlderspensjonVedtak = {
 	navEnhetId: null,
 	soknad: false,
 }
+
+export const getInitialAlderspensjonNyUttaksgrad = {
+	nyUttaksgrad: 100,
+	fom: setDate(addMonths(new Date(), 1), 1),
+	saksbehandler: null,
+	attesterer: null,
+	navEnhetId: null,
+}
