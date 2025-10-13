@@ -1,10 +1,13 @@
 import { Alert, Box, Pagination, Table, VStack } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Loading from '@/components/ui/loading/Loading'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DeleteOrganisasjon } from '@/pages/adminPages/Orgtilgang/DeleteOrganisasjon'
 import { OrgtilgangTypes } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
 import { RedigerOrganisasjon } from '@/pages/adminPages/Orgtilgang/RedigerOrganisasjon'
+import styled from 'styled-components'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import Icon from '@/components/ui/icon/Icon'
 
 type OversiktTypes = {
 	organisasjonTilgang: Array<OrgtilgangTypes>
@@ -13,12 +16,45 @@ type OversiktTypes = {
 	mutate: Function
 }
 
+const OrgSoek = styled.div`
+	position: relative;
+	max-width: 60%;
+	margin-bottom: -20px;
+
+	&& {
+		svg {
+			position: absolute;
+			top: 7px;
+			right: 30px;
+		}
+	}
+`
+
 export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: OversiktTypes) => {
 	const [page, setPage] = useState(1)
 	const rowsPerPage = 10
 
-	let sortData = organisasjonTilgang
-	sortData = sortData?.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+	const [showData, setShowData] = useState([])
+
+	const [searchText, setSearchText] = useState('')
+
+	const filteredData = organisasjonTilgang?.filter(
+		(org) =>
+			org.navn?.toUpperCase().includes(searchText?.toUpperCase()) ||
+			org.organisasjonsnummer?.includes(searchText),
+	)
+
+	useEffect(() => {
+		let sortData = filteredData
+		sortData = sortData?.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+		setShowData(sortData)
+	}, [organisasjonTilgang, page])
+
+	useEffect(() => {
+		setPage(1)
+		const sortData = filteredData?.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+		setShowData(sortData)
+	}, [searchText])
 
 	return (
 		<Box background="surface-default" padding="4">
@@ -34,6 +70,15 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 			{organisasjonTilgang?.length > 0 && (
 				<ErrorBoundary>
 					<VStack gap="space-16">
+						<OrgSoek>
+							<DollyTextInput
+								value={searchText}
+								onChange={(e: any) => setSearchText(e.target.value)}
+								size="grow"
+								placeholder="Søk etter organisasjon"
+							/>
+							<Icon kind="search" fontSize="1.4rem" />
+						</OrgSoek>
 						<Table>
 							<Table.Header>
 								<Table.Row>
@@ -45,7 +90,7 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{sortData?.map(({ organisasjonsnummer, navn, organisasjonsform, miljoe }, idx) => {
+								{showData?.map(({ organisasjonsnummer, navn, organisasjonsform, miljoe }, idx) => {
 									return (
 										<Table.Row key={organisasjonsnummer + idx}>
 											<Table.HeaderCell scope="row">{organisasjonsnummer}</Table.HeaderCell>
@@ -72,7 +117,7 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 						<Pagination
 							page={page}
 							onPageChange={setPage}
-							count={Math.ceil(organisasjonTilgang?.length / rowsPerPage)}
+							count={Math.ceil(filteredData?.length / rowsPerPage)}
 							size="small"
 						/>
 					</VStack>
