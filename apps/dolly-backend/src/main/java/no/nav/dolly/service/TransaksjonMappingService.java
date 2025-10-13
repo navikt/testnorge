@@ -35,12 +35,18 @@ public class TransaksjonMappingService {
     public Flux<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllByBestillingIdAndIdent(bestillingId, ident)
-                .filter(transaksjon -> isNull(system) || system.equals(transaksjon.getSystem()) ||
-                        (system.equals(PEN_AP.name()) &&
-                                (transaksjon.getSystem().equals(PEN_AP_REVURDERING.name()) ||
-                                        transaksjon.getSystem().equals(PEN_AP_NY_UTTAKSGRAD.name()))))
-                .sort(Comparator.comparing(TransaksjonMapping::getMiljoe).thenComparing(TransaksjonMapping::getDatoEndret))
+                .filter(transaksjon ->
+                        isNull(system) || system.equals(transaksjon.getSystem()) || isPenAp(system, transaksjon))
+                .sort(Comparator.comparing(TransaksjonMapping::getMiljoe)
+                        .thenComparing(TransaksjonMapping::getDatoEndret))
                 .map(this::toDTO);
+    }
+
+    private boolean isPenAp(String system, TransaksjonMapping transaksjon) {
+
+        return system.equals(PEN_AP.name()) &&
+                (transaksjon.getSystem().equals(PEN_AP_REVURDERING.name()) ||
+                        transaksjon.getSystem().equals(PEN_AP_NY_UTTAKSGRAD.name()));
     }
 
     public Flux<TransaksjonMapping> getTransaksjonMapping(String ident, String miljoe) {
