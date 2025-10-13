@@ -1,3 +1,0 @@
-= Testnav Dokumentasjon
-
-Denne siden er flyttet. Bruk xref:index.adoc[Testnav Dokumentasjon].

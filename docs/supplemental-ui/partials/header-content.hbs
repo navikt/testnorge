@@ -3,11 +3,6 @@
 <nav class="navbar">
   <div class="navbar-brand">
     <a class="navbar-item" href="{{site.startPage.url}}">{{site.title}}</a>
-    <div class="navbar-item search hide-for-print">
-      <div id="search-field" class="field">
-        <input id="search-input" type="text" placeholder="Søk i dokumentasjon">
-      </div>
-    </div>
     <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
       <span></span>
       <span></span>
@@ -16,6 +11,11 @@
   </div>
   <div id="topbar-nav" class="navbar-menu">
     <div class="navbar-end">
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Søk i dokumentasjon" aria-label="Søk i dokumentasjon">
+        </div>
+      </div>
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href="#">Applikasjoner</a>
         <div class="navbar-dropdown">
@@ -28,4 +28,7 @@
     </div>
   </div>
 </nav>
+<script src="{{{uiRootPath}}}/js/vendor/highlight.js" defer></script>
+<script id="site-script" src="{{{uiRootPath}}}/js/site.js" data-ui-root-path="{{{uiRootPath}}}" defer></script>
+<script id="inpage-search-script" src="{{{uiRootPath}}}/js/inpage-search.js" defer></script>
 </header>

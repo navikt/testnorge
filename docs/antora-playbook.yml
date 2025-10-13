@@ -26,5 +26,4 @@ asciidoc:
     icons: font
     experimental: ''
 antora:
-  extensions:
-    - '@antora/lunr-extension'
+  extensions: []
