@@ -150,14 +150,14 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(bostedadresse, person.getIdent()) ? vegadresse.getMatrikkelId() : null);
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), vegadresse.getMatrikkelId()));
             mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
 
             var matrikkeladresse =
                     adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(bostedadresse, person.getIdent()) ? matrikkeladresse.getMatrikkelId() : null);
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
             mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {

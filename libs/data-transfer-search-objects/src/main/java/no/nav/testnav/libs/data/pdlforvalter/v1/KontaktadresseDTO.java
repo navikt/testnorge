@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Data
@@ -25,8 +22,8 @@ public class KontaktadresseDTO extends AdresseDTO {
     private VegadresseDTO vegadresse;
     private UtenlandskAdresseDTO utenlandskAdresse;
     private PostboksadresseDTO postboksadresse;
-    private PostadresseIFrittFormat postadresseIFrittFormat;
-    private UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat;
+    private PostadresseIFrittFormatDTO postadresseIFrittFormat;
+    private UtenlandskAdresseIFrittFormatDTO utenlandskAdresseIFrittFormat;
 
     @Data
     @Builder
@@ -43,50 +40,6 @@ public class KontaktadresseDTO extends AdresseDTO {
 
         return count(getVegadresse()) + count(getUtenlandskAdresse()) + count(getPostboksadresse())
                 + count(getPostadresseIFrittFormat()) + count(getUtenlandskAdresseIFrittFormat());
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Deprecated
-    /**
-     * @Deprecated Denne benyttes kun for import av SKD-meldinger fra TPS-Forvalteren
-     */
-    public static class PostadresseIFrittFormat implements Serializable {
-
-        private List<String> adresselinjer;
-        private String postnummer;
-
-        public List<String> getAdresselinjer() {
-            if (isNull(adresselinjer)) {
-                adresselinjer = new ArrayList<>();
-            }
-            return adresselinjer;
-        }
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Deprecated
-    /**
-     * @Deprecated Denne benyttes kun for import av SKD-meldinger fra TPS-Forvalteren
-     */
-    public static class UtenlandskAdresseIFrittFormat implements Serializable {
-
-        private List<String> adresselinjer;
-        private String postkode;
-        private String byEllerStedsnavn;
-        private String landkode;
-
-        public List<String> getAdresselinjer() {
-            if (isNull(adresselinjer)) {
-                adresselinjer = new ArrayList<>();
-            }
-            return adresselinjer;
-        }
     }
 
     @Override
