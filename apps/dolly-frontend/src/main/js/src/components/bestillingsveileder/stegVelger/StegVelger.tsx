@@ -49,6 +49,7 @@ export const devEnabled =
 	window.location.hostname.includes('dolly-frontend-dev')
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
+	'use no memo' // Skip compilation for this component
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const erOrganisasjon =
