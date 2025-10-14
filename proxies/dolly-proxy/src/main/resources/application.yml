@@ -26,8 +26,9 @@ spring:
 springdoc:
   swagger-ui:
     urls:
-      - name: inntektstub
-        url: https://inntektstub.intern.dev.nav.no/v3/api-docs/a-ordningen%20api
+# Does not work due to CORS
+#      - name: inntektstub
+#        url: https://inntektstub.intern.dev.nav.no/v3/api-docs/a-ordningen%20api
     urls-primary-name: Downstream Services
 
 consumers:
