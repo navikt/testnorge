@@ -68,11 +68,11 @@ consumers:
     namespace: dolly
     name: testnav-medl-proxy
     url: https://testnav-medl-proxy.dev-fss-pub.nais.io
-  testnav-inntektstub-proxy:
+  testnav-dolly-proxy:
     cluster: dev-fss
     namespace: dolly
-    name: testnav-inntektstub-proxy
-    url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+    name: testnav-dolly-proxy
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
   testnav-norg2-proxy:
     cluster: dev-fss
     namespace: dolly

@@ -54,7 +54,7 @@
   "/testnav-udistub-proxy/api": {
     "changeOrigin": true
   },
-  "/testnav-inntektstub-proxy/api": {
+  "/testnav-dolly-proxy/inntektstub": {
     "changeOrigin": true
   },
   "/testnav-norg2-proxy/norg2": {
