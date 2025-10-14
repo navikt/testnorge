@@ -57,4 +57,5 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
+    - "https://testnav-dolly-proxy.intern.dev.nav.no"
     - "https://testnav-dolly-proxy.dev-fss-pub.nais.io"
