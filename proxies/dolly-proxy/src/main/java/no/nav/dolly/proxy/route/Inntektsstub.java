@@ -16,7 +16,7 @@ class Inntektsstub {
 
     Function<PredicateSpec, Buildable<Route>> build() {
         return spec -> spec
-                .path("/inntektsstub-proxy/**")
+                .path("/inntektstub-proxy/**")
                 .and()
                 .not(not -> not.path("/internal/**"))
                 .filters(f -> f.stripPrefix(1))
