@@ -34,7 +34,7 @@ springdoc:
 consumers:
   inntektstub:
     cluster: dev-fss
-    name: testnav-inntektstub-proxy
+    name: inntektstub
     namespace: dolly
     #url: http://inntektstub.team-inntekt.svc.nais.local/
     url: http://inntektstub.team-inntekt
