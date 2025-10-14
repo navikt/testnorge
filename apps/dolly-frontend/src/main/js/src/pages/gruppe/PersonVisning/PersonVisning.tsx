@@ -36,6 +36,7 @@ import {
 	usePoppData,
 	useTpDataForhold,
 	useTransaksjonIdData,
+	useTransaksjonIdDataUtenMiljoe,
 } from '@/utils/hooks/useFagsystemer'
 import {
 	sjekkManglerTpData,
@@ -126,6 +127,8 @@ const getIdenttype = (ident) => {
 	}
 }
 
+export const DEFAULT_RETRY_COUNT = 8
+
 export default ({
 	fetchDataFraFagsystemer,
 	data,
@@ -182,6 +185,7 @@ export default ({
 	const { loading: loadingUdistub, udistub } = useUdistub(
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harUdistubBestilling(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const {
@@ -190,12 +194,14 @@ export default ({
 	} = usePensjonsgivendeInntekt(
 		ident.ident,
 		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
 	const { loading: loadingSigrunstubSummertSkattegrunnlag, data: sigrunstubSummertSkattegrunnlag } =
 		useSummertSkattegrunnlag(
 			ident.ident,
 			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) || ident?.master === 'PDL',
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 		)
 
 	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
@@ -255,6 +261,20 @@ export default ({
 		harApBestilling(bestillingerFagsystemer),
 		pensjonEnvironments,
 	)
+
+	const { loading: loadingApRevurderingData, data: apRevurderingData } =
+		useTransaksjonIdDataUtenMiljoe(
+			ident.ident,
+			'PEN_AP_REVURDERING',
+			harApBestilling(bestillingerFagsystemer),
+		)
+
+	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } =
+		useTransaksjonIdDataUtenMiljoe(
+			ident.ident,
+			'PEN_AP_NY_UTTAKSGRAD',
+			harApBestilling(bestillingerFagsystemer),
+		)
 
 	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
 		ident.ident,
@@ -410,7 +430,15 @@ export default ({
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
 
-	const isLoadingFagsystemer = loadingAareg || loadingArbeidsplassencvData || loadingArenaData
+	const isLoadingFagsystemer =
+		loadingNom ||
+		loadingAareg ||
+		loadingArbeidssoekerregisteret ||
+		loadingArbeidsplassencvData ||
+		loadingArenaData ||
+		loadingApData ||
+		loadingApRevurderingData ||
+		loadingApNyUttaksgradData
 
 	return (
 		<ErrorBoundary>
@@ -432,11 +460,23 @@ export default ({
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
 								}
+								if (arbeidssoekerregisteretData) {
+									personData.arbeidssoekerregisteret = arbeidssoekerregisteretData
+								}
 								if (arbeidsplassencvData) {
 									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
 								if (arenaData) {
 									personData.arenaforvalteren = arenaData
+								}
+								if (apData) {
+									personData.alderspensjon = apData
+								}
+								if (apRevurderingData) {
+									personData.alderspensjonRevurdering = apRevurderingData
+								}
+								if (apNyUttaksgradData) {
+									personData.alderspensjonNyUttaksgrad = apNyUttaksgradData
 								}
 								leggTilPaaPerson(
 									personData,
@@ -554,9 +594,12 @@ export default ({
 				/>
 				<AlderspensjonVisning
 					data={apData}
+					apRevurderingData={apRevurderingData}
+					apNyUttaksgradData={apNyUttaksgradData}
 					loading={loadingApData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					ident={ident.ident}
 				/>
 				<UforetrygdVisning
 					data={uforetrygdData}

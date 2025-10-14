@@ -11,7 +11,6 @@ const NyansettelserPage = lazyWithPreload(() => import('@/pages/nyansettelser/Ny
 const GruppeOversikt = lazyWithPreload(() => import('@/pages/gruppeOversikt/GruppeOversikt'))
 const Organisasjon = lazyWithPreload(() => import('@/pages/organisasjoner/Organisasjoner'))
 const MinSide = lazyWithPreload(() => import('@/pages/minSide/MinSide'))
-const UI = lazyWithPreload(() => import('@/pages/ui/index'))
 const Endringsmelding = lazyWithPreload(() => import('@/pages/endringsmelding/Endringsmelding'))
 const DollySoekPage = lazyWithPreload(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazyWithPreload(() => import('@/pages/tenorSoek/TenorSoekPage'))
@@ -19,10 +18,13 @@ const OrgtilgangPage = lazyWithPreload(() => import('@/pages/adminPages/Orgtilga
 const LevendeArbeidsforholdPage = lazyWithPreload(
 	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
 )
+const InfostripePage = lazyWithPreload(
+	() => import('@/pages/adminPages/dollyInfostriper/DollyInfostripePage'),
+)
 const ApiOversiktPage = lazyWithPreload(() => import('@/pages/apiOversikt/ApiOversiktPage'))
 const TeamOversiktPage = lazyWithPreload(() => import('@/pages/teamOversikt/TeamOversiktPage'))
 
-const GruppeBreadcrumb = (props) => <span>Gruppe #{props.params?.gruppeId}</span>
+const GruppeBreadcrumb = (props: any) => <span>Gruppe #{props.params?.gruppeId}</span>
 
 const allRoutes = [
 	{
@@ -82,7 +84,6 @@ const allRoutes = [
 		element: Bestillingsveileder,
 	},
 	{ path: '/minside', handle: { crumb: () => 'Min side' }, element: MinSide },
-	{ path: '/ui', handle: { crumb: () => 'UI demo' }, element: UI },
 	{
 		path: '/dollysoek',
 		handle: { crumb: () => 'Søk i Dolly' },
@@ -117,6 +118,11 @@ const allRoutes = [
 		path: '/admin/levendearbeidsforhold',
 		handle: { crumb: () => 'Levende arbeidsforhold' },
 		element: LevendeArbeidsforholdPage,
+	},
+	{
+		path: '/admin/infostriper',
+		handle: { crumb: () => 'Dolly infostriper' },
+		element: InfostripePage,
 	},
 	{
 		path: '/nyansettelser',

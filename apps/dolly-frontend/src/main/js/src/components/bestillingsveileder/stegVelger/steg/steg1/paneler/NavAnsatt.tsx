@@ -67,7 +67,7 @@ NavAnsattPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			remove: () => del(paths.nom),
 		},
 		egenAnsattDatoFom: {
-			label: 'Skjerming (egen ansatt)',
+			label: 'Skjerming (egenansatt)',
 			checked: has(paths.egenAnsattDatoFom.tpsM) || has(paths.egenAnsattDatoFom.skjerming),
 			add() {
 				setMulti(

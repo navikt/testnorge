@@ -1,20 +1,23 @@
-import { toast, ToastContainer } from 'react-toastify'
+import { useEffect } from 'react'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 type Props = {
-	applicationError: string
+	applicationError: string | null
 }
 
 export const ErrorToast = ({ applicationError }: Props) => {
-	const feilmelding = applicationError?.replace?.(/\?\S*/, '')
-
-	toast.error(feilmelding, {
-		position: 'bottom-right',
-		autoClose: 10000,
-		closeOnClick: true,
-		pauseOnHover: true,
-		draggable: true,
-	})
-
-	return <ToastContainer theme={'light'} />
+	useEffect(() => {
+		if (!applicationError) return
+		const feilmelding = applicationError.replace(/\?\S*/, '')
+		toast.error(feilmelding, {
+			position: 'bottom-right',
+			autoClose: 5000,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			containerId: 'global-toast',
+		})
+	}, [applicationError])
+	return null
 }

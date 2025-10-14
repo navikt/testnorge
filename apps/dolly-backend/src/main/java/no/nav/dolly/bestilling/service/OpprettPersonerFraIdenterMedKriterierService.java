@@ -19,7 +19,6 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -110,13 +109,11 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                         availIdent, mapperFacade))
                 .concatMap(originator -> opprettProgress(bestilling, PDLF, originator.getIdent())
                         .zipWith(Mono.just(originator)))
-                .concatMap(tuple -> opprettPerson(tuple.getT2(), tuple.getT1())
-                        .zipWith(Mono.just(tuple.getT1())))
-                .concatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
-                        .zipWith(Mono.just(tuple.getT2())))
-                .filter(tuple -> StringUtils.isNotBlank(tuple.getT1()))
-                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
-                        .zipWith(Mono.just(tuple.getT2())))
+                .concatMap(tuple -> opprettPerson(tuple.getT2(), tuple.getT1()))
+                .concatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                        .zipWith(Mono.just(progress)))
                 .concatMap(tuple -> leggIdentTilGruppe(tuple.getT1().getIdent(),
                         tuple.getT2(), bestKriterier.getBeskrivelse())
                         .thenReturn(tuple))

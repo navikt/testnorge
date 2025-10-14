@@ -64,6 +64,4 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://udi-stub.dev.adeo.no"
-    - "https://udi-stub.dev.intern.nav.no" # dev-fss
-    - "https://testnav-udi-stub.dev.intern.nav.no" # dev-fss
+    - "https://testnav-udi-stub.intern.dev.nav.no" # dev-fss

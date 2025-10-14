@@ -174,7 +174,7 @@ system:
     namespace: dolly
     cluster: dev-fss
     write:
-      url: https://testnav-udi-stub.dev.intern.nav.no/swagger-ui/index.html
+      url: https://testnav-udi-stub.intern.dev.nav.no/swagger-ui/index.html
   - register: yrkesskade
     kubernetes-name: yrkesskade-datagenerator-service
     namespace: yrkesskade

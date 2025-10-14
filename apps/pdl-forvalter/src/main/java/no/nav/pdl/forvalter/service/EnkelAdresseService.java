@@ -7,7 +7,10 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseIFrittFormatDTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
@@ -54,7 +57,8 @@ public class EnkelAdresseService {
                     .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
                     .bySted(ADRESSE_3_UTLAND)
                     .postkode(ADRESSE_POSTKODE)
-                    .landkode(getLandkode(landkode))
+                    .landkode(getLandkode(isNotBlank(utenlandskAdresse.getLandkode()) ?
+                            utenlandskAdresse.getLandkode() : landkode))
                     .build();
 
         } else {
@@ -65,8 +69,27 @@ public class EnkelAdresseService {
                 oppdatertAdresse.setLandkode(getLandkode(landkode));
             }
 
-            if (isBlank(oppdatertAdresse.getAdressenavnNummer()) && isBlank(oppdatertAdresse.getPostboksNummerNavn())) {
-                oppdatertAdresse.setAdressenavnNummer(ADRESSE_NAVN_NUMMER);
+            return oppdatertAdresse;
+        }
+    }
+
+    public UtenlandskAdresseIFrittFormatDTO getUtenlandskAdresse(UtenlandskAdresseIFrittFormatDTO utenlandskAdresse, String landkode) {
+
+        if (utenlandskAdresse.isEmpty()) {
+
+            return UtenlandskAdresseIFrittFormatDTO.builder()
+                    .adresselinjer(List.of(ADRESSE_NAVN_NUMMER, ADRESSE_BY_STED))
+                    .postkode(ADRESSE_POSTKODE)
+                    .byEllerStedsnavn(ADRESSE_3_UTLAND)
+                    .landkode(getLandkode(isNotBlank(utenlandskAdresse.getLandkode()) ?
+                            utenlandskAdresse.getLandkode() : landkode))
+                    .build();
+
+        } else {
+            var oppdatertAdresse = mapperFacade.map(utenlandskAdresse, UtenlandskAdresseIFrittFormatDTO.class);
+
+            if (isBlank(oppdatertAdresse.getLandkode())) {
+                oppdatertAdresse.setLandkode(getLandkode(landkode));
             }
 
             return oppdatertAdresse;

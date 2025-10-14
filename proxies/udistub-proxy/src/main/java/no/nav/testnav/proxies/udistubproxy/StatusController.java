@@ -22,8 +22,8 @@ public class StatusController {
     public Map<String, TestnavStatusResponse> getStatus() {
 
         var status = checkConsumerStatus(
-                "http://udi-stub.dev.intern.nav.no/internal/health/liveness",
-                "http://udi-stub.dev.intern.nav.no/internal/health/readiness",
+                "http://testnav-udi-stub.dolly.svc.nais.local/internal/health/liveness",
+                "http://testnav-udi-stub.dolly.svc.nais.local/internal/health/readiness",
                 webClient);
         return Map.of(
                 "udi-stub", status

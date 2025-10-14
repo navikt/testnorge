@@ -1,5 +1,5 @@
 import { Diagnose } from '@/components/fagsystem/sykdom/SykemeldingTypes'
-import { addDays, addWeeks } from 'date-fns'
+import { addWeeks, subDays } from 'date-fns'
 import { getRandomValue } from '@/components/fagsystem/utils'
 import { SelectOptionsGyldigeDiagnoser } from '@/components/fagsystem/sykdom/form/partials/SelectOptionsDiagnoser'
 
@@ -59,8 +59,8 @@ export const initialValuesDetaljertSykemelding = {
 				grad: 50,
 				reisetilskudd: false,
 			},
-			fom: addDays(new Date(), -7),
-			tom: addDays(new Date(), -1),
+			fom: subDays(new Date(), 7),
+			tom: subDays(new Date(), 1),
 		},
 	],
 	kontaktMedPasient: {

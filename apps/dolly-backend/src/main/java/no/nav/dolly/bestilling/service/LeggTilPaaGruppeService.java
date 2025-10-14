@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -20,7 +19,6 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -30,9 +28,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -100,13 +96,11 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .map(ok -> OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                 .concatMap(originator -> opprettProgress(bestilling, originator.getMaster(), originator.getIdent())
                         .zipWith(Mono.just(originator)))
-                .concatMap(tuple -> oppdaterPdlPerson(tuple.getT2(), tuple.getT1(), tuple.getT2().getIdent())
-                        .zipWith(Mono.just(tuple.getT1())))
-                .concatMap(tuple -> sendOrdrePerson(tuple.getT2(), tuple.getT1())
-                        .zipWith(Mono.just(tuple.getT2())))
-                .filter(tuple -> isNotBlank(tuple.getT1()))
-                .concatMap(tuple -> opprettDollyPerson(tuple.getT1(), tuple.getT2(), bestilling.getBruker())
-                        .zipWith(Mono.just(tuple.getT2())))
+                .concatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
+                .concatMap(this::sendOrdrePerson)
+                .filter(BestillingProgress::isIdentGyldig)
+                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                        .zipWith(Mono.just(progress)))
                 .concatMap(tuple -> (!tuple.getT1().getIdent().equals(tuple.getT2().getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
                         .doOnNext(nyident -> counterCustomRegistry.invoke(bestKriterier))
@@ -115,24 +109,5 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                         .filter(BestillingProgress::isPdlSync)
                                         .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
                                                 tuple.getT2(), true)))));
-    }
-
-    private Mono<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress, String ident) {
-
-        if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
-
-            return transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
-                            "Info: Oppdatering av person startet ...")
-                    .then(pdlDataConsumer.oppdaterPdl(ident,
-                                    PersonUpdateRequestDTO.builder()
-                                            .person(originator.getPdlBestilling().getPerson())
-                                            .build())
-                            .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response)));
-
-        } else {
-            return Mono.just(PdlResponse.builder()
-                    .ident(ident)
-                    .build());
-        }
     }
 }

@@ -16,7 +16,7 @@ export const NySykemelding = () => {
 		<div className="flexbox--wrap">
 			<FormDollyFieldArray
 				name="sykemelding.nySykemelding.aktivitet"
-				header="Aktivitet"
+				header="Periode"
 				hjelpetekst={
 					'Det kan ikke være dager uten sykemelding mellom periodene. ' +
 					'Unntaket er når en t.o.m. er på fredag, lørdag og søndag, så kan neste f.o.m. være senest mandag.'

@@ -9,7 +9,7 @@ spring:
   data:
     redis:
       host: localhost
-      port: 1234
+      port: 6379
       username: not_in_use
       password: not_in_use
   security:
