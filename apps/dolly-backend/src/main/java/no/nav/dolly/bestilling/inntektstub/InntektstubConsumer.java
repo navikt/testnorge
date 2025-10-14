@@ -82,6 +82,6 @@ public class InntektstubConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-inntektstub-proxy";
+        return "testnav-dolly-proxy";
     }
 }
