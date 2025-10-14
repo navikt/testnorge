@@ -4,8 +4,8 @@ plugins {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "dolly-proxy"
-        property "sonar.projectName", "dolly-proxy"
+        property "sonar.projectKey", "testnav-dolly-proxy"
+        property "sonar.projectName", "testnav-dolly-proxy"
     }
 }
 

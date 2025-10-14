@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: dolly-proxy
+  name: testnav-dolly-proxy
   namespace: dolly
   labels:
     team: dolly
@@ -57,4 +57,4 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://dolly-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-dolly-proxy.dev-fss-pub.nais.io"

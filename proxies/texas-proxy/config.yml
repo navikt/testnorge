@@ -33,7 +33,7 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
-        - application: dolly-proxy
+        - application: testnav-dolly-proxy
         - application: generer-navn-service
         - application: organisasjon-bestilling-service
         - application: team-dolly-lokal-app

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: dolly-proxy
+    name: testnav-dolly-proxy
   cloud:
     gateway:
       discovery:
