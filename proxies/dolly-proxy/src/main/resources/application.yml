@@ -32,7 +32,7 @@ springdoc:
     urls-primary-name: Downstream Services
 
 consumers:
-  inntektsstub:
+  inntektstub:
     cluster: dev-fss
     name: testnav-inntektstub-proxy
     namespace: dolly

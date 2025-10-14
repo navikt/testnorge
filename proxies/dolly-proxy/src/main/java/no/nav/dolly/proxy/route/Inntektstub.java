@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-class Inntektsstub {
+class Inntektstub {
 
     private final Consumers consumers;
 
@@ -20,7 +20,7 @@ class Inntektsstub {
                 .and()
                 .not(not -> not.path("/internal/**"))
                 .filters(f -> f.stripPrefix(1))
-                .uri(consumers.inntektsstub.getUrl());
+                .uri(consumers.inntektstub.getUrl());
     }
 
 }

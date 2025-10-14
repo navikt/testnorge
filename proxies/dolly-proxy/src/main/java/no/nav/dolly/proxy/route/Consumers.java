@@ -16,6 +16,6 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter(PACKAGE)
 class Consumers {
 
-    ServerProperties inntektsstub;
+    ServerProperties inntektstub;
 
 }

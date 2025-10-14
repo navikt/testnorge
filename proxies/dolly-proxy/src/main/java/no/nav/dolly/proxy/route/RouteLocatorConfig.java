@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 class RouteLocatorConfig {
 
-    private final Inntektsstub inntektsstub;
+    private final Inntektstub inntektstub;
 
     @Bean
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         return builder
                 .routes()
-                .route("inntektsstub-proxy", inntektsstub.build())
+                .route("inntektstub-proxy", inntektstub.build())
                 .build();
 
     }
