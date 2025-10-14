@@ -8,8 +8,9 @@
     };
   }
 
+  const ESCAPE_HTML_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' };
   function escapeHtml(str) {
-    return str.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]));
+    return str.replace(/[&<>"]/g, c => ESCAPE_HTML_MAP[c]);
   }
 
   function levenshtein(a, b) {
