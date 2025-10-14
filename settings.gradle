@@ -36,4 +36,3 @@ includeAllBuildsFrom("./mocks")
 includeAllBuildsFrom("./plugins")
 includeAllBuildsFrom("./proxies")
 includeAllBuildsFrom("./xsd")
-include 'docs-adoc'

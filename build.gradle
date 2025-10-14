@@ -8,7 +8,6 @@ repositories {
 
 tasks.named('build') {
     dependsOn gradle.includedBuilds*.task(':build')
-    dependsOn ':docs-adoc:asciidoctor'
 }
 
 tasks.named('clean') {
