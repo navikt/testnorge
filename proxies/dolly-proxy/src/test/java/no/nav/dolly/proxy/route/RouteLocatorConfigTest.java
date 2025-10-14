@@ -32,14 +32,14 @@ class RouteLocatorConfigTest {
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("consumers.inntektsstub.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.inntektstub.url", () -> wireMockServer.baseUrl());
     }
 
     @Test
     void testInntektsstub() {
 
         var downstreamPath = "/api/v1/testdata";
-        var responseBody = "Success from mocked inntektsstub";
+        var responseBody = "Success from mocked inntektstub";
 
         wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
                 .willReturn(aResponse()
@@ -49,7 +49,7 @@ class RouteLocatorConfigTest {
 
         webClient
                 .get()
-                .uri("/inntektsstub-proxy" + downstreamPath)
+                .uri("/inntektstub-proxy" + downstreamPath)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("text/plain")
