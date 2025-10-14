@@ -23,6 +23,13 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
+springdoc:
+  swagger-ui:
+    urls:
+      - name: inntektstub
+        url: https://inntektstub.intern.dev.nav.no/v3/api-docs/a-ordningen%20api
+    urls-primary-name: Downstream Services
+
 consumers:
   inntektsstub:
     cluster: dev-fss

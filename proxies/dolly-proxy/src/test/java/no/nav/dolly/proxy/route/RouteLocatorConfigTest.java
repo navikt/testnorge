@@ -35,7 +35,6 @@ class RouteLocatorConfigTest {
         registry.add("consumers.inntektsstub.url", () -> wireMockServer.baseUrl());
     }
 
-    @Disabled
     @Test
     void testInntektsstub() {
 

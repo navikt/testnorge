@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 import static lombok.AccessLevel.PACKAGE;
 
-//@Configuration
-//@ConfigurationProperties(prefix = "consumers")
+@Configuration
+@ConfigurationProperties(prefix = "consumers")
 @NoArgsConstructor(access = PACKAGE)
 @Getter
 @Setter(PACKAGE)
