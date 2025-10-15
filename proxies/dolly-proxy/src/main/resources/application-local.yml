@@ -2,5 +2,11 @@ spring:
   config:
     import: "sm://"
 
+springdoc:
+  swagger-ui:
+    urls:
+      # None, due to CORS.
+
 targets:
+  histark: https://histarkimport.dev.intern.nav.no
   inntektstub: https://inntektstub.intern.dev.nav.no

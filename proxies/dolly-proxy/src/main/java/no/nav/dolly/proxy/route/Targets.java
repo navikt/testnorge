@@ -16,6 +16,7 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter
 class Targets {
 
+    String histark;
     String inntektstub;
 
 }

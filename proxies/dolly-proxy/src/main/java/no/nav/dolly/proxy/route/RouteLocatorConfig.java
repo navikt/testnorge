@@ -10,16 +10,16 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 class RouteLocatorConfig {
 
+    private final Histark histark;
     private final Inntektstub inntektstub;
 
     @Bean
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-
         return builder
                 .routes()
+                .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
                 .build();
-
     }
 
 }

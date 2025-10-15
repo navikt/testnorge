@@ -32,7 +32,32 @@ class RouteLocatorConfigTest {
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
+        registry.add("targets.histark", () -> wireMockServer.baseUrl());
         registry.add("targets.inntektstub", () -> wireMockServer.baseUrl());
+    }
+
+    @Test
+    void testHistark() {
+
+        var downstreamPath = "/api/saksmapper/1";
+        var responseBody = "Success from mocked histark";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/histark" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("application/json")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
     }
 
     @Test
