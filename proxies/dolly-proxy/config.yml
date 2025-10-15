@@ -22,11 +22,22 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-        - application: testnav-bruker-service
+          cluster: dev-gcp
+        - application: testnav-synt-vedtakshistorikk-service
+          cluster: dev-gcp
     outbound:
-      external:
-        - host: testnav-altinn3-tilgang-service.nav.no
       rules:
         - application: logging
           namespace: nais-system
