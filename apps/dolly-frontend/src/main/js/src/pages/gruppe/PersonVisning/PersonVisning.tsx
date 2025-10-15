@@ -36,7 +36,7 @@ import {
 	usePoppData,
 	useTpDataForhold,
 	useTransaksjonIdData,
-	useTransaksjonIdDataUtenMiljoe,
+	useTransaksjonIdPensjon,
 } from '@/utils/hooks/useFagsystemer'
 import {
 	sjekkManglerTpData,
@@ -255,26 +255,10 @@ export default ({
 
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
-	const { loading: loadingApData, data: apData } = useTransaksjonIdData(
+	const { loading: loadingApData, data: apData } = useTransaksjonIdPensjon(
 		ident.ident,
-		'PEN_AP',
 		harApBestilling(bestillingerFagsystemer),
-		pensjonEnvironments,
 	)
-
-	const { loading: loadingApRevurderingData, data: apRevurderingData } =
-		useTransaksjonIdDataUtenMiljoe(
-			ident.ident,
-			'PEN_AP_REVURDERING',
-			harApBestilling(bestillingerFagsystemer),
-		)
-
-	const { loading: loadingApNyUttaksgradData, data: apNyUttaksgradData } =
-		useTransaksjonIdDataUtenMiljoe(
-			ident.ident,
-			'PEN_AP_NY_UTTAKSGRAD',
-			harApBestilling(bestillingerFagsystemer),
-		)
 
 	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
 		ident.ident,
@@ -436,9 +420,7 @@ export default ({
 		loadingArbeidssoekerregisteret ||
 		loadingArbeidsplassencvData ||
 		loadingArenaData ||
-		loadingApData ||
-		loadingApRevurderingData ||
-		loadingApNyUttaksgradData
+		loadingApData
 
 	return (
 		<ErrorBoundary>
@@ -471,12 +453,6 @@ export default ({
 								}
 								if (apData) {
 									personData.alderspensjon = apData
-								}
-								if (apRevurderingData) {
-									personData.alderspensjonRevurdering = apRevurderingData
-								}
-								if (apNyUttaksgradData) {
-									personData.alderspensjonNyUttaksgrad = apNyUttaksgradData
 								}
 								leggTilPaaPerson(
 									personData,
@@ -594,8 +570,6 @@ export default ({
 				/>
 				<AlderspensjonVisning
 					data={apData}
-					apRevurderingData={apRevurderingData}
-					apNyUttaksgradData={apNyUttaksgradData}
 					loading={loadingApData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}

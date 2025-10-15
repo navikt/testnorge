@@ -12,6 +12,7 @@ import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import { mergeMiljoData } from '@/components/ui/miljoTabs/utils'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
@@ -82,22 +83,7 @@ export const InntektsmeldingVisning = ({
 		data = setTransaksjonsidData()
 	}
 
-	const mergeData = () => {
-		const mergeMiljo = []
-		data?.forEach((item) => {
-			const indexOfMiljo = mergeMiljo.findIndex((inntekt) => inntekt?.miljo === item?.miljo)
-			if (indexOfMiljo >= 0) {
-				mergeMiljo[indexOfMiljo].data?.push(item.data)
-			} else {
-				mergeMiljo.push({
-					data: [item.data],
-					miljo: item.miljo,
-				})
-			}
-		})
-		return mergeMiljo
-	}
-	const mergetData = mergeData()
+	const mergetData = mergeMiljoData(data)
 
 	const filteredData =
 		tilgjengeligMiljoe && mergetData?.filter((item) => item?.miljo === tilgjengeligMiljoe)

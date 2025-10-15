@@ -1,6 +1,6 @@
 import { ifPresent, messages, requiredDate, requiredNumber } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import { differenceInCalendarMonths, isAfter, isBefore } from 'date-fns'
+import { differenceInCalendarMonths, isAfter, isBefore, isValid } from 'date-fns'
 import { formatDate } from '@/utils/DataFormatter'
 
 export const validation = {
@@ -37,15 +37,18 @@ const validFomDateTest = (schema: Yup.DateSchema<Date, Yup.AnyObject>) =>
 	schema.test('gyldig-fom-dato', 'Feil', (value, context) => {
 		if (value == null) return true
 		const valgtDato = new Date(value)
-		const apDates = context?.options?.context?.personFoerLeggTil?.alderspensjon?.map(
-			(ap: any) => ap.data?.iverksettelsesdato,
-		)
-		const apNyUttaksgradDates =
-			context?.options?.context?.personFoerLeggTil?.alderspensjonNyUttaksgrad?.map(
-				(ap: any) => ap.transaksjonId?.fom,
-			)
-		const allDates = apDates.concat(apNyUttaksgradDates)?.map((dateString) => new Date(dateString))
-		const sisteVedtak = Math.max(...allDates)
+		const apDates = context?.options?.context?.personFoerLeggTil?.alderspensjon?.map((ap: any) => {
+			if (ap?.data?.system === 'PEN_AP') {
+				return ap.data?.transaksjonId?.iverksettelsesdato
+			} else if (ap?.data?.system === 'PEN_AP_NY_UTTAKSGRAD') {
+				return ap?.data?.transaksjonId?.fom
+			}
+		})
+
+		const formattedDates = apDates
+			?.map((dateString) => new Date(dateString))
+			?.filter((date) => isValid(date))
+		const sisteVedtak = Math.max(...formattedDates)
 		const sisteVedtakDato = new Date(sisteVedtak)
 		const nyUttaksgrad = context?.parent?.nyUttaksgrad
 
