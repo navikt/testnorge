@@ -1,3 +1,10 @@
 spring:
   config:
     import: "sm://"
+
+consumers:
+  inntektstub:
+    cluster: dev-fss
+    name: inntektstub
+    namespace: dolly
+    url: https://inntektstub.intern.dev.nav.no
