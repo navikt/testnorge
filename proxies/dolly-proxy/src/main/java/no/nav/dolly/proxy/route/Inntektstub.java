@@ -15,13 +15,12 @@ class Inntektstub {
     private final Targets targets;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var inntektstub = targets.getInntektstub();
         return spec -> spec
-                .path("/" + inntektstub.getPrefix() + "/**")
+                .path("/inntektstub/**")
                 .and()
                 .not(not -> not.path("/internal/**"))
                 .filters(f -> f.stripPrefix(1))
-                .uri(inntektstub.getUrl());
+                .uri(targets.inntektstub);
     }
 
 }

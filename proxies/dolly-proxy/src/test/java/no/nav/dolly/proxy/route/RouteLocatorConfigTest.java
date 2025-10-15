@@ -32,11 +32,11 @@ class RouteLocatorConfigTest {
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("targets.inntektstub.url", () -> wireMockServer.baseUrl());
+        registry.add("targets.inntektstub", () -> wireMockServer.baseUrl());
     }
 
     @Test
-    void testInntektsstub() {
+    void testInntektstub() {
 
         var downstreamPath = "/api/v1/testdata";
         var responseBody = "Success from mocked inntektstub";

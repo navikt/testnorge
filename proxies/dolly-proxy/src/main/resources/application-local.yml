@@ -3,6 +3,4 @@ spring:
     import: "sm://"
 
 targets:
-  inntektstub:
-    prefix: inntektstub
-    url: https://inntektstub.intern.dev.nav.no
+  inntektstub: https://inntektstub.intern.dev.nav.no

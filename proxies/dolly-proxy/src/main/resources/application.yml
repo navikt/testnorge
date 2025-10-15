@@ -32,6 +32,4 @@ springdoc:
     urls-primary-name: Downstream Services
 
 targets:
-  inntektstub:
-    prefix: inntektstub
-    url: http://inntektstub.team-inntekt
+  inntektstub: http://inntektstub.team-inntekt

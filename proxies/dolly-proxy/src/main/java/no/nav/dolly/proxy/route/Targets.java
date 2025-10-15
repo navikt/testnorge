@@ -16,17 +16,6 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter
 class Targets {
 
-    InntektstubTarget inntektstub;
-
-    static class InntektstubTarget extends Target {
-    }
-
-    @NoArgsConstructor(access = PACKAGE)
-    @Getter
-    @Setter
-    static class Target {
-        String prefix;
-        String url;
-    }
+    String inntektstub;
 
 }
