@@ -20,8 +20,10 @@ test('Åpne bestilt ident med knytning mot alle fagsystem', async ({ page }) => 
 		})
 	await page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_PERSONER).click()
 	await page.getByTestId(TestComponentSelectors.TOGGLE_PERSON_IBRUK).click()
-	await expect(page.getByTestId(TestComponentSelectors.TOGGLE_PERSON_IBRUK)).toBeEnabled()
+	await expect(page.getByTestId(TestComponentSelectors.TOGGLE_PERSON_IBRUK)).toBeChecked()
 	await page.getByTestId(TestComponentSelectors.TOGGLE_PERSON_IBRUK).click()
+	await expect(page.getByTestId(TestComponentSelectors.TOGGLE_PERSON_IBRUK)).not.toBeChecked()
+
 	await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_IDENT).click()
 	await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_BESTILLINGSDETALJER).click()
 	await page.waitForTimeout(300)
@@ -40,6 +42,7 @@ test('Åpne bestilt ident med knytning mot alle fagsystem', async ({ page }) => 
 
 	for (const hover_miljoe of await page.getByTestId(TestComponentSelectors.HOVER_MILJOE).all()) {
 		await hover_miljoe.click()
+		await page.waitForTimeout(200)
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_KONTAKTINFO).hover()
 		// Hover over kontaktinfo for å lukke gjeldende åpne miljø hover
 		await page.waitForTimeout(200)

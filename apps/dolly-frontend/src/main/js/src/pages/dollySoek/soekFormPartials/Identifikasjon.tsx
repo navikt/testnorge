@@ -4,20 +4,16 @@ import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { personPath } from '@/pages/dollySoek/SoekForm'
-import { useFormContext } from 'react-hook-form'
 
 export const Identifikasjon = ({ handleChange }: any) => {
-	const formMethods = useFormContext()
-
 	return (
 		<SoekKategori>
 			<FormTextInput
 				name={`${personPath}.ident`}
 				placeholder="Skriv inn ident ..."
 				size="large"
-				value={formMethods.watch(`${personPath}.ident`)}
 				onBlur={(val: SyntheticEvent) =>
 					handleChange(
 						val?.target?.value || null,
