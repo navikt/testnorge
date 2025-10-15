@@ -7,6 +7,4 @@
     <springProfile name="local">
         <include resource="logback-spring-console.xml"/>
     </springProfile>
-
-    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
 </configuration>
