@@ -203,11 +203,6 @@ consumers:
     namespace: dolly
     url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-histark-proxy:
-    name: testnav-histark-proxy
-    namespace: dolly
-    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-kodeverk-service:
     name: testnav-kodeverk-service
     namespace: dolly

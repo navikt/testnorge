@@ -48,7 +48,7 @@
   "/testnav-joark-dokument-service/api": {
     "changeOrigin": true
   },
-  "/testnav-histark-proxy/api": {
+  "/testnav-dolly-proxy/histark": {
     "changeOrigin": true
   },
   "/testnav-udistub-proxy/api": {

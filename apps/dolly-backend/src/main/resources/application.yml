@@ -22,7 +22,7 @@ spring:
       Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
     version: Versjon 1
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   main:
     allow-bean-definition-overriding: true
     web-application-type: reactive
@@ -163,11 +163,6 @@ consumers:
     name: testnav-pensjon-testdata-facade-proxy
     namespace: dolly
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-  testnav-histark-proxy:
-    name: testnav-histark-proxy
-    namespace: dolly
-    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter

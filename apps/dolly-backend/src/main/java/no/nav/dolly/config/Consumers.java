@@ -21,7 +21,6 @@ public class Consumers {
     private ServerProperties testnavArenaForvalterenProxy;
     private ServerProperties testnavBrregStubProxy;
     private ServerProperties testnavDokarkivProxy;
-    private ServerProperties testnavHistarkProxy;
     private ServerProperties testnavInntektsmeldingService;
     private ServerProperties testnavDollyProxy;
     private ServerProperties testnavInstProxy;
