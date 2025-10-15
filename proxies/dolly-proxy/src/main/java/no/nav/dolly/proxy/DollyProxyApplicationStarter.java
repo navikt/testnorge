@@ -1,17 +1,17 @@
 package no.nav.dolly.proxy;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 
 @SpringBootApplication
-@Import({
-        CoreConfig.class,
-        SecurityConfig.class
-})
+@Import(SecureOAuth2ServerToServerConfiguration.class)
+@EnableConfigurationProperties
+@EnableWebFluxSecurity
 public class DollyProxyApplicationStarter {
 
     public static void main(String[] args) {

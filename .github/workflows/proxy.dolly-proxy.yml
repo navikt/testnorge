@@ -7,7 +7,6 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/reactive-security/**
-      - libs/security-core/**
       - libs/testing/**
       - plugins/**
       - proxies/dolly-proxy/**
