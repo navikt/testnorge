@@ -5,7 +5,12 @@ import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Form, FormProvider } from 'react-hook-form'
-import { Buttons, Header, Soekefelt, SoekefeltWrapper } from '@/components/ui/soekForm/SoekForm'
+import {
+	Buttons,
+	Header,
+	Soekefelt,
+	SoekefeltWrapper,
+} from '@/components/ui/soekForm/SoekFormWrapper'
 import {
 	AdresserPaths,
 	AnnetPaths,
@@ -44,7 +49,7 @@ export const SoekForm = ({
 
 	const maxTotalHits = 10000
 
-	const { watch, reset, control, getValues } = formMethods
+	const { watch, reset, control, getValues, setValue } = formMethods
 	const values = watch()
 
 	useEffect(() => {
@@ -86,6 +91,10 @@ export const SoekForm = ({
 		const requestClone = { ...values }
 		const lagreSoekRequestClone = { ...lagreSoekRequest }
 		paths.forEach((path) => {
+			if (path === 'personRequest.alderFom') {
+				setValue(path, undefined)
+				reset()
+			}
 			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
 			delete lagreSoekRequestClone[path]
 			if (path === 'personRequest.harSkjerming') {
