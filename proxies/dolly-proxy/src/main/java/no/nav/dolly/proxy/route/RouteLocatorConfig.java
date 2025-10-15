@@ -17,7 +17,7 @@ class RouteLocatorConfig {
 
         return builder
                 .routes()
-                .route("inntektstub-proxy", inntektstub.build())
+                .route("inntektstub", inntektstub.build())
                 .build();
 
     }
