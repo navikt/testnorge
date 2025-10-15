@@ -22,7 +22,6 @@ public class SwaggerAutoConfiguration {
     RouterFunction<ServerResponse> swaggerRedirect() {
         return RouterFunctions
                 .route()
-                .GET("/", request -> ServerResponse.temporaryRedirect(URI.create("/swagger-ui/index.html")).build())
                 .GET("/swagger", request -> ServerResponse.temporaryRedirect(URI.create("/swagger-ui/index.html")).build())
                 .build();
     }
@@ -31,9 +30,9 @@ public class SwaggerAutoConfiguration {
     ApplicationListener<ApplicationReadyEvent> swaggerEndpointLogger() {
         return event -> {
             if (event.getApplicationContext() instanceof ReactiveWebServerApplicationContext context) {
-                log.info("Swagger is available at http://localhost:{}", context.getWebServer().getPort());
+                log.info("Swagger is available at http://localhost:{}/swagger", context.getWebServer().getPort());
             } else {
-                log.info("Swagger is available at http://localhost:8080 (guessing on port)");
+                log.info("Swagger is available at http://localhost:8080/swagger (guessing on port)");
             }
         };
     }
