@@ -14,7 +14,7 @@ export default () => {
 				<h1>Dolly</h1>
 			</div>
 			<div className="menu-links">
-				<a href="https://navikt.github.io/testnorge/docs/applications/dolly/" target="_blank">
+				<a href="https://navikt.github.io/testnorge/testnav/latest/index.html" target="_blank">
 					Dokumentasjon
 				</a>
 			</div>

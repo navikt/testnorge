@@ -1,12 +1,20 @@
-tasks.register('build') {
+plugins {
+    id 'base'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.named('build') {
     dependsOn gradle.includedBuilds*.task(':build')
 }
 
-tasks.register('clean') {
+tasks.named('clean') {
     dependsOn gradle.includedBuilds*.task(':clean')
 }
 
-tasks.register('assemble') {
+tasks.named('assemble') {
     dependsOn gradle.includedBuilds*.task(':assemble')
 }
 
@@ -19,7 +27,7 @@ tasks.register('dollyValidation') {
     group = "verification"
     def targetBuilds = gradle.includedBuilds.findAll { includedBuild ->
         def parentDirName = includedBuild.projectDir.parentFile.name
-        parentDirName == 'apps' || parentDirName == 'proxies' // Only relevant for builds in /apps or /proxies.
+        parentDirName == 'apps' || parentDirName == 'proxies'
     }
     dependsOn targetBuilds*.task(':dollyValidation')
 }
