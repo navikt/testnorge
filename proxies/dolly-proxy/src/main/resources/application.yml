@@ -26,10 +26,11 @@ spring:
 springdoc:
   swagger-ui:
     urls:
-      - name: histark
-        url: https://histarkimport.teamdokumenthandtering/v3/api-docs
-      - name: inntektstub
-        url: http://inntektstub.team-inntekt/v3/api-docs/a-ordningen%20api
+# Not working due to CORS.
+#      - name: histark
+#        url: https://histarkimport.teamdokumenthandtering/v3/api-docs
+#      - name: inntektstub
+#        url: http://inntektstub.team-inntekt/v3/api-docs/a-ordningen%20api
     urls-primary-name: Downstream Services
 
 targets:
