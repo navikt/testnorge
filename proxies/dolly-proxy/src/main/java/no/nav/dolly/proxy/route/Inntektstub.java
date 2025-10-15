@@ -12,15 +12,16 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Inntektstub {
 
-    private final Consumers consumers;
+    private final Targets targets;
 
     Function<PredicateSpec, Buildable<Route>> build() {
+        var inntektstub = targets.getInntektstub();
         return spec -> spec
-                .path("/inntektstub/**")
+                .path("/" + inntektstub.getPrefix() + "/**")
                 .and()
                 .not(not -> not.path("/internal/**"))
                 .filters(f -> f.stripPrefix(1))
-                .uri(consumers.inntektstub.getUrl());
+                .uri(inntektstub.getUrl());
     }
 
 }

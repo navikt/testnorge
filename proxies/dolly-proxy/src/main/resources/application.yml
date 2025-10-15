@@ -31,11 +31,7 @@ springdoc:
 #        url: https://inntektstub.intern.dev.nav.no/v3/api-docs/a-ordningen%20api
     urls-primary-name: Downstream Services
 
-consumers:
+targets:
   inntektstub:
-    cluster: dev-fss
-    name: inntektstub
-    namespace: dolly
-    #url: http://inntektstub.team-inntekt.svc.nais.local/
+    prefix: inntektstub
     url: http://inntektstub.team-inntekt
-
