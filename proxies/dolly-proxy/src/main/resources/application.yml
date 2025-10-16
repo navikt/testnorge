@@ -34,5 +34,5 @@ springdoc:
     urls-primary-name: Downstream Services
 
 targets:
-  histark: https://histarkimport.teamdokumenthandtering
+  histark: https://histarkimport.dev.intern.nav.no
   inntektstub: http://inntektstub.team-inntekt
