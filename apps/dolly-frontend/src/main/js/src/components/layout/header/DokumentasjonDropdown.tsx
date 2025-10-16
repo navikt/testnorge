@@ -32,7 +32,7 @@ export const DokumentasjonDropdown = () => {
 				<ActionMenu.Item
 					onClick={() =>
 						window.open(
-							'https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning',
+							'https://navikt.github.io/testnorge/testnav/latest/index.html',
 							'_blank',
 							'noopener',
 						)
@@ -40,7 +40,7 @@ export const DokumentasjonDropdown = () => {
 				>
 					<Icon kind="file-new" fontSize="1.5rem" style={{ color: 'black' }} />
 					<DropdownStyledLink
-						href="https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning"
+						href="https://navikt.github.io/testnorge/testnav/latest/index.html"
 						target="_blank"
 						rel="noopener noreferrer"
 					>

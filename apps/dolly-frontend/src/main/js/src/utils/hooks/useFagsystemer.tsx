@@ -85,7 +85,7 @@ const histarkUrl = (transaksjonsid: any) => {
 	return urlListe
 }
 
-const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v3/cv'
+const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
 const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {

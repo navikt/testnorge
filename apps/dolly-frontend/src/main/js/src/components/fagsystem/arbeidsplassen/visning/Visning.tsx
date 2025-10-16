@@ -18,6 +18,7 @@ import { HjemmelVisning } from '@/components/fagsystem/arbeidsplassen/visning/pa
 import styled from 'styled-components'
 import { PadlockLockedFillIcon } from '@navikt/aksel-icons'
 import { BodyLong } from '@navikt/ds-react'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const StyledCVVisning = styled.div`
 	margin-bottom: 20px;
@@ -47,6 +48,17 @@ export const ArbeidsplassenVisning = ({ data, loading, error, hjemmel }) => {
 				</ForbiddenVisning>
 			</>
 		)
+
+	if (error) {
+		return (
+			<>
+				<SubOverskrift label="Nav CV" iconKind="cv" isWarning />
+				<StyledAlert variant={'warning'} size={'small'} inline>
+					{error?.message ?? 'Fant ikke CV-data på person'}
+				</StyledAlert>
+			</>
+		)
+	}
 
 	if (!data) {
 		return null
