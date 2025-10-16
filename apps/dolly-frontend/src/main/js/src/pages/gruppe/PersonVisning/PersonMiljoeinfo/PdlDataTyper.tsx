@@ -129,17 +129,13 @@ type Postboksadresse = {
 	postnummer?: string
 }
 
-type PostadresseIFrittFormat = {
-	adresselinje1?: string
-	adresselinje2?: string
-	adresselinje3?: string
+export type PostadresseIFrittFormat = {
+	adresselinjer?: string[]
 	postnummer?: string
 }
 
-type UtenlandskAdresseIFrittFormat = {
-	adresselinje1?: string
-	adresselinje2?: string
-	adresselinje3?: string
+export type UtenlandskAdresseIFrittFormat = {
+	adresselinjer?: string[]
 	postkode?: string
 	byEllerStedsnavn?: string
 	landkode?: string

@@ -2,8 +2,10 @@ import React, { useContext, useEffect } from 'react'
 import * as _ from 'lodash-es'
 import {
 	getInitialKontaktadresse,
+	initialPostadresseIFrittFormat,
 	initialPostboksadresse,
 	initialUtenlandskAdresse,
+	initialUtenlandskAdresseIFrittFormat,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
@@ -11,8 +13,10 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
+	PostadresseIFrittFormat,
 	Postboksadresse,
 	UtenlandskAdresse,
+	UtenlandskAdresseIFrittFormat,
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
@@ -26,6 +30,7 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 interface KontaktadresseValues {
 	formMethods: UseFormReturn
@@ -44,6 +49,22 @@ type Target = {
 	label?: string
 }
 
+const adressetypeFieldMap: Record<string, string> = {
+	VEGADRESSE: 'vegadresse',
+	UTENLANDSK_ADRESSE: 'utenlandskAdresse',
+	POSTBOKSADRESSE: 'postboksadresse',
+	POSTADRESSE_I_FRITT_FORMAT: 'postadresseIFrittFormat',
+	UTENLANDSK_ADRESSE_I_FRITT_FORMAT: 'utenlandskAdresseIFrittFormat',
+}
+
+const adressetypeInitialMap: Record<string, any> = {
+	VEGADRESSE: initialVegadresse,
+	UTENLANDSK_ADRESSE: initialUtenlandskAdresse,
+	POSTBOKSADRESSE: initialPostboksadresse,
+	POSTADRESSE_I_FRITT_FORMAT: initialPostadresseIFrittFormat,
+	UTENLANDSK_ADRESSE_I_FRITT_FORMAT: initialUtenlandskAdresseIFrittFormat,
+}
+
 export const KontaktadresseForm = ({
 	formMethods,
 	path,
@@ -54,18 +75,21 @@ export const KontaktadresseForm = ({
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const kontaktadresse = formMethods.watch(path)
-		if (_.get(kontaktadresse, 'vegadresse') && _.get(kontaktadresse, 'vegadresse') !== null) {
-			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
-		} else if (
-			_.get(kontaktadresse, 'utenlandskAdresse') &&
-			_.get(kontaktadresse, 'utenlandskAdresse') !== null
-		) {
-			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
-		} else if (
-			_.get(kontaktadresse, 'postboksadresse') &&
-			_.get(kontaktadresse, 'postboksadresse') !== null
-		) {
-			formMethods.setValue(`${path}.adressetype`, Adressetype.Postboks)
+		const found = Object.entries(adressetypeFieldMap).find(([, field]) => {
+			const v = _.get(kontaktadresse, field)
+			return v !== null && v !== undefined
+		})
+		if (found) {
+			const [value] = found
+			if (value === 'VEGADRESSE') formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
+			else if (value === 'UTENLANDSK_ADRESSE')
+				formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+			else if (value === 'POSTBOKSADRESSE')
+				formMethods.setValue(`${path}.adressetype`, Adressetype.Postboks)
+			else if (value === 'POSTADRESSE_I_FRITT_FORMAT')
+				formMethods.setValue(`${path}.adressetype`, Adressetype.PostadresseIFrittFormat)
+			else if (value === 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT')
+				formMethods.setValue(`${path}.adressetype`, Adressetype.UtenlandskAdresseIFrittFormat)
 		}
 		formMethods.trigger(path)
 	}, [])
@@ -75,30 +99,12 @@ export const KontaktadresseForm = ({
 	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = formMethods.watch(path)
 		const adresseClone = _.cloneDeep(adresse)
-
-		_.set(adresseClone, 'adressetype', target?.value || null)
-
-		if (!target) {
-			_.set(adresseClone, 'vegadresse', undefined)
-			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'postboksadresse', undefined)
+		const value = target?.value || null
+		_.set(adresseClone, 'adressetype', value)
+		Object.values(adressetypeFieldMap).forEach((f) => _.set(adresseClone, f, undefined))
+		if (value && adressetypeFieldMap[value]) {
+			_.set(adresseClone, adressetypeFieldMap[value], adressetypeInitialMap[value])
 		}
-		if (target?.value === 'VEGADRESSE') {
-			_.set(adresseClone, 'vegadresse', initialVegadresse)
-			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'postboksadresse', undefined)
-		}
-		if (target?.value === 'UTENLANDSK_ADRESSE') {
-			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
-			_.set(adresseClone, 'vegadresse', undefined)
-			_.set(adresseClone, 'postboksadresse', undefined)
-		}
-		if (target?.value === 'POSTBOKSADRESSE') {
-			_.set(adresseClone, 'postboksadresse', initialPostboksadresse)
-			_.set(adresseClone, 'vegadresse', undefined)
-			_.set(adresseClone, 'utenlandskAdresse', undefined)
-		}
-
 		formMethods.setValue(path, adresseClone)
 		formMethods.trigger(path)
 	}
@@ -115,6 +121,7 @@ export const KontaktadresseForm = ({
 					options={Options('adressetypeKontaktadresse')}
 					onChange={(target: Target) => handleChangeAdressetype(target, path)}
 					size="large"
+					data-testid={TestComponentSelectors.ADRESSETYPE_KONTAKTADRESSE}
 				/>
 			</div>
 			{valgtAdressetype === 'VEGADRESSE' && (
@@ -133,6 +140,12 @@ export const KontaktadresseForm = ({
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
 				<Postboksadresse path={`${path}.postboksadresse`} />
+			)}
+			{valgtAdressetype === 'POSTADRESSE_I_FRITT_FORMAT' && (
+				<PostadresseIFrittFormat path={`${path}.postadresseIFrittFormat`} />
+			)}
+			{valgtAdressetype === 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT' && (
+				<UtenlandskAdresseIFrittFormat path={`${path}.utenlandskAdresseIFrittFormat`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />

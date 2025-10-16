@@ -7,6 +7,8 @@ import { MatrikkeladresseVelger } from './MatrikkeladresseVelger'
 import { MatrikkeladresseTilfeldig } from './MatrikkeladresseTilfeldig'
 import { OppholdAnnetSted } from './OppholdAnnetSted'
 import { Postboksadresse } from './Postboksadresse'
+import { PostadresseIFrittFormat } from './PostadresseIFrittFormat'
+import { UtenlandskAdresseIFrittFormat } from './UtenlandskAdresseIFrittFormat'
 
 export {
 	UtenlandskAdresse,
@@ -18,4 +20,6 @@ export {
 	MatrikkeladresseTilfeldig,
 	OppholdAnnetSted,
 	Postboksadresse,
+	PostadresseIFrittFormat,
+	UtenlandskAdresseIFrittFormat,
 }
