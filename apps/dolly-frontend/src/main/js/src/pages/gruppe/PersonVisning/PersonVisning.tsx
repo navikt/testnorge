@@ -354,6 +354,13 @@ export default ({
 		if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) {
 			return true
 		}
+		if (
+			harArbeidsplassenBestilling(bestillingerFagsystemer) &&
+			!arbeidsplassencvData &&
+			arbeidsplassencvError
+		) {
+			return true
+		}
 		return false
 	}
 
