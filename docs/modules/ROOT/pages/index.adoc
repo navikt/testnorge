@@ -460,7 +460,7 @@ Kolonner:
 Proxy (lenke til repo), Cluster (proxyens primære cluster utledet fra accessPolicy inbound), Ingress (extern/intern), Downstream apper (navn), Downstream URLer (svc/local/intern/ekstern; flere separert med ;), Cross-tenant (true/false), Status.
 
 // BEGIN GENERATED PROXY TABLE
-[cols="1,1,2,2,2,1,1", options="header"]
+[cols="1,1,2,2,2,1,1",options="header"]
 |===
 |Proxy |Cluster |Ingress |Downstream apper |Downstream URLer |Cross-tenant |Status
 |link:https://github.com/navikt/testnorge/tree/master/proxies/aareg-proxy[aareg-proxy] |dev-fss |https://testnav-aareg-proxy.dev-fss-pub.nais.io |detektert-testnav-aareg-proxy |https://testnav-aareg-proxy.dev-fss-pub.nais.io |true |aktiv
