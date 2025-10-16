@@ -7,6 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.reactive.context.ReactiveWebServerApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -27,6 +28,7 @@ public class SwaggerAutoConfiguration {
     }
 
     @Bean
+    @Profile("local")
     ApplicationListener<ApplicationReadyEvent> swaggerEndpointLogger() {
         return event -> {
             if (event.getApplicationContext() instanceof ReactiveWebServerApplicationContext context) {
