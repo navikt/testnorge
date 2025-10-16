@@ -20,10 +20,10 @@ public class Identpool32GeneratorUtil {
 
     public static List<String> generateIdents(String datoIdentifikator, int individnummer) {
 
-        return genrerateIdents(datoIdentifikator, individnummer, 3);
+        return generateIdents(datoIdentifikator, individnummer, 3);
     }
 
-    private static List<String> genrerateIdents(String datoIdentifikator, int individnummer, int antallForsoek) {
+    private static List<String> generateIdents(String datoIdentifikator, int individnummer, int antallForsoek) {
 
         var ident = datoIdentifikator +
                 String.format("%03d", individnummer--);
@@ -39,10 +39,10 @@ public class Identpool32GeneratorUtil {
                 .filter(Objects::nonNull)
                 .toList();
 
-        if (antallForsoek > 0 && identer.isEmpty()) {
+        if (antallForsoek > 0 && identer.isEmpty() && individnummer >= 0) {
             log.info("Feil ved generering av ident med datoIdentifikator {} og individnummer {}, prøver med individnummer {}",
-                    datoIdentifikator, individnummer + 1, individnummer);
-            return genrerateIdents(datoIdentifikator, individnummer, --antallForsoek);
+                    datoIdentifikator, individnummer - 1, individnummer);
+            return generateIdents(datoIdentifikator, individnummer, --antallForsoek);
         }
         return identer;
     }
@@ -57,8 +57,8 @@ public class Identpool32GeneratorUtil {
         return new Integer[]{
                 alternateK1(remainder, 14),
                 alternateK1(remainder, 13),
-                alternateK1(remainder, 12),
-                alternateK1(remainder, 11)};
+                alternateK1(remainder, 12)};
+                // controlDigit = 11 benyttes ikke for ikke å gi overlapp med eksisterende løsning
     }
 
     private static int alternateK1(int reminder, int controlDigit) {

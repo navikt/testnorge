@@ -37,46 +37,70 @@ public class Identpool32Service {
 
         var datoIdentifikator = getDatoIdentifikator(foedselsdato, request.getIdenttype());
 
-        var allokert = new AtomicBoolean(true);
-
-
-        return personidentifikatorRepository.findAvail(datoIdentifikator, false)
-                .collectList()
-                .flatMap(ledige -> {
-                    if (!ledige.isEmpty()) {
-                        ledige.getFirst().setFoedselsdato(foedselsdato);
-                        ledige.getFirst().setAllokert(true);
-                        ledige.getFirst().setDatoAllokert(LocalDate.now());
-                        return personidentifikatorRepository.save(ledige.getFirst());
+        return personidentifikatorRepository.existsByDatoIdentifikator(datoIdentifikator)
+                .flatMapMany(eksisterer -> {
+                    if (isTrue(eksisterer)) {
+                        return personidentifikatorRepository.existsByDatoIdentifikatorAndAllokert(datoIdentifikator, false)
+                                .flatMapMany(ledigFinnes -> {
+                                    if (isTrue(ledigFinnes)) {
+                                        return allokerIdent(datoIdentifikator, foedselsdato);
+                                    } else {
+                                        return generateNoekkelinfo(foedselsdato, request.getIdenttype())
+                                                .flatMapMany(noekkelinfo -> personidentifikatorRepository
+                                                        .existsByDatoIdentifikatorAndAllokert(noekkelinfo.datoIdentifikator, false)
+                                                        .flatMapMany(ledigFinnes2 -> isTrue(ledigFinnes2) ?
+                                                                allokerIdent(noekkelinfo.getDatoIdentifikator(), foedselsdato) :
+                                                                genererOgAllokerIdent(noekkelinfo, foedselsdato, request.getIdenttype())));
+                                    }
+                                });
                     } else {
-                        return generateNoekkelinfo(foedselsdato, request.getIdenttype())
-                                .flatMap(noekkelinfo -> Mono.just(Identpool32GeneratorUtil.generateIdents(
-                                                noekkelinfo.datoIdentifikator,
-                                                noekkelinfo.individnummer))
-                                        .flatMapMany(identer -> Flux.fromIterable(identer)
-                                                .map(ident -> {
-                                                    var alloker = allokert.getAndSet(false);
-                                                    return Personidentifikator.builder()
-                                                            .identtype(nonNull(request.getIdenttype()) ? request.getIdenttype() : Identtype.FNR)
-                                                            .personidentifikator(ident)
-                                                            .datoIdentifikator(noekkelinfo.datoIdentifikator)
-                                                            .individnummer(Integer.parseInt(ident.substring(6, 9)))
-                                                            .allokert(alloker)
-                                                            .foedselsdato(alloker ? foedselsdato : null)
-                                                            .datoAllokert(alloker ? LocalDate.now() : null)
-                                                            .build();
-                                                })
-                                                .doOnNext(identifikator ->
-                                                        log.info("Lagrer ny ident: {}", identifikator))
-                                                .flatMap(personidentifikatorRepository::save))
-                                        .filter(Personidentifikator::isAllokert)
-                                        .next());
+                        return genererOgAllokerIdent(datoIdentifikator, 999, foedselsdato, request.getIdenttype());
                     }
                 })
+                .next()
                 .map(Personidentifikator::getPersonidentifikator);
     }
 
+    private Flux<Personidentifikator> genererOgAllokerIdent(Noekkelinfo noekkelinfo, LocalDate foedselsdato, Identtype identtype) {
 
+        return genererOgAllokerIdent(noekkelinfo.datoIdentifikator, noekkelinfo.individnummer, foedselsdato, identtype);
+    }
+
+    private Flux<Personidentifikator> genererOgAllokerIdent(String datoindikator, int individnummer, LocalDate foedselsdato, Identtype identtype) {
+
+        var allokert = new AtomicBoolean(true);
+
+        return Mono.just(Identpool32GeneratorUtil.generateIdents(
+                        datoindikator,
+                        individnummer))
+                .flatMapMany(Flux::fromIterable)
+                .map(ident -> {
+                    var alloker = allokert.getAndSet(false);
+                    return Personidentifikator.builder()
+                            .identtype(nonNull(ident) ? identtype : Identtype.FNR)
+                            .personidentifikator(ident)
+                            .datoIdentifikator(ident.substring(0, 6))
+                            .individnummer(Integer.parseInt(ident.substring(6, 9)))
+                            .allokert(alloker)
+                            .foedselsdato(alloker ? foedselsdato : null)
+                            .datoAllokert(alloker ? LocalDate.now() : null)
+                            .build();
+                })
+                .flatMap(personidentifikatorRepository::save)
+                .filter(Personidentifikator::isAllokert);
+    }
+
+    private Mono<Personidentifikator> allokerIdent(String datoIdentifikator, LocalDate foedselsdato) {
+
+        return personidentifikatorRepository.findAvail(datoIdentifikator, false)
+                .concatMap(ledig -> {
+                    ledig.setFoedselsdato(foedselsdato);
+                    ledig.setAllokert(true);
+                    ledig.setDatoAllokert(LocalDate.now());
+                    return personidentifikatorRepository.save(ledig);
+                })
+                .next();
+    }
 
     private Mono<Noekkelinfo> generateNoekkelinfo(LocalDate foedselsdato, Identtype identtype) {
 
@@ -87,8 +111,18 @@ public class Identpool32Service {
                     if (isTrue(exists)) {
                         return personidentifikatorRepository.findAvail(datoIdentifikator, true)
                                 .collectList()
-                                .map(identer ->
-                                        identer.getFirst().getIndividnummer() - 1)
+                                .flatMap(identer -> {
+                                    if (identer.getFirst().getIndividnummer() == 0) {
+                                        return personidentifikatorRepository
+                                                .findAllByDatoIdentifikatorAndIndividnummer(datoIdentifikator, 0)
+                                                .collectList()
+                                                .map(identer2 ->
+                                                        !identer2.isEmpty() && identer2.stream().allMatch(Personidentifikator::isAllokert) ?
+                                                                -1 : 0);
+                                    } else {
+                                        return Mono.just(identer.getFirst().getIndividnummer() - 1);
+                                    }
+                                })
                                 .flatMap(individnummer -> individnummer >= 0 ?
                                         Mono.just(new Noekkelinfo(datoIdentifikator, individnummer)) :
                                         generateNoekkelinfo(foedselsdato.minusDays(1), identtype));

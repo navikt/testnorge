@@ -22,7 +22,11 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Pe
     Flux<Personidentifikator> findAvail(@Param("datoIdentifikator") String datoIdentifikator,
                                         @Param("allokert") boolean allokert);
 
+    Flux<Personidentifikator> findAllByDatoIdentifikatorAndIndividnummer(String datoIdentifikator, int individnummer);
+
     Mono<Boolean> existsByDatoIdentifikator(String datoIdentifikator);
+
+    Mono<Boolean> existsByDatoIdentifikatorAndAllokert(String datoIdentifikator, boolean allokert);
 
     @Modifying
     Mono<Void> deleteByPersonidentifikator(String identifikator);
