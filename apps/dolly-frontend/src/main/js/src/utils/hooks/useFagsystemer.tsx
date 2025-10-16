@@ -203,7 +203,7 @@ export const useTransaksjonIdPensjon = (ident, harBestilling) => {
 			return null
 		}
 		const miljoData = []
-		data?.map((m) => {
+		data?.forEach((m) => {
 			miljoData.push({ data: m, miljo: m.miljoe })
 		})
 		return miljoData

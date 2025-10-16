@@ -37,6 +37,7 @@ const validFomDateTest = (schema: Yup.DateSchema<Date, Yup.AnyObject>) =>
 	schema.test('gyldig-fom-dato', 'Feil', (value, context) => {
 		if (value == null) return true
 		const valgtDato = new Date(value)
+
 		const apDates = context?.options?.context?.personFoerLeggTil?.alderspensjon?.map((ap: any) => {
 			if (ap?.data?.system === 'PEN_AP') {
 				return ap.data?.transaksjonId?.iverksettelsesdato
@@ -48,6 +49,11 @@ const validFomDateTest = (schema: Yup.DateSchema<Date, Yup.AnyObject>) =>
 		const formattedDates = apDates
 			?.map((dateString) => new Date(dateString))
 			?.filter((date) => isValid(date))
+
+		if (!formattedDates || formattedDates.length === 0) {
+			return true
+		}
+
 		const sisteVedtak = Math.max(...formattedDates)
 		const sisteVedtakDato = new Date(sisteVedtak)
 		const nyUttaksgrad = context?.parent?.nyUttaksgrad
