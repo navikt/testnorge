@@ -475,6 +475,18 @@ const selectOptions = {
 		{ value: 'K9', label: 'Sykdom i familien (K9)' },
 		{ value: 'UFM', label: 'Unntak fra medlemskap (UFM)' },
 		{ value: 'OB36', label: 'Utbetalingsreskontro (OB36)' },
+		{ value: 'DAGPENGER', label: 'Dagpenger' },
+		{ value: 'KOMPYS', label: 'Kompys' },
+		{ value: 'ARGUS', label: 'Argus' },
+		{ value: 'NEESSI', label: 'Neessi' },
+		{ value: 'TILLEGGSSTONADER', label: 'Tilleggsstønader' },
+		{ value: 'ARBEIDSOPPFOLGING', label: 'Arbeidsoppfølging' },
+		{ value: 'TILTAKSPENGER', label: 'Tiltakspenger' },
+		{ value: 'TILTAKSADMINISTRASJON', label: 'Tiltaksadministrasjon' },
+		{ value: 'FIA', label: 'FIA' },
+		{ value: 'HELT', label: 'Helt' },
+		{ value: 'UNG_SAK', label: 'Ung sak' },
+		{ value: 'REMEDY', label: 'Remedy' },
 	],
 
 	tjenestepensjonYtelseType: [
@@ -866,4 +878,5 @@ const selectOptions = {
 	],
 }
 
-export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
+export const SelectOptionsManager = (attributeId: keyof typeof selectOptions) =>
+	selectOptions[attributeId]
