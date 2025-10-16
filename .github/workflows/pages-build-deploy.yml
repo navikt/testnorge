@@ -53,18 +53,15 @@ jobs:
       - name: Clean previous output
         run: rm -rf docs/public docs/build
 
-      - name: Generate proxy table (pre-build)
+      - name: Detect proxy table changes (pre-build)
         run: |
           python3 scripts/generate_proxy_table.py
-
-      - name: Detect proxy table changes
-        id: proxy_diff
-        run: |
           if git diff --quiet -- docs/modules/ROOT/pages/index.adoc; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
+        id: proxy_diff
 
       - name: Commit updated proxy table
         if: steps.proxy_diff.outputs.changed == 'true'
@@ -79,12 +76,15 @@ jobs:
         working-directory: docs
         run: npm ci --no-audit --no-fund
 
-      - name: Build Antora site (includes regeneration + nav)
+      - name: Build Antora site (clean)
         working-directory: docs
-        run: npm run build
+        run: npm run build:clean
 
-      - name: Verify site output
-        run: test -f docs/public/index.html && echo OK || (echo 'Missing docs/public/index.html' && exit 1)
+      - name: Debug site output listing
+        run: |
+          echo "Listing docs/public (expect index.html):"
+          ls -al docs/public || true
+          test -f docs/public/index.html || (echo 'Missing docs/public/index.html after build' && exit 1)
 
       - name: Add .nojekyll
         run: echo > docs/public/.nojekyll
