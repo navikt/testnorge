@@ -24,6 +24,7 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	return (
 		// @ts-ignore
 		<Panel
+			data-testid="panel-adresse"
 			heading={AdressePanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
@@ -33,7 +34,7 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 			<AttributtKategori title="Adresser" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.bostedsadresse} />
 				<Attributt attr={sm.attrs.oppholdsadresse} />
-				<Attributt attr={sm.attrs.kontaktadresse} />
+				<Attributt data-testid="attributt-kontaktadresse" attr={sm.attrs.kontaktadresse} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Delt bosted" attr={sm.attrs}>

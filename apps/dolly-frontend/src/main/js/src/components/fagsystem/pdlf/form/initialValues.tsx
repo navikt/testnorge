@@ -92,6 +92,18 @@ export const initialPostboksadresse = {
 	postnummer: null as unknown as string,
 }
 
+export const initialPostadresseIFrittFormat = {
+	adresselinjer: [''] as string[],
+	postnummer: null as unknown as string,
+}
+
+export const initialUtenlandskAdresseIFrittFormat = {
+	adresselinjer: [''] as string[],
+	postkode: null as unknown as string,
+	byEllerStedsnavn: null as unknown as string,
+	landkode: null as unknown as string,
+}
+
 export const initialUkjentBosted = {
 	bostedskommune: null as unknown as string,
 }

@@ -52,7 +52,7 @@ Checkbox.displayName = 'Checkbox'
 export interface DollyCheckboxProps extends BaseCheckboxProps {
 	isSwitch?: boolean
 	disabled?: boolean
-	wrapperSize?: 'grow' | 'shrink'
+	wrapperSize?: 'grow' | 'shrink' | 'tight'
 	checkboxMargin?: boolean
 	vis?: boolean
 }

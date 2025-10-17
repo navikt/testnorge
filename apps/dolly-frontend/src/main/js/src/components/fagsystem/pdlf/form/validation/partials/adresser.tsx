@@ -15,7 +15,11 @@ const gyldigDatoTom = Yup.lazy((val) =>
 		: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
 )
 
-const datoOverlapper = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
+const datoOverlapper = (
+	nyDatoFra: string,
+	gjeldendeDatoFra: string,
+	gjeldendeDatoTil: string,
+): boolean => {
 	if (!gjeldendeDatoFra || !gjeldendeDatoTil) return false
 
 	return (
@@ -24,7 +28,12 @@ const datoOverlapper = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 	)
 }
 
-const overlapperMedAdresse = (originalFradato, originalTildato, adresseListe, nyAdresse) => {
+const overlapperMedAdresse = (
+	originalFradato: string,
+	originalTildato: string | null,
+	adresseListe: any[],
+	nyAdresse: boolean,
+): boolean => {
 	for (let adresse of adresseListe) {
 		const fraDato = adresse.gyldigFraOgMed
 		const tilDato = adresse.gyldigTilOgMed
@@ -73,7 +82,7 @@ const validFradato = () => {
 					? [...fullForm.pdldata.person.bostedsadresse]
 					: [fullForm.bostedsadresse]
 				let tildato = null
-				let adresseIndex = null
+				let adresseIndex: number | null = null
 				for (let i = 0; i < nyeAdresser.length; i++) {
 					if (nyeAdresser[i]?.gyldigFraOgMed + '' === val) {
 						tildato = nyeAdresser[i].gyldigTilOgMed
@@ -84,7 +93,9 @@ const validFradato = () => {
 					}
 				}
 
-				nyeAdresser.splice(adresseIndex, 1)
+				if (adresseIndex !== null) {
+					nyeAdresser.splice(adresseIndex, 1)
+				}
 				const tidligereAdresser = personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse || []
 
 				return !(
@@ -140,6 +151,18 @@ const utenlandskAdresse = Yup.object({
 	landkode: Yup.string().nullable(),
 	bygningEtasjeLeilighet: Yup.string().nullable(),
 	regionDistriktOmraade: Yup.string().nullable(),
+})
+
+const postadresseIFrittFormat = Yup.object({
+	adresselinjer: Yup.array().of(Yup.string().nullable()).nullable(),
+	postnummer: Yup.string().nullable(),
+})
+
+const utenlandskAdresseIFrittFormat = Yup.object({
+	adresselinjer: Yup.array().of(Yup.string().nullable()).nullable(),
+	postkode: Yup.string().nullable(),
+	byEllerStedsnavn: Yup.string().nullable(),
+	landkode: Yup.string().nullable(),
 })
 
 export const postboksadresse = Yup.object({
@@ -224,6 +247,16 @@ export const kontaktadresse = Yup.object({
 	postboksadresse: Yup.mixed().when('adressetype', {
 		is: 'POSTBOKSADRESSE',
 		then: () => postboksadresse,
+		otherwise: () => Yup.mixed().nullable(),
+	}),
+	postadresseIFrittFormat: Yup.mixed().when('adressetype', {
+		is: 'POSTADRESSE_I_FRITT_FORMAT',
+		then: () => postadresseIFrittFormat,
+		otherwise: () => Yup.mixed().nullable(),
+	}),
+	utenlandskAdresseIFrittFormat: Yup.mixed().when('adressetype', {
+		is: 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT',
+		then: () => utenlandskAdresseIFrittFormat,
 		otherwise: () => Yup.mixed().nullable(),
 	}),
 })

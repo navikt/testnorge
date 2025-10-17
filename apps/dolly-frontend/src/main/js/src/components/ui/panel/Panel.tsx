@@ -24,6 +24,7 @@ export default function Panel({
 	iconType = null as unknown as string,
 	forceOpen = false,
 	setPanelOpen = null,
+	...rest
 }) {
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const [isOpen, toggleOpen] = useToggle(startOpen)
@@ -52,7 +53,7 @@ export default function Panel({
 	}
 
 	return (
-		<div className={shouldOpen ? 'dolly-panel dolly-panel-open' : 'dolly-panel'}>
+		<div className={shouldOpen ? 'dolly-panel dolly-panel-open' : 'dolly-panel'} {...rest}>
 			<div
 				className="dolly-panel-heading"
 				onClick={() => {

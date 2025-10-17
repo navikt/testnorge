@@ -174,6 +174,11 @@ const selectOptions = {
 		{ value: 'VEGADRESSE', label: adresser.vegadresse },
 		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
 		{ value: 'POSTBOKSADRESSE', label: 'Postboksadresse' },
+		{ value: 'POSTADRESSE_I_FRITT_FORMAT', label: 'Postadresse i fritt format (historisk)' },
+		{
+			value: 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT',
+			label: 'Utenlandsk adresse i fritt format( historisk)',
+		},
 	],
 
 	adressetypeDeltBosted: [

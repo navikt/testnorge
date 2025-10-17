@@ -29,9 +29,9 @@ export const Attributt: React.FC<AttributtProps> = ({
 }) => {
 	if (!vis) return null
 	return (
-		<div title={title} style={{ display: 'flex' }}>
+		<div title={title} style={{ display: 'flex', alignItems: 'center' }}>
 			<DollyCheckbox
-				wrapperSize="grow"
+				wrapperSize="tight"
 				label={attr.label}
 				attributtCheckbox
 				size="small"
@@ -41,9 +41,7 @@ export const Attributt: React.FC<AttributtProps> = ({
 				id={id}
 				{...props}
 			/>
-			{infoTekst && (
-				<Hjelpetekst style={{ marginLeft: '-25px', marginTop: '3px' }}>{infoTekst}</Hjelpetekst>
-			)}
+			{infoTekst && <Hjelpetekst>{infoTekst}</Hjelpetekst>}
 		</div>
 	)
 }
