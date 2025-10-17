@@ -9,6 +9,7 @@ import { OppholdAnnetSted } from './OppholdAnnetSted'
 import { Postboksadresse } from './Postboksadresse'
 import { PostadresseIFrittFormat } from './PostadresseIFrittFormat'
 import { UtenlandskAdresseIFrittFormat } from './UtenlandskAdresseIFrittFormat'
+import { FrittFormatAdresse } from './FrittFormatAdresse'
 
 export {
 	UtenlandskAdresse,
@@ -22,4 +23,5 @@ export {
 	Postboksadresse,
 	PostadresseIFrittFormat,
 	UtenlandskAdresseIFrittFormat,
+	FrittFormatAdresse,
 }
