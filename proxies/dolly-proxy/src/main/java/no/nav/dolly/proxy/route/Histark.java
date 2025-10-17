@@ -10,15 +10,13 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-public class Histark {
+class Histark {
 
     private final Targets targets;
 
     Function<PredicateSpec, Buildable<Route>> build() {
         return spec -> spec
                 .path("/histark/**")
-                .and()
-                .not(not -> not.path("/internal/**"))
                 .filters(f -> f.stripPrefix(1))
                 .uri(targets.histark);
     }

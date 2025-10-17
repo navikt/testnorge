@@ -17,8 +17,6 @@ class Inntektstub {
     Function<PredicateSpec, Buildable<Route>> build() {
         return spec -> spec
                 .path("/inntektstub/**")
-                .and()
-                .not(not -> not.path("/internal/**"))
                 .filters(f -> f.stripPrefix(1))
                 .uri(targets.inntektstub);
     }
