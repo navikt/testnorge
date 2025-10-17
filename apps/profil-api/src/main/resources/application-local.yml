@@ -1,13 +1,11 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-
-TOKEN_X_ISSUER: https://tokenx.dev-gcp.nav.cloud.nais.io
-TOKEN_X_JWKS_URI: https://tokenx.dev-gcp.nav.cloud.nais.io
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnorge-profil-api-dev
-
 spring:
   config:
     import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dev-gcp:dolly:testnorge-profil-api-dev
 
 consumers:
   testnav-altinn3-tilgang-service:

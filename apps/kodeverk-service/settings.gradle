@@ -1,16 +1,17 @@
 plugins {
-    id "com.gradle.develocity" version "3.17.4"
+    id "com.gradle.develocity" version "4.0.1"
 }
 
-rootProject.name = 'kodeverk-service'
+rootProject.name = "kodeverk-service"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/servlet-insecure-security'
-includeBuild '../../libs/security-core'
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/servlet-insecure-security"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {

@@ -6,16 +6,14 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import {
 	useDollyFasteDataOrganisasjoner,
-	useFasteDataOrganisasjon,
-	useOrganisasjoner,
-} from '@/utils/hooks/useOrganisasjoner'
+	useDollyOrganisasjoner,
+	useOrganisasjonForvalter,
+} from '@/utils/hooks/useDollyOrganisasjoner'
 import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
-import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
+import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
 import styled from 'styled-components'
 import { arbeidsgiverToggleValues, handleManualOrgChange } from '@/utils/OrgUtils'
 
@@ -37,7 +35,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 		useDollyFasteDataOrganisasjoner(true)
 
 	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useOrganisasjoner(currentBruker?.brukerId)
+		useDollyOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	const organisasjonPath = `${path}.organisasjonsnummer`
@@ -75,11 +73,22 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 		formMethods.watch('skattekort.arbeidsgiverSkatt')?.length,
 	])
 
-	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
-	const [success, setSuccess] = useBoolean(false)
-	const [loading, setLoading] = useBoolean(false)
-	const [orgnummer, setOrgnummer] = useState(formMethods.watch(organisasjonPath) || null)
-	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
+	const orgnummer = formMethods.watch(organisasjonPath)
+	const { organisasjoner, loading, error } = useOrganisasjonForvalter([orgnummer])
+	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
+
+	useEffect(() => {
+		if (!organisasjon) {
+			if (orgnummer && !loading) {
+				formMethods.setError(`manual.${organisasjonPath}`, {
+					message: 'Fant ikke organisasjonen',
+				})
+			}
+			return
+		}
+		formMethods.clearErrors(`manual.${organisasjonPath}`)
+		handleManualOrgChange(orgnummer, formMethods, organisasjonPath, null, organisasjon)
+	}, [organisasjon, loading])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
@@ -137,40 +146,16 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 						/>
 					)}
 					{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
-						<OrganisasjonMedMiljoeSelect
+						<OrganisasjonForvalterSelect
 							path={organisasjonPath}
 							parentPath={path}
-							miljoeOptions={aktiveMiljoer}
-							success={success}
+							value={orgnummer}
+							success={organisasjoner?.length > 0 && !error}
+							error={error}
 							loading={loading}
 							onTextBlur={(event) => {
-								const org = event.target.value
-								setOrgnummer(org)
-								handleManualOrgChange(
-									org,
-									formMethods.watch(`${path}.organisasjonMiljoe`),
-									formMethods,
-									organisasjonPath,
-									setLoading,
-									setSuccess,
-									organisasjon,
-									null,
-								)
+								formMethods.setValue(organisasjonPath, null)
 							}}
-							onMiljoeChange={(event) => {
-								formMethods.setValue(`${path}.organisasjonMiljoe`, event.value)
-								handleManualOrgChange(
-									orgnummer,
-									event.value,
-									formMethods,
-									organisasjonPath,
-									setLoading,
-									setSuccess,
-									organisasjon,
-									null,
-								)
-							}}
-							formMethods={formMethods}
 						/>
 					)}
 					{typeArbeidsgiver === ArbeidsgiverTyper.privat && (

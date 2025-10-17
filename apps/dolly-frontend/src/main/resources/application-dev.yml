@@ -1,6 +1,13 @@
 #Dev config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
-REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
+
+spring:
+  data:
+    redis:
+      host: ${VALKEY_HOST_SESSION_DEV}
+      port: ${VALKEY_PORT_SESSION_DEV}
+      username: ${VALKEY_USERNAME_SESSION_DEV}
+      password: ${VALKEY_PASSWORD_SESSION_DEV}
 
 consumers:
   # Konsumenter for dev-miljø
@@ -26,3 +33,9 @@ consumers:
   testnav-sykemelding-api:
     name: testnav-sykemelding-api-dev
     url: http://testnav-sykemelding-api-dev.dolly.svc.cluster.local
+  testnav-dolly-search-service:
+    name: testnav-dolly-search-service-dev
+    url: http://testnav-dolly-search-service-dev.dolly.svc.cluster.local
+  testnav-api-oversikt-service:
+    name: testnav-api-oversikt-service
+    url: http://testnav-api-oversikt-service.dolly.svc.cluster.local

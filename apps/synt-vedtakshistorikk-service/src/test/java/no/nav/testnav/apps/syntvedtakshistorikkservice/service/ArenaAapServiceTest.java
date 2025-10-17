@@ -1,18 +1,16 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -24,10 +22,9 @@ import java.util.List;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ArenaAapServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ArenaAapServiceTest {
 
     @Mock
     private IdentService identService;
@@ -38,7 +35,7 @@ public class ArenaAapServiceTest {
     private final String fnr1 = "27869949421";
     private final PersonDTO person = PersonDTO.builder()
             .ident(fnr1)
-            .foedselsdato(FoedselsdatoDTO.builder()
+            .foedselsdato(PersonDTO.FoedselsdatoDTO.builder()
                     .foedselsdato(LocalDate.of(1999, 6, 27))
                     .build())
             .build();
@@ -46,8 +43,8 @@ public class ArenaAapServiceTest {
     private Vedtakshistorikk historikk;
     private List<NyttVedtakAap> aap115Rettigheter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Saksopplysning saksopplysning = new Saksopplysning();
         var nyRettighetAap = NyttVedtakAap.builder()
                 .build();
@@ -77,15 +74,10 @@ public class ArenaAapServiceTest {
                 .tvungenForvaltning(defaultRettigheter)
                 .fritakMeldekort(defaultRettigheter)
                 .build();
-
-        when(identService.getIdentMedKontoinformasjon()).thenReturn(Kontoinfo.builder()
-                        .fnr("12345678910")
-                        .kontonummer("123")
-                .build());
     }
 
     @Test
-    public void shouldUpdateRettigheter(){
+    void shouldUpdateRettigheter() {
         List<RettighetRequest> rettigheter = new ArrayList<>();
 
         arenaAapService.opprettVedtakAap115(historikk.getAap115(), fnr1, miljoe, rettigheter);
@@ -94,11 +86,11 @@ public class ArenaAapServiceTest {
         arenaAapService.opprettVedtakFritakMeldekort(historikk, fnr1, miljoe, rettigheter);
         arenaAapService.opprettVedtakTvungenForvaltning(historikk, fnr1, miljoe, rettigheter);
 
-        assertThat(rettigheter).hasSize(6);
+        assertThat(rettigheter).hasSize(5);
     }
 
     @Test
-    public void shouldGetIkkeAvsluttende115Vedtak(){
+    void shouldGetIkkeAvsluttende115Vedtak() {
         var ikkeAvsluttendeVedtak = arenaAapService.getIkkeAvsluttendeVedtakAap115(aap115Rettigheter);
         var emptyVedtak = arenaAapService.getIkkeAvsluttendeVedtakAap115(null);
 
@@ -109,7 +101,7 @@ public class ArenaAapServiceTest {
     }
 
     @Test
-    public void shouldGetAvsluttende115Vedtak(){
+    void shouldGetAvsluttende115Vedtak() {
         var avsluttendeVedtak = arenaAapService.getAvsluttendeVedtakAap115(aap115Rettigheter);
         var emptyVedtak = arenaAapService.getAvsluttendeVedtakAap115(null);
 
@@ -119,7 +111,7 @@ public class ArenaAapServiceTest {
     }
 
     @Test
-    public void shouldFjernAapUngUfoerMedUgyldigeDatoer(){
+    void shouldFjernAapUngUfoerMedUgyldigeDatoer() {
         var ungUfoer1 = NyttVedtakAap.builder().build();
         ungUfoer1.setFraDato(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
         var ungUfoer2 = NyttVedtakAap.builder().build();
@@ -133,7 +125,7 @@ public class ArenaAapServiceTest {
     }
 
     @Test
-    public void shouldUpdateAapSykepengerDatoer(){
+    void shouldUpdateAapSykepengerDatoer() {
         var aap1 = NyttVedtakAap.builder().build();
         aap1.setAktivitetsfase(AKTIVITETSFASE_SYKEPENGEERSTATNING);
         aap1.setFraDato(LocalDate.now());
@@ -159,21 +151,23 @@ public class ArenaAapServiceTest {
         aap4.setVedtaktype("O");
 
         var vedtak = Arrays.asList(aap1, aap2, aap3, aap4);
-        Vedtakshistorikk historikk = Vedtakshistorikk.builder()
+        var vedtakshistorikk = Vedtakshistorikk
+                .builder()
                 .aap(vedtak)
                 .build();
-        arenaAapService.oppdaterAapSykepengeerstatningDatoer(historikk);
+        arenaAapService.oppdaterAapSykepengeerstatningDatoer(vedtakshistorikk);
 
         var diff1 = ChronoUnit.DAYS.between(LocalDate.now().plusMonths(6), LocalDate.now().plusMonths(7));
 
-        assertThat(historikk.getAap()).hasSize(4);
-        assertThat(historikk.getAap().get(0).getFraDato()).isEqualTo(LocalDate.now());
-        assertThat(historikk.getAap().get(0).getTilDato()).isEqualTo(LocalDate.now().plusMonths(6));
-        assertThat(historikk.getAap().get(1).getFraDato()).isEqualTo(LocalDate.now().plusMonths(7).minusDays(diff1));
-        assertThat(historikk.getAap().get(1).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1));
-        assertThat(historikk.getAap().get(2).getFraDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1));
-        assertThat(historikk.getAap().get(2).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1).plusMonths(6));
-        assertThat(historikk.getAap().get(3).getFraDato()).isEqualTo(LocalDate.now().plusMonths(7));
-        assertThat(historikk.getAap().get(3).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10));
+        assertThat(vedtakshistorikk.getAap()).hasSize(4);
+        assertThat(vedtakshistorikk.getAap().get(0).getFraDato()).isEqualTo(LocalDate.now());
+        assertThat(vedtakshistorikk.getAap().get(0).getTilDato()).isEqualTo(LocalDate.now().plusMonths(6));
+        assertThat(vedtakshistorikk.getAap().get(1).getFraDato()).isEqualTo(LocalDate.now().plusMonths(7).minusDays(diff1));
+        assertThat(vedtakshistorikk.getAap().get(1).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1));
+        assertThat(vedtakshistorikk.getAap().get(2).getFraDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1));
+        assertThat(vedtakshistorikk.getAap().get(2).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1).plusMonths(6));
+        assertThat(vedtakshistorikk.getAap().get(3).getFraDato()).isEqualTo(LocalDate.now().plusMonths(7));
+        assertThat(vedtakshistorikk.getAap().get(3).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10));
     }
+
 }

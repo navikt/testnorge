@@ -1,0 +1,10 @@
+spring:
+  config:
+    import: "sm://"
+
+open:
+  search:
+    uri: http://localhost:9200
+    username: dummy
+    password: dummy
+    index: local

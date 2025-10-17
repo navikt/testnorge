@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   webproxy: true
@@ -28,24 +31,26 @@ spec:
         - application: testnav-synt-sykemelding-api
     outbound:
       rules:
-        - application: dolly-backend
+        - application: logging
+          namespace: nais-system
   liveness:
-    path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -54,9 +59,9 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 100m
-      memory: 4000Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
-      memory: 5000Mi
+      memory: 2000Mi
   ingresses:
     - "https://testnav-helsepersonell-service.intern.dev.nav.no"

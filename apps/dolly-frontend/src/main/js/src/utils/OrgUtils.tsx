@@ -1,5 +1,4 @@
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
-import { OrgserviceApi } from '@/service/Api'
 
 export const arbeidsgiverToggleValues = [
 	{
@@ -42,51 +41,44 @@ export const getOrgType = (orgnr: string, fasteOrganisasjoner: any, egneOrganisa
 
 export const handleManualOrgChange = (
 	org: string,
-	miljo: string,
 	formMethods,
 	path,
-	setLoading,
-	setSuccess,
-	organisasjon,
 	opplysningspliktigPath,
+	organisasjon,
 ) => {
 	const validEnhetstyper = ['BEDR', 'AAFY']
-	if (!org || !miljo) {
-		formMethods.setError(`manual.${path}`, { message: !org ? 'Skriv inn org' : 'Velg miljø' })
+
+	if (!org) {
+		formMethods.setError(`manual.${path}`, { message: 'Skriv inn org' })
 		return
 	}
+	if (!organisasjon) {
+		formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen' })
+		return
+	}
+
+	if (!validEnhetstyper.includes(organisasjon?.enhetstype)) {
+		formMethods.setError(`manual.${path}`, {
+			message: 'Organisasjonen må være av type BEDR eller AAFY',
+		})
+		return
+	}
+	if (!organisasjon?.juridiskEnhet) {
+		if (organisasjon?.overenhet) {
+			opplysningspliktigPath &&
+				formMethods.setValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
+		} else {
+			formMethods.setError(`manual.${path}`, {
+				message: 'Organisasjonen mangler juridisk enhet',
+			})
+			return
+		}
+	}
+	opplysningspliktigPath &&
+		organisasjon?.juridiskEnhet &&
+		formMethods.setValue(opplysningspliktigPath, organisasjon?.juridiskEnhet)
+	formMethods.setValue(path, organisasjon?.organisasjonsnummer)
+
 	formMethods.clearErrors(`manual.${path}`)
 	formMethods.clearErrors(path)
-	setLoading(true)
-	setSuccess(false)
-	OrgserviceApi.getOrganisasjonInfo(org, miljo)
-		.then((response: { data: { enhetType: string; juridiskEnhet: any; orgnummer: any } }) => {
-			setLoading(false)
-			if (!validEnhetstyper.includes(response.data.enhetType)) {
-				formMethods.setError(`manual.${path}`, {
-					message: 'Organisasjonen må være av type BEDR eller AAFY',
-				})
-				return
-			}
-			if (!response.data.juridiskEnhet) {
-				if (organisasjon?.overenhet) {
-					opplysningspliktigPath &&
-						formMethods.setValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
-				} else {
-					formMethods.setError(`manual.${path}`, {
-						message: 'Organisasjonen mangler juridisk enhet',
-					})
-					return
-				}
-			}
-			setSuccess(true)
-			opplysningspliktigPath &&
-				response.data.juridiskEnhet &&
-				formMethods.setValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
-			formMethods.setValue(`${path}`, response.data.orgnummer)
-		})
-		.catch(() => {
-			setLoading(false)
-			formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen i ' + miljo })
-		})
 }

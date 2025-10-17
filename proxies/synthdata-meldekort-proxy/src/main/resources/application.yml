@@ -2,26 +2,20 @@ spring:
   application:
     name: testnav-synthdata-meldekort-proxy
     description: Proxy for synthdata-arena-meldekort som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         trygdeetaten:
-          issuer-uri: ${azure.openid.config.issuer}
-          jwk-set-uri: ${azure.openid.config.jwks.uri}
-          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
   codec:
     max-in-memory-size: 15MB
   cloud:
     gcp:
       secretmanager:
         enabled: false
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   synt-meldekort:

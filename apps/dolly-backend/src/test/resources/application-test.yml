@@ -1,12 +1,9 @@
 APP_NAME: dolly
 APP_VERSION: ${application.version}
 environment: localhost
-TOKEN_X_ISSUER: dummy
 
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira
-  username: dummy
-  password: dummy
 
 open:
   search:
@@ -14,7 +11,7 @@ open:
     username: dummy
     password: dummy
     total-fields: 150
-    index: dummy
+    index: dolly
 
 consumers:
   kodeverk-api:
@@ -73,24 +70,31 @@ consumers:
     url: http://localhost:${wiremock.server.port:0}/kontoregister
     cluster: dev-fss
 
-sts:
-  token:
-    provider:
-      test: dummy
-      preprod: dummy
+management:
+  prometheus:
+    metrics:
+      export:
+        enabled: false
+  endpoint:
+    metrics:
+      access: none
+  endpoints:
+    web:
+      exposure:
+        include: none
 
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-  datasource:
-    type: org.springframework.jdbc.datasource.SimpleDriverDataSource
-    url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
-    username: user
-    password: pass
-  flyway:
-    enabled: true
-    url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
-    user: user
-    password: pass
+  config:
+    activate:
+      on-profile: test
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  main:
+    web-application-type: reactive
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          enabled: false

@@ -4,17 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
-import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlDeleteHendelseIdCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlMergeNpidCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettNpidCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
-import no.nav.pdl.forvalter.dto.ArtifactValue;
-import no.nav.pdl.forvalter.dto.HendelseIdRequest;
-import no.nav.pdl.forvalter.dto.MergeIdent;
-import no.nav.pdl.forvalter.dto.OpprettIdent;
-import no.nav.pdl.forvalter.dto.OrdreRequest;
+import no.nav.pdl.forvalter.consumer.command.*;
+import no.nav.pdl.forvalter.dto.*;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
@@ -23,12 +14,15 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -54,11 +48,14 @@ public class PdlTestdataConsumer {
             Consumers consumers,
             ObjectMapper objectMapper,
             PersonServiceConsumer personServiceConsumer,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getPdlProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .responseTimeout(Duration.ofSeconds(10))))
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();

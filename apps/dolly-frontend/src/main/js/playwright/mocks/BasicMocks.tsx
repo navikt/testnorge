@@ -19,6 +19,18 @@ export const gjeldendeBankidBrukerMock = {
 	brukertype: 'BANKID',
 }
 
+export const brukerTeamsMock = [
+	{
+		beskrivelse: 'Testytest beskrivelse',
+		brukerId: 'team-bruker-id-90',
+		brukere: [gjeldendeAzureBrukerMock],
+		id: 1,
+		navn: 'Testytest',
+		opprettet: '2022-09-06T10:24:03',
+		opprettetAv: gjeldendeAzureBrukerMock,
+	},
+]
+
 export const personOrgTilgangMock = [
 	{
 		navn: 'testytest',
@@ -61,24 +73,11 @@ const malBestilling = {
 		egenAnsattDatoFom: '2022-09-06T10:24:03',
 	},
 }
-export const brukerMalerMock = {
-	malbestillinger: {
-		testbruker: [
-			{
-				id: 1,
-				malNavn: 'Teste Playwright',
-				bestilling: malBestilling,
-				bruker: gjeldendeAzureBrukerMock,
-			},
-		],
-	},
-}
-
-export const brukerMalerEndretMock = [
+export const brukerMalerMock = [
 	{
 		id: 1,
-		malNavn: 'Nytt navn på mal',
-		bestilling: malBestilling,
+		malNavn: 'Teste Playwright',
+		malBestilling: malBestilling,
 		bruker: gjeldendeAzureBrukerMock,
 	},
 ]
@@ -289,10 +288,12 @@ export const backendTransaksjonMock = [
 		ident: '12345678912',
 		system: 'INNTKMELD',
 		miljoe: 'q1',
-		transaksjonId: {
-			journalpostId: '999999999',
-			dokumentInfoId: '888888888',
-		},
+		transaksjonId: [
+			{
+				journalpostId: '999999999',
+				dokumentInfoId: '888888888',
+			},
+		],
 		datoEndret: '2022-01-01T11:58:58.227916',
 	},
 	{
@@ -301,31 +302,15 @@ export const backendTransaksjonMock = [
 		ident: '12345678912',
 		system: 'INNTKMELD',
 		miljoe: 'q2',
-		transaksjonId: {
-			journalpostId: '999999999',
-			dokumentInfoId: '888888888',
-		},
+		transaksjonId: [
+			{
+				journalpostId: '999999999',
+				dokumentInfoId: '888888888',
+			},
+		],
 		datoEndret: '2022-01-01T11:58:59.289252',
 	},
 ]
-
-export const sigrunstubMock = {
-	responseList: [
-		{
-			personidentifikator: '12345678912',
-			grunnlag: [
-				{
-					inntektsaar: '2022',
-					tjeneste: 'Beregnet skatt',
-					grunnlag: 'formuePrimaerbolig',
-					verdi: '12345',
-					testDataEier: '',
-				},
-			],
-			svalbardGrunnlag: [],
-		},
-	],
-}
 
 export const aaregMock = [
 	{
@@ -889,8 +874,6 @@ export const joarkDokumentMock =
 
 export const varslingerVelkommenResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY' }]
 
-export const malerMock = { malbestillinger: ['Playwright, Testytest', []] }
-
 export const testnorgeMalBestillinger = [
 	{
 		id: 4,
@@ -1059,16 +1042,6 @@ export const testnorgeMalBestillinger = [
 								identer: ['04916412345', '31816512345'],
 							},
 						],
-					},
-				],
-			},
-			{
-				id: 'SIGRUN_LIGNET',
-				navn: 'Lignet skatteinntekt (Sigrunstub)',
-				statuser: [
-					{
-						melding: 'OK',
-						identer: ['31816512345', '06896512345', '08826512345', '06836312345', '04916412345'],
 					},
 				],
 			},
@@ -1692,21 +1665,23 @@ export const backendBestillingerMock = [
 				],
 				understatuser: [0],
 			},
-			dokarkiv: {
-				tittel: 'Anke',
-				tema: 'AGR',
-				kanal: 'NAV_NO',
-				avsenderMottaker: {
-					id: '12345678912',
-					idType: 'FNR',
-				},
-				dokumenter: [
-					{
-						tittel: 'Anke',
-						brevkode: 'NAV 90-00.08 A',
+			dokarkiv: [
+				{
+					tittel: 'Anke',
+					tema: 'AGR',
+					kanal: 'NAV_NO',
+					avsenderMottaker: {
+						id: '12345678912',
+						idType: 'FNR',
 					},
-				],
-			},
+					dokumenter: [
+						{
+							tittel: 'Anke',
+							brevkode: 'NAV 90-00.08 A',
+						},
+					],
+				},
+			],
 			histark: {},
 			medl: {},
 			sykemelding: {
@@ -1949,9 +1924,6 @@ export const backendBestillingerMock = [
 					],
 				},
 			},
-			tpsMessaging: {
-				spraakKode: 'AB',
-			},
 			bankkonto: {
 				norskBankkonto: {
 					kontonummer: '99999999999',
@@ -2074,6 +2046,12 @@ export const eksisterendeGruppeMock = {
 	erLaast: false,
 	identer: [testidentMock],
 	tags: [],
+}
+
+export const laastGruppeMock = {
+	...eksisterendeGruppeMock,
+	erLaast: true,
+	laastBeskrivelse: 'Låst gruppe',
 }
 
 export const histarkMock = {
@@ -2293,3 +2271,146 @@ export const tenorSoekOrganisasjonTestdataMock = {
 	query: 'organisasjonsnummer:312345678',
 	error: null,
 }
+
+export const dollySearchMock = {
+	antall: 1,
+	error: null,
+	personer: [
+		{
+			hentIdenter: {
+				identer: [
+					{
+						ident: '12345678912',
+						historisk: false,
+						gruppe: 'FOLKEREGISTERIDENT',
+					},
+				],
+			},
+			hentPerson: {
+				foedsel: [
+					{
+						foedselsaar: 1992,
+						foedselsdato: '1992-01-11',
+						foedeland: 'NOR',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: 'c8eb5066-14ec-4bf7-acb5-365cae1deaf3',
+						},
+					},
+				],
+				kjoenn: [
+					{
+						kjoenn: 'MANN',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: '017a6239-91c2-463b-b9d1-1e732c3db5e5',
+						},
+					},
+				],
+				navn: [
+					{
+						fornavn: 'Cafe',
+						etternavn: 'Test',
+						gyldigFraOgMed: '2022-10-03',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: '764dc813-3c85-42c3-abb6-472f6f30d953',
+						},
+					},
+				],
+				vergemaalEllerFremtidsfullmakt: [
+					{
+						type: 'forvaltningUtenforVergemaal',
+						embete: 'Statsforvalteren i Innlandet',
+						vergeEllerFullmektig: {
+							navn: {
+								fornavn: 'Testesen',
+								etternavn: 'Cafe',
+							},
+							motpartsPersonident: '23456789123',
+							omfangetErInnenPersonligOmraade: true,
+						},
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T00:00',
+							gyldighetstidspunkt: '2022-10-03T11:57:42',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:42',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: 'f80d7429-dec4-49af-b933-88d07a143017',
+						},
+					},
+				],
+			},
+		},
+	],
+	seed: 1111,
+	side: 0,
+	totalHits: 1,
+}
+
+export const fagsystemTyperMock = [
+	{
+		type: 'AAREG',
+		beskrivelse: 'Arbeidsgiver/arbeidstaker-register (AAREG)',
+	},
+	{
+		type: 'ARBEIDSPLASSENCV',
+		beskrivelse: 'Nav CV',
+	},
+]

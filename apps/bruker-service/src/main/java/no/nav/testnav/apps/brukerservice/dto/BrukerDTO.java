@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record BrukerDTO(
         String id,
         String brukernavn,
+        String epost,
         String organisasjonsnummer,
         LocalDateTime opprettet,
         LocalDateTime sistInnlogget

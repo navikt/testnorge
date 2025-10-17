@@ -1,27 +1,25 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.intern.dev.nav.no/login
-REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
   application:
     name: dolly-frontend
-  main:
-    banner-mode: off
     allow-circular-references: true
+  config:
+    import: "dolly-application.yml"
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: 6379
+      host: ${VALKEY_HOST_SESSION}
+      port: ${VALKEY_PORT_SESSION}
+      username: ${VALKEY_USERNAME_SESSION}
+      password: ${VALKEY_PASSWORD_SESSION}
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
@@ -135,11 +133,11 @@ consumers:
     namespace: dolly
     name: testnav-miljoer-service
     url: http://testnav-miljoer-service.dolly.svc.cluster.local
-  testnav-person-search-service:
+  testnav-dolly-search-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-search-service
-    url: http://testnav-person-search-service.dolly.svc.cluster.local
+    name: testnav-dolly-search-service
+    url: http://testnav-dolly-search-service.dolly.svc.cluster.local
   testnav-person-service:
     cluster: dev-gcp
     namespace: dolly
@@ -200,6 +198,11 @@ consumers:
     namespace: dolly
     url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
+  testnav-sykemelding-proxy:
+    name: testnav-sykemelding-proxy
+    namespace: dolly
+    url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-histark-proxy:
     name: testnav-histark-proxy
     namespace: dolly
@@ -240,40 +243,27 @@ consumers:
     namespace: dolly
     name: testnav-sykemelding-api
     url: http://testnav-sykemelding-api.dolly.svc.cluster.local
+  testnav-arbeidssoekerregisteret-proxy:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-arbeidssoekerregisteret-proxy
+    url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
+  testnav-api-oversikt-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-api-oversikt-service
+    url: http://testnav-api-oversikt-service.dolly.svc.cluster.local
+  testnav-nom-proxy:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-nom-proxy
+    url: http://testnav-nom-proxy.dolly.svc.cluster.local
 
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
 server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
   max-http-request-header-size: 128KB
 
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
-
   level:
-    org:
-      springframework:
-        boot:
-          autoconfigure:
-            security:
-              reactive:
-                ReactiveUserDetailsServiceAutoConfiguration: OFF
+    org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration: OFF

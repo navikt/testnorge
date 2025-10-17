@@ -36,6 +36,4 @@ dependencies {
     implementation "org.flywaydb:flyway-database-postgresql"
 
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
-
-    testImplementation "no.nav.testnav.libs:testing"
 }

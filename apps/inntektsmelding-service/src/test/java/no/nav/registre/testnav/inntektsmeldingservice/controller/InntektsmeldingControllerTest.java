@@ -3,15 +3,14 @@ package no.nav.registre.testnav.inntektsmeldingservice.controller;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.DokmotConsumer;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.GenererInntektsmeldingConsumer;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -24,9 +23,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@DollySpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
 @Slf4j
 class InntektsmeldingControllerTest {
 
@@ -85,10 +83,10 @@ class InntektsmeldingControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private GenererInntektsmeldingConsumer genererInntektsmeldingConsumer;
 
-    @MockBean
+    @MockitoBean
     private DokmotConsumer dokmotConsumer;
 
     @BeforeEach

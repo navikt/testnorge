@@ -33,19 +33,11 @@ export const SelectOptionsOppslag = {
 		)
 	},
 
-	hentFullmaktOmraader: () => {
-		return useAsync(async () => DollyApi.getKodeverkByNavn('Tema'), [DollyApi.getKodeverkByNavn])
-	},
-
 	hentRollerFraBrregstub: () => {
 		return useAsync(async () => BrregstubApi.getRoller(), [BrregstubApi.getRoller])
 	},
 
 	hentUnderstatusFraBrregstub: () => {
 		return useAsync(async () => BrregstubApi.getUnderstatus(), [BrregstubApi.getUnderstatus])
-	},
-
-	hentTagsFraDolly: () => {
-		return useAsync(async () => DollyApi.getTags(), [DollyApi.getTags])
 	},
 }

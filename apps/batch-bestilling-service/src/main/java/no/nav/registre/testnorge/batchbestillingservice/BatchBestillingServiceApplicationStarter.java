@@ -1,11 +1,16 @@
 package no.nav.registre.testnorge.batchbestillingservice;
 
-import org.springframework.boot.SpringApplication;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+@EnableWebSecurity
 @SpringBootApplication
 public class BatchBestillingServiceApplicationStarter {
     public static void main(String[] args) {
-        SpringApplication.run(BatchBestillingServiceApplicationStarter.class, args);
+        new SpringApplicationBuilder(BatchBestillingServiceApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

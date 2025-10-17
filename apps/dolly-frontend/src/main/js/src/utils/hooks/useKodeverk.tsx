@@ -1,8 +1,8 @@
-import useSWR from 'swr'
 import { fetcher } from '@/api'
 import * as _ from 'lodash-es'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { SortKodeverkArray } from '@/service/services/dolly/Utils'
+import useSWRImmutable from 'swr/immutable'
 
 type KodeverkListe = {
 	koder: Array<KodeverkType>
@@ -23,7 +23,7 @@ const getKodeverkUrl = (kodeverkNavn) =>
 		: `/testnav-kodeverk-service/api/v1/kodeverk/${kodeverkNavn}`
 
 export const useKodeverk = (kodeverkNavn) => {
-	const { data, isLoading, error } = useSWR<KodeverkListe, Error>(
+	const { data, isLoading, error, mutate } = useSWRImmutable<KodeverkListe, Error>(
 		[
 			getKodeverkUrl(kodeverkNavn),
 			{ accept: 'application/json', 'Content-Type': 'application/json' },
@@ -50,5 +50,6 @@ export const useKodeverk = (kodeverkNavn) => {
 		),
 		loading: isLoading,
 		error: error,
+		mutate,
 	}
 }

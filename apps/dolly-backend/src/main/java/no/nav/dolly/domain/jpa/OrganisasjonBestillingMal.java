@@ -1,14 +1,5 @@
 package no.nav.dolly.domain.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OrderColumn;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,40 +7,41 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ORGANISASJON_BESTILLING_MAL")
+@Table("ORGANISASJON_BESTILLING_MAL")
 public class OrganisasjonBestillingMal implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "BEST_KRITERIER", nullable = false)
+    @Column("BEST_KRITERIER")
     private String bestKriterier;
 
-    @Column(name = "MILJOER")
+    @Column("MILJOER")
     private String miljoer;
 
-    @Column(name = "MAL_NAVN", nullable = false)
-    @OrderColumn
+    @Column("MAL_NAVN")
     private String malNavn;
 
-    @ManyToOne
-    @JoinColumn(name = "BRUKER_ID")
+    @Column("BRUKER_ID")
+    private Long brukerId;
+
+    @Transient
     private Bruker bruker;
 
-    @Column(name = "SIST_OPPDATERT", nullable = false)
-    @UpdateTimestamp
+    @Column("SIST_OPPDATERT")
     private LocalDateTime sistOppdatert;
 
     @Override
@@ -65,7 +57,7 @@ public class OrganisasjonBestillingMal implements Serializable {
                 .append(bestKriterier, that.bestKriterier)
                 .append(miljoer, that.miljoer)
                 .append(malNavn, that.malNavn)
-                .append(bruker, that.bruker)
+                .append(brukerId, that.brukerId)
                 .append(sistOppdatert, that.sistOppdatert)
                 .isEquals();
     }
@@ -77,7 +69,7 @@ public class OrganisasjonBestillingMal implements Serializable {
                 .append(bestKriterier)
                 .append(miljoer)
                 .append(malNavn)
-                .append(bruker)
+                .append(brukerId)
                 .append(sistOppdatert)
                 .toHashCode();
     }
@@ -89,7 +81,7 @@ public class OrganisasjonBestillingMal implements Serializable {
                 ", bestKriterier='" + bestKriterier + '\'' +
                 ", miljoer='" + miljoer + '\'' +
                 ", malNavn='" + malNavn + '\'' +
-                ", bruker=" + bruker +
+                ", brukerId=" + brukerId +
                 ", sistOppdatert=" + sistOppdatert +
                 '}';
     }

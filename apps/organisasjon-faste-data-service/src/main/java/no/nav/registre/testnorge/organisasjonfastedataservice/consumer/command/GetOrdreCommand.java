@@ -2,16 +2,15 @@ package no.nav.registre.testnorge.organisasjonfastedataservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -29,15 +28,16 @@ public class GetOrdreCommand implements Callable<List<ItemDTO>> {
                     .get()
                     .uri(builder -> builder
                             .path("/api/v1/order/{ordreId}/items")
-                            .build(ordreId)
-                    )
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                            .build(ordreId))
+                    .headers(WebClientHeader.bearer(token))
                     .retrieve()
                     .bodyToMono(ItemDTO[].class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
+                    .retryWhen(WebClientError.is5xxException())
                     .block();
-            return Arrays.asList(response);
+            return Optional
+                    .ofNullable(response)
+                    .map(Arrays::asList)
+                    .orElse(List.of());
         } catch (WebClientResponseException.NotFound e) {
             log.warn("Fant ikke ordre med ordreId {}.", ordreId);
             return null;

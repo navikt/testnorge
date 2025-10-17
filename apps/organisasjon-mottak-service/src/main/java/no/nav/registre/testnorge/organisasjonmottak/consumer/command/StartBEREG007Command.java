@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.apache.hc.core5.http.ContentType;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -19,14 +20,12 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
@@ -69,19 +68,18 @@ public class StartBEREG007Command implements Callable<Long> {
                 .with("stepSelection", "'2;3;4;5;6'")
                 .with("input_file", fileEntity);
 
-        String crumb = this.crumb.getCrumb();
+        var jenkinsCrumb = this.crumb.getCrumb();
 
         try {
             log.info("Sender inn bestilling til jenkins");
             var id = webClient
                     .post()
                     .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
-                    .header("Jenkins-Crumb", crumb)
+                    .header("Jenkins-Crumb", jenkinsCrumb)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .headers(WebClientHeader.bearer(token))
                     .body(body)
-                    .exchange()
-                    .flatMap(response -> {
+                    .exchangeToMono(response -> {
                         try {
                             if (!response.statusCode().is2xxSuccessful()) {
                                 return Mono.error(new RuntimeException("Klarer ikke å opprette organiasasjonen. Http status: " + response.statusCode()));
@@ -99,17 +97,15 @@ public class StartBEREG007Command implements Callable<Long> {
                             } else {
                                 return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
                             }
+                        } catch (WebClientResponseException e) {
+                            log.error("Klarer ikke å finne location.\nResponse body: {}.", e.getResponseBodyAsString(), e);
+                            return Mono.error(e);
                         } catch (Exception e) {
-                            log.error(
-                                    "Klarer ikke å finne location.\nResponse body: {}.",
-                                    response.bodyToMono(String.class),
-                                    e
-                            );
+                            log.error("Klarer ikke å finne location.", e);
                             return Mono.error(e);
                         }
                     })
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
+                    .retryWhen(WebClientError.is5xxException())
                     .block();
             log.info("Bestilling opprettet i jenkins med id: {}", id);
             return id;
@@ -129,7 +125,7 @@ public class StartBEREG007Command implements Callable<Long> {
 
     private static Resource getFileResource(String content) throws IOException {
         Path tempFile = Files.createTempFile("ereg", ".txt");
-        Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
+        Files.writeString(tempFile, content);
         File file = tempFile.toFile();
         return new FileSystemResource(file);
     }

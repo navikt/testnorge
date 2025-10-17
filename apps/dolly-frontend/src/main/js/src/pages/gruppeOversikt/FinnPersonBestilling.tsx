@@ -1,26 +1,31 @@
-import './FinnPerson.less'
-import { useAsyncFn } from 'react-use'
-import AsyncSelect from 'react-select/async'
+import './FinnPersonBestilling.less'
 import { components } from 'react-select'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { JSX, useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import Icon from '@/components/ui/icon/Icon'
-import { SoekTypeValg, VelgSoekTypeToggle } from '@/pages/gruppeOversikt/VelgSoekTypeToggle'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Highlighter from 'react-highlight-words'
-import styled from 'styled-components'
-import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
+import { useDispatch, useSelector } from 'react-redux'
+import { identerSearch } from '@/service/services/dollysearch/DollySearch'
+import AsyncSelect from 'react-select/async'
+import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
 
-type FinnPersonProps = {
-	feilmelding: string
-	gruppe: number
-	resetFeilmelding: Function
-	navigerTilPerson: Function
-	navigerTilBestilling: Function
+enum SoekTypeValg {
+	PERSON = 'Person',
+	BESTILLING = 'Bestilling',
 }
+
+const formatGroupLabel = (data: GroupedOption) => (
+	<div className={'group'}>
+		<Icon className={'group-icon'} kind={data.label === 'Bestillinger' ? 'bestilling' : 'person'} />
+		<span className={'group-label'}>{data.label}</span>
+		<span className={'group-badge'}>{data.options.length}</span>
+	</div>
+)
 
 type Person = {
 	ident: string
@@ -39,20 +44,26 @@ type ResponsBestilling = {
 	]
 }
 
-const StyledAsyncSelect = styled(AsyncSelect)`
-	width: 80%;
-	margin-top: 2px;
-`
+type FinnPersonBestillingOption = {
+	value: string
+	label: string
+	type: SoekTypeValg
+}
 
-const FinnPersonBestilling = ({
-	feilmelding,
-	gruppe,
-	resetFeilmelding,
-	navigerTilPerson,
-	navigerTilBestilling,
-}: FinnPersonProps) => {
-	const [soekType, setSoekType] = useState(SoekTypeValg.PERSON)
-	const [searchQuery, setSearchQuery] = useState(null)
+interface GroupedOption {
+	label: string
+	options: FinnPersonBestillingOption[]
+}
+
+const FinnPersonBestilling = () => {
+	const dispatch = useDispatch()
+	const searchInputRef = React.useRef(null)
+	const shortcutKey = useSearchHotkey(searchInputRef)
+
+	const feilmelding = useSelector((state: any) => state.finnPerson.feilmelding)
+	const gruppe = useSelector((state: any) => state.finnPerson.navigerTilGruppe)
+
+	const [searchQuery, setSearchQuery] = useState(null as unknown as FinnPersonBestillingOption)
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
 
@@ -60,67 +71,48 @@ const FinnPersonBestilling = ({
 	const [pdlIdenter, setPdlIdenter] = useState([])
 	const [pdlAktoerer, setPdlAktoerer] = useState([])
 
-	const customAsyncSelectStyles = {
-		control: (provided: any, state: { isFocused: boolean }) => ({
-			...provided,
-			borderRadius: 0,
-			paddingTop: '3px',
-			borderWidth: 0,
-			borderStyle: 'none',
-			boxShadow: state.isFocused ? 'inset 0px 0px 2px 1px #5684ff' : null,
-		}),
-		indicatorSeparator: () => ({
-			visibility: 'hidden',
-		}),
-	}
-
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		const feilmeldingIdent = feilmelding?.substring(0, 11)
-		let finnesPdlf = false
-		let finnesPdl = false
-
-		if (feilmelding) {
-			if (pdlfIdenter?.find((element) => element.ident === feilmeldingIdent)) {
-				finnesPdlf = true
-			}
-			if (
-				pdlIdenter?.find((element) => element.ident === feilmeldingIdent) ||
-				pdlAktoerer?.find((element) => element.ident === feilmeldingIdent)
-			) {
-				finnesPdl = true
-			}
-		}
-
-		let beskrivendeFeilmelding = feilmelding
-
-		if (finnesPdlf || finnesPdl) {
-			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master
-			${finnesPdlf ? ' PDL' : ''}${finnesPdlf && finnesPdl ? ' og' : ''}${
-				finnesPdl ? ' Test-Norge' : ''
-			}, og eksisterer ikke i Dolly.`
-		}
-
+		const beskrivendeFeilmelding = extractFeilmelding()
 		setError(beskrivendeFeilmelding)
 	}, [feilmelding])
 
 	useEffect(() => {
-		resetFeilmelding()
-		if (!searchQuery) {
+		dispatch(resetFeilmelding())
+		if (!searchQuery || !searchQuery.value) {
 			return
 		}
-		soekType === SoekTypeValg.PERSON
-			? navigerTilPerson(searchQuery)
-			: navigerTilBestilling(searchQuery)
+		searchQuery.type === SoekTypeValg.PERSON
+			? dispatch(navigerTilPerson(searchQuery.value))
+			: dispatch(navigerTilBestilling(searchQuery.value))
 		return setSearchQuery(null)
 	}, [searchQuery])
 
 	useEffect(() => {
-		if (fragment && !feilmelding) {
-			resetFeilmelding()
+		if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
+			navigate(`/gruppe/${gruppe}`, { replace: true })
 		}
-	}, [fragment])
+	})
+
+	const customAsyncSelectStyles = {
+		control: (provided: any, state: { isFocused: boolean }) => ({
+			...provided,
+			minWidth: '360px',
+		}),
+		group: (provided: any) => ({
+			...provided,
+			paddingBottom: 0,
+		}),
+		menuList: (provided: any) => ({
+			...provided,
+			paddingBottom: 0,
+		}),
+		container: (provided: any) => ({
+			...provided,
+			width: '480px',
+		}),
+	}
 
 	function mapToPersoner(personData: any, personer: Array<Option>) {
 		if (!Array.isArray(personData)) {
@@ -143,25 +135,55 @@ const FinnPersonBestilling = ({
 		if (!tekst) {
 			return []
 		}
-		return DollyApi.getBestillingerFragment(tekst).then((response: ResponsBestilling) => {
-			if (!response?.data || response?.data?.length < 1) {
-				return []
+		return DollyApi.getBestillingerFragment(tekst.replaceAll('#', '')).then(
+			(response: ResponsBestilling) => {
+				if (!response?.data || response?.data?.length < 1) {
+					return []
+				}
+				return response.data?.map((resp) => ({
+					value: resp.id,
+					label: `#${resp.id} - ${resp.navn}`,
+				}))
+			},
+		)
+	}
+
+	const extractFeilmelding = () => {
+		const feilmeldingIdent = feilmelding?.substring(0, 11)
+		let finnesPdlf = false
+		let finnesPdl = false
+
+		if (feilmelding) {
+			if (pdlfIdenter?.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdlf = true
 			}
-			return response.data?.map((resp) => ({
-				value: resp.id,
-				label: `#${resp.id} - ${resp.navn}`,
-			}))
-		})
+			if (
+				pdlIdenter?.find((element) => element.ident === feilmeldingIdent) ||
+				pdlAktoerer?.find((element) => element.ident === feilmeldingIdent)
+			) {
+				finnesPdl = true
+			}
+		}
+
+		let beskrivendeFeilmelding = feilmelding
+
+		if (finnesPdlf || finnesPdl) {
+			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master
+   ${finnesPdlf ? ' PDL' : ''}${finnesPdlf && finnesPdl ? ' og' : ''}${
+			finnesPdl ? ' Test-Norge' : ''
+		}, og eksisterer ikke i Dolly.`
+		}
+		return beskrivendeFeilmelding
 	}
 
 	const soekPersoner = async (tekst: string): Promise<Option[]> => {
-		if (!tekst) {
+		if (!tekst || tekst.includes('#')) {
 			return []
 		}
 
 		const [pdlfValues, pdlValues, pdlAktoerValues] = (await Promise.allSettled([
 			PdlforvalterApi.soekPersoner(tekst),
-			PersonSearch.searchPdlFragment(tekst),
+			identerSearch(tekst),
 			DollyApi.getAktoerFraPdl(tekst),
 		])) as any
 
@@ -202,29 +224,48 @@ const FinnPersonBestilling = ({
 		return personer
 	}
 
-	// @ts-ignore
-	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(
-		async (tekst) => {
-			return soekType === SoekTypeValg.BESTILLING
-				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
-				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
-		},
-		[soekType],
-	)
+	const fetchOptions = useCallback(async (tekst: string) => {
+		const bestillinger = await soekBestillinger(tekst).catch((err: Error) => {
+			setError(err.message)
+			return undefined
+		})
+
+		const personer = await soekPersoner(tekst).catch((err: Error) => {
+			setError(err.message)
+			return undefined
+		})
+
+		return [
+			{
+				label: 'Personer',
+				options: personer?.map((person) => ({
+					value: person.value,
+					label: person.label?.length > 39 ? `${person.label?.substring(0, 36)}...` : person.label,
+					type: SoekTypeValg.PERSON,
+				})),
+			},
+			{
+				label: 'Bestillinger',
+				options: bestillinger?.map((bestilling) => ({
+					...bestilling,
+					type: SoekTypeValg.BESTILLING,
+				})),
+			},
+		]
+	}, [])
 
 	const handleChange = (tekst: string) => {
-		fetchOptions(tekst)
+		dispatch(resetFeilmelding())
+		setError('')
 		setFragment(tekst)
 	}
 
-	// @ts-ignore
 	const CustomOption = ({ children, ...props }) => (
-		// @ts-ignore
-		<components.Option {...props}>
+		<components.Option {...props} className={'group-option'}>
 			<span data-testid={TestComponentSelectors.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
 					textToHighlight={children}
-					searchWords={fragment.split(' ')}
+					searchWords={fragment?.replaceAll('#', '').split(' ')}
 					autoEscape={true}
 					caseSensitive={false}
 				/>
@@ -232,20 +273,26 @@ const FinnPersonBestilling = ({
 		</components.Option>
 	)
 
+	const windowHeight = window.innerHeight
+
 	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon fontSize={'1.5rem'} kind={'search'} />
+				<div
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						flexDirection: 'row',
+						height: '24px',
+					}}
+				>
+					<Icon fontSize={'1.5rem'} kind={'search'} />
+					<p style={{ marginLeft: '5px' }}>{shortcutKey}</p>
+				</div>
 			</components.DropdownIndicator>
 		)
 	}
-
-	useEffect(() => {
-		if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
-			navigate(`/gruppe/${gruppe}`, { replace: true })
-		}
-	})
 
 	return (
 		<ErrorBoundary>
@@ -254,11 +301,10 @@ const FinnPersonBestilling = ({
 					data-testid={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
 					className="finnperson-container skjemaelement"
 				>
-					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
-					{/*@ts-ignore*/}
-					<StyledAsyncSelect
+					<AsyncSelect
+						ref={searchInputRef}
 						data-testid={TestComponentSelectors.SELECT_PERSON_SEARCH}
-						defaultOptions={false}
+						classNamePrefix={'person-search'}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}
 						onInputChange={handleChange}
@@ -267,16 +313,15 @@ const FinnPersonBestilling = ({
 							DropdownIndicator,
 						}}
 						isClearable={true}
-						options={options}
 						value={null}
-						onChange={(e: Option) => setSearchQuery(e?.value)}
+						formatGroupLabel={formatGroupLabel}
+						maxMenuHeight={
+							windowHeight > 800 ? '500px' : `${windowHeight < 500 ? 300 : windowHeight - 400}px`
+						}
+						onChange={(e: GroupedOption) => setSearchQuery(e)}
 						backspaceRemovesValue={true}
 						label="Person"
-						placeholder={
-							soekType === SoekTypeValg.PERSON
-								? 'Søk etter navn, ident eller aktør-ID'
-								: 'Søk etter bestilling'
-						}
+						placeholder={'Søk etter navn, ident, aktør-ID, bestilling eller gruppe'}
 						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>

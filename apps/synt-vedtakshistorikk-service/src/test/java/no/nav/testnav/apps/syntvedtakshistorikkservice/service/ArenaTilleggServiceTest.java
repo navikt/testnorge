@@ -3,17 +3,17 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetAap115Request;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,13 +21,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaTilleggService.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaTilleggService.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaTilleggService.MAALGRUPPEKODE_TILKNYTTET_AAP;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaTilleggService.MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ArenaTilleggServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ArenaTilleggServiceTest {
 
     @Mock
     private RequestUtils requestUtils;
@@ -43,8 +41,8 @@ public class ArenaTilleggServiceTest {
     private static final String IDENT = "12345678910";
     private static final String MILJOE = "test";
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         aap115 = Collections.singletonList(NyttVedtakAap.builder().build());
         aap115Request = new RettighetAap115Request(aap115);
         aap115Request.setPersonident(IDENT);
@@ -62,7 +60,7 @@ public class ArenaTilleggServiceTest {
     }
 
     @Test
-    public void shouldFilterOutTilleggWithoutRelatedTiltak(){
+    void shouldFilterOutTilleggWithoutRelatedTiltak() {
         var rettigheter = new ArrayList<RettighetRequest>();
         rettigheter.add(aap115Request);
 
@@ -83,7 +81,7 @@ public class ArenaTilleggServiceTest {
     }
 
     @Test
-    public void shouldFilterOutTilleggWithoutRelatedAap(){
+    void shouldFilterOutTilleggWithoutRelatedAap() {
         var rettigheter = new ArrayList<RettighetRequest>();
         rettigheter.add(aap115Request);
 
@@ -105,7 +103,7 @@ public class ArenaTilleggServiceTest {
     }
 
     @Test
-    public void shouldAddRettighetRequest(){
+    void shouldAddRettighetRequest() {
         var rettigheter = new ArrayList<RettighetRequest>();
         rettigheter.add(aap115Request);
 
@@ -126,7 +124,7 @@ public class ArenaTilleggServiceTest {
     }
 
     @Test
-    public void shouldAddRettighetRequests(){
+    void shouldAddRettighetRequests() {
         var rettigheter = new ArrayList<RettighetRequest>();
         rettigheter.add(aap115Request);
 
@@ -148,7 +146,7 @@ public class ArenaTilleggServiceTest {
 
 
     @Test
-    public void shouldFjerneVedtakMedUgyldigeDatoer(){
+    void shouldFjerneVedtakMedUgyldigeDatoer() {
         var vedtak1 = NyttVedtakTillegg.builder().build();
         vedtak1.setFraDato(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT.plusDays(1));
 
@@ -161,4 +159,5 @@ public class ArenaTilleggServiceTest {
         assertThat(response).hasSize(1);
         assertThat(response.get(0).getFraDato()).isEqualTo(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT);
     }
+
 }

@@ -18,22 +18,28 @@ export default defineConfig({
 	// One worker on CI to make tests more stable
 	workers: process.env.CI ? 1 : 3,
 
-	reporter: 'html',
-	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+	reporter: [
+		[
+			process.env.CI ? 'blob' : 'html',
+			{
+				attachments: true,
+			},
+		],
+	],
+
 	use: {
 		baseURL: 'http://localhost:5678/',
 		trace: 'on-first-retry',
+		screenshot: {
+			mode: 'on',
+			fullPage: true,
+		},
 	},
 
-	/* Configure projects for major browsers */
 	projects: [
 		{
 			name: 'Google Chrome',
 			use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-		},
-		{
-			name: 'Microsoft Edge',
-			use: { ...devices['Desktop Edge'], channel: 'msedge' },
 		},
 	],
 

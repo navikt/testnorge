@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useDollyOrganisasjoner'
 
 type OrganisasjonLoaderProps = {
 	kanHaArbeidsforhold?: boolean

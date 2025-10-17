@@ -1,29 +1,16 @@
 package no.nav.dolly.bestilling.instdata;
 
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.junit.jupiter.api.BeforeEach;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
+import org.springframework.http.HttpStatus;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -31,78 +18,57 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.singletonList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yml")
-@AutoConfigureWireMock(port = 0)
-class InstdataConsumerTest {
+class InstdataConsumerTest extends AbstractConsumerTest {
 
-    private static final String IDENT = "12345678901";
-    private static final String ENVIRONMENT = "U2";
+        private static final String IDENT = "12345678901";
+        private static final String ENVIRONMENT = "U2";
 
-    @MockBean
-    private TokenExchange tokenService;
+        @Autowired
+        private InstdataConsumer instdataConsumer;
 
-    @MockBean
-    private ErrorStatusDecoder errorStatusDecoder;
+        @Test
+        void deleteInstdata() {
 
-    @Autowired
-    private InstdataConsumer instdataConsumer;
+            stubDeleteInstData();
 
-    @MockBean
-    private BestillingElasticRepository bestillingElasticRepository;
+            instdataConsumer.deleteInstdata(List.of(IDENT))
+                    .as(StepVerifier::create)
+                    .assertNext(status ->
+                            assertThat(status.getFirst().getStatus(), Matchers.is(HttpStatus.OK)))
+                    .verifyComplete();
+        }
 
-    @MockBean
-    private ElasticsearchOperations elasticsearchOperations;
+        @Test
+        void postInstdata() {
 
-    @BeforeEach
-    void setup() {
+            stubPostInstData();
 
-        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-    }
+            instdataConsumer.postInstdata(singletonList(Instdata.builder().build()), ENVIRONMENT)
+                    .as(StepVerifier::create)
+                    .assertNext(status ->
+                            MatcherAssert.assertThat(status.getStatus(), Matchers.is(HttpStatus.OK)))
+                    .verifyComplete();
+        }
 
-    @Test
-    void deleteInstdata() {
+        private void stubPostInstData() {
 
-        stubDeleteInstData();
+            stubFor(post(urlPathMatching("(.*)/api/v1/institusjonsopphold/person"))
+                    .withQueryParam("environments", equalTo(ENVIRONMENT))
+                    .willReturn(ok()));
+        }
 
-        instdataConsumer.deleteInstdata(List.of(IDENT))
-                .subscribe(resultat ->
-                        verify(tokenService).exchange(ArgumentMatchers.any(ServerProperties.class)));
-    }
+        private void stubDeleteInstData() {
 
-    @Test
-    void postInstdata() {
+            stubFor(get(urlPathMatching("(.*)/api/v1/environment"))
+                    .willReturn(ok()
+                            .withHeader("Content-Type", "application/json")
+                            .withBody("{\"institusjonsoppholdEnvironments\":[\"" + ENVIRONMENT + "\"]}")));
 
-        stubPostInstData();
+            stubFor(post(urlPathMatching("(.*)/api/v1/institusjonsopphold/person/slett"))
+                    .willReturn(ok()
+                            .withHeader("Content-Type", "application/json")));
 
-        StepVerifier.create(instdataConsumer.postInstdata(singletonList(Instdata.builder().build()), ENVIRONMENT))
-                .expectNextCount(1)
-                .verifyComplete();
-    }
-
-    private void stubPostInstData() {
-
-        stubFor(post(urlPathMatching("(.*)/api/v1/institusjonsopphold/person"))
-                .withQueryParam("miljoe", equalTo("U2"))
-                .willReturn(ok()));
-    }
-
-    private void stubDeleteInstData() {
-
-        stubFor(delete(urlPathMatching("(.*)/api/v1/ident/batch"))
-                .withQueryParam("identer", equalTo(IDENT))
-                .withQueryParam("miljoe", equalTo(ENVIRONMENT))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
-
-        stubFor(get(urlPathMatching("(.*)/api/v1/miljoer"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + ENVIRONMENT + "\"]")));
-    }
+        }
 }

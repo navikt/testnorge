@@ -1,40 +1,49 @@
-import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { BestillingProgresjon } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
-import React from 'react'
-import { http, HttpResponse } from 'msw'
-import { setupServer } from 'msw/node'
-import { uferdigBestillingMock } from '#/mocks/BasicMocks'
+import React, { act } from 'react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { dollyTest } from '../vitest.setup'
+import { userEvent } from '@vitest/browser/context'
+import { uferdigBestillingMock } from '#/mocks/BasicMocks'
+import { worker } from './mocks/browser'
+import { http, HttpResponse } from 'msw'
 
-describe('BestillingProgresjon', () => {
-	const server = setupServer(
-		http.get('/dolly-backend/api/v1/bestilling/1', () => {
-			return HttpResponse.json(bestillinger?.[0])
+dollyTest('renders Bestillingprogresjon and cancel removes the element', async () => {
+	const bestillinger = [uferdigBestillingMock]
+
+	const { rerender } = render(
+		<BestillingProgresjon
+			bestillingID={bestillinger?.[0]?.id}
+			cancelBestilling={() => bestillinger.pop()}
+			onFinishBestilling={() => null}
+		/>,
+	)
+
+	await waitFor(() => expect(screen.getByText('Bestillingsstatus')).toBeDefined(), {
+		timeout: 2000,
+	})
+
+	worker.use(
+		// override the initial uferdigBestillling request handler to return empty
+		http.get('/dolly-backend/api/v1/bestilling/2', () => {
+			return new HttpResponse(null, { status: 404 })
 		}),
 	)
 
-	const bestillinger = [uferdigBestillingMock]
+	const avbrytButton = screen.getByTestId(TestComponentSelectors.BUTTON_AVBRYT_BESTILLING)
+	await act(async () => {
+		await userEvent.click(avbrytButton)
+	})
 
-	beforeAll(() => server.listen())
-	afterEach(() => server.resetHandlers())
-	afterAll(() => server.close())
-
-	test('renders', async () => {
-		render(
+	act(() => {
+		rerender(
 			<BestillingProgresjon
-				bestillingID={'1'}
-				cancelBestilling={() => bestillinger.pop()}
-				erOrganisasjon={false}
 				onFinishBestilling={() => null}
+				bestillingID={null}
+				cancelBestilling={() => bestillinger.pop()}
 			/>,
 		)
-
-		await waitFor(() => expect(screen.queryByText('Bestillingsstatus')).toBeDefined())
-
-		const avbrytButton = screen.getByTestId(TestComponentSelectors.BUTTON_AVBRYT_BESTILLING)
-		fireEvent.click(avbrytButton)
-
-		await waitFor(() => expect(screen.queryByText('Bestillingsstatus')).toBeNull())
 	})
+
+	expect(screen.queryByText('Bestillingsstatus')).toBeNull()
 })

@@ -11,14 +11,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   flyway:
     enabled: true
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-    vault:
-      enabled: false
-
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 
 consumers:
   generer-navn-service:
@@ -61,9 +53,6 @@ aareg:
   pageSize: 2
 
 controller.staticdata.cache.hours: 24
-azure.app.client.id: dummy
 
 KAFKA_SCHEMA_REGISTRY: http://localhost:9009
 kafka.groupid: organisasjon-forvalter-v1
-
-TOKEN_X_ISSUER: dummy

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 import { Button } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -22,7 +22,6 @@ export const NavigerTilPerson = ({ ident }: NavigerTilPersonProps) => {
 		mutate().then((result) => {
 			if (result?.gruppe?.id && !window.location.pathname.includes(`/${result?.gruppe?.id}`)) {
 				navigate(`/gruppe/${result?.gruppe?.id}`, {
-					replace: true,
 					state: {
 						hovedperson: result.identHovedperson,
 						visPerson: result.identNavigerTil,

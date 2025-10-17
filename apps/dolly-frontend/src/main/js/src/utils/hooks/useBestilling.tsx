@@ -39,9 +39,12 @@ export type Bestilling = {
 	status: System[]
 }
 
+type VisningType = 'personer' | 'liste' | string
+
 export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
 	if (!gruppeId) {
 		return {
+			miljoer: undefined as string[] | undefined,
 			loading: false,
 			error: 'GruppeId mangler!',
 		}
@@ -62,6 +65,8 @@ export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
 export const useBestillingerGruppe = (gruppeId: string | number) => {
 	if (!gruppeId) {
 		return {
+			bestillinger: undefined as Bestilling[] | undefined,
+			bestillingerById: undefined as Record<string, Bestilling> | undefined,
 			loading: false,
 			error: 'GruppeId mangler!',
 		}
@@ -73,8 +78,11 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 	)
 
 	const bestillingerSorted = data
-		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
-		.reduce((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})
+		?.sort?.((a, b) => (a.id < b.id ? 1 : -1))
+		.reduce<Record<string, Bestilling>>((acc, curr) => {
+			acc[curr.id] = curr
+			return acc
+		}, {})
 
 	return {
 		bestillinger: data,
@@ -86,29 +94,34 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 
 export const useIkkeFerdigBestillingerGruppe = (
 	gruppeId: string | number,
-	visning,
+	visning: VisningType,
 	sidetall: number,
 	sideStoerrelse: number,
-	update: string,
+	update?: string,
 ) => {
 	if (!gruppeId) {
 		return {
+			bestillinger: undefined as Bestilling[] | undefined,
+			bestillingerById: undefined as Record<string, Bestilling> | undefined,
 			loading: false,
 			error: 'GruppeId mangler!',
 		}
 	}
 
 	const updateParam = update ? `?update=${update}` : ''
-
 	const url =
-		visning == 'personer'
+		visning === 'personer'
 			? getIkkeFerdigBestillingerGruppeUrl(gruppeId) + updateParam
 			: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
+
 	const { data, isLoading, error } = useSWR<Bestilling[], Error>(url, fetcher)
 
 	const bestillingerSorted = data
-		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
-		.reduce((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})
+		?.sort?.((a, b) => (a.id < b.id ? 1 : -1))
+		?.reduce?.<Record<string, Bestilling>>((acc, curr) => {
+			acc[curr.id] = curr
+			return acc
+		}, {})
 
 	return {
 		bestillinger: data,
@@ -119,30 +132,17 @@ export const useIkkeFerdigBestillingerGruppe = (
 }
 
 export const useBestillingById = (
-	bestillingId: string,
+	bestillingId: string | number,
 	erOrganisasjon = false,
 	autoRefresh = false,
 ) => {
-	if (!bestillingId) {
-		return {
-			loading: false,
-			error: 'BestillingId mangler!',
-		}
-	}
-	if (erOrganisasjon) {
-		return {
-			loading: false,
-			error: 'Bestilling er org!',
-		}
-	}
-	const { data, isLoading, error } = useSWR<Bestilling, Error>(
-		getBestillingByIdUrl(bestillingId),
-		fetcher,
-		{
-			refreshInterval: autoRefresh ? 1000 : null,
-			dedupingInterval: autoRefresh ? 1000 : null,
-		},
-	)
+	const shouldFetch = !!bestillingId && !erOrganisasjon
+	const key: string | null = shouldFetch ? getBestillingByIdUrl(bestillingId) : null
+
+	const { data, isLoading, error } = useSWR<Bestilling, Error>(key, fetcher, {
+		refreshInterval: autoRefresh ? 1000 : 0,
+		dedupingInterval: autoRefresh ? 1000 : 2000,
+	})
 
 	return {
 		bestilling: data,
@@ -155,8 +155,9 @@ export const useBestilteMiljoer = (
 	bestillingIdListe: Array<string> | undefined,
 	fagsystem: string,
 ) => {
-	if (!bestillingIdListe || bestillingIdListe?.length < 1) {
+	if (!bestillingIdListe || bestillingIdListe.length < 1) {
 		return {
+			bestilteMiljoer: undefined as string[] | undefined,
 			loading: false,
 			error: 'Bestilling-id mangler!',
 		}
@@ -167,10 +168,10 @@ export const useBestilteMiljoer = (
 		multiFetcherAll,
 	)
 
-	const miljoer = []
-	data?.map((bestilling) => {
+	const miljoer: string[] = []
+	data?.forEach?.((bestilling) => {
 		bestilling?.environments?.forEach((miljo) => {
-			if (!miljoer.includes(miljo) && bestilling.status?.find((s) => s.id === fagsystem)) {
+			if (!miljoer.includes(miljo) && bestilling.status?.some((s) => s.id === fagsystem)) {
 				miljoer.push(miljo)
 			}
 		})

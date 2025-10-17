@@ -1,10 +1,11 @@
 package no.nav.testnav.proxies.arenaforvalterenproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.Buildable;
@@ -26,7 +27,9 @@ public class ArenaForvalterenProxyApplicationStarter {
     private static final String[] ARENA_MILJOER = {"q1", "q2", "q4"};
 
     public static void main(String[] args) {
-        SpringApplication.run(ArenaForvalterenProxyApplicationStarter.class, args);
+        new SpringApplicationBuilder(ArenaForvalterenProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     @Bean

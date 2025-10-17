@@ -14,7 +14,7 @@ import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type SivilstandTypes = {

@@ -57,8 +57,6 @@ on:
         required: false
         default: true
     secrets:
-      NAIS_WORKLOAD_IDENTITY_PROVIDER:
-        required: true
       NAV_TOKEN:
         required: true
       READER_TOKEN:
@@ -116,7 +114,7 @@ jobs:
           java-version: 21
       - name: "Gradle"
         id: gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
         env:
@@ -145,8 +143,6 @@ jobs:
         uses: nais/docker-build-push@v0
         with:
           team: dolly
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ inputs.image-suffix }}
     outputs:

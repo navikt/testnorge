@@ -1,17 +1,14 @@
 package no.nav.dolly.domain.resultset;
 
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 public enum BAFeilkoder {
+    BA10("Arbeidsforholdet mangler virksomhet."),
     BA20("En verdi er utenfor det gyldige intervallet for feltet."),
     BA30("Et organisasjonsnummer har ugyldig format."),
     BA40("Et fødselsnummer har ugyldig format."),
@@ -39,15 +36,4 @@ public enum BAFeilkoder {
     BA194("Det skal kun være mulig å sette feltene Stillingsprosent og Antall timer i full stilling hvis arbeidsforholdet er sist endret av a-ordningen");
 
     private String beskrivelse;
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class BABeskrivelse {
-
-        private String baKode;
-        private String beskrivelse;
-    }
 }

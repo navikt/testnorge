@@ -2,14 +2,12 @@ package no.nav.testnav.joarkdokumentservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
-import no.nav.testnav.joarkdokumentservice.util.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -27,16 +25,14 @@ public class GetDokumentCommand implements Callable<Mono<String>> {
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/{miljo}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/{type}")
-                        .build(miljo, journalpostId, dokumentInfoId, type.name())
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .build(miljo, journalpostId, dokumentInfoId, type.name()))
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(
                         throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Mono.empty()
-                );
+                        throwable -> Mono.empty());
     }
+
 }

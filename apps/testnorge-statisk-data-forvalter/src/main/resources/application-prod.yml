@@ -1,6 +1,6 @@
 spring:
   config:
-    import: vault://
+    import: "vault://"
   datasource:
     url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-statisk-data?useUnicode=yes&characterEncoding=UTF-8
     hikari:
@@ -12,14 +12,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     locations: classpath:db/migration/postgresql
-  main:
-    banner-mode: off
   security:
     oauth2:
       resourceserver:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gcp:

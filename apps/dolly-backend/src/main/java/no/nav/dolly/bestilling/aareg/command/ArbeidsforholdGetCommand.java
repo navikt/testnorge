@@ -1,31 +1,28 @@
 package no.nav.dolly.bestilling.aareg.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRespons>> {
 
     private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
     private static final String ARBEIDSFORHOLD_TYPE = "arbeidsforholdtype";
-    private static final String ARBEIDSFORHOLD_AVAIL =
-            "forenkletOppgjoersordning, " +
+    private static final String ARBEIDSFORHOLD_AVAIL = "forenkletOppgjoersordning, " +
             "frilanserOppdragstakerHonorarPersonerMm, " +
             "maritimtArbeidsforhold, " +
             "ordinaertArbeidsforhold";
@@ -45,20 +42,18 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
                         .build(miljoe))
                 .header(HEADER_NAV_CALL_ID, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(Arbeidsforhold[].class)
                 .map(arbeidsforhold1 -> ArbeidsforholdRespons.builder()
                         .eksisterendeArbeidsforhold(Arrays.asList(arbeidsforhold1))
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .error(error)
-                        .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .build()));
     }
 }

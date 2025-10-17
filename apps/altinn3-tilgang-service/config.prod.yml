@@ -37,27 +37,35 @@ spec:
           cluster: dev-gcp
         - application: testnav-altinn3-tilgang-proxy
           cluster: dev-gcp
+        - application: dolly-proxy
+          cluster: dev-gcp
+        - application: dolly-texas-proxy
+          cluster: dev-gcp
     outbound:
       external:
         - host: platform.altinn.no
         - host: data.brreg.no
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 10
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 10
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -66,8 +74,8 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 900Mi
     limits:
       memory: 2048Mi
   env:

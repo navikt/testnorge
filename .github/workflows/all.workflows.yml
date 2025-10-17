@@ -3,7 +3,7 @@ on:
     inputs:
       workflow:
         type: choice
-        description: "Backend or frontend."
+        description: "Backend or frontend. These use slightly different workflows."
         options:
           - "backend"
           - "frontend"
@@ -26,26 +26,28 @@ on:
         required: true
       force-deploy:
         type: boolean
-        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below! Note: For dolly-frontend, this will also deploy with config.idporten.yml."
+        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below!"
+        default: false
+      force-deploy-idporten:
+        type: boolean
+        description: "Deploy to idporten? Make sure the effective working directory contains a config.idporten.yml! Note: Only relevant for dolly-frontend."
         default: false
       force-deploy-test:
         type: boolean
-        description: "Deploy to test? Make sure the effective working directory contains a config.test.yml! Note: For dolly-frontend, this will also deploy with config.unstable.yml."
+        description: "Deploy to test? Make sure the effective working directory contains a config.test.yml! Note: For dolly-frontend, this will also deploy unstable."
         default: false
       sonar-enabled:
         type: boolean
         description: "Run Sonar scan?"
-        default: true
-
-permissions:
-  contents: read
-  id-token: write
+        default: false
 
 jobs:
-
   backend:
     if: inputs.workflow == 'backend'
     uses: ./.github/workflows/common.workflow.backend.yml
+    permissions:
+      contents: read
+      id-token: write
     with:
       cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
@@ -59,6 +61,10 @@ jobs:
   frontend:
     if: inputs.workflow == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     with:
       cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
@@ -66,7 +72,7 @@ jobs:
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
-      force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy }}
+      force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-idporten }}
       force-deploy-unstable: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-test }}
       sonar-enabled: ${{ inputs.sonar-enabled }}
     secrets: inherit

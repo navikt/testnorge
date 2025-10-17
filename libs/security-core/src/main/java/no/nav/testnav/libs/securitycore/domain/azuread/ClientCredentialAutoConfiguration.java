@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.util.Assert;
 
 @AutoConfiguration
 public class ClientCredentialAutoConfiguration {
@@ -26,11 +25,10 @@ public class ClientCredentialAutoConfiguration {
     @ConditionalOnDollyApplicationConfiguredForAzure
     @ConditionalOnMissingBean(AzureClientCredential.class)
     AzureClientCredential azureClientCredential(
-            @Value("${AAD_ISSUER_URI}") String azureTokenEndpoint, // TODO: Not currently used, AAD_ISSUER_URI is hardcoded elsewhere; should be refactored to use AZURE_OPENID_CONFIG_TOKEN_ENDPOINT instead.
+            @Value("${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}") String azureTokenEndpoint,
             @Value("${AZURE_APP_CLIENT_ID}") String azureClientId,
             @Value("${AZURE_APP_CLIENT_SECRET}") String azureClientSecret
     ) {
-
         return new AzureClientCredential(azureTokenEndpoint, azureClientId, azureClientSecret);
     }
 

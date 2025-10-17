@@ -1,29 +1,26 @@
 import api from '@/api'
 import { Bruker } from '@/pages/brukerPage/types'
-import { NotFoundError } from '@/error'
 
-const brukerServiceUrl = '/testnav-bruker-service/api/v1/brukere'
+const brukerServiceUrl = '/testnav-bruker-service/api/v2/brukere'
 
 export default {
 	getBruker(orgnummer: string) {
 		return api
-			.fetchJson<Bruker[]>(
-				`testnav-bruker-service/api/v1/brukere?organisasjonsnummer=${orgnummer}`,
-				{
-					method: 'GET',
-				}
-			)
-			.then((brukere) => brukere[0])
+			.fetchJson(`${brukerServiceUrl}?organisasjonsnummer=${orgnummer}`, {
+				method: 'GET',
+			})
+			.then((brukere: Bruker[]) => brukere[0])
 	},
 
-	opprettBruker(brukernavn: string, organisasjonsnummer: string) {
+	opprettBruker(brukernavn: string, epost: string, organisasjonsnummer: string) {
 		const bruker: Bruker = {
 			brukernavn: brukernavn,
+			epost: epost,
 			organisasjonsnummer: organisasjonsnummer,
 		}
 		return api
-			.fetchJson<Bruker>(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
-			.then((response) => {
+			.fetchJson(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
+			.then((response: any) => {
 				return response
 			})
 			.catch(() => {
@@ -31,24 +28,19 @@ export default {
 			})
 	},
 
-	deleteBruker(id: string, jwt?: string) {
-		return api.fetch(`${brukerServiceUrl}/${id}`, {
-			method: 'DELETE',
-			headers: jwt ? { 'User-Jwt': jwt } : {},
-		})
-	},
-
-	getBrukernavnStatus(brukernavn: string) {
+	updateBruker(brukernavn: string, epost: string, organisasjonsnummer: string) {
+		const bruker: Bruker = {
+			brukernavn: brukernavn,
+			epost: epost,
+			organisasjonsnummer: organisasjonsnummer,
+		}
 		return api
-			.fetch(`${brukerServiceUrl}/brukernavn/${brukernavn}`, { method: 'GET' })
+			.fetchJson(`${brukerServiceUrl}`, { method: 'PUT' }, bruker)
 			.then((response: any) => {
-				return response.status
+				return response
 			})
-			.catch((_e: NotFoundError) => {
-				return 404
-			})
-			.catch((_e: Error) => {
-				return 500
+			.catch(() => {
+				return null
 			})
 	},
 }

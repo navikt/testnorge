@@ -6,16 +6,30 @@ import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import './LaasModal.less'
 import React from 'react'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	useMatchMutate,
+} from '@/utils/hooks/useMutate'
 
 type LaasButtonProps = {
 	action: Function
 	loading: boolean
 	gruppeId: string | number
 	children: any
+	autoMutate?: boolean
 }
 
-export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {
+export const LaasButton = ({
+	action,
+	gruppeId,
+	loading,
+	children,
+	autoMutate = true,
+}: LaasButtonProps) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const matchMutate = useMatchMutate()
 
 	if (loading) {
 		return <Loading label="låser..." />
@@ -23,16 +37,17 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="lock">
+			<Button
+				data-testid={TestComponentSelectors.BUTTON_LAAS_GRUPPE}
+				onClick={openModal}
+				kind={'lock'}
+			>
 				LÅS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="laasModal">
 					<div className="laasModal laasModal-content">
-						{
-							// @ts-ignore
-							<Icon size={50} kind="report-problem-circle" />
-						}
+						<Icon size={50} kind="report-problem-circle" />
 						<h1>Lås gruppen</h1>
 						<h4>{children}</h4>
 					</div>
@@ -41,9 +56,16 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 							Nei
 						</NavButton>
 						<NavButton
-							onClick={() => {
+							data-testid={TestComponentSelectors.BUTTON_BEKREFT_LAAS}
+							onClick={async () => {
 								closeModal()
-								return action(gruppeId)
+								await action(gruppeId)
+								if (autoMutate) {
+									setTimeout(() => {
+										matchMutate(REGEX_BACKEND_GRUPPER)
+										matchMutate(REGEX_BACKEND_BESTILLINGER)
+									}, 300)
+								}
 							}}
 							variant={'primary'}
 						>

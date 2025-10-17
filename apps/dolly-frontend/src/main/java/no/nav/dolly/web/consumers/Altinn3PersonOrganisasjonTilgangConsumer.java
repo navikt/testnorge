@@ -26,13 +26,13 @@ public class Altinn3PersonOrganisasjonTilgangConsumer {
     public Altinn3PersonOrganisasjonTilgangConsumer(
             Consumers consumers,
             AccessService accessService,
-            WebClient.Builder webClientBuilder,
-            GetAuthenticatedUserId getAuthenticatedUserId) {
-
+            WebClient webClient,
+            GetAuthenticatedUserId getAuthenticatedUserId
+    ) {
         this.accessService = accessService;
         serverProperties = consumers.getTestnavAltinn3TilgangService();
-
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.getAuthenticatedUserId = getAuthenticatedUserId;

@@ -1,6 +1,6 @@
-import useSWR from 'swr'
 import { fetcher } from '@/api'
 import { Option } from '@/service/SelectOptionsOppslag'
+import useSWRImmutable from 'swr/immutable'
 
 const norg2Url = `/testnav-norg2-proxy/norg2/api/v1/enhet?enhetStatusListe=AKTIV&oppgavebehandlerFilter=KUN_OPPGAVEBEHANDLERE`
 
@@ -10,7 +10,7 @@ type EnhetType = {
 }
 
 export const useNavEnheter = () => {
-	const { data, isLoading, error } = useSWR<string[], Error>(norg2Url, fetcher)
+	const { data, isLoading, error } = useSWRImmutable<string[], Error>(norg2Url, fetcher)
 	const navEnheterOptions: Option[] = []
 	data?.forEach((enhet: EnhetType | any) => {
 		navEnheterOptions.push({

@@ -2,18 +2,16 @@ package no.nav.testnav.apps.apptilganganalyseservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.SearchDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
-
 
 @RequiredArgsConstructor
 public class SearchCodeCommand implements Callable<Mono<SearchDTO>> {
+
     private final WebClient webClient;
     private final String search;
     private final int page;
@@ -33,8 +31,7 @@ public class SearchCodeCommand implements Callable<Mono<SearchDTO>> {
                 .header(HttpHeaders.ACCEPT, "application/vnd.github.v3+json")
                 .retrieve()
                 .bodyToMono(SearchDTO.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
-
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

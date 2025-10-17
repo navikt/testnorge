@@ -7,10 +7,18 @@ import { useFormContext } from 'react-hook-form'
 import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/initialValues'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ArbeidsforholdForm } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
-import React from 'react'
-import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import React, { useContext } from 'react'
+import {
+	useDollyFasteDataOrganisasjoner,
+	useDollyOrganisasjoner,
+} from '@/utils/hooks/useDollyOrganisasjoner'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 
 export const aaregAttributt = 'aareg'
 
@@ -22,8 +30,13 @@ export const AaregForm = () => {
 		useDollyFasteDataOrganisasjoner(true)
 
 	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useOrganisasjoner(currentBruker?.brukerId)
+		useDollyOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
+
+	const { personFoerLeggTil } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
+	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
 
 	return (
 		<Vis attributt={aaregAttributt}>
@@ -38,6 +51,7 @@ export const AaregForm = () => {
 					header="Arbeidsforhold"
 					newEntry={initialArbeidsforholdOrg}
 					canBeEmpty={false}
+					lockedEntriesLength={tidligereAaregdata?.length || 0}
 				>
 					{(path: string, idx: number) => (
 						<>
@@ -45,11 +59,14 @@ export const AaregForm = () => {
 								path={path}
 								idx={idx}
 								fasteOrganisasjoner={fasteOrganisasjoner}
-								brukerOrganisasjoner={brukerOrganisasjoner}
 								egneOrganisasjoner={egneOrganisasjoner}
 								loadingOrganisasjoner={fasteOrganisasjonerLoading || brukerOrganisasjonerLoading}
 							/>
-							<ArbeidsforholdForm path={path} arbeidsforholdIndex={idx} />
+							<ArbeidsforholdForm
+								path={path}
+								arbeidsforholdIndex={idx}
+								tidligereAaregdata={tidligereAaregdata}
+							/>
 						</>
 					)}
 				</FormDollyFieldArray>

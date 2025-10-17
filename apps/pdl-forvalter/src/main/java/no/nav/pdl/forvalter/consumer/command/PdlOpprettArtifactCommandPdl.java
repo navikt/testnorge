@@ -5,21 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
 
     private final WebClient webClient;
@@ -31,13 +29,12 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
 
     @Override
     public Flux<OrdreResponseDTO.HendelseDTO> call() {
-
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).build())
                 .body(BodyInserters.fromValue(body))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .retrieve()
@@ -47,9 +44,9 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                         .status(PdlStatus.OK)
                         .hendelseId(response.getHendelseId())
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .retryWhen(WebClientError.is5xxException())
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(errorHandling(error, id)));
     }
+
 }

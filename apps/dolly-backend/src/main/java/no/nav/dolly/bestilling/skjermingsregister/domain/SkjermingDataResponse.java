@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import reactor.core.publisher.Mono;
 
 @Data
 @Builder
@@ -24,4 +26,12 @@ public class SkjermingDataResponse {
     private boolean eksistererIkke;
 
     private String error;
+
+    public static Mono<SkjermingDataResponse> of(WebClientError.Description description) {
+        return Mono.just(SkjermingDataResponse
+                .builder()
+                .error(description.getMessage())
+                .build());
+    }
+
 }

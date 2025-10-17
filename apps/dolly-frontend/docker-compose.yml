@@ -1,0 +1,8 @@
+services:
+
+  valkey:
+    image: valkey/valkey:latest
+    container_name: dolly-frontend-valkey
+    ports:
+      - "6379:6379"
+    command: valkey-server --save "" --appendonly no --requirepass not_in_use

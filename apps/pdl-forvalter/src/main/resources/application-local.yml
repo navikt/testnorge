@@ -1,13 +1,10 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-
 spring:
   config:
     import: "sm://"
   datasource:
     url: jdbc:postgresql://localhost:5432/testnav-pdl-forvalter-local
     username: testnav-pdl-forvalter-local
-    password: ${sm://testnav-pdl-forvalter-local}
+    password: ${sm\://testnav-pdl-forvalter-local}
 
 consumers:
   adresse-service:

@@ -1,53 +1,23 @@
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import {
-	createRoutesFromChildren,
-	matchRoutes,
+	createBrowserRouter,
+	createRoutesFromElements,
 	Route,
-	Routes,
+	RouterProvider,
 	useLocation,
-	useNavigationType,
-} from 'react-router-dom'
+	useRouteError,
+} from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import BrukerPage from '@/pages/brukerPage'
 import LoginPage from '@/pages/loginPage'
-import { history, store } from '@/Store'
-import { HistoryRouter as Router } from 'redux-first-history/rr6'
+import { store } from '@/Store'
 import { SWRConfig } from 'swr'
 import { App } from '@/app/App'
-import nais from './nais'
-
-import {
-	FaroRoutes,
-	getWebInstrumentations,
-	initializeFaro,
-	ReactIntegration,
-	ReactRouterVersion,
-} from '@grafana/faro-react'
-import { useRouteError } from 'react-router'
 import { AppError } from '@/components/ui/appError/AppError'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
-
-initializeFaro({
-	paused: window.location.hostname.includes('localhost'),
-	url: nais.telemetryCollectorURL,
-	app: nais.app,
-	instrumentations: [
-		...getWebInstrumentations(),
-
-		new ReactIntegration({
-			router: {
-				version: ReactRouterVersion.V6,
-				dependencies: {
-					createRoutesFromChildren,
-					matchRoutes,
-					Routes,
-					useLocation,
-					useNavigationType,
-				},
-			},
-		}),
-	],
-})
+import allRoutes from '@/allRoutes'
+import React, { useEffect } from 'react'
+import { locationChange } from '@/ducks/finnPerson'
+import BrukerPage from '@/pages/brukerPage'
 
 const ErrorView = () => {
 	console.error('Applikasjonen har støtt på en feil')
@@ -66,23 +36,47 @@ const ErrorView = () => {
 	return <AppError error={error} stackTrace={error.stackTrace} />
 }
 
+export function RouteChangeHandler() {
+	const location = useLocation()
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		dispatch(locationChange(location))
+	}, [location, dispatch])
+
+	return null
+}
+
+const router = createBrowserRouter(
+	createRoutesFromElements(
+		<>
+			<Route path="/login" element={<LoginPage />} errorElement={<ErrorView />} />
+			<Route path="/bruker" element={<BrukerPage />} errorElement={<ErrorView />} />
+			<Route
+				path="/"
+				element={<App />}
+				handle={{ crumb: () => 'Hjem' }}
+				errorElement={<ErrorView />}
+			>
+				{allRoutes.map((route, idx) => (
+					<Route key={idx} path={route.path} handle={route.handle} element={<route.element />} />
+				))}
+			</Route>
+		</>,
+	),
+)
+
 export const RootComponent = () => (
 	<ErrorBoundary>
 		<Provider store={store}>
-			<Router history={history}>
-				<SWRConfig
-					value={{
-						dedupingInterval: 5000,
-						revalidateOnFocus: false,
-					}}
-				>
-					<FaroRoutes>
-						<Route path="/login" element={<LoginPage />} />
-						<Route errorElement={<ErrorView />} path="/bruker" element={<BrukerPage />} />
-						<Route errorElement={<ErrorView />} path="*" element={<App />} />
-					</FaroRoutes>
-				</SWRConfig>
-			</Router>
+			<SWRConfig
+				value={{
+					dedupingInterval: 5000,
+					revalidateOnFocus: false,
+				}}
+			>
+				<RouterProvider router={router} />
+			</SWRConfig>
 		</Provider>
 	</ErrorBoundary>
 )

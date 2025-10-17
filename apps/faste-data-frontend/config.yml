@@ -27,19 +27,25 @@ spec:
         - application: testnav-person-service
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
+        - application: logging
+          namespace: nais-system
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true
@@ -48,11 +54,11 @@ spec:
     min: 1
     max: 1
   resources:
+    requests:
+      cpu: 50m
+      memory: 600Mi
     limits:
       memory: 2048Mi
-    requests:
-      cpu: 300m
-      memory: 1024Mi
   image: "{{image}}"
   ingresses:
     - "https://testnav-faste-data.intern.dev.nav.no"

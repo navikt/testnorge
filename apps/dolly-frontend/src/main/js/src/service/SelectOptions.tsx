@@ -465,6 +465,7 @@ const selectOptions = {
 		{ value: 'AO11', label: 'Grisen (AO11)' },
 		{ value: 'HJELPEMIDLER', label: 'Hjelpemidler' },
 		{ value: 'IT01', label: 'Infotrygd (IT01)' },
+		{ value: 'KELVIN', label: 'Kelvin' },
 		{ value: 'KONT', label: 'Kontantstøtte (KONT)' },
 		{ value: 'FS38', label: 'Melosys (FS38)' },
 		{ value: 'OMSORGSPENGER', label: 'Omsorgspenger' },
@@ -482,6 +483,12 @@ const selectOptions = {
 		{ value: 'GJENLEVENDE', label: 'Gjenlevendepensjon' },
 		{ value: 'BARN', label: 'Barnepensjon' },
 		{ value: 'AFP', label: 'AFP-pensjon' },
+		{ value: 'BETINGET_TP', label: 'Betinget TP' },
+		{ value: 'LIVSVARIG_AFP ', label: 'Livsvarig AFP' },
+		{ value: 'OPPSATT_BTO_PEN', label: 'Oppsatt bruttopensjon' },
+		{ value: 'OVERGANGSTILLEGG', label: 'Overgangstillegg' },
+		{ value: 'PAASLAGSPENSJON', label: 'Påslagspensjon' },
+		{ value: 'SAERALDER', label: 'Særalder' },
 	],
 
 	tpOrdninger: [],
@@ -493,6 +500,13 @@ const selectOptions = {
 		{ value: 'SOKT', label: 'Søkt' },
 		{ value: 'AVSLAG', label: 'Avslag' },
 		{ value: 'IKKE_SOKT', label: 'Ikke søkt' },
+	],
+
+	afpPrivatResultat: [
+		{ value: 'INNVILGET', label: 'Innvilget' },
+		{ value: 'AVSLATT', label: 'Avslått' },
+		{ value: 'TRUKKET', label: 'Trukket' },
+		{ value: 'VENTER_PAA_FELLESORDNINGEN', label: 'Venter på fellesordningen' },
 	],
 
 	// PDL vergemaal:
@@ -586,7 +600,7 @@ const selectOptions = {
 		{ value: 12, label: 'Desember' },
 	],
 
-	// Arbeidsplassen:
+	// Arbeidsplassen / Nav CV:
 	nusKoder: [
 		{ value: '2', label: 'Grunnskole' },
 		{ value: '3', label: 'Folkehøgskole' },
@@ -828,8 +842,10 @@ const selectOptions = {
 	// Yrkesskader:
 	klassifisering: [
 		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
-		{ value: 'MANUELL', label: 'Manuell' },
 		{ value: 'IMPORT', label: 'Import' },
+		{ value: 'MANUELL', label: 'Manuell' },
+		{ value: 'MELLOMSKADER', label: 'Mellomskader' },
+		{ value: 'MULIG_NULLSKADE', label: 'Mulig nullskade' },
 	],
 
 	tidstype: [
@@ -841,6 +857,12 @@ const selectOptions = {
 	ferdigstillSak: [
 		{ value: 'GODKJENT', label: 'Godkjent' },
 		{ value: 'AVSLAG', label: 'Avslag' },
+	],
+
+	miljoer: [
+		{ value: 'q1', label: 'Q1' },
+		{ value: 'q2', label: 'Q2' },
+		{ value: 'q4', label: 'Q4' },
 	],
 }
 

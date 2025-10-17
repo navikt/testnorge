@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.command.tokenx.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -16,20 +17,12 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.tokenx.issuer-uri")
+@RequiredArgsConstructor
 public class TokenXService implements TokenService {
+
     private final GetAuthenticatedToken getAuthenticatedTokenAction;
     private final WebClient webClient;
     private final TokenXProperties tokenXProperties;
-
-    TokenXService(
-            TokenXProperties tokenXProperties,
-            GetAuthenticatedToken getAuthenticatedToken
-    ) {
-        log.info("Init TokenX token exchange.");
-        this.webClient = WebClient.builder().build();
-        this.tokenXProperties = tokenXProperties;
-        this.getAuthenticatedTokenAction = getAuthenticatedToken;
-    }
 
     @Override
     public Mono<AccessToken> exchange(ServerProperties serverProperties) {
@@ -41,4 +34,5 @@ public class TokenXService implements TokenService {
     public ResourceServerType getType() {
         return ResourceServerType.TOKEN_X;
     }
+
 }

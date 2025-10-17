@@ -1,30 +1,19 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-
 spring:
   config:
     import: "sm://"
-  h2:
-    console:
-      enabled: true
-      path: /h2
   datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
+    url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    username: postgres
     password:
   flyway:
-    # InMemmory database
     url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
-    user: ${NAV_USERNAME}
+    user: postgres
     password:
+    locations: classpath:db/migration,classpath:db/local
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
-    username: ${NAV_USERNAME}
+    username: postgres
     password:
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:/db/dev/h2-default-config.sql
 
 consumers:
   testnav-kodeverk-service:

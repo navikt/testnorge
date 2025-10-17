@@ -26,10 +26,11 @@ public class MiljoerServiceConsumer {
     public MiljoerServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavMiljoerService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
@@ -41,7 +42,7 @@ public class MiljoerServiceConsumer {
                 .flatMap(token ->
                         new MiljoerServiceCommand(webClient, token.getTokenValue()).call())
                 .map(miljoer -> Flux.fromIterable(Arrays.asList(miljoer))
-                        .filter(env -> !env.equals("t13") && !env.equals("qx"))
+                        .filter(env -> !env.equals("qx"))
                         .collect(Collectors.toSet()))
                 .flatMap(Mono::from)
                 .cache(Duration.ofMinutes(5))

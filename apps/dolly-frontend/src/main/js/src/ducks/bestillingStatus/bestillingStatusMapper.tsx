@@ -83,10 +83,12 @@ const extractBestillingstatusKode = (
 }
 
 function getBestillingTag(data: Bestilling) {
-	if (data?.bestilling?.pdldata?.opprettNyPerson) return 'Ny bestilling'
 	if (data?.opprettetFraId) return 'Gjenopprett bestilling'
 	if (data?.gjenopprettetFraIdent) return 'Gjenopprett person'
 	if (data?.opprettetFraGruppeId) return 'Gjenopprett gruppe'
+	if (data?.bestilling?.pdldata?.opprettNyPerson) return 'Ny bestilling'
+	if (data?.status?.filter((status) => status.id === 'PDLIMPORT')?.length > 0)
+		return 'Import (Tenor)'
 	return 'Legg til/endre'
 }
 
@@ -103,6 +105,7 @@ const extractValuesForBestillingListe = (
 
 	const values = {
 		id: data.id.toString(),
+		gruppe: data.gruppeId ? data.gruppeId.toString() : null,
 		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : null,
 		sistOppdatert: formatDateTimeWithSeconds(data.sistOppdatert),
 		variant: bestillingTag,

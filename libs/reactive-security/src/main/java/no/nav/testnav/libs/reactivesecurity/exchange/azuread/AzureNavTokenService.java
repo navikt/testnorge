@@ -25,16 +25,17 @@ public class AzureNavTokenService implements TokenService {
     private final ClientCredential clientCredential;
 
     public AzureNavTokenService(
+            WebClient webClient,
             String proxyHost,
             AzureNavClientCredential azureNavClientCredential
     ) {
-        this.clientCredential = azureNavClientCredential;
         log.info("Init AzureAd Nav token service.");
-        WebClient.Builder builder = WebClient
-                .builder()
+
+        clientCredential = azureNavClientCredential;
+        var builder = webClient
+                .mutate()
                 .baseUrl(azureNavClientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
@@ -47,7 +48,6 @@ public class AzureNavTokenService implements TokenService {
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
         this.webClient = builder.build();
-
     }
 
     @Override
@@ -64,4 +64,18 @@ public class AzureNavTokenService implements TokenService {
         ).call();
 
     }
+
+    public static class Test extends AzureNavTokenService {
+
+        public Test(WebClient webClient, String proxyHost, AzureNavClientCredential azureNavClientCredential) {
+            super(webClient, proxyHost, azureNavClientCredential);
+        }
+
+        @Override
+        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+            return Mono.empty();
+        }
+
+    }
+
 }

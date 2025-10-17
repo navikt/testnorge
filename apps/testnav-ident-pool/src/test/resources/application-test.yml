@@ -1,17 +1,26 @@
-TOKEN_X_ISSUER: dummy
 
-### DATABASE ###
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=Postgresql;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
+  config:
+    activate:
+      on-profile: test
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  r2dbc:
+    url: r2dbc:tc:postgresql:///test?TC_IMAGE_TAG=16.9
+    username: test
+    password: test
+  sql:
+    init:
+      mode: always
 
-tps-forvalteren:
-  rest:
-    api:
-      url: dummy
+logging:
+  level:
+    org:
+      springframework:
+        security=TRACE:
 
+server:
+  error:
+    include-message: always

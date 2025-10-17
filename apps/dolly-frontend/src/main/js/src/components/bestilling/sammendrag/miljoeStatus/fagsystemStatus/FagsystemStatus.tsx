@@ -6,7 +6,13 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import IdentList from '@/components/bestilling/sammendrag/miljoeStatus/fagsystemStatus/IdentList'
 
-export default function FagsystemStatus({ statusrapport }: { statusrapport: Status[] }) {
+export default function FagsystemStatus({
+	statusrapport,
+	closeModal,
+}: {
+	statusrapport: Status[]
+	closeModal?: () => void
+}) {
 	if (statusrapport.length <= 0) {
 		return null
 	}
@@ -91,7 +97,7 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 							</td>
 							<td>{status.miljo || <i>Ikke relevant</i>}</td>
 							<td>
-								<IdentList identer={status.identer} />
+								<IdentList identer={status.identer} closeModal={closeModal} />
 							</td>
 						</tr>
 					))}

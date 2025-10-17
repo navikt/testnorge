@@ -1,49 +1,35 @@
-import React, { useContext } from 'react'
-import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { FingerButtonIcon, TenancyIcon } from '@navikt/aksel-icons'
-
-const DropdownToggle = () => {
-	const context = useContext(DropdownContext)
-	const { isOpen } = context
-	const location = useLocation()
-	const isAdmin =
-		location?.pathname === '/admin/orgtilgang' ||
-		location?.pathname === '/admin/levendearbeidsforhold'
-
-	return (
-		<Dropdown.Toggle className={isOpen || isAdmin ? 'dropdown-toggle active' : 'dropdown-toggle'}>
-			<a className={isAdmin ? 'active' : ''} style={{ margin: 0, padding: '19px 10px' }}>
-				Admin
-			</a>
-		</Dropdown.Toggle>
-	)
-}
+import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
+import { FingerButtonIcon, InformationSquareIcon, TenancyIcon } from '@navikt/aksel-icons'
+import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
+import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 
 export const AdminDropdown = () => {
-	const navigate = useNavigate()
+	const location = useLocation()
+	const [isActive, setIsActive] = useState(false)
+	useEffect(() => {
+		setIsActive(
+			location?.pathname === '/admin/orgtilgang' ||
+				location?.pathname === '/admin/levendearbeidsforhold',
+		)
+	}, [location])
 
 	return (
-		<Dropdown>
-			<DropdownToggle />
-			<Dropdown.Menu placement="bottom-start">
-				<Dropdown.Menu.List>
-					<Dropdown.Menu.List.Item
-						onClick={() => navigate('/admin/orgtilgang')}
-						style={{ color: '#212529' }}
-					>
-						<TenancyIcon title="a11y-title" fontSize="1.5rem" />
-						Organisasjon-tilgang
-					</Dropdown.Menu.List.Item>
-					<Dropdown.Menu.List.Item
-						onClick={() => navigate('/admin/levendearbeidsforhold')}
-						style={{ color: '#212529' }}
-					>
-						<FingerButtonIcon title="a11y-title" fontSize="1.5rem" />
-						Levende arbeidsforhold
-					</Dropdown.Menu.List.Item>
-				</Dropdown.Menu.List>
-			</Dropdown.Menu>
-		</Dropdown>
+		<ActionMenuWrapper title="Admin" isActive={isActive}>
+			<PreloadableActionMenuItem route="/admin/orgtilgang" style={{ color: '#212529' }}>
+				<TenancyIcon title="a11y-title" fontSize="1.5rem" />
+				<DropdownStyledLink href="/admin/orgtilgang">Organisasjon-tilgang</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+			<PreloadableActionMenuItem route="/admin/levendearbeidsforhold" style={{ color: '#212529' }}>
+				<FingerButtonIcon title="a11y-title" fontSize="1.5rem" />
+				<DropdownStyledLink href="/admin/levendearbeidsforhold">
+					Levende arbeidsforhold
+				</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+			<PreloadableActionMenuItem route="/admin/infostriper" style={{ color: '#212529' }}>
+				<InformationSquareIcon title="a11y-title" fontSize="1.5rem" />
+				<DropdownStyledLink href="/admin/infostriper">Administrer infostriper</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+		</ActionMenuWrapper>
 	)
 }

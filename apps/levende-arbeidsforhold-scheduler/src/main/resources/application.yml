@@ -1,48 +1,17 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
-  main:
-    banner-mode: off
   application:
     name: testnav-levende-arbeidsforhold-scheduler
     version: 1
     description: App for å ansette personer i en organisasjon
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  port: 8080
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 consumers:
   levende-arbeidsforhold-ansettelse:
     name: testnav-levende-arbeidsforhold-ansettelse

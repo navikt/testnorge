@@ -1,13 +1,14 @@
 plugins {
-    id "com.gradle.develocity" version "3.17.4"
+    id "com.gradle.develocity" version "4.0.1"
 }
 
-rootProject.name = 'brreg-stub'
+rootProject.name = "brreg-stub"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/vault'
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/testing"
+includeBuild "../../libs/vault"
 
 develocity {
     buildScan {

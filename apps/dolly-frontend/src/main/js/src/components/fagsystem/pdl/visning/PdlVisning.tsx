@@ -131,7 +131,7 @@ export const PdlVisning = ({
 					erPdlVisning={miljoeVisning}
 				/>
 				<PdlRelasjoner data={hentPerson} />
-				{!erDoed && <FullmaktVisning ident={gjeldendeIdent?.ident} />}
+				{!erDoed && gjeldendeIdent && <FullmaktVisning ident={gjeldendeIdent?.ident} />}
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<KontaktinformasjonForDoedsbo

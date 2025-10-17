@@ -74,7 +74,6 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 
 	const ident = data?.person?.ident
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
-	const skjermingData = fagsystemData?.skjermingsregister
 
 	const bankkontoData = getBankkontoData(fagsystemData)
 
@@ -89,7 +88,6 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					ident={ident}
 					tpsMessaging={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}
-					skjermingData={skjermingData}
 					erRedigerbar={erRedigerbar}
 				/>
 				<Foedsel
@@ -198,7 +196,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					ident={ident}
 					erRedigerbar={erRedigerbar}
 				/>
-				{!erDoed && <FullmaktVisning ident={ident} />}
+				{!erDoed && ident && <FullmaktVisning ident={ident} />}
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
 				<UtenlandsId
 					data={data?.person?.utenlandskIdentifikasjonsnummer}

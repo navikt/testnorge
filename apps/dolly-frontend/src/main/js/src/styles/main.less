@@ -29,10 +29,6 @@ body {
   .navds-date .rdp-button {
     position: unset;
   }
-
-  && .navds-button {
-    position: unset;
-  }
 }
 
 fieldset {
@@ -228,15 +224,19 @@ a {
 
   &_selects {
     display: flex;
-    padding: 20px 0 0;
+    padding: 10px 0 0;
   }
 
-  &_maler {
+  &_input {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 25px -20px 0;
+    margin-top: 25px;
     padding: 0 0 0 20px;
+
+    h2 {
+      margin: 0 0 10px;
+    }
 
     .mal-admin {
       margin-bottom: 16px;

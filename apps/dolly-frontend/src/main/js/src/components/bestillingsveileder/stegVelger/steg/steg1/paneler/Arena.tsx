@@ -3,13 +3,16 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { arenaPath } from '@/components/fagsystem/arena/form/Form'
 import { runningE2ETest } from '@/service/services/Request'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
 
 export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 
-	const veileder = useContext(BestillingsveilederContext)
+	const veileder = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const maaned = veileder.personFoerLeggTil?.pdl?.ident?.substring?.(2, 4)
 	const syntetisk = maaned === undefined || maaned >= 40
 

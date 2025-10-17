@@ -2,16 +2,14 @@ package no.nav.registre.testnorge.tilbakemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.tilbakemeldingapi.config.Consumers;
-import no.nav.registre.testnorge.tilbakemeldingapi.util.WebClientFilter;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 @Slf4j
 @Component
@@ -24,26 +22,29 @@ public class ProfilApiConsumer {
     public ProfilApiConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
-
         serverProperties = consumers.getProfilApi();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public ProfilDTO getBruker() {
         log.info("Henter bruker fra Azure.");
-        return tokenExchange.exchange(serverProperties)
-                .flatMap(accessToken -> webClient.get()
+        return tokenExchange
+                .exchange(serverProperties)
+                .map(AccessToken::getTokenValue)
+                .flatMap(token -> webClient
+                        .get()
                         .uri("/api/v1/profil")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
+                        .headers(WebClientHeader.bearer(token))
                         .retrieve()
                         .bodyToMono(ProfilDTO.class)
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException))
-                ).block();
+                        .retryWhen(WebClientError.is5xxException()))
+                .block();
     }
+
 }

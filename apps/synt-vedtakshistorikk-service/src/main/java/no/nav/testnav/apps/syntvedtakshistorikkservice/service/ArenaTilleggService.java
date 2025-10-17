@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetTiltaksaktivitetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,12 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTilleggRequest;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getTilleggSekvenser;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.datoErInnenforPeriode;
-
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.datoErInnenforPeriode;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTilleggRequest;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getTilleggSekvenser;
 
 @Service
 @RequiredArgsConstructor

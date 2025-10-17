@@ -1,9 +1,13 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service.util;
 
-import no.nav.testnav.libs.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.*;
+import no.nav.testnav.libs.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.RettighetType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

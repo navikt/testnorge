@@ -4,8 +4,10 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { Sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { TpsMessagingDiverse } from '@/components/fagsystem/tpsmessaging/form/TpsMessagingDiverse'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Telefonnummer } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { Doedsfall } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import { Statsborgerskap } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
@@ -17,10 +19,8 @@ import { Kjoenn } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { Navn } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
-import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
-import { Fullmakt } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -28,12 +28,6 @@ const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
 	'pdldata.person.innflytting',
 	'pdldata.person.utflytting',
-]
-
-const diversePaths = [
-	'tpsMessaging.spraakKode',
-	'skjerming.egenAnsattDatoFom',
-	'skjerming.egenAnsattDatoTom',
 ]
 
 const alderPaths = [
@@ -56,12 +50,10 @@ const foedselsdatoPath = ['pdldata.person.foedselsdato']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['pdldata.person.vergemaal']
 const sikkerhetstiltakPath = ['pdldata.person.sikkerhetstiltak']
-const fullmaktPath = ['pdldata.person.fullmakt', 'fullmakt']
 
 const panelPaths = [
 	alderPaths,
 	nasjonalitetPaths,
-	diversePaths,
 	innvandringPath,
 	utvandringPath,
 	kjoennPath,
@@ -78,7 +70,9 @@ const panelPaths = [
 ].flat()
 
 export const Personinformasjon = ({ formMethods }) => {
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 
 	return (
 		<Vis attributt={panelPaths}>
@@ -127,11 +121,6 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Navn" vis={navnPath}>
 					<Navn formMethods={formMethods} />
-				</Kategori>
-
-				<Kategori title="Diverse" vis={diversePaths}>
-					<TpsMessagingDiverse />
-					<SkjermingForm formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>

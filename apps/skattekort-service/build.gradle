@@ -23,24 +23,20 @@ xjc {
 }
 
 dependencies {
-    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
-    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
-    implementation "org.json:json:20231013"
-
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:security-core"
 
-    implementation "org.apache.httpcomponents.core5:httpcore5:5.3"
-
-    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
-    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap"
-
-    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "org.apache.httpcomponents.core5:httpcore5:5.3"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
+    implementation "org.json:json:20231013"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 }

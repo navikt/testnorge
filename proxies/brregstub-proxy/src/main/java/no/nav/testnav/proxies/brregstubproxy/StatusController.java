@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.brregstubproxy;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,21 +11,25 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class StatusController {
+
     private static final String TEAM = "Team Dolly";
+
+    private final WebClient webClient;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
-        var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://brreg-stub.intern.dev.nav.no/isAlive",
-                "https://brreg-stub.intern.dev.nav.no/isReady",
-                statusWebClient);
+                "https://brreg-stub.intern.dev.nav.no/internal/liveness",
+                "https://brreg-stub.intern.dev.nav.no/internal/readiness",
+                webClient);
 
         return Map.of(
                 "brreg-stub", status
         );
+
     }
 
     public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {

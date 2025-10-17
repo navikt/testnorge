@@ -29,10 +29,10 @@ public class OrganisasjonOrgnummerServiceConsumer {
     public OrganisasjonOrgnummerServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient) {
         serverProperties = consumers.getTestnavOrgnummerService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

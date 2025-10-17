@@ -1,7 +1,8 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-adresse-service
-
 spring:
   config:
     import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dev-gcp:dolly:testnav-adresse-service

@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,10 +14,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -35,13 +34,12 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
 
     @Override
     public Mono<List<IdentDTO>> call() {
-
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).query(query).build())
                 .body(BodyInserters.fromValue(body))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(String[].class)
                 .flatMap(identer -> Mono.just(Arrays.stream(identer)
@@ -50,10 +48,7 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                                 .build())
                         .map(IdentDTO.class::cast)
                         .toList()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException)
-                        .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) ->
-                                new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
+                .retryWhen(WebClientError.is5xxExceptionThen(new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException exception) {
@@ -69,9 +64,9 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
     }
 
     protected static String getMessage(Throwable error) {
-
         return error instanceof WebClientResponseException webClientResponseException ?
                 webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
                 error.getMessage();
     }
+
 }

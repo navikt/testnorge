@@ -1,47 +1,63 @@
 package no.nav.dolly.bestilling;
 
-import no.nav.dolly.util.CheckAliveUtil;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public interface ConsumerStatus {
+import static no.nav.dolly.util.CheckAliveUtil.checkConsumerStatus;
 
-    org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConsumerStatus.class);
+@Slf4j
+public abstract class ConsumerStatus {
 
-    String serviceUrl();
+    private static final String LIVENESS_ENDPOINT = "/internal/health/liveness";
+    private static final String READINESS_ENDPOINT = "/internal/health/readiness";
 
-    String consumerName();
+    public abstract String serviceUrl();
 
-    default Map<String, TestnavStatusResponse> checkStatus(WebClient webClient) {
+    public abstract String consumerName();
 
-        var consumerStatus = CheckAliveUtil.checkConsumerStatus(
-                serviceUrl() + "/internal/isAlive",
-                serviceUrl() + "/internal/isReady",
-                webClient);
+    public Mono<Map<String, TestnavStatusResponse>> checkStatus(WebClient webClient) {
 
-        var statusMap = new ConcurrentHashMap<String, TestnavStatusResponse>();
-        statusMap.put(consumerName(), consumerStatus);
+        return checkConsumerStatus(
+                serviceUrl() + LIVENESS_ENDPOINT,
+                serviceUrl() + READINESS_ENDPOINT,
+                webClient)
+                .map(consumerResponce -> Map.of(consumerName(), consumerResponce))
+                .flatMap(consumerStatus ->
+                        webClient
+                                .get()
+                                .uri(serviceUrl() + "/internal/status")
+                                .retrieve()
+                                .bodyToMono(new TypeReference())
+                                .timeout(Duration.ofSeconds(5))
+                                .flatMap(resultat ->
+                                        Flux.fromIterable(resultat.entrySet())
+                                                .collectMap(Map.Entry::getKey, entry -> TestnavStatusResponse
+                                                        .builder()
+                                                        .team(entry.getValue().get("team"))
+                                                        .alive(entry.getValue().get("alive"))
+                                                        .ready(entry.getValue().get("ready"))
+                                                        .build()))
+                                .zipWith(Mono.just(consumerStatus))
+                                .onErrorResume(ignore -> Mono.just(Map.of(consumerName(), new TestnavStatusResponse()))
+                                        .zipWith(Mono.just(consumerStatus)))
+                                .map(tuple -> List.of(tuple.getT1(), tuple.getT2())))
+                .flatMapMany(Flux::fromIterable)
+                .reduce(new HashMap<>(),
+                        (map, status) -> {
+                            map.putAll(status);
+                            return map;
+                        });
+    }
 
-        var response = webClient.get()
-                .uri(serviceUrl() + "/internal/status")
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Map<String, String>>>() {
-                })
-                .timeout(Duration.ofSeconds(5))
-                .doOnError(throwable -> log.error("Klarte ikke å hente status for {}", serviceUrl(), throwable))
-                .onErrorReturn(new ConcurrentHashMap<>())
-                .block();
-        response.forEach((key, value) -> statusMap.put(key, TestnavStatusResponse.builder()
-                .team(value.get("team"))
-                .alive(value.get("alive"))
-                .ready(value.get("ready"))
-                .build()));
-
-        return statusMap;
+    private static class TypeReference extends ParameterizedTypeReference<Map<String, Map<String, String>>> {
     }
 }

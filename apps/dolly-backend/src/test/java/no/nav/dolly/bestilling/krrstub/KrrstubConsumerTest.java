@@ -2,26 +2,14 @@ package no.nav.dolly.bestilling.krrstub;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.domain.CommonKeysAndUtils;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -41,35 +29,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yml")
-@AutoConfigureWireMock(port = 0)
-class KrrstubConsumerTest {
+class KrrstubConsumerTest extends AbstractConsumerTest {
 
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
     private static final String IDENT = "12345678901";
     private static final boolean RESERVERT = true;
 
-    @MockBean
-    private TokenExchange tokenService;
-
-    @MockBean
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockBean
-    private ElasticsearchOperations elasticsearchOperations;
-
     @Autowired
     private KrrstubConsumer krrStubConsumer;
-
-    @BeforeEach
-    void setup() {
-
-        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-    }
 
     @Test
     void createDigitalKontaktdata_Ok() {
@@ -116,7 +84,7 @@ class KrrstubConsumerTest {
     @Test
     void createDigitalKontaktdata_GenerateTokenFailed_NoAction() {
 
-        when(tokenService.exchange(any(ServerProperties.class))).thenReturn(Mono.empty());
+        when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                         .epost(EPOST)
@@ -126,7 +94,7 @@ class KrrstubConsumerTest {
                 .expectNextCount(0)
                 .verifyComplete();
 
-        verify(tokenService).exchange(any(ServerProperties.class));
+        verify(tokenExchange).exchange(any(ServerProperties.class));
     }
 
     @Test
@@ -141,7 +109,7 @@ class KrrstubConsumerTest {
                         .build()))
                 .expectNext(DigitalKontaktdataResponse.builder()
                         .status(HttpStatus.CONFLICT)
-                        .melding("")
+                        .melding("409 Conflict")
                         .build())
                 .verifyComplete();
     }

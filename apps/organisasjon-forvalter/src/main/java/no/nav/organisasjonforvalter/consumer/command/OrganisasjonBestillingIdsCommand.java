@@ -3,8 +3,8 @@ package no.nav.organisasjonforvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -28,7 +28,7 @@ public class OrganisasjonBestillingIdsCommand implements Callable<Mono<Status>> 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(STATUS_URL)
                         .build(status.getUuid()))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String[].class)
@@ -45,6 +45,6 @@ public class OrganisasjonBestillingIdsCommand implements Callable<Mono<Status>> 
                         .miljoe(status.getMiljoe())
                         .organisasjonsnummer(status.getOrganisasjonsnummer())
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(WebClientError.logTo(log));
     }
 }

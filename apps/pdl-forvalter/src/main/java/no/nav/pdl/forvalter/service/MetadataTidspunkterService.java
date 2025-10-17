@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
@@ -30,7 +31,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -40,6 +42,7 @@ import static java.util.Objects.nonNull;
 public class MetadataTidspunkterService {
 
     private final PersonRepository personRepository;
+    private final MapperFacade mapperFacade;
 
     public void updateMetadata(String ident) {
 
@@ -130,7 +133,9 @@ public class MetadataTidspunkterService {
 
         for (var i = opplysningstype.size() - 1; i > 0; i--) {
             opplysningstype.get(i).getFolkeregistermetadata().setOpphoerstidspunkt(
-                    subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()));
+                    opplysningstype.get(i).getFolkeregistermetadata().getGyldighetstidspunkt().isAfter(opplysningstype.get(i-1).getFolkeregistermetadata().getGyldighetstidspunkt()) ?
+                    subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()) :
+                            null);
         }
     }
 
@@ -221,31 +226,45 @@ public class MetadataTidspunkterService {
         sikkerhetstiltakDTO.getFolkeregistermetadata().setOpphoerstidspunkt(sikkerhetstiltakDTO.getGyldigTilOgMed());
     }
 
-    private static void fixSivilstand(PersonDTO person) {
+    private void fixSivilstand(PersonDTO person) {
 
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
-        var counter = new AtomicInteger(0);
-        person.getSivilstand()
-                .forEach(sivilstand -> {
-                    fixFolkeregisterMetadata(sivilstand);
-                    if (isNull(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt())) {
+        var sivilstandCopy = mapperFacade.mapAsList(person.getSivilstand(), SivilstandDTO.class);
+        var dato = new AtomicReference<>(LocalDateTime.now().minusYears(5));
 
-                        LocalDateTime gyldighetstidspunkt;
-                        if (nonNull(sivilstand.getSivilstandsdato())) {
-                            gyldighetstidspunkt = sivilstand.getSivilstandsdato();
-                        } else if (nonNull(sivilstand.getBekreftelsesdato())) {
-                            gyldighetstidspunkt = sivilstand.getBekreftelsesdato();
-                        } else {
-                            gyldighetstidspunkt = LocalDateTime.now().minusYears(counter.incrementAndGet());
-                        }
-                        sivilstand.getFolkeregistermetadata().setGyldighetstidspunkt(gyldighetstidspunkt);
-                    }
-                    if (isNull(sivilstand.getFolkeregistermetadata().getAjourholdstidspunkt())) {
-                        sivilstand.getFolkeregistermetadata().setAjourholdstidspunkt(
-                                sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt());
+        sivilstandCopy
+                .forEach(sivilstand -> {
+                    if (isNull(sivilstand.getSivilstandsdato()) && isNull(sivilstand.getBekreftelsesdato())) {
+
+                        sivilstand.setSivilstandsdato(dato.get());
+                        dato.set(dato.get().minusYears(3));
+
+                    } else {
+                        var sivilstandsdato = nonNull(sivilstand.getSivilstandsdato()) ? sivilstand.getSivilstandsdato() : sivilstand.getBekreftelsesdato();
+                        sivilstand.setSivilstandsdato(sivilstandsdato);
+                        dato.set(sivilstandsdato.minusYears(3));
                     }
                 });
+
+        for (int i = 0; i < person.getSivilstand().size(); i++) {
+
+            var sivilstand = person.getSivilstand().get(i);
+            fixFolkeregisterMetadata(sivilstand);
+            sivilstand.getFolkeregistermetadata().setAjourholdstidspunkt(sivilstandCopy.get(i).getSivilstandsdato());
+            sivilstand.getFolkeregistermetadata().setGyldighetstidspunkt(sivilstandCopy.get(i).getSivilstandsdato());
+        }
+        fixOpphoert(person.getSivilstand());
+
+        var doedsdato = person.getDoedsfall().stream()
+                .map(DoedsfallDTO::getDoedsdato)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
+        if (!person.getSivilstand().isEmpty()) {
+            person.getSivilstand().getFirst().getFolkeregistermetadata().setOpphoerstidspunkt(doedsdato);
+        }
     }
 
     private static void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {

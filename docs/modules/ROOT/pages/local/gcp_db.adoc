@@ -1,0 +1,64 @@
+[[gcp_db]]
+= Opprette GCP-database for lokal kjøring
+
+1. Opprett en database i https://console.cloud.google.com/sql/instances/[Google Cloud Console]. Eksempel: `testnav-min-database`.
+2. Opprett en bruker i databasen (klikk på instansen, velg Users, Add user account). Ta vare på generert passord.
+3. Opprett en secret i https://console.cloud.google.com/security/secret-manager[Secret Manager] (samme navn). Legg inn passordet slik at applikasjoner kan bruke `${sm://testnav-min-database}`.
+4. Instansen er opprettet, men skjema mangler. Logg på instansen (database `postgres`) og opprett databasen:
+   `create database "testnav-min-database";`
+5. Logg på databasen `testnav-min-database` med brukeren `testnav-min-database`.
+
+Hvis du ønsker å rotere passord: generer nytt og oppdater secret.
+
+[[gcp_db_bruk_lokalt]]
+== Bruk av GCP-database under lokal kjøring
+
+Noen applikasjoner bruker en GCP‑database også lokalt (Spring profile `local`):
+
+* `dolly-backend`
+* `organisasjon-forvalter`
+* `pdl-forvalter`
+
+Disse refereres her som `APP_NAME`.
+
+Applikasjonene bruker `gcloud` og `cloud_sql_proxy` (eller nyere Cloud SQL Auth Proxy).
+
+[[gcp_db_install_proxy]]
+=== Installere proxy
+
+----
+gcloud components install cloud-sql-proxy
+----
+
+[[gcp_db_login]]
+=== Logg inn
+
+----
+gcloud auth login --update-adc
+----
+
+[[gcp_db_start_proxy]]
+=== Start proxy
+
+----
+cloud-sql-proxy dolly-dev-ff83:europe-north1:testnav-APP_NAME-local -p 5432
+----
+
+La prosessen kjøre i eget vindu.
+
+[[gcp_db_run_app]]
+=== Kjøre applikasjon lokalt
+
+Start applikasjonen (profile `local`). Passord hentes automatisk fra Secret Manager.
+
+[[gcp_db_fetch_secret]]
+=== Hente passord manuelt
+
+----
+gcloud secrets versions access latest --secret=testnav-APP_NAME-local
+----
+
+[[gcp_db_jdbc]]
+=== JDBC URL
+
+`jdbc:postgresql://localhost:5432/testnav-APP_NAME-local?user=testnav-APP_NAME-local`

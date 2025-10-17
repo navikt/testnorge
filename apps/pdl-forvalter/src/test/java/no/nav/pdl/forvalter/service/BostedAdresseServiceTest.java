@@ -149,21 +149,20 @@ class BostedAdresseServiceTest {
                 .ident(FNR_IDENT)
                 .bostedsadresse(new ArrayList<>(List.of(
                         BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .gyldigTilOgMed(LocalDate.of(2021, 2, 3).atStartOfDay())
-                                .utenlandskAdresse(new UtenlandskAdresseDTO())
+                                .gyldigFraOgMed(LocalDate.of(2021, 2, 2).atStartOfDay())
+                                .matrikkeladresse(new MatrikkeladresseDTO())
                                 .isNew(true)
                                 .build(),
                         BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 2).atStartOfDay())
-                                .matrikkeladresse(new MatrikkeladresseDTO())
+                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                .utenlandskAdresse(new UtenlandskAdresseDTO())
                                 .isNew(true)
                                 .build())))
                 .build();
 
         var response = bostedAdresseService.convert(request, null);
 
-        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDateTime.of(2020, 2, 1, 0, 0))));
+        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDateTime.of(2021, 2, 1, 0, 0))));
     }
 
     @Test

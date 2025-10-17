@@ -4,6 +4,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatAlder, formatDate, formatKjonn, gtTypeLabel } from '@/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
 import * as _ from 'lodash-es'
+import { getAlder } from '@/ducks/fagsystem'
 
 function hentSkjermingData(skjermingPath) {
 	if (!skjermingPath) {
@@ -14,7 +15,7 @@ function hentSkjermingData(skjermingPath) {
 			{skjermingPath.egenAnsattDatoFom && (
 				<>
 					<TitleValue
-						title="Har skjerming"
+						title="Har skjerming (egenansatt)"
 						value={
 							skjermingPath.egenAnsattDatoTom &&
 							isBefore(new Date(skjermingPath.egenAnsattDatoTom), addDays(new Date(), -1))
@@ -80,6 +81,7 @@ export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdl
 	const harPdlUfb = pdlData && _.has(pdlData, 'bostedsadresse[0].ukjentBosted')
 
 	const tpsMessaging = fagsystemData?.tpsMessaging
+	const alder = getAlder(data.alder, data.doedsdato, data.ident)
 
 	return (
 		<div>
@@ -93,7 +95,7 @@ export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdl
 				<TitleValue title="Etternavn" value={data.etternavn} />
 
 				<TitleValue title="Kjønn" value={formatKjonn(data.kjonn, data.alder)} />
-				<TitleValue title="Alder" value={formatAlder(data.alder, data.doedsdato)} />
+				<TitleValue title="Alder" value={formatAlder(alder, data.doedsdato)} />
 				<TitleValue title="Dødsdato" value={formatDate(data.doedsdato)} />
 
 				<TitleValue

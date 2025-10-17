@@ -83,7 +83,7 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 
 	const sortedData = data
 		?.slice()
-		?.sort((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
+		?.sort?.((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
 
 	return (
 		<DollyFieldArray
@@ -126,7 +126,7 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 						)}
 					</div>
 
-					<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
+					{arbeidsforhold.arbeidsgiver && <Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />}
 
 					<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
 
@@ -179,7 +179,9 @@ export const AaregVisning = ({
 			data: item?.data
 				?.map((data) => {
 					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ||
-						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver')
+						data?.sporingsinformasjon?.opprettetAv?.includes('srvtestnorge') ||
+						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver') ||
+						data?.sporingsinformasjon?.opprettetAv?.includes('aareg-dolly-api')
 						? data
 						: null
 				})

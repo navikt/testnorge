@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import {
 	cvFetcher,
 	fetcher,
+	multiFetcherAll,
 	multiFetcherArena,
 	multiFetcherDokarkiv,
 	multiFetcherInst,
@@ -28,11 +29,14 @@ const pensjonsavtaleUrl = (miljoer) =>
 		miljo: miljo,
 	}))
 
-const tpUrl = (ident, miljoer) =>
+const tpForholdUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
 		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
+
+const tpYtelseUrl = (miljo, ordningNr) =>
+	`/testnav-pensjon-testdata-facade-proxy/api/v1/tp/ytelse?ordning=${ordningNr}&miljo=${miljo}`
 
 const instUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -46,12 +50,15 @@ const arenaUrl = (miljoer) =>
 		miljo: miljoe,
 	}))
 
+const transaksjonIdUrl = (ident, system) =>
+	`/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}`
+
 const journalpostUrl = (transaksjonsid, miljoer) => {
 	const urlListe = []
 	miljoer.forEach((miljoe) => {
 		const journalpostId = transaksjonsid
 			?.filter((id) => id.miljoe === miljoe)
-			?.map((filtrertId) => filtrertId?.transaksjonId?.journalpostId)
+			?.flatMap((filtrertId) => filtrertId?.transaksjonId?.map((item) => item?.journalpostId))
 		if (journalpostId && journalpostId?.length > 0) {
 			journalpostId?.forEach((journalpost) => {
 				urlListe.push({
@@ -69,10 +76,19 @@ const journalpostUrl = (transaksjonsid, miljoer) => {
 	return urlListe
 }
 
-const histarkUrl = (transaksjonsid: string) =>
-	transaksjonsid ? `/testnav-histark-proxy/api/saksmapper/${transaksjonsid}` : null
+const histarkUrl = (transaksjonsid: any) => {
+	const urlListe: string[] = []
+	transaksjonsid?.forEach((transaksjon: any) => {
+		transaksjon?.transaksjonId?.forEach((tx) => {
+			if (tx?.dokumentInfoId) {
+				urlListe.push(`/testnav-histark-proxy/api/saksmapper/${tx.dokumentInfoId}`)
+			}
+		})
+	})
+	return urlListe
+}
 
-const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v3/cv'
+const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
 const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {
@@ -87,7 +103,7 @@ export const usePoppData = (ident, harPoppBestilling) => {
 	)
 
 	return {
-		poppData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		poppData: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -105,25 +121,41 @@ export const usePensjonsavtaleData = (ident, harPensjonsavtaleBestilling) => {
 	)
 
 	return {
-		pensjonsavtaleData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		pensjonsavtaleData: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
 }
 
-export const useTpData = (ident, harTpBestilling) => {
+export const useTpDataForhold = (ident, harTpBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
 	const { data, isLoading, error } = useSWR<any, Error>(
 		[
-			harTpBestilling ? tpUrl(ident, pensjonEnvironments) : null,
+			harTpBestilling ? tpForholdUrl(ident, pensjonEnvironments) : null,
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
 		([url, headers]) => multiFetcherPensjon(url, headers),
 	)
 
 	return {
-		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		tpDataForhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useTpDataYtelse = (ident, ordningNr, miljo) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		[
+			ordningNr ? tpYtelseUrl(miljo, ordningNr) : null,
+			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly', fnr: ident },
+		],
+		([url, headers]) => fetcher(url, headers),
+	)
+
+	return {
+		tpDataYtelse: data,
 		loading: isLoading,
 		error: error,
 	}
@@ -131,7 +163,7 @@ export const useTpData = (ident, harTpBestilling) => {
 
 export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMiljoer = null) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
+		harBestilling ? transaksjonIdUrl(ident, system) : null,
 		fetcher,
 	)
 
@@ -155,7 +187,31 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 	const miljoData = getMiljoData()
 
 	return {
-		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		data: miljoData?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useTransaksjonIdPensjon = (ident, harBestilling) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harBestilling ? transaksjonIdUrl(ident, 'PEN_AP') : null,
+		fetcher,
+	)
+	const getMiljoData = () => {
+		if (!harBestilling || !data) {
+			return null
+		}
+		const miljoData = []
+		data?.forEach((m) => {
+			miljoData.push({ data: m, miljo: m.miljoe })
+		})
+		return miljoData
+	}
+	const miljoData = getMiljoData()
+
+	return {
+		data: miljoData?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -170,7 +226,7 @@ export const useInstData = (ident, harInstBestilling) => {
 	)
 
 	return {
-		instData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		instData: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -194,12 +250,9 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 
 export const useHistarkData = (ident, harHistarkbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
-
-	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
-
 	const { data, isLoading, error } = useSWR<any, Error>(
-		harHistarkbestilling ? histarkUrl(histarkId) : null,
-		fetcher,
+		harHistarkbestilling ? histarkUrl(transaksjonsid) : null,
+		multiFetcherAll,
 	)
 
 	return {
@@ -244,7 +297,7 @@ export const useArenaData = (ident: string, harArenaBestilling: boolean) => {
 	)
 
 	return {
-		arenaData: data?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		arenaData: data?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

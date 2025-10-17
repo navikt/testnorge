@@ -26,7 +26,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 
     implementation "jakarta.validation:jakarta.validation-api:$versions.jakartaValidation"
-    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
+    implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
 
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
@@ -36,7 +36,6 @@ dependencies {
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
-    implementation "org.projectreactor:reactor-spring:$versions.reactorSpring"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

@@ -3,12 +3,14 @@ package no.nav.pdl.forvalter.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolGetLedigCommand;
+import no.nav.pdl.forvalter.consumer.command.IdentpoolGetProdSjekkCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostVoidCommand;
 import no.nav.pdl.forvalter.dto.AllokerIdentRequest;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
+import no.nav.pdl.forvalter.dto.ProdSjekkDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -35,11 +37,12 @@ public class IdentPoolConsumer {
     public IdentPoolConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getIdentPool();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
@@ -62,10 +65,16 @@ public class IdentPoolConsumer {
     public Flux<IdentpoolLedigDTO> getErLedig(Set<String> identer) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> Flux.concat(identer.stream()
-                        .map(ident ->
-                                new IdentpoolGetLedigCommand(webClient, ident, token.getTokenValue()).call())
-                        .toList()));
+                .flatMapMany(token -> Flux.fromIterable(identer)
+                        .flatMap(ident ->
+                                new IdentpoolGetLedigCommand(webClient, ident, token.getTokenValue()).call()));
+    }
+
+    public Flux<ProdSjekkDTO> getProdSjekk(Set<String> identer) {
+
+        return tokenExchange.exchange(serverProperties)
+                .flatMapMany(token ->
+                        new IdentpoolGetProdSjekkCommand(webClient, identer, token.getTokenValue()).call());
     }
 
     public Mono<Void> allokerIdent(String ident) {

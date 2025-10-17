@@ -1,81 +1,71 @@
-import React, { useContext } from 'react'
-import './Header.less'
+import React, { useEffect, useState } from 'react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
+import { ActionMenu } from '@navikt/ds-react'
+import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
-import styled from 'styled-components'
-
-const DropdownToggle = () => {
-	const context = useContext(DropdownContext)
-	const { isOpen } = context
-
-	return (
-		<Dropdown.Toggle
-			className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}
-			style={{ margin: 0, padding: '19px 10px' }}
-		>
-			Dokumentasjon
-		</Dropdown.Toggle>
-	)
-}
-
-const StyledA = styled.a`
-	color: #212529 !important;
-	text-decoration: none;
-	font-size: 1em !important;
-
-	&:hover {
-		background-color: #ebfcff !important;
-	}
-
-	padding: 0 !important;
-
-	&&& {
-		margin: 0;
-	}
-`
+import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
+import { useLocation } from 'react-router'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const DokumentasjonDropdown = () => {
 	const { currentBruker } = useCurrentBruker()
 
+	const location = useLocation()
+	const [isActive, setIsActive] = useState(false)
+	useEffect(() => {
+		setIsActive(location?.pathname === '/oversikt')
+	}, [location])
+
+	const isDevVersion =
+		window.location.hostname.includes('frontend') || window.location.hostname.includes('localhost')
+	const apiUrl = isDevVersion
+		? 'https://dolly-backend-dev.intern.dev.nav.no/swagger'
+		: 'https://dolly-backend.ekstern.dev.nav.no/swagger'
+
 	return (
-		<div style={{ color: 'white', fontSize: '1.2em', margin: '0 10px' }}>
-			<Dropdown>
-				<DropdownToggle />
-				<Dropdown.Menu placement="bottom-start">
-					<Dropdown.Menu.List>
-						<Dropdown.Menu.List.Item
-							onClick={() =>
-								window.open(
-									'https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning',
-									'_blank',
-									'noopener',
-								)
-							}
+		<ActionMenuWrapper
+			title="Dokumentasjon"
+			isActive={isActive}
+			dataTestId={TestComponentSelectors.BUTTON_HEADER_DOKUMENTASJON}
+		>
+			<>
+				<ActionMenu.Item
+					onClick={() =>
+						window.open(
+							'https://navikt.github.io/testnorge/testnav/latest/index.html',
+							'_blank',
+							'noopener',
+						)
+					}
+				>
+					<Icon kind="file-new" fontSize="1.5rem" style={{ color: 'black' }} />
+					<DropdownStyledLink
+						href="https://navikt.github.io/testnorge/testnav/latest/index.html"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Brukerdokumentasjon
+					</DropdownStyledLink>
+				</ActionMenu.Item>
+				<ActionMenu.Item onClick={() => window.open(apiUrl, '_blank', 'noopener')}>
+					<Icon kind="file-code" fontSize="1.5rem" style={{ color: 'black' }} />
+					<DropdownStyledLink href={apiUrl} target="_blank" rel="noopener noreferrer">
+						API-dokumentasjon (Dolly backend)
+					</DropdownStyledLink>
+				</ActionMenu.Item>
+				{currentBruker?.brukertype === 'AZURE' && (
+					<>
+						<PreloadableActionMenuItem
+							route="/oversikt"
+							dataTestId={TestComponentSelectors.BUTTON_HEADER_OVERSIKT}
+							style={{ color: '#212529' }}
 						>
-							<Icon kind="file-new" fontSize={'1.5rem'} style={{ color: 'black' }} />
-							<StyledA>Brukerdokumentasjon</StyledA>
-						</Dropdown.Menu.List.Item>
-						{currentBruker?.brukertype === 'AZURE' && (
-							<Dropdown.Menu.List.Item
-								onClick={() =>
-									window.open(
-										window.location.hostname.includes('frontend') ||
-											window.location.hostname.includes('localhost')
-											? 'https://dolly-backend-dev.intern.dev.nav.no/swagger'
-											: 'https://dolly-backend.intern.dev.nav.no/swagger',
-										'_blank',
-										'noopener',
-									)
-								}
-							>
-								<Icon kind="file-code" fontSize={'1.5rem'} style={{ color: 'black' }} />
-								<StyledA>API-dokumentasjon</StyledA>
-							</Dropdown.Menu.List.Item>
-						)}
-					</Dropdown.Menu.List>
-				</Dropdown.Menu>
-			</Dropdown>
-		</div>
+							<Icon kind="file-code" fontSize="1.5rem" />
+							<DropdownStyledLink href="/oversikt">API-oversikt</DropdownStyledLink>
+						</PreloadableActionMenuItem>
+					</>
+				)}
+			</>
+		</ActionMenuWrapper>
 	)
 }

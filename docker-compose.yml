@@ -1,61 +1,74 @@
 services:
+
   testnav-altinn3-tilgang-service:
-    container_name: testnav-altinn3-tilgang-service
-    environment:
-      - SPRING_PROFILES_ACTIVE=virtual
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-      - TOKEN_X_PRIVATE_JWK=${JWK}
-      - MASKINPORTEN_CLIENT_JWK=${JWK}
-    build:
-      context: ./apps/testnav-altinn3-tilgang-service
     depends_on:
       - tokendings
       - maskinporten
       - altinn
+    build:
+      context: ./apps/altinn3-tilgang-service
+    environment:
+      - ALTINN_URL=http//altinn:8080
+      - AZURE_OPENID_CONFIG_ISSUER=dummy
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - MASKINPORTEN_CLIENT_ID=dummy
+      - MASKINPORTEN_CLIENT_JWK=${JWK}
+      - MASKINPORTEN_SCOPES=altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
+      - MASKINPORTEN_WELL_KNOWN_URL=http://maskinporten:8080
+      - SPRING_PROFILES_ACTIVE=virtual
+      - TOKEN_X_ISSUER=http://tokendings:8080
+      - TOKEN_X_PRIVATE_JWK=${JWK}
     ports:
       - "8001:8080"
       - "5001:5005"
+
   tokendings:
-    container_name: tokendings
     build:
       context: ./mocks/tokendings-mock
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - SPRING_PROFILES_ACTIVE=virtual
     ports:
       - "9001:8080"
+
   maskinporten:
-    container_name: maskinporten
     build:
       context: ./mocks/maskinporten-mock
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - SPRING_PROFILES_ACTIVE=virtual
     ports:
       - "9002:8080"
+
   altinn:
     image: wiremock/wiremock
-    container_name: altinn
     volumes:
       - ./mocks/altinn-mock/wiremock/__files:/home/wiremock/__files
       - ./mocks/altinn-mock/wiremock/mappings:/home/wiremock/mappings
+
   testnav-bruker-service-db:
     image: postgres
-    restart: always
-    container_name: testnav-bruker-service-db
     environment:
       - POSTGRES_USER=compose-postgres
       - POSTGRES_PASSWORD=compose-postgres
+    restart: always
+
   testnav-bruker-service:
-    container_name: testnav-bruker-service
-    environment:
-      - SPRING_PROFILES_ACTIVE=virtual
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-      - TOKEN_X_PRIVATE_JWK=${JWK}
-    build:
-      context: ./apps/bruker-service
     depends_on:
       - testnav-bruker-service-db
       - testnav-altinn3-tilgang-service
       - tokendings
+    build:
+      context: ./apps/bruker-service
+    environment:
+      - AZURE_OPENID_CONFIG_ISSUER=dummy
+      - CRYPTOGRAPHY_SECRET=dummy
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - JWT_SECRET=dummy
+      - SPRING_PROFILES_ACTIVE=virtual
+      - TOKEN_X_CLIENT_ID=dev-gcp:dolly:testnav-bruker-service
+      - TOKEN_X_PRIVATE_JWK=${JWK}
+      - TOKEN_X_WELL_KNOWN_URL=http://tokendings:8080/.well-known/oauth-authorization-server
     ports:
       - "8002:8080"
       - "5002:5005"

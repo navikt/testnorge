@@ -6,16 +6,17 @@ export default {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
 
-	getGruppeByUserId(userId) {
-		return Request.get(Endpoints.gruppeByUser(userId))
-	},
-
 	createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
 	},
 
 	updateGruppe(gruppeId, data) {
-		return Request.put(Endpoints.gruppeById(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.put(Endpoints.gruppeById(valgtGruppe), data)
+	},
+
+	endreTilknytningGruppe(gruppeId, brukerId) {
+		return Request.put(Endpoints.endreTilknytningGruppe(gruppeId, brukerId))
 	},
 
 	deleteGruppe(gruppeId) {
@@ -23,11 +24,13 @@ export default {
 	},
 
 	createBestilling(gruppeId, data) {
-		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.post(Endpoints.gruppeBestilling(valgtGruppe), data)
 	},
 
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
-		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(valgtGruppe), data)
 	},
 
 	updateGruppeLaas(gruppeId, data) {
@@ -51,16 +54,13 @@ export default {
 		return Request.put(Endpoints.identIbruk(ident, ibruk))
 	},
 
-	createRelasjon(ident, data) {
-		return Request.put(Endpoints.kobleIdenter(ident), data)
-	},
-
 	createBestillingLeggTilPaaPerson(ident, data) {
 		return Request.put(Endpoints.leggTilPaaPerson(ident), data)
 	},
 
 	createBestillingLeggTilPaaGruppe(gruppeId, data) {
-		return Request.put(Endpoints.leggTilPaaGruppe(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.put(Endpoints.leggTilPaaGruppe(valgtGruppe), data)
 	},
 
 	navigerTilPerson(ident) {
@@ -97,10 +97,6 @@ export default {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
-	getBestilling(bestillingId) {
-		return Request.get(Endpoints.bestillingStatus(bestillingId))
-	},
-
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
@@ -126,7 +122,8 @@ export default {
 	},
 
 	importerPersonerFraPdl: (gruppeId, request) => {
-		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
+		const valgtGruppe = gruppeId || request.gruppeId
+		return Request.post(Endpoints.gruppeBestillingImportFraPdl(valgtGruppe), request)
 	},
 
 	getAktoerFraPdl(aktoerId, pdlMiljoe) {
@@ -139,8 +136,37 @@ export default {
 		return Request.get(Endpoints.personoppslagMange(identer))
 	},
 
-	getTransaksjonid(system, ident, bestillingsid) {
-		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
+	//* Team
+	opprettTeam(data) {
+		return Request.post(Endpoints.opprettTeam(), data)
+	},
+
+	redigerTeam(teamId, data) {
+		return Request.put(Endpoints.redigerTeam(teamId), data)
+	},
+
+	leggTilBrukerITeam(teamId, brukerId) {
+		return Request.post(Endpoints.leggTilFjernBrukerFraTeam(teamId, brukerId))
+	},
+
+	fjernBrukerFraTeam(teamId, brukerId) {
+		return Request.delete(Endpoints.leggTilFjernBrukerFraTeam(teamId, brukerId))
+	},
+
+	slettTeam(teamId) {
+		return Request.delete(Endpoints.slettTeam(teamId))
+	},
+
+	setRepresentererTeam(teamId) {
+		return Request.put(Endpoints.setRepresentererTeam(teamId))
+	},
+
+	fjernRepresentererTeam() {
+		return Request.delete(Endpoints.fjernRepresentererTeam())
+	},
+
+	lagreSoek(data, soekType) {
+		return Request.post(Endpoints.lagreSoek(soekType), data)
 	},
 
 	//* Organisasjoner
@@ -157,22 +183,8 @@ export default {
 		return Request.delete(Endpoints.deleteOrganisasjonOrgnummer(orgnummer))
 	},
 
-	//* Tags
-	getTags() {
-		return Request.get(Endpoints.getTags())
-	},
-
 	getTagsForIdent(ident) {
 		return Request.get(Endpoints.getIdentTags(ident))
-	},
-
-	//* Excel
-	getExcelFil(groupId) {
-		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
-	},
-
-	getOrgExcelFil(brukerId) {
-		return Request.getExcel(Endpoints.orgExcelFil(brukerId))
 	},
 
 	importerRelatertPerson(groupId, ident, master) {
@@ -249,6 +261,28 @@ export default {
 				if (!response.ok) {
 					throw new Error(response.statusText)
 				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	personerSearch(request) {
+		const getRegistreRequest = () => {
+			if (!request?.registreRequest || request?.registreRequest.length === 0) {
+				return null
+			}
+			let url = ''
+			request?.registreRequest?.forEach((type, idx) =>
+				idx === 0 ? (url += `?registreRequest=${type}`) : (url += `&registreRequest=${type}`),
+			)
+			return url
+		}
+		const registre = getRegistreRequest()
+		return Request.post(Endpoints.personerSearch(registre), request)
+			.then((response) => {
 				return response
 			})
 			.catch((error) => {

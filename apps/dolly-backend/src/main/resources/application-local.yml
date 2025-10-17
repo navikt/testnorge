@@ -1,37 +1,29 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-
 dolly:
   client:
     general:
-      timeout: 30
+      timeout: 300
 
 spring:
   cache:
     type: none
   config:
     import: "sm://"
-  datasource:
+  flyway:
     url: jdbc:postgresql://localhost:5432/testnav-dolly-backend-local
+    user: testnav-dolly-backend-local
+    password: ${sm\://testnav-dolly-backend-local}
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-dolly-backend-local
     username: testnav-dolly-backend-local
-    password: ${sm://testnav-dolly-backend-local}
+    password: ${sm\://testnav-dolly-backend-local}
+  devtools:
+    restart:
+      enabled: false
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-      path-mapping:
-        prometheus: "prometheus"
   health:
     elasticsearch:
       enabled: false
-
-azure:
-  app:
-    client:
-      id: ${sm://azure-app-client-id}
-      secret: ${sm://azure-app-client-secret}
 
 open:
   search:
@@ -52,15 +44,8 @@ consumers:
     url: https://testnav-tps-messaging-service.intern.dev.nav.no
   testnav-person-service:
     url: https://testnav-person-service.intern.dev.nav.no
-  testnav-arbeidsforhold-service:
-    url: https://testnav-arbeidsforhold-service.intern.dev.nav.no
-  testnav-amelding-service:
-    url: https://testnav-amelding-service.intern.dev.nav.no
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
-  testnav-synt-sykemelding-api:
-    name: testnav-synt-sykemelding-api-dev
-    url: https://testnav-synt-sykemelding-api-dev.intern.dev.nav.no
   testnav-sykemelding-api:
     name: testnav-sykemelding-api-dev
     url: https://testnav-sykemelding-api-dev.intern.dev.nav.no
@@ -74,3 +59,14 @@ consumers:
     url: https://testnav-skattekort-service.intern.dev.nav.no
   yrkesskade-proxy:
     url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
+  arbeidssoekerregisteret-proxy:
+    url: https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
+  bruker-service:
+    name: testnav-bruker-service-dev
+    url: https://testnav-bruker-service-dev.intern.dev.nav.no
+  etterlatte:
+    url: https://etterlatte-testdata.intern.dev.nav.no
+  nom-proxy:
+    url: https://testnav-nom-proxy.intern.dev.nav.no
+  testnav-sykemelding-proxy:
+    url: https://testnav-sykemelding-proxy.intern.dev.nav.no

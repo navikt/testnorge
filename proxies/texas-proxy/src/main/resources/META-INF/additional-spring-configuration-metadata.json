@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "dolly.texas.shared.secret",
+      "type": "java.lang.String",
+      "description": "A secret that is shared with any application attempting to use this proxy for local development."
+  }
+] }

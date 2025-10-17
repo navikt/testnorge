@@ -1,48 +1,71 @@
-import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { CheckboxGroup } from '@navikt/ds-react'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import React from 'react'
 
-export const Attributt = ({
+interface AttrItem {
+	label: string
+	readonly checked: boolean
+	add: () => void
+	remove: () => void
+}
+interface AttributtProps {
+	attr: AttrItem
+	vis?: boolean
+	disabled?: boolean
+	title?: string
+	id?: string
+	infoTekst?: string
+	[key: string]: any
+}
+export const Attributt: React.FC<AttributtProps> = ({
 	attr,
 	vis = true,
 	disabled = false,
-	title = null,
-	id = null,
+	title,
+	id,
+	infoTekst = '',
 	...props
 }) => {
-	if (!vis) {
-		return null
-	}
+	if (!vis) return null
 	return (
-		<div title={title}>
+		<div title={title} style={{ display: 'flex' }}>
 			<DollyCheckbox
-				label={attr?.label}
-				attributtCheckbox={true}
-				size={'small'}
-				onChange={attr?.checked ? attr?.remove : attr?.add}
-				value={attr?.label}
-				isDisabled={disabled}
+				wrapperSize="grow"
+				label={attr.label}
+				attributtCheckbox
+				size="small"
+				onChange={(e) => (e.target.checked ? attr.add() : attr.remove())}
+				value={attr.label}
+				disabled={disabled}
 				id={id}
 				{...props}
 			/>
+			{infoTekst && (
+				<Hjelpetekst style={{ marginLeft: '-25px', marginTop: '3px' }}>{infoTekst}</Hjelpetekst>
+			)}
 		</div>
 	)
 }
 
-export const AttributtKategori = ({ title, children, attr }) => {
+interface AttributtKategoriProps {
+	title: string
+	children: React.ReactNode
+	attr: Record<string, AttrItem>
+}
+export const AttributtKategori: React.FC<AttributtKategoriProps> = ({ title, children, attr }) => {
+	'use no memo' // Skip compilation for this component
 	const values = attr && Object.values(attr)
-	const checked = values
-		?.filter((attribute) => attribute.checked)
-		?.map((attribute) => attribute.label)
+	const checkedValues = values?.filter((a) => a.checked)?.map((a) => a.label) || []
 
 	const attributter = Array.isArray(children) ? children : [children]
-	const attributterSomSkalVises = attributter.some(
-		(attr) => attr.props.vis || !attr.props.hasOwnProperty('vis'),
+	const showAny = attributter.some(
+		(child: any) => child?.props?.vis || !child?.props?.hasOwnProperty('vis'),
 	)
-	if (!attributterSomSkalVises) {
-		return null
-	}
+	if (!showAny) return null
+
 	return (
-		<CheckboxGroup name={title} legend={title} value={checked}>
+		<CheckboxGroup name={title} legend={title} value={checkedValues}>
 			<div className="attributt-velger_panelsubcontent">{children}</div>
 		</CheckboxGroup>
 	)

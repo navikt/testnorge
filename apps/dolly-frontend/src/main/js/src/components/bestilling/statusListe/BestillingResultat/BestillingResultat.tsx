@@ -8,11 +8,11 @@ import './BestillingResultat.less'
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
-import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
+import { Bestillingsstatus } from '@/utils/hooks/useDollyOrganisasjoner'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import ConfettiExplosion from 'react-confetti-explosion'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 const StyledConfettiExplosion = styled(ConfettiExplosion)`
@@ -21,6 +21,8 @@ const StyledConfettiExplosion = styled(ConfettiExplosion)`
 	align-self: center;
 	text-align: center;
 `
+
+const confettiDuration = 2800
 
 type ResultatProps = {
 	bestilling: Bestillingsstatus
@@ -40,12 +42,27 @@ export default function BestillingResultat({
 	lukkBestilling,
 	erOrganisasjon,
 }: ResultatProps) {
-	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
+	const [showConfetti, setShowConfetti] = useState(false)
+	const mutate = useMatchMutate()
 
+	useEffect(() => {
+		if (bestilling.ferdig && !bestilling.stoppet && !bestillingHarFeil(bestilling)) {
+			setShowConfetti(true)
+			const timer = setTimeout(() => {
+				setShowConfetti(false)
+			}, confettiDuration)
+			return () => clearTimeout(timer)
+		}
+	}, [bestilling])
+
+	const brukerId = bestilling?.bruker?.brukerId
 	const antallOpprettet = antallIdenterOpprettet(bestilling)
 	const harIdenterOpprettet = bestilling?.antallIdenterOpprettet > 0 || bestilling?.antallLevert > 0
-	const mutate = useMatchMutate()
+	const disableGjenopprett =
+		bestilling?.gjenopprettetFraIdent ||
+		bestilling?.opprettetFraId ||
+		bestilling?.opprettetFraGruppeId
 
 	return (
 		<div className="bestilling-status" key={`ferdig-bestilling-${bestilling.id}`}>
@@ -64,26 +81,26 @@ export default function BestillingResultat({
 					</div>
 				</div>
 				<hr />
-				{/*// @ts-ignore*/}
 				<BestillingStatus bestilling={bestilling} erOrganisasjon={erOrganisasjon} />
 				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 				<Feedback
 					label="Hvordan var din opplevelse med bruk av Dolly?"
 					feedbackFor="Bruk av Dolly etter bestilling"
+					etterBestilling={true}
 				/>
-				{bestilling.ferdig && !bestilling.stoppet && !bestillingHarFeil(bestilling) && (
-					<div style={{ display: 'flex', flexDirection: 'column' }}>
-						<StyledConfettiExplosion particleCount={70} force={0.3} duration={2800} />
+				{showConfetti && (
+					<div data-testid="confetti" style={{ display: 'flex', flexDirection: 'column' }}>
+						<StyledConfettiExplosion particleCount={70} force={0.3} duration={confettiDuration} />
 					</div>
 				)}
 				<div className="flexbox--all-center">
 					<BestillingSammendragModal bestillinger={[bestilling]} />
 					{harIdenterOpprettet && (
 						<Button
-							disabled={bestilling?.opprettetFraId || bestilling?.opprettetFraGruppeId}
+							disabled={disableGjenopprett}
 							title={
-								bestilling?.opprettetFraId
+								disableGjenopprett
 									? 'Kan ikke gjenopprette gjenoppretting av bestilling'
 									: 'Gjenopprett'
 							}

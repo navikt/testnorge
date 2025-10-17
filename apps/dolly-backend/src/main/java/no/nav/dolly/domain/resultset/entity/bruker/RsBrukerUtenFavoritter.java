@@ -20,5 +20,4 @@ public class RsBrukerUtenFavoritter {
     private String brukernavn;
     private Brukertype brukertype;
     private String epost;
-    private String navIdent;
 }

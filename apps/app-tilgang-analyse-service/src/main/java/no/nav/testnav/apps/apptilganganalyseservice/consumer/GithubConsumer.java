@@ -20,9 +20,9 @@ public class GithubConsumer {
 
     public GithubConsumer(@Value("${consumers.github.url}") String url,
                           @Value("${consumers.github.token}") String token,
-                          WebClient.Builder webClientBuilder) {
-
-        this.webClient = webClientBuilder
+                          WebClient webClient) {
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(url)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "token " + token)
                 .exchangeStrategies(ExchangeStrategies.builder()

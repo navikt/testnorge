@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.consumers.dto.AltinnBrukerRequest;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -23,19 +21,21 @@ public class PostPersonOrganisasjonTilgangCommand implements Callable<Flux<Organ
 
     @Override
     public Flux<OrganisasjonDTO> call() {
-
         return webClient
                 .post()
                 .uri(builder -> builder.path("/api/v1/brukertilgang").build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(new AltinnBrukerRequest(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
-                .doOnError(error -> log.error("Feilet å hente organisasjon, status: {}, feilmelding: {}",
-                        WebClientFilter.getStatus(error),
-                        WebClientFilter.getMessage(error),
-                        error))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    log.error("Feilet å hente organisasjon, status: {}, feilmelding: {}",
+                            description.getStatus(),
+                            description.getMessage(),
+                            throwable);
+                })
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

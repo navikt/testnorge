@@ -4,23 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.NavHeaders;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static java.lang.String.format;
 
-
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>> {
 
     private static final String MILJOE = "q2";
@@ -37,7 +34,6 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
 
     @Override
     public Flux<Arbeidsforhold> call() {
-
         return webClient
                 .get()
                 .uri(builder -> builder
@@ -46,17 +42,16 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
                                 "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold",
                                 "ordinaertArbeidsforhold")
                         .build(MILJOE))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(NAV_PERSON_IDENT, ident)
                 .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
                 .header(NavHeaders.NAV_CALL_ID, getNavCallId())
                 .retrieve()
                 .bodyToFlux(Arbeidsforhold.class)
-                .retryWhen(Retry
-                        .backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .retryWhen(WebClientError.is5xxException())
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.empty())
                 .onErrorResume(WebClientResponseException.class, error -> Mono.empty());
     }
+
 }

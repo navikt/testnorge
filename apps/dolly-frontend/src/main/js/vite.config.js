@@ -11,36 +11,6 @@ import * as child from 'child_process'
 const commitHash = child.execSync('git rev-parse --short HEAD').toString()
 const gitBranch = child.execSync('git branch --show-current').toString()
 
-const preserveRefPlugin = () => {
-	const preverseRefFunc = `
-function __preserveRef(key, v) {
-  if (import.meta.env.PROD) return v;
-
-  import.meta.hot.data ??= {}
-  import.meta.hot.data.contexts ??= {}
-  const old = import.meta.hot.data.contexts[key];
-  const now = old || v;
-
-  import.meta.hot.on('vite:beforeUpdate', () => {
-    import.meta.hot.data.contexts[key] = now;
-  });
-
-  return now;
-}
-`
-	return {
-		name: 'preserveRef',
-		transform(code) {
-			if (!code.includes('__preserveRef')) return
-
-			return {
-				code: code + preverseRefFunc,
-				map: null,
-			}
-		},
-	}
-}
-
 const createProxyConfig = (routes) => {
 	const target = 'http://localhost:8020'
 	const secure = false
@@ -50,6 +20,10 @@ const createProxyConfig = (routes) => {
 			{ target, changeOrigin, secure },
 		]),
 	)
+}
+
+const ReactCompilerConfig = {
+	target: '19',
 }
 
 export default defineConfig(({ mode }) => ({
@@ -98,6 +72,7 @@ export default defineConfig(({ mode }) => ({
 		react({
 			babel: {
 				plugins: [
+					['babel-plugin-react-compiler', ReactCompilerConfig],
 					[
 						'babel-plugin-styled-components',
 						{
@@ -109,7 +84,6 @@ export default defineConfig(({ mode }) => ({
 			},
 		}),
 		viteTsconfigPaths(),
-		preserveRefPlugin(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',

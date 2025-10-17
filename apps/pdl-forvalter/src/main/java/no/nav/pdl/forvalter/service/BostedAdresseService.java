@@ -23,6 +23,8 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
@@ -51,15 +53,17 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
     public List<BostedadresseDTO> convert(PersonDTO person, Boolean relaxed) {
 
-        for (var adresse : person.getBostedsadresse()) {
+        person.getBostedsadresse().stream()
+                .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
+                .forEach(adresse -> {
+                    handle(adresse, person);
+                    adresse.setKilde(getKilde(adresse));
+                    adresse.setMaster(getMaster(adresse, person));
+                });
 
-            if (isTrue(adresse.getIsNew()) && (isNotTrue(relaxed))) {
-                handle(adresse, person);
-                populateMiscFields(adresse, person);
+        oppdaterAdressedatoer(person.getBostedsadresse(), person);
+        setAngittFlyttedato(person.getBostedsadresse());
 
-            }
-        }
-        enforceIntegrity(person.getBostedsadresse());
         return person.getBostedsadresse();
     }
 
@@ -146,14 +150,14 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(bostedadresse, person.getIdent()) ? vegadresse.getMatrikkelId() : null);
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), vegadresse.getMatrikkelId()));
             mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
 
             var matrikkeladresse =
                     adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(bostedadresse, person.getIdent()) ? matrikkeladresse.getMatrikkelId() : null);
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
             mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
@@ -191,5 +195,11 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst().orElse(null);
+    }
+
+    private static void setAngittFlyttedato(List<BostedadresseDTO> bostedsadresse) {
+
+        bostedsadresse.forEach(adresse ->
+                adresse.setAngittFlyttedato(adresse.getGyldigFraOgMed()));
     }
 }

@@ -1,16 +1,14 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+dolly:
+  texas:
+    consumers:
+      - name: generer-navn-service
+        url: https://generer-navn-service.intern.dev.nav.no
+        audience: api://dev-gcp.dolly.generer-navn-service/.default
+  nais:
+    name: dolly-texas-proxy
+    variables:
+      - DOLLY_TEXAS_PROXY_SHARED_SECRET
 
 spring:
   config:
     import: "sm://"
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
-consumers:
-  generer-navn-service:
-    url: "https://generer-navn-service.intern.dev.nav.no"

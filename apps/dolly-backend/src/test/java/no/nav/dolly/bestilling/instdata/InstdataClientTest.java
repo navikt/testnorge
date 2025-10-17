@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.instdata;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -10,8 +9,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.service.TransactionHelperService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -48,9 +46,6 @@ class InstdataClientTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private ErrorStatusDecoder errorStatusDecoder;
-
-    @Mock
     private InstdataConsumer instdataConsumer;
 
     @Mock
@@ -62,18 +57,13 @@ class InstdataClientTest {
     @InjectMocks
     private InstdataClient instdataClient;
 
-    void setup() {
-        statusCaptor = ArgumentCaptor.forClass(String.class);
-    }
-
     @Test
     void gjenopprettUtenInstdata_TomRetur() {
 
         var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
         StepVerifier.create(instdataClient.gjenopprett(new RsDollyBestillingRequest(), dollyPerson,
-                                new BestillingProgress(), false)
-                        .map(ClientFuture::get))
+                                new BestillingProgress(), false))
                 .expectNextCount(0)
                 .verifyComplete();
     }
@@ -91,13 +81,13 @@ class InstdataClientTest {
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton("q2"));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true)
-                        .map(ClientFuture::get))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true))
                 .assertNext(status -> {
                     verify(transactionHelperService)
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -122,13 +112,13 @@ class InstdataClientTest {
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton("q2"));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false)
-                        .map(ClientFuture::get))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService)
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());

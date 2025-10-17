@@ -1,52 +1,14 @@
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import cn from 'classnames'
+import styled from 'styled-components'
+import { useFormContext } from 'react-hook-form'
+import * as _ from 'lodash-es'
+
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Icon from '@/components/ui/icon/Icon'
-import styled from 'styled-components'
-import React, { useContext, useEffect, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
-import {
-	ShowErrorContext,
-	ShowErrorContextType,
-} from '@/components/bestillingsveileder/ShowErrorContext'
-import * as _ from 'lodash-es'
-import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
-import { Button } from '@navikt/ds-react'
-
-type TextInputProps = {
-	placeholder?: string
-	visHvisAvhuket?: boolean
-	name: string
-	label?: string
-	size?: string
-	type?: string
-	useOnChange?: boolean
-	onBlur?: (val: any) => void
-	afterChange?: (val: any) => void
-	onClick?: (val: any) => void
-	onFocus?: (val: any) => void
-	useControlled?: boolean
-	defaultValue?: string
-	isDisabled?: boolean
-	onKeyPress?: (val: any) => void
-	autoFocus?: boolean
-	fieldName?: string
-	value?: any
-	input?: string
-	style?: any
-	readOnly?: boolean
-	onKeyDown?: any
-	'data-testid'?: string
-	onSubmit?: Function
-	onChange?: (val: any) => void
-	onPaste?: Function
-	className?: string
-	icon?: string
-	isDatepicker?: boolean
-	title?: string
-	datepickerOnclick?: Function
-}
+import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
@@ -54,105 +16,177 @@ const StyledIcon = styled(Icon)`
 	translate: 160px -30px;
 `
 
-const StyledButton = styled(Button)`
-	&&& {
-		svg {
-			translate: -1px 1px;
+type TextInputProps = {
+	name: string
+	label?: string
+	title?: string
+	placeholder?: string
+	defaultValue?: string
+	value?: string
+	fieldName?: string
+	type?: 'text' | 'number'
+	size?: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
+	className?: string
+	icon?: string
+	isDisabled?: boolean
+	readOnly?: boolean
+	autoFocus?: boolean
+	manualError?: string
+	visHvisAvhuket?: boolean
+	style?: React.CSSProperties
+	'data-testid'?: string
+	useOnChange?: boolean
+	useControlled?: boolean
+	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+	onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
+	onClick?: (event: React.MouseEvent<HTMLInputElement>) => void
+	onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
+	onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void
+	onSubmit?: () => void
+	afterChange?: (event: React.FocusEvent<HTMLInputElement>) => void
+}
+
+export const TextInput = ({
+	placeholder = 'Ikke spesifisert',
+	name,
+	fieldName,
+	className,
+	icon,
+	isDisabled,
+	autoFocus,
+	type = 'text',
+	value,
+	defaultValue,
+	style,
+	'data-testid': dataTestId,
+	useControlled = false,
+	...props
+}: TextInputProps) => {
+	'use no memo' // Skip compilation for this component
+	const { register, formState, setValue, watch } = useFormContext() || {}
+	const { showError } = React.useContext(ShowErrorContext) || {}
+
+	const { onChange: registerOnChange, onBlur: registerOnBlur } =
+		name && register ? register(name) : {}
+
+	const initialValue = value ?? defaultValue ?? (name ? watch(name) || '' : '')
+	const [fieldValue, setFieldValue] = useState(initialValue)
+	const validateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+	const formValue = name ? watch(name) : undefined
+
+	const isTouched =
+		formState?.touchedFields &&
+		((fieldName && _.has(formState.touchedFields, fieldName)) ||
+			(name && _.has(formState.touchedFields, name)))
+
+	const hasSubmitted = formState?.isSubmitted || formState?.submitCount > 0
+
+	const error =
+		formState?.errors &&
+		(_.get(formState.errors, `manual.${name}`) ||
+			_.get(formState.errors, name) ||
+			(fieldName && _.get(formState.errors, fieldName)))
+
+	const shouldShowError = (error && (showError || isTouched || hasSubmitted)) || !!props.manualError
+
+	useEffect(() => {
+		if (formValue !== undefined) {
+			setFieldValue(formValue || '')
 		}
+	}, [value, formValue])
 
-		position: absolute;
-		height: 37px;
-		translate: -31px 1px;
-		padding: 5px 3px 0 3px;
-		margin: 0;
-	}
-`
+	const handleChange = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			const newValue = e.target.value
+			setFieldValue(newValue)
 
-export const TextInput = React.forwardRef(
-	(
-		{
-			placeholder = 'Ikke spesifisert',
-			name,
-			fieldName,
-			className,
-			icon,
-			isDisabled,
-			datepickerOnclick,
-			...props
-		}: TextInputProps,
-		forwardRef,
-	) => {
-		const {
-			register,
-			formState: { touchedFields },
-			setValue,
-			watch,
-			getFieldState,
-		} = useFormContext()
-		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-		const { onChange, onBlur } = register(name)
-		const input = props.input || props.value
-		const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
-		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
-		const feil =
-			getFieldState(`manual.${name}`)?.error ||
-			getFieldState(name)?.error ||
-			getFieldState(fieldName)?.error
-		const visFeil = feil && (errorContext?.showError || isTouched)
-		const css = cn('skjemaelement__input', className, {
-			'skjemaelement__input--harFeil': visFeil,
-		})
-
-		useEffect(() => {
-			if (input && input !== fieldValue) {
-				setFieldValue(input)
+			// Update form without validation during typing
+			if (name && setValue) {
+				setValue(name, newValue, { shouldDirty: true, shouldValidate: false })
 			}
-		}, [input])
 
-		return (
-			<>
-				<input
-					value={fieldValue}
-					disabled={isDisabled}
-					id={name}
-					name={name}
-					className={css}
-					placeholder={placeholder}
-					onBlur={(e) => {
-						onBlur?.(e)
-						props.onBlur?.(e)
-						props.afterChange?.(e)
-					}}
-					onChange={(e) => {
-						setValue(name, e.target.value)
-						setFieldValue(e.target.value)
-						onChange?.(e)
-						props.onChange?.(e)
-					}}
-					data-testid={props['data-testid']}
-					onClick={props.onClick}
-					onFocus={props.onFocus}
-					onKeyDown={props.onKeyDown}
-					style={props.style}
-				/>
-				{icon &&
-					(datepickerOnclick ? (
-						<StyledButton variant="tertiary" onClick={datepickerOnclick}>
-							<Icon kind={icon} style={{ color: 'black' }} fontSize={'1.5rem'} />
-						</StyledButton>
-					) : (
-						<div style={{ height: '0' }}>
-							<StyledIcon fontSize="1.5rem" kind={icon} />
-						</div>
-					))}
-			</>
-		)
-	},
-)
+			registerOnChange?.(e)
+			props.onChange?.(e)
+
+			if (validateTimeoutRef.current) {
+				clearTimeout(validateTimeoutRef.current)
+			}
+
+			validateTimeoutRef.current = setTimeout(() => {
+				if (name && setValue) {
+					setValue(name, newValue, { shouldValidate: true })
+				}
+			}, 400) // Validate after inactivity
+		},
+		[name, setValue, registerOnChange, props.onChange],
+	)
+
+	const handleBlur = useCallback(
+		(e: React.FocusEvent<HTMLInputElement>) => {
+			if (validateTimeoutRef.current) {
+				clearTimeout(validateTimeoutRef.current)
+				validateTimeoutRef.current = null
+			}
+
+			registerOnBlur?.(e)
+			props.onBlur?.(e)
+
+			if (name && setValue) {
+				setValue(name, fieldValue, { shouldValidate: true })
+			}
+
+			props.afterChange?.(e)
+		},
+		[name, setValue, fieldValue, registerOnBlur, props.onBlur, props.afterChange],
+	)
+
+	useEffect(() => {
+		return () => {
+			if (validateTimeoutRef.current) {
+				clearTimeout(validateTimeoutRef.current)
+			}
+		}
+	}, [])
+
+	const inputClassNames = cn('skjemaelement__input', className, {
+		'skjemaelement__input--harFeil': shouldShowError,
+	})
+
+	return (
+		<>
+			<input
+				id={name}
+				name={name}
+				value={fieldValue || ''}
+				type={type}
+				disabled={isDisabled}
+				autoFocus={autoFocus}
+				className={inputClassNames}
+				placeholder={placeholder}
+				onChange={handleChange}
+				onBlur={handleBlur}
+				onClick={props.onClick}
+				onFocus={props.onFocus}
+				title={props.title}
+				onKeyDown={props.onKeyDown}
+				style={style}
+				data-testid={dataTestId}
+				readOnly={props.readOnly}
+			/>
+
+			{icon && (
+				<div style={{ height: '0' }}>
+					<StyledIcon fontSize="1.5rem" kind={icon} />
+				</div>
+			)}
+		</>
+	)
+}
 
 export const DollyTextInput = (props: TextInputProps) => (
 	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label}>
+		<Label name={props.name} label={props.label || ''} manualError={props.manualError}>
 			<TextInput {...props} />
 		</Label>
 	</InputWrapper>
@@ -161,8 +195,8 @@ export const DollyTextInput = (props: TextInputProps) => (
 export const FormTextInput = ({ visHvisAvhuket = true, ...props }: TextInputProps) =>
 	visHvisAvhuket ? (
 		<Vis attributt={props.name}>
-			<FormFieldInput {...props} />
+			<DollyTextInput {...props} />
 		</Vis>
 	) : (
-		<FormFieldInput {...props} />
+		<DollyTextInput {...props} />
 	)

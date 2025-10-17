@@ -1,28 +1,18 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnorge-profil-api
     description: API for hente ut profil fra Azure Ad
-    cluster: dev-gcp
-    namespace: dolly
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
         tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
+          issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
 
 access.scopes:
   - https://graph.microsoft .com/.default
@@ -35,26 +25,3 @@ consumers:
     namespace: dolly
     name: ${ALTINN3_TILGANG_NAME}
     url: ${ALTINN3_TILGANG_URL}
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

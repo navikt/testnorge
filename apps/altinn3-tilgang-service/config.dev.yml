@@ -29,31 +29,37 @@ spec:
       rules:
         - application: dolly-frontend-dev
         - application: dolly-frontend-dev-unstable
+        - application: dolly-proxy
+        - application: dolly-texas-proxy
         - application: team-dolly-lokal-app
-        - application: testnav-oversikt-frontend
         - application: testnav-bruker-service-dev
+        - application: testnav-oversikt-frontend
         - application: testnorge-profil-api-dev
     outbound:
       external:
         - host: platform.tt02.altinn.no
         - host: data.brreg.no
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 10
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 10
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -62,8 +68,8 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
   env:

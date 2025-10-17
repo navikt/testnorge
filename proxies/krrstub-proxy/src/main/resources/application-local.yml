@@ -1,11 +1,11 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-TOKEN_X_ISSUER: dummy
+dolly:
+  nais:
+    cluster: dev-fss
+    name: testnav-krrstub-proxy
+    variables:
+      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
+      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
 
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: true
   config:
     import: "sm://"

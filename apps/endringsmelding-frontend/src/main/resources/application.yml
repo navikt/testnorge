@@ -1,11 +1,9 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
     name: endringsmelding-frontend
     description: App for å sende inn endringsmeldinger til tps
-  main:
-    banner-mode: off
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       client:
@@ -18,9 +16,7 @@ spring:
             scope: openid,  ${AZURE_APP_CLIENT_ID}/.default
         provider:
           aad:
-            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
-            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
-            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
 
 consumers:
   endringsmelding-service:
@@ -38,29 +34,6 @@ consumers:
     namespace: dolly
     name: testnorge-profil-api
     url: http://testnorge-profil-api.dolly.svc.cluster.local
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 logging:
   level:

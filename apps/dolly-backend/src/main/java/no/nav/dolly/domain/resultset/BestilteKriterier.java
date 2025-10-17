@@ -7,9 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
+import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
@@ -22,6 +24,7 @@ import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
+import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
@@ -47,6 +50,7 @@ public class BestilteKriterier {
     private RsUdiPerson udistub;
     private List<RsLignetInntekt> sigrunstub;
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
+    private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private Arenadata arenaforvalter;
     private PdlPersondata pdldata;
     private List<RsInstdata> instdata;
@@ -54,7 +58,7 @@ public class BestilteKriterier {
     private PensjonData pensjonforvalter;
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
-    private RsDokarkiv dokarkiv;
+    private List<RsDokarkiv> dokarkiv;
     private List<RsFullmakt> fullmakt;
     private RsMedl medl;
     private RsHistark histark;
@@ -65,4 +69,7 @@ public class BestilteKriterier {
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     private SkattekortRequestDTO skattekort;
     private List<YrkesskadeRequest> yrkesskader;
+    private RsArbeidssoekerregisteret arbeidssoekerregisteret;
+    private List<EtterlatteYtelse> etterlatteYtelser;
+    private RsNomData nomdata;
 }

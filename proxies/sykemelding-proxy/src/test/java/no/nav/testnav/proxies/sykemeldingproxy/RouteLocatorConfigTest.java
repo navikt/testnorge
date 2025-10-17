@@ -1,68 +1,84 @@
 package no.nav.testnav.proxies.sykemeldingproxy;
 
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOAuth2Login;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = "consumers.sykemelding.url=http://localhost:${wiremock.server.port}"
-)
-@AutoConfigureWireMock(port = 0)
-@AutoConfigureWebTestClient
+@DollySpringBootTest()
 @ActiveProfiles("test")
-class RouteLocatorConfigTest {
+@AutoConfigureWireMock(port = 0)
+@AutoConfigureWebTestClient(timeout = "PT30S")
+class RouteLocatorConfigTest extends DollyApplicationContextTest {
 
-    @Autowired
-    private WebTestClient webClient;
+    @MockitoBean
+    AzureTrygdeetatenTokenService tokenService;
 
-    @TestConfiguration
-    static class TestAuthenticationConfig {
+    @MockitoBean
+    TokenExchange tokenExchange;
 
-        @Primary
-        @Bean
-        GatewayFilter getNoopAuthenticationFilter() {
-            return (exchange, chain) -> chain.filter(exchange);
-
-        }
-
+    @BeforeEach
+    void setupMocks() {
+        when(tokenService.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-token")));
     }
 
     @Test
-    void shouldRouteToStub() {
+    void shouldRouteSyfosmreglerAndStripFirstPathSegment() {
+        stubFor(get(urlEqualTo("/api/v1/validate"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"result\":\"valid\"}")));
 
-        stubFor(
-                get(urlEqualTo("/testing/route"))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(HttpStatus.OK.value())
-                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
-                                        .withBody("Some content")
-                        )
-        );
-
-        webClient
+        webTestClient
                 .mutateWith(mockOAuth2Login())
-                .get().uri("/testing/route")
+                .get()
+                .uri("/syfosmregler/api/v1/validate")
                 .exchange()
                 .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.TEXT_PLAIN_VALUE)
-                .expectBody(String.class).isEqualTo("Some content");
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json("{\"result\":\"valid\"}");
 
+        verify(1, getRequestedFor(urlEqualTo("/api/v1/validate")));
     }
 
+    @Test
+    void shouldRouteTsmAndStripPrefix() {
+        stubFor(get(urlEqualTo("/api/v1/sykmelding"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"status\":\"ok\"}")));
+
+        webTestClient
+                .mutateWith(mockOAuth2Login())
+                .get()
+                .uri("/tsm/api/v1/sykmelding")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json("{\"status\":\"ok\"}");
+
+        verify(1, getRequestedFor(urlEqualTo("/api/v1/sykmelding")));
+    }
 }

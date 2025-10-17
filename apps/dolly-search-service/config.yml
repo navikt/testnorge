@@ -1,0 +1,75 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-dolly-search-service
+  namespace: dolly
+  labels:
+    team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
+spec:
+  image: "{{image}}"
+  port: 8080
+  openSearch:
+    instance: bestillinger
+    access: read
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-idporten
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
+        - application: testnav-synt-vedtakshistorikk-service
+    outbound:
+      external:
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system
+  liveness:
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  readiness:
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1250Mi
+    limits:
+      memory: 2048Mi
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+  ingresses:
+    - "https://testnav-dolly-search-service.intern.dev.nav.no"
+

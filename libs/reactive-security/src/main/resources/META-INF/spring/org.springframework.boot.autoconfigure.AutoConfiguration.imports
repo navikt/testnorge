@@ -1,1 +1,2 @@
 no.nav.testnav.libs.reactivesecurity.exchange.TokenServiceAutoConfiguration
+no.nav.testnav.libs.reactivesecurity.jwt.ReactiveJwtAutoConfiguration

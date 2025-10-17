@@ -22,7 +22,10 @@ import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OppholdsadresseValues {
@@ -166,7 +169,7 @@ export const OppholdsadresseForm = ({
 }
 
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (

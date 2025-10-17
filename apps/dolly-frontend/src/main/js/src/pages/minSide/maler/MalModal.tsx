@@ -74,6 +74,8 @@ export const MalModal = ({ id, malType, closeModal }) => {
 								name="malnavn"
 								onChange={(e) => setMalnavn(e.target.value)}
 								className="input--fullbredde"
+								autoFocus
+								useControlled
 							/>
 						</Label>
 						<ModalActionKnapper

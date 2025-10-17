@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.dokarkivproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
@@ -8,8 +9,8 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTo
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.dokarkivproxy.config.Consumers;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -30,7 +31,13 @@ import java.util.function.Function;
 @SpringBootApplication
 public class DokarkivProxyApplicationStarter {
 
-    private static final String[] miljoer = new String[]{"q1", "q2", "q4", "q5", "t3"};
+    private static final String[] miljoer = new String[]{"q1", "q2", "q4"};
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(DokarkivProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
 
     @Bean
     public RouteLocator customRouteLocator(
@@ -48,10 +55,6 @@ public class DokarkivProxyApplicationStarter {
                                                         .exchange(forEnvironment(consumers.getDokarkiv(), miljoe))
                                                         .map(AccessToken::getTokenValue)))));
         return routes.build();
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(DokarkivProxyApplicationStarter.class, args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, String url, GatewayFilter filter) {

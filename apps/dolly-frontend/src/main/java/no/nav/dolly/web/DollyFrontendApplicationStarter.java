@@ -2,6 +2,7 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
@@ -12,8 +13,8 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerCon
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -42,7 +43,6 @@ public class DollyFrontendApplicationStarter {
     private final AccessService accessService;
     private final UserJwtExchange userJwtExchange;
     private final Consumers consumers;
-
     private final GatewayFilter removeCookiesFilter = (exchange, chain) -> {
         ServerWebExchange modifiedExchange = exchange.mutate()
                 .request(r -> r.headers(headers -> headers.remove(HttpHeaders.COOKIE)))
@@ -83,7 +83,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavOrganisasjonService()))
                 .route(createRoute(consumers.getTestnavSigrunstubProxy()))
                 .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
-                .route(createRoute(consumers.getTestnavPersonSearchService()))
+                .route(createRoute(consumers.getTestnavDollySearchService(), "testnav-dolly-search-service"))
                 .route(createRoute(consumers.getTestnavSkjermingsregisterProxy()))
                 .route(createRoute(consumers.getTestnavDokarkivProxy()))
                 .route(createRoute(consumers.getTestnavArbeidsplassenCVProxy()))
@@ -96,12 +96,18 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdAnsettelse(), "testnav-levende-arbeidsforhold-ansettelse"))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdScheduler(), "testnav-levende-arbeidsforhold-scheduler"))
                 .route(createRoute(consumers.getTestnavYrkesskadeProxy()))
+                .route(createRoute(consumers.getTestnavSykemeldingProxy()))
+                .route(createRoute(consumers.getTestnavNomProxy()))
                 .route(createRoute(consumers.getTestnavAltinn3TilgangService(), "testnav-altinn3-tilgang-service"))
+                .route(createRoute(consumers.getTestnavArbeidssoekerregisteretProxy()))
+                .route(createRoute(consumers.getTestnavApiOversiktService(), "testnav-oversikt-service"))
                 .build();
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
+        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {

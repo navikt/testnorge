@@ -1,11 +1,3 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-MASKINPORTEN_CLIENT_ID: dummy
-MASKINPORTEN_CLIENT_JWK: dummy
-MASKINPORTEN_SCOPES: dummy
-MASKINPORTEN_WELL_KNOWN_URL: dummy
-TOKEN_X_ISSUER: dummy
-
 spring:
   config:
     import: "sm://"

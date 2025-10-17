@@ -8,9 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
+import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
@@ -23,6 +25,7 @@ import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
+import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
@@ -57,7 +60,9 @@ public class RsDollyBestilling {
     private Set<String> environments;
 
     @Schema(description = "Navn på malbestillling")
+    private String beskrivelse;
     private String malBestillingNavn;
+    private RsNomData nomdata;
     private PdlPersondata pdldata;
     private RsDigitalKontaktdata krrstub;
     private List<RsFullmakt> fullmakt;
@@ -66,13 +71,14 @@ public class RsDollyBestilling {
     private List<RsAareg> aareg;
     private List<RsLignetInntekt> sigrunstub;
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
+    private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private InntektMultiplierWrapper inntektstub;
     private Arenadata arenaforvalter;
     private RsUdiPerson udistub;
     private PensjonData pensjonforvalter;
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
-    private RsDokarkiv dokarkiv;
+    private List<RsDokarkiv> dokarkiv;
     private RsHistark histark;
     private RsSykemelding sykemelding;
     private RsTpsMessaging tpsMessaging;
@@ -81,6 +87,8 @@ public class RsDollyBestilling {
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     private SkattekortRequestDTO skattekort;
     private List<YrkesskadeRequest> yrkesskader;
+    private RsArbeidssoekerregisteret arbeidssoekerregisteret;
+    private List<EtterlatteYtelse> etterlatteYtelser;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
@@ -101,6 +109,13 @@ public class RsDollyBestilling {
             sigrunstub = new ArrayList<>();
         }
         return sigrunstub;
+    }
+
+    public List<RsSummertSkattegrunnlag> getSigrunstubSummertSkattegrunnlag() {
+        if (isNull(sigrunstubSummertSkattegrunnlag)) {
+            sigrunstubSummertSkattegrunnlag = new ArrayList<>();
+        }
+        return sigrunstubSummertSkattegrunnlag;
     }
 
     public List<RsPensjonsgivendeForFolketrygden> getSigrunstubPensjonsgivende() {
@@ -129,6 +144,20 @@ public class RsDollyBestilling {
             yrkesskader = new ArrayList<>();
         }
         return yrkesskader;
+    }
+
+    public List<RsDokarkiv> getDokarkiv() {
+        if (isNull(dokarkiv)) {
+            dokarkiv = new ArrayList<>();
+        }
+        return dokarkiv;
+    }
+
+    public List<EtterlatteYtelse> getEtterlatteYtelser() {
+        if (isNull(etterlatteYtelser)) {
+            etterlatteYtelser = new ArrayList<>();
+        }
+        return etterlatteYtelser;
     }
 
     @JsonIgnore

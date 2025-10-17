@@ -81,6 +81,12 @@ export const useGruppeById = (
 }
 
 export const useGruppeIdenter = (gruppeId) => {
+	if (!gruppeId) {
+		return {
+			loading: false,
+			error: 'GruppeId mangler!',
+		}
+	}
 	const { data, isLoading, error } = useSWR<Gruppe, Error>(
 		gruppeId ? getHelGruppeUrl(gruppeId) : null,
 		fetcher,
@@ -111,7 +117,7 @@ export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
 	}
 }
 
-export const useEgneGrupper = (brukerId: string) => {
+export const useEgneGrupper = (brukerId?: string) => {
 	const { data, isLoading, error } = useSWR<PaginertGruppe, Error>(
 		brukerId ? getEgneGrupperUrl(brukerId) : null,
 		fetcher,

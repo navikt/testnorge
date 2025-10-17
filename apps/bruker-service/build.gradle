@@ -23,33 +23,30 @@ sonarqube {
 }
 
 dependencies {
-    implementation "com.auth0:java-jwt:$versions.jwt"
-
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:security-core"
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
 
-    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
-
-    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
-    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
-
+    implementation "com.auth0:java-jwt:$versions.jwt"
     implementation "io.r2dbc:r2dbc-h2"
-    implementation "org.postgresql:r2dbc-postgresql"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "org.bouncycastle:bcprov-jdk18on:$versions.bouncyCastle"
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
+    implementation "org.postgresql:r2dbc-postgresql"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
-    runtimeOnly "org.postgresql:postgresql"
     runtimeOnly "com.h2database:h2"
+    runtimeOnly "org.postgresql:postgresql"
 
-    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
-    testImplementation "org.assertj:assertj-core:$versions.assertj"
-    testImplementation "no.nav.testnav.libs:integration-test"
-    testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
+    testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
+    testImplementation "no.nav.testnav.libs:integration-test"
+    testImplementation "org.assertj:assertj-core:$versions.assertj"
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

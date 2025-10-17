@@ -1,18 +1,8 @@
 package no.nav.skattekortservice;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-@ActiveProfiles("test")
-@SpringBootTest
-class ApplicationContextTest {
-
-    @Test
-    @SuppressWarnings("java:S2699")
-    void load_app_context() {
-        assertThat(true).isTrue();
-    }
+@DollySpringBootTest
+class ApplicationContextTest extends DollyApplicationContextTest {
 }

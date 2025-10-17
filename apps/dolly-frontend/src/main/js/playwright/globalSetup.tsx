@@ -10,6 +10,7 @@ import {
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
+	brukerTeamsMock,
 	eksisterendeGruppeMock,
 	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
@@ -20,7 +21,6 @@ import {
 	kodeverkMock,
 	kontoregisterMock,
 	krrstubMock,
-	malerMock,
 	medlMock,
 	miljoeMock,
 	nyGruppeMock,
@@ -33,7 +33,6 @@ import {
 	pensjonTpMock,
 	personFragmentNavigerMock,
 	personFragmentSearchMock,
-	sigrunstubMock,
 	skjermingMock,
 	tagsMock,
 	tpsMessagingMock,
@@ -54,6 +53,7 @@ const arenaMiljoer = new RegExp(/testnav-arena-forvalteren-proxy\/api\/v1\/miljo
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/\/profil\/bilde/)
+const brukerTeams = new RegExp(/api\/v1\/bruker\/teams/)
 const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
 const histark = new RegExp(/testnav-histark-proxy\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
@@ -90,9 +90,7 @@ const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const medl = new RegExp(/testnav-medl-proxy/)
-const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
-const alleMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling$/)
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\/brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,
 )
@@ -111,6 +109,7 @@ const mockRoutes: RouteInfo[] = [
 	{ url: weatherApi, status: 404, response: {} },
 	{ url: current, response: gjeldendeAzureBrukerMock },
 	{ url: profil, response: gjeldendeProfilMock },
+	{ url: brukerTeams, response: brukerTeamsMock },
 	{ url: miljoer, response: miljoeMock },
 	{ url: pensjonMiljoer, response: miljoeMock },
 	{ url: personFragmentSearch, response: personFragmentSearchMock },
@@ -129,7 +128,6 @@ const mockRoutes: RouteInfo[] = [
 	{ url: kontoregister, response: kontoregisterMock },
 	{ url: backendTransaksjon, response: backendTransaksjonMock },
 	{ url: tags, response: tagsMock },
-	{ url: alleMaler, response: malerMock },
 	{ url: brukerMaler, response: brukerMalerMock },
 	{ url: oppsummeringsdokService, response: oppsummeringsdokumentServiceMock },
 	{ url: brukerOrganisasjonMaler, response: brukerOrganisasjonMalerMock },
@@ -147,7 +145,6 @@ const mockRoutes: RouteInfo[] = [
 	{ url: pensjonTp, response: pensjonTpMock },
 	{ url: pensjonPensjonsavtale, response: pensjonPensjonsavtaleMock },
 	{ url: afpOffentlig, response: afpOffentligMock },
-	{ url: sigrunstub, response: sigrunstubMock },
 	{ url: udistub, response: udistubMock },
 	{ url: kodeverk, response: kodeverkMock },
 	{ url: organisasjonFraMiljoe, response: organisasjonFraMiljoeMock },

@@ -7,7 +7,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const brukerveiledning = (
 	<a
-		href="https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning.html#feil-ved-innlogging"
+		href="https://navikt.github.io/testnorge/testnav/latest/index.html#feil_innlogging"
 		target="_blank"
 	>
 		brukerveiledningen

@@ -1,6 +1,3 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-
 spring:
   config:
     import: "sm://"
@@ -16,7 +13,7 @@ consumers:
     url: https://synthdata-arena-vedtakshistorikk.intern.dev.nav.no
   synt-dagpenger:
     url: https://synthdata-arena-dagpenger.intern.dev.nav.no
-  testnav-person-search-service:
-    url: https://testnav-person-search-service.intern.dev.nav.no
+  testnav-dolly-search-service:
+    url: https://testnav-dolly-search-service.intern.dev.nav.no
   testnav-organisasjon-faste-data-service:
     url: https://testnav-organisasjon-faste-data-service.intern.dev.nav.no

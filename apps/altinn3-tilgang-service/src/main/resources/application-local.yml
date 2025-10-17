@@ -1,19 +1,10 @@
-ALTINN_URL: https://platform.tt02.altinn.no
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+ALTINN_URL: ${sm\://altinn-url}
 MASKINPORTEN_CLIENT_ID: ef2960de-7fa6-4396-80a5-2eca00e4af28
-MASKINPORTEN_CLIENT_JWK: dummy
 MASKINPORTEN_SCOPES: altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
-MASKINPORTEN_WELL_KNOWN_URL: https://test.maskinporten.no/.well-known/oauth-authorization-server
-TOKEN_X_ISSUER: dummy
 
 spring:
   cache:
     type: none
-  cloud:
-    gcp:
-      secretmanager:
-        project-id: dolly-dev-ff83
   config:
     import: "sm://"
   flyway:
@@ -22,8 +13,8 @@ spring:
     baseline-on-migrate: true
     url: jdbc:postgresql://localhost:5432/testnav-altinn3-tilgang-local
     user: testnav-altinn3-tilgang-local
-    password: ${sm://testnav-altinn3-tilgang-local}
+    password: ${sm\://testnav-altinn3-tilgang-local}
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/testnav-altinn3-tilgang-local
     username: testnav-altinn3-tilgang-local
-    password: ${sm://testnav-altinn3-tilgang-local}
+    password: ${sm\://testnav-altinn3-tilgang-local}

@@ -7,6 +7,7 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.MaskinportenConfig;
@@ -23,16 +24,11 @@ import java.util.UUID;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class MaskinportenConsumer {
 
     private final WebClient webClient;
     private final MaskinportenConfig maskinportenConfig;
-
-    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig, WebClient.Builder webClientBuilder) {
-
-        this.webClient = webClientBuilder.build();
-        this.maskinportenConfig = maskinportenConfig;
-    }
 
     public Mono<String> getAccessToken() {
 

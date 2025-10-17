@@ -4,8 +4,8 @@ import { BestillingData, BestillingTitle } from '@/components/bestilling/sammend
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { oversettBoolean, showLabel } from '@/utils/DataFormatter'
-import { Kodeverk } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { Journalpost } from '@/service/services/JoarkDokumentService'
+import { Kodeverk } from '@/components/fagsystem/dokarkiv/form/partials/Dokument'
 
 type DokarkivProps = {
 	dokarkiv: Journalpost

@@ -3,14 +3,16 @@ name: levende-arbeidsforhold-ansettelse
 on:
   push:
     paths:
-      - libs/commands/**
-      - libs/data-transfer-objects/**
-      - libs/security-core/**
-      - libs/servlet-core/**
-      - libs/servlet-security/**
-      - libs/servlet-insecure-security/**
-      - apps/levende-arbeidsforhold-ansettelse/**
       - .github/workflows/app.levende-arbeidsforhold-ansettelse.yml
+      - apps/levende-arbeidsforhold-ansettelse/**
+      - libs/data-transfer-objects/**
+      - libs/data-transfer-search-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/servlet-insecure-security/**
+      - libs/testing/**
+      - plugins/**
 
 
 jobs:

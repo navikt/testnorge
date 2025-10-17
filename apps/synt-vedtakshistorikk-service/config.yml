@@ -10,23 +10,27 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   port: 8080
   webproxy: true
   tokenx:
     enabled: true
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true
@@ -36,8 +40,8 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
   image: "{{image}}"
@@ -51,7 +55,9 @@ spec:
         - application: synthdata-arena-dagpenger
         - application: synthdata-arena-vedtakshistorikk
         - application: testnav-organisasjon-faste-data-service
-        - application: testnav-person-search-service
+        - application: testnav-dolly-search-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io

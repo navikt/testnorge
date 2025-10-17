@@ -1,6 +1,8 @@
 package no.nav.testnav.apps.tenorsearchservice.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +18,16 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @SuppressWarnings("java:S115")
 public class TenorRequest {
+
+    public enum VergeTjenestevirksomhet {
+        Bank, Forsikringsselskap, Helfo, Husbanken, Inkassoselskap, Kartverket, Kommune,
+        Kredittvurderingsselskap, Namsmannen, Nav, Oevrige, Pasientreiser, Skatteetaten, StatensInnkrevingssentral,
+        Statsforvalter, Tingretten
+    }
+
+    public enum CoAdressenavnType {Bostedsadresse, DeltBosted, Oppholdsadresse, Postadresse, PostadresseIUtlandet}
+
+    public enum BostedsadresseType {Matrikkel, Veiadresse, Ukjent}
 
     public enum IdentifikatorType {Foedselsnummer, DNummer, DNummerOgFoedselsnr}
 
@@ -77,6 +89,11 @@ public class TenorRequest {
 
     public enum Stadietype {Utkast, Fastsatt, Oppgjoer}
 
+    public enum VergemaalType {
+        EnsligMindreaarigAsylsoeker, EnsligMindreaarigFlyktning, ForvaltningUtenforVergemaal, MidlertidigForMindreaarig,
+        MidlertidigForVoksen, Mindreaarig, StadfestetFremtidsfullmakt, Voksen
+    }
+
     @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
     private String identifikator;
     private IdentifikatorType identifikatorType;
@@ -92,10 +109,57 @@ public class TenorRequest {
     private Boolean harFalskIdentitet;
     private Boolean harNorskStatsborgerskap;
     private Boolean harFlereStatsborgerskap;
+    private Boolean harNordenStatsborgerskap;
+    private Boolean harEuEoesStatsborgerskap;
+    private Boolean harTredjelandStatsborgerskap;
+    private Boolean harUtgaattStatsborgerskap;
+    private Boolean harStatsborgerskapHistorikk;
     private Navn navn;
     private Adresser adresser;
     private Relasjoner relasjoner;
     private Hendelser hendelser;
+    private Avansert avansert;
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Avansert {
+
+        private BostedsadresseType bostedsadresseType;
+        private String bostedsadresse;
+        private CoAdressenavnType coAdressenavnType;
+        private String fornavn;
+        private String mellomnavn;
+        private String etternavn;
+        @Schema(description = "Verdi hentes fra felles kodeverk Landkoder")
+        private String foedeland;
+        private String visningnavn;
+        private String barnFnr;
+        private String farFnr;
+        private String morFnr;
+        private VergeTjenestevirksomhet vergeTjenestevirksomhet;
+        private VergemaalType vergemaalType;
+        @Schema(description = "Verdi hentes fra felles kodeverk Landkoder")
+        private List<String> statsborgerskap;
+        private Boolean harBostedsadresseHistorikk;
+        private Boolean harDoedfoedtBarn;
+        private Boolean harForeldreMedSammeKjoenn;
+        private Boolean harInnflytting;
+        private Boolean harNavnHistorikk;
+        private Boolean harOpphold;
+        private Boolean harPostadresseIFrittFormat;
+        private Boolean harPostadressePostboks;
+        private Boolean harPostadresseVegadresse;
+        private Boolean harPostboks;
+        private Boolean harRelatertPersonUtenFolkeregisteridentifikator;
+        private Boolean harRettsligHandleevne;
+        private Boolean harSivilstandHistorikk;
+        private Boolean harUtenlandskAdresseIFrittFormat;
+        private Boolean harUtenlandskPostadressePostboks;
+        private Boolean harUtenlandskPostadresseVegadresse;
+        private Boolean harUtflytting;
+    }
 
     private List<Rolle> roller;
     private Tjenestepensjonsavtale tjenestepensjonsavtale;

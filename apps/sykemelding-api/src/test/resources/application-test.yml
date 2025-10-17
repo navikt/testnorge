@@ -13,14 +13,6 @@ application:
 SERVICEUSER_USERNAME: dummy
 SERVICEUSER_PASSWORD: dummy
 
-TOKEN_X_CLIENT_ID: test
-
-spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-
 ibm:
   mq:
     queue-manager: dummy

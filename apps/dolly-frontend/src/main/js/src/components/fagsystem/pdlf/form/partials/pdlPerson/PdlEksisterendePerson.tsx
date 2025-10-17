@@ -1,9 +1,12 @@
 import React, { useContext } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import Loading from '@/components/ui/loading/Loading'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
+import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -30,10 +33,12 @@ export const PdlEksisterendePerson = ({
 	fullmektigsNavnPath = null as unknown as string,
 	ident,
 }: PdlEksisterendePersonValues) => {
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const formGruppeId = formMethods.watch('gruppeId')
 
 	const antall = opts?.antall || 1
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id || window.location.pathname.split('/')?.[2]
+	const gruppeId =
+		formGruppeId || opts?.gruppeId || opts?.gruppe?.id || window.location.pathname.split('/')?.[2]
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
 	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0].ident || ident
@@ -47,7 +52,7 @@ export const PdlEksisterendePerson = ({
 		data: pdlOptions,
 		loading: pdlLoading,
 		error: pdlError,
-	} = usePdlOptions(filtrerteIdenter, identMaster)
+	} = usePdlOptions(filtrerteIdenter, identMaster, true)
 
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')

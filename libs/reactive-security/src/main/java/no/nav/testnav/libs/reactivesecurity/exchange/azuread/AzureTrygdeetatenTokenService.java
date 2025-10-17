@@ -37,22 +37,22 @@ public class AzureTrygdeetatenTokenService implements TokenService {
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
     public AzureTrygdeetatenTokenService(
+            WebClient webClient,
             String proxyHost,
             AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential,
             GetAuthenticatedUserId getAuthenticatedUserId,
             ObjectMapper objectMapper) {
+        log.info("Init AzureAd Trygdeetaten token service.");
 
         this.clientCredential = azureTrygdeetatenClientCredential;
         this.getAuthenticatedUserId = getAuthenticatedUserId;
         this.objectMapper = objectMapper;
         tokenCache = new HashMap<>();
 
-        log.info("Init AzureAd Trygdeetaten token service.");
-        WebClient.Builder builder = WebClient
-                .builder()
+        var builder = webClient
+                .mutate()
                 .baseUrl(azureTrygdeetatenClientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-
         if (nonNull(proxyHost)) {
             log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
@@ -114,4 +114,18 @@ public class AzureTrygdeetatenTokenService implements TokenService {
                 .minusSeconds(300)
                 .isBefore(Instant.now());
     }
+
+    public static class Test extends AzureTrygdeetatenTokenService {
+
+        public Test(WebClient webClient, String proxyHost, AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential, GetAuthenticatedUserId getAuthenticatedUserId, ObjectMapper objectMapper) {
+            super(webClient, proxyHost, azureTrygdeetatenClientCredential, getAuthenticatedUserId, objectMapper);
+        }
+
+        @Override
+        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+            return Mono.empty();
+        }
+
+    }
+
 }

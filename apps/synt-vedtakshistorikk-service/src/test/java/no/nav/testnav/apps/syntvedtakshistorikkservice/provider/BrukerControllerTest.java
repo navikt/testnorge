@@ -5,15 +5,15 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaDagpengerSer
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
@@ -26,9 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class BrukerControllerTest {
+@ExtendWith(MockitoExtension.class)
+class BrukerControllerTest {
 
     @Mock
     private IdentService identService;
@@ -54,8 +53,8 @@ public class BrukerControllerTest {
     private NyeBrukereResponse singleResponse;
     private Map<String, NyeBrukereResponse> oppfoelgingResponse;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         syntetiserArenaRequestSingle = new SyntetiserArenaRequest(miljoe, 1);
 
         singleResponse = new NyeBrukereResponse();
@@ -66,7 +65,7 @@ public class BrukerControllerTest {
     }
 
     @Test
-    public void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
+    void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
         var identer = Collections.singletonList(fnr1);
         var personer = Collections.singletonList(PersonDTO.builder().ident(fnr1).build());
 
@@ -84,10 +83,11 @@ public class BrukerControllerTest {
     }
 
     @Test
-    public void checkExceptionOccursOnBadMiljoe() {
+    void checkExceptionOccursOnBadMiljoe() {
         var request = new SyntetiserArenaRequest("test", 1);
         assertThrows(ResponseStatusException.class, () -> {
             brukerController.registrerBrukereIArenaForvalterMedOppfoelging(request);
         });
     }
+
 }

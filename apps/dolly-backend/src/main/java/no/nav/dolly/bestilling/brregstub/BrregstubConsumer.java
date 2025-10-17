@@ -21,7 +21,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class BrregstubConsumer implements ConsumerStatus {
+public class BrregstubConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -31,11 +31,12 @@ public class BrregstubConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavBrregStubProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();

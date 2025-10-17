@@ -10,10 +10,7 @@ import {
 	initialPersonstatus,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarPersondetaljerConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
-import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
-import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
-import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -26,13 +23,11 @@ type PersondetaljerTypes = {
 	erPdlVisning?: boolean
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
-	skjermingData: Skjerming
 	erRedigerbar?: boolean
 }
 
 type PersonTypes = {
 	person: PersonData
-	skjerming?: Skjerming
 	redigertPerson: any
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
@@ -55,14 +50,7 @@ const NavnVisning = ({ navn, showMaster }) => {
 	)
 }
 
-const PersondetaljerLes = ({
-	person,
-	skjerming,
-	redigertPerson,
-	tpsMessaging,
-	tpsMessagingLoading,
-	harFlerePersonstatuser,
-}: PersonTypes) => {
+const PersondetaljerLes = ({ person, redigertPerson, harFlerePersonstatuser }: PersonTypes) => {
 	const navnListe = person?.navn
 	const personKjoenn = person?.kjoenn?.[0]
 	const personstatus =
@@ -89,8 +77,6 @@ const PersondetaljerLes = ({
 					/>
 				</>
 			)}
-			<SkjermingVisning data={skjerming} />
-			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
 	)
 }
@@ -102,7 +88,6 @@ export const Persondetaljer = ({
 	erPdlVisning = false,
 	tpsMessaging,
 	tpsMessagingLoading = false,
-	skjermingData,
 	erRedigerbar = true,
 }: PersondetaljerTypes) => {
 	if (!data) {
@@ -129,11 +114,9 @@ export const Persondetaljer = ({
 		navn: getNavn(),
 		kjoenn: [data?.kjoenn?.[0] || getInitialKjoenn()],
 		folkeregisterpersonstatus: getPersonstatus(),
-		skjermingsregister: skjermingData,
 	}
 
 	const redigertPersonPdlf = _.get(tmpPersoner?.pdlforvalter, `${ident}.person`)
-	const redigertSkjerming = _.get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
 
@@ -151,7 +134,6 @@ export const Persondetaljer = ({
 
 	const redigertPersonValues = {
 		pdlf: redigertPdlfPersonValues,
-		skjermingsregister: redigertSkjerming ? redigertSkjerming : null,
 	}
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
@@ -172,7 +154,6 @@ export const Persondetaljer = ({
 					{erPdlVisning || !erRedigerbar ? (
 						<PersondetaljerLes
 							person={data}
-							skjerming={skjermingData}
 							redigertPerson={redigertPerson}
 							tpsMessaging={tpsMessaging}
 							tpsMessagingLoading={tpsMessagingLoading}
@@ -184,7 +165,6 @@ export const Persondetaljer = ({
 								dataVisning={
 									<PersondetaljerLes
 										person={personValues}
-										skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
 										redigertPerson={redigertPerson}
 										tpsMessaging={tpsMessaging}
 										tpsMessagingLoading={tpsMessagingLoading}

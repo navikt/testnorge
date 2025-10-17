@@ -9,7 +9,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterSer
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -72,7 +72,6 @@ public class BatchController {
     /**
      * PÅ VENT: bytt fra forenklet versjon til versjon som oppretter dagpengesoknad og vedtak
      * når synt-dagpenger har fått trent på bedre uttrekk
-     *
      * Denne metoden oppretter dagpengevedtak i Arena. Metoden kjører hver natt kl 00:30.
      */
     @Scheduled(cron = "0 30 0 * * *")

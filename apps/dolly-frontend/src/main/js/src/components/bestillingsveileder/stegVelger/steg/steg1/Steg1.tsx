@@ -1,10 +1,13 @@
 import React, { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Steg1Person } from './Steg1Person'
 import { Steg1Organisasjon } from './Steg1Organisasjon'
 
 const Steg1 = ({ stateModifier }) => {
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return opts.is.nyOrganisasjon ||
 		opts.is.nyStandardOrganisasjon ||

@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { usePdlOptions, useTestnorgeOptions } from '@/utils/hooks/useSelectOptions'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { Form, FormProvider, useForm } from 'react-hook-form'
@@ -45,7 +45,7 @@ const ModalContent = styled.div`
 
 export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPersonButtonTypes) => {
 	const formMethods = useForm({
-		defaultValues: { identer: [], gruppeId: '' },
+		defaultValues: { identer: [], gruppeId: undefined },
 		resolver: yupResolver(validation),
 	})
 	const [loading, setLoading] = useState(false)
@@ -142,29 +142,27 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	}
 
 	return (
-		<>
-			<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
-				<ModalContent>
-					<FormProvider {...formMethods}>
-						<Form onSubmit={handleSubmit}>
-							<FlyttPersonForm
-								gruppeId={gruppeId}
-								gruppeLoading={gruppeLoading}
-								error={error}
-								loading={loading}
-								gruppeIdenterListe={gruppeIdenterListe}
-								gruppeOptions={gruppeOptions}
-								pdlLoading={pdlLoading}
-								pdlError={pdlError}
-								testnorgeLoading={testnorgeLoading}
-								testnorgeError={testnorgeError}
-								handleClose={handleClose}
-								harRelatertePersoner={harRelatertePersoner}
-							/>
-						</Form>
-					</FormProvider>
-				</ModalContent>
-			</DollyModal>
-		</>
+		<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
+			<ModalContent>
+				<FormProvider {...formMethods}>
+					<Form onSubmit={handleSubmit}>
+						<FlyttPersonForm
+							gruppeId={gruppeId}
+							gruppeLoading={gruppeLoading}
+							error={error}
+							loading={loading}
+							gruppeIdenterListe={gruppeIdenterListe}
+							gruppeOptions={gruppeOptions}
+							pdlLoading={pdlLoading}
+							pdlError={pdlError}
+							testnorgeLoading={testnorgeLoading}
+							testnorgeError={testnorgeError}
+							handleClose={handleClose}
+							harRelatertePersoner={harRelatertePersoner}
+						/>
+					</Form>
+				</FormProvider>
+			</ModalContent>
+		</DollyModal>
 	)
 }

@@ -3,15 +3,14 @@ name: medl-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "proxies/medl-proxy/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "libs/servlet-insecure-security/**"
-      - "libs/security-core/**"
-      - "libs/database/**"
-      - "libs/data-transfer-objects/**"
-      - ".github/workflows/proxy.medl-proxy.yml"
+      - .github/workflows/proxy.medl-proxy.yml
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/medl-proxy/**
 
 jobs:
   workflow:

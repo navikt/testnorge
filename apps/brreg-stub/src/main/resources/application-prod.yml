@@ -1,9 +1,8 @@
-
 spring:
+  config:
+    import: "vault://"
   flyway:
     locations: classpath:db/migration/postgresql
-  main:
-    banner-mode: off
   datasource:
     url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?useUnicode=yes&characterEncoding=UTF-8
     hikari:
@@ -32,5 +31,3 @@ spring:
         role: testnav-brregstub-admin
         backend: postgresql/preprod-fss
       fail-fast: true
-  config:
-    import: vault://

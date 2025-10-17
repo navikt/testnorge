@@ -1,17 +1,16 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @RequiredArgsConstructor
+@Slf4j
 public class PersonExistsGetCommand implements Callable<Flux<Boolean>> {
 
     private static final String PERSON_URL = "/api/v1/personer/{ident}/exists";
@@ -20,19 +19,18 @@ public class PersonExistsGetCommand implements Callable<Flux<Boolean>> {
     private final String ident;
     private final String token;
 
-
     @Override
     public Flux<Boolean> call() {
-
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(PERSON_URL)
                         .build(ident))
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(Boolean.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

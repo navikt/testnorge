@@ -26,7 +26,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class KontoregisterConsumer implements ConsumerStatus {
+public class KontoregisterConsumer extends ConsumerStatus {
 
 
     private final WebClient webClient;
@@ -37,11 +37,12 @@ public class KontoregisterConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavKontoregisterPersonProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

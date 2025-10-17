@@ -30,7 +30,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class PdlDataConsumer implements ConsumerStatus {
+public class PdlDataConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -40,21 +40,22 @@ public class PdlDataConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPdlForvalter();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
-    public Flux<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
+    public Mono<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PdlDataOrdreCommand(webClient, ident, ekskluderEksternePersoner,
+                .flatMap(token -> new PdlDataOrdreCommand(webClient, ident, ekskluderEksternePersoner,
                         token.getTokenValue()).call());
     }
 
@@ -70,17 +71,17 @@ public class PdlDataConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
-    public Flux<PdlResponse> opprettPdl(BestillingRequestDTO request) {
+    public Mono<PdlResponse> opprettPdl(BestillingRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
+                .flatMap(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
-    public Flux<PdlResponse> oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
+    public Mono<PdlResponse> oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
+                .flatMap(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
     }
 
     public Flux<FullPersonDTO> getPersoner(List<String> identer) {

@@ -13,6 +13,11 @@ export const brregAttributt = 'brregstub'
 
 export const BrregstubForm = () => {
 	const formMethods = useFormContext()
+
+	if (!formMethods.watch(brregAttributt)) {
+		return null
+	}
+
 	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
 	const understatuserOptions = SelectOptionsFormat.formatOptions('understatuser', understatuser)
 

@@ -42,7 +42,7 @@ import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
-import Loading from '@/components/ui/loading/Loading'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -133,6 +133,7 @@ export const VisningRedigerbar = ({
 	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
 
+	const visFormState = devEnabled || erDollyAdmin()
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
@@ -401,9 +402,9 @@ export const VisningRedigerbar = ({
 				{visningModus === Modus.Skriv && (
 					<Form onSubmit={(data) => handleSubmit(data)}>
 						<>
-							{devEnabled && (
+							{visFormState && (
 								<>
-									<Suspense fallback={<Loading label="Laster komponenter" />}>
+									<Suspense>
 										<DisplayFormState />
 										<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
 									</Suspense>

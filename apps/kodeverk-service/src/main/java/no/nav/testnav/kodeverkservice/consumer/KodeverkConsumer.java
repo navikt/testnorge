@@ -3,7 +3,6 @@ package no.nav.testnav.kodeverkservice.consumer;
 import no.nav.testnav.kodeverkservice.config.Consumers;
 import no.nav.testnav.kodeverkservice.consumer.command.KodeverkGetCommand;
 import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
-import no.nav.testnav.kodeverkservice.utility.FilterUtility;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,12 @@ public class KodeverkConsumer {
     public KodeverkConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getKodeverkApi();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(
                         ExchangeStrategies
                                 .builder()
@@ -41,8 +41,7 @@ public class KodeverkConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new KodeverkGetCommand(webClient,
-                        FilterUtility.hentKodeverk(kodeverk),
-                        token.getTokenValue()).call())
-                .map(response -> FilterUtility.filterKodeverk(kodeverk, response));
+                        kodeverk,
+                        token.getTokenValue()).call());
     }
 }

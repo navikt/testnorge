@@ -4,9 +4,9 @@ metadata:
   name: testnav-ident-pool
   namespace: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
   labels:
     team: dolly
 spec:
@@ -26,7 +26,7 @@ spec:
   ingresses:
     - "https://testnav-ident-pool.intern.dev.nav.no"
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 30
     periodSeconds: 30
     failureThreshold: 3
@@ -34,11 +34,12 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
     periodSeconds: 30
     failureThreshold: 3
@@ -49,11 +50,11 @@ spec:
     min: 1
     max: 1
   resources:
+    requests:
+      cpu: 50m
+      memory: 2048Mi
     limits:
       memory: 4096Mi
-    requests:
-      cpu: 600m
-      memory: 2048Mi
   accessPolicy:
     inbound:
       rules:
@@ -66,6 +67,8 @@ spec:
       rules:
         - application: testnav-tps-messaging-service
           cluster: dev-gcp
+        - application: logging
+          namespace: nais-system
   gcp:
     sqlInstances:
       - type: POSTGRES_16

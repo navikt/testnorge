@@ -9,18 +9,24 @@ import {
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import { useFormContext } from 'react-hook-form'
 
 export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
+	const formMethods = useFormContext()
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const testNorgePerson = opts?.identMaster === 'PDL'
 	const npidPerson = opts?.identtype === 'NPID'
 
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
-	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const formGruppeId = formMethods.watch('gruppeId')
+	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
+	const { identer } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 
 	const ukjentGruppe = !gruppeId
@@ -32,8 +38,8 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
 	const foedselsaar =
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0]?.foedselsaar ||
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0]?.foedselsaar
 
 	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 	const getIgnoreKeys = () => {
@@ -123,8 +129,8 @@ FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const foedselsaar =
-		personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
-		personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+		personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0]?.foedselsaar ||
+		personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0]?.foedselsaar
 
 	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 

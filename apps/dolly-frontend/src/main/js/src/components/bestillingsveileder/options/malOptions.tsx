@@ -14,13 +14,13 @@ import {
 	SivilstandData,
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
-import { addMonths, isAfter, setDate } from 'date-fns'
-import subYears from 'date-fns/subYears'
+import { addDays, addMonths, isAfter, setDate, subYears } from 'date-fns'
 import {
 	initialArbeidsavtale,
 	initialArbeidsgiverOrg,
 	initialFartoy,
 } from '@/components/fagsystem/aareg/form/initialValues'
+import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
 
 export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)
@@ -90,6 +90,14 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 			initialValuesMal.tpsMessaging.utenlandskBankkonto,
 		)
 		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
+	}
+	if (initialValuesMal.dokarkiv) {
+		initialValuesMal.dokarkiv = getUpdatedDokarkiv(initialValuesMal.dokarkiv)
+	}
+	if (initialValuesMal.sykemelding?.syntSykemelding) {
+		initialValuesMal.sykemelding.detaljertSykemelding = getUpdatedSykemelding(
+			initialValuesMal.sykemelding.syntSykemelding,
+		)
 	}
 
 	initialValuesMal.environments = filterMiljoe(environments, mal.bestilling?.environments)
@@ -256,9 +264,10 @@ const getUpdatedPdldata = (pdldata: any) => {
 	const nyPerson = newPdldata?.opprettNyPerson
 	if (nyPerson) {
 		newPdldata.opprettNyPerson.syntetisk = true
+		newPdldata.opprettNyPerson.identtype = nyPerson.identtype ?? 'FNR'
 		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
 			newPdldata.opprettNyPerson = {
-				identtype: nyPerson.identtype,
+				identtype: nyPerson.identtype ?? 'FNR',
 				syntetisk: true,
 			}
 		}
@@ -419,6 +428,15 @@ const getUpdatedBankkonto = (bankkonto: any) => {
 	return bankkonto
 }
 
+const getUpdatedSykemelding = (syntSykemelding: any) => {
+	let updatedSykemelding = initialValuesDetaljertSykemelding
+	updatedSykemelding.startDato = new Date()
+	updatedSykemelding.mottaker.orgNr = syntSykemelding.orgnummer
+	updatedSykemelding.perioder[0].fom = addDays(syntSykemelding.startDato, -7)
+	updatedSykemelding.perioder[0].tom = addDays(syntSykemelding.startDato, -1)
+	return updatedSykemelding
+}
+
 const updateKontaktType = (kontaktinfo: any) => {
 	if (kontaktinfo?.advokatSomKontakt) {
 		kontaktinfo.kontaktType = 'ADVOKAT'
@@ -446,6 +464,21 @@ const updateKontaktType = (kontaktinfo: any) => {
 	}
 
 	return kontaktinfo
+}
+
+const getUpdatedDokarkiv = (dokarkiv: any) => {
+	let newDokarkiv = dokarkiv?.map((dok) => {
+		let newDok = { ...dok }
+		if (newDok.avsenderMottaker) {
+			newDok.avsenderMottaker = {
+				id: newDok.avsenderMottaker?.id || '',
+				navn: newDok.avsenderMottaker?.navn || '',
+				idType: newDok.avsenderMottaker?.idType || '',
+			}
+		}
+		return newDok
+	})
+	return newDokarkiv
 }
 
 const updateData = (data: any, initalValues: any) => {

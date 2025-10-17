@@ -1,74 +1,151 @@
-import React, { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React from 'react'
 import './Header.less'
-import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
+import {
+	useBrukerProfil,
+	useBrukerProfilBilde,
+	useBrukerTeams,
+	useCurrentBruker,
+} from '@/utils/hooks/useBruker'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 import { getDefaultImage } from '@/pages/minSide/Profil'
-import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
-import Icon from '@/components/ui/icon/Icon'
-import styled from 'styled-components'
+import { ActionMenu } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { ActionMenuWrapper, DropdownStyledIcon, DropdownStyledLink } from './ActionMenuWrapper'
+import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
+import { DollyApi } from '@/service/Api'
+import dollyTeam from '@/assets/img/dollyTeam.png'
+import { teamVarslingLocalStorageKey } from '@/components/layout/header/TeamVarsel'
+import { useBoolean } from 'react-use'
+import Loading from '@/components/ui/loading/Loading'
+import { formatBrukerNavn } from '@/utils/DataFormatter'
 
-const StyledIcon = styled(Icon)`
-	&& {
-		g {
-			path,
-			ellipse {
-				stroke: #212529;
-				stroke-width: 2;
-			}
-		}
-	}
-`
-
-const DropdownToggle = () => {
+export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
 
-	const context = useContext(DropdownContext)
-	const { isOpen } = context
+	const { currentBruker, mutate: currentMutate } = useCurrentBruker()
+	const { brukerTeams } = useBrukerTeams()
+	const representererTeam = currentBruker?.representererTeam
+
+	const brukerNavn = formatBrukerNavn(brukerProfil?.visningsNavn)
+
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
+
+	const [isLoading, setIsLoading] = useBoolean(false)
+
+	const handleTeamChange = (teamId: string) => {
+		setIsLoading(true)
+		DollyApi.setRepresentererTeam(teamId)
+			.then(() => {
+				currentMutate().then(() => setIsLoading(false))
+			})
+			.catch((error) => {
+				console.error('Feil ved valg av gjeldende team: ', error)
+				setIsLoading(false)
+			})
+	}
+
+	const handleFjernRepresentererTeam = () => {
+		setIsLoading(true)
+		localStorage.removeItem(teamVarslingLocalStorageKey)
+		DollyApi.fjernRepresentererTeam()
+			.then(() => {
+				currentMutate().then(() => setIsLoading(false))
+			})
+			.catch((error) => {
+				console.error('Feil ved valg av gjeldende bruker: ', error)
+				setIsLoading(false)
+			})
+	}
 
 	return (
-		<Dropdown.Toggle className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}>
-			<div className="profil-area">
-				<div className="img-logo">
-					<img
-						data-testid={TestComponentSelectors.BUTTON_PROFIL}
-						alt="Profilbilde"
-						src={brukerBilde || getDefaultImage()}
-					/>
-				</div>
-				<div className="profil-navn">
-					<p>{brukerProfil?.visningsNavn}</p>
-				</div>
-			</div>
-		</Dropdown.Toggle>
-	)
-}
-
-export const BrukerDropdown = () => {
-	const navigate = useNavigate()
-	return (
-		<div style={{ margin: '0 10px' }}>
-			<Dropdown>
-				<DropdownToggle />
-				<Dropdown.Menu placement="bottom-end">
-					<Dropdown.Menu.List>
-						<Dropdown.Menu.List.Item
-							onClick={() => navigate('/minside')}
+		<span className={'dropdown-toggle'}>
+			<ActionMenuWrapper
+				title="Bruker"
+				trigger={
+					<ActionMenu.Trigger style={{ hover: 'blue' }}>
+						<div className="profil-area">
+							{isLoading ? (
+								<Loading label="Laster ..." className="loading-component loading-white" />
+							) : (
+								<>
+									<div className="img-logo">
+										<img
+											data-testid={TestComponentSelectors.BUTTON_PROFIL}
+											alt="Profilbilde"
+											src={representererTeam ? dollyTeam : brukerBilde || getDefaultImage()}
+										/>
+									</div>
+									<p>{representererTeam ? representererTeam.navn : brukerNavn}</p>
+								</>
+							)}
+						</div>
+					</ActionMenu.Trigger>
+				}
+			>
+				<ActionMenu.Group label="Bruker-/team-valg">
+					<ActionMenu.Item
+						onClick={(event) => {
+							event.preventDefault()
+							return handleFjernRepresentererTeam()
+						}}
+						style={{
+							color: '#212529',
+							backgroundColor: !representererTeam ? '#99C3FF' : null,
+						}}
+					>
+						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
+						<DropdownStyledLink href="">
+							{brukerNavn + (!representererTeam && !bankIdBruker ? ' (valgt)' : '')}
+						</DropdownStyledLink>
+					</ActionMenu.Item>
+					{!bankIdBruker &&
+						brukerTeams?.map((team) => (
+							<ActionMenu.Item
+								onClick={(event) => {
+									event.preventDefault()
+									handleTeamChange(team.id)
+								}}
+								key={team.id}
+								style={{
+									color: '#212529',
+									backgroundColor: representererTeam?.id === team.id ? '#99C3FF' : null,
+								}}
+							>
+								<DropdownStyledIcon kind="group" fontSize="1.5rem" />
+								<DropdownStyledLink href="">
+									{team.navn + (representererTeam?.id === team.id ? ' (valgt)' : '')}
+								</DropdownStyledLink>
+							</ActionMenu.Item>
+						))}
+				</ActionMenu.Group>
+				<ActionMenu.Divider />
+				<ActionMenu.Group label="Administrasjon">
+					<PreloadableActionMenuItem
+						route="/minside"
+						style={{ color: '#212529' }}
+						dataTestId={TestComponentSelectors.BUTTON_PROFIL_MINSIDE}
+					>
+						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
+						<DropdownStyledLink href="/minside">Min side</DropdownStyledLink>
+					</PreloadableActionMenuItem>
+					{!bankIdBruker && (
+						<PreloadableActionMenuItem
+							route="/team"
 							style={{ color: '#212529' }}
-							data-testid={TestComponentSelectors.BUTTON_PROFIL_MINSIDE}
+							dataTestId={TestComponentSelectors.BUTTON_PROFIL_TEAMOVERSIKT}
 						>
-							<StyledIcon kind="person" fontSize={'1.5rem'} />
-							Min side
-						</Dropdown.Menu.List.Item>
-						<Dropdown.Menu.List.Item onClick={() => logoutBruker()} style={{ color: '#212529' }}>
-							<Icon kind="logout" fontSize={'1.5rem'} />
-							Logg ut
-						</Dropdown.Menu.List.Item>
-					</Dropdown.Menu.List>
-				</Dropdown.Menu>
-			</Dropdown>
-		</div>
+							<DropdownStyledIcon kind="group" fontSize="1.5rem" />
+							<DropdownStyledLink href="/team">Team-oversikt</DropdownStyledLink>
+						</PreloadableActionMenuItem>
+					)}
+				</ActionMenu.Group>
+				<ActionMenu.Divider />
+				<ActionMenu.Item onClick={() => logoutBruker()} style={{ color: '#212529' }}>
+					<DropdownStyledIcon kind="logout" fontSize="1.5rem" />
+					<DropdownStyledLink href="#">Logg ut</DropdownStyledLink>
+				</ActionMenu.Item>
+			</ActionMenuWrapper>
+		</span>
 	)
 }

@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   tokenx:
@@ -24,19 +27,24 @@ spec:
           cluster: dev-gcp
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true
@@ -45,10 +53,10 @@ spec:
     min: 1
     max: 1
   resources:
+    requests:
+      cpu: 20m
+      memory: 600Mi
     limits:
       memory: 2048Mi
-    requests:
-      cpu: 200m
-      memory: 1024Mi
   ingresses:
     - "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no"

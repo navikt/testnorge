@@ -1,12 +1,16 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-dokarkiv-proxy
-TOKEN_X_ISSUER: dummy
+dolly:
+  nais:
+    cluster: dev-fss
+    name: testnav-dokarkiv-proxy
+    variables:
+      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
+      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
 
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: true
   config:
     import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dev-gcp:dolly:testnav-dokarkiv-proxy

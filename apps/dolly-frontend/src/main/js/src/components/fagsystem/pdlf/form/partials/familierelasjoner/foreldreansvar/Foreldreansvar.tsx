@@ -16,7 +16,10 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import styled from 'styled-components'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -46,7 +49,7 @@ export const ForeldreansvarForm = ({
 	path,
 	eksisterendeNyPerson = null,
 }: ForeldreansvarForm) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const antall = opts?.antall || 1
 
 	const ansvarlig = 'ansvarlig'
@@ -131,9 +134,10 @@ export const ForeldreansvarForm = ({
 		}
 	}, [])
 
-	const ansvarlige = Options('typeAnsvarlig').filter(
-		(ansvar) => ansvar.value !== 'EKSISTERENDE' || antall === 1,
-	)
+	const ansvarlige =
+		antall > 1
+			? Options('typeAnsvarlig').filter((value) => value.value !== 'EKSISTERENDE')
+			: Options('typeAnsvarlig')
 
 	return (
 		<div className="flexbox--flex-wrap foreldre-form">
@@ -190,7 +194,9 @@ export const ForeldreansvarForm = ({
 }
 
 export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
-	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 
 	const relasjoner = formMethods.watch('pdldata.person.forelderBarnRelasjon')
 	const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')

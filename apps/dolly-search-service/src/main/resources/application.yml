@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: testnav-dolly-search-service
+    description: Tjeneste for å søke etter Dolly-personer.
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+  main:
+    web-application-type: reactive
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
+consumers:
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure:
+        include: prometheus,health
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
+open:
+  search:
+    pdl-index: pdl-sok

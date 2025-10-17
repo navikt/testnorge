@@ -28,11 +28,11 @@ public class AdresseServiceConsumer {
     public AdresseServiceConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getAdresseService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

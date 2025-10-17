@@ -10,7 +10,7 @@ import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoein
 import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { getBestillingsListe } from '@/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
@@ -25,7 +25,7 @@ import {
 	sjekkManglerPensjonData,
 } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { AaregVisning, sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
-import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
+import { useArbeidsforhold } from '@/utils/hooks/useDollyOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useArenaData,
@@ -34,8 +34,9 @@ import {
 	useInstData,
 	usePensjonsavtaleData,
 	usePoppData,
-	useTpData,
+	useTpDataForhold,
 	useTransaksjonIdData,
+	useTransaksjonIdPensjon,
 } from '@/utils/hooks/useFagsystemer'
 import {
 	sjekkManglerTpData,
@@ -47,6 +48,7 @@ import {
 	harAfpOffentligBestilling,
 	harApBestilling,
 	harArbeidsplassenBestilling,
+	harArbeidssoekerregisteretBestilling,
 	harArenaBestilling,
 	harDokarkivBestilling,
 	harHistarkBestilling,
@@ -55,6 +57,8 @@ import {
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
+	harSigrunstubPensjonsgivendeInntekt,
+	harSigrunstubSummertSkattegrunnlag,
 	harSkattekortBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
@@ -99,7 +103,6 @@ import {
 	YrkesskaderVisning,
 } from '@/components/fagsystem/yrkesskader/visning/YrkesskaderVisning'
 import { InntektsmeldingVisning } from '@/components/fagsystem/inntektsmelding/visning/Visning'
-import { SigrunstubVisning } from '@/components/fagsystem/sigrunstub/visning/Visning'
 import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/Visning'
 import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
 import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
@@ -107,6 +110,12 @@ import { UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
 
 import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
+import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
+import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
+import { usePensjonsgivendeInntekt, useSummertSkattegrunnlag } from '@/utils/hooks/useSigrunstub'
+import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/visning/Visning'
+import { useNomData } from '@/utils/hooks/useNom'
+import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -117,6 +126,8 @@ const getIdenttype = (ident) => {
 		return 'FNR'
 	}
 }
+
+export const DEFAULT_RETRY_COUNT = 8
 
 export default ({
 	fetchDataFraFagsystemer,
@@ -174,9 +185,26 @@ export default ({
 	const { loading: loadingUdistub, udistub } = useUdistub(
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harUdistubBestilling(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
 	)
 
-	const { loading: loadingTpData, tpData } = useTpData(
+	const {
+		loading: loadingSigrunstubPensjonsgivendeInntekt,
+		data: sigrunstubPensjonsgivendeInntekt,
+	} = usePensjonsgivendeInntekt(
+		ident.ident,
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) || ident?.master === 'PDL',
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
+	)
+
+	const { loading: loadingSigrunstubSummertSkattegrunnlag, data: sigrunstubSummertSkattegrunnlag } =
+		useSummertSkattegrunnlag(
+			ident.ident,
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) || ident?.master === 'PDL',
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) ? DEFAULT_RETRY_COUNT : 0,
+		)
+
+	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer),
 	)
@@ -206,6 +234,12 @@ export default ({
 		harInstBestilling(bestillingerFagsystemer),
 	)
 
+	const { loading: loadingArbeidssoekerregisteret, data: arbeidssoekerregisteretData } =
+		useArbeidssoekerregistrering(
+			ident.ident,
+			harArbeidssoekerregisteretBestilling(bestillingerFagsystemer),
+		)
+
 	const {
 		loading: loadingArbeidsplassencvData,
 		arbeidsplassencvData,
@@ -221,11 +255,9 @@ export default ({
 
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
-	const { loading: loadingApData, data: apData } = useTransaksjonIdData(
+	const { loading: loadingApData, data: apData } = useTransaksjonIdPensjon(
 		ident.ident,
-		'PEN_AP',
 		harApBestilling(bestillingerFagsystemer),
-		pensjonEnvironments,
 	)
 
 	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
@@ -270,6 +302,8 @@ export default ({
 		ident?.master === 'PDL' ? ident.ident : null,
 	)
 
+	const { nomData, loading: loadingNom } = useNomData(ident.ident)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -282,14 +316,10 @@ export default ({
 		return null
 	}
 
-	const { sigrunstub, sigrunstubPensjonsgivende, inntektstub, brregstub, krrstub } = data
+	const { inntektstub, brregstub, krrstub } = data
 
 	const manglerFagsystemdata = () => {
-		if (
-			[sigrunstub, inntektstub, krrstub].some(
-				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length,
-			)
-		) {
+		if ([inntektstub, krrstub].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)) {
 			return true
 		}
 		if (arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold) {
@@ -298,7 +328,7 @@ export default ({
 		if (poppData && sjekkManglerPensjonData(poppData)) {
 			return true
 		}
-		if (tpData && sjekkManglerTpData(tpData)) {
+		if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) {
 			return true
 		}
 		if (apData && sjekkManglerApData(apData)) {
@@ -324,6 +354,13 @@ export default ({
 		if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) {
 			return true
 		}
+		if (
+			harArbeidsplassenBestilling(bestillingerFagsystemer) &&
+			!arbeidsplassencvData &&
+			arbeidsplassencvError
+		) {
+			return true
+		}
 		return false
 	}
 
@@ -331,10 +368,8 @@ export default ({
 		const relatertePersoner = []
 
 		data.pdl?.hentPerson?.sivilstand
-			?.filter(
-				(siv) =>
-					!siv?.metadata?.historisk &&
-					['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type),
+			?.filter((siv) =>
+				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type),
 			)
 			?.forEach((person) => {
 				relatertePersoner.push({
@@ -353,10 +388,8 @@ export default ({
 			})
 
 		data.pdl?.hentPerson?.forelderBarnRelasjon
-			?.filter(
-				(forelderBarn) =>
-					!forelderBarn?.metadata?.historisk &&
-					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle),
+			?.filter((forelderBarn) =>
+				['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle),
 			)
 			?.forEach((person) => {
 				relatertePersoner.push({
@@ -379,9 +412,6 @@ export default ({
 
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
-	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
-		gruppeIdenter?.includes(ident.id),
-	)
 
 	const getArbeidsplassencvHjemmel = () => {
 		if (!harArbeidsplassenBestilling(bestillingerFagsystemer)) return null
@@ -390,6 +420,14 @@ export default ({
 		)
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
+
+	const isLoadingFagsystemer =
+		loadingNom ||
+		loadingAareg ||
+		loadingArbeidssoekerregisteret ||
+		loadingArbeidsplassencvData ||
+		loadingArenaData ||
+		loadingApData
 
 	return (
 		<ErrorBoundary>
@@ -405,14 +443,23 @@ export default ({
 								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
 									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
 								}
+								if (nomData) {
+									personData.nomdata = nomData
+								}
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
+								}
+								if (arbeidssoekerregisteretData) {
+									personData.arbeidssoekerregisteret = arbeidssoekerregisteretData
 								}
 								if (arbeidsplassencvData) {
 									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
 								if (arenaData) {
 									personData.arenaforvalteren = arenaData
+								}
+								if (apData) {
+									personData.alderspensjon = apData
 								}
 								leggTilPaaPerson(
 									personData,
@@ -424,6 +471,7 @@ export default ({
 								)
 							}}
 							kind="add-circle"
+							loading={isLoadingFagsystemer}
 						>
 							LEGG TIL/ENDRE
 						</Button>
@@ -465,6 +513,11 @@ export default ({
 				{ident.master === 'PDL' && (
 					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
+				<NavAnsattVisning
+					nomData={nomData}
+					nomLoading={loadingNom}
+					skjermingData={data.skjermingsregister}
+				/>
 				{visArbeidsforhold && (
 					<AaregVisning
 						liste={arbeidsforhold}
@@ -474,10 +527,13 @@ export default ({
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
 				)}
-				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<SigrunstubPensjonsgivendeVisning
-					data={sigrunstubPensjonsgivende}
-					loading={loading.sigrunstubPensjonsgivende}
+					data={sigrunstubPensjonsgivendeInntekt}
+					loading={loadingSigrunstubPensjonsgivendeInntekt}
+				/>
+				<SigrunstubSummertSkattegrunnlagVisning
+					data={sigrunstubSummertSkattegrunnlag}
+					loading={loadingSigrunstubSummertSkattegrunnlag}
 				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
@@ -490,6 +546,10 @@ export default ({
 					}
 				/>
 				<SkattekortVisning liste={skattekortData} loading={loadingSkattekort} />
+				<ArbeidssoekerregisteretVisning
+					data={arbeidssoekerregisteretData}
+					loading={loadingArbeidssoekerregisteret}
+				/>
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
 					loading={loadingArbeidsplassencvData}
@@ -509,16 +569,18 @@ export default ({
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<TpVisning
-					data={tpData}
-					loading={loadingTpData}
+					data={tpDataForhold}
+					loading={loadingTpDataForhold}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					ident={ident.ident}
 				/>
 				<AlderspensjonVisning
 					data={apData}
 					loading={loadingApData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					ident={ident.ident}
 				/>
 				<UforetrygdVisning
 					data={uforetrygdData}
@@ -538,8 +600,10 @@ export default ({
 					loading={loadingArenaData}
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					harArenaBestilling={harArenaBestilling(bestillingerFagsystemer)}
 				/>
 				<SykemeldingVisning
+					ident={ident}
 					data={sykemeldingData}
 					loading={loadingSykemeldingData}
 					bestillingIdListe={bestillingIdListe}
@@ -568,7 +632,7 @@ export default ({
 					loading={loadingDokarkivData}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
+				<HistarkVisning data={histarkData} loading={loadingHistarkData} ident={ident.ident} />
 				<SkatteetatenVisning
 					data={tenorData?.data?.data?.dokumentListe?.find((dokument: any) =>
 						dokument.identifikator?.includes(ident.ident),

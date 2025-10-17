@@ -1,0 +1,15 @@
+dolly:
+  nais:
+    cluster: dev-gcp
+    name: testnav-nom-proxy
+    variables:
+      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
+      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
+
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  nom-api:
+    url: https://nom-api.intern.dev.nav.no

@@ -114,7 +114,7 @@
   "/udi-stub/api": {
     "changeOrigin": true
   },
-  "/testnav-person-search-service/api": {
+  "/testnav-dolly-search-service/api": {
     "changeOrigin": true
   },
   "/testnav-pdl-forvalter/api": {
@@ -133,6 +133,9 @@
     "changeOrigin": true
   },
   "/testnav-arbeidsplassencv-proxy": {
+    "changeOrigin": true
+  },
+  "/testnav-sykemelding-proxy": {
     "changeOrigin": true
   },
   "/testnav-helsepersonell-service": {
@@ -160,6 +163,15 @@
     "changeOrigin": true
   },
   "/testnav-yrkesskade-proxy": {
+    "changeOrigin": true
+  },
+  "/testnav-arbeidssoekerregisteret-proxy": {
+    "changeOrigin": true
+  },
+  "/testnav-oversikt-service/api": {
+    "changeOrigin": true
+  },
+  "/testnav-nom-proxy": {
     "changeOrigin": true
   }
 }

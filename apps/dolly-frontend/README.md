@@ -24,23 +24,9 @@ generate new token (må ha read:packages og repo tilgang)
 
 .npmrc filen skal ligge i brukermappen (cd ~) din, hvis den ikke finnes der må du opprette den.
 
-### Kjøre Redis lokalt
+### Kjøre Valkey lokalt
 
-Evt last ned colima og kjør
-
-```
-colima start
-```
-
-For å kjøre Redis-instans lokalt må du ha Docker kjørende og kjør kommandoen:
-
-```
-docker run --name redis-image -d -p 6379:6379 redis:6.2.6
-```
-
-Deretter må du fjerne "local" fra profiles i LocalConfig og legge til "local" i profiles for ProdConfig (husk å endre
-dette tilbake
-før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrevet i JavaScript.
+Local profile bruker p.t. ikke Valkey for sessions, men dersom det er ønskelig er det mulig å bruke [docker-compose.yml](./docker-compose.yml) for lokal testing.
 
 ### Playwright - E2E testing
 

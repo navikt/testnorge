@@ -64,6 +64,10 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
 
                         destinasjon.setAntall(1);
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
+
+                        if (isNull(kilde.getSyntetisk())) {
+                            destinasjon.setSyntetisk(true);
+                        }
                     }
                 })
                 .exclude("identtype")
@@ -89,7 +93,9 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
 
                         } else if (nonNull(foedsel.getFoedselsdato())) {
                             destinasjon.setFoedtEtter(foedsel.getFoedselsdato().toLocalDate().minusDays(1));
-                            destinasjon.setFoedtFoer(foedsel.getFoedselsdato().toLocalDate().plusDays(1));
+                            destinasjon.setFoedtFoer(foedsel.getFoedselsdato().toLocalDate().equals(LocalDate.now()) ?
+                                    LocalDate.now() :
+                                    foedsel.getFoedselsdato().toLocalDate().plusDays(1));
 
                         } else if (nonNull(kilde.getAlder()) && kilde.getAlder() > 0) {
                             destinasjon.setFoedtEtter(LocalDate.now().minusYears(kilde.getAlder()).minusYears(1));

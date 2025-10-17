@@ -1,5 +1,4 @@
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 const TYPE = Object.freeze({
 	NY_BESTILLING: 'NY_BESTILLING',
@@ -26,53 +25,52 @@ export const BVOptions = (
 		opprettOrganisasjon = null,
 		leggTilPaaGruppe = null,
 		gruppe,
-	} = {},
-	gruppeId,
+	}: any = {},
+	gruppeId: number,
+	dollyEnvironments: any,
 ) => {
-	const { dollyEnvironments } = useDollyEnvironments()
-
 	let initialValues = {
 		antall: antall || 1,
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
-				identtype,
+				identtype: identtype || 'FNR',
 				syntetisk: true,
 			},
 		},
 		importPersoner: null,
 	}
 
-	let initialValuesLeggTil = {
+	const initialValuesLeggTil = Object.freeze({
 		antall: antall || 1,
 		environments: [],
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: null,
 		},
-	}
+	})
 
-	let initialValuesLeggTilPaaGruppe = {
+	const initialValuesLeggTilPaaGruppe = Object.freeze({
 		environments: [],
 		pdldata: {
 			opprettNyPerson: null,
 		},
-	}
+	})
 
-	let initialValuesOpprettFraIdenter = {
+	const initialValuesOpprettFraIdenter = Object.freeze({
 		pdldata: {
 			opprettNyPerson: {},
 		},
 		opprettFraIdenter: opprettFraIdenter,
-	}
+	})
 
-	let initialValuesOrganisasjon = {
+	const initialValuesOrganisasjon = Object.freeze({
 		organisasjon: {
 			enhetstype: '',
 		},
-	}
+	})
 
-	let initialValuesStandardOrganisasjon = {
+	const initialValuesStandardOrganisasjon = Object.freeze({
 		organisasjon: {
 			enhetstype: 'AS',
 			naeringskode: '01.451',
@@ -95,14 +93,9 @@ export const BVOptions = (
 				},
 			],
 		},
-	}
+	})
 
 	let bestType = TYPE.NY_BESTILLING
-
-	if (mal) {
-		bestType = TYPE.NY_BESTILLING_FRA_MAL
-		initialValues = Object.assign(initialValues, initialValuesBasedOnMal(mal, dollyEnvironments))
-	}
 
 	if (opprettFraIdenter) {
 		bestType = TYPE.OPPRETT_FRA_IDENTER
@@ -127,19 +120,29 @@ export const BVOptions = (
 		antall = importPersoner.length
 	}
 
+	if (mal) {
+		if (bestType === TYPE.NY_BESTILLING) {
+			bestType = TYPE.NY_BESTILLING_FRA_MAL
+		}
+		initialValues = {
+			...initialValues,
+			...initialValuesBasedOnMal(mal, dollyEnvironments),
+		}
+	}
+
 	if (opprettOrganisasjon) {
 		if (opprettOrganisasjon === 'STANDARD') {
 			bestType = TYPE.NY_STANDARD_ORGANISASJON
 			initialValues = initialValuesStandardOrganisasjon
 		} else if (mal) {
 			bestType = TYPE.NY_ORGANISASJON_FRA_MAL
-			initialValues = Object.assign(
-				initialValuesOrganisasjon,
-				initialValuesBasedOnMal(mal, dollyEnvironments),
-			)
+			initialValues = {
+				...initialValuesOrganisasjon,
+				...initialValuesBasedOnMal(mal, dollyEnvironments),
+			}
 		} else {
 			bestType = TYPE.NY_ORGANISASJON
-			initialValues = initialValuesOrganisasjon
+			initialValues = { ...initialValuesOrganisasjon }
 		}
 	}
 
@@ -155,6 +158,7 @@ export const BVOptions = (
 		importPersoner,
 		identMaster,
 		tidligereBestillinger,
+		opprettOrganisasjon,
 		gruppe,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,

@@ -3,7 +3,7 @@ package no.nav.testnav.altinn3tilgangservice.consumer.brreg.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.BrregResponseDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,6 +32,6 @@ public class GetBrregEnheterCommand implements Callable<Mono<BrregResponseDTO>> 
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(BrregResponseDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(WebClientError.logTo(log));
     }
 }

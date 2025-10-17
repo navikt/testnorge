@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,10 +25,11 @@ public class TilbakemeldingConsumer {
     public TilbakemeldingConsumer(
             Consumers consumers,
             AccessService accessService,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnorgeTilbakemeldingApi();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.accessService = accessService;
@@ -36,10 +38,10 @@ public class TilbakemeldingConsumer {
     public Mono<Void> send(TilbakemeldingDTO dto, ServerWebExchange exchange) {
         return
                 accessService.getAccessToken(serverProperties, exchange)
-                        .flatMap(accessToken -> webClient
+                        .flatMap(token -> webClient
                                 .post()
                                 .uri("/api/v1/tilbakemelding")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                                .headers(WebClientHeader.bearer(token))
                                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .body(BodyInserters.fromPublisher(Mono.just(dto), TilbakemeldingDTO.class))
                                 .retrieve()

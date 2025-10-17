@@ -18,18 +18,18 @@ dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:kafka-config"
     implementation "no.nav.testnav.libs:kafka-producers"
+    implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.kafka:spring-kafka"
-    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
+    implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
 
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
     implementation "org.springframework.cloud:spring-cloud-vault-config-databases"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
@@ -42,13 +42,15 @@ dependencies {
     implementation "org.flywaydb:flyway-database-postgresql"
 
     implementation "com.h2database:h2"
-   
-    implementation "org.apache.httpcomponents.client5:httpclient5:5.3.1"
+
+    implementation "org.apache.httpcomponents.client5:httpclient5:5.4.1"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
 
-    testImplementation "no.nav.testnav.libs:testing"
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.okhttp"

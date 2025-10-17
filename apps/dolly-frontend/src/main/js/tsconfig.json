@@ -14,10 +14,13 @@
       ]
     },
     "types": [
+      "@vitest/browser/providers/playwright",
+      "vitest/globals",
       "vite/client",
       "node",
       "./support"
     ],
+    "noEmit": true,
     "target": "ESNext",
     "useDefineForClassFields": true,
     "allowJs": false,

@@ -12,7 +12,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +26,8 @@ import static java.util.Objects.nonNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsSykemelding {
 
-    private RsSyntSykemelding syntSykemelding;
     private RsDetaljertSykemelding detaljertSykemelding;
+    private RsNySykemelding nySykemelding;
 
     @JsonIgnore
     public boolean hasDetaljertSykemelding() {
@@ -37,9 +36,9 @@ public class RsSykemelding {
     }
 
     @JsonIgnore
-    public boolean hasSyntSykemelding() {
+    public boolean hasNySykemelding() {
 
-        return nonNull(syntSykemelding);
+        return nonNull(nySykemelding);
     }
 
     @Getter
@@ -48,12 +47,31 @@ public class RsSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class RsSyntSykemelding {
+    public static class RsNySykemelding {
 
-        private String arbeidsforholdId;
-        private String orgnummer;
-        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
-        private LocalDateTime startDato;
+        private List<Aktivitet> aktivitet;
+
+        public List<Aktivitet> getAktivitet() {
+            if (isNull(aktivitet)) {
+                aktivitet = new ArrayList<>();
+            }
+            return aktivitet;
+        }
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class Aktivitet {
+
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+            private LocalDate fom;
+
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+            private LocalDate tom;
+        }
     }
 
     @Getter

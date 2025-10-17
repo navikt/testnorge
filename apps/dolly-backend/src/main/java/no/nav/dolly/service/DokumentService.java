@@ -13,13 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -29,39 +31,36 @@ public class DokumentService {
     private final BestillingMalRepository bestillingMalRepository;
     private final ObjectMapper objectMapper;
 
-    @Transactional(readOnly = true)
-    public List<Dokument> getDokumenterByBestilling(Long bestillingId) {
+    @Transactional
+    public Flux<Dokument> getDokumenterByBestilling(Long bestillingId) {
 
         return dokumentRepository.getDokumentsByBestillingId(bestillingId);
     }
 
-    @Transactional(readOnly = true)
-    public List<Dokument> getDokumenterByMal(Long malId) {
+    @Transactional
+    public Flux<Dokument> getDokumenterByMal(Long malId) {
 
         return bestillingMalRepository.findById(malId)
                 .map(malBestilling -> fromJson(malBestilling.getBestKriterier()))
-                .map(kriterier -> Stream.concat(
-                                        Optional.ofNullable(kriterier.getDokarkiv())
+                .map(kriterier -> Stream.concat(kriterier.getDokarkiv().stream()
                                                 .map(RsDokarkiv::getDokumenter)
-                                                .stream()
                                                 .flatMap(Collection::stream)
                                                 .map(RsDokarkiv.Dokument::getDokumentvarianter)
                                                 .flatMap(Collection::stream)
-                                                .map(RsDokarkiv.Dokument.DokumentVariant::getDokumentReferanse),
-                                        Optional.ofNullable(kriterier.getHistark())
-                                                .map(RsHistark::getDokumenter)
-                                                .stream()
-                                                .flatMap(Collection::stream)
-                                                .map(RsHistark.RsHistarkDokument::getDokumentReferanse)
+                                                .map(RsDokarkiv.Dokument.DokumentVariant::getDokumentReferanse)
+                                                .filter(Objects::nonNull),
+                                        nonNull(kriterier.getHistark()) ?
+                                                kriterier.getHistark().getDokumenter().stream()
+                                                        .map(RsHistark.RsHistarkDokument::getDokumentReferanse)
+                                                        .filter(Objects::nonNull) : Stream.empty()
                                 )
                                 .collect(Collectors.toSet())
                 )
-                .map(dokumentRepository::getDokumentsByIdIsIn)
-                .orElse(Collections.emptyList());
+                .flatMapMany(dokumentRepository::getDokumentsByIdIsIn);
     }
 
-    @Transactional(readOnly = true)
-    public List<Dokument> getDokumenter(List<Long> dokumentIdListe) {
+    @Transactional
+    public Flux<Dokument> getDokumenter(List<Long> dokumentIdListe) {
 
         return dokumentRepository.getDokumentsByIdIsIn(dokumentIdListe);
     }

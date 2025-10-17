@@ -1,13 +1,16 @@
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { DollyApi } from '@/service/Api'
 import { useAsync } from 'react-use'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useContext, useEffect, useState } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ToggleGroup } from '@navikt/ds-react'
 import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
@@ -57,7 +60,9 @@ export const PdlPersonForm = ({
 	initialNyIdent = null,
 	initialEksisterendePerson = null,
 }: PdlPersonValues) => {
-	const { gruppeId } = useParams()
+	const { gruppeId: gruppeIdParam } = useParams()
+	const formGruppeId = formMethods.watch('gruppeId')
+	const gruppeId = formGruppeId || gruppeIdParam
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
 	}, [])
@@ -71,7 +76,7 @@ export const PdlPersonForm = ({
 	}
 
 	//@ts-ignore
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const [type, setType] = useState(getType())
 
 	const gruppeIdenter = gruppe?.value?.data?.identer?.map((person) => person.ident)

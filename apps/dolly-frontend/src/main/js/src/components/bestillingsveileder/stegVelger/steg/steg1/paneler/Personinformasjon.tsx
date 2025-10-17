@@ -2,7 +2,10 @@ import React, { useContext } from 'react'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	getInitialDoedsfall,
 	getInitialFoedested,
@@ -17,6 +20,7 @@ import {
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import { useFormContext } from 'react-hook-form'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -30,11 +34,13 @@ const utvandret = 'utvandretTilLand'
 
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
+	const formMethods = useFormContext()
 	const sm: any = stateModifier(PersoninformasjonPanel.initialValues)
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
-	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const formGruppeId = formMethods.watch('gruppeId')
+	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
+	const { identer } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
@@ -93,8 +99,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.kjonn} />
 					<Attributt attr={sm.attrs.navn} />
-					<Attributt attr={sm.attrs.sprakKode} />
-					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+					<Attributt attr={sm.attrs.telefonnummer} />
 					<Attributt
 						attr={sm.attrs.norskBankkonto}
 						disabled={sm.attrs.utenlandskBankkonto.checked}
@@ -103,7 +108,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						attr={sm.attrs.utenlandskBankkonto}
 						disabled={sm.attrs.norskBankkonto.checked}
 					/>
-					<Attributt attr={sm.attrs.telefonnummer} />
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 					<Attributt
@@ -158,11 +162,9 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			<AttributtKategori title="Diverse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.navn} />
-				<Attributt attr={sm.attrs.sprakKode} />
-				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
-				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt
 					attr={sm.attrs.vergemaal}
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
@@ -205,23 +207,10 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		utflytting: 'pdldata.person.utflytting',
 		kjoenn: 'pdldata.person.kjoenn',
 		navn: 'pdldata.person.navn',
-		spraakKode: {
-			tpsM: 'tpsMessaging.spraakKode',
-		},
-		egenAnsattDatoFom: {
-			tpsM: 'tpsMessaging.egenAnsattDatoFom',
-			skjerming: 'skjerming.egenAnsattDatoFom',
-		},
-		egenAnsattDatoTom: {
-			tpsM: 'tpsMessaging.egenAnsattDatoTom',
-			skjerming: 'skjerming.egenAnsattDatoTom',
-		},
-		skjermetFra: 'skjermingsregister.skjermetFra',
 		norskBankkonto: 'bankkonto.norskBankkonto',
 		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
 		telefonnummer: {
 			pdl: 'pdldata.person.telefonnummer',
-			tpsM: 'tpsMessaging.telefonnummer',
 		},
 		fullmakt: 'fullmakt',
 		fullmaktPDL: 'pdldata.person.fullmakt',
@@ -318,30 +307,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			checked: has(paths.navn),
 			add: () => set(paths.navn, [getInitialNavn(initMaster)]),
 			remove: () => del(paths.navn),
-		},
-		sprakKode: {
-			label: 'Språk',
-			checked: has(paths.spraakKode.tpsM),
-			add: () => set(paths.spraakKode.tpsM, ''),
-			remove: () => del(paths.spraakKode.tpsM),
-		},
-		egenAnsattDatoFom: {
-			label: 'Skjerming',
-			checked: has(paths.egenAnsattDatoFom.tpsM) || has(paths.egenAnsattDatoFom.skjerming),
-			add() {
-				setMulti(
-					[
-						paths.egenAnsattDatoFom.skjerming,
-						_.get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
-							_.get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
-							new Date(),
-					],
-					[paths.egenAnsattDatoTom.skjerming, undefined],
-				)
-			},
-			remove() {
-				del('skjerming')
-			},
 		},
 		norskBankkonto: {
 			label: 'Norsk bank',

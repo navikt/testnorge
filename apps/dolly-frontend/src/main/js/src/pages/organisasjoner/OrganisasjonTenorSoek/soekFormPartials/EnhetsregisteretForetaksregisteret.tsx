@@ -1,4 +1,4 @@
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import React from 'react'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -32,7 +32,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 			<FormSelect
 				name="forretningsadresse.kommunenummer"
 				label="Kommunenummer"
-				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				size={'large'}
 				onChange={(val: Option) =>
 					handleChange(val?.value || null, 'forretningsadresse.kommunenummer')

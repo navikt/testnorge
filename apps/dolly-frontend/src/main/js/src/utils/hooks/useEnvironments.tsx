@@ -1,6 +1,5 @@
 import { fetcher } from '@/api'
 import useSWRImmutable from 'swr/immutable'
-import useSWR from 'swr'
 
 const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
 const getPensjonMiljoerUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/miljo'
@@ -8,7 +7,7 @@ const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-inst-proxy/api/v1/environment'
 const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/rest/miljoe'
 
-const prefetchedMiljoer = ['t13', 'q1', 'q2', 'q4', 'qx']
+const prefetchedMiljoer = ['q1', 'q2', 'q4', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = { institusjonsoppholdEnvironments: ['q1', 'q2'] }
@@ -27,16 +26,20 @@ export const useDollyEnvironments = () => {
 	const environmentsSortedByType = _getEnvironmentsSortedByType(data)
 	return {
 		dollyEnvironments: environmentsSortedByType,
-		dollyEnvironmentList: environmentsSortedByType.Q?.concat(environmentsSortedByType?.T),
+		dollyEnvironmentList: environmentsSortedByType.Q,
 		loading: isLoading,
 		error: error,
 	}
 }
 
 export const usePensjonEnvironments = () => {
-	const { data, isLoading, error } = useSWR<string[], Error>(getPensjonMiljoerUrl, fetcher, {
-		fallbackData: prefetchedPensjonMiljoer,
-	})
+	const { data, isLoading, error } = useSWRImmutable<string[], Error>(
+		getPensjonMiljoerUrl,
+		fetcher,
+		{
+			fallbackData: prefetchedPensjonMiljoer,
+		},
+	)
 
 	return {
 		pensjonEnvironments: data,
@@ -46,7 +49,7 @@ export const usePensjonEnvironments = () => {
 }
 
 export const useArenaEnvironments = () => {
-	const { data, isLoading, error } = useSWR<string[], Error>(
+	const { data, isLoading, error } = useSWRImmutable<string[], Error>(
 		[getArenaMiljoerUrl, { 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly' }],
 		([url, headers]) => fetcher(url, headers),
 		{
@@ -62,9 +65,13 @@ export const useArenaEnvironments = () => {
 }
 
 export const useInstEnvironments = () => {
-	const { data, isLoading, error } = useSWR<InstResponse, Error>(getInstMiljoerUrl, fetcher, {
-		fallbackData: prefetchedInstMiljoer,
-	})
+	const { data, isLoading, error } = useSWRImmutable<InstResponse, Error>(
+		getInstMiljoerUrl,
+		fetcher,
+		{
+			fallbackData: prefetchedInstMiljoer,
+		},
+	)
 
 	return {
 		instEnvironments: data?.institusjonsoppholdEnvironments,
@@ -74,7 +81,7 @@ export const useInstEnvironments = () => {
 }
 
 export const useDokarkivEnvironments = () => {
-	const { data, isLoading, error } = useSWR<string[], Error>(
+	const { data, isLoading, error } = useSWRImmutable<string[], Error>(
 		[getDokarkivMiljoerUrl, { 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly' }],
 		([url, headers]) => fetcher(url, headers),
 		{

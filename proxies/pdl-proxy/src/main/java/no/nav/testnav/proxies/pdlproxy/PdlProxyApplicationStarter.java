@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.pdlproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
@@ -8,8 +9,8 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTo
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.pdlproxy.config.Consumers;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -30,7 +31,9 @@ import java.util.function.Function;
 public class PdlProxyApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(PdlProxyApplicationStarter.class, args);
+        new SpringApplicationBuilder(PdlProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     @Bean

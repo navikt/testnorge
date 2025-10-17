@@ -1,5 +1,3 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 syfo:
   queue:
     name: "QA.Q1_SYFOSMMOTTAK.INPUT"
@@ -9,45 +7,18 @@ spring:
     version: application.version.todo
     name: testnav-sykemelding-api
     description: Api for opprettelse av detaljerte sykemeldinger
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 ibm:
   mq:
     queueManager: ${IBM_MQ_QUEUE_MANAGER}
@@ -57,6 +28,7 @@ ibm:
     password: ${IBM_MQ_PASSWORD}
     application-name: testnav-sykemelding-api
     use-authentication-m-q-c-s-p: true
+
 consumers:
   sykemelding-proxy:
     url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local

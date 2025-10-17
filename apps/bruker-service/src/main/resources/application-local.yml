@@ -1,20 +1,18 @@
-
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
-JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
-
+CRYPTOGRAPHY_SECRET: dummy
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
 
 spring:
-  application:
-    name: testnav-bruker-service-dev
   config:
     import: "sm://"
   flyway:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
   testnav-altinn3-tilgang-service:

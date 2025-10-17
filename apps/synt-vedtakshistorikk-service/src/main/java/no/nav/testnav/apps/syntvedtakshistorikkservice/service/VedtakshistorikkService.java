@@ -17,10 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.SyntVedtakshistorikkConsumer;
 
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import org.springframework.stereotype.Service;
 

@@ -1,33 +1,19 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
-application:
-  name: testnav-ident-pool
-  version: 1.0.0
-
 ### TPS ###
 generer:
   identer:
     enable: true
 
-### METRICS ###
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
 spring:
+  application:
+    name: testnav-ident-pool
+    version: 1.0.0
+    description: >
+      Ident-pool har oversikt på syntetiske identer, og sjekker mot prod og testmiljøer for eksistens.<br>
+      Fra ident-pool kan det rekvireres identer basert på født-før og født-etter samt kjønn og type.<br>
+      Spesifikke identer kan også allokeres.<br>
+      Identer kan frigjøres og benyttes om igjen
+  config:
+    import: "classpath:dolly-application.yml"
   flyway:
     enabled: true
     locations: classpath:/db/migration
@@ -47,25 +33,16 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
-          #The client_id of this application
-          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
+server:
+  error:
+    include-message: always
 
 consumers:
   tps-messaging-service:
-        url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
-        cluster: dev-gcp
-        namespace: dolly
-        name: testnav-tps-messaging-service
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tps-messaging-service

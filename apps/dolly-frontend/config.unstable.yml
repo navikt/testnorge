@@ -23,15 +23,10 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - https://dolly-frontend-dev-unstable.intern.dev.nav.no/login/oauth2/code/aad
-        - http://localhost:8020/login/oauth2/code/aad
-        - http://localhost:3000/login/oauth2/code/aad
   accessPolicy:
     outbound:
       rules:
         - application: dolly-backend-dev
-        - application: dolly-dev-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
         - application: testnav-arbeidsplassencv-proxy
@@ -40,12 +35,11 @@ spec:
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
-        - application: testnav-oppsummeringsdokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
-        - application: testnav-person-search-service
+        - application: testnav-dolly-search-service
         - application: testnav-person-service
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
@@ -54,7 +48,13 @@ spec:
         - application: testnorge-tilbakemelding-api
         - application: testnav-skattekort-service
         - application: testnav-yrkesskade-proxy
+        - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-service
+        - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-sykemelding-proxy
+        - application: testnav-api-oversikt-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -77,7 +77,7 @@ spec:
   ingresses:
     - "https://dolly-frontend-dev-unstable.intern.dev.nav.no"
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -85,11 +85,15 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
+  valkey:
+    - instance: session-dev
+      access: readwrite
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140

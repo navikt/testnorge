@@ -12,7 +12,10 @@ import styled from 'styled-components'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type NavnTypes = {
 	formMethods: any
@@ -25,6 +28,11 @@ const RefreshButton = styled(Button)`
 	margin: 8px 0 0 -10px;
 `
 
+const manuelleNavn = [
+	{ adjektiv: 'Lillegull', adverb: 'Lillesøster', substantiv: 'Navnesen' },
+	{ adjektiv: 'Sussebass', adverb: 'Lillebror', substantiv: 'Etternavnesen' },
+]
+
 const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	if (!navnInfo) {
 		return []
@@ -36,7 +44,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 				label: navn,
 			})),
 		)
-		?.sort((first, second) => (first.label > second.label ? 1 : -1))
+		?.sort?.((first, second) => (first.label > second.label ? 1 : -1))
 
 	return _.uniqBy(navnOptions, 'label')
 }
@@ -56,7 +64,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 
 	const [mellomnavnOptions, setMellomnavnOptions] = useState([])
 	const [etternavnOptions, setetternavnOptions] = useState([])
-	const { data, navnInfo, mutate } = useGenererNavn()
+	const { data, navnInfo, mutate } = useGenererNavn(manuelleNavn)
 
 	if (!formMethods.watch(path)) {
 		return null
@@ -163,7 +171,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 }
 
 export const Navn = ({ formMethods }: NavnTypes) => {
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormDollyFieldArray

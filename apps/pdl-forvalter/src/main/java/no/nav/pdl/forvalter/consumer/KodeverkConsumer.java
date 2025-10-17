@@ -20,7 +20,7 @@ public class KodeverkConsumer {
 
     private static final String POSTNUMMER = "Postnummer";
     private static final String LANDKODER = "Landkoder";
-    private static final String KOMMUNER = "Kommuner2024";
+    private static final String KOMMUNER = "Kommuner";
     private static final String EMBETER = "Vergemål_Fylkesmannsembeter";
     private static final Random random = new SecureRandom();
 
@@ -31,10 +31,12 @@ public class KodeverkConsumer {
     public KodeverkConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getKodeverkService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
@@ -51,7 +53,7 @@ public class KodeverkConsumer {
 
         return hentKodeverk(LANDKODER)
                 .map(landkoder -> landkoder.keySet().stream()
-                        .filter(landkode -> !landkode.equals("9999") && !landkode.equals("???"))
+                        .filter(landkode -> !landkode.equals("9999") && !landkode.contains("???"))
                         .toList())
                 .map(list -> list.get(random.nextInt(list.size())))
                 .block();
@@ -71,11 +73,17 @@ public class KodeverkConsumer {
                 .block();
     }
 
-    private Mono<Map<String, String>> hentKodeverk(String kodeverk) {
+    private Mono<Map<String, String>> hentKodeverkInner(String kodeverk) {
 
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMap(token -> new KodeverkCommand(webClient, kodeverk, token.getTokenValue()).call())
                 .map(KodeverkDTO::getKodeverk);
+    }
+
+    private Mono<Map<String, String>> hentKodeverk(String kodeverk) {
+
+        return hentKodeverkInner(kodeverk)
+                .switchIfEmpty(hentKodeverkInner(kodeverk));
     }
 }

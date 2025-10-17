@@ -4,7 +4,10 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { getAlder, validation } from '@/components/fagsystem/pensjon/form/validation'
 import React, { useContext, useState } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 import { ToggleGroup } from '@navikt/ds-react'
 import { FyllInnInntektForm } from '@/components/fagsystem/pensjon/form/FyllInnInntektForm'
@@ -25,7 +28,7 @@ const inputValg = { generertInntekt: 'generer', fyllInnInntekt: 'fyllInn' }
 
 export const PensjonForm = () => {
 	const formMethods = useFormContext()
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const [inputType, setInputType] = useState(
 		formMethods.getValues(pensjonGenererPath)
 			? inputValg.generertInntekt
@@ -54,7 +57,7 @@ export const PensjonForm = () => {
 				heading="Pensjonsgivende inntekt (POPP)"
 				hasErrors={panelError(pensjonPath) || panelError(pensjonGenererPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath, pensjonGenererPath])}
+				startOpen={erForsteEllerTest(formMethods.watch(), [pensjonPath, pensjonGenererPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				{!alder && (nyBestilling || nyBestillingFraMal) && (

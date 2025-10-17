@@ -1,4 +1,11 @@
 import React from 'react'
 
-export type ShowErrorContextType = { showError: boolean; setShowError: any }
-export const ShowErrorContext = __preserveRef('ShowErrorContext', React.createContext(false))
+export interface ShowErrorContextType {
+	showError: boolean
+	setShowError: (show: boolean) => void
+}
+
+export const ShowErrorContext = React.createContext({
+	showError: false,
+	setShowError: () => {},
+} as ShowErrorContextType)

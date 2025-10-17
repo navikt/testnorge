@@ -29,7 +29,7 @@ public class Consumers {
     private ServerProperties testnavOrganisasjonFasteDataService;
     private ServerProperties pdlApiProxy;
     private ServerProperties testnavPensjonTestdataFacadeProxy;
-    private ServerProperties testnavPersonSearchService;
+    private ServerProperties testnavDollySearchService;
     private ServerProperties syntDagpenger;
     private ServerProperties syntVedtakshistorikk;
 

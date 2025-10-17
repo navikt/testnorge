@@ -4,17 +4,23 @@ import { AppError } from '@/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
 
 import './bestillingsveileder.less'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
+import { sendBestilling } from '@/ducks/bestilling'
+import { useDispatch } from 'react-redux'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
-export const Bestillingsveileder = ({ error, sendBestilling }) => {
+export const Bestillingsveileder = () => {
 	const location = useLocation()
+	const { dollyEnvironments } = useDollyEnvironments()
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
+	const [error, setError] = useState(null)
 	const [showError, setShowError] = useState(false)
 	const [navigateRoot, setNavigateRoot] = useState(false)
-	const { gruppeId } = useParams()
+	const { gruppeId }: any = useParams()
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
 	const importPersoner = location?.state?.importPersoner
 
@@ -35,7 +41,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 
 	if (!location.state) {
 		location.state = {
-			antall: 1,
+			antall: '1',
 			identtype: 'FNR',
 			mal: null,
 		}
@@ -46,13 +52,18 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		return null
 	}
 
-	const options = BVOptions(location.state, gruppeId)
-	const handleSubmit = (values) => {
-		sendBestilling(values, options, gruppeId, navigate)
+	const options = BVOptions(location.state, gruppeId, dollyEnvironments)
+
+	const handleSubmit = async (values) => {
+		try {
+			dispatch(sendBestilling(values, options, gruppeId, navigate))
+		} catch (err) {
+			setError(err)
+		}
 	}
 
 	if (error) {
-		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
+		return <AppError title="Det skjedde en feil ved bestilling" message={error?.message} />
 	}
 
 	return (

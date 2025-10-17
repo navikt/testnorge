@@ -1,21 +1,18 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-AZURE_TRYGDEETATEN_APP_CLIENT_ID: placeholder
-AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: placeholder
-AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: http://localhost/placeholder
-TOKEN_X_ISSUER: dummy
+dolly:
+  nais:
+    cluster: dev-fss
+    name: testnav-pdl-proxy
+    variables:
+      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
+      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
 
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: true
   config:
     import: "sm://"
 
 app:
   elastic:
-    username: ${sm://elastic-username}
-    password: ${sm://elastic-password}
-  hendelse.lager.api.key: ${sm://hendelse-lager-api-key}
-  person.aktor.api.key: ${sm://person-aktor-api-key}
+    username: ${sm\://elastic-username}
+    password: ${sm\://elastic-password}
+  hendelse.lager.api.key: ${sm\://hendelse-lager-api-key}
+  person.aktor.api.key: ${sm\://person-aktor-api-key}

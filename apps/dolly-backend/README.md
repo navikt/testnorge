@@ -14,6 +14,7 @@ trenger å ha noe forhold til under utfylling av bestilling. Noe data blir persi
 av Dolly, bestillingskriterier, hvem som har sendt de inn og status på disse.
 
 ## Lokal kjøring
+
 * [Generelt.](../../docs/local_general.md)
 * [Secret Manager.](../../docs/local_secretmanager.md)
 * [Database i GCP.](../../docs/gcp_db.md)

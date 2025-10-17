@@ -5,6 +5,7 @@ import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/uti
 import { v4 as uuid } from 'uuid'
 import * as _ from 'lodash-es'
 import { Logger } from '@/logger/Logger'
+import { BVOptions } from '@/components/bestillingsveileder/options/options'
 
 export const actions = createActions(
 	{
@@ -47,29 +48,30 @@ const trackBestilling = (values) => {
 /**
  * Sender de ulike bestillingstypene fra Bestillingsveileder
  */
-export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispatch) => {
+export const sendBestilling = (values, options, gruppeId, navigate) => async (dispatch) => {
+	const opts = BVOptions(options, gruppeId, values.environments)
+	const valgtGruppe = values?.gruppeId || gruppeId
 	let bestillingAction
 
 	if (opts.is.leggTil) {
 		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
 	} else if (opts.is.leggTilPaaGruppe) {
-		bestillingAction = actions.postBestillingLeggTilPaaGruppe(gruppeId, values)
+		bestillingAction = actions.postBestillingLeggTilPaaGruppe(valgtGruppe, values)
 	} else if (opts.is.opprettFraIdenter) {
-		values = Object.assign({}, values, { opprettFraIdenter: opts.opprettFraIdenter })
-		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
+		bestillingAction = actions.postBestillingFraEksisterendeIdenter(valgtGruppe, values)
 	} else if (opts.is.importTestnorge) {
 		values = Object.assign({}, values, {
 			identer: opts.importPersoner.map((person) => person.ident),
 			environments: values.environments || [],
 		})
-		bestillingAction = actions.postTestnorgeBestilling(values.gruppeId, values)
+		bestillingAction = actions.postTestnorgeBestilling(values.valgtGruppe, values)
 	} else if (values.organisasjon) {
 		trackBestilling(values)
 		bestillingAction = actions.postOrganisasjonBestilling(values)
 	} else {
 		trackBestilling(values)
-		bestillingAction = actions.postBestilling(gruppeId, values)
+		bestillingAction = actions.postBestilling(valgtGruppe, values)
 	}
 
 	const response = await dispatch(bestillingAction)
@@ -82,8 +84,8 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 	} else if (type.includes('OrganisasjonBestilling')) {
 		navigate(`/organisasjoner`)
 	} else if (opts.is.importTestnorge) {
-		navigate(`/gruppe/${values.gruppeId}`)
+		navigate(`/gruppe/${valgtGruppe}`)
 	} else {
-		navigate(`/gruppe/${gruppeId}`)
+		navigate(`/gruppe/${valgtGruppe}`)
 	}
 }

@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 
@@ -27,7 +28,7 @@ import reactor.core.publisher.Mono;
 @Configuration
 @Profile("idporten")
 @EnableWebFluxSecurity
-public class IdportenSecurityConfig {
+class IdportenSecurityConfig {
 
     private static final String LOGOUT = "/logout";
     private static final String LOGIN = "/login";
@@ -46,7 +47,7 @@ public class IdportenSecurityConfig {
     }
 
     @Bean
-    public ServerOAuth2AuthorizationRequestResolver pkceResolver(ReactiveClientRegistrationRepository repo) {
+    ServerOAuth2AuthorizationRequestResolver pkceResolver(ReactiveClientRegistrationRepository repo) {
         var resolver = new DefaultServerOAuth2AuthorizationRequestResolver(repo);
         resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
         return resolver;
@@ -54,29 +55,31 @@ public class IdportenSecurityConfig {
 
     @SneakyThrows
     @Bean
-    public SecurityWebFilterChain configure(ServerHttpSecurity http, ServerOAuth2AuthorizationRequestResolver requestResolver) {
+    SecurityWebFilterChain configure(
+            WebClient webClient,
+            ServerHttpSecurity http,
+            ServerOAuth2AuthorizationRequestResolver requestResolver
+    ) {
         var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
-        var authenticationManager = new AuthorizationCodeReactiveAuthenticationManger(JWK.parse(jwk));
+        var authenticationManager = new AuthorizationCodeReactiveAuthenticationManger(webClient, JWK.parse(jwk));
         var logoutSuccessHandler = new LogoutSuccessHandler();
-        logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(wellKnownUrl, postLogoutRedirectUri));
+        logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(webClient, wellKnownUrl, postLogoutRedirectUri));
 
         return http
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.pathMatchers(
-                                "/internal/isReady",
-                                "/internal/isAlive",
-                                "/assets/*",
-                                "/internal/metrics",
-                                "/oauth2/callback",
-                                "/favicon.ico",
-                                LOGIN,
-                                LOGOUT,
-                                "/oauth2/logout",
                                 "/*.css",
                                 "/*.js",
                                 "/*.mjs",
-                                "/*.png"
+                                "/*.png",
+                                "/assets/*",
+                                "/favicon.ico",
+                                "/internal/**",
+                                "/oauth2/callback",
+                                "/oauth2/logout",
+                                LOGIN,
+                                LOGOUT
                         ).permitAll()
                         .anyExchange().authenticated())
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec

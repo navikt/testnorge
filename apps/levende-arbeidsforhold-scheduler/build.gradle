@@ -13,6 +13,7 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
 
@@ -27,8 +28,8 @@ dependencies {
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 
     //Dependencies av dependencies som må ha spesifisert versjon for å ikke forårsake sikkerthets-sårbarheter
-    implementation "org.apache.tomcat.embed:tomcat-embed-core:10.1.25"
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.6'
     implementation "org.bouncycastle:bcprov-jdk18on:$versions.bouncyCastle"
-    implementation "com.nimbusds:nimbus-jose-jwt:9.37.2"
+    implementation "com.nimbusds:nimbus-jose-jwt:9.41.1"
 
 }

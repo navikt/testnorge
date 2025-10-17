@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Service
-public class UdiStubConsumer implements ConsumerStatus {
+public class UdiStubConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -31,11 +31,12 @@ public class UdiStubConsumer implements ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavUdistubProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();

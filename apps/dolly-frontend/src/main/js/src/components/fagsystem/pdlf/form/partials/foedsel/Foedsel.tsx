@@ -7,7 +7,10 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 
@@ -17,7 +20,7 @@ type FoedselTypes = {
 }
 
 export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
 		formMethods.setValue(`${foedselPath}.foedeland`, selected?.value || null)
@@ -62,7 +65,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 			<FormSelect
 				name={`${path}.foedekommune`}
 				label="Fødekommune"
-				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 				isDisabled={
 					formMethods.watch(`${path}.foedeland`) !== 'NOR' &&
@@ -85,7 +88,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 }
 
 export const Foedsel = ({ formMethods }: FoedselTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
 		<div className="flexbox--flex-wrap">

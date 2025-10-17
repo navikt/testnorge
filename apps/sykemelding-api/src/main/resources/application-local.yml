@@ -1,6 +1,3 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-
 ibm:
   mq:
     queueManager: dummy
@@ -10,6 +7,7 @@ ibm:
     password: dummy
     application-name: dummy
     use-authentication-m-q-c-s-p: true
+
 consumers:
   sykemelding-proxy:
     url: https://testnav-sykemelding-proxy.intern.dev.nav.no
@@ -20,3 +18,8 @@ consumers:
 spring:
   config:
     import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dummy

@@ -4,18 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,30 +32,33 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                         .path(PEN_SAMBOER_URL)
                         .queryParam("historikk", true)
                         .build(miljoe, ident))
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToMono(PensjonSamboerResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 
-    private static PensjonSamboerResponse pensjonforvalterResponseFromError(String miljoe, Throwable error) {
-
-        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
+    private static PensjonSamboerResponse pensjonforvalterResponseFromError(String miljoe, Throwable throwable) {
+        var description = WebClientError.describe(throwable);
+        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment
+                .builder()
                 .miljo(miljoe)
-                .response(PensjonforvalterResponse.Response.builder()
+                .response(PensjonforvalterResponse.Response
+                        .builder()
                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .status(WebClientFilter.getStatus(error).value())
-                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
+                                .status(description.getStatus().value())
+                                .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(WebClientFilter.getMessage(error))
+                        .message(description.getMessage().replaceAll("\"timestamp\":\\d+,", ""))
                         .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();
-
-        return PensjonSamboerResponse.builder()
+        return PensjonSamboerResponse
+                .builder()
                 .status(Collections.singletonList(miljoeResponse))
                 .build();
     }

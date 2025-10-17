@@ -25,7 +25,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class MedlConsumer implements ConsumerStatus {
+public class MedlConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -35,17 +35,18 @@ public class MedlConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavMedlProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "medl_createMedlemskapsperiode" })
+    @Timed(name = "providers", tags = {"operation", "medl_createMedlemskapsperiode"})
     public Mono<MedlPostResponse> createMedlemskapsperiode(MedlData medlData) {
 
         log.info("Medlemskapsperiode opprett {}", medlData);
@@ -53,16 +54,15 @@ public class MedlConsumer implements ConsumerStatus {
                 .flatMap(token -> new MedlPostCommand(webClient, medlData, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "medl_deleteMedlemskapsperioder" })
-    public Flux<MedlPostResponse> deleteMedlemskapsperioder(Flux<MedlData> medlDataRequests) {
+    @Timed(name = "providers", tags = {"operation", "medl_deleteMedlemskapsperioder"})
+    public Flux<MedlPostResponse> deleteMedlemskapsperioder(MedlData medldata) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
-                        medlDataRequests.flatMap(medlData ->
-                                new MedlPutCommand(webClient, medlData, token.getTokenValue()).call()));
+                        new MedlPutCommand(webClient, medldata, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "medl_getMedlemskapsperiode" })
+    @Timed(name = "providers", tags = {"operation", "medl_getMedlemskapsperiode"})
     public Flux<MedlDataResponse> getMedlemskapsperioder(List<String> identer) {
 
         return tokenService.exchange(serverProperties)

@@ -3,15 +3,13 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -27,19 +25,21 @@ public class TagsSlettingCommand implements Callable<Mono<ResponseEntity<JsonNod
     private final List<Tags> tags;
     private final String token;
 
+    @Override
     public Mono<ResponseEntity<JsonNode>> call() {
         log.info("Sletter tag(s) på ident(er)");
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder
-                        .path( "/pdl-testdata/api/v1/bestilling/tags")
+                        .path("/pdl-testdata/api/v1/bestilling/tags")
                         .queryParam(IDENTS_QUERY, identer)
                         .queryParam(TAGS_QUERY, tags)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .toEntity(JsonNode.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
 import { Option } from '@/service/SelectOptionsOppslag'
+import useSWRImmutable from 'swr/immutable'
 
 type NodeType = {
 	kode: string
@@ -30,7 +31,7 @@ export const useFullmektig = (ident: string) => {
 }
 
 export const useFullmaktOmraader = () => {
-	const { data, isLoading, error } = useSWR<FullmaktKodeverkType, Error>(
+	const { data, isLoading, error } = useSWRImmutable<FullmaktKodeverkType, Error>(
 		[
 			'/testnav-fullmakt-proxy/api/omraade',
 			{ accept: 'application/json', 'Content-Type': 'application/json', fnr: '12808012345' },

@@ -3,16 +3,15 @@ import Button from '@/components/ui/button/Button'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
-import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
+import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
+import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import Loading from '@/components/ui/loading/Loading'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import Icon from '@/components/ui/icon/Icon'
 import { Alert } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useFieldArray, useFormContext } from 'react-hook-form'
-import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 
 type Option = {
 	value: string
@@ -94,7 +93,7 @@ const PersonSoek = styled.div`
 	}
 `
 
-const StyledErrorMessageWithFocus = styled(DollyErrorMessage)`
+const StyledErrorMessageWithFocus = styled(DollyErrorMessageWrapper)`
 	margin-top: 10px;
 `
 export const FlyttPersonForm = ({
@@ -113,16 +112,15 @@ export const FlyttPersonForm = ({
 }: any) => {
 	const formMethods = useFormContext()
 	const [searchText, setSearchText] = useState('')
-	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 	const fieldMethods = useFieldArray({
 		control: formMethods.control,
 		name: 'identer',
 	})
-	const isChecked = (id: string) => fieldMethods.fields?.find((i) => i.fnr === id)
+	const isChecked = (id: string) => fieldMethods.fields?.find((i: any) => i.fnr === id)
 	const onClick = (e: { target: any }) => {
 		const id = e.target.id
 		isChecked(id)
-			? fieldMethods.remove(fieldMethods.fields?.map((value) => value.fnr).indexOf(id))
+			? fieldMethods.remove(fieldMethods.fields?.map((value: any) => value.fnr).indexOf(id))
 			: fieldMethods.append({ fnr: id })
 		formMethods.trigger('identer')
 	}
@@ -135,10 +133,7 @@ export const FlyttPersonForm = ({
 					formMethods={formMethods}
 					title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 					fraGruppe={gruppeId}
-					gruppevalg={gruppevalg}
-					setGruppevalg={setGruppevalg}
 				/>
-				<StyledErrorMessageWithFocus name="gruppe" />
 			</GruppeVelger>
 			<PersonVelger>
 				<PersonKolonne>
@@ -161,7 +156,7 @@ export const FlyttPersonForm = ({
 					</PersonSoek>
 					{!gruppeOptions ||
 					gruppeOptions?.length < 1 ||
-					gruppeOptions.every((i) => i === undefined) ? (
+					gruppeOptions.every((i: any) => i === undefined) ? (
 						pdlError && testnorgeError ? (
 							<div className="error-message" style={{ marginBottom: '5px' }}>
 								Henting av personer feilet helt eller delvis
@@ -179,7 +174,9 @@ export const FlyttPersonForm = ({
 												key={person.value}
 												id={person.value}
 												label={person.label}
-												checked={fieldMethods.fields.map((val) => val.fnr)?.includes(person.value)}
+												checked={fieldMethods.fields
+													.map((val: any) => val.fnr)
+													?.includes(person.value)}
 												onChange={onClick}
 												size="small"
 												attributtCheckbox
@@ -225,7 +222,7 @@ export const FlyttPersonForm = ({
 					<ValgtePersonerList data-testid={TestComponentSelectors.CONTAINER_VALGTE_PERSONER}>
 						{fieldMethods.fields.length > 0 ? (
 							<ul>
-								{fieldMethods.fields?.map((field) => (
+								{fieldMethods.fields?.map((field: any) => (
 									<li key={field.id}>
 										{gruppeOptions?.find((person: Option) => person?.value === field.fnr)?.label}
 									</li>

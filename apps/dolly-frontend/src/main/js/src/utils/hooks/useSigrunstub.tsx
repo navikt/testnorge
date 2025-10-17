@@ -1,11 +1,12 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
+import useSWRImmutable from 'swr/immutable'
 
-const getSigrunstubBaseUrl = () => `/testnav-sigrunstub-proxy/api/v1`
+const getSigrunstubBaseUrl = () => `/testnav-sigrunstub-proxy/api`
 
 export const usePensjonsgivendeInntektKodeverk = () => {
-	const { data, isLoading, error } = useSWR<any, Error>(
-		`${getSigrunstubBaseUrl()}/pensjonsgivendeinntektforfolketrygden/kodeverk`,
+	const { data, isLoading, error } = useSWRImmutable<any, Error>(
+		`${getSigrunstubBaseUrl()}/v1/pensjonsgivendeinntektforfolketrygden/kodeverk`,
 		fetcher,
 	)
 
@@ -18,7 +19,7 @@ export const usePensjonsgivendeInntektKodeverk = () => {
 
 export const usePensjonsgivendeInntektSkatteordning = () => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		`${getSigrunstubBaseUrl()}/pensjonsgivendeinntektforfolketrygden/skatteordning`,
+		`${getSigrunstubBaseUrl()}/v1/pensjonsgivendeinntektforfolketrygden/skatteordning`,
 		fetcher,
 	)
 
@@ -26,5 +27,46 @@ export const usePensjonsgivendeInntektSkatteordning = () => {
 		skatteordning: data,
 		loading: isLoading,
 		error: error,
+	}
+}
+
+export const usePensjonsgivendeInntekt = (ident, harPensjonsgivendeInntekt, retryCount = 8) => {
+	const endpoint = `${getSigrunstubBaseUrl()}/v1/pensjonsgivendeinntektforfolketrygden`
+	const { data, error, isLoading } = useSWR(
+		ident && harPensjonsgivendeInntekt ? [endpoint, { norskident: ident }] : null,
+		([url, params]) => fetcher(url, params),
+		{ errorRetryCount: retryCount },
+	)
+
+	return {
+		data,
+		loading: isLoading,
+		error,
+	}
+}
+
+export const useSummertSkattegrunnlag = (ident, harSummertSkattegrunnlag, retryCount = 8) => {
+	const endpoint = `${getSigrunstubBaseUrl()}/v2/summertskattegrunnlag`
+	const { data, error, isLoading } = useSWR(
+		ident && harSummertSkattegrunnlag ? [endpoint, { personIdentifikator: ident }] : null,
+		([url, params]) => fetcher(url, params),
+		{ errorRetryCount: retryCount },
+	)
+
+	return {
+		data,
+		loading: isLoading,
+		error,
+	}
+}
+
+export const useSekvensnummer = (ident) => {
+	const endpoint = `${getSigrunstubBaseUrl()}/sekvensnummer/${ident}`
+	const { data, error, isLoading } = useSWR(ident ? endpoint : null, (url) => fetcher(url))
+
+	return {
+		data,
+		loading: isLoading,
+		error,
 	}
 }

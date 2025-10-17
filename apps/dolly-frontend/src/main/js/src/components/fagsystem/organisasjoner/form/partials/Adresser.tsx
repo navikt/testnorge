@@ -50,7 +50,7 @@ export const Adresser = ({ formMethods, path }: AdresserProps) => {
 						<FormSelect
 							name={`${path}.forretningsadresse.kommunenr`}
 							label="Kommunenummer"
-							kodeverk={AdresseKodeverk.Kommunenummer2024}
+							kodeverk={AdresseKodeverk.Kommunenummer}
 							size="large"
 						/>
 					</>
@@ -100,7 +100,7 @@ export const Adresser = ({ formMethods, path }: AdresserProps) => {
 						<FormSelect
 							name={`${path}.postadresse.kommunenr`}
 							label="Kommunenummer"
-							kodeverk={AdresseKodeverk.Kommunenummer2024}
+							kodeverk={AdresseKodeverk.Kommunenummer}
 							size="large"
 						/>
 					</>

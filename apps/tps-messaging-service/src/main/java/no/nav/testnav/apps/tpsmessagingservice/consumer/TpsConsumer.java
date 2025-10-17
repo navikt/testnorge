@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer;
 
+import jakarta.jms.JMSException;
 import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -76,6 +77,25 @@ public abstract class TpsConsumer {
     protected abstract String getQueueName(String queue, String miljoe);
 
     protected abstract String getErrorMessage(Exception e) throws JAXBException;
+
+    public String sendMessage(String melding, String queue) {
+
+        var miljoe = queue.replace(PREFIX_MQ_QUEUES, "").replaceAll("_[0-9,A-Z_.]+", "");
+        log.info("Sender TpsMelding: {} til miljoe {}", melding, miljoe);
+
+        try {
+            return new TpsMeldingCommand(
+                    connectionFactoryFactory.createConnectionFactory(getQueueManager(miljoe)),
+                    queue,
+                    isPreprod(miljoe) ? usernamePreprod : usernameTest,
+                    isPreprod(miljoe) ? passwordPreprod : passwordTest,
+                    melding).call();
+
+        } catch (JMSException e) {
+            log.error(e.getMessage(), e);
+            return e.getMessage();
+        }
+    }
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 

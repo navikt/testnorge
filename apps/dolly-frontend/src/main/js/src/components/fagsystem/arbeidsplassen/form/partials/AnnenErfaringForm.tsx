@@ -3,7 +3,7 @@ import {
 	initialAnnenErfaring,
 	initialAnnenErfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import * as _ from 'lodash-es'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -11,8 +11,10 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useFormContext } from 'react-hook-form'
 
-export const AnnenErfaringForm = ({ formMethods }) => {
+export const AnnenErfaringForm = () => {
+	const formMethods = useFormContext()
 	const annenErfaringListePath = 'arbeidsplassenCV.annenErfaring'
 
 	return (
@@ -27,11 +29,11 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 				{(annenErfaringPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<FormTextInput
+							<DollyTextInput
 								name={`${annenErfaringPath}.role`}
 								label="Rolle"
 								size="xlarge"
-								key={`role_${_.get(formMethods.getValues(), `${annenErfaringPath}.role`)}`}
+								key={`role_${formMethods.getValues(`${annenErfaringPath}.role`)}`}
 							/>
 							<Fritekstfelt
 								label="Beskrivelse"
@@ -44,10 +46,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 									)
 								}
 								size="small"
-								key={`description_${_.get(
-									formMethods.getValues(),
-									`${annenErfaringPath}.description`,
-								)}`}
+								key={`description_${formMethods.getValues(`${annenErfaringPath}.description`)}`}
 								resize
 							/>
 							<FormDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />

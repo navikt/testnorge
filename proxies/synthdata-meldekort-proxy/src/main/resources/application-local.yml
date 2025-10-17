@@ -1,18 +1,13 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+dolly:
+  nais:
+    name: testnav-synthdata-meldekort-proxy
+    variables:
+      - AZURE_NAV_APP_CLIENT_ID
+      - AZURE_NAV_APP_CLIENT_SECRET
 
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: true
   config:
     import: "sm://"
-
-azure:
-  openid:
-    config:
-      issuer: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 consumers:
   synt-meldekort:

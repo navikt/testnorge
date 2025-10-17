@@ -70,7 +70,14 @@ const ARENASYNT = 'ARENASYNT'
 const SYNT_MILJOE = 'q2'
 const SYNT_INFO = 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
 
-export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjengeligMiljoe }) => {
+export const ArenaVisning = ({
+	data,
+	ident,
+	bestillingIdListe,
+	loading,
+	tilgjengeligMiljoe,
+	harArenaBestilling,
+}) => {
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
 	const [tagsloading, setTagsLoading] = useState(false)
 	const mountedRef = useRef(true)
@@ -117,6 +124,10 @@ export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjeng
 	}
 
 	const miljoerMedData = data?.filter((arb) => arb.data)?.map((arb) => arb.miljo)
+
+	if ((!miljoerMedData || miljoerMedData?.length < 1) && !harArenaBestilling) {
+		return null
+	}
 
 	const errorMiljoer = bestilteMiljoer?.filter((m) => !miljoerMedData?.includes(m))
 

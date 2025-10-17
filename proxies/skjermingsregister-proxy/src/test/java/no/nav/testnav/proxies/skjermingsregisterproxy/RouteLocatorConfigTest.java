@@ -1,9 +1,9 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -12,23 +12,28 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOAuth2Login;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@DollySpringBootTest(
         properties = "consumers.skjermingsregister.url=http://localhost:${wiremock.server.port}"
 )
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureWebTestClient
-@ActiveProfiles("test")
-class RouteLocatorConfigTest {
+@AutoConfigureWebTestClient(timeout = "PT1M")
+class RouteLocatorConfigTest extends DollyApplicationContextTest {
 
-    @Autowired
-    private WebTestClient webClient;
+    @TestConfiguration
+    static class TestAuthenticationConfig {
+
+        @Primary
+        @Bean
+        GatewayFilter getNoopAuthenticationFilter() {
+            return (exchange, chain) -> chain.filter(exchange);
+
+        }
+
+    }
 
     @Test
     void shouldRouteToStub() {
@@ -43,25 +48,13 @@ class RouteLocatorConfigTest {
                         )
         );
 
-        webClient
+        webTestClient
                 .mutateWith(mockOAuth2Login())
                 .get().uri("/testing/route")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.TEXT_PLAIN_VALUE)
                 .expectBody(String.class).isEqualTo("Some content");
-
-    }
-
-    @TestConfiguration
-    static class TestAuthenticationConfig {
-
-        @Primary
-        @Bean
-        GatewayFilter getNoopAuthenticationFilter() {
-            return (exchange, chain) -> chain.filter(exchange);
-
-        }
 
     }
 

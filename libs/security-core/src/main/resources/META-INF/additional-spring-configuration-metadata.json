@@ -3,12 +3,12 @@
     {
       "name": "AZURE_APP_CLIENT_ID",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavClientCredential. Kan erstattes med ${sm://azure-app-client-id} for lokal kjøring."
+      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavClientCredential. Kan erstattes med ${sm\://azure-app-client-id} for lokal kjøring."
     },
     {
       "name": "AZURE_APP_CLIENT_SECRET",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavClientCredential. Kan erstattes med ${sm://azure-app-client-secret} for lokal kjøring."
+      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavClientCredential. Kan erstattes med ${sm\://azure-app-client-secret} for lokal kjøring."
     },
     {
       "name": "AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT",

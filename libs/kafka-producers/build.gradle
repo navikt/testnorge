@@ -14,7 +14,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:avro-schema'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
+    implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }

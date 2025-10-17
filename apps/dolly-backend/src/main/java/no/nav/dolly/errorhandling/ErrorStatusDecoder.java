@@ -46,7 +46,8 @@ public class ErrorStatusDecoder {
                         .replace(',', ';')
                         .replace(':', '=')
                         .replace("\"", "")
-                        .replace("$", "§") : "";
+                        .replace("$", "§")
+                        .replace("\n", ""): "";
     }
 
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {

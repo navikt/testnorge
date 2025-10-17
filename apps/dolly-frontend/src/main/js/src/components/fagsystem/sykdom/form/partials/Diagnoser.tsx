@@ -1,4 +1,4 @@
-const texts = {
+export const texts = {
 	NUM30: 'Medisinsk undersøkelse fullstendig',
 	NUM31: 'Medisinsk undersøkelse målrettet',
 	NUM32: 'Sensitivitetsprøve',

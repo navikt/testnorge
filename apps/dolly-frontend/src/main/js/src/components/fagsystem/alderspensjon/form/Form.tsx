@@ -8,12 +8,14 @@ import { Alert, ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import * as _ from 'lodash-es'
 import { add, getYear, isAfter, isDate, parseISO } from 'date-fns'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { getAlder } from '@/ducks/fagsystem'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
@@ -21,6 +23,7 @@ import {
 	genInitialAlderspensjonVedtak,
 } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { useFormContext } from 'react-hook-form'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -49,8 +52,8 @@ export const AlderspensjonForm = () => {
 		setRandomSaksbehandlere(genererTilfeldigeNavPersonidenter(saksbehandler))
 	}, [])
 
-	const opts = useContext(BestillingsveilederContext)
-	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is || {}
 
 	function sjekkAlderFelt() {
 		const harAlder =
@@ -160,10 +163,10 @@ export const AlderspensjonForm = () => {
 			adresseUtenTilDato ||
 			_.get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
 				if (
-					!prev.gyldigTilOgMed ||
-					!curr.gyldigTilOgMed ||
-					curr.gyldigTilOgMed?.isValid?.() === false ||
-					prev.gyldigTilOgMed?.isValid?.() === false
+					!prev?.gyldigTilOgMed ||
+					!curr?.gyldigTilOgMed ||
+					curr?.gyldigTilOgMed?.isValid?.() === false ||
+					prev?.gyldigTilOgMed?.isValid?.() === false
 				)
 					return null
 				return isAfter(parseISO(prev.gyldigTilOgMed), parseISO(curr.gyldigTilOgMed)) ? prev : curr
@@ -193,6 +196,17 @@ export const AlderspensjonForm = () => {
 		}
 
 		return opts?.identtype === 'FNR' && valgtAdresseType() !== adressetyper.utland
+	}
+
+	const manglerPoppOpptjening = () => {
+		const harApfPrivat =
+			formMethods.watch(`${alderspensjonPath}.inkluderAfpPrivat`) ||
+			formMethods.watch(`${alderspensjonPath}.afpPrivatResultat`)
+		const poppOpptjeningFom = formMethods.watch('pensjonforvalter.inntekt.fomAar')
+		const poppOpptjeningTom = formMethods.watch('pensjonforvalter.inntekt.tomAar')
+		const poppOpptjeningAntallAar = poppOpptjeningTom - poppOpptjeningFom
+		const poppOpptjeningBelop = formMethods.watch('pensjonforvalter.inntekt.belop')
+		return harApfPrivat && (poppOpptjeningAntallAar < 30 || !poppOpptjeningBelop)
 	}
 
 	const soknad = formMethods.watch(`${alderspensjonPath}.soknad`)
@@ -257,6 +271,12 @@ export const AlderspensjonForm = () => {
 							gyldig.
 						</StyledAlert>
 					)}
+				{manglerPoppOpptjening() && (
+					<StyledAlert variant={'info'} size={'small'}>
+						For å sikre at AFP privat innvilges må personen ha minst 30 år med opptjening i POPP (de
+						siste 5 årene er spesielt viktige), gjerne med inntekt over gjennomsnittet.
+					</StyledAlert>
+				)}
 
 				<div className="flexbox--flex-wrap">
 					<div className="toggle--wrapper">
@@ -281,13 +301,6 @@ export const AlderspensjonForm = () => {
 							</ToggleGroup.Item>
 						</ToggleGroup>
 					</div>
-					{!soknad && (
-						<FormDatepicker
-							name={`${alderspensjonPath}.kravFremsattDato`}
-							label="Krav fremsatt dato"
-							date={formMethods.getValues(`${alderspensjonPath}.kravFremsattDato`)}
-						/>
-					)}
 					<Monthpicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
 						label="Iverksettelsesdato"
@@ -328,11 +341,23 @@ export const AlderspensjonForm = () => {
 						/>
 					)}
 					{soknad && (
-						<FormTextInput
-							name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
-							label="Ektefelle/partners inntekt"
-							type="number"
-						/>
+						<>
+							<FormTextInput
+								name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
+								label="Ektefelle/partners inntekt"
+								type="number"
+							/>
+							<FormCheckbox
+								name={`${alderspensjonPath}.inkluderAfpPrivat`}
+								label="Inkluder AFP privat"
+								checkboxMargin
+							/>
+							<FormSelect
+								name={`${alderspensjonPath}.afpPrivatResultat`}
+								label="AFP privat resultat"
+								options={Options('afpPrivatResultat')}
+							/>
+						</>
 					)}
 				</div>
 			</Panel>

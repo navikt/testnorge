@@ -1,0 +1,33 @@
+plugins {
+    id "dolly-apps"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "dolly-search-service"
+        property "sonar.projectName", "dolly-search-service"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:data-transfer-search-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
+
+    implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
+
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+}

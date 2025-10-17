@@ -1,20 +1,19 @@
 package no.nav.testnav.apps.fastedatafrontend;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ActiveProfiles;
+import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
 
-@SpringBootTest
-@ActiveProfiles("test")
-class ApplicationContextTest {
+@DollySpringBootTest
+class ApplicationContextTest extends DollyApplicationContextTest {
 
-    @MockBean
-    public JwtDecoder jwtDecoder;
-
-    @Test
-    @SuppressWarnings("java:S2699")
-    void load_app_context() {
+    @Override
+    public void testNonexistingApiEndpoint() {
+        webTestClient
+                .get()
+                .uri("/api/someNonExistingEndpoint")
+                .exchange()
+                .expectStatus()
+                .is3xxRedirection();
     }
+
 }

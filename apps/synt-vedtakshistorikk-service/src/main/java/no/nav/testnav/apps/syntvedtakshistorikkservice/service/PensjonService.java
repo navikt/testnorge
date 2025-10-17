@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PensjonTestdataFacadeConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataInntekt;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataPerson;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

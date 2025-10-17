@@ -3,21 +3,16 @@ package no.nav.dolly.bestilling.tagshendelseslager.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.Tags;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class TagsSlettingCommand implements Callable<Flux<String>> {
 
     private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
@@ -31,7 +26,6 @@ public class TagsSlettingCommand implements Callable<Flux<String>> {
     private final String token;
 
     public Flux<String> call() {
-
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder
@@ -40,12 +34,9 @@ public class TagsSlettingCommand implements Callable<Flux<String>> {
                         .queryParam(IDENTS_QUERY, identer)
                         .queryParam(TAGS_QUERY, tags)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(String.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log));
     }
 }

@@ -1,8 +1,4 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-REDIS_HOST: localhost
-TOKEN_X_ISSUER: dummy
 
 server:
   port: 8020
@@ -10,6 +6,12 @@ server:
 spring:
   config:
     import: "sm://"
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username: not_in_use
+      password: not_in_use
   security:
     oauth2:
       client:
@@ -17,14 +19,12 @@ spring:
           aad:
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
-            scope: openid, offline_access,  ${sm://azure-app-client-id}/.default
+            scope: openid, offline_access,  ${AZURE_APP_CLIENT_ID}/.default
             client-id: ${AZURE_APP_CLIENT_ID}
             client-secret: ${AZURE_APP_CLIENT_SECRET}
         provider:
           aad:
-            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
-            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
-            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
 
 consumers:
   testnav-altinn3-tilgang-service:
@@ -40,7 +40,7 @@ consumers:
     url: https://testnorge-profil-api-dev.intern.dev.nav.no
   testnav-varslinger-service:
     name: testnav-varslinger-service-dev
-    url: http://testnav-varslinger-service-dev.intern.dev.nav.no
+    url: https://testnav-varslinger-service-dev.intern.dev.nav.no
   oppsummeringsdokument-service:
     url: https://testnav-oppsummeringsdokument-service.intern.dev.nav.no
   testnav-bruker-service:
@@ -61,8 +61,9 @@ consumers:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.intern.dev.nav.no
-  testnav-person-search-service:
-    url: https://testnav-person-search-service.intern.dev.nav.no
+  testnav-dolly-search-service:
+    name: testnav-dolly-search-service-dev
+    url: https://testnav-dolly-search-service-dev.intern.dev.nav.no
   testnav-adresse-service:
     url: https://testnav-adresse-service.intern.dev.nav.no
   testnorge-tilbakemelding-api:
@@ -88,3 +89,11 @@ consumers:
   testnav-sykemelding-api:
     name: testnav-sykemelding-api-dev
     url: https://testnav-sykemelding-api-dev.intern.dev.nav.no
+  testnav-arbeidssoekerregisteret-proxy:
+    url: https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
+  testnav-sykemelding-proxy:
+    url: https://testnav-sykemelding-proxy.intern.dev.nav.no
+  testnav-api-oversikt-service:
+    url: https://testnav-oversikt-service.intern.dev.nav.no
+  testnav-nom-proxy:
+    url: https://testnav-nom-proxy.intern.dev.nav.no

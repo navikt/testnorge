@@ -3,6 +3,7 @@ import { arrayToString } from '@/utils/DataFormatter'
 const uri = `/dolly-backend/api/v1`
 const kodeverkUri = `/testnav-kodeverk-service/api/v1`
 const personUri = '/person-service/api/v2'
+const dollySearchUrl = '/testnav-dolly-search-service/api/v1'
 
 const groupBase = `${uri}/gruppe`
 const tagsBase = `${uri}/tags`
@@ -12,6 +13,7 @@ const kodeverkBase = `${kodeverkUri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
+const teamBase = `${uri}/team`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -44,10 +46,6 @@ export default class DollyEndpoints {
 
 	static sendGruppeTags(gruppeId) {
 		return `${tagsBase}/gruppe/${gruppeId}`
-	}
-
-	static getTags() {
-		return `${tagsBase}`
 	}
 
 	static getIdentTags(ident) {
@@ -114,14 +112,6 @@ export default class DollyEndpoints {
 		return `${personoppslagBase}/identer?identer=${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
-	static gruppeExcelFil(gruppeId) {
-		return `${uri}/excel/gruppe/${gruppeId}`
-	}
-
-	static orgExcelFil(brukerId) {
-		return `${uri}/excel/organisasjoner?brukerId=${brukerId}`
-	}
-
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`
@@ -181,6 +171,10 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/identer/${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
+	static endreTilknytningGruppe(gruppeId, brukerId) {
+		return `${groupBase}/${gruppeId}/tilknytning/${brukerId}`
+	}
+
 	static malBestillingMedId(malId, malNavn) {
 		return `${uri}/malbestilling/id/${malId}?malNavn=${malNavn}`
 	}
@@ -199,5 +193,37 @@ export default class DollyEndpoints {
 
 	static malBestillingOrganisasjon(malId, malNavn) {
 		return `${organisasjonBase}/bestilling/malbestilling/${malId}?malNavn=${malNavn}`
+	}
+
+	static personerSearch(registre) {
+		return `${dollySearchUrl}/personer${registre ? registre : ''}`
+	}
+
+	static opprettTeam() {
+		return teamBase
+	}
+
+	static redigerTeam(teamId) {
+		return `${teamBase}/${teamId}`
+	}
+
+	static leggTilFjernBrukerFraTeam(teamId, brukerId) {
+		return `${teamBase}/${teamId}/medlem/${brukerId}`
+	}
+
+	static slettTeam(teamId) {
+		return `${teamBase}/${teamId}`
+	}
+
+	static setRepresentererTeam(teamId) {
+		return `${brukerBase}/representererTeam/${teamId}`
+	}
+
+	static fjernRepresentererTeam() {
+		return `${brukerBase}/representererTeam`
+	}
+
+	static lagreSoek(soekType: string) {
+		return `${uri}/soek?soekType=${soekType}`
 	}
 }

@@ -3,7 +3,6 @@ package no.nav.dolly.web.provider.web.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-
 import no.nav.dolly.web.domain.Level;
 import no.nav.dolly.web.domain.Rating;
 
@@ -31,4 +30,10 @@ public class LogEventDTO {
 
     @JsonProperty
     String brukerType;
+
+    @JsonProperty
+    String brukernavn;
+
+    @JsonProperty
+    String tilknyttetOrganisasjon;
 }

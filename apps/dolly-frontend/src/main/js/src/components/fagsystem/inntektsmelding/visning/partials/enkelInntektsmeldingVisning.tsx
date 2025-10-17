@@ -9,25 +9,35 @@ import PleiepengerVisning from './pleiepengerVisning'
 import NaturalytelseVisning from './naturalytelseVisning'
 import {
 	EnkelInntektsmelding,
-	Inntekt,
+	InntektsmeldingData,
 } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { PersonVisningContent } from '@/components/fagsystem/inntektsmelding/visning/partials/personVisningContent'
+import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
+import React from 'react'
 
-const getHeader = (data: Inntekt) => {
+const getHeader = (data: InntektsmeldingData) => {
 	const inntekt = data?.request?.inntekter?.[0]
 	if (!inntekt) {
 		return 'Inntekt'
 	}
-	const arbeidsgiver = inntekt.arbeidsgiver
-		? inntekt.arbeidsgiver?.virksomhetsnummer
-		: inntekt.arbeidsgiverPrivat
-		? inntekt.arbeidsgiverPrivat?.arbeidsgiverFnr
-		: ''
+	const arbeidsgiver =
+		inntekt.arbeidsgiver?.virksomhetsnummer || inntekt.arbeidsgiverPrivat?.arbeidsgiverFnr || ''
+
 	return `Inntekt (${arbeidsgiver})`
 }
 
 export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
+	const virksomheter = data.map(
+		(inntekt) => inntekt.request?.inntekter?.[0]?.arbeidsgiver?.virksomhetsnummer,
+	)
+
+	const { organisasjoner: virksomhetInfo } = useOrganisasjonForvalter(virksomheter)
+	const opplysningspliktigeOrg = virksomhetInfo?.map(
+		(virksomhet) => virksomhet?.q1?.juridiskEnhet || virksomhet?.q2?.juridiskEnhet,
+	)
+	const { organisasjoner: opplysningspliktigInfo } =
+		useOrganisasjonForvalter(opplysningspliktigeOrg)
 	if (!data) {
 		return null
 	}
@@ -42,11 +52,17 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 					expandable={data?.length > 3}
 					whiteBackground
 				>
-					{(inntektsmelding: Inntekt, idx: number) => {
+					{(inntektsmelding: InntektsmeldingData, idx: number) => {
 						const inntekt = inntektsmelding?.request?.inntekter?.[0]
 						if (!inntekt) {
 							return null
 						}
+						const virksomhetNavn =
+							virksomhetInfo?.[idx]?.q1?.organisasjonsnavn ||
+							virksomhetInfo?.[idx]?.q2?.organisasjonsnavn
+						const opplysningspliktigNavn =
+							opplysningspliktigInfo?.[idx]?.q1?.organisasjonsnavn ||
+							opplysningspliktigInfo?.[idx]?.q2?.organisasjonsnavn
 						return (
 							<>
 								<div className="person-visning_content" key={idx}>
@@ -56,16 +72,16 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 									/>
 									<TitleValue title="Ytelse" value={codeToNorskLabel(inntekt.ytelse)} />
 									<TitleValue
-										title="Virksomhet (orgnr)"
-										value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+										title="Virksomhet"
+										value={`${virksomheter?.[idx]} - ${virksomhetNavn}`}
 									/>
 									<TitleValue
-										title="Opplysningspliktig virksomhet"
-										value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
+										title="Opplysningspliktig"
+										value={`${opplysningspliktigeOrg?.[idx]} - ${opplysningspliktigNavn}`}
 									/>
 									<TitleValue
 										title="Innsendingstidspunkt"
-										value={formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
+										value={formatDate(inntekt?.avsendersystem?.innsendingstidspunkt)}
 									/>
 									<TitleValue
 										title="Privat arbeidsgiver"

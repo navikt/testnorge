@@ -2,21 +2,19 @@ package no.nav.brregstub.endpoint.rs.v1;
 
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.api.common.UnderstatusKode;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DollySpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KodeControllerTest {
 

@@ -20,33 +20,33 @@ import java.net.URI;
 @Slf4j
 @Service
 public class AzureAdTokenService {
+
     private final WebClient webClient;
     private final AzureClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
 
-    public AzureAdTokenService(
-            @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
+    AzureAdTokenService(
+            WebClient webClient,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init custom AzureAd token exchange.");
         this.getAuthenticatedToken = getAuthenticatedToken;
-        WebClient.Builder builder = WebClient
-                .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+        var builder = webClient
+                .mutate()
+                .baseUrl(clientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
             ));
         }
         this.webClient = builder.build();

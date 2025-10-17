@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sykemelding.command.SykemeldingPostCommand;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
+import no.nav.dolly.bestilling.sykemelding.command.DetaljertSykemeldingValideringPostCommand;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingRequestDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -19,7 +19,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class SykemeldingConsumer implements ConsumerStatus {
+public class SykemeldingConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -29,23 +29,24 @@ public class SykemeldingConsumer implements ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavSykemeldingApi();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
-    public Mono<SykemeldingResponse> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
+    public Mono<DetaljertSykemeldingResponseDTO> postDetaljertSykemelding(DetaljertSykemeldingRequestDTO detaljertSykemeldingRequestDTO) {
 
-        log.info("Detaljert Sykemelding sendt {}", Json.pretty(detaljertSykemeldingRequest));
+        log.info("Detaljert Sykemelding sendt {}", Json.pretty(detaljertSykemeldingRequestDTO));
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new SykemeldingPostCommand(webClient, detaljertSykemeldingRequest,
+                .flatMap(token -> new DetaljertSykemeldingValideringPostCommand(webClient, detaljertSykemeldingRequestDTO,
                         token.getTokenValue()).call());
     }
 

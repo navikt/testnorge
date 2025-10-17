@@ -17,6 +17,7 @@ import java.util.Set;
 @Slf4j
 @Component
 public class JenkinsConsumer {
+
     private final JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer;
     private final Environment env;
     private final WebClient webClient;
@@ -30,13 +31,15 @@ public class JenkinsConsumer {
             TokenExchange tokenExchange,
             JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer,
             OrganisasjonBestillingConsumer organisasjonBestillingConsumer,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         this.organisasjonBestillingConsumer = organisasjonBestillingConsumer;
         serverProperties = consumers.getJenkins();
         this.tokenExchange = tokenExchange;
         this.jenkinsBatchStatusConsumer = jenkinsBatchStatusConsumer;
         this.env = env;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

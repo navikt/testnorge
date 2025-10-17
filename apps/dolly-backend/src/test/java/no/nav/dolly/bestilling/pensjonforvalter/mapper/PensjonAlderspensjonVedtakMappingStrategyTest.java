@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -47,7 +47,7 @@ class PensjonAlderspensjonVedtakMappingStrategyTest {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
-        context.setProperty("miljoer", List.of("q2"));
+        context.setProperty("miljoer", Set.of("q2"));
 
         var target = mapperFacade.map(pensjon, AlderspensjonVedtakRequest.class, context);
 
@@ -70,8 +70,8 @@ class PensjonAlderspensjonVedtakMappingStrategyTest {
                 .build();
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
-        context.setProperty("miljoer", List.of("q2"));
-        context.setProperty("navEnhet", "1234");
+        context.setProperty("miljoer", Set.of("q2"));
+        context.setProperty("navEnhetId", "1234");
 
         var target = mapperFacade.map(pensjon, AlderspensjonVedtakRequest.class, context);
 

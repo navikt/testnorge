@@ -96,6 +96,17 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
+    public Sivilstand getGjenlevendeSivilstand() {
+
+        return switch (type) {
+            case GIFT -> Sivilstand.ENKE_ELLER_ENKEMANN;
+            case REGISTRERT_PARTNER -> Sivilstand.GJENLEVENDE_PARTNER;
+            default -> type;
+        };
+    }
+
+    @JsonIgnore
+    @Override
     public String getIdentForRelasjon() {
         return relatertVedSivilstand;
     }

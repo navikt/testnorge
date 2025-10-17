@@ -3,6 +3,9 @@ package no.nav.testnav.apps.tenorsearchservice.service;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -21,6 +24,19 @@ public class TenorConverterUtility {
     public static String convertObject(String navn, Object verdi) {
 
         return isNull(verdi) || verdi instanceof String string && isBlank(string) ? "" : " and %s:%s".formatted(navn, verdi);
+    }
+
+    public static String convertStringList(String navn, List<String> verdi) {
+
+        return isNull(verdi) || verdi.isEmpty() ? "" :
+                verdi.stream()
+                        .map(element -> " and %s:%s".formatted(navn, element))
+                        .collect(Collectors.joining(""));
+    }
+
+    public static String convertString(String navn, String verdi) {
+
+        return isBlank(verdi) ? "" : " and %s:\"%s\"".formatted(navn, verdi);
     }
 
     public static String convertIntervall(String intervallNavn, TenorRequest.Intervall intervall) {

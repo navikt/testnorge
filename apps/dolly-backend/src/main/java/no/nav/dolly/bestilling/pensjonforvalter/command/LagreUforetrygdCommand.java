@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClientRequest;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
@@ -18,12 +17,11 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterResponse>> {
+public class LagreUforetrygdCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
     private static final String PENSJON_UT_URL = "/api/v2/vedtak/ut";
 
@@ -33,11 +31,11 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
 
     private final PensjonUforetrygdRequest uforetrygdRequest;
 
-    public Flux<PensjonforvalterResponse> call() {
+    @Override
+    public Mono<PensjonforvalterResponse> call() {
 
         var callId = generateCallId();
         log.info("Pensjon lagre uforetrygd {}, callId: {}", uforetrygdRequest, callId);
-        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -45,32 +43,40 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
                         .build())
                 .httpRequest(httpRequest -> {
                     HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                    reactorRequest.responseTimeout(Duration.ofSeconds(SHORT_REQUEST_DURATION));
                 })
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(uforetrygdRequest)
                 .retrieve()
-                .bodyToFlux(PensjonforvalterResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .onErrorResume(error ->
-                        Mono.just(PensjonforvalterResponse.builder()
-                                .status(uforetrygdRequest.getMiljoer().stream()
-                                        .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                                .miljo(miljoe)
-                                                .response(PensjonforvalterResponse.Response.builder()
-                                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientFilter.getStatus(error).value())
-                                                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
-                                                                .build())
-                                                        .message(WebClientFilter.getMessage(error))
-                                                        .path(PENSJON_UT_URL)
-                                                        .build())
-                                                .build())
-                                        .toList())
-                                .build()));
+                .bodyToMono(PensjonforvalterResponse.class)
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(PensjonforvalterResponse
+                            .builder()
+                            .status(uforetrygdRequest
+                                    .getMiljoer()
+                                    .stream()
+                                    .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment
+                                            .builder()
+                                            .miljo(miljoe)
+                                            .response(PensjonforvalterResponse.Response
+                                                    .builder()
+                                                    .httpStatus(PensjonforvalterResponse.HttpStatus
+                                                            .builder()
+                                                            .status(description.getStatus().value())
+                                                            .reasonPhrase(description.getStatus().getReasonPhrase())
+                                                            .build())
+                                                    .message(description.getMessage()
+                                                            .replaceAll("\"timestamp\":\\d+,", ""))
+                                                    .path(PENSJON_UT_URL)
+                                                    .build())
+                                            .build())
+                                    .toList())
+                            .build());
+                });
     }
 }

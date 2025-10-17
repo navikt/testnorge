@@ -4,8 +4,8 @@ import { BestillingData, BestillingTitle } from '@/components/bestilling/sammend
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, formatDateTime, showKodeverkLabel } from '@/utils/DataFormatter'
 import React from 'react'
-import { Kodeverk } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { HistarkTypes } from '@/components/fagsystem/histark/HistarkTypes'
+import { Kodeverk } from '@/components/fagsystem/dokarkiv/form/partials/Dokument'
 
 type HistarkProps = {
 	histark: HistarkTypes

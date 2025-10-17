@@ -3,11 +3,13 @@ name: altinn3-tilgang-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-security/**"
-      - "apps/altinn3-tilgang-service/**"
-      - ".github/workflows/app.altinn3-tilgang-service.yml"
+      - .github/workflows/app.altinn3-tilgang-service.yml
+      - apps/altinn3-tilgang-service/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

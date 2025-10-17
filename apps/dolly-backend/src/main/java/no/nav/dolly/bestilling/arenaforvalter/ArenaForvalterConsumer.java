@@ -1,6 +1,8 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
@@ -37,21 +39,22 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class ArenaForvalterConsumer implements ConsumerStatus {
+public class ArenaForvalterConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final ServerProperties serverProperties;
-    private final TokenExchange tokenService;
+    private final TokenExchange tokenExchange;
 
     public ArenaForvalterConsumer(
             Consumers consumers,
-            TokenExchange tokenService,
+            TokenExchange tokenExchange,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         serverProperties = consumers.getTestnavArenaForvalterenProxy();
-        this.tokenService = tokenService;
-        this.webClient = webClientBuilder
+        this.tokenExchange = tokenExchange;
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
@@ -60,7 +63,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
     public Flux<ArenaResponse> deleteIdenter(List<String> identer) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call()
                         .flatMap(miljoe -> Flux.fromIterable(identer)
                                 .delayElements(Duration.ofMillis(100))
@@ -71,62 +74,62 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
     public Mono<ArenaResponse> inaktiverBruker(String ident, LocalDate stansdato, String miljoe) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new ArenaForvalterDeleteCommand(webClient, ident, stansdato, miljoe, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Inaktivert bruker {} mot Arenaforvalter {}", ident, response)));
+                        .doOnNext(response -> log.info("Inaktivert bruker {} mot Arenaforvalter {}", ident, response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postBruker"})
     public Flux<ArenaNyeBrukereResponse> postArenaBruker(ArenaNyeBrukere arenaNyeBrukere) {
 
         log.info("Arena opprett bruker {}", arenaNyeBrukere);
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new ArenaforvalterPostArenaBruker(webClient, arenaNyeBrukere, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Opprettet bruker {} mot Arenaforvalter {}",
-                        arenaNyeBrukere.getNyeBrukere().get(0).getPersonident(), response)));
+                        .doOnNext(response -> log.info("Opprettet bruker {} mot Arenaforvalter {}",
+                                arenaNyeBrukere.getNyeBrukere().getFirst().getPersonident(), response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postAap"})
     public Flux<AapResponse> postAap(AapRequest aapRequest) {
 
         log.info("Arena opprett Aap {}", aapRequest);
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new ArenaforvalterPostAap(webClient, aapRequest, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Opprettet aap {} mot Arenaforvalter {}",
-                        aapRequest.getPersonident(), response)));
+                        .doOnNext(response -> log.info("Opprettet aap {} mot Arenaforvalter {}",
+                                aapRequest.getPersonident(), response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postAap115"})
     public Flux<Aap115Response> postAap115(Aap115Request aap115Request) {
 
         log.info("Arena opprett Aap115 {}", aap115Request);
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new ArenaforvalterPostAap115(webClient, aap115Request, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Opprettet aap115 {} mot Arenaforvalter {}",
-                        aap115Request.getPersonident(), response)));
+                        .doOnNext(response -> log.info("Opprettet aap115 {} mot Arenaforvalter {}",
+                                aap115Request.getPersonident(), response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postDagpenger"})
     public Flux<ArenaNyeDagpengerResponse> postArenaDagpenger(ArenaDagpenger arenaDagpenger) {
 
         log.info("Opprett dagpenger mot Arenaforvalter {}", arenaDagpenger);
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new ArenaforvalterPostArenadagpenger(webClient, arenaDagpenger, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Opprettet dagpenger for {} mot Arenaforvalter {}",
-                        arenaDagpenger.getPersonident(), response)));
+                        .doOnNext(response -> log.info("Opprettet dagpenger for {} mot Arenaforvalter {}",
+                                arenaDagpenger.getPersonident(), response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_getEnvironments"})
     public Flux<String> getEnvironments() {
 
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_getEnvironments"})
     public Mono<ArenaStatusResponse> getArenaBruker(String ident, String miljoe) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new ArenaGetCommand(webClient, ident, miljoe, token.getTokenValue()).call())
                 .doOnNext(response -> log.info("Hentet bruker {} fra Arena miljoe {} {}", ident, miljoe, response));
     }

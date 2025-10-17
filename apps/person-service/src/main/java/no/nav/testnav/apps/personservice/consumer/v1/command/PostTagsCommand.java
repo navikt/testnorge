@@ -1,23 +1,20 @@
 package no.nav.testnav.apps.personservice.consumer.v1.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@Slf4j
 @RequiredArgsConstructor
 public class PostTagsCommand implements Callable<Mono<Void>> {
 
@@ -36,11 +33,11 @@ public class PostTagsCommand implements Callable<Mono<Void>> {
                         .build()
                 )
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromPublisher(Mono.just(ident), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(Void.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

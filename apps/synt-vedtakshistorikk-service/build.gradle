@@ -11,7 +11,8 @@ sonarqube {
 
 dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
-    implementation "no.nav.testnav.libs:domain"
+    implementation "no.nav.testnav.libs:data-transfer-search-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
@@ -26,5 +27,4 @@ dependencies {
     implementation "com.google.guava:guava:$versions.guava"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
-    testImplementation "junit:junit:4.13.2" //TODO upgrade to JUnit5
 }

@@ -1,16 +1,15 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
     name: pensjon-testdata-facade-proxy
     description: Proxy for pensjon-testdata-facade som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
   cloud:
     gateway:
       httpclient:
@@ -18,9 +17,6 @@ spring:
         wiretap: true
       httpserver:
         wiretap: true
-    gcp:
-      secretmanager:
-        enabled: false
 
 logging:
   level:
@@ -31,23 +27,16 @@ logging:
         cloud:
           gateway: TRACE
 
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
-
 consumers:
   pensjon-testdata-facade:
     url: http://pensjon-testdata-facade.pensjontestdata.svc.nais.local
   samboer-testdata:
     name: pensjon-samboerforhold-backend-{miljoe}
     namespace: pensjon-person
-    url:  https://pensjon-samboerforhold-backend-{miljoe}.intern.dev.nav.no
+    url: https://pensjon-samboerforhold-backend-{miljoe}.intern.dev.nav.no
     cluster: dev-gcp
   afp-offentlig:
     name: pensjon-afp-offentlig-mock-{miljoe}
     namespace: pensjon-saksbehandling
-    url:  https://pensjon-afp-offentlig-mock-{miljoe}.intern.dev.nav.no
+    url: https://pensjon-afp-offentlig-mock-{miljoe}.intern.dev.nav.no
     cluster: dev-gcp

@@ -1,15 +1,13 @@
 package no.nav.registre.testnorge.organisasjonmottak.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.organisajonbestilling.v2.OrderDTO;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -24,10 +22,10 @@ public class RegisterBestillingCommand implements Callable<Mono<OrderDTO>> {
                 .post()
                 .uri("/api/v2/order")
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OrderDTO.class))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(OrderDTO.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

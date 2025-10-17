@@ -10,6 +10,7 @@ import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import * as _ from 'lodash-es'
 
 type Props = {
 	antallEgneMaler: any
@@ -44,7 +45,12 @@ export const MalPanel = ({
 		if (bestilling?.aareg?.find((arbforh: any) => arbforh?.amelding?.length > 0)) {
 			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
 		}
-		return null
+		if (_.has(bestilling, 'sykemelding.syntSykemelding')) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder syntetisk sykemelding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
+		if (_.has(bestilling, 'sigrunstub')) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder sigrunstub med lignet inntekt, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
@@ -105,11 +111,11 @@ export const MalPanel = ({
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{maler.map(({ malNavn, id, bestilling }) => {
-									const alert = harUtdaterteVerdier(bestilling)
+								{maler.map(({ malNavn, id, malBestilling }) => {
+									const alert = harUtdaterteVerdier(malBestilling)
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
-											bestilling: bestilling,
+											bestilling: malBestilling,
 										},
 										dollyEnvironments,
 									)

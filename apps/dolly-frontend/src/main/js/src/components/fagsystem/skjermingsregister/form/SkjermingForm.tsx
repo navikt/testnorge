@@ -4,10 +4,10 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
 
-export const SkjermingForm = ({ formMethods }) => {
+export const SkjermingForm = () => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 
-	const HarAktivSkjerming = () => {
+	const harAktivSkjerming = () => {
 		if (personFoerLeggTil?.skjermingsregister?.skjermetTil) {
 			return personFoerLeggTil?.skjermingsregister?.skjermetFra
 				? isAfter(
@@ -20,7 +20,7 @@ export const SkjermingForm = ({ formMethods }) => {
 		}
 	}
 
-	const harSkjerming = HarAktivSkjerming()
+	const harSkjerming = harAktivSkjerming()
 
 	return (
 		<div className="flexbox--flex-wrap">

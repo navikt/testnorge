@@ -77,7 +77,7 @@ const VergemaalLes = ({
 		<>
 			<div className="person-visning_redigerbar" key={idx}>
 				<TitleValue
-					title="Fylkesmannsembete"
+					title="Fylkesembete"
 					kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
 					value={vergemaalData.vergemaalEmbete || vergemaalData.embete}
 				/>

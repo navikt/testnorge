@@ -9,6 +9,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   webproxy: true
@@ -43,6 +46,8 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-orgnummer-service
         - application: testnav-tps-messaging-service
+        - application: logging
+          namespace: nais-system
   gcp:
     sqlInstances:
       - type: POSTGRES_15
@@ -50,22 +55,23 @@ spec:
         databases:
           - name: organisasjon-forvalter-db
   liveness:
-    path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -74,10 +80,10 @@ spec:
     max: 2
   resources:
     requests:
-      cpu: 200m
-      memory: 500Mi
+      cpu: 100m
+      memory: 1024Mi
     limits:
-      memory: 2000Mi
+      memory: 2048Mi
   ingresses:
     - "https://testnav-organisasjon-forvalter.intern.dev.nav.no"
   kafka:

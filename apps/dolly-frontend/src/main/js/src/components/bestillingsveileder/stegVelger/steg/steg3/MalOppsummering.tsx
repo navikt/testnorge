@@ -72,13 +72,16 @@ export const MalOppsummering = ({
 						size={'xlarge'}
 						label="Malnavn"
 						options={getMalOptions(malbestillinger)}
+						autoFocus
 					/>
 				) : (
 					<FormTextInput
+						useControlled
 						data-testid={TestComponentSelectors.INPUT_BESTILLING_MALNAVN}
 						name="malBestillingNavn"
 						size={'xlarge'}
 						label="Malnavn"
+						autoFocus
 					/>
 				)}
 			</span>

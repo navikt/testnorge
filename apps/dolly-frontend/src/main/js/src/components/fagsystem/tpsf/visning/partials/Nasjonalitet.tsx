@@ -1,11 +1,11 @@
-import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
-const Statsborgerskap = ({ statsborgerskap, sprak }) => {
+const Statsborgerskap = ({ statsborgerskap }) => {
 	if (!statsborgerskap) {
 		return null
 	}
@@ -24,7 +24,6 @@ const Statsborgerskap = ({ statsborgerskap, sprak }) => {
 				title="Statsborgerskap til"
 				value={formatDate(statsborgerskap.statsborgerskapTildato)}
 			/>
-			<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprak} />
 		</div>
 	)
 }
@@ -53,7 +52,7 @@ const InnvandretUtvandret = ({ data }) => {
 }
 
 export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
-	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+	const { statsborgerskap, innvandretUtvandret } = data
 
 	if (!statsborgerskap) {
 		return null
@@ -68,17 +67,9 @@ export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
 						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
 							{(borgerskap) => <Statsborgerskap statsborgerskap={borgerskap} />}
 						</DollyFieldArray>
-						<TitleValue
-							title="Språk"
-							kodeverk={PersoninformasjonKodeverk.Spraak}
-							value={sprakKode}
-						/>
 					</ErrorBoundary>
 				) : (
-					<Statsborgerskap
-						statsborgerskap={statsborgerskap[0] || statsborgerskap}
-						sprak={sprakKode}
-					/>
+					<Statsborgerskap statsborgerskap={statsborgerskap[0] || statsborgerskap} />
 				)}
 				<InnvandretUtvandret data={innvandretUtvandret} />
 			</div>

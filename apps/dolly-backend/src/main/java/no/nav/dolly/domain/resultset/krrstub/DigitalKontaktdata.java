@@ -32,4 +32,5 @@ public class DigitalKontaktdata {
     private ZonedDateTime mobilOppdatert;
     private ZonedDateTime mobilVerifisert;
     private ZonedDateTime spraakOppdatert;
+    private ZonedDateTime reservertOppdatert;
 }

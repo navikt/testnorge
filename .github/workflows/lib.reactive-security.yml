@@ -3,9 +3,9 @@ name: reactive-security
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-security/**"
-      - ".github/workflows/lib.reactive-security.yml"
+      - plugins/**
+      - libs/reactive-security/**
+      - .github/workflows/lib.reactive-security.yml
 
 jobs:
   workflow:

@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   webproxy: true
@@ -29,19 +32,22 @@ spec:
           cluster: dev-gcp
         - application: testnav-udistub-proxy
           cluster: dev-fss
+        - application: logging
+          namespace: nais-system
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true
@@ -52,12 +58,10 @@ spec:
   vault:
     enabled: true
   resources:
+    requests:
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
-    requests:
-      cpu: 200m
-      memory: 1024Mi
   ingresses:
-    - "https://udi-stub.dev.adeo.no"
-    - "https://udi-stub.dev.intern.nav.no" # dev-fss
-    - "https://testnav-udi-stub.dev.intern.nav.no" # dev-fss
+    - "https://testnav-udi-stub.intern.dev.nav.no" # dev-fss

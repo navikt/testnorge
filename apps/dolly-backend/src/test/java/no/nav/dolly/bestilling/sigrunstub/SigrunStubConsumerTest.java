@@ -2,28 +2,14 @@ package no.nav.dolly.bestilling.sigrunstub;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -36,25 +22,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.singletonList;
-import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yml")
-@AutoConfigureWireMock(port = 0)
-class SigrunStubConsumerTest {
+class SigrunStubConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "111111111";
-
-    @MockBean
-    private TokenExchange tokenService;
-
-    @MockBean
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockBean
-    private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private SigrunStubConsumer sigrunStubConsumer;
@@ -69,10 +40,6 @@ class SigrunStubConsumerTest {
 
     @BeforeEach
     void setup() {
-
-        WireMock.reset();
-
-        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         lignetInntektRequest = SigrunstubLignetInntektRequest.builder()
                 .inntektsaar("1978")
@@ -89,13 +56,13 @@ class SigrunStubConsumerTest {
         stubOpprettSkattegrunnlagOK();
 
         StepVerifier.create(sigrunStubConsumer.updateLignetInntekt(singletonList(lignetInntektRequest)))
-                        .expectNext(SigrunstubResponse.builder()
-                                .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
-                                                .inntektsaar("1978")
-                                                .status(200)
-                                        .build()))
-                                .build())
-                                .verifyComplete();
+                .expectNext(SigrunstubResponse.builder()
+                        .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
+                                .inntektsaar("1978")
+                                .status(200)
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test

@@ -1,11 +1,7 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
+import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import * as _ from 'lodash-es'
-import {
-	matrikkeladresse,
-	vegadresse,
-} from '@/components/fagsystem/pdlf/form/validation/partials/adresser'
 
 const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
 	return val.test('er-gyldig-foreldreansvar', (selected, testContext) => {
@@ -13,7 +9,7 @@ const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
 		const context = testContext.options.context
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-		if (context.leggTilPaaGruppe || context.personFoerLeggTil) {
+		if (context.leggTilPaaGruppe) {
 			return true
 		}
 
@@ -126,52 +122,41 @@ const testForeldreansvarForBarn = (val) => {
 	})
 }
 
-const testDeltBostedAdressetype = (value: Yup.StringSchema<string, Yup.AnyObject>) => {
-	return value.test('har-gyldig-adressetype', (selected, testContext) => {
-		let feilmelding = null
-		const context = testContext.options.context
-		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
-		if (selected === 'PARTNER_ADRESSE') {
-			const personFoerLeggTil = context?.personFoerLeggTil
-			let fantPartner = false
-			const nyePartnere = _.get(fullForm, 'pdldata.person.sivilstand')
-
-			if (nyePartnere?.length > 0) {
-				fantPartner = nyePartnere.find((partner) => partner.borIkkeSammen)
-			} else if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
-				const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
-					(relasjon) => relasjon.relasjonType === 'EKTEFELLE_PARTNER',
-				)
-				if (partnere.length > 0) {
-					const partnerAdresseId =
-						partnere[0].relatertPerson?.bostedsadresse?.[0]?.adresseIdentifikatorFraMatrikkelen
-					const identAdresseId =
-						personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse?.[0]
-							?.adresseIdentifikatorFraMatrikkelen
-					if (partnerAdresseId && partnerAdresseId !== identAdresseId) {
-						fantPartner = true
-					}
-				}
-			}
-			feilmelding = fantPartner ? null : 'Fant ikke gyldig partner for delt bosted'
-		}
-
-		return feilmelding ? testContext.createError({ message: feilmelding }) : true
-	})
-}
-
-const testSivilstandsdatoBekreftelsesdato = (value) => {
+const testSivilstandsdatoBekreftelsesdato = (value, field) => {
 	return value.test('har-gyldig-sivilstandsdato', (value, testContext) => {
-		let feilmelding = null
+		let feilmeldingSivilstanddato = null
+		let feilmeldingBekreftelsesdato = null
 		const parent = testContext.parent
 		const master = parent?.master
 		const sivilstandsdato = parent?.sivilstandsdato
 		const bekreftelsesdato = parent?.bekreftelsesdato
 
-		if (master === 'PDL' && !sivilstandsdato && !bekreftelsesdato) {
-			feilmelding = 'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+		const giftEllerSamboer = ['GIFT', 'SAMBOER', 'REGISTRERT_PARTNER']
+		const erGiftEllerSamboer = giftEllerSamboer.includes(parent?.type)
+		const uforetrygd = _.get(fullForm, 'pensjonforvalter.uforetrygd')
+		if (
+			uforetrygd?.barnetilleggDetaljer?.barnetilleggType === 'FELLESBARN' &&
+			erGiftEllerSamboer &&
+			!sivilstandsdato &&
+			!bekreftelsesdato
+		) {
+			feilmeldingSivilstanddato = 'Dato er påkrevd for barnetillegg for fellesbarn'
 		}
 
+		if (master === 'PDL' && !sivilstandsdato && !bekreftelsesdato) {
+			feilmeldingSivilstanddato =
+				'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
+			feilmeldingBekreftelsesdato =
+				'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
+		}
+
+		const feilmelding =
+			field === 'sivilstandsdato'
+				? feilmeldingSivilstanddato
+				: field === 'bekreftelsesdato'
+					? feilmeldingBekreftelsesdato
+					: null
 		return feilmelding ? testContext.createError({ message: feilmelding }) : true
 	})
 }
@@ -202,7 +187,7 @@ export const sivilstand = Yup.object({
 	sivilstandsdato: Yup.mixed().when('type', {
 		is: (type) => type === 'SAMBOER',
 		then: () => requiredDate,
-		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
+		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable(), 'sivilstandsdato'),
 	}),
 	relatertVedSivilstand: Yup.string()
 		.test('feltet-mangler', 'Partner er påkrevd', (value, testcontext) => {
@@ -220,39 +205,25 @@ export const sivilstand = Yup.object({
 	bekreftelsesdato: Yup.mixed().when('type', {
 		is: (type) => type === 'SAMBOER',
 		then: () => Yup.mixed().notRequired(),
-		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
+		otherwise: () =>
+			testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable(), 'bekreftelsesdato'),
 	}),
 	borIkkeSammen: Yup.boolean().nullable(),
 	nyRelatertPerson: nyPerson,
 })
 
-export const deltBosted = Yup.object().shape(
-	{
-		adressetype: ifPresent('adressetype', testDeltBostedAdressetype(requiredString)),
-		startdatoForKontrakt: testDatoFom(
-			Yup.mixed().optional().nullable(),
-			'sluttdatoForKontrakt',
-			'Dato må være før sluttdato',
-		),
-		sluttdatoForKontrakt: testDatoTom(
-			Yup.mixed().optional().nullable(),
-			'startdatoForKontrakt',
-			'Dato må være etter startdato',
-		),
-		vegadresse: vegadresse.nullable(),
-		matrikkeladresse: matrikkeladresse.nullable(),
-		ukjentBosted: Yup.mixed()
-			.when('adressetype', {
-				is: 'UKJENT_BOSTED',
-				then: () =>
-					Yup.object({
-						bostedskommune: requiredString,
-					}).nullable(),
-			})
-			.nullable(),
-	},
-	[['adressetype', 'adressetype']],
-)
+export const deltBosted = Yup.object().shape({
+	startdatoForKontrakt: testDatoFom(
+		Yup.mixed().optional().nullable(),
+		'sluttdatoForKontrakt',
+		'Dato må være før sluttdato',
+	),
+	sluttdatoForKontrakt: testDatoTom(
+		Yup.mixed().optional().nullable(),
+		'startdatoForKontrakt',
+		'Dato må være etter startdato',
+	),
+})
 
 export const forelderBarnRelasjon = Yup.object().shape(
 	{
@@ -283,21 +254,22 @@ export const forelderBarnRelasjon = Yup.object().shape(
 			)
 			.test(
 				'er-identisk-person',
-				'Person kan kun benyttes en gang i relasjon',
+				'Person kan kun benyttes en gang i relasjon pr master-register',
 				(value, testContext) => {
 					const forelderBarnRelasjon = testContext?.from?.find(
 						(element) => element.value?.forelderBarnRelasjon?.length > 0,
 					)
-
 					if (!forelderBarnRelasjon) {
 						return true
 					}
-
-					const relasjoner = forelderBarnRelasjon?.value.forelderBarnRelasjon
-						.filter((element) => element.relatertPerson)
-						.map((element) => element.relatertPerson)
-
-					return relasjoner?.length === new Set(relasjoner).size
+					const master = testContext?.parent?.master
+					const relasjoner = forelderBarnRelasjon?.value.forelderBarnRelasjon.filter(
+						(element) => element.relatertPerson,
+					)
+					const duplikatRelasjoner = relasjoner.filter(
+						(relasjon) => relasjon.relatertPerson === value && relasjon.master === master,
+					)
+					return duplikatRelasjoner?.length < 2
 				},
 			)
 			.nullable(),

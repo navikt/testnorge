@@ -12,7 +12,6 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -27,12 +26,11 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class TpsMessagingConsumer implements ConsumerStatus {
+public class TpsMessagingConsumer extends ConsumerStatus {
 
     private static final String BASE_URL = "/api/v1/personer/{ident}";
     private static final String UTENLANDSK_BANKKONTO_URL = BASE_URL + "/bankkonto-utenlandsk";
     private static final String NORSK_BANKKONTO_URL = BASE_URL + "/bankkonto-norsk";
-    private static final String SPRAAKKODE_URL = BASE_URL + "/spraakkode";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -42,17 +40,18 @@ public class TpsMessagingConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavTpsMessagingService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
     public Flux<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer,
                                                                       BankkontonrUtlandDTO body) {
 
@@ -61,7 +60,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
     public Flux<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
 
         return tokenService.exchange(serverProperties)
@@ -69,7 +68,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSkjerming" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSkjerming"})
     public Flux<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
         return tokenService.exchange(serverProperties)
@@ -77,22 +76,14 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new EgenansattPostCommand(webClient, ident, miljoer, fraOgMed, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSkjerming" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSkjerming"})
     public Flux<TpsMeldingResponseDTO> deleteEgenansattRequest(String ident, List<String> miljoer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new EgenansattDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSpraakkode" })
-    public Flux<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, SpraakDTO body) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
-                        new TpsMessagingPostCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_getPerson" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_getPerson"})
     public Flux<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
         return tokenService.exchange(serverProperties)

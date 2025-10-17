@@ -22,38 +22,41 @@ import java.net.URI;
 @Slf4j
 @Service
 public class AzureAdTokenService implements ExchangeToken {
+
     private final WebClient webClient;
     private final ClientCredential clientCredential;
 
-    public AzureAdTokenService(
-            @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
+    AzureAdTokenService(
+            WebClient webClient,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             AzureClientCredential clientCredential
     ) {
         log.info("Init AzureAd token exchange.");
-        WebClient.Builder builder = WebClient
-                .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
+        this.clientCredential = clientCredential;
+
+        var builder = webClient
+                .mutate()
+                .baseUrl(clientCredential.getTokenEndpoint())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
             ));
         }
         this.webClient = builder.build();
-        this.clientCredential = clientCredential;
     }
 
     @Override
     public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope()).call();
     }
+
 }

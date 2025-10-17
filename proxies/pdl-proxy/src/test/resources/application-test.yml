@@ -1,5 +1,3 @@
-TOKEN_X_ISSUER: placeholder
-
 app:
   elastic:
     username: placeholder

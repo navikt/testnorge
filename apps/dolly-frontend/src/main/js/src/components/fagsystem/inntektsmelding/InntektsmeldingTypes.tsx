@@ -120,7 +120,7 @@ export type Periode = {
 
 export type EnkelInntektsmelding = {
 	bestilling: BestillingData
-	data: Journalpost[]
+	data: InntektsmeldingData[]
 }
 
 export type Dokument = {
@@ -129,17 +129,32 @@ export type Dokument = {
 	dokument: string
 }
 
-export type TransaksjonId = {
-	miljoe: string
-	transaksjonId: {
-		journalpostId?: number
-		dokumentInfoId?: number
-		dokument?: {
-			journalpostId?: number
-			dokumentInfoId?: number
-		}
+export type InntektsmeldingData = {
+	dokument: {
+		journalpostId: string
+		dokumentInfoId: string
 	}
-	bestillingId: string
+	request: {
+		inntekter: [
+			{
+				arbeidsgiver: Arbeidsgiver
+				arbeidsgiverPrivat: ArbeidsgiverPrivat
+				naerRelasjon: boolean
+				ytelse: string
+				aarsakTilInnsending: string
+				startdatoForeldrepengeperiode: string
+				arbeidsforhold: Arbeidsforhold
+				avsendersystem?: Avsendersystem
+				gjenopptakelseNaturalytelseListe?: Array<Naturalytelse>
+				opphoerAvNaturalytelseListe?: Array<Naturalytelse>
+				omsorgspenger?: Omsorgspenger
+				pleiepengerPerioder?: Array<Pleiepenger>
+				refusjon?: Refusjon
+				sykepengerIArbeidsgiverperioden?: Sykepenger
+			},
+		]
+		miljoe: string
+	}
 }
 
 export type Journalpost = {

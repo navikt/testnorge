@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,6 +24,14 @@ public class AltinnAccessListResponseDTO {
     private List<AccessListMembershipDTO> data;
     private String feilmelding;
     private HttpStatus status;
+
+    public static Mono<AltinnAccessListResponseDTO> of(WebClientError.Description description) {
+        return Mono.just(AltinnAccessListResponseDTO
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .build());
+    }
 
     public List<AccessListMembershipDTO> getData() {
 

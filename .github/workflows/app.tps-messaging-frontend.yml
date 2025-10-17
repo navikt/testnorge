@@ -1,0 +1,36 @@
+name: tps-messaging-frontend
+
+on:
+  push:
+    paths:
+      - .github/workflows/app.tps-messaging-frontend.yml
+      - .github/workflows/common.vitest.yml
+      - apps/tps-messaging-frontend/**
+      - libs/reactive-core/**
+      - libs/reactive-frontend/**
+      - libs/reactive-security/**
+      - libs/reactive-session-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+
+jobs:
+  vitest:
+    uses: ./.github/workflows/common.vitest.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
+    with:
+      working-directory: "apps/tps-messaging-frontend"
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+  workflow:
+    uses: ./.github/workflows/common.workflow.frontend.yml
+    with:
+      working-directory: "apps/tps-messaging-frontend"
+      deploy-tag: "#deploy-tps-messaging-frontend"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

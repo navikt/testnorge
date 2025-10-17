@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: testnav-pdl-forvalter
@@ -22,5 +21,4 @@ spring:
       resourceserver:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${ACCEPTED_AUDIENCE}

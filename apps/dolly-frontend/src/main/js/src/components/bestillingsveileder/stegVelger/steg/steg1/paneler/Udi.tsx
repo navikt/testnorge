@@ -58,10 +58,8 @@ UdiPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		checked: has('udistub.oppholdStatus'),
 		add: () =>
 			setMulti(['udistub.oppholdStatus', {}], ['pdldata.person.opphold', [initialOpphold]]),
-		remove: () => {
-			del('udistub.oppholdStatus')
-			del('pdldata.person.opphold')
-		},
+		remove: () =>
+			del(['udistub.oppholdStatus', 'udistub.harOppholdsTillatelse', 'pdldata.person.opphold']),
 	},
 	arbeidsadgang: {
 		label: 'Arbeidsadgang',

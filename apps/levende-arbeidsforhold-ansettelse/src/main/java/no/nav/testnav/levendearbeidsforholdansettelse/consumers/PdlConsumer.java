@@ -43,11 +43,12 @@ public class PdlConsumer {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getPdlProxy();
         this.tokenService = tokenService;
-        webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(config -> {

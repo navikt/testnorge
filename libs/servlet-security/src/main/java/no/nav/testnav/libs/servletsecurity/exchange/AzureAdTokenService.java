@@ -27,37 +27,39 @@ import java.net.URI;
 @Service
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
 public class AzureAdTokenService implements TokenService {
+
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
 
-    public AzureAdTokenService(
-            @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
+    AzureAdTokenService(
+            WebClient webClient,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init AzureAd token exchange.");
-        this.getAuthenticatedToken = getAuthenticatedToken;
-        WebClient.Builder builder = WebClient
-                .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
+        this.getAuthenticatedToken = getAuthenticatedToken;
+        this.clientCredential = clientCredential;
+
+        var builder = webClient
+                .mutate()
+                .baseUrl(clientCredential.getTokenEndpoint())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
             ));
         }
         this.webClient = builder.build();
-        this.clientCredential = clientCredential;
     }
 
     @Override

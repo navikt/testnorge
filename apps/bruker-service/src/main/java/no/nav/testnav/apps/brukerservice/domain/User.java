@@ -1,13 +1,14 @@
 package no.nav.testnav.apps.brukerservice.domain;
 
-import java.time.LocalDateTime;
-
 import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.apps.brukerservice.repository.UserEntity;
+
+import java.time.LocalDateTime;
 
 public class User {
     private final String id;
     private final String brukernavn;
+    private final String epost;
     private final String organisasjonsnummer;
     private final LocalDateTime opprett;
     private final LocalDateTime sisteLoggetinn;
@@ -16,6 +17,7 @@ public class User {
         this.organisasjonsnummer = entity.getOrganisasjonsnummer();
         this.id = entity.getId();
         this.brukernavn = entity.getBrukernavn();
+        this.epost = entity.getEpost();
         this.opprett = entity.getOpprettet();
         this.sisteLoggetinn = entity.getSistInnlogget();
     }
@@ -41,6 +43,6 @@ public class User {
     }
 
     public BrukerDTO toDTO() {
-        return new BrukerDTO(id, brukernavn, organisasjonsnummer, opprett, sisteLoggetinn);
+        return new BrukerDTO(id, brukernavn, epost, organisasjonsnummer, opprett, sisteLoggetinn);
     }
 }

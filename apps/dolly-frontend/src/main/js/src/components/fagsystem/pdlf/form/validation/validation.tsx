@@ -106,19 +106,23 @@ export const validation = {
 	pdldata: ifPresent(
 		'$pdldata',
 		Yup.object({
-			opprettNyPerson: Yup.object({
-				alder: testGyldigAlder(Yup.string().nullable()),
-				foedtEtter: testDatoFom(
-					Yup.date().nullable(),
-					'foedtFoer',
-					'Dato må være før født før-dato',
-				),
-				foedtFoer: testDatoTom(
-					Yup.date().nullable(),
-					'foedtEtter',
-					'Dato må være etter født etter-dato',
-				),
-			}).nullable(),
+			opprettNyPerson: ifPresent(
+				'$opprettNyPerson',
+				Yup.object({
+					alder: testGyldigAlder(Yup.string().nullable()),
+					foedtEtter: testDatoFom(
+						Yup.date().nullable(),
+						'foedtFoer',
+						'Dato må være før født før-dato',
+					),
+					foedtFoer: testDatoTom(
+						Yup.date().nullable(),
+						'foedtEtter',
+						'Dato må være etter født etter-dato',
+					),
+					identtype: ifPresent('$identtype', Yup.string().required('Velg en identtype')),
+				}).nullable(),
+			),
 			person: Yup.object({
 				bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
 				oppholdsadresse: ifPresent(
