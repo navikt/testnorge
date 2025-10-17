@@ -120,7 +120,7 @@ export const KontaktadresseForm = ({
 					label="Adressetype"
 					options={Options('adressetypeKontaktadresse')}
 					onChange={(target: Target) => handleChangeAdressetype(target, path)}
-					size="large"
+					size="xlarge"
 					data-testid={TestComponentSelectors.ADRESSETYPE_KONTAKTADRESSE}
 				/>
 			</div>

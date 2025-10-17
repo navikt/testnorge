@@ -40,7 +40,7 @@ export const FrittFormatAdresse = ({
 				<FormDollyFieldArray
 					nested
 					name={`${path}.adresselinjer`}
-					header="Adresselinje"
+					header="Adresselinjer"
 					newEntry=""
 					canBeEmpty={false}
 					handleNewEntry={handleNewEntry}
