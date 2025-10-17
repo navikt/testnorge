@@ -36,3 +36,4 @@ springdoc:
 targets:
   histark: https://histarkimport.dev.intern.nav.no
   inntektstub: http://inntektstub.team-inntekt
+  udistub: http://testnav-udi-stub.dolly

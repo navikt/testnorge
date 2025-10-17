@@ -12,6 +12,7 @@ class RouteLocatorConfig {
 
     private final Histark histark;
     private final Inntektstub inntektstub;
+    private final Udistub udistub;
 
     @Bean
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -19,6 +20,7 @@ class RouteLocatorConfig {
                 .routes()
                 .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
+                .route("udistub", udistub.build())
                 .build();
     }
 

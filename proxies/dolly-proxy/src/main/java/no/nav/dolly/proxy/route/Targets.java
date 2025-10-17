@@ -18,5 +18,6 @@ class Targets {
 
     String histark;
     String inntektstub;
+    String udistub;
 
 }

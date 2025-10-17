@@ -2,17 +2,25 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @DollySpringBootTest(properties = {
         "management.endpoints.web.exposure.include=health",
@@ -20,6 +28,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 })
 @AutoConfigureWebTestClient
 class RouteLocatorConfigTest {
+
+    @MockitoBean
+    private TokenExchange tokenExchange;
 
     @Autowired
     private WebTestClient webClient;
@@ -34,6 +45,13 @@ class RouteLocatorConfigTest {
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("targets.histark", () -> wireMockServer.baseUrl());
         registry.add("targets.inntektstub", () -> wireMockServer.baseUrl());
+        registry.add("targets.udistub", () -> wireMockServer.baseUrl());
+    }
+
+    @BeforeEach
+    public void setup() {
+        when(tokenExchange.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-token")));
     }
 
     @Test
@@ -81,6 +99,31 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @Test
+    void testUdistub() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked udistub";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/udistub" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("application/json; charset=UTF-8")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-token")));
 
     }
 
