@@ -30,7 +30,7 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: testnav-udistub-proxy
+        - application: testnav-dolly-proxy
           cluster: dev-fss
         - application: logging
           namespace: nais-system
