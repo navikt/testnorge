@@ -458,24 +458,36 @@ const selectOptions = {
 
 	fagsaksystem: [
 		{ value: 'AO01', label: 'Arena (AO01)' },
+		{ value: 'ARBEIDSOPPFOLGING', label: 'Arbeidsoppfølging' },
+		{ value: 'ARGUS', label: 'Argus' },
 		{ value: 'BARNEBRILLER', label: 'Barnebriller' },
 		{ value: 'BA', label: 'Barnetrygd (BA)' },
 		{ value: 'BISYS', label: 'Bisys' },
+		{ value: 'DAGPENGER', label: 'Dagpenger' },
 		{ value: 'EF', label: 'Enslig forsørger (EF)' },
 		{ value: 'EY', label: 'Etterlatteytelser (EY)' },
+		{ value: 'FIA', label: 'FIA' },
 		{ value: 'FS36', label: 'Foreldrepengeløsningen (FS36)' },
 		{ value: 'AO11', label: 'Grisen (AO11)' },
+		{ value: 'HELT', label: 'Helt' },
 		{ value: 'HJELPEMIDLER', label: 'Hjelpemidler' },
 		{ value: 'IT01', label: 'Infotrygd (IT01)' },
 		{ value: 'KELVIN', label: 'Kelvin' },
+		{ value: 'KOMPYS', label: 'Kompys' },
 		{ value: 'KONT', label: 'Kontantstøtte (KONT)' },
 		{ value: 'FS38', label: 'Melosys (FS38)' },
+		{ value: 'NEESSI', label: 'Neessi' },
 		{ value: 'OMSORGSPENGER', label: 'Omsorgspenger' },
-		{ value: 'OEBS', label: 'Oracle E-Business Suite (OEBS)' },
+		{ value: 'OEBS', label: 'Oracle E\-Business Suite (OEBS)' },
 		{ value: 'PP01', label: 'Pesys (PP01)' },
+		{ value: 'REMEDY', label: 'Remedy' },
 		{ value: 'SUPSTONAD', label: 'Supplerende stønad (SUPSTONAD)' },
 		{ value: 'K9', label: 'Sykdom i familien (K9)' },
+		{ value: 'TILLEGGSSTONADER', label: 'Tilleggsstønader' },
+		{ value: 'TILTAKSADMINISTRASJON', label: 'Tiltaksadministrasjon' },
+		{ value: 'TILTAKSPENGER', label: 'Tiltakspenger' },
 		{ value: 'UFM', label: 'Unntak fra medlemskap (UFM)' },
+		{ value: 'UNG_SAK', label: 'Ung sak' },
 		{ value: 'OB36', label: 'Utbetalingsreskontro (OB36)' },
 	],
 
@@ -868,4 +880,5 @@ const selectOptions = {
 	],
 }
 
-export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
+export const SelectOptionsManager = (attributeId: keyof typeof selectOptions) =>
+	selectOptions[attributeId]
