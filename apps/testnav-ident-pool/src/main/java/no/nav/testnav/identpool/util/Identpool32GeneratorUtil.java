@@ -2,10 +2,10 @@ package no.nav.testnav.identpool.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.identpool.dto.NoekkelinfoDTO;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
@@ -18,33 +18,17 @@ public class Identpool32GeneratorUtil {
     private static final int[] WEIGHTS_K1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
     private static final int[] WEIGHTS_K2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
 
-    public static List<String> generateIdents(String datoIdentifikator, int individnummer) {
+    public static List<String> generateIdents(NoekkelinfoDTO noekkelinfo) {
 
-        return generateIdents(datoIdentifikator, individnummer, 3);
-    }
+        var ident = noekkelinfo.datoIdentifikator() +
+                String.format("%03d", noekkelinfo.individnummer());
 
-    private static List<String> generateIdents(String datoIdentifikator, int individnummer, int antallForsoek) {
-
-        var ident = datoIdentifikator +
-                String.format("%03d", individnummer--);
-
-        var identer = Arrays.stream(calculateK1(ident))
+        return Arrays.stream(calculateK1(ident))
                 .filter(k1 -> k1 != 10)
                 .map(k1 -> ident + String.format("%1d", k1))
-                .map(identMedK1 -> {
-                        var k2 = calculateK2(identMedK1);
-                        return k2 != 10 ?
-                        identMedK1 + String.format("%1d", k2) : null;
-                })
-                .filter(Objects::nonNull)
+                .map(identMedK1 -> identMedK1 + String.format("%1d", calculateK2(identMedK1)))
+                .filter(Identpool32GeneratorUtil::isValidLenth)
                 .toList();
-
-        if (antallForsoek > 0 && identer.isEmpty() && individnummer >= 0) {
-            log.info("Feil ved generering av ident med datoIdentifikator {} og individnummer {}, prøver med individnummer {}",
-                    datoIdentifikator, individnummer - 1, individnummer);
-            return generateIdents(datoIdentifikator, individnummer, --antallForsoek);
-        }
-        return identer;
     }
 
     private static Integer[] calculateK1(String ident) {
@@ -58,7 +42,7 @@ public class Identpool32GeneratorUtil {
                 alternateK1(remainder, 14),
                 alternateK1(remainder, 13),
                 alternateK1(remainder, 12)};
-                // controlDigit = 11 benyttes ikke for ikke å gi overlapp med eksisterende løsning
+        // controlDigit = 11 benyttes ikke for ikke å gi overlapp med eksisterende løsning
     }
 
     private static int alternateK1(int reminder, int controlDigit) {
@@ -75,5 +59,10 @@ public class Identpool32GeneratorUtil {
         int remainder = 11 - weightedK2 % 11;
 
         return remainder % 11;
+    }
+
+    private static boolean isValidLenth(String ident) {
+
+        return ident.length() == 11;
     }
 }

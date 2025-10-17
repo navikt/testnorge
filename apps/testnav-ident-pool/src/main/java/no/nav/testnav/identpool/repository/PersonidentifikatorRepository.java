@@ -29,5 +29,10 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Pe
     Mono<Boolean> existsByDatoIdentifikatorAndAllokert(String datoIdentifikator, boolean allokert);
 
     @Modifying
-    Mono<Void> deleteByPersonidentifikator(String identifikator);
+    @Query("""
+            update personidentifikator2032
+            set allokert = false
+            where personidentifikator = :personidentifikator;
+            """)
+    Mono<Void> releaseByPersonidentifikator(String identifikator);
 }

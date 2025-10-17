@@ -1,13 +1,11 @@
 package no.nav.testnav.identpool.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Personidentifikator;
+import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
+import no.nav.testnav.identpool.dto.NoekkelinfoDTO;
 import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import no.nav.testnav.identpool.util.Identpool32GeneratorUtil;
@@ -15,8 +13,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
@@ -28,51 +27,39 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class Identpool32Service {
 
     private static final LocalDate START_DATO = LocalDate.of(1900, 1, 1);
+    private static final Random RANDOM = new SecureRandom();
 
     private final PersonidentifikatorRepository personidentifikatorRepository;
 
-    public Mono<String> generateIdent(RekvirerIdentRequest request) {
+    public Mono<IdentpoolResponseDTO> generateIdent(RekvirerIdentRequest request) {
 
         var foedselsdato = generateRandomLocalDate(request.getFoedtEtter(), request.getFoedtFoer());
 
         var datoIdentifikator = getDatoIdentifikator(foedselsdato, request.getIdenttype());
 
-        return personidentifikatorRepository.existsByDatoIdentifikator(datoIdentifikator)
-                .flatMapMany(eksisterer -> {
-                    if (isTrue(eksisterer)) {
-                        return personidentifikatorRepository.existsByDatoIdentifikatorAndAllokert(datoIdentifikator, false)
-                                .flatMapMany(ledigFinnes -> {
-                                    if (isTrue(ledigFinnes)) {
-                                        return allokerIdent(datoIdentifikator, foedselsdato);
-                                    } else {
-                                        return generateNoekkelinfo(foedselsdato, request.getIdenttype())
-                                                .flatMapMany(noekkelinfo -> personidentifikatorRepository
-                                                        .existsByDatoIdentifikatorAndAllokert(noekkelinfo.datoIdentifikator, false)
-                                                        .flatMapMany(ledigFinnes2 -> isTrue(ledigFinnes2) ?
-                                                                allokerIdent(noekkelinfo.getDatoIdentifikator(), foedselsdato) :
-                                                                genererOgAllokerIdent(noekkelinfo, foedselsdato, request.getIdenttype())));
-                                    }
-                                });
+        return personidentifikatorRepository.existsByDatoIdentifikatorAndAllokert(datoIdentifikator, false)
+                .flatMapMany(ledigFinnes -> {
+                    if (isTrue(ledigFinnes)) {
+                        return allokerIdent(datoIdentifikator, foedselsdato);
                     } else {
-                        return genererOgAllokerIdent(datoIdentifikator, 999, foedselsdato, request.getIdenttype());
+                        return generateNoekkelinfo(foedselsdato, request.getIdenttype())
+                                .flatMapMany(noekkelinfo -> personidentifikatorRepository
+                                        .existsByDatoIdentifikatorAndAllokert(noekkelinfo.datoIdentifikator(), false)
+                                        .flatMapMany(ledigFinnes2 -> isTrue(ledigFinnes2) ?
+                                                allokerIdent(noekkelinfo.datoIdentifikator(), foedselsdato) :
+                                                genererOgAllokerIdent(noekkelinfo, foedselsdato, request.getIdenttype())));
                     }
                 })
                 .next()
-                .map(Personidentifikator::getPersonidentifikator);
+                .map(Personidentifikator::getPersonidentifikator)
+                .map(ident -> new IdentpoolResponseDTO(ident, foedselsdato));
     }
 
-    private Flux<Personidentifikator> genererOgAllokerIdent(Noekkelinfo noekkelinfo, LocalDate foedselsdato, Identtype identtype) {
-
-        return genererOgAllokerIdent(noekkelinfo.datoIdentifikator, noekkelinfo.individnummer, foedselsdato, identtype);
-    }
-
-    private Flux<Personidentifikator> genererOgAllokerIdent(String datoindikator, int individnummer, LocalDate foedselsdato, Identtype identtype) {
+    private Flux<Personidentifikator> genererOgAllokerIdent(NoekkelinfoDTO noekkelinfo, LocalDate foedselsdato, Identtype identtype) {
 
         var allokert = new AtomicBoolean(true);
 
-        return Mono.just(Identpool32GeneratorUtil.generateIdents(
-                        datoindikator,
-                        individnummer))
+        return Mono.just(Identpool32GeneratorUtil.generateIdents(noekkelinfo))
                 .flatMapMany(Flux::fromIterable)
                 .map(ident -> {
                     var alloker = allokert.getAndSet(false);
@@ -102,7 +89,16 @@ public class Identpool32Service {
                 .next();
     }
 
-    private Mono<Noekkelinfo> generateNoekkelinfo(LocalDate foedselsdato, Identtype identtype) {
+    /**
+     * Genererer nøkkelinformasjon for identifikator basert på fødselsdato og identtype.
+     * Hvis det allerede finnes allokerte identifikatorer for den genererte datoIdentifikatoren leveres neste invidnummer.
+     * Hvis identnummer blir negativt vil metoden rekursivt prøve med en tidligere dato til en ledig identifikator finnes.
+     *
+     * @param foedselsdato Fødselsdato for personen
+     * @param identtype FNR, DNR eller NPID
+     * @return Mono<NoekkelinfoDTO>
+     */
+    private Mono<NoekkelinfoDTO> generateNoekkelinfo(LocalDate foedselsdato, Identtype identtype) {
 
         var datoIdentifikator = getDatoIdentifikator(foedselsdato, identtype);
 
@@ -124,10 +120,10 @@ public class Identpool32Service {
                                     }
                                 })
                                 .flatMap(individnummer -> individnummer >= 0 ?
-                                        Mono.just(new Noekkelinfo(datoIdentifikator, individnummer)) :
+                                        Mono.just(new NoekkelinfoDTO(datoIdentifikator, individnummer)) :
                                         generateNoekkelinfo(foedselsdato.minusDays(1), identtype));
                     } else {
-                        return Mono.just(new Noekkelinfo(datoIdentifikator, 999));
+                        return Mono.just(new NoekkelinfoDTO(datoIdentifikator, 999));
                     }
                 });
     }
@@ -137,7 +133,7 @@ public class Identpool32Service {
         long startEpochDay = (nonNull(startDate) ? startDate : START_DATO).toEpochDay();
         long endEpochDay = (nonNull(endDate) ? endDate : LocalDate.now()).toEpochDay();
 
-        long randomEpochDay = ThreadLocalRandom.current().nextLong(startEpochDay, endEpochDay + 1); // +1 to include endDate
+        long randomEpochDay = RANDOM.nextLong(startEpochDay, endEpochDay + 1); // +1 to include endDate
 
         return LocalDate.ofEpochDay(randomEpochDay);
     }
@@ -147,15 +143,5 @@ public class Identpool32Service {
         return String.format("%02d", foedselsdato.getDayOfMonth() + (identtype == Identtype.DNR ? 40 : 0)) +
                 String.format("%02d", foedselsdato.getMonthValue() + (identtype == Identtype.NPID ? 60 : 40)) +
                 String.format("%02d", foedselsdato.getYear() % 100);
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    private static class Noekkelinfo {
-
-        private String datoIdentifikator;
-        private int individnummer;
     }
 }
