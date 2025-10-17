@@ -51,7 +51,7 @@
   "/testnav-dolly-proxy/histark": {
     "changeOrigin": true
   },
-  "/testnav-udistub-proxy/api": {
+  "/testnav-dolly-proxy/udistub/api": {
     "changeOrigin": true
   },
   "/testnav-dolly-proxy/inntektstub": {
