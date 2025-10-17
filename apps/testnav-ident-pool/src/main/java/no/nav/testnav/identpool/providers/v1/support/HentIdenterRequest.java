@@ -1,16 +1,13 @@
 package no.nav.testnav.identpool.providers.v1.support;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -18,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class HentIdenterRequest {
+
     private Identtype identtype;
     private LocalDate foedtEtter;
     private LocalDate foedtFoer;
@@ -26,9 +24,4 @@ public class HentIdenterRequest {
     private int antall;
     private String rekvirertAv;
     private Boolean syntetisk;
-
-    @JsonIgnore
-    public Pageable getPageable() {
-        return PageRequest.of(0, antall);
-    }
 }
