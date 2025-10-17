@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties testnavArenaForvalterenProxy;
-    private ServerProperties testnavInntektstubProxy;
+    private ServerProperties testnavDollyProxy;
     private ServerProperties testnavOrganisasjonFasteDataService;
     private ServerProperties pdlApiProxy;
     private ServerProperties testnavPensjonTestdataFacadeProxy;

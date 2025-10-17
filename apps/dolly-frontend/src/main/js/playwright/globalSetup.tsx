@@ -55,7 +55,7 @@ const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/\/profil\/bilde/)
 const brukerTeams = new RegExp(/api\/v1\/bruker\/teams/)
 const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
-const histark = new RegExp(/testnav-histark-proxy\/api\//)
+const histark = new RegExp(/testnav-dolly-proxy\/histark\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
 const bestillingFragmentSearch = new RegExp(
 	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
@@ -87,7 +87,7 @@ const pensjonPensjonsavtale = new RegExp(
 )
 const afpOffentlig = new RegExp(/testnav-pensjon-testdata-facade-proxy\/q1\/api\/mock-oppsett/)
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
-const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
+const udistub = new RegExp(/testnav-dolly-proxy\/udistub\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const medl = new RegExp(/testnav-medl-proxy/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\/brukerId/)

@@ -34,7 +34,7 @@ public class UdiStubConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = accessTokenService;
-        serverProperties = consumers.getTestnavUdistubProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -80,6 +80,6 @@ public class UdiStubConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-udistub-proxy";
+        return "testnav-dolly-proxy";
     }
 }

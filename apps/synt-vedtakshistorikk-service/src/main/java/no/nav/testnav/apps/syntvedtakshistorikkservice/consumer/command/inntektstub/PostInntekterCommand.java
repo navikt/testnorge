@@ -27,7 +27,7 @@ public class PostInntekterCommand implements Callable<Mono<List<Inntektsinformas
     public Mono<List<Inntektsinformasjon>> call() {
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder.path("/api/v2/inntektsinformasjon").build())
+                .uri(uriBuilder -> uriBuilder.path("/inntektstub/api/v2/inntektsinformasjon").build())
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
