@@ -1,34 +1,57 @@
 package no.nav.testnav.identpool.service;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
+import no.nav.testnav.identpool.domain.Ident;
+import no.nav.testnav.identpool.domain.Identtype;
+import no.nav.testnav.identpool.domain.Kjoenn;
+import no.nav.testnav.identpool.domain.Personidentifikator;
+import no.nav.testnav.identpool.dto.ValideringResponseDTO;
+import no.nav.testnav.identpool.repository.IdentRepository;
+import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
+import no.nav.testnav.identpool.util.DatoFraIdentUtility;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.identpool.domain.Kjoenn.KVINNE;
+import static no.nav.testnav.identpool.domain.Kjoenn.MANN;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-@UtilityClass
+@Service
+@RequiredArgsConstructor
 public class PersonnummerValidatorService {
 
     private static final int[] VEKTER_K1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
     private static final int[] VEKTER_K2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
     private static final int[] GYLDIG_REST_K1 = {0, 1, 2, 3};
     private static final int GYLDIG_REST_K2 = 0;
-    private static final int[] D_NUMMER_SIFRE = {4, 5, 6, 7};
+    private static final List<Integer> DNR_SIFFERE = List.of(4, 5, 6, 7);
+    private static final List<Integer> FNR_SIFFERE = List.of(0, 1, 4, 5);
+    private static final List<Integer> NPID_SIFFERE = List.of(2, 3, 6, 7);
     private static final int[] SYNTETISKE_MAANED_SIFRE = {4, 5, 6, 7, 8, 9};
+
+    private final PersonidentifikatorRepository personidentifikatorRepository;
+    private final IdentRepository identRepository;
 
     /**
      * Validerer et fødsels-eller-d-nummer(1964 og 2032-type) ved å sjekke kontrollsifrene iht.
      * <a href="https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/nytt-fodselsnummer-fra-2032/">...</a>
      *
-     * @param fnrdnr 11-siffret fødsels-eller-D-nummer som skal valideres.
-     * @return true hvis fødsels-eller-D-nummer er gyldig, ellers false
+     * @param ident 11-siffret FNR, DNR eller NPID som skal valideres.
+     * @return true hvis gyldig, ellers false
      */
-    private static boolean validerKontrollsifferFoedselsEllerDnummer(String fnrdnr) {
-        final int[] sifre = konverterTilIntArray(fnrdnr);
+    private static boolean validerKontrollsiffer(String ident, boolean erStrictFoedselsnummer64) {
+        final int[] sifre = konverterTilIntArray(ident);
         final int gittK1 = sifre[9];
         final int gittK2 = sifre[10];
 
@@ -38,6 +61,10 @@ public class PersonnummerValidatorService {
                 .sum();
 
         final int beregnetRestSifferK1 = (vektetK1 + gittK1) % 11;
+
+        if (erStrictFoedselsnummer64) {
+            return beregnetRestSifferK1 == 0;
+        }
 
         if (Arrays.stream(GYLDIG_REST_K1).noneMatch(siffer -> siffer == beregnetRestSifferK1)) {
             return false;
@@ -69,18 +96,18 @@ public class PersonnummerValidatorService {
     }
 
     /**
-     * Validerer at gitt ID har gyldig format og dato før den kaller selve valideringen.
+     * Validerer at gitt ident har gyldig format og dato før den kaller selve valideringen.
      *
-     * @param gittNummer  ID-nummer som skal valideres.
-     * @param erSyntetisk Angir om ID-nummeret er syntetisk.
-     * @return true hvis ID-nummeret er gyldig, ellers kaster en IllegalArgumentException.
-     * @throws IllegalArgumentException hvis ID-nummeret har ugyldig format eller ikke er gyldig bygget opp.
+     * @param gittNummer  ident-nummer som skal valideres.
+     * @param erSyntetisk Angir om ident-nummeret er syntetisk.
+     * @return true hvis ident-nummeret er gyldig, ellers kaster en IllegalArgumentException.
+     * @throws IllegalArgumentException hvis ident-nummeret har ugyldig format eller ikke er gyldig bygget opp.
      */
     private static boolean validerInput(String gittNummer, boolean erSyntetisk) {
         boolean gyldigFormat = gittNummer.matches("^\\d{11}$");
 
         if (!gyldigFormat) {
-            throw new IllegalArgumentException("Ugyldig format: ID må være 11 sifre");
+            throw new IllegalArgumentException("Ugyldig format: ident må være 11 sifre");
         }
 
         String dato = gittNummer.substring(0, 6);
@@ -104,9 +131,9 @@ public class PersonnummerValidatorService {
                     "Ugyldig format: " + gittNummer + " har ugyldig dato " + dato + " i formatet ddMMyy");
         }
 
-        if (!validerKontrollsifferFoedselsEllerDnummer(gittNummer)) {
+        if (!validerKontrollsiffer(gittNummer, false)) {
             throw new IllegalArgumentException(
-                    "Ugyldig ID: " + gittNummer + " er ikke gyldig bygget opp som " + (erSyntetisk ? "syntetisk" : "reelt") + " nummer");
+                    "Ugyldig ident: " + gittNummer + " har ugyldige kontrollsifre");
         }
         return true;
     }
@@ -118,7 +145,8 @@ public class PersonnummerValidatorService {
      * @return true hvis nummeret er et D-nummer, ellers false.
      */
     private static boolean erDnummer(String gittNummer) {
-        return Arrays.asList(D_NUMMER_SIFRE).contains(Character.getNumericValue(gittNummer.charAt(0)));
+
+        return DNR_SIFFERE.contains(Character.getNumericValue(gittNummer.charAt(0)));
     }
 
     /**
@@ -157,14 +185,74 @@ public class PersonnummerValidatorService {
         return parseInt(aar) % 4 == 0;
     }
 
-    public static String validerFoedselsnummer(String foedselsnummer) {
+    public Mono<ValideringResponseDTO> validerFoedselsnummer(String foedselsnummer) {
 
         boolean erSyntetisk = foedselsnummer.charAt(2) >= '4';
+        boolean erTestnorgeIdent = foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9';
+        var feilmelding = new AtomicReference<String>();
+        var erGyldig = new AtomicBoolean();
+        boolean erStriktFoedselsnummer64 = validerKontrollsiffer(foedselsnummer, true);
+        var kjoenn = parseInt(foedselsnummer.substring(8, 9)) % 2 == 0 ? KVINNE : MANN;
         try {
-            validerInput(foedselsnummer, erSyntetisk);
-            return "Gyldig ID: " + foedselsnummer + " er gyldig bygget opp som " + (erSyntetisk ? "syntetisk" : "reelt") + " nummer";
+            erGyldig.set(validerInput(foedselsnummer, erSyntetisk));
         } catch (IllegalArgumentException e) {
-            return e.getMessage();
+            erGyldig.set(false);
+            feilmelding.set(e.getMessage());
+        }
+
+        return Mono.zip(identRepository.findByPersonidentifikator(foedselsnummer)
+                                .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident()))),
+                        personidentifikatorRepository.findByPersonidentifikator(foedselsnummer)
+                                .switchIfEmpty(Mono.defer(() -> Mono.just(new Personidentifikator()))))
+                .map(tuple ->
+                        new ValideringResponseDTO(
+                                foedselsnummer,
+                                utledIdenttype(foedselsnummer),
+                                erTestnorgeIdent,
+                                erSyntetisk,
+                                erGyldig.get(),
+                                !erGyldig.get() ? null : !erStriktFoedselsnummer64,
+                                utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64),
+                                erGyldig.get() && erStriktFoedselsnummer64 ? kjoenn : null,
+                                !erGyldig.get() ? null : nonNull(tuple.getT1().getIdentity()) || nonNull(tuple.getT2().getId()),
+                                feilmelding.get()));
+    }
+
+    private static Identtype utledIdenttype(String ident) {
+
+        if (erDnummer(ident)) {
+            return Identtype.DNR;
+        }
+        if (FNR_SIFFERE.contains(Character.getNumericValue(ident.charAt(2)))) {
+            return Identtype.FNR;
+        }
+        if (NPID_SIFFERE.contains(Character.getNumericValue(ident.charAt(2)))) {
+            return Identtype.NPID;
+        }
+        return null;
+    }
+
+    private static LocalDate utledFoedselsdato(String foedselsnummer, Ident ident, Personidentifikator personidentifikator, Boolean erStriktFoedselsnummer64) {
+
+        if (nonNull(ident.getFoedselsdato())) {
+            return ident.getFoedselsdato();
+        } else if (nonNull(personidentifikator.getFoedselsdato())) {
+            return personidentifikator.getFoedselsdato();
+        } else if (isTrue(erStriktFoedselsnummer64)) {
+            return DatoFraIdentUtility.getFoedselsdato(foedselsnummer);
+        } else {
+            return null;
+        }
+    }
+
+    private static Kjoenn utledKjoenn(String foedselsnummer, Ident ident, Boolean erStriktFoedselsnummer64) {
+
+        if (nonNull(ident.getKjoenn())) {
+            return ident.getKjoenn();
+        } else if (isTrue(erStriktFoedselsnummer64)) {
+            return parseInt(foedselsnummer.substring(8, 9)) % 2 == 0 ? KVINNE : MANN;
+        } else {
+            return null;
         }
     }
 }

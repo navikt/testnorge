@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
+import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import no.nav.testnav.identpool.service.Identpool32Service;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class IdentController {
 
     private final Identpool32Service identpool32Service;
     private final PersonidentifikatorRepository personidentifikatorRepository;
+    private final PersonnummerValidatorService personnummerValidatorService;
 
     @Operation(description = "Rekvirer nye test-identer for pid2032")
     @PostMapping("/rekvirer")
@@ -39,9 +39,9 @@ public class IdentController {
 
     @Operation(description = "Validering for nye og gamle test-identer")
     @GetMapping("/valider")
-    public Mono<String> valider(String ident) {
+    public Mono<ValideringResponseDTO> valider(String ident) {
 
-        return Mono.just(requireNonNull(PersonnummerValidatorService.validerFoedselsnummer(ident)));
+        return personnummerValidatorService.validerFoedselsnummer(ident);
     }
 
     @Operation(description = "Frigjoer pid2032 test-ident")

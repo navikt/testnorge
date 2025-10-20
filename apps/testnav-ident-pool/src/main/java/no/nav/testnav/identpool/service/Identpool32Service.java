@@ -33,6 +33,8 @@ public class Identpool32Service {
 
     public Mono<IdentpoolResponseDTO> generateIdent(RekvirerIdentRequest request) {
 
+        var startTime = System.currentTimeMillis();
+
         var foedselsdato = generateRandomLocalDate(request.getFoedtEtter(), request.getFoedtFoer());
 
         var datoIdentifikator = getDatoIdentifikator(foedselsdato, request.getIdenttype());
@@ -52,7 +54,7 @@ public class Identpool32Service {
                 })
                 .next()
                 .map(Personidentifikator::getPersonidentifikator)
-                .map(ident -> new IdentpoolResponseDTO(ident, foedselsdato));
+                .map(ident -> new IdentpoolResponseDTO(ident, foedselsdato, System.currentTimeMillis() - startTime));
     }
 
     private Flux<Personidentifikator> genererOgAllokerIdent(NoekkelinfoDTO noekkelinfo, LocalDate foedselsdato, Identtype identtype) {
