@@ -174,11 +174,13 @@ public class PersonnummerValidatorService {
 
     public Mono<ValideringResponseDTO> validerFoedselsnummer(String foedselsnummer) {
 
-        boolean erSyntetisk = foedselsnummer.charAt(2) >= '4';
-        boolean erTestnorgeIdent = foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9';
+
         var valideringResultat = validerInput(foedselsnummer);
-        boolean erStriktFoedselsnummer64 = validerKontrollsiffer(foedselsnummer, true);
         var erGyldig = "OK".equals(valideringResultat);
+        var erStriktFoedselsnummer64 = erGyldig && validerKontrollsiffer(foedselsnummer, true);
+        Boolean erSyntetisk = erGyldig ? foedselsnummer.charAt(2) >= '4' : null;
+        Boolean erTestnorgeIdent = erGyldig ? foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9' : null;
+        Identtype identtype = erGyldig ? utledIdenttype(foedselsnummer) : null;
 
         return Mono.zip(identRepository.findByPersonidentifikator(foedselsnummer)
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident()))),
@@ -187,7 +189,7 @@ public class PersonnummerValidatorService {
                 .map(tuple ->
                         new ValideringResponseDTO(
                                 foedselsnummer,
-                                utledIdenttype(foedselsnummer),
+                                identtype,
                                 erTestnorgeIdent,
                                 erSyntetisk,
                                 erGyldig,
@@ -244,15 +246,15 @@ public class PersonnummerValidatorService {
     private static String getKommentar(String foedselsnummer, boolean erStriktFoedselsnummer64,
                                        Ident ident, Ident2032 ident2032) {
 
-        if (nonNull(ident2032.getId())) {
+        if (nonNull(ident2032.getFoedselsdato())) {
             return "Fødselsdato er hentet fra eksisterende ident i identpool. Århundre kan ikke utledes " +
                     "fra 2032-fødselsnummer, ei heller kjønn.";
-        } else if (nonNull(ident.getIdentity())) {
+        } else if (nonNull(ident.getFoedselsdato())) {
             return "Fødselsdato og kjønn er hentet fra eksisterende ident i identpool." +
                     (getKjoennFromIdent(foedselsnummer) != ident.getKjoenn() ?
                     " Kjønn avledet fra fødselsnummer samsvarer ikke med lagret verdi fra identpool." : "");
         } else if (erStriktFoedselsnummer64) {
-            return "Fødselsdato og kjønn er avledet fra fødselsnummer.";
+            return "Fødselsdato og kjønn er avledet fra fødselsnummer, som er riktig hvis det er et gyldig 1964-fødselsnummer.";
         } else {
             return "2032-fødselsnummer mangler informasjon om århundre og kjønn. Fødselsdato er derfor avledet med antakelse om " +
                     "at personen er født på 1900- eller 2000-tallet basert på dagens dato.";
