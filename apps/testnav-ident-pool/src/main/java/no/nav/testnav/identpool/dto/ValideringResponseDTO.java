@@ -15,6 +15,6 @@ public record ValideringResponseDTO(
         Boolean erPersonnummer2032,
         LocalDate foedselsdato,
         Kjoenn kjoenn,
-        Boolean finnesIIdentpool,
-        String feilmelding) {
+        String feilmelding,
+        String kommentar) {
 }

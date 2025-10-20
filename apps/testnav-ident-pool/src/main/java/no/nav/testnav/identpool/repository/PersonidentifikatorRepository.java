@@ -1,6 +1,6 @@
 package no.nav.testnav.identpool.repository;
 
-import no.nav.testnav.identpool.domain.Personidentifikator;
+import no.nav.testnav.identpool.domain.Ident2032;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,7 +8,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Personidentifikator, Long> {
+public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Ident2032, Long> {
 
     @Query("""
             select * from personidentifikator2032 p
@@ -19,8 +19,8 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Pe
                                   and pi.allokert = :allokert)
             order by p.individnummer desc, p.personidentifikator
             """)
-    Flux<Personidentifikator> findAvail(@Param("datoIdentifikator") String datoIdentifikator,
-                                        @Param("allokert") boolean allokert);
+    Flux<Ident2032> findAvail(@Param("datoIdentifikator") String datoIdentifikator,
+                              @Param("allokert") boolean allokert);
 
     @Query("""
             select * from personidentifikator2032 p
@@ -29,11 +29,11 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Pe
                                   where pi.dato_identifikator = :datoIdentifikator)
             order by p.individnummer desc, p.personidentifikator
             """)
-    Flux<Personidentifikator> findAvail(@Param("datoIdentifikator") String datoIdentifikator);
+    Flux<Ident2032> findAvail(@Param("datoIdentifikator") String datoIdentifikator);
 
     Mono<Boolean> existsByDatoIdentifikatorAndAllokert(String datoIdentifikator, boolean allokert);
 
-    Mono<Personidentifikator> findByPersonidentifikator(String personidentifikator);
+    Mono<Ident2032> findByPersonidentifikator(String personidentifikator);
 
     @Modifying
     @Query("""

@@ -1,5 +1,6 @@
 package no.nav.testnav.identpool.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PERSONIDENTIFIKATOR2032")
-public class Personidentifikator {
+public class Ident2032 {
 
     @Id
     @Column("ID")
@@ -56,14 +57,20 @@ public class Personidentifikator {
     @Column("VERSJON")
     private Integer versjon;
 
+    @JsonIgnore
     public boolean isAllokert() {
         return BooleanUtils.isTrue(allokert);
+    }
+
+    @JsonIgnore
+    public boolean isLedig() {
+        return !isAllokert();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Personidentifikator that = (Personidentifikator) o;
+        Ident2032 that = (Ident2032) o;
         return Objects.equals(id, that.id) && identtype == that.identtype && Objects.equals(personidentifikator, that.personidentifikator) && Objects.equals(datoIdentifikator, that.datoIdentifikator) && Objects.equals(individnummer, that.individnummer) && Objects.equals(foedselsdato, that.foedselsdato) && Objects.equals(allokert, that.allokert) && Objects.equals(datoAllokert, that.datoAllokert);
     }
 

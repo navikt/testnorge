@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
-import no.nav.testnav.identpool.domain.Personidentifikator;
+import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
@@ -17,8 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
@@ -99,15 +97,13 @@ public class PersonnummerValidatorService {
      * Validerer at gitt ident har gyldig format og dato før den kaller selve valideringen.
      *
      * @param gittNummer  ident-nummer som skal valideres.
-     * @param erSyntetisk Angir om ident-nummeret er syntetisk.
-     * @return true hvis ident-nummeret er gyldig, ellers kaster en IllegalArgumentException.
-     * @throws IllegalArgumentException hvis ident-nummeret har ugyldig format eller ikke er gyldig bygget opp.
+     * @return OK ident-nummeret er gyldig, ellers en feilmelding.
      */
-    private static boolean validerInput(String gittNummer, boolean erSyntetisk) {
+    private static String validerInput(String gittNummer) {
         boolean gyldigFormat = gittNummer.matches("^\\d{11}$");
 
         if (!gyldigFormat) {
-            throw new IllegalArgumentException("Ugyldig format: ident må være 11 sifre");
+            return "Ugyldig format: ident må være 11 sifre";
         }
 
         String dato = gittNummer.substring(0, 6);
@@ -117,25 +113,20 @@ public class PersonnummerValidatorService {
             dato = (dagSiffer - 4) + dato.substring(1, 6);
         }
 
-        if (erSyntetisk) {
-            int maanedSiffer = Character.getNumericValue(dato.charAt(2));
-            if (Arrays.stream(SYNTETISKE_MAANED_SIFRE).noneMatch(siffer -> siffer == maanedSiffer)) {
-                throw new IllegalArgumentException("Ugyldig format: " + gittNummer + " syntetiske nummer må ha 4, 5, 6, 7, 8 eller 9 på indeks 2");
-            }
-            // utled kalenderdato fra syntetisk nummer
-            dato = dato.substring(0, 2) + (maanedSiffer % 2) + dato.substring(3, 6);
+        int maanedSiffer = Character.getNumericValue(dato.charAt(2));
+        if (maanedSiffer >= '4' && Arrays.stream(SYNTETISKE_MAANED_SIFRE).noneMatch(siffer -> siffer == maanedSiffer)) {
+                return "Ugyldig format: " + gittNummer + " syntetiske nummer må ha 4, 5, 6, 7, 8 eller 9 på indeks 2";
         }
+        dato = dato.substring(0, 2) + (maanedSiffer % 2) + dato.substring(3, 6);
 
         if (!erDatoGyldig(dato)) {
-            throw new IllegalArgumentException(
-                    "Ugyldig format: " + gittNummer + " har ugyldig dato " + dato + " i formatet ddMMyy");
+            return "Ugyldig format: " + gittNummer + " har ugyldig dato " + dato + " i formatet ddMMyy";
         }
 
         if (!validerKontrollsiffer(gittNummer, false)) {
-            throw new IllegalArgumentException(
-                    "Ugyldig ident: " + gittNummer + " har ugyldige kontrollsifre");
+            return "Ugyldig ident: " + gittNummer + " har ugyldige kontrollsifre";
         }
-        return true;
+        return "OK";
     }
 
     /**
@@ -189,33 +180,27 @@ public class PersonnummerValidatorService {
 
         boolean erSyntetisk = foedselsnummer.charAt(2) >= '4';
         boolean erTestnorgeIdent = foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9';
-        var feilmelding = new AtomicReference<String>();
-        var erGyldig = new AtomicBoolean();
+        var valideringResultat = validerInput(foedselsnummer);
         boolean erStriktFoedselsnummer64 = validerKontrollsiffer(foedselsnummer, true);
-        var kjoenn = parseInt(foedselsnummer.substring(8, 9)) % 2 == 0 ? KVINNE : MANN;
-        try {
-            erGyldig.set(validerInput(foedselsnummer, erSyntetisk));
-        } catch (IllegalArgumentException e) {
-            erGyldig.set(false);
-            feilmelding.set(e.getMessage());
-        }
+        var erGyldig = "OK".equals(valideringResultat);
 
         return Mono.zip(identRepository.findByPersonidentifikator(foedselsnummer)
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident()))),
                         personidentifikatorRepository.findByPersonidentifikator(foedselsnummer)
-                                .switchIfEmpty(Mono.defer(() -> Mono.just(new Personidentifikator()))))
+                                .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident2032()))))
                 .map(tuple ->
                         new ValideringResponseDTO(
                                 foedselsnummer,
                                 utledIdenttype(foedselsnummer),
                                 erTestnorgeIdent,
                                 erSyntetisk,
-                                erGyldig.get(),
-                                !erGyldig.get() ? null : !erStriktFoedselsnummer64,
-                                utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64),
-                                erGyldig.get() && erStriktFoedselsnummer64 ? kjoenn : null,
-                                !erGyldig.get() ? null : nonNull(tuple.getT1().getIdentity()) || nonNull(tuple.getT2().getId()),
-                                feilmelding.get()));
+                                erGyldig,
+                                erGyldig ? !erStriktFoedselsnummer64 : null,
+                                erGyldig ? utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64) : null,
+                                erGyldig ? utledKjoenn(foedselsnummer, tuple.getT1(), erStriktFoedselsnummer64) : null,
+                                erGyldig ? null : valideringResultat,
+                                erGyldig ? getKommentar(foedselsnummer, erStriktFoedselsnummer64,
+                                        tuple.getT1(), tuple.getT2()) : null));
     }
 
     private static Identtype utledIdenttype(String ident) {
@@ -232,16 +217,20 @@ public class PersonnummerValidatorService {
         return null;
     }
 
-    private static LocalDate utledFoedselsdato(String foedselsnummer, Ident ident, Personidentifikator personidentifikator, Boolean erStriktFoedselsnummer64) {
+    private static LocalDate utledFoedselsdato(String foedselsnummer, Ident ident,
+                                               Ident2032 ident2032,
+                                               boolean erStriktFoedselsnummer64) {
 
         if (nonNull(ident.getFoedselsdato())) {
             return ident.getFoedselsdato();
-        } else if (nonNull(personidentifikator.getFoedselsdato())) {
-            return personidentifikator.getFoedselsdato();
-        } else if (isTrue(erStriktFoedselsnummer64)) {
+        } else if (nonNull(ident2032.getFoedselsdato())) {
+            return ident2032.getFoedselsdato();
+        } else if (erStriktFoedselsnummer64) {
             return DatoFraIdentUtility.getFoedselsdato(foedselsnummer);
         } else {
-            return null;
+            var foedselsdato = DatoFraIdentUtility.getFoedselsdato(foedselsnummer);
+            var foedselsdatoPaa2000Tallet = LocalDate.of(foedselsdato.getYear() % 100 + 2000, foedselsdato.getMonth(), foedselsdato.getDayOfMonth());
+            return foedselsdatoPaa2000Tallet.isAfter(LocalDate.now()) ? foedselsdatoPaa2000Tallet.minusYears(100) : foedselsdatoPaa2000Tallet;
         }
     }
 
@@ -250,9 +239,32 @@ public class PersonnummerValidatorService {
         if (nonNull(ident.getKjoenn())) {
             return ident.getKjoenn();
         } else if (isTrue(erStriktFoedselsnummer64)) {
-            return parseInt(foedselsnummer.substring(8, 9)) % 2 == 0 ? KVINNE : MANN;
+            return getKjoennFromIdent(foedselsnummer);
         } else {
             return null;
         }
+    }
+
+    private static String getKommentar(String foedselsnummer, boolean erStriktFoedselsnummer64,
+                                       Ident ident, Ident2032 ident2032) {
+
+        if (nonNull(ident2032.getId())) {
+            return "Fødselsdato er hentet fra eksisterende ident i identpool. Århundre kan ikke utledes " +
+                    "fra 2032-fødselsnummer, ei heller kjønn.";
+        } else if (nonNull(ident.getIdentity())) {
+            return "Fødselsdato og kjønn er hentet fra eksisterende ident i identpool." +
+                    (getKjoennFromIdent(foedselsnummer) != ident.getKjoenn() ?
+                    " Kjønn avledet fra fødselsnummer samsvarer ikke med lagret verdi fra identpool." : "");
+        } else if (erStriktFoedselsnummer64) {
+            return "Fødselsdato og kjønn er avledet fra fødselsnummer.";
+        } else {
+            return "2032-fødselsnummer mangler informasjon om århundre og kjønn. Fødselsdato er derfor avledet med antakelse om " +
+                    "at personen er født på 1900- eller 2000-tallet basert på dagens dato.";
+        }
+    }
+
+    private static Kjoenn getKjoennFromIdent(String ident) {
+
+        return parseInt(ident.substring(8, 9)) % 2 == 0 ? KVINNE : MANN;
     }
 }

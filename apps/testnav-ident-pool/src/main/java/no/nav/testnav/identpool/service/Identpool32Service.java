@@ -3,7 +3,7 @@ package no.nav.testnav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Personidentifikator;
+import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.NoekkelinfoDTO;
 import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
@@ -51,7 +51,7 @@ public class Identpool32Service {
                         System.currentTimeMillis() - startTime));
     }
 
-    private Flux<Personidentifikator> genererOgAllokerIdent(NoekkelinfoDTO noekkelinfo, LocalDate foedselsdato, Identtype identtype) {
+    private Flux<Ident2032> genererOgAllokerIdent(NoekkelinfoDTO noekkelinfo, LocalDate foedselsdato, Identtype identtype) {
 
         var allokert = new AtomicBoolean(true);
 
@@ -59,7 +59,7 @@ public class Identpool32Service {
                 .flatMapMany(Flux::fromIterable)
                 .map(ident -> {
                     var alloker = allokert.getAndSet(false);
-                    return Personidentifikator.builder()
+                    return Ident2032.builder()
                             .identtype(nonNull(ident) ? identtype : Identtype.FNR)
                             .personidentifikator(ident)
                             .datoIdentifikator(ident.substring(0, 6))
@@ -70,10 +70,10 @@ public class Identpool32Service {
                             .build();
                 })
                 .flatMap(personidentifikatorRepository::save)
-                .filter(Personidentifikator::isAllokert);
+                .filter(Ident2032::isAllokert);
     }
 
-    private Flux<Personidentifikator> allokerIdent(String datoIdentifikator, LocalDate foedselsdato) {
+    private Flux<Ident2032> allokerIdent(String datoIdentifikator, LocalDate foedselsdato) {
 
         return personidentifikatorRepository.findAvail(datoIdentifikator, false)
                 .concatMap(ledig -> {
@@ -98,7 +98,7 @@ public class Identpool32Service {
         var datoIdentifikator = getDatoIdentifikator(foedselsdato, identtype);
 
         return personidentifikatorRepository.findAvail(datoIdentifikator)
-                .switchIfEmpty(Mono.defer(() -> Mono.just(Personidentifikator.builder()
+                .switchIfEmpty(Mono.defer(() -> Mono.just(Ident2032.builder()
                         .datoIdentifikator(datoIdentifikator)
                         .individnummer(999)
                         .build())))
@@ -106,7 +106,7 @@ public class Identpool32Service {
                 .flatMap(identer -> {
                     if (identer.getFirst().getIndividnummer() == 999 && isNull(identer.getFirst().getPersonidentifikator())) {
                         return Mono.just(new NoekkelinfoDTO(datoIdentifikator, 999));
-                    } else if (identer.stream().anyMatch(ident -> !ident.isAllokert())) {
+                    } else if (identer.stream().anyMatch(Ident2032::isLedig)) {
                         return Mono.just(new NoekkelinfoDTO(datoIdentifikator, identer.getFirst().getIndividnummer()));
                     } else {
                         var individnummer = identer.getFirst().getIndividnummer() - 1;
