@@ -41,7 +41,7 @@
     "vitest": "^3.0.9"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/lodash": "^4.14.202",
     "@types/node": "^24.0.10",
@@ -58,7 +58,7 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.1",
     "msw": "^2.7.3",
-    "playwright": "^1.51.0",
+    "playwright": "^1.56.1",
     "prettier": "^3.0.1",
     "swr": "^2.0.0",
     "typescript": "^5.8.2",
