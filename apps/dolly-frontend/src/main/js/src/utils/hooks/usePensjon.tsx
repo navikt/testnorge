@@ -46,12 +46,12 @@ type PensjonResponse = {
 const validateBody = (body) => {
 	if (!body) return false
 	const { fomAar, tomAar, averageG } = body
-	return fomAar && tomAar && averageG
+	return !!(fomAar && tomAar && averageG)
 }
 
 export const usePensjonFacadeGenerer = (body: any) => {
 	const { data, error, trigger } = useSWRMutation<PensjonResponse, Error>(
-		validateBody(body) && pensjonFacadeGenererUrl,
+		validateBody(body) ? pensjonFacadeGenererUrl : null,
 		(url) => {
 			return api
 				.fetchJson(
