@@ -145,8 +145,8 @@ export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 			return 'Personen har registrert alderspensjon. For automatisk revurderingsvedtak må dato for endring av sivilstand settes.'
 		}
 		const alderspensjonIverksettelsesdato = personFoerLeggTil?.alderspensjon?.find(
-			(ap) => ap?.data?.iverksettelsesdato,
-		)?.data?.iverksettelsesdato
+			(ap) => ap?.data?.transaksjonId?.iverksettelsesdato,
+		)?.data?.transaksjonId?.iverksettelsesdato
 		const harGyldigSivilstanddato = sivilstandListe?.some((sivilstand) =>
 			isAfter(new Date(sivilstand.sivilstandsdato), new Date(alderspensjonIverksettelsesdato)),
 		)

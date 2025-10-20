@@ -13,15 +13,9 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
-interface TelefonnummerValues {
-	landskode?: string
-	nummer?: string
-}
-
 interface TelefonnummerProps {
 	formMethods: UseFormReturn
 	path: string
-	idx?: number
 }
 
 const StyledAvansert = styled.div`
@@ -64,7 +58,7 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 	)
 }
 
-export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps) => {
+export const TelefonnummerForm = ({ path, formMethods }: TelefonnummerProps) => {
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch(`${path}.land`) || 'NO')
 	const tlfListe = formMethods.watch(path || 'pdldata.person.telefonnummer')
@@ -100,7 +94,7 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 		}
 	}
 
-	const handleChangeLandkode = (option) => {
+	const handleChangeLandkode = (option: any) => {
 		setLand(option.value)
 		formMethods.setValue(`${path}.landskode`, option.landkode)
 		formMethods.setValue(`${path}.land`, option.value)
@@ -156,16 +150,16 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 		return null
 	}
 
-	const handleNewEntry = () => {
-		formMethods.setValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
-		formMethods.trigger(path)
+	const handleNewEntry = (append: (value: any) => void, _values: any[]) => {
+		append(initialTelefonnummer)
 	}
 
-	const handleRemoveEntry = (idx: number) => {
-		tlfListe.splice(idx, 1)
-		formMethods.setValue(paths.pdlTelefonnummer, tlfListe)
-		formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-		formMethods.trigger(path)
+	const handleRemoveEntry = () => {
+		const oppdatertListe = formMethods.watch(paths.pdlTelefonnummer) || []
+		if (oppdatertListe[0]) {
+			formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+			formMethods.trigger(path)
+		}
 	}
 
 	return (

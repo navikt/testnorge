@@ -6,21 +6,28 @@ import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import './LaasModal.less'
 import React from 'react'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
-import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type LaasButtonProps = {
 	action: Function
 	loading: boolean
 	gruppeId: string | number
 	children: any
+	autoMutate?: boolean
 }
 
-export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {
+export const LaasButton = ({
+	action,
+	gruppeId,
+	loading,
+	children,
+	autoMutate = true,
+}: LaasButtonProps) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const matchMutate = useMatchMutate()
 
@@ -50,13 +57,15 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 						</NavButton>
 						<NavButton
 							data-testid={TestComponentSelectors.BUTTON_BEKREFT_LAAS}
-							onClick={() => {
+							onClick={async () => {
 								closeModal()
-								action(gruppeId)
-								setTimeout(() => {
-									matchMutate(REGEX_BACKEND_GRUPPER)
-									matchMutate(REGEX_BACKEND_BESTILLINGER)
-								}, 500)
+								await action(gruppeId)
+								if (autoMutate) {
+									setTimeout(() => {
+										matchMutate(REGEX_BACKEND_GRUPPER)
+										matchMutate(REGEX_BACKEND_BESTILLINGER)
+									}, 300)
+								}
 							}}
 							variant={'primary'}
 						>

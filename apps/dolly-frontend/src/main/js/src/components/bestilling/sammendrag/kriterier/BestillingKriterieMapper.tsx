@@ -37,16 +37,16 @@ import {
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
 import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon' // TODO: Flytte til selector?
 
-// TODO: Flytte til selector?
-// - Denne kan forminskes ved bruk av hjelpefunksjoner
-// - Når vi får på plass en bedre struktur for bestillingsprosessen, kan
-//   mest sannsynlig visse props fjernes herfra (width?)
-
 const obj = (label: string, value: any, apiKodeverkId?: any) => ({
 	label,
 	value,
 	apiKodeverkId,
 })
+
+const ingenVerdierSatt = 'Ingen verdier satt'
+
+const mapAdresselinjer = (lines?: string[]) =>
+	(lines || []).filter(Boolean).map((l, i) => obj(`Adresselinje ${i + 1}`, l))
 
 const expandable = (
 	expandableHeader: null | string,
@@ -463,8 +463,6 @@ const mapDoedsfall = (doedsfall, data) => {
 	}
 }
 
-const ingenVerdierSatt = 'Ingen verdier satt'
-
 const adresseVerdi = (adresseData) => {
 	return isEmpty(adresseData) && ingenVerdierSatt
 }
@@ -603,6 +601,30 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 						obj('Postbokseier', adresseData.postbokseier),
 						obj('Postboks', adresseData.postboks),
 						obj('Postnummer', adresseData.postnummer),
+						...datoer(item),
+						...coAdresse(item.opprettCoAdresseNavn),
+					]
+				}
+				if (item.postadresseIFrittFormat) {
+					const adresseData = item.postadresseIFrittFormat
+					return [
+						{ numberHeader: `Kontaktadresse ${idx + 1}: Postadresse i fritt format` },
+						obj('Postadresse i fritt format', adresseVerdi(adresseData)),
+						...mapAdresselinjer(adresseData.adresselinjer),
+						obj('Postnummer', adresseData.postnummer),
+						...datoer(item),
+						...coAdresse(item.opprettCoAdresseNavn),
+					]
+				}
+				if (item.utenlandskAdresseIFrittFormat) {
+					const adresseData = item.utenlandskAdresseIFrittFormat
+					return [
+						{ numberHeader: `Kontaktadresse ${idx + 1}: Utenlandsk adresse i fritt format` },
+						obj('Utenlandsk adresse i fritt format', adresseVerdi(adresseData)),
+						...mapAdresselinjer(adresseData.adresselinjer),
+						obj('Postkode', adresseData.postkode),
+						obj('By eller sted', adresseData.byEllerStedsnavn),
+						obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
@@ -1231,9 +1253,6 @@ const mapInntektStub = (bestillingData, data) => {
 	if (inntektStubKriterier) {
 		const inntektStub = {
 			header: 'A-ordningen (Inntektstub)',
-			// items: [
-			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
-			// ],
 			itemRows: [],
 		}
 
@@ -2413,9 +2432,7 @@ const mapOrganisasjon = (bestillingData, data) => {
 					obj('Postnummer', forretningsadresse.postnr),
 					obj('Poststed', forretningsadresse.poststed),
 					obj('Kommunenummer', forretningsadresse.kommunenr),
-					obj('Adresselinje 1', forretningsadresse.adresselinjer[0]),
-					obj('Adresselinje 2', forretningsadresse.adresselinjer[1]),
-					obj('Adresselinje 3', forretningsadresse.adresselinjer[2]),
+					...mapAdresselinjer(forretningsadresse.adresselinjer),
 				],
 			}
 			data.push(forretningsadresseKriterier)
@@ -2428,9 +2445,7 @@ const mapOrganisasjon = (bestillingData, data) => {
 					obj('Postnummer', postadresse.postnr),
 					obj('Poststed', postadresse.poststed),
 					obj('Kommunenummer', postadresse.kommunenr),
-					obj('Adresselinje 1', postadresse.adresselinjer[0]),
-					obj('Adresselinje 2', postadresse.adresselinjer[1]),
-					obj('Adresselinje 3', postadresse.adresselinjer[2]),
+					...mapAdresselinjer(postadresse.adresselinjer),
 				],
 			}
 			data.push(postadresseKriterier)
@@ -2438,16 +2453,19 @@ const mapOrganisasjon = (bestillingData, data) => {
 	}
 }
 
-export function mapBestillingData(bestillingData, bestillingsinformasjon, firstIdent) {
+function buildBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+	bestilling?: BestillingsveilederContextType,
+	navEnheter?: any,
+) {
 	if (!bestillingData) {
 		return null
 	}
 
 	const data: any[] = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
-
-	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const { navEnheter } = useNavEnheter()
 
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype, firstIdent)
 	mapPdlNyPerson(bestillingData, data, bestilling)
@@ -2537,4 +2555,36 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapOrganisasjon(bestillingData, data)
 
 	return data
+}
+
+export function useBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+) {
+	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const { navEnheter } = useNavEnheter()
+	return buildBestillingData(
+		bestillingData,
+		bestillingsinformasjon,
+		firstIdent,
+		bestilling,
+		navEnheter,
+	)
+}
+
+export function mapBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+	bestilling?: BestillingsveilederContextType,
+	navEnheter?: any,
+) {
+	return buildBestillingData(
+		bestillingData,
+		bestillingsinformasjon,
+		firstIdent,
+		bestilling,
+		navEnheter,
+	)
 }

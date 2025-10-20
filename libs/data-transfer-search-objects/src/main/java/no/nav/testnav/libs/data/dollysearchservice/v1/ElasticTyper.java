@@ -10,7 +10,7 @@ public enum ElasticTyper {
     ARBEIDSFORHOLD_FRILANS("Arbeidsforhold - Frilans", true),
     ARBEIDSFORHOLD_MARITIMT("Arbeidsforhold - Maritimt", true),
     ARBEIDSFORHOLD_ORDINAERT("Arbeidsforhold - Ordinært", true),
-    ARBEIDSPLASSENCV("Arbeidsplassen CV", false),
+    ARBEIDSPLASSENCV("Nav CV", false),
     ARBEIDSSOEKERREGISTERET("Arbeidssøkerregisteret",false),
     ARENA_AAP("Arena AAP ytelse", true),
     ARENA_AAP115("Arena AAP115 rettighet", true),
@@ -28,7 +28,7 @@ public enum ElasticTyper {
     INST("Institusjonsopphold (INST2)", true),
     KRRSTUB("Kontakt- og reservasjonsregister-stub", false),
     MEDL("Medlemskap (MEDL)", false),
-    NOM("NAV-ansatt (NOM)", false),
+    NOM("Nav-ansatt (NOM)", false),
     PEN_AFP_OFFENTLIG("Pensjon - AFP offentlig", true),
     PEN_AP("Pensjon - Alderspensjon (AP)", true),
     PEN_AP_NY_UTTAKSGRAD("Pensjon - AP ny uttaksgrad", true),
@@ -40,7 +40,7 @@ public enum ElasticTyper {
     SIGRUN_SUMMERT("Sigrunstub - Summert skattegrunnlag", false),
     SKATTEKORT("Skattekort (SOKOS)", false),
     SKJERMING("Skjermingsregisteret", false),
-    SYKEMELDING("Sykemelding", true),
+    SYKEMELDING("Nav sykemelding", true),
     UDISTUB("Udistub - Utlendingsdirektoratet", false),
     YRKESSKADE("Yrkesskade", false);
 
