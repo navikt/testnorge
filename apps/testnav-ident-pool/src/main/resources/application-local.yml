@@ -16,15 +16,3 @@ spring:
 consumers:
   tps-messaging-service:
     url: https://testnav-tps-messaging-service.intern.dev.nav.no
-
-logging:
-  level:
-    org:
-      springframework:
-        data:
-          r2dbc: INFO
-    io:
-      r2dbc:
-        postgresql:
-          QUERY: INFO
-          PARAM: INFO

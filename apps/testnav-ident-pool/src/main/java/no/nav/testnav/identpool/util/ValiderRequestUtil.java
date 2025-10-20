@@ -14,30 +14,36 @@ public class ValiderRequestUtil {
 
     public static void validateDatesInRequest(HentIdenterRequest hentIdenterRequest) {
 
-        if (nonNull(hentIdenterRequest.getFoedtEtter()) &&
-                hentIdenterRequest.getFoedtEtter().isAfter(LocalDate.now())) {
-            throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtEtter'");
-        }
-        if (nonNull(hentIdenterRequest.getFoedtFoer()) &&
-                hentIdenterRequest.getFoedtFoer().isAfter(LocalDate.now())) {
-            throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtFoer'");
-        }
+        validerFoedtEtter(hentIdenterRequest.getFoedtEtter());
+        validerFoedtFoer(hentIdenterRequest.getFoedtFoer());
+        validateDateOrder(hentIdenterRequest.getFoedtEtter(), hentIdenterRequest.getFoedtFoer());
     }
 
     public static void validateDatesInRequest(RekvirerIdentRequest request) {
 
-        if (nonNull(request.getFoedtEtter()) &&
-                request.getFoedtEtter().isAfter(LocalDate.now())) {
+        validerFoedtEtter(request.getFoedtEtter());
+        validerFoedtFoer(request.getFoedtFoer());
+        validateDateOrder(request.getFoedtEtter(), request.getFoedtFoer());
+    }
+
+    private static void validerFoedtEtter(LocalDate foedtEtter) {
+
+        if (nonNull(foedtEtter) && foedtEtter.isAfter(LocalDate.now())) {
             throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtEtter'");
         }
+    }
 
-        if (nonNull(request.getFoedtFoer()) &&
-                request.getFoedtFoer().isAfter(LocalDate.now())) {
+    private static void validerFoedtFoer(LocalDate foedtEtter) {
+
+        if (nonNull(foedtEtter) && foedtEtter.isAfter(LocalDate.now())) {
             throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtFoer'");
         }
+    }
 
-        if (nonNull(request.getFoedtEtter()) && nonNull(request.getFoedtFoer()) &&
-                request.getFoedtEtter().isAfter(request.getFoedtFoer())) {
+    private static void validateDateOrder(LocalDate foedtEtter, LocalDate foedtFoer) {
+
+        if (nonNull(foedtEtter) && nonNull(foedtFoer) &&
+                foedtEtter.isAfter(foedtFoer)) {
             throw new UgyldigDatoException("Ugyldig kombinasjon av datoer i feltene 'foedtEtter' og 'foedtFoer'");
         }
     }

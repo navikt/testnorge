@@ -36,7 +36,6 @@ public class PersonnummerValidatorService {
     private static final List<Integer> DNR_SIFFERE = List.of(4, 5, 6, 7);
     private static final List<Integer> FNR_SIFFERE = List.of(0, 1, 4, 5);
     private static final List<Integer> NPID_SIFFERE = List.of(2, 3, 6, 7);
-    private static final int[] SYNTETISKE_MAANED_SIFRE = {4, 5, 6, 7, 8, 9};
 
     private final PersonidentifikatorRepository personidentifikatorRepository;
     private final IdentRepository identRepository;
@@ -88,7 +87,7 @@ public class PersonnummerValidatorService {
         int[] ints = new int[streng.length()];
 
         for (int i = 0; i < streng.length(); i++) {
-            ints[i] = parseInt(streng.substring(i, i + 1));
+            ints[i] = Character.getNumericValue(streng.charAt(i));
         }
         return ints;
     }
@@ -114,9 +113,6 @@ public class PersonnummerValidatorService {
         }
 
         int maanedSiffer = Character.getNumericValue(dato.charAt(2));
-        if (maanedSiffer >= '4' && Arrays.stream(SYNTETISKE_MAANED_SIFRE).noneMatch(siffer -> siffer == maanedSiffer)) {
-                return "Ugyldig format: " + gittNummer + " syntetiske nummer må ha 4, 5, 6, 7, 8 eller 9 på indeks 2";
-        }
         dato = dato.substring(0, 2) + (maanedSiffer % 2) + dato.substring(3, 6);
 
         if (!erDatoGyldig(dato)) {

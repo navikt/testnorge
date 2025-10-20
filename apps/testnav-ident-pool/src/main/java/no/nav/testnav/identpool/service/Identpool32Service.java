@@ -60,7 +60,7 @@ public class Identpool32Service {
                 .map(ident -> {
                     var alloker = allokert.getAndSet(false);
                     return Ident2032.builder()
-                            .identtype(nonNull(ident) ? identtype : Identtype.FNR)
+                            .identtype(nonNull(identtype) ? identtype : Identtype.FNR)
                             .personidentifikator(ident)
                             .datoIdentifikator(ident.substring(0, 6))
                             .individnummer(Integer.parseInt(ident.substring(6, 9)))

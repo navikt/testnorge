@@ -27,7 +27,7 @@ public class Identpool32GeneratorUtil {
                 .filter(k1 -> k1 != 10)
                 .map(k1 -> ident + String.format("%1d", k1))
                 .map(identMedK1 -> identMedK1 + String.format("%1d", calculateK2(identMedK1)))
-                .filter(Identpool32GeneratorUtil::isValidLenth)
+                .filter(Identpool32GeneratorUtil::isValidLength)
                 .toList();
     }
 
@@ -61,7 +61,7 @@ public class Identpool32GeneratorUtil {
         return remainder % 11;
     }
 
-    private static boolean isValidLenth(String ident) {
+    private static boolean isValidLength(String ident) {
 
         return ident.length() == 11;
     }
