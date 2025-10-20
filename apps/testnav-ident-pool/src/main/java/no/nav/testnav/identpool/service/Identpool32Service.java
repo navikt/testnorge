@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -57,6 +58,7 @@ public class Identpool32Service {
 
         return Mono.just(Identpool32GeneratorUtil.generateIdents(noekkelinfo))
                 .flatMapMany(Flux::fromIterable)
+                .sort(Comparator.naturalOrder())
                 .map(ident -> {
                     var alloker = allokert.getAndSet(false);
                     return Ident2032.builder()
@@ -69,13 +71,13 @@ public class Identpool32Service {
                             .datoAllokert(alloker ? LocalDate.now() : null)
                             .build();
                 })
-                .flatMap(personidentifikatorRepository::save)
+                .flatMapSequential(personidentifikatorRepository::save)
                 .filter(Ident2032::isAllokert);
     }
 
     private Flux<Ident2032> allokerIdent(String datoIdentifikator, LocalDate foedselsdato) {
 
-        return personidentifikatorRepository.findAvail(datoIdentifikator, false)
+        return personidentifikatorRepository.findLedige(datoIdentifikator)
                 .concatMap(ledig -> {
                     ledig.setFoedselsdato(foedselsdato);
                     ledig.setAllokert(true);

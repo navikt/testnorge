@@ -13,14 +13,13 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Id
     @Query("""
             select * from personidentifikator2032 p
             where p.dato_identifikator = :datoIdentifikator
-            and p.allokert = :allokert
+            and p.allokert = false
             and p.individnummer = (select min(individnummer) from personidentifikator2032 pi
                                   where pi.dato_identifikator = :datoIdentifikator
-                                  and pi.allokert = :allokert)
+                                  and pi.allokert = false)
             order by p.individnummer desc, p.personidentifikator
             """)
-    Flux<Ident2032> findAvail(@Param("datoIdentifikator") String datoIdentifikator,
-                              @Param("allokert") boolean allokert);
+    Flux<Ident2032> findLedige(@Param("datoIdentifikator") String datoIdentifikator);
 
     @Query("""
             select * from personidentifikator2032 p
