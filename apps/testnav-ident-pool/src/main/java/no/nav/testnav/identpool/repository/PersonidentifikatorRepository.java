@@ -22,9 +22,14 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Pe
     Flux<Personidentifikator> findAvail(@Param("datoIdentifikator") String datoIdentifikator,
                                         @Param("allokert") boolean allokert);
 
-    Flux<Personidentifikator> findAllByDatoIdentifikatorAndIndividnummer(String datoIdentifikator, int individnummer);
-
-    Mono<Boolean> existsByDatoIdentifikator(String datoIdentifikator);
+    @Query("""
+            select * from personidentifikator2032 p
+            where p.dato_identifikator = :datoIdentifikator
+            and p.individnummer = (select min(individnummer) from personidentifikator2032 pi
+                                  where pi.dato_identifikator = :datoIdentifikator)
+            order by p.individnummer desc, p.personidentifikator
+            """)
+    Flux<Personidentifikator> findAvail(@Param("datoIdentifikator") String datoIdentifikator);
 
     Mono<Boolean> existsByDatoIdentifikatorAndAllokert(String datoIdentifikator, boolean allokert);
 
