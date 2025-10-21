@@ -1,4 +1,4 @@
-import { isDate } from 'date-fns'
+import { isValid } from 'date-fns'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import utc from 'dayjs/plugin/utc'
@@ -52,7 +52,7 @@ export const convertInputToDate = (
 		return date
 	}
 	const customDayjs = initDayjs()
-	const dayJs = isDate(date)
+	const dayJs = isValid(new Date(date))
 		? customDayjs(date)
 		: customDayjs(date, specificFormat || DateFormatUtils.generateValidDateFormats(), true)
 	if (fixOffset) {
