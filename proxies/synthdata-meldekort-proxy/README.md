@@ -6,8 +6,8 @@ nå synt-applikasjonen.
 ## Lokal kjøring
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
 
 ## Access token
 Siden proxy-en kjører med trygdeetaten tenant kan man ikke bruke oversikt-frontend for å hente access token når man 
