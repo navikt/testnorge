@@ -7,9 +7,11 @@ import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Logger } from '@/logger/Logger'
 
+axios.defaults.timeout = 10000
+
 const fetchRetry = fetch_retry(originalFetch)
 
-const logoutForbidden = ['dolly-backend']
+const logoutOnForbidden = ['dolly-backend']
 
 export const multiFetcherAll = (urlListe, headers = null) =>
 	Promise.all(
@@ -130,7 +132,7 @@ export const fetcher = (url, headers?) =>
 		.catch((reason) => {
 			if (
 				(reason?.response?.status === 401 || reason?.response?.status === 403) &&
-				logoutForbidden.some((value) => url.includes(value))
+				logoutOnForbidden.some((value) => url.includes(value))
 			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
@@ -179,7 +181,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 				response?.status !== 400 &&
 				!runningE2ETest()
 			) {
-				if (response?.status === 401 && logoutForbidden.some((value) => url.includes(value))) {
+				if (response?.status === 401 && logoutOnForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()
 				}
@@ -209,7 +211,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			window.location.href = response.url
 		}
 		if (!response.ok && response.status !== 400 && !runningE2ETest()) {
-			if (response?.status === 401 && logoutForbidden.some((value) => url.includes(value))) {
+			if (response?.status === 401 && logoutOnForbidden.some((value) => url.includes(value))) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}
