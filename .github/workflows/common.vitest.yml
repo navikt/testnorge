@@ -6,9 +6,16 @@ on:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
         required: true
+        default: "apps/dolly-frontend"
     secrets:
       READER_TOKEN:
         required: true
+  workflow_dispatch:
+    inputs:
+      working-directory:
+        description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
+        required: true
+        default: "apps/dolly-frontend"
 
 jobs:
   vitest:
@@ -23,11 +30,11 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: Install dependencies
-        working-directory: ${{ inputs.working-directory }}/src/main/js
+        working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
         run: npm ci
       - name: Install Playwright Browsers
-        working-directory: ${{ inputs.working-directory }}/src/main/js
+        working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
         run: npx playwright install --with-deps
       - name: Run Vitest/RTL tests
-        working-directory: ${{ inputs.working-directory }}/src/main/js
+        working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
         run: npm run test:vitest-run
