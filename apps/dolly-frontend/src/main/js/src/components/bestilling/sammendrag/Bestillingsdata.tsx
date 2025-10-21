@@ -159,7 +159,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Krrstub krrstub={bestilling.krrstub} />
 			<Medl medl={bestilling.medl} />
 			<Udistub udistub={bestilling.udistub} />
-			<Dokarkiv dokarkiv={bestilling.dokarkiv} />
+			<Dokarkiv dokarkivListe={bestilling.dokarkiv} />
 			<Histark histark={bestilling.histark} />
 		</>
 	)

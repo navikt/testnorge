@@ -1,18 +1,18 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
-import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { oversettBoolean, showLabel } from '@/utils/DataFormatter'
-import { Journalpost } from '@/service/services/JoarkDokumentService'
 import { Kodeverk } from '@/components/fagsystem/dokarkiv/form/partials/Dokument'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Journalpost } from '@/utils/hooks/useDokumenter'
 
 type DokarkivProps = {
-	dokarkiv: Journalpost
+	dokarkivListe: Journalpost[]
 }
 
-export const Dokarkiv = ({ dokarkiv }: DokarkivProps) => {
-	if (!dokarkiv || isEmpty(dokarkiv)) {
+export const Dokarkiv = ({ dokarkivListe }: DokarkivProps) => {
+	if (!dokarkivListe || dokarkivListe.length < 1) {
 		return null
 	}
 
@@ -20,31 +20,35 @@ export const Dokarkiv = ({ dokarkiv }: DokarkivProps) => {
 		<div className="person-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Dokumenter (Joark)</BestillingTitle>
-				<BestillingData>
-					<TitleValue title="Brevkode" value={dokarkiv.dokumenter?.[0]?.brevkode} />
-					<TitleValue title="Tittel" value={dokarkiv.tittel} />
-					<TitleValue title="Tema" value={dokarkiv.tema} kodeverk={Kodeverk.TEMA} />
-					<TitleValue
-						title="Behandlingstema"
-						value={dokarkiv.behandlingstema}
-						kodeverk={Kodeverk.BEHANDLINGSTEMA}
-					/>
-					<TitleValue title="Journalførende enhet" value={dokarkiv.journalfoerendeEnhet} />
-					<TitleValue title="Sakstype" value={showLabel('sakstype', dokarkiv.sak?.sakstype)} />
-					<TitleValue
-						title="Fagsaksystem"
-						value={showLabel('fagsaksystem', dokarkiv.sak?.fagsaksystem)}
-					/>
-					<TitleValue title="Fagsak-ID" value={dokarkiv.sak?.fagsakId} />
-					<TitleValue
-						title="Ferdigstill journalpost"
-						value={oversettBoolean(dokarkiv.ferdigstill)}
-					/>
-					<TitleValue title="Avsender type" value={dokarkiv.avsenderMottaker?.idType} />
-					<TitleValue title="Avsender ID" value={dokarkiv.avsenderMottaker?.id} />
-					<TitleValue title="Avsender navn" value={dokarkiv.avsenderMottaker?.navn} />
-					<TitleValue title="Antall vedlegg" value={dokarkiv.vedlegg?.length || '0'} />
-				</BestillingData>
+				<DollyFieldArray header="Dokument" data={dokarkivListe}>
+					{(dokarkiv: Journalpost, idx: number) => (
+						<React.Fragment key={idx}>
+							<TitleValue title="Brevkode" value={dokarkiv.dokumenter?.[0]?.brevkode} />
+							<TitleValue title="Tittel" value={dokarkiv.tittel} />
+							<TitleValue title="Tema" value={dokarkiv.tema} kodeverk={Kodeverk.TEMA} />
+							<TitleValue
+								title="Behandlingstema"
+								value={dokarkiv.behandlingstema}
+								kodeverk={Kodeverk.BEHANDLINGSTEMA}
+							/>
+							<TitleValue title="Journalførende enhet" value={dokarkiv.journalfoerendeEnhet} />
+							<TitleValue title="Sakstype" value={showLabel('sakstype', dokarkiv.sak?.sakstype)} />
+							<TitleValue
+								title="Fagsaksystem"
+								value={showLabel('fagsaksystem', dokarkiv.sak?.fagsaksystem)}
+							/>
+							<TitleValue title="Fagsak-ID" value={dokarkiv.sak?.fagsakId} />
+							<TitleValue
+								title="Ferdigstill journalpost"
+								value={oversettBoolean(dokarkiv.ferdigstill)}
+							/>
+							<TitleValue title="Avsender type" value={dokarkiv.avsenderMottaker?.idType} />
+							<TitleValue title="Avsender ID" value={dokarkiv.avsenderMottaker?.id} />
+							<TitleValue title="Avsender navn" value={dokarkiv.avsenderMottaker?.navn} />
+							<TitleValue title="Antall vedlegg" value={dokarkiv.vedlegg?.length || '0'} />
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>
 	)
