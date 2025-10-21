@@ -7,6 +7,8 @@ import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.pdl.forvalter.dto.IdentDTO;
+import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -41,13 +43,16 @@ public class CreatePersonService {
     private final NavPersonIdentifikatorService navsPersonIdentifikatorService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
 
-    private static PersonDTO buildPerson(PersonRequestDTO request) {
+    private static PersonDTO buildPerson(PersonRequestDTO request, IdentDTO identifikator) {
 
         return PersonDTO.builder()
-                .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn())
+                .kjoenn(List.of(KjoennDTO.builder().kjoenn(nonNull(request.getKjoenn()) ?
+                                request.getKjoenn() : KjoennUtility.getKjoenn())
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
                 .foedselsdato(List.of(FoedselsdatoDTO.builder()
+                        .foedselsdato(nonNull(identifikator.getFoedselsdato()) ?
+                                identifikator.getFoedselsdato().atStartOfDay() : null)
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
                 .foedested(List.of(FoedestedDTO.builder()
@@ -80,14 +85,15 @@ public class CreatePersonService {
 
         var startTime = currentTimeMillis();
 
-        var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO()),
-                new PersonDTO());
+        IdentDTO identifikator = identPoolConsumer.acquireIdents(
+                        mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
+                .block();
+        assert nonNull(identifikator);
 
-        mergedPerson.setIdent(Objects.requireNonNull(identPoolConsumer.acquireIdents(
-                                mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
-                        .block())
-                .getFirst()
-                .getIdent());
+        var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO(),
+                identifikator), new PersonDTO());
+
+        mergedPerson.setIdent(Objects.requireNonNull(identifikator.getIdent()));
 
         Stream.of(
                         Flux.just(foedselsdatoService.convert(mergedPerson)),

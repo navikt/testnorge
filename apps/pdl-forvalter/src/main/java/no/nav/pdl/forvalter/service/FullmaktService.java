@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -18,6 +17,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
+import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -46,7 +47,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
     @Override
     public void validate(FullmaktDTO fullmakt, PersonDTO person) {
-
+        // No specific validation rules for FullmaktDTO at this time
     }
 
     private void handle(FullmaktDTO fullmakt, String ident) {
@@ -68,7 +69,10 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             }
 
             if (isNull(fullmakt.getNyFullmektig().getSyntetisk())) {
-                fullmakt.getNyFullmektig().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
+                fullmakt.getNyFullmektig().setSyntetisk(isSyntetisk(ident));
+            }
+            if (isNull(fullmakt.getNyFullmektig().getId2032())) {
+                fullmakt.getNyFullmektig().setId2032(isId2032(ident));
             }
 
             fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());

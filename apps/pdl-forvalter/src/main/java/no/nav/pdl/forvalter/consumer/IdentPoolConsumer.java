@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolGetLedigCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolGetProdSjekkCommand;
+import no.nav.pdl.forvalter.consumer.command.IdentpoolId32PostCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostVoidCommand;
 import no.nav.pdl.forvalter.dto.AllokerIdentRequest;
@@ -21,6 +22,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Slf4j
 @Service
 public class IdentPoolConsumer {
@@ -37,8 +40,8 @@ public class IdentPoolConsumer {
     public IdentPoolConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient webClient
-    ) {
+            WebClient webClient) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getIdentPool();
         this.webClient = webClient
@@ -47,11 +50,15 @@ public class IdentPoolConsumer {
                 .build();
     }
 
-    public Mono<List<IdentDTO>> acquireIdents(HentIdenterRequest request) {
+    public Mono<IdentDTO> acquireIdents(HentIdenterRequest request) {
 
-        return tokenExchange.exchange(serverProperties).flatMap(
-                token -> new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request,
-                        token.getTokenValue()).call());
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> isTrue(request.getId2032()) ?
+                        new IdentpoolId32PostCommand(webClient, request, token.getTokenValue()).call() :
+                        new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request,
+                                token.getTokenValue()).call()
+                                .filter(identer -> !identer.isEmpty())
+                                .map(List::getFirst));
     }
 
     public Mono<List<IdentDTO>> releaseIdents(Set<String> identer, Bruker bruker) {

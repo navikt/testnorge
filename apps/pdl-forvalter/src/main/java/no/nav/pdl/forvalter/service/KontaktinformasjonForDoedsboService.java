@@ -31,6 +31,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
+import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -147,7 +149,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
             if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt());
+                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
                 leggTilPersonadresse(kontaktinfo);
                 kontaktinfo.getPersonSomKontakt().setNavn(null);
             }
@@ -313,7 +315,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                                 .equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")));
     }
 
-    private void leggTilNyAddressat(KontaktpersonDTO kontakt) {
+    private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
 
         if (isNull(kontakt.getNyKontaktperson())) {
             kontakt.setNyKontaktperson(new PersonRequestDTO());
@@ -325,6 +327,12 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
             kontakt.getNyKontaktperson().setFoedtFoer(LocalDateTime.now().minusYears(18));
             kontakt.getNyKontaktperson().setFoedtEtter(LocalDateTime.now().minusYears(75));
+        }
+        if (isNull(kontakt.getNyKontaktperson().getSyntetisk())) {
+            kontakt.getNyKontaktperson().setSyntetisk(isSyntetisk(hovedperson));
+        }
+        if (isNull(kontakt.getNyKontaktperson().getId2032())) {
+            kontakt.getNyKontaktperson().setId2032(isId2032(hovedperson));
         }
 
         kontakt.setIdentifikasjonsnummer(

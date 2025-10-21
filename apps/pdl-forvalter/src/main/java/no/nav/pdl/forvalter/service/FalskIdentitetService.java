@@ -25,6 +25,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -201,6 +202,9 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
 
         if (isNull(identitet.getNyFalskIdentitetPerson().getSyntetisk())) {
             identitet.getNyFalskIdentitetPerson().setSyntetisk(isSyntetisk(person.getIdent()));
+        }
+        if (isNull(identitet.getNyFalskIdentitetPerson().getId2032())) {
+            identitet.getNyFalskIdentitetPerson().setId2032(isId2032(person.getIdent()));
         }
 
         identitet.setRettIdentitetVedIdentifikasjonsnummer(

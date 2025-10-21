@@ -6,7 +6,6 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
-import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
@@ -31,6 +30,7 @@ import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.def
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
+import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
@@ -108,11 +108,16 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
                     KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream().findFirst()
                             .map(KjoennDTO::getKjoenn)
-                            .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
+                            .orElse(KjoennUtility.getPartnerKjoenn(hovedperson.getKjoenn().stream().findFirst()
+                                    .map(KjoennDTO::getKjoenn)
+                                    .orElse(KjoennUtility.getKjoenn())));
                     sivilstand.getNyRelatertPerson().setKjoenn(KjoennUtility.getPartnerKjoenn(kjoenn));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {
                     sivilstand.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
+                }
+                if (isNull(sivilstand.getNyRelatertPerson().getId2032())) {
+                    sivilstand.getNyRelatertPerson().setId2032(isId2032(hovedperson.getIdent()));
                 }
 
                 PersonDTO relatertPerson = createPersonService.execute(sivilstand.getNyRelatertPerson());
