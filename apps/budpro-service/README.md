@@ -10,5 +10,5 @@ Kun én integrasjon, med _generer-navn-service_.
 * [Organisasjonsenhet](https://confluence.adeo.no/display/PK/PK-6917?preview=%2F68215567%2F101614076%2FHR+ORGANISASJONSSTRUKTUR2.xls)
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

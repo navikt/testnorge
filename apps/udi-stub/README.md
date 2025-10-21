@@ -19,5 +19,5 @@ For dokumentasjon av applikasjonen sine endepunkter:
 - `WSDL: /ws/udistub.wsdl
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Lokal PostgreSQL.](../../docs/local_db.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Lokal PostgreSQL.](../../docs/modules/ROOT/pages/local/local_db.adoc)
