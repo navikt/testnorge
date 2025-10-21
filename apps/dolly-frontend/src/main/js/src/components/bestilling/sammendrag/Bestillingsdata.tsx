@@ -55,6 +55,7 @@ import { Dokarkiv } from '@/components/fagsystem/dokarkiv/bestilling/Dokarkiv'
 import { Histark } from '@/components/fagsystem/histark/bestilling/Histark'
 import { Foedested } from '@/components/fagsystem/pdlf/bestilling/partials/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/bestilling/partials/Foedselsdato'
+import { Arbeidssoekerregisteret } from '@/components/fagsystem/arbeidssoekerregisteret/bestilling/Arbeidssoekerregisteret'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -141,6 +142,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Inntektstub inntektstub={bestilling.inntektstub} />
 			<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
 			<Skattekort skattekort={bestilling.skattekort} />
+			<Arbeidssoekerregisteret arbeidssoekerregisteret={bestilling.arbeidssoekerregisteret} />
 			<Arbeidsplassen arbeidsplassenCV={bestilling.arbeidsplassenCV} />
 			<PensjonsgivendeInntekt pensjon={bestilling.pensjonforvalter?.inntekt} />
 			<GenerertPensjonsgivendeInntekt
