@@ -1,37 +1,35 @@
+import { vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { dollyTest } from '../vitest.setup'
 import { userEvent } from '@vitest/browser/context'
 import React, { act } from 'react'
-import { vi } from 'vitest'
 import BrukernavnVelger from '@/pages/brukerPage/BrukernavnVelger'
 import { BrukerApi } from '@/service/Api'
-import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Organisasjon } from '@/pages/brukerPage/types'
 
-vi.mock('@/service/Api')
-vi.mock('@/components/utlogging/navigateToLogin')
+vi.mock('@/components/utlogging/navigateToLogin', () => ({
+	navigateToLogin: vi.fn(),
+}))
 
 const mockOrganisasjon: Organisasjon = {
 	navn: 'Test Organisasjon',
 	organisasjonsnummer: '123456789',
 }
 
-const TestComponent = ({
-	organisasjon,
-	addToSession,
-}: {
+interface TestComponentProps {
 	organisasjon: Organisasjon
-	addToSession: () => void
-}) => {
+	addToSession: (org: string) => void
+}
+
+const TestComponent = ({ organisasjon, addToSession }: TestComponentProps) => {
 	return <BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 }
 
 dollyTest('renders BrukernavnVelger and handles successful user creation', async () => {
 	const addToSessionMock = vi.fn()
-	vi.mocked(BrukerApi.opprettBruker).mockResolvedValue({
-		brukernavn: 'testbruker123',
-		epost: 'test@test.com',
-	})
+	const opprettBrukerMock = vi
+		.spyOn(BrukerApi, 'opprettBruker')
+		.mockResolvedValue({ brukernavn: 'testbruker123', epost: 'test@test.com' })
 
 	render(<TestComponent organisasjon={mockOrganisasjon} addToSession={addToSessionMock} />)
 
@@ -49,11 +47,7 @@ dollyTest('renders BrukernavnVelger and handles successful user creation', async
 	})
 
 	await waitFor(() => {
-		expect(BrukerApi.opprettBruker).toHaveBeenCalledWith(
-			'testbruker123',
-			'test@test.com',
-			'123456789',
-		)
+		expect(opprettBrukerMock).toHaveBeenCalledWith('testbruker123', 'test@test.com', '123456789')
 	})
 
 	await waitFor(() => {
