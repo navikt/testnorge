@@ -13,6 +13,7 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
@@ -72,7 +73,8 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private static final String INVALID_RELASJON_FELLES_EXCEPTION = BARN_MANGLER +
             "barnets foreldrerelasjon til mor og/eller far ikke funnet";
 
-    private static final Random random = new SecureRandom();
+    private static final Random RANDOM = new SecureRandom();
+
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
@@ -467,7 +469,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             foreldreansvar.getNyAnsvarlig().setFoedtEtter(LocalDateTime.now().minusYears(60));
         }
         if (isNull(foreldreansvar.getNyAnsvarlig().getKjoenn())) {
-            foreldreansvar.getNyAnsvarlig().setKjoenn(random.nextBoolean() ? Kjoenn.KVINNE : Kjoenn.MANN);
+            foreldreansvar.getNyAnsvarlig().setKjoenn(KjoennUtility.getKjoenn());
         }
         if (isNull(foreldreansvar.getNyAnsvarlig().getSyntetisk())) {
             foreldreansvar.getNyAnsvarlig().setSyntetisk(isSyntetisk(barn.getIdent()));
@@ -563,13 +565,13 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
 
         if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator().getKjoenn())) {
-            foreldreansvar.getAnsvarligUtenIdentifikator().setKjoenn(random.nextBoolean() ? Kjoenn.MANN : Kjoenn.KVINNE);
+            foreldreansvar.getAnsvarligUtenIdentifikator().setKjoenn(KjoennUtility.getKjoenn());
         }
 
         if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator().getFoedselsdato())) {
             foreldreansvar.getAnsvarligUtenIdentifikator().setFoedselsdato(
                     FoedselsdatoUtility.getFoedselsdato(person)
-                            .plusDays(random.nextInt(365)));
+                            .plusDays(RANDOM.nextInt(365)));
         }
     }
 

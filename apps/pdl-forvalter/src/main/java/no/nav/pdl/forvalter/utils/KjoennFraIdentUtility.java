@@ -12,6 +12,9 @@ public class KjoennFraIdentUtility {
 
     public KjoennDTO.Kjoenn getKjoenn(String ident) {
 
+        if (Id2032FraIdentUtility.isId2032(ident)) {
+            return KjoennUtility.getKjoenn();
+        }
         var kjoennNummer = parseInt(ident.substring(8, 9));
         return kjoennNummer % 2 == 0 ? KVINNE : MANN;
     }

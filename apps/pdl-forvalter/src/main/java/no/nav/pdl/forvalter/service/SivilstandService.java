@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
@@ -106,11 +107,10 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                     sivilstand.getNyRelatertPerson().setFoedtEtter(foedselsdato.minusYears(2));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
-                    KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream().findFirst()
+                    KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream()
+                            .findFirst()
                             .map(KjoennDTO::getKjoenn)
-                            .orElse(KjoennUtility.getPartnerKjoenn(hovedperson.getKjoenn().stream().findFirst()
-                                    .map(KjoennDTO::getKjoenn)
-                                    .orElse(KjoennUtility.getKjoenn())));
+                            .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
                     sivilstand.getNyRelatertPerson().setKjoenn(KjoennUtility.getPartnerKjoenn(kjoenn));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {

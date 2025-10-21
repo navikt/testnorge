@@ -39,6 +39,6 @@ public class KjoennUtility {
 
     public KjoennDTO.Kjoenn getKjoenn() {
 
-        return RANDOM.nextBoolean() ? KVINNE : MANN;
+        return RANDOM.nextBoolean() ? MANN : KVINNE;
     }
 }

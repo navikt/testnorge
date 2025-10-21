@@ -17,7 +17,6 @@ import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
@@ -206,10 +205,7 @@ public class PersonService {
         }
 
         if (request.getPerson().getKjoenn().isEmpty()) {
-            request.getPerson().getKjoenn().add(KjoennDTO.builder()
-                    .kjoenn(nonNull(identifier) && nonNull(identifier.getFoedselsdato()) ?
-                            KjoennUtility.getKjoenn() : null)
-                    .build());
+            request.getPerson().getKjoenn().add(new KjoennDTO());
         }
         if (request.getPerson().getFoedselsdato().isEmpty()) {
             request.getPerson().getFoedselsdato().add(FoedselsdatoDTO.builder()
