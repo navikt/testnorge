@@ -44,6 +44,6 @@ sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette man
 
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
 

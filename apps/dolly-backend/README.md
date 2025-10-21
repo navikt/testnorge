@@ -15,7 +15,7 @@ av Dolly, bestillingskriterier, hvem som har sendt de inn og status på disse.
 
 ## Lokal kjøring
 
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
-* [Database i GCP.](../../docs/gcp_db.md)
-* [OpenSearch.](../../docs/local_opensearch.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
+* [Database i GCP.](../../docs/modules/ROOT/pages/local/gcp_db.adoc)
+* [OpenSearch.](../../docs/modules/ROOT/pages/local/local_opensearch.adoc)

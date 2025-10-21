@@ -2,8 +2,8 @@
 TPS-messaging-service gir mulighet å sende og motta XML-meldinger mot TPS MQ-køer, samt lese XML-innhold fra TPS servicerutiner over CICS.
 
 ## Lokal kjøring
-* [Generelt](../../docs/local_general.md)
-* [Lokal PostgreSQL.](../../docs/local_db.md)
+* [Generelt](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Lokal PostgreSQL.](../../docs/modules/ROOT/pages/local/local_db.adoc)
 
 Gjennom `naisdevice` er det ikke åpnet opp for kjøring mot MQ. Det er mulig å teste mot et Dockerimage som innholder en test-MQ, i hht. [dokumentasjon](https://developer.ibm.com/tutorials/mq-connect-app-queue-manager-containers/).
 
