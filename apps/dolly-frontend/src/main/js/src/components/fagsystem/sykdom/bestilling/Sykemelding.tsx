@@ -22,8 +22,8 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 		return null
 	}
 
-	const syntSykemelding = sykemelding.syntSykemelding
 	const detaljertSykemelding = sykemelding.detaljertSykemelding
+	const nySykemelding = sykemelding.nySykemelding
 
 	const getNavn = (helsepersonell: Helsepersonell) => {
 		return `${helsepersonell.fornavn} ${helsepersonell.mellomnavn ? helsepersonell.mellomnavn : ''} ${helsepersonell.etternavn}`
@@ -37,13 +37,6 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 		<div className="person-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Sykemelding</BestillingTitle>
-				{syntSykemelding && (
-					<BestillingData>
-						<TitleValue title="Startdato" value={formatDate(syntSykemelding.startDato)} />
-						<TitleValue title="Arbeidsforhold-ID" value={syntSykemelding.arbeidsforholdId} />
-						<TitleValue title="Organisasjonsnummer" value={syntSykemelding.orgnummer} />
-					</BestillingData>
-				)}
 				{detaljertSykemelding && (
 					<>
 						<BestillingData>
@@ -168,6 +161,18 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 							</>
 						)}
 					</>
+				)}
+				{nySykemelding && (
+					<BestillingData>
+						<DollyFieldArray header="Periode" data={nySykemelding.aktivitet}>
+							{(periode: Periode, idx: number) => (
+								<React.Fragment key={idx}>
+									<TitleValue title="F.o.m. dato" value={formatDate(periode?.fom)} />
+									<TitleValue title="T.o.m. dato" value={formatDate(periode?.tom)} />
+								</React.Fragment>
+							)}
+						</DollyFieldArray>
+					</BestillingData>
 				)}
 			</ErrorBoundary>
 		</div>
