@@ -19,6 +19,10 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 @RequiredArgsConstructor
 class Udistub {
 
+    private static final String CLUSTER = "dev-fss";
+    private static final String NAME = "testnav-udi-stub";
+    private static final String NAMESPACE = "dolly";
+
     private final Targets targets;
     private final TokenExchange tokenExchange;
 
@@ -34,9 +38,9 @@ class Udistub {
 
     private GatewayFilter getAuthenticationFilter() {
         var serverProperties = new ServerProperties();
-        serverProperties.setCluster("dev-fss");
-        serverProperties.setName("testnav-udi-stub");
-        serverProperties.setNamespace("dolly");
+        serverProperties.setCluster(CLUSTER);
+        serverProperties.setName(NAME);
+        serverProperties.setNamespace(NAMESPACE);
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
                         () -> tokenExchange
