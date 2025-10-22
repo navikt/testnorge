@@ -3,12 +3,14 @@ package no.nav.pdl.forvalter.utils;
 import lombok.experimental.UtilityClass;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 @UtilityClass
 public class Id2032FraIdentUtility {
 
     private static final int[] VEKTER_K1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+    private static final List<Integer> GYLDIG_REST_K1 = List.of(1, 2, 3);
 
     /**
      * Validerer et fødsels-eller-d-nummer(1964 og 2032-type) ved å sjekke kontrollsifrene iht.
@@ -29,7 +31,7 @@ public class Id2032FraIdentUtility {
 
         final int beregnetRestSifferK1 = (vektetK1 + gittK1) % 11;
 
-        return beregnetRestSifferK1 != 0;
+        return GYLDIG_REST_K1.contains(beregnetRestSifferK1);
     }
 
     private static int[] konverterTilIntArray(String ident) {
