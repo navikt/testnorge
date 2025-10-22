@@ -18,6 +18,7 @@ class Targets {
 
     String histark;
     String inntektstub;
+    String sigrunstub;
     String skjermingsregister;
     String udistub;
 

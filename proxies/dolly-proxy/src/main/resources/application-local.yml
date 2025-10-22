@@ -10,5 +10,6 @@ springdoc:
 targets:
   histark: https://histarkimport.dev.intern.nav.no
   inntektstub: https://inntektstub.intern.dev.nav.no
+  sigrunstub: http://sigrun-skd-stub.team-inntekt.dev.intern.nav.no
   skjermingsregister: https://skjermede-personer.intern.dev.nav.no
   udistub: http://testnav-udi-stub.intern.dev.nav.no
