@@ -88,11 +88,6 @@ consumers:
     namespace: dolly
     name: testnav-fullmakt-proxy
     url: https://testnav-fullmakt-proxy.dev-fss-pub.nais.io
-  testnav-sigrunstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-sigrunstub-proxy
-    url: https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io
   testnav-pensjon-testdata-facade-proxy:
     cluster: dev-fss
     namespace: dolly

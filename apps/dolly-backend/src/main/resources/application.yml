@@ -154,11 +154,6 @@ consumers:
     namespace: dolly
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-sigrunstub-proxy:
-    name: testnav-sigrunstub-proxy
-    namespace: dolly
-    url: https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-pensjon-testdata-facade-proxy:
     name: testnav-pensjon-testdata-facade-proxy
     namespace: dolly

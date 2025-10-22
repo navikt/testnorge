@@ -65,7 +65,6 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-saf-proxy.dev-fss-pub.nais.io
-        - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
