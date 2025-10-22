@@ -126,7 +126,7 @@
   "/testnav-kontoregister-person-proxy/api/system": {
     "changeOrigin": true
   },
-  "/testnav-skjermingsregister-proxy/api": {
+  "/testnav-dolly-proxy/skjermingsregister/api": {
     "changeOrigin": true
   },
   "/testnav-dokarkiv-proxy": {

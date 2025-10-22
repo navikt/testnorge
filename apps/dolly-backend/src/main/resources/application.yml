@@ -139,11 +139,6 @@ consumers:
     namespace: dolly
     url: https://testnav-inst-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-skjermingsregister-proxy:
-    name: testnav-skjermingsregister-proxy
-    namespace: dolly
-    url: https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-arena-forvalteren-proxy:
     name: testnav-arena-forvalteren-proxy
     namespace: dolly

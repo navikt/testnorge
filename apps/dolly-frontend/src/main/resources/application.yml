@@ -168,11 +168,6 @@ consumers:
     namespace: dolly
     url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-skjermingsregister-proxy:
-    name: testnav-skjermingsregister-proxy
-    namespace: dolly
-    url: https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-dokarkiv-proxy:
     name: testnav-dokarkiv-proxy
     namespace: dolly
