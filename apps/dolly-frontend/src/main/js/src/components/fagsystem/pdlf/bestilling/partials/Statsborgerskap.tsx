@@ -41,6 +41,7 @@ export const Statsborgerskap = ({ statsborgerskapListe }: StatsborgerskapTypes) 
 									title="Bekreftelsesdato"
 									value={formatDate(statsborgerskap.bekreftelsesdato)}
 								/>
+								<TitleValue title="Master" value={statsborgerskap.master} />
 							</React.Fragment>
 						)
 					}}

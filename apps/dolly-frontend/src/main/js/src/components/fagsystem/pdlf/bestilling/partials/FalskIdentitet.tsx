@@ -70,6 +70,7 @@ export const FalskIdentitet = ({ falskIdentitetListe }: FalskIdentitetTypes) => 
 									value={falskIdentitet.rettIdentitetVedOpplysninger?.kjoenn}
 								/>
 								<TitleValue title="Statsborgerskap" value={statsborgerskapFormatted} />
+								<TitleValue title="Master" value={falskIdentitet.master} />
 							</React.Fragment>
 						)
 					}}

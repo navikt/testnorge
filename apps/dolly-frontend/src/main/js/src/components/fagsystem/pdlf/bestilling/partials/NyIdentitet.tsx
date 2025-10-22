@@ -38,6 +38,7 @@ export const NyIdentitet = ({ nyIdentitetListe }: NyIdentitetTypes) => {
 											title="Har mellomnavn"
 											value={nyIdentitet.nyttNavn?.hasMellomnavn && 'JA'}
 										/>
+										<TitleValue title="Master" value={nyIdentitet.master} />
 									</>
 								)}
 							</React.Fragment>

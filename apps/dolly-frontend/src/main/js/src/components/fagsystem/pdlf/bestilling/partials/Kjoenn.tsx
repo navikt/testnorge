@@ -24,6 +24,7 @@ export const Kjoenn = ({ kjoennListe }: KjoennTypes) => {
 						return (
 							<React.Fragment key={idx}>
 								<TitleValue title="Kjønn" value={showLabel('kjoenn', kjoenn.kjoenn)} />
+								<TitleValue title="Master" value={kjoenn.master} />
 							</React.Fragment>
 						)
 					}}

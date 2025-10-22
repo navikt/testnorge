@@ -48,6 +48,7 @@ export const Foreldreansvar = ({ foreldreansvarListe }: ForeldreansvarTypes) => 
 								/>
 								<TitleValue title="Ansvarlig" value={foreldreansvar.ansvarlig} />
 								<TitleValue title="Ansvarssubjekt" value={foreldreansvar.ansvarssubjekt} />
+								<TitleValue title="Master" value={foreldreansvar.master} />
 								<EkspanderbarVisning
 									vis={_get(foreldreansvar, 'nyAnsvarlig')}
 									header={'NY ANSVARLIG'}

@@ -40,6 +40,7 @@ export const Sikkerhetstiltak = ({ sikkerhetstiltakListe }: SikkerhetstiltakType
 									title="Gyldig t.o.m."
 									value={formatDate(sikkerhetstiltak.gyldigTilOgMed)}
 								/>
+								<TitleValue title="Master" value={sikkerhetstiltak.master} />
 							</React.Fragment>
 						)
 					}}

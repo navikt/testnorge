@@ -35,6 +35,7 @@ export const TilrettelagtKommunikasjon = ({
 									value={tilrettelagtKommunikasjon.spraakForTegnspraakTolk}
 									kodeverk={PersoninformasjonKodeverk.Spraak}
 								/>
+								<TitleValue title="Master" value={tilrettelagtKommunikasjon.master} />
 							</React.Fragment>
 						)
 					}}

@@ -34,6 +34,7 @@ export const Utvandring = ({ utvandringListe }: UtvandringTypes) => {
 									title="Utvandringsdato"
 									value={formatDate(utvandring.utflyttingsdato)}
 								/>
+								<TitleValue title="Master" value={utvandring.master} />
 							</React.Fragment>
 						)
 					}}

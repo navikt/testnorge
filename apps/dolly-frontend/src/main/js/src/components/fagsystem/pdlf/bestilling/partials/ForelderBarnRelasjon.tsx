@@ -64,6 +64,7 @@ export const ForelderBarnRelasjon = ({ forelderBarnListe }: ForelderBarnTypes) =
 									title={forelderBarn.relatertPersonsRolle}
 									value={forelderBarn.relatertPerson}
 								/>
+								<TitleValue title="Master" value={forelderBarn.master} />
 								<EkspanderbarVisning vis={_get(forelderBarn, 'deltBosted')} header="DELT BOSTED">
 									<DeltBosted deltBosted={forelderBarn.deltBosted} />
 								</EkspanderbarVisning>

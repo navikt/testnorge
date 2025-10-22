@@ -56,6 +56,7 @@ export type NavnBestilling = {
 	etternavn: string
 	hasMellomnavn: boolean
 	gyldigFraOgMed?: string
+	master?: string
 }
 
 type Kjoenn = {
@@ -76,6 +77,7 @@ export type FoedselData = {
 	foedeland: string
 	metadata?: Metadata
 	id?: number
+	master?: string
 }
 
 export type FoedselsdatoData = {
@@ -83,6 +85,7 @@ export type FoedselsdatoData = {
 	foedselsaar: number
 	metadata: Metadata
 	id?: number
+	master?: string
 }
 
 export type FoedestedData = {
@@ -91,12 +94,14 @@ export type FoedestedData = {
 	foedeland: string
 	metadata: Metadata
 	id?: number
+	master?: string
 }
 
 export type DoedsfallData = {
 	doedsdato: string
 	metadata?: Metadata
 	id?: number
+	master?: string
 }
 
 export type StatsborgerskapData = {
@@ -105,6 +110,7 @@ export type StatsborgerskapData = {
 	gyldigTilOgMed: string
 	bekreftelsesdato?: string
 	id?: number
+	master?: string
 }
 
 export type Innflytting = {
@@ -138,6 +144,7 @@ export type SivilstandData = {
 	borIkkeSammen?: boolean
 	nyRelatertPerson?: NyIdent
 	metadata: Metadata
+	master?: string
 }
 
 export type Metadata = {
@@ -171,11 +178,13 @@ export type ForeldreBarnRelasjon = {
 	typeForelderBarn?: string
 	borIkkeSammen?: boolean
 	partnerErIkkeForelder?: boolean
+	master?: string
 }
 
 export type DoedfoedtBarnData = {
 	id?: number
 	dato: Date
+	master?: string
 }
 
 export type ForeldreansvarData = {
@@ -187,6 +196,7 @@ export type ForeldreansvarData = {
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId
 	nyAnsvarlig?: NyIdent
 	metadata?: Metadata
+	master?: string
 }
 
 export type ForeldreansvarUtenId = {
@@ -205,6 +215,7 @@ export type VergemaalValues = {
 	nyVergeIdent?: NyIdent | undefined
 	vergeIdent?: string
 	id: number
+	master?: string
 }
 
 export type FullmaktValues = {
@@ -237,6 +248,7 @@ export type NyIdent = {
 		hasMellomnavn: boolean
 	}
 	eksisterendeIdent?: string
+	master?: string
 }
 
 export type FalskIdentitetData = {
@@ -252,12 +264,14 @@ export type FalskIdentitetData = {
 		statsborgerskap?: Array<string>
 	}
 	rettIdentitetErUkjent?: boolean
+	master?: string
 }
 
 export type UtenlandskIdentData = {
 	identifikasjonsnummer: string
 	utstederland: string
 	opphoert: boolean
+	master?: string
 }
 
 export type KontaktinformasjonForDoedsboData = {
@@ -299,6 +313,7 @@ export type KontaktinformasjonForDoedsboData = {
 			gradering: string
 		}
 	}
+	master?: string
 }
 
 export type SelectedValue = {

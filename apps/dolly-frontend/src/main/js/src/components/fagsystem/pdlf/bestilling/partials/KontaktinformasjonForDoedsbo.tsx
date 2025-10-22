@@ -65,6 +65,7 @@ export const KontaktinformasjonForDoedsbo = ({
 									title="Utstedelsesdato skifteattest"
 									value={formatDate(kontaktinformasjonForDoedsbo.attestutstedelsesdato)}
 								/>
+								<TitleValue title="Master" value={kontaktinformasjonForDoedsbo.master} />
 								<div className="flexbox--full-width" style={{ margin: '15px 0 -15px 0' }}>
 									<BestillingTitle>Kontakt</BestillingTitle>
 									<BestillingData>

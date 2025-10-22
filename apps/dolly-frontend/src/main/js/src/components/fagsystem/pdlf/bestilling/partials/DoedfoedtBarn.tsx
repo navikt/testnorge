@@ -24,6 +24,7 @@ export const DoedfoedtBarn = ({ doedfoedtBarnListe }: DoedfoedtBarnTypes) => {
 						return (
 							<React.Fragment key={idx}>
 								<TitleValue title="Dødsdato" value={formatDate(doedfoedtBarn.dato)} />
+								<TitleValue title="Master" value={doedfoedtBarn.master} />
 							</React.Fragment>
 						)
 					}}

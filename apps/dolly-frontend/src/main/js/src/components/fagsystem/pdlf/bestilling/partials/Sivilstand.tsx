@@ -43,6 +43,7 @@ export const Sivilstand = ({ sivilstandListe }: SivilstandTypes) => {
 									title="Partner"
 									value={oversettBoolean(sivilstand.relatertVedSivilstand)}
 								/>
+								<TitleValue title="Master" value={sivilstand.master} />
 								<EkspanderbarVisning
 									vis={!dataIsEmpty(sivilstand.nyRelatertPerson)}
 									header={'PARTNER'}

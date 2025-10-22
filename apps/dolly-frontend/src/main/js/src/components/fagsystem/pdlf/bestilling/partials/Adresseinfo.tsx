@@ -13,6 +13,7 @@ type AdresseinfoTypes = {
 			mellomnavn?: string
 			etternavn?: string
 		}
+		master?: string
 	}
 }
 
@@ -36,6 +37,7 @@ export const Adresseinfo = ({ adresseinfo }: AdresseinfoTypes) => {
 				value={showLabel('oppholdAnnetSted', adresseinfo.oppholdAnnetSted)}
 			/>
 			<TitleValue title="C/O adressenavn" value={navn} />
+			<TitleValue title="Master" value={adresseinfo.master} />
 		</>
 	)
 }

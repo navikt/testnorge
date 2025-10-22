@@ -30,6 +30,7 @@ export const Foedselsdato = ({ foedselsdatoListe }: FoedselsdatoTypes) => {
 									<>
 										<TitleValue title="Fødselsdato" value={formatDate(foedselsdato.foedselsdato)} />
 										<TitleValue title="Fødselsår" value={foedselsdato.foedselsaar} />
+										<TitleValue title="Master" value={foedselsdato.master} />
 									</>
 								)}
 							</React.Fragment>

@@ -222,6 +222,7 @@ export type TelefonData = {
 	prioritet?: number
 	telefontype?: string
 	id?: number
+	master?: string
 }
 
 export type TilrettelagtKommunikasjonData = {
@@ -229,6 +230,7 @@ export type TilrettelagtKommunikasjonData = {
 	tegnspraaktolk: { spraak: string }
 	spraakForTaletolk: string
 	spraakForTegnspraakTolk: string
+	master?: string
 }
 
 export type SikkerhetstiltakData = {
@@ -238,6 +240,7 @@ export type SikkerhetstiltakData = {
 	beskrivelse: string
 	kontaktperson: Kontaktperson
 	omraader: []
+	master?: string
 }
 
 export type Kontaktperson = {
@@ -261,6 +264,7 @@ export type Relasjon = {
 }
 export type AdressebeskyttelseData = {
 	gradering: string
+	master?: string
 }
 
 export type Kodeverk = {
@@ -310,6 +314,7 @@ export type InnvandringValues = {
 	fraflyttingsstedIUtlandet: string
 	innflyttingsdato: string
 	id?: number
+	master?: string
 }
 
 export type UtvandringValues = {
@@ -317,6 +322,7 @@ export type UtvandringValues = {
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
 	id?: number
+	master?: string
 }
 
 export type Folkeregisterpersonstatus = {
@@ -328,6 +334,7 @@ export type Folkeregisterpersonstatus = {
 export type KjoennValues = {
 	kjoenn: string
 	metadata: Metadata
+	master?: string
 }
 
 type Navn = {

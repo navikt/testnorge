@@ -24,6 +24,7 @@ export const Doedsfall = ({ doedsfallListe }: DoedsfallTypes) => {
 						return (
 							<React.Fragment key={idx}>
 								<TitleValue title="Dødsdato" value={formatDate(doedsfall.doedsdato)} />
+								<TitleValue title="Master" value={doedsfall.master} />
 							</React.Fragment>
 						)
 					}}

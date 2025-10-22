@@ -27,6 +27,7 @@ export const Adressebeskyttelse = ({ adressebeskyttelseListe }: Adressebeskyttel
 									title="Gradering"
 									value={showLabel('gradering', adressebeskyttelse.gradering)}
 								/>
+								<TitleValue title="Master" value={adressebeskyttelse.master} />
 							</React.Fragment>
 						)
 					}}

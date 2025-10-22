@@ -31,6 +31,7 @@ export const Navn = ({ navnListe }: NavnTypes) => {
 									value={oversettBoolean(navn.hasMellomnavn)}
 								/>
 								<TitleValue title="Gyldig f.o.m. dato" value={formatDate(navn.gyldigFraOgMed)} />
+								<TitleValue title="Master" value={navn.master} />
 							</React.Fragment>
 						)
 					}}

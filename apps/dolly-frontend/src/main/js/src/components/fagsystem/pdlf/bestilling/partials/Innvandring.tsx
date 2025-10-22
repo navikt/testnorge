@@ -37,6 +37,7 @@ export const Innvandring = ({ innvandringListe }: InnvandringTypes) => {
 									title="Fraflyttingsdato"
 									value={formatDate(innvandring.innflyttingsdato)}
 								/>
+								<TitleValue title="Master" value={innvandring.master} />
 							</React.Fragment>
 						)
 					}}

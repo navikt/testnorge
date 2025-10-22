@@ -45,6 +45,7 @@ export const Vergemaal = ({ vergemaalListe }: VergemaalTypes) => {
 								<TitleValue title="Gyldig f.o.m." value={formatDate(vergemaal.gyldigFraOgMed)} />
 								<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaal.gyldigTilOgMed)} />
 								<TitleValue title="Verge" value={vergemaal.vergeIdent} />
+								<TitleValue title="Master" value={vergemaal.master} />
 								<EkspanderbarVisning vis={_get(vergemaal, 'nyVergeIdent')} header="VERGE">
 									<RelatertPerson personData={vergemaal.nyVergeIdent} tittel="Verge" />
 								</EkspanderbarVisning>

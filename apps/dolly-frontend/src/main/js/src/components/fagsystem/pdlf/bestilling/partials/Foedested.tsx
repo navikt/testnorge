@@ -39,6 +39,7 @@ export const Foedested = ({ foedestedListe }: FoedestedTypes) => {
 											value={foedested.foedeland}
 											kodeverk={AdresseKodeverk.StatsborgerskapLand}
 										/>
+										<TitleValue title="Master" value={foedested.master} />
 									</>
 								)}
 							</React.Fragment>

@@ -27,6 +27,7 @@ export const Telefonnummer = ({ telefonnummerListe }: TelefonnummerTypes) => {
 									value={`${telefonnummer.landskode} ${telefonnummer.nummer}`}
 								/>
 								<TitleValue title="Prioritet" value={telefonnummer.prioritet} />
+								<TitleValue title="Master" value={telefonnummer.master} />
 							</React.Fragment>
 						)
 					}}

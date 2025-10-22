@@ -96,20 +96,10 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Utvandring utvandringListe={bestilling.pdldata?.person?.utflytting} />
 			<Kjoenn kjoennListe={bestilling.pdldata?.person?.kjoenn} />
 			<Navn navnListe={bestilling.pdldata?.person?.navn} />
-			<Spraak spraakKode={bestilling.tpsMessaging?.spraakKode} />
-			<Skjerming
-				skjerming={
-					bestilling.tpsMessaging?.egenAnsattDatoFom
-						? {
-								egenAnsattDatoFom: bestilling.tpsMessaging?.egenAnsattDatoFom,
-								egenAnsattDatoTom: bestilling.tpsMessaging?.egenAnsattDatoTom,
-							}
-						: bestilling.skjerming
-				}
-			/>
+			{/*<Spraak spraakKode={bestilling.tpsMessaging?.spraakKode} />*/}
+			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
 			<NorskBankkonto norskBankkonto={bestilling.bankkonto?.norskBankkonto} />
 			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
-			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
 			<Vergemaal vergemaalListe={bestilling.pdldata?.person?.vergemaal} />
 			<Fullmakt fullmaktListe={bestilling.fullmakt || bestilling.pdldata?.person?.fullmakt} />
 			<Sikkerhetstiltak sikkerhetstiltakListe={bestilling.pdldata?.person?.sikkerhetstiltak} />
@@ -131,6 +121,16 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 				utenlandskIdentListe={bestilling.pdldata?.person?.utenlandskIdentifikasjonsnummer}
 			/>
 			<NyIdentitet nyIdentitetListe={bestilling.pdldata?.person?.nyident} />
+			<Skjerming
+				skjerming={
+					bestilling.tpsMessaging?.egenAnsattDatoFom
+						? {
+								egenAnsattDatoFom: bestilling.tpsMessaging?.egenAnsattDatoFom,
+								egenAnsattDatoTom: bestilling.tpsMessaging?.egenAnsattDatoTom,
+							}
+						: bestilling.skjerming
+				}
+			/>
 			<KontaktinformasjonForDoedsbo
 				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
 			/>

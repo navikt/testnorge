@@ -34,6 +34,7 @@ export const UtenlandskIdent = ({ utenlandskIdentListe }: UtenlandskIdentTypes) 
 									title="Utenlandsk ID opphørt"
 									value={oversettBoolean(utenlandskIdent.opphoert)}
 								/>
+								<TitleValue title="Master" value={utenlandskIdent.master} />
 							</React.Fragment>
 						)
 					}}
