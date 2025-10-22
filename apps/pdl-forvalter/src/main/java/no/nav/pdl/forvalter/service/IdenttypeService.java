@@ -10,6 +10,7 @@ import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.IdentRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
@@ -18,10 +19,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -30,8 +29,6 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
@@ -50,8 +47,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
             "enn fødtEtter";
     private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller BOST";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
-
-    private static final Random secureRandom = new SecureRandom();
 
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
@@ -149,17 +144,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         return isNotBlank(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
     }
 
-    private static Kjoenn getTilfeldigKjoenn() {
-
-        return secureRandom.nextBoolean() ? MANN : KVINNE;
-    }
-
     private static Kjoenn getKjoenn(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
             return request.getKjoenn();
         }
-        return isNotBlank(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
+        return isNotBlank(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : KjoennUtility.getKjoenn();
     }
 
     private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
