@@ -8,7 +8,6 @@ import { Innvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Inn
 import { Utvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Utvandring'
 import { Kjoenn } from '@/components/fagsystem/pdlf/bestilling/partials/Kjoenn'
 import { Navn } from '@/components/fagsystem/pdlf/bestilling/partials/Navn'
-import { Spraak } from '@/components/fagsystem/pdlf/bestilling/partials/Spraak'
 import { Skjerming } from '@/components/fagsystem/pdlf/bestilling/partials/Skjerming'
 import { NorskBankkonto } from '@/components/fagsystem/pdlf/bestilling/partials/NorskBankkonto'
 import { UtenlandskBankkonto } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskBankkonto'
@@ -96,7 +95,6 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Utvandring utvandringListe={bestilling.pdldata?.person?.utflytting} />
 			<Kjoenn kjoennListe={bestilling.pdldata?.person?.kjoenn} />
 			<Navn navnListe={bestilling.pdldata?.person?.navn} />
-			{/*<Spraak spraakKode={bestilling.tpsMessaging?.spraakKode} />*/}
 			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
 			<NorskBankkonto norskBankkonto={bestilling.bankkonto?.norskBankkonto} />
 			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
@@ -121,16 +119,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 				utenlandskIdentListe={bestilling.pdldata?.person?.utenlandskIdentifikasjonsnummer}
 			/>
 			<NyIdentitet nyIdentitetListe={bestilling.pdldata?.person?.nyident} />
-			<Skjerming
-				skjerming={
-					bestilling.tpsMessaging?.egenAnsattDatoFom
-						? {
-								egenAnsattDatoFom: bestilling.tpsMessaging?.egenAnsattDatoFom,
-								egenAnsattDatoTom: bestilling.tpsMessaging?.egenAnsattDatoTom,
-							}
-						: bestilling.skjerming
-				}
-			/>
+			<Skjerming skjerming={bestilling.skjerming} />
 			<KontaktinformasjonForDoedsbo
 				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
 			/>
