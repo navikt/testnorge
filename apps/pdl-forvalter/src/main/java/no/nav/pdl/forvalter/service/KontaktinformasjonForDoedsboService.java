@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -31,8 +32,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
-import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -328,12 +327,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             kontakt.getNyKontaktperson().setFoedtFoer(LocalDateTime.now().minusYears(18));
             kontakt.getNyKontaktperson().setFoedtEtter(LocalDateTime.now().minusYears(75));
         }
-        if (isNull(kontakt.getNyKontaktperson().getSyntetisk())) {
-            kontakt.getNyKontaktperson().setSyntetisk(isSyntetisk(hovedperson));
-        }
-        if (isNull(kontakt.getNyKontaktperson().getId2032())) {
-            kontakt.getNyKontaktperson().setId2032(isId2032(hovedperson));
-        }
+
+        EgenskaperFraHovedperson.kopierData(hovedperson, kontakt.getNyKontaktperson());
 
         kontakt.setIdentifikasjonsnummer(
                 createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());

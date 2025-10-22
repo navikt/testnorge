@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.dto.PersonUtenIdentifikatorRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
@@ -37,8 +38,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
-import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
@@ -250,15 +249,11 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                 relasjon.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(
                         relasjon.getRelatertPersonsRolle() == Rolle.BARN ? 18 : 90));
             }
+
             if (isNull(relasjon.getNyRelatertPerson().getKjoenn())) {
                 relasjon.getNyRelatertPerson().setKjoenn(getKjoenn(relasjon.getRelatertPersonsRolle()));
             }
-            if (isNull(relasjon.getNyRelatertPerson().getSyntetisk())) {
-                relasjon.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
-            }
-            if (isNull(relasjon.getNyRelatertPerson().getId2032())) {
-                relasjon.getNyRelatertPerson().setId2032(isId2032(hovedperson.getIdent()));
-            }
+            EgenskaperFraHovedperson.kopierData(hovedperson, relasjon.getNyRelatertPerson());
 
             PersonDTO relatertPerson = createPersonService.execute(relasjon.getNyRelatertPerson());
 

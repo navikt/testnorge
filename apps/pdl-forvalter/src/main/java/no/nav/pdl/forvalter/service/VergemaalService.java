@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
@@ -17,8 +18,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
-import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -89,12 +88,7 @@ public class VergemaalService implements Validation<VergemaalDTO> {
                 vergemaal.getNyVergeIdent().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            if (isNull(vergemaal.getNyVergeIdent().getSyntetisk())) {
-                vergemaal.getNyVergeIdent().setSyntetisk(isSyntetisk(ident));
-            }
-            if (isNull(vergemaal.getNyVergeIdent().getId2032())) {
-                vergemaal.getNyVergeIdent().setId2032(isId2032(ident));
-            }
+            EgenskaperFraHovedperson.kopierData(ident, vergemaal.getNyVergeIdent());
 
             vergemaal.setVergeIdent(createPersonService.execute(vergemaal.getNyVergeIdent()).getIdent());
         }

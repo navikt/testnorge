@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
@@ -41,8 +42,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
-import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FORELDER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MEDMOR;
@@ -471,12 +470,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         if (isNull(foreldreansvar.getNyAnsvarlig().getKjoenn())) {
             foreldreansvar.getNyAnsvarlig().setKjoenn(KjoennUtility.getKjoenn());
         }
-        if (isNull(foreldreansvar.getNyAnsvarlig().getSyntetisk())) {
-            foreldreansvar.getNyAnsvarlig().setSyntetisk(isSyntetisk(barn.getIdent()));
-        }
-        if (isNull(foreldreansvar.getNyAnsvarlig().getId2032())) {
-            foreldreansvar.getNyAnsvarlig().setId2032(isId2032(barn.getIdent()));
-        }
+        EgenskaperFraHovedperson.kopierData(barn, foreldreansvar.getNyAnsvarlig());
 
         PersonDTO relatertPerson = createPersonService.execute(foreldreansvar.getNyAnsvarlig());
 
