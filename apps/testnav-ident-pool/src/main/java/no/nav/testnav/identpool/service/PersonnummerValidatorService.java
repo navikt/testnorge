@@ -2,9 +2,9 @@ package no.nav.testnav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.identpool.domain.Ident;
+import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
-import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
@@ -23,6 +23,7 @@ import static java.lang.Integer.parseInt;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.identpool.domain.Kjoenn.KVINNE;
 import static no.nav.testnav.identpool.domain.Kjoenn.MANN;
+import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
@@ -247,10 +248,11 @@ public class PersonnummerValidatorService {
                                        Ident ident, Ident2032 ident2032) {
 
         if (nonNull(ident2032.getFoedselsdato())) {
-            return "Fødselsdato er hentet fra eksisterende ident i identpool. Århundre kan ikke utledes " +
-                    "fra 2032-fødselsnummer, ei heller kjønn.";
+            return "Fødselsdato er hentet fra " + (isTrue(ident2032.getAllokert()) ? "eksisterende" : "ledig") +
+                    " ident i identpool. Århundre kan ikke utledes fra 2032-fødselsnummer, ei heller kjønn.";
         } else if (nonNull(ident.getFoedselsdato())) {
-            return "Fødselsdato og kjønn er hentet fra eksisterende ident i identpool." +
+            return "Fødselsdato og kjønn er hentet fra " + (isTrue(ident.getRekvireringsstatus() == I_BRUK) ?
+                    "eksisterende" : "ledig") + " ident i identpool." +
                     (getKjoennFromIdent(foedselsnummer) != ident.getKjoenn() ?
                     " Kjønn avledet fra fødselsnummer samsvarer ikke med lagret verdi fra identpool." : "");
         } else if (erStriktFoedselsnummer64) {
