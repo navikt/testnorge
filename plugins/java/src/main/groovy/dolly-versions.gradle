@@ -4,9 +4,9 @@ class DollyVersionCatalog {
     String navAltinnInntektsmelding = "1.2019.08.16-13.46-35cbdfd492d4"
     String navFellesregister = "2020.08.27-09.53-183ead3d81eb"
 
-    String springBoot = "3.4.5"
-    String springSession = "3.4.3"
-    String springCloud = "2024.0.1"
+    String springBoot = "3.5.3"
+    String springCloud = "2025.0.0"
+    String springSession = "3.4.4"
 
     String gcpSecretManager = "5.10.0"
 
