@@ -48,6 +48,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 					tidligereBestillinger: bestillinger,
 					identMaster: master,
 					identtype: type,
+					timedOutFagsystemer: data?.timedOutFagsystemer,
 				},
 			}),
 	}

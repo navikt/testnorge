@@ -25,10 +25,12 @@ export interface BestillingsveilederContextType {
 		nyStandardOrganisasjon?: boolean
 		importTestnorge?: boolean
 	}
+	timedOutFagsystemer?: string[]
 }
 
 const defaultContextValue: BestillingsveilederContextType = {
 	initialValues: {},
+	timedOutFagsystemer: [],
 }
 
 export const BestillingsveilederContext: Context<BestillingsveilederContextType> =

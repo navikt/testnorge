@@ -13,6 +13,7 @@ interface AttributtProps {
 	attr: AttrItem
 	vis?: boolean
 	disabled?: boolean
+	wrapperSize?: 'grow' | 'tight'
 	title?: string
 	id?: string
 	infoTekst?: string
@@ -21,6 +22,7 @@ interface AttributtProps {
 export const Attributt: React.FC<AttributtProps> = ({
 	attr,
 	vis = true,
+	wrapperSize = 'grow',
 	disabled = false,
 	title,
 	id,
@@ -31,7 +33,7 @@ export const Attributt: React.FC<AttributtProps> = ({
 	return (
 		<div title={title} style={{ display: 'flex', alignItems: 'center' }}>
 			<DollyCheckbox
-				wrapperSize="tight"
+				wrapperSize={wrapperSize as any}
 				label={attr.label}
 				attributtCheckbox
 				size="small"
@@ -52,7 +54,6 @@ interface AttributtKategoriProps {
 	attr: Record<string, AttrItem>
 }
 export const AttributtKategori: React.FC<AttributtKategoriProps> = ({ title, children, attr }) => {
-	'use no memo' // Skip compilation for this component
 	const values = attr && Object.values(attr)
 	const checkedValues = values?.filter((a) => a.checked)?.map((a) => a.label) || []
 

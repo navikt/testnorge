@@ -35,7 +35,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 	return (
 		<StyledTabs size="small" defaultValue={forsteMiljo}>
 			<Tabs.List>
-				{data.map((miljoData, idx: number) => {
+				{data?.map?.((miljoData, idx: number) => {
 					if (errorMiljoer?.includes(miljoData?.miljo)) {
 						return (
 							<ErrorMiljoTab
@@ -63,7 +63,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					)
 				})}
 			</Tabs.List>
-			{data.map((miljoData, idx: number) => (
+			{data?.map?.((miljoData, idx: number) => (
 				<StyledPanel key={miljoData?.miljo + idx} value={miljoData?.miljo}>
 					{!miljoData?.data ||
 					miljoData?.data?.length < 1 ||
