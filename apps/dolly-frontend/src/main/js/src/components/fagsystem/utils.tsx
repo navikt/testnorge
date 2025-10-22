@@ -48,6 +48,9 @@ export const getEksisterendeNyPerson = (
 	}
 }
 
+export const getFagsystemTimeoutTitle = (code: string): string =>
+	code + ' kan ikke nås fra Dolly, legg til/endre er midlertidig utilgjengelig'
+
 export const getRandomValue = (liste: any) => {
 	if (!liste || liste?.length < 1) {
 		return null
@@ -55,6 +58,3 @@ export const getRandomValue = (liste: any) => {
 	const random = Math.floor(Math.random() * liste.length) //NOSONAR not used in secure contexts
 	return liste[random]
 }
-
-export const getFagsystemTimeoutTitle = (code: string): string =>
-	code + ' kan ikke nås fra Dolly, legg til/endre er midlertidig utilgjengelig'
