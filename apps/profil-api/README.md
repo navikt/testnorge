@@ -8,5 +8,5 @@ parent: Applikasjoner
 Api for henting av profil (navn, e-post og avdeling) og profilbilde for innlogget bruker.
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

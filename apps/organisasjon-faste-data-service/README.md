@@ -3,5 +3,5 @@ Service som utfører CRUD funksjonalitet for organisasjoner mot EREG. Ofte benyt
 sende inn organisasjoner fra grupper som er blitt overskrevet.
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
