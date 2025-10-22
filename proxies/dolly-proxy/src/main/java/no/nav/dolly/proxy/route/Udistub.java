@@ -37,10 +37,7 @@ class Udistub {
     }
 
     private GatewayFilter getAuthenticationFilter() {
-        var serverProperties = new ServerProperties();
-        serverProperties.setCluster(CLUSTER);
-        serverProperties.setName(NAME);
-        serverProperties.setNamespace(NAMESPACE);
+        var serverProperties = ServerProperties.of(CLUSTER, NAME, NAMESPACE, targets.udistub);
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
                         () -> tokenExchange
