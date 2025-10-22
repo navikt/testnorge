@@ -12,6 +12,7 @@ class RouteLocatorConfig {
 
     private final Histark histark;
     private final Inntektstub inntektstub;
+    private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
 
     @Bean
@@ -20,6 +21,7 @@ class RouteLocatorConfig {
                 .routes()
                 .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
+                .route("skjermingsregister", skjermingsregister.build())
                 .route("udistub", udistub.build())
                 .build();
     }

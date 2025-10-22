@@ -36,4 +36,5 @@ springdoc:
 targets:
   histark: https://histarkimport.dev.intern.nav.no
   inntektstub: http://inntektstub.team-inntekt
+  skjermingsregister: https://skjermede-personer.dev.adeo.no
   udistub: http://testnav-udi-stub.dolly
