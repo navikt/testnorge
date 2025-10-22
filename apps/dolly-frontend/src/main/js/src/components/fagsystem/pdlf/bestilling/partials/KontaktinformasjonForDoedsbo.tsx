@@ -4,7 +4,7 @@ import { BestillingData, BestillingTitle } from '@/components/bestilling/sammend
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, showKodeverkLabel, showLabel } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
@@ -130,7 +130,8 @@ export const KontaktinformasjonForDoedsbo = ({
 									<EkspanderbarVisning vis={adresse} header="ADRESSE">
 										<TitleValue
 											title="Land"
-											value={showKodeverkLabel(AdresseKodeverk.PostadresseLand, adresse?.landkode)}
+											value={adresse?.landkode}
+											kodeverk={AdresseKodeverk.PostadresseLand}
 										/>
 										<TitleValue title="Adresselinje 1" value={adresse?.adresselinje1} />
 										<TitleValue title="Adresselinje 2" value={adresse?.adresselinje2} />

@@ -2,7 +2,7 @@ import { UtenlandskIdentData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { oversettBoolean, showKodeverkLabel } from '@/utils/DataFormatter'
+import { oversettBoolean } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -27,10 +27,8 @@ export const UtenlandskIdent = ({ utenlandskIdentListe }: UtenlandskIdentTypes) 
 								<TitleValue title="Utenlandsk ID" value={utenlandskIdent.identifikasjonsnummer} />
 								<TitleValue
 									title="Utstederland"
-									value={showKodeverkLabel(
-										AdresseKodeverk.Utstederland,
-										utenlandskIdent.utstederland,
-									)}
+									value={utenlandskIdent.utstederland}
+									kodeverk={AdresseKodeverk.Utstederland}
 								/>
 								<TitleValue
 									title="Utenlandsk ID opphørt"

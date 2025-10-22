@@ -3,7 +3,7 @@ import React from 'react'
 import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, showKodeverkLabel } from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk, ArbeidKodeverk } from '@/config/kodeverk'
 import {
 	Aareg,
@@ -65,7 +65,8 @@ const Utenlandsopphold = ({ utenlandsopphold }: UtlandsoppholdData) => {
 				<React.Fragment key={idx}>
 					<TitleValue
 						title="Land"
-						value={showKodeverkLabel(AdresseKodeverk.ArbeidOgInntektLand, opphold?.land)}
+						value={opphold?.land}
+						kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 					/>
 					<TitleValue title="Opphold fra" value={formatDate(opphold?.periode?.fom)} />
 					<TitleValue title="Opphold til" value={formatDate(opphold?.periode?.tom)} />
@@ -85,10 +86,8 @@ const Permisjon = ({ permisjon }: PermisjonData) => {
 				<React.Fragment key={idx}>
 					<TitleValue
 						title="Permisjonstype"
-						value={showKodeverkLabel(
-							ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse,
-							perm?.permisjon,
-						)}
+						value={perm?.permisjon}
+						kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 					/>
 					<TitleValue title="Permisjon fra" value={formatDate(perm?.permisjonsPeriode?.fom)} />
 					<TitleValue title="Permisjon til" value={formatDate(perm?.permisjonsPeriode?.tom)} />
@@ -137,32 +136,27 @@ const ArbeidsforholdVisning = ({ arbeidsforhold }: ArbeidsforholdVisningData) =>
 			<TitleValue title="Organisasjonsnummer" value={arbeidsforhold?.arbeidsgiver?.orgnummer} />
 			<TitleValue
 				title="Type arbeidsforhold"
-				value={showKodeverkLabel(
-					ArbeidKodeverk.Arbeidsforholdstyper,
-					arbeidsforhold?.arbeidsforholdstype,
-				)}
+				value={arbeidsforhold?.arbeidsforholdstype}
+				kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 			/>
 			<TitleValue title="Arbeidsgiver ident" value={arbeidsforhold?.arbeidsgiver?.ident} />
 			<TitleValue title="Ansatt fra" value={formatDate(arbeidsforhold?.ansettelsesPeriode?.fom)} />
 			<TitleValue title="Ansatt til" value={formatDate(arbeidsforhold?.ansettelsesPeriode?.tom)} />
 			<TitleValue
 				title="Sluttårsak"
-				value={showKodeverkLabel(
-					ArbeidKodeverk.SluttaarsakAareg,
-					arbeidsforhold?.ansettelsesPeriode?.sluttaarsak,
-				)}
+				value={arbeidsforhold?.ansettelsesPeriode?.sluttaarsak}
+				kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 			/>
 			<TitleValue title="NAV arbeidsforholdsperiode" value={periode && formatDate(periode)} />
 			<TitleValue
 				title="Yrke"
-				value={showKodeverkLabel(ArbeidKodeverk.Yrker, arbeidsforhold?.arbeidsavtale?.yrke)}
+				value={arbeidsforhold?.arbeidsavtale?.yrke}
+				kodeverk={ArbeidKodeverk.Yrker}
 			/>
 			<TitleValue
 				title="Ansettelsesform"
-				value={showKodeverkLabel(
-					ArbeidKodeverk.AnsettelsesformAareg,
-					arbeidsforhold?.arbeidsavtale?.ansettelsesform,
-				)}
+				value={arbeidsforhold?.arbeidsavtale?.ansettelsesform}
+				kodeverk={ArbeidKodeverk.AnsettelsesformAareg}
 			/>
 			<TitleValue
 				title="Stillingsprosent"
@@ -182,10 +176,8 @@ const ArbeidsforholdVisning = ({ arbeidsforhold }: ArbeidsforholdVisningData) =>
 			/>
 			<TitleValue
 				title="Arbeidstidsordning"
-				value={showKodeverkLabel(
-					ArbeidKodeverk.Arbeidstidsordninger,
-					arbeidsforhold?.arbeidsavtale?.arbeidstidsordning,
-				)}
+				value={arbeidsforhold?.arbeidsavtale?.arbeidstidsordning}
+				kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
 			/>
 			<TitleValue
 				title="Avtalt arbeidstimer per uke"
@@ -193,21 +185,18 @@ const ArbeidsforholdVisning = ({ arbeidsforhold }: ArbeidsforholdVisningData) =>
 			/>
 			<TitleValue
 				title="Skipsregister"
-				value={showKodeverkLabel(
-					ArbeidKodeverk.Skipsregistre,
-					arbeidsforhold.fartoy?.[0]?.skipsregister,
-				)}
+				value={arbeidsforhold.fartoy?.[0]?.skipsregister}
+				kodeverk={ArbeidKodeverk.Skipsregistre}
 			/>
 			<TitleValue
 				title="Fartøystype"
-				value={showKodeverkLabel(ArbeidKodeverk.Skipstyper, arbeidsforhold.fartoy?.[0]?.skipstype)}
+				value={arbeidsforhold.fartoy?.[0]?.skipstype}
+				kodeverk={ArbeidKodeverk.Skipstyper}
 			/>
 			<TitleValue
 				title="Fartsområde"
-				value={showKodeverkLabel(
-					ArbeidKodeverk.Fartsomraader,
-					arbeidsforhold.fartoy?.[0]?.fartsomraade,
-				)}
+				value={arbeidsforhold.fartoy?.[0]?.fartsomraade}
+				kodeverk={ArbeidKodeverk.Fartsomraader}
 			/>
 			<TimerMedTimeloennet timerMedTimeloennet={arbeidsforhold?.antallTimerForTimeloennet} />
 			<Utenlandsopphold utenlandsopphold={arbeidsforhold?.utenlandsopphold} />
