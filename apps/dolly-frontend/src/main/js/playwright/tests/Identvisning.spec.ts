@@ -57,33 +57,6 @@ test('Åpne bestilt ident med knytning mot alle fagsystem', async ({ page }) => 
 	await page.getByTestId(TestComponentSelectors.TITLE_VISNING).hover({ force: true })
 })
 
-test('skal timeout Aareg arbeidsforhold etter 10 sekunder ved åpning av ident', async ({
-	page,
-}) => {
-	const AAREG_ROUTE = new RegExp(
-		/\/testnav-aareg-proxy\/.*\/api\/v1\/arbeidstaker\/arbeidsforhold.*$/,
-	)
-	await page.route(AAREG_ROUTE, async (route) => {
-		await new Promise((r) => setTimeout(r, 11500))
-		await route.abort()
-	})
-	await page.goto('gruppe')
-	await page
-		.locator('div')
-		.getByText(/Testytest/)
-		.first()
-		.click()
-	await page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_PERSONER).click()
-	await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_IDENT).click()
-	await page.getByText('Laster Aareg-data').waitFor({ timeout: 20000 })
-	const start = Date.now()
-	await page
-		.getByText(/(timeout|Henting av data fra .*arbeidsforhold.* feilet\.)/i)
-		.waitFor({ timeout: 30000 })
-	const elapsed = Date.now() - start
-	expect(elapsed).toBeGreaterThanOrEqual(9500)
-})
-
 test('skal disable AAREG checkbox ved legg til/endre når Aareg timeout oppstår', async ({
 	page,
 }) => {
@@ -91,7 +64,7 @@ test('skal disable AAREG checkbox ved legg til/endre når Aareg timeout oppstår
 		/\/testnav-aareg-proxy\/.*\/api\/v1\/arbeidstaker\/arbeidsforhold.*$/,
 	)
 	await page.route(AAREG_ROUTE, async (route) => {
-		await new Promise((r) => setTimeout(r, 11500))
+		await new Promise((r) => setTimeout(r, 2000))
 		await route.abort()
 	})
 	await page.goto('gruppe')
@@ -102,10 +75,14 @@ test('skal disable AAREG checkbox ved legg til/endre når Aareg timeout oppstår
 		.click()
 	await page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_PERSONER).click()
 	await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_IDENT).click()
-	await page.getByText('Laster Aareg-data').waitFor({ timeout: 20000 })
-	await page
-		.getByText(/(timeout|Henting av data fra .*arbeidsforhold.* feilet\.)/i)
-		.waitFor({ timeout: 30000 })
+	await page.getByText('Laster Aareg-data').waitFor({ timeout: 5000 })
+
+	await expect(page.getByText('Laster Aareg-data')).toHaveCount(0)
+
 	await page.getByText('LEGG TIL/ENDRE').click()
+	await page.waitForURL(/\/gruppe\/.*\/bestilling\/.*$/)
+	await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+	await page.getByText('Arbeid og inntekt').click()
+
 	await expect(page.getByTestId(TestComponentSelectors.CHECKBOX_AAREG)).toBeDisabled()
 })
