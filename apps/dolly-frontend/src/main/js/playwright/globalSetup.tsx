@@ -159,10 +159,8 @@ export const test = base.extend({
 	page: async ({ page, context }, use) => {
 		for (const routeInfo of mockRoutes) {
 			await context.addInitScript(() => {
-				// @ts-ignore
-				return (window.isRunningTest = true)
+				return ((window as any).isRunningTest = true)
 			})
-
 			await page.route(routeInfo.url, async (route) => {
 				await route.fulfill({
 					status: routeInfo.status || 200,
@@ -171,7 +169,6 @@ export const test = base.extend({
 				})
 			})
 		}
-
 		await use(page)
 	},
 })

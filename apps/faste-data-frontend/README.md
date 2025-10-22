@@ -6,5 +6,5 @@ dataene som er lagret i de forskjellige mijøene stemmer overens.
 Appen har ikke noen swagger, men søkene kan utføres på [Faste data](https://faste-data-frontend.intern.dev.nav.no)
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

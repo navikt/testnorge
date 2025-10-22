@@ -50,6 +50,9 @@ const arenaUrl = (miljoer) =>
 		miljo: miljoe,
 	}))
 
+const transaksjonIdUrl = (ident, system) =>
+	`/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}`
+
 const journalpostUrl = (transaksjonsid, miljoer) => {
 	const urlListe = []
 	miljoer.forEach((miljoe) => {
@@ -85,7 +88,7 @@ const histarkUrl = (transaksjonsid: any) => {
 	return urlListe
 }
 
-const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v3/cv'
+const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
 const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {
@@ -160,7 +163,7 @@ export const useTpDataYtelse = (ident, ordningNr, miljo) => {
 
 export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMiljoer = null) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
+		harBestilling ? transaksjonIdUrl(ident, system) : null,
 		fetcher,
 	)
 
@@ -190,14 +193,25 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 	}
 }
 
-export const useTransaksjonIdDataUtenMiljoe = (ident, system, harBestilling) => {
+export const useTransaksjonIdPensjon = (ident, harBestilling) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
+		harBestilling ? transaksjonIdUrl(ident, 'PEN_AP') : null,
 		fetcher,
 	)
+	const getMiljoData = () => {
+		if (!harBestilling || !data) {
+			return null
+		}
+		const miljoData = []
+		data?.forEach((m) => {
+			miljoData.push({ data: m, miljo: m.miljoe })
+		})
+		return miljoData
+	}
+	const miljoData = getMiljoData()
 
 	return {
-		data: data,
+		data: miljoData?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

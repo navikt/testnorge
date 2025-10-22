@@ -1,0 +1,549 @@
+= Testnav Dokumentasjon
+:sectnums:
+:sectanchors:
+:sectnumlevels: 4
+
+[[introduksjon]]
+== Introduksjon
+
+Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjoner som støtter tjenester knyttet til Dolly og syntetiske testdata.
+
+=== Om
+
+Dette er en samlet dokumentasjon for applikasjoner, retningslinjer og støtteverktøy relatert til syntetiske testdata i NAV.
+Spesisfikke søke kan gjøres i søkefelt øverst til høyre.
+
+[[dolly]]
+== Dolly
+
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
+
+[[brukerveiledning]]
+=== Brukerveiledning
+
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
+I Dolly kan du opprette syntetiske personer med forskjellige egenskaper, og tilgjengeliggjøre dataene i valgte testmiljøer.
+
+Link til Dolly: https://dolly.ekstern.dev.nav.no/
+
+[[palogging]]
+==== Pålogging
+
+Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet.
+Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
+
+Det første som møter deg når du har logget inn er en startside med noen menyvalg.
+Siden åpnes automatisk med en oversikt over dine grupper.
+
+image::dolly/startside.png[Startside]
+
+Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter.
+Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
+
+image::dolly/varslinger.png[Varslinger]
+
+[[opprette_gruppe]]
+==== Opprette en ny gruppe
+
+For å opprette nye syntetiske personer i Dolly kan du enten lage en ny gruppe eller legge til personer i en eksisterende gruppe.
+En gruppe inneholder personer du eller teamet har opprettet.
+
+Under Mine vises grupper opprettet av deg selv.
+Under Alle vises dine og andres grupper.
+En god regel er at du ikke endrer andres grupper uten avtale med eieren.
+
+Trykk på Ny gruppe og velg navn og beskriv hensikten med gruppen.
+Når hensikten er beskrevet er det enklere for både deg selv og eventuelt andre du samarbeider med å forstå hva denne gruppen brukes til.
+Trykk Opprett og gå til gruppe.
+
+image::dolly/testdatagrupper.png[Testdatagrupper]
+
+Inne på gruppen har du en oversikt over alle personene som tilhører gruppen og hvilke egenskaper de har.
+Her kan du også legge til nye personer.
+
+image::dolly/ny_testdatagruppe.png[Ny testdatagruppe]
+
+Det kommer opp en boks der du får to valg:
+
+. Opprette helt nye personer (Dolly finner et ubrukt fnr, dnr eller bost)
+. Opprette fra eksisterende fnr, dnr eller bost (identen kan ikke finnes i prod eller i Dolly)
+
+Vi velger å opprette nye og angir at vi ønsker 10 personer i bestillingen.
+
+Opprettelse av personer følger en prosess med tre steg:
+
+image::dolly/opprettelse_prossess.png[Opprettelse prosess]
+
+. Velg hvilke egenskaper du selv ønsker å bestemme.
+De resterende egenskapene vil systemet sette.
+. Angi verdier på egenskapene du valgte i steg 1.
+. Oppsummering og valg av hvilke testmiljø personene skal sendes til.
+
+[[velg_egenskaper]]
+===== Velg egenskaper
+
+image::dolly/velg_egenskaper.png[Velg egenskaper]
+
+Det finnes en lang rekke områder med egenskaper du kan velge.
+Trykk på pil ned til høyre i boksen for å ekspandere hvert område.
+I de fleste tilfeller er det kun et utvalg egenskaper som er nødvendig å definere for testscenariene dine.
+Dolly tildeler verdier til egenskaper du ikke krysser av for.
+
+I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av for følgende egenskaper:
+
+image::dolly/valgt_egenskap.png[Valgt egenskap]
+
+Team Dolly videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende.
+Savner du noe, meld inn på Slack-kanalen link:https://nav-it.slack.com/archives/CA3P9NGA2[#dolly].
+
+Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
+
+For mer informasjon om NAVs testmiljøer se: https://confluence.adeo.no/pages/viewpage.action?pageId=305341700
+
+image::dolly/miljoe_valg.png[Miljøvalg]
+
+Velg miljø og trykk Opprett.
+
+image::dolly/opprettet_gruppe.png[Opprettet gruppe]
+
+Gruppen har fått nye personer og du kan jobbe med disse i relevante fagsystemer.
+Trykk på pil ned til høyre på raden for detaljinformasjon per person.
+
+[[leggtil_endre_person]]
+==== Legg til eller endre person
+
+For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisning for personen, trykk LEGG TIL/ENDRE og velg egenskaper.
+
+[[demo]]
+==== Demo
+
+[[demo_opprette_tilfeldige]]
+===== Opprette personer med tilfeldige verdier
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[demo_opprette_onskede]]
+===== Opprette person med ønskede verdier
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[demo_endre_person]]
+===== Legg til eller endre person
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[maler]]
+==== Opprette og bruke maler
+
+Når du oppretter en ny person i Dolly kan du velge å lagre bestillingen som en mal.
+Malen kan senere hentes av deg selv eller andre og gir en ferdigutfylt bestilling.
+
+For å lage en mal huk av for Lagre som mal på siste steg i prosessen.
+Gi malen et beskrivende navn.
+
+image::dolly/opprette_mal.png[Opprette mal]
+
+For å bruke en mal: i første steg huk av for Maler, velg bruker (deg selv eller annen) og deretter ønsket mal.
+
+image::dolly/bruk_mal.png[Bruk mal]
+
+Du kan endre verdier før innsending.
+
+[[demo_maler]]
+===== Demo
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[endringsmelding_status]]
+=== Endringsmelding (status)
+
+Øverst i menyen kan du velge endringsmelding.
+Her kan du sende inn fødselsmelding eller dødsmelding til ønsket testmiljø.
+Dette er en separat applikasjon med egne tilganger.
+
+Merk: Kun én person per melding.
+Funksjonaliteten vil bli erstattet; bruk Dolly-funksjonene for fødsels- og dødsmeldinger:
+
+* Fødselsmelding: Gå til gruppe, finn forelder, velg Legg til/endre og kryss av Barn eller bruk Legg til relasjoner.
+* Dødsmelding: Gå til gruppe, velg Legg til/endre og kryss av Dødsdato.
+
+For personer som ikke eksisterer i Dolly: Opprett person, velg Eksisterende person og skriv inn ident.
+
+image::dolly/endringsmelding.png[Endringsmelding]
+
+[[api_dok]]
+=== API-dokumentasjon
+
+Øverst i menyen ligger en lenke til API dokumentasjon (Swagger) for tilgjengelige API-er.
+
+image::dolly/api_dok.png[API dok]
+
+[[feil_innlogging]]
+=== Feil ved innlogging
+
+image::dolly/logged_out_error.png[Tvungen utlogging]
+
+Hvis du gjentatte ganger blir logget ut eller ikke kommer inn kan det skyldes cookies.
+
+* Manuell logout: https://dolly.intern.dev.nav.no/oauth2/logout
+* Tøm cookies i nettleser (se video under)
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/159910685-f4bcbe86-c856-459c-a220-b242c46a59cd.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[dolly_retningslinjer]]
+=== Retningslinjer Dolly
+
+Retningslinjer for bruk og forvaltning av Dolly, basert på overordnede retningslinjer for syntetiske testdata i NAV.
+
+[[dolly_retningslinjer_hensikt]]
+==== Hensikt, målgrupper og ansvar
+
+Syntetiske testdata skal brukes i utvikling og forvaltning av NAVs IT-løsninger.
+Ved unntaksvis bruk av produksjonsdata gjelder spesielle sikkerhetstiltak.
+Disse føringene er sentrale for å minimere og sikre kontroll med bruken av persondata:
+
+* Syntetiske testdata kan ikke kobles til reelle personer og er ikke personopplysninger
+* Produksjonsdata kan direkte eller indirekte knyttes til en enkeltperson og må håndteres som personopplysninger som må beskyttes gjennom tilgangskontroll, maskering, logging m.m.
+
+Retningslinjene gjelder for alle ansatte og eksterne som er involvert i utvikling av NAVs IT‑løsninger.
+Følgende har et spesielt ansvar:
+
+* Teamleder i produktteam har ansvaret for at retningslinjene følges av interne og eksterne ressurser i teamet
+* IT Data og Innsikt har ansvaret for basisløsninger for syntetiske testdata
+* Sikkerhetsseksjonen har overordnet ansvar for bruk av testdata og informasjonssikkerhet
+
+Retningslinjene er operative rutiner til styringssystem for både sikkerhet og personvern.
+Sikkerhetsseksjonen har ansvaret for vedlikehold; endringsbehov kan meldes dit.
+
+Avgrensning (historisk):
+
+* NAV utviklet løsning for syntetiske testdata i 2018–2019. Syntetiske data blir gradvis tilgjengelig pr område/system.
+For områder der syntetiske data ikke er tilgjengelig vil sikkerhetsregler for unntak gjelde
+* Ny løsning for tilgangskontroll ved unntaksvis bruk av produksjonsdata vurderes av personvernprosjekter
+
+[[dolly_retningslinjer_bruk_syntetiske]]
+==== Bruk av syntetiske testdata i NAV
+
+Syntetiske testdata skal brukes til utvikling og forvaltning, og er tilgjengelig som:
+
+* Mini‑Norge (befolkningsutvalg) i syntetiske utviklings-/testmiljøer
+* Egendefinerte data fra Dolly selvbetjening (randtilfeller og spesielle testbehov).
+Dolly sikrer at personer og egenskaper er syntetiske
+* Syntetiske datasett for integrasjonstest med eksterne samhandlere
+* Tekniske stubber som simulerer eksterne kilder til volum- og basistesting
+
+Syntetiske testdata er ikke personopplysninger og kan brukes uten ekstra sikkerhetstiltak.
+
+Kvalitetskontroller for å hindre reelle data i syntetiske miljøer:
+
+* Navnepool med fiktive navn
+* Identpool med identer som teknisk sjekkes mot reelle identiteter i Folkeregisteret
+* Jevnlige tekniske sjekker av syntetiske miljøer (fiktive navn og identer)
+* Manuelle stikkprøver av testdata fra eksterne samhandlere
+* Miljøoppsett som hindrer krysskobling mellom syntetiske og produksjonsnære miljøer
+
+[[dolly_retningslinjer_prinsipper_dolly]]
+==== Prinsipper for å lage egne testdata i Dolly
+
+Dolly brukes for å lage egne data til randtilfeller og spesialbehov.
+Brukere må følge disse prinsippene:
+
+* Ikke ta utgangspunkt i reelle personer – alle verdier må velges uavhengig og tilfeldig
+* Ikke gjør endringer eller slett andres grupper/personer uten avtale
+* Del aldri påloggingsinformasjon
+* Kontakt oss på Slack‑kanalen #dolly for innspill, ønsker eller feil
+
+[[dolly_retningslinjer_unntak]]
+==== Unntak fra bruk av syntetiske testdata
+
+Unntak vurderes pr produktteam i samarbeid med behandlingsansvarlig og gjelder typisk:
+
+* Kritiske produksjonsfeil der produksjonsdata er nødvendig for rekonstruksjon
+* Korrigering av datakvalitet
+* Spesialtester/engangstilfeller med komplekse verdikjeder
+* Større datakonvertering
+* System/område som snart skal saneres eller moderniseres
+
+[[dolly_retningslinjer_oversikt]]
+==== Oversikt over sikkerhetstiltak
+
+*Begrensning i kopiering og bruk av produksjonsdata*
+
+* Diskresjonskode 6 og 7 fjernes alltid ved kopi/uttrekk
+* Ansatte i NAV fjernes alltid
+* For Bisys: brukere bosatt i utlandet og dekket av paragraf 19 tas ut manuelt
+* Maskering brukes i overgangsperioder
+
+Ansvar produktteam:
+
+* Teknisk støtte for å fjerne kode 6/7 og ansatte ved kopi
+* Rutiner for maskering i overgangsperiode
+* Rutiner som hindrer bruk av egne eller familiemedlemmers data
+
+*Midlertidig lagring og tilgangskontroll (ekstraordinære kopier)*
+
+* Kopier utføres av dedikerte IT‑ressurser med logging
+* Kopier lagres på egne områder med tidsbegrenset tilgang
+* Filer lagres i filarkiv med tilgangskontroll (tidsbegrenset)
+* Ved distribusjon (e‑post, minnepinne) skal innhold krypteres og avgrenses
+
+Ansvar produktteam:
+
+* Behov vurderes per sak med behandlingsansvarlig
+* Bestiller kopi via dedikerte roller
+* Har felles filarkiv med tidsbegrenset lagring (normalt maks 30 dager)
+* Teamleder gir tilgang etter behov
+
+*Tilgangskontroll og logging i skyggemiljøer*
+
+* Fagsystemtilganger som testbrukere via IDA
+* Systemtilganger følger produksjonsrutiner
+* Logging på både fagsystem og systembrukere
+
+Ansvar produktteam:
+
+* Teamleder gir føringer for bruk av tilganger
+* Teamleder har oversikt over hvem som har tilgang
+* Taushetserklæringer gjelder alle
+
+*Kontroll av data fra eksterne samhandlere*
+
+Integrasjonstester skal kun bruke syntetiske testdata.
+Andre tester skal bruke syntetiske stubber.
+
+Ansvar produktteam:
+
+* Avtaler med eksterne samhandlere om miljø og testdata
+* Faste syntetiske datasett for integrasjonstester
+* Jevnlige stikkprøver av data fra eksterne samhandlere
+
+[[dolly_retningslinjer_hendelser]]
+==== Håndtering av hendelser og avvik
+
+Avvik (brudd på regler for testdata eller sikkerhetstiltak) håndteres slik:
+
+. Følg prosess for håndtering av hendelser
+. Meld brudd på informasjonssikkerhet og personvern i ASYS for videre oppfølging
+
+[[dolly_github]]
+=== Åpen kildekode Dolly
+
+Dolly er åpen kildekode og lagret i GitHub.
+
+[[dolly_github_repos]]
+==== Repos
+
+Se kildekode og relaterte prosjekter:
+
+https://github.com/navikt/testnorge/tree/master/apps/dolly-frontend/
+
+[[dolly_github_bidra]]
+==== Bidra
+
+Pull requests er velkomne.
+Opprett gjerne issue med forslag eller feil før PR.
+
+[[dolly_github_referanser]]
+==== Referanser
+
+xref:index.adoc#brukerveiledning[Brukerveiledning]
+
+xref:index.adoc#dolly_retningslinjer[Retningslinjer]
+
+xref:index.adoc#dolly_testnorge[Test-Norge]
+
+[[dolly_testnorge]]
+=== Test-Norge
+
+Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i forbindelse med nytt folkeregister.
+Populasjonen er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv.
+Populasjonen har syntetiske fnr/dnr hvor det er lagt til 80 på måned.
+Hele Test-Norge populasjonen er tilgjengelig i PDL.
+
+[[dolly_testnorge_sok_import]]
+==== Søk og import
+
+Under Test-Norge fanen i Dolly er det mulig å søke opp Test-Norge identiteter i Dolly, velge identiteter man ønsker å ta i bruk, velge ekstra informasjon som skal legges til og importere dem inn i en ønsket gruppe i Dolly.
+Videoen under viser en demo.
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/174292316-cc1b2c47-b855-4390-b77f-66bc8e426a39.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor brukes: https://www.skatteetaten.no/skjema/testdata
+Tenor er ikke koblet opp mot Dolly, men identiteter funnet i Tenor kan søkes opp i Dolly og importeres til en ønsket gruppe.
+
+[[dolly_testnorge_import_partner]]
+==== Import av partner
+
+Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd.
+Hvis valgt person har en partner som ikke allerede er valgt kan man huke av for IMPORT MED PARTNER for å inkludere den.
+Bildet under viser et tilfelle hvor import av partner er valgt.
+
+image::dolly/import_partner.png[Import med partner]
+
+Det er også mulig å importere partner etter opprinnelig import.
+Dette kan gjøres direkte i personvisning.
+Videoen under viser en demo.
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/169964561-975783ea-3279-467b-8448-7aba3fecbac0.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
+
+[[dolly_testnorge_idporten]]
+==== ID-Porten
+
+Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident.
+
+[[proxyer]]
+== Proxyer
+
+[[proxyer_hensikt]]
+=== Hensikt
+
+* Forenkle integrasjon for Dolly-relaterte applikasjoner
+* Skjule variasjon i sikkerhetsmekanismer (TokenX, Azure AD NAV, Azure AD Trygdeetaten, interne servicebrukere)
+* Forholde oss enkelt til nais accesspolicy og ha sentralisert kontroll
+* legge til cross-cutting funksjoner der det egner seg: tidsgrenser, retries, korrelasjonsid, strukturerte logger og metrikk
+
+[[proxyer_arkitektur]]
+=== Arkitektur og mønster
+
+Alle proxyer følger et felles mønster:
+
+* Bygget med spring boot webflux for ikke-blokkerende io operasjoner
+* Felles gradle-plugin: dolly-proxies som konfigurerer standard avhengigheter og bygg
+* Felles biblioteker: reactive-core, reactive-proxy, reactive-security, security-core for tokenutveksling og feilhåndtering
+* Konfigurasjon via config.yml (nais application + eventuelle azure-AD application ressurser)
+* Standard interne endepunkter: /internal/health/liveness, /internal/health/readiness, /internal/status
+* Token-håndtering: inngående tokenx eller azure ad token transformeres til riktig utgående token (for eksempel azure ad mot target applikasjon eller interne credentials) gjennom tjenestene i reactive-security
+
+for eksempel pdl-proxy eksponerer seg i namespace dolly i dev-gcp, tillater et sett av interne applikasjoner og ruter videre til pdl-testdata i dev-fss med nødvendig tokenutveksling aktivert.
+
+[[proxyer_sikkerhet]]
+=== Sikkerhet
+
+* autentisering: konsument sender obo-token (tokenx eller azure ad) avhengig av kall-kontekst
+* autorisasjon: nais accesspolicy + eventuell intern validering av scopes/claims
+* hemmelige verdier: hentes via secret manager (se lokal utvikling) og mountes som envfrom secrets
+* allowallusers settes kun der det er nødvendig for azure-applikasjoner; ellers begrenses til teamets bruk
+
+[[proxyer_kryss_tenant]]
+=== Kryss-tenant (nav.no <-> trygdeetaten.no)
+
+flere proxyer krysser azure ad tenants (for eksempel nav (nav.no) og trygdeetaten (trygdeetaten.no)).
+dette løses ved at:
+
+* det opprettes en azureadapplication ressurs for sekundær tenant (gir secret med prefiks, f.eks.
+azure_trygdeetaten eller azure_nav)
+* i application-spec settes azure.application.tenant til primær tenant
+* reactive-security bibliotekene bruker konfigurerte client id/secret fra begge tenants for å gjøre OBO/bytte av token når downstream krever annen tenant enn innkommende token
+* Enkelte proxyer (f.eks. nom-proxy, kontoregister-person-proxy, dokarkiv-proxy) har AzureAdApplication for trygdeetaten.no og kjører applikasjonen i nav.no tenant; andre (f.eks. synthdata-meldekort-proxy) er motsatt
+
+[[proxyer_tabell]]
+=== Tilgjengelige proxyer (ingress og downstream mål)
+
+Format: tabell under genereres automatisk av script.
+Kolonner:
+Proxy (lenke til repo), Cluster (proxyens primære cluster utledet fra accessPolicy inbound), Ingress (extern/intern), Downstream apper (navn), Downstream URLer (svc/local/intern/ekstern; flere separert med ;), Cross-tenant (true/false), Status.
+
+// BEGIN GENERATED PROXY TABLE
+[cols="1,1,2,2,2,1,1",options="header"]
+|===
+|Proxy |Cluster |Ingress |Downstream apper |Downstream URLer |Cross-tenant |Status
+|link:https://github.com/navikt/testnorge/tree/master/proxies/aareg-proxy[aareg-proxy] |dev-fss |https://testnav-aareg-proxy.dev-fss-pub.nais.io |detektert-testnav-aareg-proxy |https://testnav-aareg-proxy.dev-fss-pub.nais.io |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/altinn3-tilgang-proxy[altinn3-tilgang-proxy] |dev-gcp |https://testnav-altinn3-tilgang-proxy.intern.dev.nav.no |testnav-altinn3-tilgang-service-prod |https://testnav-altinn3-tilgang-service.nav.no |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/arbeidsplassencv-proxy[arbeidsplassencv-proxy] |dev-gcp |https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no |pam-cv-api-gcp |http://pam-cv-api-gcp.teampam.svc.cluster.local |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/arbeidssoekerregisteret-proxy[arbeidssoekerregisteret-proxy] |dev-gcp |https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no |paw-arbeidssoekerregisteret-api-dolly |http://paw-arbeidssoekerregisteret-api-dolly.paw.svc.cluster.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/arena-forvalteren-proxy[arena-forvalteren-proxy] |dev-fss |https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io |arena-services-MILJOE |http://arena-ords-MILJOE.teamarenanais.svc.nais.local |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/batch-adeo-proxy[batch-adeo-proxy] |dev-fss |https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io |detektert-testnorge-batch-adeo-proxy |https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/brregstub-proxy[brregstub-proxy] |dev-fss |https://testnav-brregstub-proxy.dev-fss-pub.nais.io |detektert-brreg-stub, detektert-testnav-brregstub-proxy |http://brreg-stub.dolly.svc.nais.local/; https://brreg-stub.intern.dev.nav.no/internal/liveness; https://brreg-stub.intern.dev.nav.no/internal/readiness, https://testnav-brregstub-proxy.dev-fss-pub.nais.io |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/brregstub-reverse-proxy[brregstub-reverse-proxy] |dev-fss |https://testnav-brregstub-reverse-proxy.dev-fss-pub.nais.io |brreg-stub |http://brreg-stub.dolly.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/dokarkiv-proxy[dokarkiv-proxy] |dev-fss |https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io |dokarkiv-MILJOE |http://dokarkiv-MILJOE.teamdokumenthandtering.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/ereg-proxy[ereg-proxy] |dev-fss |https://testnav-ereg-proxy.dev-fss-pub.nais.io |detektert-testnav-ereg-proxy |https://testnav-ereg-proxy.dev-fss-pub.nais.io |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/fullmakt-proxy[fullmakt-proxy] |dev-fss |https://testnav-fullmakt-proxy.dev-fss-pub.nais.io |repr-fullmakt |http://repr-fullmakt.repr.svc.nais.local |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/histark-proxy[histark-proxy] |dev-fss |https://testnav-histark-proxy.dev-fss-pub.nais.io |detektert-histarkimport, detektert-testnav-histark-proxy |https://histarkimport.dev.intern.nav.no/, https://testnav-histark-proxy.dev-fss-pub.nais.io |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/inntektstub-proxy[inntektstub-proxy] |dev-fss |https://testnav-inntektstub-proxy.dev-fss-pub.nais.io |detektert-inntektstub, detektert-testnav-inntektstub-proxy |http://inntektstub.team-inntekt.svc.nais.local/; http://inntektstub.team-inntekt.svc.nais.local/internal/isAlive; http://inntektstub.team-inntekt.svc.nais.local/internal/isReady, https://testnav-inntektstub-proxy.dev-fss-pub.nais.io |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/inst-proxy[inst-proxy] |dev-fss |https://testnav-inst-proxy.dev-fss-pub.nais.io |opphold-testdata |http://opphold-testdata.team-rocket.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/kontoregister-person-proxy[kontoregister-person-proxy] |dev-fss |https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io |sokos-kontoregister-person |https://sokos-kontoregister-person.intern.dev.nav.no |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/krrstub-proxy[krrstub-proxy] |dev-fss |https://testnav-krrstub-proxy.dev-fss-pub.nais.io |digdir-krr-stub |https://digdir-krr-stub.intern.dev.nav.no |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/medl-proxy[medl-proxy] |dev-fss |https://testnav-medl-proxy.dev-fss-pub.nais.io |medlemskap-medl-testdata |https://medlemskap-medl-testdata.intern.dev.nav.no |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/nom-proxy[nom-proxy] |dev-gcp |https://testnav-nom-proxy.intern.dev.nav.no |nom-api |http://nom-api.nom.svc.cluster.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/norg2-proxy[norg2-proxy] |dev-fss |https://testnav-norg2-proxy.dev-fss-pub.nais.io |detektert-norg2, detektert-testnav-norg2-proxy |http://norg2.org.svc.nais.local; http://norg2.org.svc.nais.local/norg2/internal/isAlive; http://norg2.org.svc.nais.local/norg2/internal/isReady, https://testnav-norg2-proxy.dev-fss-pub.nais.io |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/pdl-proxy[pdl-proxy] |dev-fss |https://testnav-pdl-proxy.dev-fss-pub.nais.io |pdl-api, pdl-api-q1, pdl-testdata |http://pdl-api.pdl.svc.nais.local, http://pdl-api-q1.pdl.svc.nais.local, http://pdl-testdata.pdl.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/pensjon-testdata-facade-proxy[pensjon-testdata-facade-proxy] |dev-fss |https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io |pensjon-afp-offentlig-mock-\{miljoe\}, pensjon-samboerforhold-backend-q1, pensjon-samboerforhold-backend-\{miljoe\}, pensjon-testdata-facade |https://pensjon-afp-offentlig-mock-\{miljoe\}.intern.dev.nav.no, -, https://pensjon-samboerforhold-backend-\{miljoe\}.intern.dev.nav.no, http://pensjon-testdata-facade.pensjontestdata.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/saf-proxy[saf-proxy] |dev-fss |https://testnav-saf-proxy.dev-fss-pub.nais.io |saf-MILJOE |http://saf-MILJOE.teamdokumenthandtering.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/sigrunstub-proxy[sigrunstub-proxy] |dev-fss |https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io |detektert-sigrun-skd-stub, detektert-testnav-sigrunstub-proxy |http://sigrun-skd-stub.team-inntekt.svc.nais.local/; http://sigrun-skd-stub.team-inntekt.svc.nais.local/internal/isAlive, https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/skjermingsregister-proxy[skjermingsregister-proxy] |dev-fss |https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io |skjermede-personer |https://skjermede-personer.dev.adeo.no |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/sykemelding-proxy[sykemelding-proxy] |dev-gcp |https://testnav-sykemelding-proxy.intern.dev.nav.no |syfosmregler, tsm-input-dolly |http://syfosmregler.teamsykmelding.svc.cluster.local, http://tsm-input-dolly.tsm.svc.cluster.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/synthdata-meldekort-proxy[synthdata-meldekort-proxy] |dev-fss |https://testnav-synthdata-meldekort-proxy.intern.dev.nav.no |synthdata-arena-meldekort |https://synthdata-arena-meldekort.intern.dev.nav.no |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/texas-proxy[texas-proxy] |dev-gcp |https://dolly-texas-proxy.intern.dev.nav.no |samler alle andre proxyer (WIP) |- |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/trygdeetaten-nav-proxy[trygdeetaten-nav-proxy] |dev-gcp |- |detektert-synthdata-arena-meldekort |https://synthdata-arena-meldekort.intern.dev.nav.no |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/udistub-proxy[udistub-proxy] |dev-fss |https://testnav-udistub-proxy.dev-fss-pub.nais.io |testnav-udi-stub |http://testnav-udi-stub.dolly.svc.nais.local |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/yrkesskade-proxy[yrkesskade-proxy] |dev-gcp |https://testnav-yrkesskade-proxy.intern.dev.nav.no |yrkesskade-datagenerator-service |http://yrkesskade-datagenerator-service.yrkesskade.svc.cluster.local |false |aktiv
+|===
+// END GENERATED PROXY TABLE
+
+[[proxyer_koble]]
+=== Hvordan koble seg på
+
+1. Avklar behov og hvilket dataområde proxyen dekker
+2. Kontakt Dolly for tilgang og vurdering av use-case
+3. Finn ingress i proxyens config.yml under ingresses.
+Eksempler:
++
+----
+# dev-fss (publisert via nais):
+https://testnav-pdl-proxy.dev-fss-pub.nais.io
+
+# dev-gcp intern:
+https://testnav-nom-proxy.intern.dev.nav.no
+----
+4. Kall endepunkter med gyldig TokenX/OBO-token.
+Velg riktig token-type basert på proxy (TokenX for sluttbrukersesjoner, Azure AD OBO for system-til-system)
+5. Hvis proxy krever kryss-tenant tilgang sørg for at applikasjonen din har riktige scopes/audience for innkommende token (NAV eller Trygdeetaten)
+6. Overvåk logger (Elastic/Loki) for korrelasjonsid og eventuelle feil
+
+[[proxyer_feilsoking]]
+=== Feilsøking
+
+* 401/403: Sjekk at applikasjonen din er oppført i accessPolicy inbound rules og at riktig token-type/tenant brukes
+* 404: Verifiser path og at endepunktet faktisk er eksponert (noen proxyer kun pass-through på bestemte paths)
+* 5xx: Kontakt oss på slack, eller eventuelt sjekk logger for root cause fra downstream; korrelasjonsid finnes i MDC/loggfelt
+
+[[proxyer_retningslinjer]]
+=== Retningslinjer for endringer og nye proxyer
+
+* Gjenbruk eksisterende reactive-* biblioteker, ikke kopier sikkerhetskode
+* Ikke eksponer flere endepunkter enn nødvendig
+* Oppdater accessPolicy samtidig med kodeendring som introduserer nye konsumenter
+* Følg navngivingsmønster: testnav-<domene>-proxy
+* Noen proxyer går til forskjellige miljøer, disse vil da kalles med -+{miljoe}+ på enden av ingress og ha routing basert på denne miljøvariabel (se f.eks. saf-proxy)
+
+[[proxyer_kontakt]]
+=== Kontakt
+
+Kontakt Dolly på Slack-kanalen #dolly (https://nav-it.slack.com/archives/CA3P9NGA2) for tilgang til en eller flere av disse proxyene.
+
+[[lokal_utvikling]]
+== Lokal utvikling
+
+Denne informasjonen er mest tiltenkt dolly-utviklere, men kan også være nyttig for andre som ønsker å se hvordan dolly fungerer under panseret når vi utvikler lokalt.
+
+include::local/gcp_db.adoc[leveloffset=+2]
+include::local/local_db.adoc[leveloffset=+2]
+include::local/local_general.adoc[leveloffset=+2]
+include::local/local_opensearch.adoc[leveloffset=+2]
+include::local/local_secretmanager.adoc[leveloffset=+2]

@@ -4,5 +4,5 @@ et substantiv (som ofte brukes som etternavn). Det er vurdert at sammenstillinge
 ekte navn til at data med disse ikke kan forveksles med skarpe data.
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

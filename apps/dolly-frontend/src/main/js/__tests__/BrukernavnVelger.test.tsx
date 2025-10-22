@@ -5,7 +5,6 @@ import React, { act } from 'react'
 import { vi } from 'vitest'
 import BrukernavnVelger from '@/pages/brukerPage/BrukernavnVelger'
 import { BrukerApi } from '@/service/Api'
-import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Organisasjon } from '@/pages/brukerPage/types'
 
 vi.mock('@/service/Api')
@@ -28,7 +27,7 @@ const TestComponent = ({
 
 dollyTest('renders BrukernavnVelger and handles successful user creation', async () => {
 	const addToSessionMock = vi.fn()
-	vi.mocked(BrukerApi.opprettBruker).mockResolvedValue({
+	vi.spyOn(BrukerApi, 'opprettBruker').mockResolvedValue({
 		brukernavn: 'testbruker123',
 		epost: 'test@test.com',
 	})

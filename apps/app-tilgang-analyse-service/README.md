@@ -10,8 +10,8 @@ Swagger finnes under [/swagger](https://testnav-app-tilgang-analyse-service.inte
 applikasjonen.
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
 
 En egen Spring profile _localdb_ er satt opp for å kjøre med proxy mot applikasjonens reelle DB.
 

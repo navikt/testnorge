@@ -1,8 +1,8 @@
-import { Button } from '@navikt/ds-react'
+import { Alert, Button } from '@navikt/ds-react'
 import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
 import { TrashIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
-import React from 'react'
+import React, { useState } from 'react'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -14,12 +14,23 @@ type DeleteTypes = {
 }
 
 export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
+	const [isLoading, setIsLoading, resetLoading] = useBoolean(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [error, setError] = useState(null)
 
-	const slettOrg = () => {
-		OrganisasjonTilgangService.deleteOrganisasjoner(orgNr).then((response) => {
-			mutate()
-		})
+	const slettOrg = async () => {
+		setIsLoading(true)
+		await OrganisasjonTilgangService.deleteOrganisasjoner(orgNr)
+			.then(() => {
+				mutate().then(() => {
+					resetLoading()
+					closeModal()
+				})
+			})
+			.catch((error) => {
+				setError(error)
+				resetLoading()
+			})
 	}
 
 	return (
@@ -37,16 +48,21 @@ export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 						<h1>Fjern tilgang</h1>
 						<h4>Er du sikker på at du vil fjerne tilgang til Dolly for {navn}?</h4>
 					</div>
+					{error && (
+						<Alert variant={'error'} size={'small'}>
+							Feil ved sletting: {error.message}
+						</Alert>
+					)}
 					<div className="slettModal-actions">
 						<NavButton onClick={closeModal} variant={'secondary'}>
 							Nei
 						</NavButton>
 						<NavButton
 							onClick={() => {
-								closeModal()
 								slettOrg()
 							}}
 							variant={'primary'}
+							loading={isLoading}
 						>
 							Ja, jeg er sikker
 						</NavButton>

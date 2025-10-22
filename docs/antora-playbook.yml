@@ -1,0 +1,30 @@
+site:
+  title: Testnav Dokumentasjon
+  start_page: testnav::index.adoc
+  url: https://navikt.github.io/testnorge/
+content:
+  sources:
+    - url: ..
+      start_path: docs
+      branches: HEAD
+      worktrees: true
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+  supplemental_files: ./supplemental-ui
+output:
+  clean: true
+  dir: public
+runtime:
+  cache_dir: ./.antora-cache
+  fetch: false
+asciidoc:
+  attributes:
+    toclevels: 5
+    sectanchors: ''
+    sectnums: ''
+    icons: font
+    experimental: ''
+antora:
+  extensions: []
