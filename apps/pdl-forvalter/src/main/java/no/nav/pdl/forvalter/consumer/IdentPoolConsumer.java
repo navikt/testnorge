@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolGetLedigCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolGetProdSjekkCommand;
+import no.nav.pdl.forvalter.consumer.command.IdentpoolId32DeleteCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolId32PostCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostVoidCommand;
@@ -12,6 +13,7 @@ import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.pdl.forvalter.dto.ProdSjekkDTO;
+import no.nav.pdl.forvalter.utils.Id2032FraIdentUtility;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -64,8 +66,16 @@ public class IdentPoolConsumer {
     public Mono<List<IdentDTO>> releaseIdents(Set<String> identer, Bruker bruker) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
-                        token.getTokenValue()).call())
+                .flatMapMany(token -> Flux.merge(
+                        new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
+                                token.getTokenValue()).call()
+                                .flatMapMany(Flux::fromIterable),
+                        Flux.fromIterable(identer)
+                                .filter(Id2032FraIdentUtility::isId2032)
+                                .flatMap(ident ->
+                                        new IdentpoolId32DeleteCommand(webClient, ident, token.getTokenValue()).call()
+                                                .then(Mono.just(IdentDTO.builder().ident(ident).build())))))
+                .collectList()
                 .doOnNext(resultat -> log.info("Slettet identer mot identpool: {}", String.join(",", identer)));
     }
 
