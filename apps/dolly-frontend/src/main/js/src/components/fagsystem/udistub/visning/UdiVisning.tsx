@@ -8,7 +8,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { hasProperty } from 'dot-prop'
 import { Alert } from '@navikt/ds-react'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { getFagsystemTimeoutTitle } from '@/utils/getFagsystemTimeoutTitle'
+import { getFagsystemTimeoutTitle } from '@/components/fagsystem/utils'
 
 type UdiData = {
 	oppholdStatus?: any
@@ -52,7 +52,7 @@ export const UdiVisning = ({ data, loading, timedOutFagsystemer = [] }: UdiVisni
 					label="UDI"
 					iconKind="udi"
 					isWarning={manglerFagsystemdata}
-					title={timedOutFagsystemer.includes('UDI') ? getFagsystemTimeoutTitle('UDI') : undefined}
+					title={timedOutFagsystemer?.includes('UDI') ? getFagsystemTimeoutTitle('UDI') : undefined}
 				/>
 				{manglerFagsystemdata ? (
 					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
