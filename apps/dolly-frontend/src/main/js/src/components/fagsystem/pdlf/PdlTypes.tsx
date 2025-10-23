@@ -326,6 +326,8 @@ export enum Adressetype {
 	Matrikkel = 'MATRIKKELADRESSE',
 	Postboks = 'POSTBOKSADRESSE',
 	Utenlandsk = 'UTENLANDSK_ADRESSE',
+	PostadresseIFrittFormat = 'POSTADRESSE_I_FRITT_FORMAT',
+	UtenlandskAdresseIFrittFormat = 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT',
 	Ukjent = 'UKJENT_BOSTED',
 	Annet = 'OPPHOLD_ANNET_STED',
 }

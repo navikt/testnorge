@@ -11,5 +11,5 @@ Det er kun Team Dolly som bruker denne appen.
 Lenke https://testnav-oversikt.dev.adeo.no/ 
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

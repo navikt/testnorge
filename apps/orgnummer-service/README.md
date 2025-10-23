@@ -9,5 +9,5 @@ grand_parent: Applikasjoner
 App for å hente gyldige organisasjonsnummer som ikke er i bruk i EREG.
 
 ## Lokal kjøring
-* [Generelt.](../../docs/local_general.md)
-* [Secret Manager.](../../docs/local_secretmanager.md)
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

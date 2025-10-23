@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -147,7 +148,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
             if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt());
+                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
                 leggTilPersonadresse(kontaktinfo);
                 kontaktinfo.getPersonSomKontakt().setNavn(null);
             }
@@ -313,7 +314,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                                 .equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")));
     }
 
-    private void leggTilNyAddressat(KontaktpersonDTO kontakt) {
+    private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
 
         if (isNull(kontakt.getNyKontaktperson())) {
             kontakt.setNyKontaktperson(new PersonRequestDTO());
@@ -326,6 +327,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             kontakt.getNyKontaktperson().setFoedtFoer(LocalDateTime.now().minusYears(18));
             kontakt.getNyKontaktperson().setFoedtEtter(LocalDateTime.now().minusYears(75));
         }
+
+        EgenskaperFraHovedperson.kopierData(hovedperson, kontakt.getNyKontaktperson());
 
         kontakt.setIdentifikasjonsnummer(
                 createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());

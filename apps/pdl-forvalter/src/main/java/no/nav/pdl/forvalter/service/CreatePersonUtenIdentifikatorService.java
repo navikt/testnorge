@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.dto.PersonUtenIdentifikatorRequest;
+import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonnavnDTO;
@@ -16,8 +17,6 @@ import java.time.LocalDateTime;
 
 import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.BARN;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -57,7 +56,7 @@ public class CreatePersonUtenIdentifikatorService {
 
         if (isNull(request.getKjoenn())) {
 
-            relatertPerson.setKjoenn(secureRandom.nextBoolean() ? MANN : KVINNE);
+            relatertPerson.setKjoenn(KjoennUtility.getKjoenn());
         }
 
         if (isNull(request.getFoedselsdato())) {

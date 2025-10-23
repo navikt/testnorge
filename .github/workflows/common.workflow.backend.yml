@@ -106,6 +106,9 @@ jobs:
           path: ${{ inputs.working-directory }}/build/reports
           retention-days: 7
       - name: "Build and push Docker image"
+        if: |
+          needs.start.outputs.do-deploy == 'true' || 
+          needs.start.outputs.do-deploy-test == 'true'
         id: docker-build-push
         uses: nais/docker-build-push@v0
         with:
@@ -143,6 +146,9 @@ jobs:
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       - name: "Build and push Docker image"
+        if: |
+          needs.start.outputs.do-deploy == 'true' || 
+          needs.start.outputs.do-deploy-test == 'true'
         id: docker-build-push
         uses: nais/docker-build-push@v0
         with:

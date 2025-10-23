@@ -28,6 +28,7 @@ public class BestillingRequestDTO {
     private Integer alder;
 
     private Boolean syntetisk;
+    private Boolean id2032;
 
     private String opprettFraIdent;
 

@@ -9,7 +9,8 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { Alert } from '@navikt/ds-react'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
+import { useEffect } from 'react'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -71,7 +72,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 						break
 				}
 			}
-
 			return bankMiljoer
 		}
 		return miljoer.Q.filter((env: any) => env.id !== 'qx')
@@ -79,22 +79,23 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
-	const values: [] = formMethods.watch('environments')
+	const values = useWatch({ name: 'environments', control: formMethods.control }) || []
 
-	if (disableAllEnvironments && values.length > 0) {
-		formMethods.setValue('environments', [])
-	}
+	useEffect(() => {
+		if (disableAllEnvironments && values.length > 0) {
+			formMethods.setValue('environments', [])
+			formMethods.trigger('environments')
+		}
+	}, [disableAllEnvironments, values, formMethods])
+
 	const isChecked = (id) => values.includes(id)
 
-	const onClick = (e) => {
-		const { id } = e.target
+	const toggleEnvironment = (id: string) => {
 		if (alleredeValgtMiljoe?.includes(id) && values.includes(id)) {
 			console.warn('Miljøet er påkrevd')
 		} else {
-			formMethods.setValue(
-				'environments',
-				isChecked(id) ? values.filter((value) => value !== id) : values.concat(id),
-			)
+			const next = isChecked(id) ? values.filter((value) => value !== id) : values.concat(id)
+			formMethods.setValue('environments', next)
 		}
 		formMethods.trigger('environments')
 	}
@@ -120,7 +121,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 							disabled={env.disabled || (disableAllEnvironments && values.length < 1)}
 							label={env?.id?.toUpperCase()}
 							checked={values.includes(env.id)}
-							onClick={onClick}
+							onChange={() => toggleEnvironment(env.id)}
 							size={'small'}
 						/>
 					))}
