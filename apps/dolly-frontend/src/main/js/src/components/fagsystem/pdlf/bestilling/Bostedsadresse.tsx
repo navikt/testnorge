@@ -4,12 +4,12 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { BostedData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { uppercaseAndUnderscoreToCapitalized } from '@/utils/DataFormatter'
-import { Vegadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Vegadresse'
-import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/partials/Adresseinfo'
-import { Matrikkeladresse } from '@/components/fagsystem/pdlf/bestilling/partials/Matrikkeladresse'
+import { Vegadresse } from '@/components/fagsystem/pdlf/bestilling/Vegadresse'
+import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/Adresseinfo'
+import { Matrikkeladresse } from '@/components/fagsystem/pdlf/bestilling/Matrikkeladresse'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskAdresse'
-import { UkjentBosted } from '@/components/fagsystem/pdlf/bestilling/partials/UkjentBosted'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/UtenlandskAdresse'
+import { UkjentBosted } from '@/components/fagsystem/pdlf/bestilling/UkjentBosted'
 
 type BostedsadresseTypes = {
 	bostedsadresseListe: Array<BostedData>

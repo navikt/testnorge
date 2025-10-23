@@ -4,11 +4,11 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { uppercaseAndUnderscoreToCapitalized } from '@/utils/DataFormatter'
-import { Vegadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Vegadresse'
-import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/partials/Adresseinfo'
-import { Matrikkeladresse } from '@/components/fagsystem/pdlf/bestilling/partials/Matrikkeladresse'
+import { Vegadresse } from '@/components/fagsystem/pdlf/bestilling/Vegadresse'
+import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/Adresseinfo'
+import { Matrikkeladresse } from '@/components/fagsystem/pdlf/bestilling/Matrikkeladresse'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskAdresse'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/UtenlandskAdresse'
 
 type OppholdsadresseTypes = {
 	oppholdsadresseListe: Array<OppholdsadresseData>

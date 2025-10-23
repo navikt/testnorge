@@ -4,11 +4,11 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { KontaktadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { uppercaseAndUnderscoreToCapitalized } from '@/utils/DataFormatter'
-import { Vegadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Vegadresse'
-import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/partials/Adresseinfo'
+import { Vegadresse } from '@/components/fagsystem/pdlf/bestilling/Vegadresse'
+import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/Adresseinfo'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskAdresse'
-import { Postboksadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Postboksadresse'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/UtenlandskAdresse'
+import { Postboksadresse } from '@/components/fagsystem/pdlf/bestilling/Postboksadresse'
 
 type KontaktadresseTypes = {
 	kontaktadresseListe: Array<KontaktadresseData>
