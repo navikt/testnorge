@@ -57,6 +57,7 @@ import { Foedselsdato } from '@/components/fagsystem/pdlf/bestilling/partials/Fo
 import { Arbeidssoekerregisteret } from '@/components/fagsystem/arbeidssoekerregisteret/bestilling/Arbeidssoekerregisteret'
 import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/partials/DeltBosted'
 import { NavAnsatt } from '@/components/fagsystem/nom/bestilling/NavAnsatt'
+import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/bestilling/AlderspensjonNyUttaksgrad'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -146,7 +147,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Pensjonsavtale pensjon={bestilling.pensjonforvalter?.pensjonsavtale} />
 			<Tjenestepensjon pensjon={bestilling.pensjonforvalter?.tp} />
 			<Alderspensjon pensjon={bestilling.pensjonforvalter?.alderspensjon} />
-			{/*TODO: Alderspensjon ny uttaksgrad*/}
+			<AlderspensjonNyUttaksgrad apNy={bestilling.pensjonforvalter?.alderspensjonNyUtaksgrad} />
 			<Uforetrygd pensjon={bestilling.pensjonforvalter?.uforetrygd} />
 			<AfpOffentlig pensjon={bestilling.pensjonforvalter?.afpOffentlig} />
 			<Arena arbeidsytelse={bestilling.arenaforvalter} />
