@@ -15,8 +15,8 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Id
             where p.dato_identifikator = :datoIdentifikator
             and p.allokert = false
             and p.individnummer = (select min(individnummer) from personidentifikator2032 pi
-                                  where pi.dato_identifikator = :datoIdentifikator
-                                  and pi.allokert = false)
+                                   where pi.dato_identifikator = :datoIdentifikator
+                                   and pi.allokert = false)
             order by p.individnummer desc, p.personidentifikator
             """)
     Flux<Ident2032> findLedige(@Param("datoIdentifikator") String datoIdentifikator);
@@ -25,12 +25,10 @@ public interface PersonidentifikatorRepository extends ReactiveCrudRepository<Id
             select * from personidentifikator2032 p
             where p.dato_identifikator = :datoIdentifikator
             and p.individnummer = (select min(individnummer) from personidentifikator2032 pi
-                                  where pi.dato_identifikator = :datoIdentifikator)
+                                   where pi.dato_identifikator = :datoIdentifikator)
             order by p.individnummer desc, p.personidentifikator
             """)
     Flux<Ident2032> findAvail(@Param("datoIdentifikator") String datoIdentifikator);
-
-    Mono<Boolean> existsByDatoIdentifikatorAndAllokert(String datoIdentifikator, boolean allokert);
 
     Mono<Ident2032> findByPersonidentifikator(String personidentifikator);
 

@@ -13,6 +13,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,6 +21,7 @@ class KjoennServiceTest {
 
     private static final String IDENT_MANN = "12345678901";
     private static final String IDENT_KVINNE = "12345678801";
+    private static final String IDENT_ID2032 = "22502599902";
 
     @InjectMocks
     private KjoennService kjoennService;
@@ -76,5 +78,17 @@ class KjoennServiceTest {
                         .build()).getFirst();
 
         assertThat(target.getKjoenn(), is(equalTo(KVINNE)));
+    }
+
+    @Test
+    void whenIdentIsId2032_thenProvideKjoennFromKjoennUtility() {
+
+        var target = kjoennService.convert(
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
+                        .ident(IDENT_ID2032)
+                        .build()).getFirst();
+
+        assertThat(target.getKjoenn(), is(in(KjoennDTO.Kjoenn.values())));
     }
 }

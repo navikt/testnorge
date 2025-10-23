@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
@@ -88,9 +88,7 @@ public class VergemaalService implements Validation<VergemaalDTO> {
                 vergemaal.getNyVergeIdent().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            if (isNull(vergemaal.getNyVergeIdent().getSyntetisk())) {
-                vergemaal.getNyVergeIdent().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
-            }
+            EgenskaperFraHovedperson.kopierData(ident, vergemaal.getNyVergeIdent());
 
             vergemaal.setVergeIdent(createPersonService.execute(vergemaal.getNyVergeIdent()).getIdent());
         }

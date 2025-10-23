@@ -23,6 +23,7 @@ public class HentIdenterRequest {
     private int antall;
     private String rekvirertAv;
     private Boolean syntetisk;
+    private Boolean id2032;
 
     public enum Identtype {
         FNR,
