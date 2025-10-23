@@ -104,16 +104,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
             setPendingFromDato(adresser);
             var startIndex = adresser.size() - 1;
             setGyldigFromDato(adresser, startIndex);
-            setGyldigTomDato(adresser);
-        }
-    }
-
-    private static void setGyldigTomDato(List<? extends AdresseDTO> adresser) {
-
-        for (int i = adresser.size() - 1; i > 0; i--) {
-            if (isNull(adresser.get(i).getGyldigTilOgMed())) {
-                adresser.get(i).setGyldigTilOgMed(adresser.get(i - 1).getGyldigFraOgMed().minusDays(1));
-            }
         }
     }
 
