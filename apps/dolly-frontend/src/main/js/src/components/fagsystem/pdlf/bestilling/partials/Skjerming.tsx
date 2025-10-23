@@ -10,6 +10,7 @@ type SkjermingTypes = {
 		egenAnsattDatoTom?: string
 	}
 }
+
 export const Skjerming = ({ skjerming }: SkjermingTypes) => {
 	if (!skjerming) {
 		return null

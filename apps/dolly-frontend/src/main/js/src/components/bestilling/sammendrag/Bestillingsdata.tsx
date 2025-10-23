@@ -56,6 +56,7 @@ import { Foedested } from '@/components/fagsystem/pdlf/bestilling/partials/Foede
 import { Foedselsdato } from '@/components/fagsystem/pdlf/bestilling/partials/Foedselsdato'
 import { Arbeidssoekerregisteret } from '@/components/fagsystem/arbeidssoekerregisteret/bestilling/Arbeidssoekerregisteret'
 import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/partials/DeltBosted'
+import { NavAnsatt } from '@/components/fagsystem/nom/bestilling/NavAnsatt'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -108,7 +109,6 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Bostedsadresse bostedsadresseListe={bestilling.pdldata?.person?.bostedsadresse} />
 			<Oppholdsadresse oppholdsadresseListe={bestilling.pdldata?.person?.oppholdsadresse} />
 			<Kontaktadresse kontaktadresseListe={bestilling.pdldata?.person?.kontaktadresse} />
-			{/*TODO: Delt bosted*/}
 			<DeltBosted deltBosted={bestilling.pdldata?.person?.deltBosted?.[0]} />
 			<Adressebeskyttelse
 				adressebeskyttelseListe={bestilling.pdldata?.person?.adressebeskyttelse}
@@ -122,7 +122,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 				utenlandskIdentListe={bestilling.pdldata?.person?.utenlandskIdentifikasjonsnummer}
 			/>
 			<NyIdentitet nyIdentitetListe={bestilling.pdldata?.person?.nyident} />
-			{/*TODO: NOM*/}
+			<NavAnsatt nomdata={bestilling.nomdata} />
 			<Skjerming skjerming={bestilling.skjerming} />
 			<KontaktinformasjonForDoedsbo
 				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
