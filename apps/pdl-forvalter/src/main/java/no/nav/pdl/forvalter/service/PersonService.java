@@ -193,7 +193,7 @@ public class PersonService {
         if (isBlank(request.getOpprettFraIdent())) {
             identifier = identPoolConsumer.acquireIdents(
                     mapperFacade.map(request, HentIdenterRequest.class)).block();
-            assert identifier != null;
+            Objects.requireNonNull(identifier, "Personident fra identpool kan ikke være null");
             request.getPerson().setIdent(identifier.getIdent());
 
         } else {

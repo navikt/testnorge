@@ -19,7 +19,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
@@ -165,7 +164,6 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
         if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
 
-            // -> Begge foreldre opprettes
             var forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             personRepository.findByIdent(relasjon.getRelatertPerson())
                     .map(DbPerson::getPerson)

@@ -46,7 +46,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
     @Override
     public void validate(FullmaktDTO fullmakt, PersonDTO person) {
-        // No specific validation rules for FullmaktDTO at this time
+
     }
 
     private void handle(FullmaktDTO fullmakt, String ident) {

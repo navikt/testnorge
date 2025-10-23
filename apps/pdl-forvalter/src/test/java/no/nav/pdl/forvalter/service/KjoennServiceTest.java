@@ -81,7 +81,7 @@ class KjoennServiceTest {
     }
 
     @Test
-    void whhenIdentIsId2032_thenProvideKjoennFromKjoennUtility() {
+    void whenIdentIsId2032_thenProvideKjoennFromKjoennUtility() {
 
         var target = kjoennService.convert(
                 PersonDTO.builder()

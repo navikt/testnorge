@@ -98,7 +98,7 @@ public class CreatePersonService {
         IdentDTO identifikator = identPoolConsumer.acquireIdents(
                         mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
                 .block();
-        assert nonNull(identifikator);
+        Objects.requireNonNull(identifikator, "Kunne ikke hente ident fra identpool");
 
         var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO(),
                 identifikator), new PersonDTO());
