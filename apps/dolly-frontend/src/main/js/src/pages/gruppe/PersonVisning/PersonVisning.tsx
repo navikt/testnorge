@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
@@ -100,7 +100,6 @@ import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/V
 import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
 import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
 import { sjekkManglerUdiData, UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
-
 import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
@@ -113,6 +112,7 @@ import {
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/visning/Visning'
 import { useNomData } from '@/utils/hooks/useNom'
 import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
+import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -153,15 +153,10 @@ export default (props: PersonVisningProps) => {
 		tmpPersoner,
 	} = props
 	const { gruppeId } = ident
-	const [timedOutFagsystemer, setTimedOutFagsystemer] = useState<string[]>([])
-
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
-
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
-
 	const bestillinger: any[] = []
-
 	if (ident.bestillinger) {
 		ident.bestillinger.map((b: any) => {
 			bestillinger[b.id] = b
@@ -410,7 +405,6 @@ export default (props: PersonVisningProps) => {
 
 	const pdlRelatertPerson = () => {
 		const relatertePersoner: any[] = []
-
 		data.pdl?.hentPerson?.sivilstand
 			?.filter((siv: any) =>
 				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type),
@@ -421,7 +415,6 @@ export default (props: PersonVisningProps) => {
 					id: person.relatertVedSivilstand,
 				})
 			})
-
 		data.pdlforvalter?.person?.sivilstand
 			?.filter((siv: any) => siv?.type === 'SAMBOER')
 			?.forEach((person: any) => {
@@ -430,7 +423,6 @@ export default (props: PersonVisningProps) => {
 					id: person.relatertVedSivilstand,
 				})
 			})
-
 		data.pdl?.hentPerson?.forelderBarnRelasjon
 			?.filter((forelderBarn: any) =>
 				['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle),
@@ -441,7 +433,6 @@ export default (props: PersonVisningProps) => {
 					id: person.relatertPersonsIdent,
 				})
 			})
-
 		data.pdl?.hentPerson?.foreldreansvar
 			?.filter((foreldreansvar: any) => foreldreansvar.ansvarlig)
 			?.forEach((person: any) => {
@@ -450,7 +441,6 @@ export default (props: PersonVisningProps) => {
 					id: person.ansvarlig,
 				})
 			})
-
 		return relatertePersoner
 	}
 
@@ -473,60 +463,9 @@ export default (props: PersonVisningProps) => {
 		loadingArenaData ||
 		loadingApData
 
-	useEffect(() => {
-		if (!data) return
-		const list: string[] = []
-		const bestillingerFagsystemer = ident?.bestillinger?.map((i: any) => i.bestilling) || []
-		const harAareg = bestillingerFagsystemer?.some((b: any) => b?.aareg)
-		if (
-			harAareg &&
-			(!arbeidsforhold ||
-				sjekkManglerAaregData(arbeidsforhold) ||
-				(loadingAareg === false && typeof arbeidsforhold === 'undefined') ||
-				aaregError)
-		) {
-			list.push('AAREG')
-		}
-		if (poppData && sjekkManglerPensjonData(poppData)) list.push('POPP')
-		if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) list.push('TP')
-		if (apData && sjekkManglerApData(apData)) list.push('PEN_AP')
-		if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
-		if (brregstub && sjekkManglerBrregData(brregstub)) list.push('BRREG')
-		if (instData && sjekkManglerInstData(instData)) list.push('INST')
-		if (
-			sykemeldingData &&
-			sjekkManglerSykemeldingData(sykemeldingData) &&
-			harSykemeldingBestilling(bestillingerFagsystemer) &&
-			sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
-		)
-			list.push('SYKEMELDING')
-		if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) list.push('YRKESSKADE')
-		if (
-			harArbeidsplassenBestilling(bestillingerFagsystemer) &&
-			!arbeidsplassencvData &&
-			arbeidsplassencvError
-		)
-			list.push('ARBEIDSPLASSENCV')
-		if (harDokarkivBestilling(bestillingerFagsystemer) && !dokarkivData && dokarkivError)
-			list.push('DOKARKIV')
-		if (harHistarkBestilling(bestillingerFagsystemer) && !histarkData && histarkError)
-			list.push('HISTARK')
-		if (
-			(udistub && sjekkManglerUdiData(udistub)) ||
-			(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
-		)
-			list.push('UDI')
-		if (
-			(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
-			(harMedlBestilling(bestillingerFagsystemer) &&
-				medl?.response &&
-				Array.isArray(medl.response) &&
-				medl.response.length === 0)
-		)
-			list.push('MEDL')
-		setTimedOutFagsystemer(list)
-	}, [
+	const timedOutFagsystemer = useTimedOutFagsystemer({
 		data,
+		ident,
 		arbeidsforhold,
 		poppData,
 		tpDataForhold,
@@ -535,6 +474,7 @@ export default (props: PersonVisningProps) => {
 		brregstub,
 		instData,
 		sykemeldingData,
+		sykemeldingBestilling,
 		yrkesskadeData,
 		arbeidsplassencvData,
 		arbeidsplassencvError,
@@ -542,14 +482,13 @@ export default (props: PersonVisningProps) => {
 		dokarkivError,
 		histarkData,
 		histarkError,
-		ident?.bestillinger,
 		udistub,
 		udistubError,
 		medl,
 		medlError,
 		loadingAareg,
 		aaregError,
-	])
+	})
 
 	return (
 		<ErrorBoundary>
