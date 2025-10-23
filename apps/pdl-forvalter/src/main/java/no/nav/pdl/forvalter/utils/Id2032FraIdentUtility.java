@@ -16,6 +16,9 @@ public class Id2032FraIdentUtility {
      * Validerer et fødsels-eller-d-nummer(1964 og 2032-type) ved å sjekke kontrollsifrene iht.
      * <a href="https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/nytt-fodselsnummer-fra-2032/">...</a>
      *
+     * Denne utility antar at input er et gyldig personidentifikasjonsnummer, og gjør ikke en full validering, men
+     * kun validering av kontrollsiffer K1 for å bestemme om det er en 2032-type eller ikke.
+     *
      * @param ident 11-siffret FNR, DNR eller NPID som skal valideres.
      * @return true hvis gyldig, ellers false
      */
