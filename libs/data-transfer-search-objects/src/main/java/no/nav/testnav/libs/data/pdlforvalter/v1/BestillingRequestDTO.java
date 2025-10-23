@@ -27,8 +27,6 @@ public class BestillingRequestDTO {
     private Boolean syntetisk;
     private Boolean id2032;
 
-    private Boolean id2032;
-
     private String opprettFraIdent;
 
     private PersonDTO person;
