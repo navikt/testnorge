@@ -98,6 +98,7 @@ export type DeltBostedData = {
 	ukjentBosted?: UkjentBostedData
 	metadata?: Metadata
 	adressetype?: string
+	master?: string
 }
 
 export type OppholdsadresseData = {

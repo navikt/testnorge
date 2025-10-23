@@ -6,7 +6,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import { showLabel } from '@/utils/DataFormatter'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
-import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/partials/DeltBosted'
+import { DeltBostedVisning } from '@/components/fagsystem/pdlf/bestilling/partials/DeltBosted'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import _get from 'lodash/get'
@@ -66,7 +66,7 @@ export const ForelderBarnRelasjon = ({ forelderBarnListe }: ForelderBarnTypes) =
 								/>
 								<TitleValue title="Master" value={forelderBarn.master} />
 								<EkspanderbarVisning vis={_get(forelderBarn, 'deltBosted')} header="DELT BOSTED">
-									<DeltBosted deltBosted={forelderBarn.deltBosted} />
+									<DeltBostedVisning deltBosted={forelderBarn.deltBosted} />
 								</EkspanderbarVisning>
 								<EkspanderbarVisning
 									vis={_get(forelderBarn, 'nyRelatertPerson')}
