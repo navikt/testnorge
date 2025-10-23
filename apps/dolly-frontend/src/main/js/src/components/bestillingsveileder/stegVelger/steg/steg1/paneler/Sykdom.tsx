@@ -11,16 +11,30 @@ import {
 	initialValuesDetaljertSykemelding,
 	initialValuesNySykemelding,
 } from '@/components/fagsystem/sykdom/form/initialValues'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useContext } from 'react'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
 export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
-
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const sykemeldingTimeout = getTimeoutAttr('SYKEMELDING', opts)
+	const yrkesskadeTimeout = getTimeoutAttr('YRKESSKADE', opts)
+	const sykemeldingTitle = sykemeldingTimeout.title
+	const nySykemeldingTitle =
+		sykemeldingTitle ||
+		(sm.attrs.sykemelding.checked
+			? 'Personen har allerede detaljert sykemelding i bestillingen'
+			: undefined)
+	const yrkesskadeTitle = yrkesskadeTimeout.title
 	return (
-		// @ts-ignore
 		<Panel
 			heading={SykdomPanel.heading}
-			checkAttributeArray={() => sm.batchAdd(['nySykemelding'])}
-			uncheckAttributeArray={sm.batchRemove}
+			checkAttributeArray={(() => sm.batchAdd(['nySykemelding'])) as any}
+			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="sykdom"
 			startOpen={harValgtAttributt(formValues, [
 				sykemeldingAttributt,
@@ -28,18 +42,22 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 				yrkesskaderAttributt,
 			])}
 		>
-			<AttributtKategori title={null} attr={sm.attrs}>
-				<Attributt attr={sm.attrs.sykemelding} disabled={sm.attrs.nySykemelding.checked} />
+			<AttributtKategori title="" attr={sm.attrs}>
+				<Attributt
+					attr={sm.attrs.sykemelding}
+					disabled={sm.attrs.nySykemelding.checked || sykemeldingTimeout.disabled}
+					title={sykemeldingTitle}
+				/>
 				<Attributt
 					attr={sm.attrs.nySykemelding}
-					disabled={sm.attrs.sykemelding.checked}
-					title={
-						sm.attrs.sykemelding.checked
-							? 'Personen har allerede detaljert sykemelding i bestillingen'
-							: null
-					}
+					disabled={sm.attrs.sykemelding.checked || sykemeldingTimeout.disabled}
+					title={nySykemeldingTitle}
 				/>
-				<Attributt attr={sm.attrs.yrkesskader} />
+				<Attributt
+					attr={sm.attrs.yrkesskader}
+					disabled={yrkesskadeTimeout.disabled}
+					title={yrkesskadeTitle}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)
