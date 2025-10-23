@@ -30,7 +30,7 @@ class BestillingTpsMessagingStatusMapperTest {
 
     private static final List<BestillingProgress> ERROR_WITH_ENV = List.of(
             BestillingProgress.builder().ident("IDENT_1")
-                    .tpsMessagingStatus("Spraakkode#t4:FEIL= Ingen svarstatus mottatt fra TPS,q2:FEIL= Ingen svarstatus mottatt fra TPS")
+                    .tpsMessagingStatus("Spraakkode#t4:FEIL= Ingen svarstatus mottatt fra TPS,q4:FEIL= Ingen svarstatus mottatt fra TPS")
                     .build()
     );
 
@@ -39,13 +39,13 @@ class BestillingTpsMessagingStatusMapperTest {
 
         var identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(RUN_STATUS);
 
-        assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("OK")));
-        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
-        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.getFirst().getStatuser().get(1).getMelding(), is(equalTo("OK")));
+        assertThat(identStatuses.getFirst().getStatuser().get(1).getDetaljert().getFirst().getMiljo(), is(equalTo("t4")));
+        assertThat(identStatuses.getFirst().getStatuser().get(1).getDetaljert().getFirst().getIdenter(), containsInAnyOrder("IDENT_1"));
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Egenansatt send: Miljø ikke støttet")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t6")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getMelding(), is(equalTo("Feil: Egenansatt send: Miljø ikke støttet")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getMiljo(), is(equalTo("t6")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getIdenter(), containsInAnyOrder("IDENT_1"));
 
     }
 
@@ -54,9 +54,9 @@ class BestillingTpsMessagingStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(ERROR_AND_OK);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Telefonnummer: Bad Request")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getMelding(), is(equalTo("Feil: Telefonnummer: Bad Request")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getMiljo(), is(equalTo("t4")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getIdenter(), containsInAnyOrder("IDENT_1"));
     }
 
     @Test
@@ -64,10 +64,10 @@ class BestillingTpsMessagingStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(ERROR_WITH_ENV);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Advarsel: Spraakkode: Status ukjent (tidsavbrudd)")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(1).getMiljo(), is(equalTo("q2")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(1).getIdenter(), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getMelding(), is(equalTo("Advarsel: Spraakkode: Status ukjent (tidsavbrudd)")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().get(1).getMiljo(), is(equalTo("q4")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().get(1).getIdenter(), containsInAnyOrder("IDENT_1"));
     }
 }
