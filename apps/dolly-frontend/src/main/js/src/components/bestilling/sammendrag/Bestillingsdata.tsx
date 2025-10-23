@@ -58,6 +58,7 @@ import { Arbeidssoekerregisteret } from '@/components/fagsystem/arbeidssoekerreg
 import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/partials/DeltBosted'
 import { NavAnsatt } from '@/components/fagsystem/nom/bestilling/NavAnsatt'
 import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/bestilling/AlderspensjonNyUttaksgrad'
+import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/bestilling/SigrunstubSummertSkattegrunnlag'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -134,7 +135,9 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<SigrunstubPensjonsgivende
 				sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
 			/>
-			{/*TODO: sigrunstubSummertSkattegrunnlag"*/}
+			<SigrunstubSummertSkattegrunnlag
+				summertSkattegrunnlagListe={bestilling.sigrunstubSummertSkattegrunnlag}
+			/>
 			<Inntektstub inntektstub={bestilling.inntektstub} />
 			<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
 			<Skattekort skattekort={bestilling.skattekort} />
