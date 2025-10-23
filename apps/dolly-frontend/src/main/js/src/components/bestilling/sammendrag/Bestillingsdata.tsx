@@ -29,7 +29,6 @@ import { UtenlandskIdent } from '@/components/fagsystem/pdlf/bestilling/partials
 import { NyIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/NyIdentitet'
 import { KontaktinformasjonForDoedsbo } from '@/components/fagsystem/pdlf/bestilling/partials/KontaktinformasjonForDoedsbo'
 import { Arbeidsforhold } from '@/components/fagsystem/aareg/bestilling/Arbeidsforhold'
-import { Sigrunstub } from '@/components/fagsystem/sigrunstub/bestilling/Sigrunstub'
 import { SigrunstubPensjonsgivende } from '@/components/fagsystem/sigrunstubPensjonsgivende/bestilling/SigrunstubPensjonsgivende'
 import { Inntektstub } from '@/components/fagsystem/inntektstub/bestilling/Inntektstub'
 import { Inntektsmelding } from '@/components/fagsystem/inntektsmelding/bestilling/Inntektsmelding'
@@ -130,8 +129,6 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
 			/>
 			<Arbeidsforhold arbeidsforholdListe={bestilling.aareg} />
-			{/*TODO: Fjerne Sigrunstub???*/}
-			<Sigrunstub sigrunstubListe={bestilling.sigrunstub} />
 			<SigrunstubPensjonsgivende
 				sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
 			/>

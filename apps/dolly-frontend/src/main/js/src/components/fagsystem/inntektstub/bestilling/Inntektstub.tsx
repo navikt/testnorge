@@ -3,7 +3,6 @@ import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsd
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { Grunnlag } from '@/components/fagsystem/sigrunstub/SigrunstubTypes'
 import { formatDate, formatDateTime } from '@/utils/DataFormatter'
 import { AdresseKodeverk, ArbeidKodeverk, InntektstubKodeverk } from '@/config/kodeverk'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
@@ -73,7 +72,7 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 					whiteBackground={whiteBackground}
 					nested
 				>
-					{(inntekt: Grunnlag, idy: number) => (
+					{(inntekt: any, idy: number) => (
 						<React.Fragment key={`inntekt_${idy}`}>
 							{genererTitleValueFelter(inntekt)}
 						</React.Fragment>

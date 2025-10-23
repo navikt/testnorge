@@ -1,7 +1,6 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { Grunnlag } from '@/components/fagsystem/sigrunstub/SigrunstubTypes'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
@@ -10,6 +9,11 @@ import { SigrunstubPensjonsgivendeData } from '@/components/fagsystem/sigrunstub
 
 type SigrunstubPensjonsgivendeTypes = {
 	sigrunstubPensjonsgivendeListe: Array<SigrunstubPensjonsgivendeData>
+}
+
+type Grunnlag = {
+	tekniskNavn: string
+	verdi: string
 }
 
 export const SigrunstubPensjonsgivende = ({
