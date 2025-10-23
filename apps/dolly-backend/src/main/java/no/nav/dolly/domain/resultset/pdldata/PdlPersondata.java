@@ -35,5 +35,6 @@ public class PdlPersondata {
         private LocalDateTime foedtFoer;
         private Integer alder;
         private Boolean syntetisk;
+        private Boolean id2032;
     }
 }
