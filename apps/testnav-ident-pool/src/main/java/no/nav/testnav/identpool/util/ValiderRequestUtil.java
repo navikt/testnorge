@@ -28,7 +28,7 @@ public class ValiderRequestUtil {
             throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtEtter'");
         }
 
-        if (nonNull(foedtEtter) && foedtEtter.isAfter(LocalDate.now())) {
+        if (nonNull(foedtFoer) && foedtFoer.isAfter(LocalDate.now())) {
             throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtFoer'");
         }
 
