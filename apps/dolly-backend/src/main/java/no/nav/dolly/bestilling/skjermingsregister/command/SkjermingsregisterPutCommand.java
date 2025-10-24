@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class SkjermingsregisterPutCommand implements Callable<Mono<SkjermingDataResponse>> {
 
-    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjerming/dolly";
+    private static final String SKJERMINGSREGISTER_URL = "/skjermingsregister/api/v1/skjerming/dolly";
 
     private final WebClient webClient;
     private final SkjermingDataRequest skjermingsDataRequest;

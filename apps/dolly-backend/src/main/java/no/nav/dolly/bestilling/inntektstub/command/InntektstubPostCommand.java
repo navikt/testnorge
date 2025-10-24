@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon>> {
 
-    private static final String INNTEKTER_URL = "/api/v2/inntektsinformasjon";
+    private static final String INNTEKTER_URL = "/inntektstub/api/v2/inntektsinformasjon";
 
     private final WebClient webClient;
     private final List<Inntektsinformasjon> inntektsinformasjon;

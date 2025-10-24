@@ -81,7 +81,7 @@ const histarkUrl = (transaksjonsid: any) => {
 	transaksjonsid?.forEach((transaksjon: any) => {
 		transaksjon?.transaksjonId?.forEach((tx) => {
 			if (tx?.dokumentInfoId) {
-				urlListe.push(`/testnav-histark-proxy/api/saksmapper/${tx.dokumentInfoId}`)
+				urlListe.push(`/testnav-dolly-proxy/histark/api/saksmapper/${tx.dokumentInfoId}`)
 			}
 		})
 	})

@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: testnav-dolly-proxy
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      httpclient:
+        response-timeout: 1200s
+  config:
+    import: "dolly-application.yml"
+  main:
+    web-application-type: reactive
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+springdoc:
+  swagger-ui:
+    urls:
+# Not working due to CORS.
+#      - name: histark
+#        url: https://histarkimport.teamdokumenthandtering/v3/api-docs
+#      - name: inntektstub
+#        url: http://inntektstub.team-inntekt/v3/api-docs/a-ordningen%20api
+    urls-primary-name: Downstream Services
+
+targets:
+  histark: https://histarkimport.dev.intern.nav.no
+  inntektstub: http://inntektstub.team-inntekt
+  sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
+  skjermingsregister: https://skjermede-personer.dev.adeo.no
+  udistub: http://testnav-udi-stub.dolly

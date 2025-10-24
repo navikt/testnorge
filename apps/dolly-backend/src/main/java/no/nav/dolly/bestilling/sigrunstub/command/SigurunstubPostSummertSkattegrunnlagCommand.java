@@ -24,7 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class SigurunstubPostSummertSkattegrunnlagCommand implements Callable<Mono<SigrunstubResponse>> {
 
-    private static final String SKATTEGRUNNLAG_URL = "/api/v2/summertskattegrunnlag";
+    private static final String SKATTEGRUNNLAG_URL = "/sigrunstub/api/v2/summertskattegrunnlag";
 
     private final WebClient webClient;
     private final SigrunstubSummertskattegrunnlagRequest request;

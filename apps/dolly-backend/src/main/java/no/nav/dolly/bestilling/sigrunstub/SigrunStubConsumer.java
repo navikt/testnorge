@@ -3,11 +3,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubLignetDeleteCommand;
-import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubPensjonsgivendeDeleteCommand;
-import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubSummertSkattgrunnlagDeleteCommand;
-import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPostSummertSkattegrunnlagCommand;
-import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPutCommand;
+import no.nav.dolly.bestilling.sigrunstub.command.*;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
@@ -30,8 +26,8 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Component
 public class SigrunStubConsumer extends ConsumerStatus {
 
-    private static final String SIGRUN_STUB_LIGNET_INNTEKT_URL = "/api/v1/lignetinntekt";
-    private static final String SIGRUN_STUB_PENSJONSGIVENDE_INNTEKT_URL = "/api/v1/pensjonsgivendeinntektforfolketrygden";
+    private static final String SIGRUN_STUB_LIGNET_INNTEKT_URL = "/sigrunstub/api/v1/lignetinntekt";
+    private static final String SIGRUN_STUB_PENSJONSGIVENDE_INNTEKT_URL = "/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden";
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;
@@ -43,7 +39,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavSigrunstubProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -53,8 +49,8 @@ public class SigrunStubConsumer extends ConsumerStatus {
 
     @Timed(name = "providers", tags = {"operation", "sigrun_deleteLignetInntekt"})
     public Flux<SigrunstubResponse> deleteLignetInntekt(List<String> identer) {
-
-        return tokenService.exchange(serverProperties)
+        return tokenService
+                .exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(identer)
                         .delayElements(Duration.ofMillis(50))
                         .map(ident -> new SigrunstubLignetDeleteCommand(webClient, ident, token.getTokenValue()).call())
@@ -117,7 +113,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-sigrunstub-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

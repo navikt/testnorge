@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import { fetcher } from '@/api'
 import useSWRImmutable from 'swr/immutable'
 
-const getSigrunstubBaseUrl = () => `/testnav-sigrunstub-proxy/api`
+const getSigrunstubBaseUrl = () => `/testnav-dolly-proxy/sigrunstub/api`
 
 export const usePensjonsgivendeInntektKodeverk = () => {
 	const { data, isLoading, error } = useSWRImmutable<any, Error>(
