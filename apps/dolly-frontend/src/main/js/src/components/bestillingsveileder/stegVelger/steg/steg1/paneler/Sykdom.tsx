@@ -42,7 +42,7 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 				yrkesskaderAttributt,
 			])}
 		>
-			<AttributtKategori title="" attr={sm.attrs}>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.sykemelding}
 					disabled={sm.attrs.nySykemelding.checked || sykemeldingTimeout.disabled}

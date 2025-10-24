@@ -49,11 +49,15 @@ export const Attributt: React.FC<AttributtProps> = ({
 }
 
 interface AttributtKategoriProps {
-	title: string
+	title?: string
 	children: React.ReactNode
 	attr: Record<string, AttrItem>
 }
-export const AttributtKategori: React.FC<AttributtKategoriProps> = ({ title, children, attr }) => {
+export const AttributtKategori: React.FC<AttributtKategoriProps> = ({
+	title = undefined,
+	children,
+	attr,
+}) => {
 	const values = attr && Object.values(attr)
 	const checkedValues = values?.filter((a) => a.checked)?.map((a) => a.label) || []
 

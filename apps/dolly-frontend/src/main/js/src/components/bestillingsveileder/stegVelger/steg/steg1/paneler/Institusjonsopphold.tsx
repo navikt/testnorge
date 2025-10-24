@@ -22,7 +22,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 			iconType="institusjon"
 			startOpen={harValgtAttributt(formValues, [instAttributt])}
 		>
-			<AttributtKategori title="" attr={sm.attrs}>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.instdata}
 					disabled={instTimeout.disabled}
