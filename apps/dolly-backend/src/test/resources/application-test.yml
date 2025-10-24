@@ -39,6 +39,11 @@ consumers:
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/aareg
     cluster: dev-fss
+  testnav-dolly-proxy:
+    name: sigrunstub-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}
+    cluster: dev-fss
   testnav-pdl-proxy:
     name: pdl-mock
     namespace: dolly
