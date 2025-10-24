@@ -33,11 +33,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class PersonDTO implements Serializable {
 
     protected static final int[] WEIGHTS = {3, 7, 6, 1, 8, 9, 4, 5, 2};
-    protected static final List<Integer> VALIDS = java.util.List.of(1, 2, 3);
+    protected static final List<Integer> VALIDS = List.of(1, 2, 3);
 
     private String ident;
     private Identtype identtype;
-    private Boolean id2032;
+    private boolean id2032;
     private Boolean standalone;
 
     @JsonIgnore
@@ -299,7 +299,7 @@ public class PersonDTO implements Serializable {
         }
     }
 
-    public Boolean getId2032() {
+    public boolean getId2032() {
 
         return isId2032(ident);
     }
