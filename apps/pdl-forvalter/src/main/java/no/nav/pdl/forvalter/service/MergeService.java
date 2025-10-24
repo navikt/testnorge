@@ -45,7 +45,9 @@ public class MergeService {
         if (!request.getTelefonnummer().isEmpty()) {
             dbPerson.setTelefonnummer(null);
         }
-        Stream.of(request.getClass().getDeclaredFields()).forEach(field -> {
+        Stream.of(request.getClass().getDeclaredFields())
+                .filter(field -> !"WEIGHTS".equals(field.getName()) && !"VALIDS".equals(field.getName()))
+                .forEach(field -> {
 
             if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {
 
