@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -46,7 +47,9 @@ public class MergeService {
             dbPerson.setTelefonnummer(null);
         }
         Stream.of(request.getClass().getDeclaredFields())
-                .filter(field -> !"WEIGHTS".equals(field.getName()) && !"VALIDS".equals(field.getName()))
+                .filter(field ->
+                        !Modifier.isStatic(field.getModifiers()) &&
+                        !Modifier.isFinal(field.getModifiers()))
                 .forEach(field -> {
 
             if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {
