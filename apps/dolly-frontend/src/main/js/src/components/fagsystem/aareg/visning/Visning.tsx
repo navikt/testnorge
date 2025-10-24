@@ -15,6 +15,7 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { formatDate } from '@/utils/DataFormatter'
 import React from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { getFagsystemTimeoutTitle } from '@/components/fagsystem/utils'
 
 type AaregVisningProps = {
 	ident?: string
@@ -24,11 +25,13 @@ type AaregVisningProps = {
 	bestillingIdListe?: Array<string>
 	bestillinger?: Array<any>
 	tilgjengeligMiljoe?: string
+	timedOutFagsystemer?: string[]
 }
 
 type MiljoDataListe = {
 	miljo: string
 	data: Array<Arbeidsforhold>
+	feil?: { message?: string }
 }
 
 type ArbeidsforholdArray = {
@@ -72,31 +75,24 @@ export const sjekkManglerAaregData = (aaregData: Array<MiljoDataListe>) => {
 	)
 }
 
-const getHeader = (data: Arbeidsforhold) => {
-	return `Arbeidsforhold (${data?.arbeidsgiver?.type}: ${
-		data?.arbeidsgiver?.organisasjonsnummer || data?.arbeidsgiver?.offentligIdent
-	})`
-}
-
 const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 	if (!data) return null
-
 	const sortedData = data
 		?.slice()
 		?.sort?.((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
-
 	return (
 		<DollyFieldArray
 			header="Arbeidsforhold"
-			getHeader={getHeader}
+			getHeader={(d) =>
+				`Arbeidsforhold (${d?.arbeidsgiver?.type}: ${d?.arbeidsgiver?.organisasjonsnummer || d?.arbeidsgiver?.offentligIdent})`
+			}
 			data={sortedData}
 			expandable={sortedData.length > 1}
 		>
-			{(arbeidsforhold: Arbeidsforhold, idx: number) => (
+			{(arbeidsforhold, idx) => (
 				<React.Fragment>
 					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
-
 						{arbeidsforhold.ansettelsesperiode && (
 							<>
 								<TitleValue
@@ -104,7 +100,6 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 									value={arbeidsforhold.type}
 									kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 								/>
-
 								{arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
 										title="Ansatt fra"
@@ -125,17 +120,11 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 							</>
 						)}
 					</div>
-
 					{arbeidsforhold.arbeidsgiver && <Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />}
-
 					<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
-
 					<Fartoy data={arbeidsforhold.fartoy} />
-
 					<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
-
 					<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
-
 					<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
 				</React.Fragment>
 			)}
@@ -143,65 +132,56 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 	)
 }
 
+const erOpprettetAvDolly = (opprettetAv?: string): boolean =>
+	!!(
+		opprettetAv &&
+		(opprettetAv.includes('testnav') ||
+			opprettetAv.includes('srvtestnorge') ||
+			opprettetAv.includes('srvappserver') ||
+			opprettetAv.includes('aareg-dolly-api'))
+	)
+
 export const AaregVisning = ({
 	liste,
 	loading,
 	bestillingIdListe,
 	bestillinger,
 	tilgjengeligMiljoe,
+	timedOutFagsystemer = [],
 }: AaregVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'AAREG')
-
-	if (loading) {
-		return <Loading label="Laster Aareg-data" />
-	}
-	if (!liste || liste.length === 0) {
-		return null
-	}
-
+	if (loading) return <Loading label="Laster Aareg-data" />
+	if (!liste || liste.length === 0) return null
 	const miljoerMedData = liste?.map((miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo)
-
 	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
-
 	const forsteMiljo =
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
-
-	const aaregBestillinger: any = []
+	const aaregBestillinger = []
 	bestillinger?.forEach((best) => {
-		best?.bestilling?.aareg?.forEach((arbforh: Arbeidsforhold) => aaregBestillinger.push(arbforh))
+		best?.bestilling?.aareg?.forEach((arbforh) => aaregBestillinger.push(arbforh))
 	})
-
-	const harArbeidsforholdBestilling = aaregBestillinger?.some((best: any) => best?.arbeidsgiver)
-
-	const arbeidsforhold = liste?.map((item) => {
-		return {
-			...item,
-			data: item?.data
-				?.map((data) => {
-					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ||
-						data?.sporingsinformasjon?.opprettetAv?.includes('srvtestnorge') ||
-						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver') ||
-						data?.sporingsinformasjon?.opprettetAv?.includes('aareg-dolly-api')
-						? data
-						: null
-				})
-				?.filter((data) => data),
-		}
-	})
-
+	const harArbeidsforholdBestilling = aaregBestillinger?.some((best) => best?.arbeidsgiver)
+	const arbeidsforhold = liste?.map((item) => ({
+		...item,
+		data: item?.data
+			?.map((data) => (erOpprettetAvDolly(data?.sporingsinformasjon?.opprettetAv) ? data : null))
+			?.filter((d) => d),
+	}))
 	const filteredData =
 		tilgjengeligMiljoe && arbeidsforhold?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
-
-	const manglerArbeidsforholdData = sjekkManglerAaregData(arbeidsforhold)
+	const manglerArbeidsforholdData =
+		arbeidsforhold?.length < 1 || arbeidsforhold?.every((m) => !m?.data || m?.data?.length < 1)
 	const arbeidsforholdFeil =
 		harArbeidsforholdBestilling && arbeidsforhold?.find((arbforh) => arbforh?.feil)
-
 	return (
 		<div>
 			<SubOverskrift
 				label="Arbeidsforhold"
 				iconKind="arbeid"
 				isWarning={manglerArbeidsforholdData}
+				title={
+					timedOutFagsystemer?.includes('AAREG') ? getFagsystemTimeoutTitle('AAREG') : undefined
+				}
 			/>
 			{arbeidsforholdFeil?.feil && manglerArbeidsforholdData ? (
 				<StyledAlert variant={'warning'} size={'small'} inline>

@@ -71,6 +71,8 @@ export const RootComponent = () => (
 		<Provider store={store}>
 			<SWRConfig
 				value={{
+					timeout: 10000,
+					timeoutErrorMessage: 'Tjenesten tok for lang tid å svare',
 					dedupingInterval: 5000,
 					revalidateOnFocus: false,
 				}}

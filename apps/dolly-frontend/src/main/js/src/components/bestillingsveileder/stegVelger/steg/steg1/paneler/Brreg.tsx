@@ -2,10 +2,17 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { brregAttributt } from '@/components/fagsystem/brregstub/form/Form'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useContext } from 'react'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
 export const BrregPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(BrregPanel.initialValues)
-
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const brregTimeout = getTimeoutAttr('BRREG', opts)
 	return (
 		<Panel
 			heading={BrregPanel.heading}
@@ -15,7 +22,11 @@ export const BrregPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, [brregAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt attr={sm.attrs.brregstub} />
+				<Attributt
+					attr={sm.attrs.brregstub}
+					disabled={brregTimeout.disabled}
+					title={brregTimeout.title}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)

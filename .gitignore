@@ -36,3 +36,4 @@ apps/brreg-stub/src/jaxb2
 ### VS Code ###
 .vscode
 **/bin/*
+/test-results/.last-run.json

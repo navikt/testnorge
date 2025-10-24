@@ -1854,20 +1854,6 @@ const getTredjelandsborgerStatus = (oppholdKriterier, udiStubKriterier) => {
 	return null
 }
 
-const getAliasListe = (udiStubKriterier) => {
-	const aliaserListe = []
-	if (udiStubKriterier.aliaser) {
-		udiStubKriterier.aliaser.forEach((alias, i) => {
-			if (alias.nyIdent === false) {
-				aliaserListe.push(`#${i + 1} Navn\n`)
-			} else {
-				aliaserListe.push(`#${i + 1} ID-nummer - ${alias.identtype}\n`)
-			}
-		})
-	}
-	return aliaserListe
-}
-
 const mapUdiStub = (bestillingData, data) => {
 	const udiStubKriterier = bestillingData.udistub
 
@@ -1890,8 +1876,6 @@ const mapUdiStub = (bestillingData, data) => {
 
 		const oppholdsrett = Boolean(currentOppholdsrettType)
 		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus) ? 'Tredjelandsborger' : null
-
-		const aliaserListe = getAliasListe(udiStubKriterier)
 
 		const udistub = {
 			header: 'UDI',
@@ -1970,7 +1954,6 @@ const mapUdiStub = (bestillingData, data) => {
 				obj('Arbeidsadgang til dato', formatDate(_.get(arbeidsadgangKriterier, 'periode.til'))),
 				obj('Hjemmel', _.get(arbeidsadgangKriterier, 'hjemmel')),
 				obj('Forklaring', _.get(arbeidsadgangKriterier, 'forklaring')),
-				obj('Alias', aliaserListe?.length > 0 && aliaserListe),
 				obj('Flyktningstatus', oversettBoolean(udiStubKriterier.flyktning)),
 				obj(
 					'Asylsøker',

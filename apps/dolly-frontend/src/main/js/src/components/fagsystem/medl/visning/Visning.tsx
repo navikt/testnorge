@@ -4,9 +4,11 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import * as _ from 'lodash-es'
 import { Medlemskapsperiode } from '@/components/fagsystem/medl/MedlTypes'
 import styled from 'styled-components'
+import { getFagsystemTimeoutTitle } from '@/components/fagsystem/utils'
 
 type MedlTypes = {
 	data?: Medlemskapsperiode[]
+	timedOutFagsystemer?: string[]
 }
 
 const StyledSuboverskrift = styled(SubOverskrift)`
@@ -23,7 +25,7 @@ const predicateGyldigeMedlemskapsperioder = () => (medlemskapsperiode: Medlemska
 const harGyldigMedlData = (data: Medlemskapsperiode[] | undefined) =>
 	!_.isEmpty(data) && data?.some(predicateGyldigeMedlemskapsperioder())
 
-export default ({ data }: MedlTypes) => {
+export default ({ data, timedOutFagsystemer = [] }: MedlTypes) => {
 	if (!harGyldigMedlData(data)) {
 		return null
 	}
@@ -34,13 +36,16 @@ export default ({ data }: MedlTypes) => {
 				label="Medlemskap"
 				iconKind="calendar"
 				style={{ marginBottom: '-2px' }}
+				title={timedOutFagsystemer?.includes('MEDL') ? getFagsystemTimeoutTitle('MEDL') : undefined}
 			/>
 			<DollyFieldArray
 				data={data?.filter(predicateGyldigeMedlemskapsperioder())}
 				header="Medlemskapsperiode"
 				nested
 			>
-				{(medlemskapsperiode, idx) => <MedlVisning medlemskapsperiode={medlemskapsperiode} />}
+				{(medlemskapsperiode: Medlemskapsperiode) => (
+					<MedlVisning medlemskapsperiode={medlemskapsperiode} />
+				)}
 			</DollyFieldArray>
 		</>
 	)

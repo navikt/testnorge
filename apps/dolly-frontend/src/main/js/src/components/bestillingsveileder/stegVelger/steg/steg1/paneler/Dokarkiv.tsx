@@ -6,31 +6,45 @@ import {
 	initialDigitalInnsending,
 	initialDokarkiv,
 } from '@/components/fagsystem/dokarkiv/form/initialValues'
+import { useContext } from 'react'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
 export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(DokarkivPanel.initialValues)
-
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const dokarkiv = getTimeoutAttr('DOKARKIV', opts)
+	const histark = getTimeoutAttr('HISTARK', opts)
 	return (
-		// @ts-ignore
 		<Panel
 			heading={DokarkivPanel.heading}
 			checkAttributeArray={() => sm.batchAdd(['digitalInnsending', 'histark'])}
-			uncheckAttributeArray={sm.batchRemove}
+			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="dokarkiv"
 			startOpen={harValgtAttributt(formValues, ['dokarkiv', 'histark'])}
 		>
 			<AttributtKategori title="Oppretting av dokument" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.dokarkiv}
-					disabled={sm.attrs.digitalInnsending.checked || sm.attrs.histark.checked}
+					disabled={
+						dokarkiv.disabled || sm.attrs.digitalInnsending.checked || sm.attrs.histark.checked
+					}
+					title={dokarkiv.title}
 				/>
 				<Attributt
 					attr={sm.attrs.digitalInnsending}
-					disabled={sm.attrs.dokarkiv.checked || sm.attrs.histark.checked}
+					disabled={dokarkiv.disabled || sm.attrs.dokarkiv.checked || sm.attrs.histark.checked}
+					title={dokarkiv.title}
 				/>
 				<Attributt
 					attr={sm.attrs.histark}
-					disabled={sm.attrs.dokarkiv.checked || sm.attrs.digitalInnsending.checked}
+					disabled={
+						histark.disabled || sm.attrs.dokarkiv.checked || sm.attrs.digitalInnsending.checked
+					}
+					title={histark.title}
 				/>
 			</AttributtKategori>
 		</Panel>

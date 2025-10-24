@@ -24,28 +24,34 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
-
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-
-	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
+	const harGyldigApBestilling = (opts?.tidligereBestillinger as any[])?.some((bestilling: any) =>
 		bestilling.status?.some(
-			(status) => status.id === 'PEN_AP' && status.statuser?.some((item) => item?.melding === 'OK'),
+			(status: any) =>
+				status.id === 'PEN_AP' && status.statuser?.some((item: any) => item?.melding === 'OK'),
 		),
 	)
-
-	const harGyldigUforetrygdBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
-		bestilling.status?.some(
-			(status) => status.id === 'PEN_UT' && status.statuser?.some((item) => item.melding === 'OK'),
-		),
+	const harGyldigUforetrygdBestilling = (opts?.tidligereBestillinger as any[])?.some(
+		(bestilling: any) =>
+			bestilling.status?.some(
+				(status: any) =>
+					status.id === 'PEN_UT' && status.statuser?.some((item: any) => item.melding === 'OK'),
+			),
 	)
 
 	const infoTekst =
 		'Pensjon: \nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\n' +
 		'Tjenestepensjon: \nTjenestepensjonsforhold lagt til i TP. \n\n' +
 		'Alderspensjon: \nAlderspensjonssak med vedtak blir lagt til i PEN.'
+
+	const poppTimeout = getTimeoutAttr('POPP', opts)
+	const tpTimeout = getTimeoutAttr('TP', opts)
+	const apTimeout = getTimeoutAttr('PEN_AP', opts)
+	const utTimeout = getTimeoutAttr('PEN_UT', opts)
 
 	const getIgnoreKeys = () => {
 		const ignoreKeys = []
@@ -64,11 +70,13 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	return (
 		<Panel
 			heading={PensjonPanel.heading}
-			informasjonstekst={infoTekst}
-			checkAttributeArray={() => {
-				sm.batchAdd(getIgnoreKeys())
-			}}
-			uncheckAttributeArray={sm.batchRemove}
+			informasjonstekst={infoTekst as any}
+			checkAttributeArray={
+				(() => {
+					sm.batchAdd(getIgnoreKeys())
+				}) as any
+			}
+			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="pensjon"
 			startOpen={harValgtAttributt(formValues, [
 				pensjonPath,
@@ -80,35 +88,47 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.inntekt} id="inntekt_pensjon" />
+				<Attributt
+					attr={sm.attrs.inntekt}
+					disabled={poppTimeout.disabled}
+					title={poppTimeout.title}
+					id="inntekt_pensjon"
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Pensjonsavtale" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.pensjonsavtale} />
 			</AttributtKategori>
 			<AttributtKategori title="Tjenestepensjon (TP)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.tp} />
+				<Attributt attr={sm.attrs.tp} disabled={tpTimeout.disabled} title={tpTimeout.title} />
 			</AttributtKategori>
 			<AttributtKategori title="Alderspensjon" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.alderspensjon}
-					disabled={harGyldigApBestilling}
-					title={harGyldigApBestilling ? 'Personen har allerede alderspensjon' : null}
+					disabled={harGyldigApBestilling || apTimeout.disabled}
+					title={
+						apTimeout.title ||
+						(harGyldigApBestilling ? 'Personen har allerede alderspensjon' : undefined)
+					}
 				/>
 				<Attributt
 					attr={sm.attrs.alderspensjonNyUttaksgrad}
-					disabled={!harGyldigApBestilling}
+					disabled={!harGyldigApBestilling || apTimeout.disabled}
 					title={
-						!harGyldigApBestilling
+						apTimeout.title ||
+						(!harGyldigApBestilling
 							? 'Personen må først ha fått innvilget alderspensjon for å kunne få ny uttaksgrad'
-							: null
+							: undefined)
 					}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.uforetrygd}
-					disabled={harGyldigUforetrygdBestilling}
-					title={harGyldigUforetrygdBestilling ? 'Personen har allerede uføretrygd' : null}
+					disabled={harGyldigUforetrygdBestilling || utTimeout.disabled}
+					title={
+						utTimeout.title ||
+						(harGyldigUforetrygdBestilling ? 'Personen har allerede uføretrygd' : undefined)
+					}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="AFP offentlig" attr={sm.attrs}>
