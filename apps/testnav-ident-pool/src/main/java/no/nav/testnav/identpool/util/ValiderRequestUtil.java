@@ -14,33 +14,23 @@ public class ValiderRequestUtil {
 
     public static void validateDatesInRequest(HentIdenterRequest hentIdenterRequest) {
 
-        validerFoedtEtter(hentIdenterRequest.getFoedtEtter());
-        validerFoedtFoer(hentIdenterRequest.getFoedtFoer());
-        validateDateOrder(hentIdenterRequest.getFoedtEtter(), hentIdenterRequest.getFoedtFoer());
+        validerDatoer(hentIdenterRequest.getFoedtEtter(), hentIdenterRequest.getFoedtFoer());
     }
 
     public static void validateDatesInRequest(RekvirerIdentRequest request) {
 
-        validerFoedtEtter(request.getFoedtEtter());
-        validerFoedtFoer(request.getFoedtFoer());
-        validateDateOrder(request.getFoedtEtter(), request.getFoedtFoer());
+        validerDatoer(request.getFoedtEtter(), request.getFoedtFoer());
     }
 
-    private static void validerFoedtEtter(LocalDate foedtEtter) {
+    private static void validerDatoer(LocalDate foedtEtter, LocalDate foedtFoer) {
 
         if (nonNull(foedtEtter) && foedtEtter.isAfter(LocalDate.now())) {
             throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtEtter'");
         }
-    }
 
-    private static void validerFoedtFoer(LocalDate foedtEtter) {
-
-        if (nonNull(foedtEtter) && foedtEtter.isAfter(LocalDate.now())) {
+        if (nonNull(foedtFoer) && foedtFoer.isAfter(LocalDate.now())) {
             throw new UgyldigDatoException("Kan ikke oppgi framtidig dato i felt 'foedtFoer'");
         }
-    }
-
-    private static void validateDateOrder(LocalDate foedtEtter, LocalDate foedtFoer) {
 
         if (nonNull(foedtEtter) && nonNull(foedtFoer) &&
                 foedtEtter.isAfter(foedtFoer)) {

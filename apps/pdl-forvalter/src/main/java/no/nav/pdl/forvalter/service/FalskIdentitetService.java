@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
@@ -25,7 +26,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -199,9 +199,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
             identitet.getNyFalskIdentitetPerson().setFoedtEtter(LocalDateTime.now().minusYears(75));
         }
 
-        if (isNull(identitet.getNyFalskIdentitetPerson().getSyntetisk())) {
-            identitet.getNyFalskIdentitetPerson().setSyntetisk(isSyntetisk(person.getIdent()));
-        }
+        EgenskaperFraHovedperson.kopierData(person, identitet.getNyFalskIdentitetPerson());
 
         identitet.setRettIdentitetVedIdentifikasjonsnummer(
                 createPersonService.execute(identitet.getNyFalskIdentitetPerson()).getIdent());

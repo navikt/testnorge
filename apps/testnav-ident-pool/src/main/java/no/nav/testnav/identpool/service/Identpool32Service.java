@@ -2,8 +2,8 @@ package no.nav.testnav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Ident2032;
+import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.NoekkelinfoDTO;
 import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -40,12 +39,10 @@ public class Identpool32Service {
         var foedselsdato = generateRandomLocalDate(request.getFoedtEtter(), request.getFoedtFoer());
 
         return generateNoekkelinfo(foedselsdato, request.getIdenttype())
-                .flatMap(noekkelinfo -> personidentifikatorRepository
-                        .existsByDatoIdentifikatorAndAllokert(noekkelinfo.datoIdentifikator(), false)
-                        .flatMapMany(ledigFinnes -> isTrue(ledigFinnes) ?
-                                allokerIdent(noekkelinfo.datoIdentifikator(), foedselsdato) :
-                                genererOgAllokerIdent(noekkelinfo, foedselsdato, request.getIdenttype()))
-                        .next())
+                .flatMapMany(noekkelinfo -> noekkelinfo.ledige() ?
+                        allokerIdent(noekkelinfo.datoIdentifikator(), foedselsdato) :
+                        genererOgAllokerIdent(noekkelinfo, foedselsdato, request.getIdenttype()))
+                .next()
                 .map(personidentifikator -> new IdentpoolResponseDTO(
                         personidentifikator.getPersonidentifikator(),
                         personidentifikator.getFoedselsdato(),
@@ -107,13 +104,13 @@ public class Identpool32Service {
                 .collectList()
                 .flatMap(identer -> {
                     if (identer.getFirst().getIndividnummer() == 999 && isNull(identer.getFirst().getPersonidentifikator())) {
-                        return Mono.just(new NoekkelinfoDTO(datoIdentifikator, 999));
+                        return Mono.just(new NoekkelinfoDTO(datoIdentifikator, 999, false));
                     } else if (identer.stream().anyMatch(Ident2032::isLedig)) {
-                        return Mono.just(new NoekkelinfoDTO(datoIdentifikator, identer.getFirst().getIndividnummer()));
+                        return Mono.just(new NoekkelinfoDTO(datoIdentifikator, identer.getFirst().getIndividnummer(), true));
                     } else {
                         var individnummer = identer.getFirst().getIndividnummer() - 1;
                         if (individnummer >= 0) {
-                            return Mono.just(new NoekkelinfoDTO(datoIdentifikator, individnummer));
+                            return Mono.just(new NoekkelinfoDTO(datoIdentifikator, individnummer, false));
                         } else {
                             return generateNoekkelinfo(foedselsdato.minusDays(1), identtype);
                         }
@@ -134,7 +131,9 @@ public class Identpool32Service {
     private static String getDatoIdentifikator(LocalDate foedselsdato, Identtype identtype) {
 
         return String.format("%02d", foedselsdato.getDayOfMonth() + (identtype == Identtype.DNR ? 40 : 0)) +
-                String.format("%02d", foedselsdato.getMonthValue() + (identtype == Identtype.NPID ? 60 : 40)) +
+                String.format("%02d", foedselsdato.getMonthValue() +
+                        (identtype == Identtype.BOST ||
+                         identtype == Identtype.NPID ? 60 : 40)) +
                 String.format("%02d", foedselsdato.getYear() % 100);
     }
 }

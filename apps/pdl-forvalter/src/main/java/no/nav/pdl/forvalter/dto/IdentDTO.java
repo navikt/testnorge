@@ -1,18 +1,20 @@
 package no.nav.pdl.forvalter.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+
+import java.time.LocalDate;
 
 @Data
-@SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdentDTO extends DbVersjonDTO {
+public class IdentDTO {
 
     private String ident;
+    private String personidentifikator;
+    private LocalDate foedselsdato;
+    private long millis;
 }
