@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
@@ -8,7 +7,7 @@ import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	sjekkManglerSykemeldingBestilling,
-	sjekkManglerSykemeldingData
+	sjekkManglerSykemeldingData,
 } from '@/components/fagsystem/sykdom/visning/Visning'
 import { sjekkManglerYrkesskadeData } from '@/components/fagsystem/yrkesskader/visning/YrkesskaderVisning'
 import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
@@ -18,7 +17,7 @@ import {
 	harHistarkBestilling,
 	harMedlBestilling,
 	harSykemeldingBestilling,
-	harUdistubBestilling
+	harUdistubBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 
 interface UseTimedOutParams {
@@ -75,87 +74,54 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		loadingAareg,
 		aaregError,
 	} = params
-
-	const [timedOutFagsystemer, setTimedOutFagsystemer] = useState<string[]>([])
-
-	useEffect(() => {
-		if (!data) return
-		const list: string[] = []
-		const bestillingerFagsystemer = ident?.bestillinger?.map((i: any) => i.bestilling) || []
-		const harAareg = bestillingerFagsystemer?.some((b: any) => b?.aareg)
-		if (
-			harAareg &&
-			(!arbeidsforhold ||
-				sjekkManglerAaregData(arbeidsforhold) ||
-				(loadingAareg === false && typeof arbeidsforhold === 'undefined') ||
-				aaregError)
-		) {
-			list.push('AAREG')
-		}
-		if (poppData && sjekkManglerPensjonData(poppData)) list.push('POPP')
-		if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) list.push('TP')
-		if (apData && sjekkManglerApData(apData)) list.push('PEN_AP')
-		if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
-		if (brregstub && sjekkManglerBrregData(brregstub)) list.push('BRREG')
-		if (instData && sjekkManglerInstData(instData)) list.push('INST')
-		if (
-			sykemeldingData &&
-			sjekkManglerSykemeldingData(sykemeldingData) &&
-			harSykemeldingBestilling(bestillingerFagsystemer) &&
-			sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
-		)
-			list.push('SYKEMELDING')
-		if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) list.push('YRKESSKADE')
-		if (
-			harArbeidsplassenBestilling(bestillingerFagsystemer) &&
-			!arbeidsplassencvData &&
-			arbeidsplassencvError
-		)
-			list.push('ARBEIDSPLASSENCV')
-		if (harDokarkivBestilling(bestillingerFagsystemer) && !dokarkivData && dokarkivError)
-			list.push('DOKARKIV')
-		if (harHistarkBestilling(bestillingerFagsystemer) && !histarkData && histarkError)
-			list.push('HISTARK')
-		if (
-			(udistub && sjekkManglerUdiData(udistub)) ||
-			(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
-		)
-			list.push('UDI')
-		if (
-			(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
-			(harMedlBestilling(bestillingerFagsystemer) &&
-				medl?.response &&
-				Array.isArray(medl.response) &&
-				medl.response.length === 0)
-		)
-			list.push('MEDL')
-		setTimedOutFagsystemer(list)
-	}, [
-		data,
-		ident?.bestillinger,
-		arbeidsforhold,
-		poppData,
-		tpDataForhold,
-		apData,
-		uforetrygdData,
-		brregstub,
-		instData,
-		sykemeldingData,
-		sykemeldingBestilling,
-		yrkesskadeData,
-		arbeidsplassencvData,
-		arbeidsplassencvError,
-		dokarkivData,
-		dokarkivError,
-		histarkData,
-		histarkError,
-		udistub,
-		udistubError,
-		medl,
-		medlError,
-		loadingAareg,
-		aaregError,
-	])
-
-	return timedOutFagsystemer
+	if (!data) return []
+	const list: string[] = []
+	const bestillingerFagsystemer = ident?.bestillinger?.map((i: any) => i.bestilling) || []
+	const harAareg = bestillingerFagsystemer?.some((b: any) => b?.aareg)
+	if (
+		harAareg &&
+		(!arbeidsforhold ||
+			sjekkManglerAaregData(arbeidsforhold) ||
+			(loadingAareg === false && typeof arbeidsforhold === 'undefined') ||
+			aaregError)
+	)
+		list.push('AAREG')
+	if (poppData && sjekkManglerPensjonData(poppData)) list.push('POPP')
+	if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) list.push('TP')
+	if (apData && sjekkManglerApData(apData)) list.push('PEN_AP')
+	if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
+	if (brregstub && sjekkManglerBrregData(brregstub)) list.push('BRREG')
+	if (instData && sjekkManglerInstData(instData)) list.push('INST')
+	if (
+		sykemeldingData &&
+		sjekkManglerSykemeldingData(sykemeldingData) &&
+		harSykemeldingBestilling(bestillingerFagsystemer) &&
+		sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
+	)
+		list.push('SYKEMELDING')
+	if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) list.push('YRKESSKADE')
+	if (
+		harArbeidsplassenBestilling(bestillingerFagsystemer) &&
+		!arbeidsplassencvData &&
+		arbeidsplassencvError
+	)
+		list.push('ARBEIDSPLASSENCV')
+	if (harDokarkivBestilling(bestillingerFagsystemer) && !dokarkivData && dokarkivError)
+		list.push('DOKARKIV')
+	if (harHistarkBestilling(bestillingerFagsystemer) && !histarkData && histarkError)
+		list.push('HISTARK')
+	if (
+		(udistub && sjekkManglerUdiData(udistub)) ||
+		(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
+	)
+		list.push('UDI')
+	if (
+		(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
+		(harMedlBestilling(bestillingerFagsystemer) &&
+			medl?.response &&
+			Array.isArray(medl.response) &&
+			medl.response.length === 0)
+	)
+		list.push('MEDL')
+	return list
 }
