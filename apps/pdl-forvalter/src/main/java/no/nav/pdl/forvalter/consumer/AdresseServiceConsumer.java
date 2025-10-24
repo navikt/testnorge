@@ -54,14 +54,10 @@ public class AdresseServiceConsumer {
         var startTime = currentTimeMillis();
         var vegadresseDTO = mapperFacade.map(vegadresse, VegadresseDTO.class);
 
-        if (vegadresse.getKommunenummer().equals(UOPPGITT)) {
+        if (UOPPGITT.equals(vegadresse.getKommunenummer())) {
             vegadresseDTO.setKommunenummer(null);
         } else {
             vegadresseDTO.setKommunenummer(sjekkHistorisk(vegadresse));
-        }
-
-        if (UOPPGITT.equals(vegadresseDTO.getKommunenummer())) {
-            vegadresseDTO.setKommunenummer(null);
         }
 
         return tokenExchange.exchange(serverProperties)
@@ -97,14 +93,15 @@ public class AdresseServiceConsumer {
         if (isNotBlank(vegadresse.getKommunenummer())) {
             var historiske = kodeverkConsumer.getKommunerMedHistoriske();
             var kommunenavn = historiske.get(vegadresse.getKommunenummer());
-            var gjeldendeKommunenavn = remove(kommunenavn, HISTORISK).trim();
-            return historiske.entrySet().stream()
-                    .filter(kommune -> kommune.getValue().equals(gjeldendeKommunenavn))
-                    .map(Map.Entry::getKey)
-                    .findFirst()
-                    .orElse(null);
-        } else {
-            return null;
+            if (isNotBlank(kommunenavn) && kommunenavn.endsWith(HISTORISK)) {
+                var gjeldendeKommunenavn = remove(kommunenavn, HISTORISK).trim();
+                return historiske.entrySet().stream()
+                        .filter(kommune -> kommune.getValue().equals(gjeldendeKommunenavn))
+                        .map(Map.Entry::getKey)
+                        .findFirst()
+                        .orElse(null);
+            }
         }
+        return vegadresse.getKommunenummer();
     }
 }
