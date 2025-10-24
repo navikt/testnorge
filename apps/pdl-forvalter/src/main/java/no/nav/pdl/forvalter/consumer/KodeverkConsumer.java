@@ -21,6 +21,7 @@ public class KodeverkConsumer {
     private static final String POSTNUMMER = "Postnummer";
     private static final String LANDKODER = "Landkoder";
     private static final String KOMMUNER = "Kommuner";
+    private static final String KOMMUNER_MED_HISTORISKE = "KommunerMedHistoriske";
     private static final String EMBETER = "Vergemål_Fylkesmannsembeter";
     private static final Random random = new SecureRandom();
 
@@ -70,6 +71,12 @@ public class KodeverkConsumer {
 
         return hentKodeverk(EMBETER)
                 .map(embeter -> embeter.get(embete))
+                .block();
+    }
+
+    public Map<String, String> getKommunerMedHistoriske() {
+
+        return hentKodeverk(KOMMUNER_MED_HISTORISKE)
                 .block();
     }
 

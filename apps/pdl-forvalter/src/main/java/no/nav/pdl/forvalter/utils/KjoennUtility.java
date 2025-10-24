@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn;
 
 import java.security.SecureRandom;
@@ -14,7 +15,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
 @UtilityClass
 public class KjoennUtility {
 
-    private static Random random = new SecureRandom();
+    private static final Random RANDOM = new SecureRandom();
 
     private static Kjoenn getMotsattKjoenn(Kjoenn kjoenn) {
 
@@ -31,8 +32,13 @@ public class KjoennUtility {
 
     public static Kjoenn getPartnerKjoenn(Kjoenn kjoenn) {
 
-        return random.nextFloat() <= .95 ?
+        return RANDOM.nextFloat() <= .95 ?
                 getMotsattKjoenn(kjoenn) :
                 kjoenn;
+    }
+
+    public KjoennDTO.Kjoenn getKjoenn() {
+
+        return RANDOM.nextBoolean() ? MANN : KVINNE;
     }
 }

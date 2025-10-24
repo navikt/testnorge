@@ -9,26 +9,25 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.PersonUtenIdentifikatorRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Collections.emptyList;
@@ -37,7 +36,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
@@ -61,8 +59,6 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     private static final String INVALID_RELATERT_PERSON_EXCEPTION = "ForelderBarnRelasjon: Relatert person %s finnes ikke";
     private static final String INVALID_AMBIGUOUS_ADRESSE = "Delt bosted: kun én adresse skal være satt (vegadresse, " +
             "ukjentBosted, matrikkeladresse)";
-
-    private static final Random RANDOM = new SecureRandom();
 
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
@@ -166,11 +162,14 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
         relasjon.setPartnerErIkkeForelder(null);
 
-        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) { // -> Begge foreldre opprettes
+        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
+
             var forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
-            forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
-                    .kjoenn(getKjoenn(relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == MANN ? KVINNE : MANN)
-                    .build());
+            personRepository.findByIdent(relasjon.getRelatertPerson())
+                    .map(DbPerson::getPerson)
+                    .ifPresent(person -> forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
+                            .kjoenn(KjoennFraIdentUtility.getKjoenn(person) == MANN ? KVINNE : MANN)
+                            .build()));
             forelderRelasjon.setRelatertPerson(null);
 
             setRelatertPerson(forelderRelasjon, hovedperson);
@@ -192,14 +191,6 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
             }
         }
         return partnere.getLast().getRelatertVedSivilstand();
-    }
-
-    private KjoennDTO.Kjoenn getKjoenn(String relatertPerson, RelatertBiPersonDTO utenIdentifikator) {
-
-        return isNotBlank(relatertPerson) ?
-
-                KjoennFraIdentUtility.getKjoenn(relatertPerson) :
-                utenIdentifikator.getKjoenn();
     }
 
     private ForelderBarnRelasjonDTO addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
@@ -249,12 +240,11 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                 relasjon.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(
                         relasjon.getRelatertPersonsRolle() == Rolle.BARN ? 18 : 90));
             }
+
             if (isNull(relasjon.getNyRelatertPerson().getKjoenn())) {
                 relasjon.getNyRelatertPerson().setKjoenn(getKjoenn(relasjon.getRelatertPersonsRolle()));
             }
-            if (isNull(relasjon.getNyRelatertPerson().getSyntetisk())) {
-                relasjon.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
-            }
+            EgenskaperFraHovedperson.kopierData(hovedperson, relasjon.getNyRelatertPerson());
 
             PersonDTO relatertPerson = createPersonService.execute(relasjon.getNyRelatertPerson());
 
@@ -281,11 +271,15 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     private void setRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
         if (Rolle.FORELDER == relasjon.getMinRolleForPerson()) {
-            relasjon.setMinRolleForPerson(KjoennFraIdentUtility.getKjoenn(person.getIdent()) == MANN ? Rolle.FAR : Rolle.MOR);
+            relasjon.setMinRolleForPerson(KjoennFraIdentUtility.getKjoenn(person) == MANN ? Rolle.FAR : Rolle.MOR);
 
         } else if (Rolle.FORELDER == relasjon.getRelatertPersonsRolle()) {
-            relasjon.setRelatertPersonsRolle(getKjoenn(
-                    relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == KVINNE ? Rolle.MOR : Rolle.FAR);
+
+            personRepository.findByIdent(relasjon.getRelatertPerson())
+                    .map(DbPerson::getPerson)
+                    .ifPresent(relatertPerson ->
+                            relasjon.setRelatertPersonsRolle(KjoennFraIdentUtility
+                                    .getKjoenn(relatertPerson) == MANN ? Rolle.FAR : Rolle.MOR));
         }
     }
 
@@ -330,7 +324,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         return switch (rolle) {
             case FAR -> MANN;
             case MOR, MEDMOR -> KVINNE;
-            default -> RANDOM.nextBoolean() ? MANN : KVINNE;
+            default -> KjoennUtility.getKjoenn();
         };
     }
 

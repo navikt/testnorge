@@ -26,6 +26,7 @@ public class PersonRequestDTO implements Serializable {
     private LocalDateTime foedtFoer;
     private Integer alder;
     private Boolean syntetisk;
+    private Boolean id2032;
 
     private NyttNavnDTO nyttNavn;
     private String statsborgerskapLandkode;

@@ -13,6 +13,7 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -188,12 +189,12 @@ public class PersonService {
         }
         relasjonerAlderService.fixRelasjonerAlder(request);
 
+        IdentDTO identifier = null;
         if (isBlank(request.getOpprettFraIdent())) {
-            request.getPerson().setIdent(Objects.requireNonNull(identPoolConsumer.acquireIdents(
-                                    mapperFacade.map(request, HentIdenterRequest.class))
-                            .block())
-                    .getFirst()
-                    .getIdent());
+            identifier = identPoolConsumer.acquireIdents(
+                    mapperFacade.map(request, HentIdenterRequest.class)).block();
+            Objects.requireNonNull(identifier, "Personident fra identpool kan ikke være null");
+            request.getPerson().setIdent(identifier.getIdent());
 
         } else {
             if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
@@ -207,7 +208,10 @@ public class PersonService {
             request.getPerson().getKjoenn().add(new KjoennDTO());
         }
         if (request.getPerson().getFoedselsdato().isEmpty()) {
-            request.getPerson().getFoedselsdato().add(new FoedselsdatoDTO());
+            request.getPerson().getFoedselsdato().add(FoedselsdatoDTO.builder()
+                    .foedselsdato(nonNull(identifier) && nonNull(identifier.getFoedselsdato()) ?
+                            identifier.getFoedselsdato().atStartOfDay() : null)
+                    .build());
         }
         if (request.getPerson().getFoedested().isEmpty()) {
             request.getPerson().getFoedested().add(new FoedestedDTO());
