@@ -32,9 +32,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PersonDTO implements Serializable {
 
-    private static final int[] WEIGHTS = {3, 7, 6, 1, 8, 9, 4, 5, 2};
-    private static final List<Integer> VALIDS = List.of(1, 2, 3);
-
     private String ident;
     private Identtype identtype;
     private Boolean id2032;
@@ -336,16 +333,19 @@ public class PersonDTO implements Serializable {
 
     public static boolean isId2032(String ident) {
 
+        final int[] weights = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+        final List<Integer> valids = java.util.List.of(1, 2, 3);
+
         if (isBlank(ident) || ident.length() != 11 || !ident.chars().allMatch(Character::isDigit)) {
             return false;
         }
 
-        var vektetK1 = IntStream.range(0, WEIGHTS.length)
-                .map(i -> Character.getNumericValue(ident.charAt(i)) * WEIGHTS[i])
+        var vektetK1 = IntStream.range(0, weights.length)
+                .map(i -> Character.getNumericValue(ident.charAt(i)) * weights[i])
                 .sum();
 
         final int beregnetRestSifferK1 = (vektetK1 + Character.getNumericValue(ident.charAt(9))) % 11;
 
-        return VALIDS.contains(beregnetRestSifferK1);
+        return valids.contains(beregnetRestSifferK1);
     }
 }
