@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyList;
@@ -22,6 +23,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Data
 @Builder
@@ -30,8 +32,12 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PersonDTO implements Serializable {
 
+    private static final int[] WEIGHTS = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+    private static final List<Integer> VALIDS = List.of(1, 2, 3);
+
     private String ident;
     private Identtype identtype;
+    private Boolean id2032;
     private Boolean standalone;
 
     @JsonIgnore
@@ -293,6 +299,11 @@ public class PersonDTO implements Serializable {
         }
     }
 
+    public Boolean getId2032() {
+
+        return isId2032(ident);
+    }
+
     @JsonIgnore
     public boolean isStrengtFortrolig() {
 
@@ -321,5 +332,20 @@ public class PersonDTO implements Serializable {
                 .map(result -> (List<? extends DbVersjonDTO>) result)
                 .flatMap(Collection::stream)
                 .noneMatch(entity -> isTrue(entity.getIsNew()));
+    }
+
+    public static boolean isId2032(String ident) {
+
+        if (isBlank(ident) || ident.length() != 11 || !ident.chars().allMatch(Character::isDigit)) {
+            return false;
+        }
+
+        var vektetK1 = IntStream.range(0, WEIGHTS.length)
+                .map(i -> Character.getNumericValue(ident.charAt(i)) * WEIGHTS[i])
+                .sum();
+
+        final int beregnetRestSifferK1 = (vektetK1 + Character.getNumericValue(ident.charAt(9))) % 11;
+
+        return VALIDS.contains(beregnetRestSifferK1);
     }
 }

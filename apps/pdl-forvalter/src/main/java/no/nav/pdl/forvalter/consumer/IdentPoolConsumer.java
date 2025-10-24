@@ -13,7 +13,7 @@ import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.pdl.forvalter.dto.ProdSjekkDTO;
-import no.nav.pdl.forvalter.utils.Id2032FraIdentUtility;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -71,7 +71,7 @@ public class IdentPoolConsumer {
                                 token.getTokenValue()).call()
                                 .flatMapMany(Flux::fromIterable),
                         Flux.fromIterable(identer)
-                                .filter(Id2032FraIdentUtility::isId2032)
+                                .filter(PersonDTO::isId2032)
                                 .flatMap(ident ->
                                         new IdentpoolId32DeleteCommand(webClient, ident, token.getTokenValue()).call()
                                                 .then(Mono.just(IdentDTO.builder().ident(ident).build())))))
