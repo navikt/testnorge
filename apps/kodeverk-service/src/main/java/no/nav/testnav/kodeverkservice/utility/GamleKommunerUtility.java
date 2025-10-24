@@ -29,7 +29,7 @@ public class GamleKommunerUtility {
 
     static {
         gamleKommuner.add(new Kommune("0101", START_AAR_2000, SLUTT_AAR_2019, "Halden (historisk)"));
-        gamleKommuner.add(new Kommune("0104", START_AAR_2000, SLUTT_AAR_2019, "Moss; (historisk)"));
+        gamleKommuner.add(new Kommune("0104", START_AAR_2000, SLUTT_AAR_2019, "Moss (historisk)"));
         gamleKommuner.add(new Kommune("0105", START_AAR_2000, SLUTT_AAR_2019, "Sarpsborg (historisk)"));
         gamleKommuner.add(new Kommune("0106", START_AAR_2000, SLUTT_AAR_2019, "Fredrikstad (historisk)"));
         gamleKommuner.add(new Kommune("0111", START_AAR_2000, SLUTT_AAR_2019, "Hvaler (historisk)"));
@@ -230,7 +230,7 @@ public class GamleKommunerUtility {
         gamleKommuner.add(new Kommune("1243", START_AAR_2000, SLUTT_AAR_2019, "Os (historisk)"));
         gamleKommuner.add(new Kommune("1244", START_AAR_2000, SLUTT_AAR_2019, "Austevoll (historisk)"));
         gamleKommuner.add(new Kommune("1245", START_AAR_2000, SLUTT_AAR_2019, "Sund (historisk)"));
-        gamleKommuner.add(new Kommune("1246", START_AAR_2000, SLUTT_AAR_2019, "FjellL (historisk)"));
+        gamleKommuner.add(new Kommune("1246", START_AAR_2000, SLUTT_AAR_2019, "Fjell (historisk)"));
         gamleKommuner.add(new Kommune("1247", START_AAR_2000, SLUTT_AAR_2019, "Askøy (historisk)"));
         gamleKommuner.add(new Kommune("1251", START_AAR_2000, SLUTT_AAR_2019, "Vaksdal (historisk)"));
         gamleKommuner.add(new Kommune("1252", START_AAR_2000, SLUTT_AAR_2019, "Modalen (historisk)"));
