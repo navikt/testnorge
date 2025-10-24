@@ -14,15 +14,19 @@ export type Journalpost = {
 	dokumenter: Dokument[]
 	miljoe: string
 	bestillingId?: number
+	vedlegg?: any[]
+	ferdigstill?: boolean
 }
 
 export type Dokument = {
 	dokumentInfoId: number
 	tittel?: string
+	brevkode?: string
 }
 
 type AvsenderMottaker = {
 	id: string
+	idType?: string
 	navn: string
 	type: string
 }
