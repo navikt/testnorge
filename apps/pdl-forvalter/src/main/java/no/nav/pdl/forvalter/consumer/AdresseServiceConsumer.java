@@ -68,7 +68,8 @@ public class AdresseServiceConsumer {
                 .switchIfEmpty(Mono.defer(() -> Mono.just(VegadresseServiceCommand.defaultAdresse())))
                 .doOnNext(adresse -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
                 .map(adresse -> {
-                    if (isNotBlank(vegadresse.getKommunenummer()) &&
+                    if (isNotBlank(vegadresseDTO.getKommunenummer()) &&
+                            isNotBlank(vegadresse.getKommunenummer()) &&
                             !UOPPGITT.equals(vegadresse.getKommunenummer()) &&
                             !"FYRSTIKKALLÉEN".equals(adresse.getAdressenavn())) {
                         adresse.setKommunenummer(vegadresse.getKommunenummer());
@@ -98,7 +99,8 @@ public class AdresseServiceConsumer {
                 .switchIfEmpty(Mono.defer(() -> Mono.just(MatrikkeladresseServiceCommand.defaultAdresse())))
                 .doOnNext(adresseDTO -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
                 .map(adresseDTO -> {
-                    if (isNotBlank(adresse.getKommunenummer()) &&
+                    if (isNotBlank(matrikkeladresseDTO.getKommunenummer()) &&
+                            isNotBlank(adresse.getKommunenummer()) &&
                             !UOPPGITT.equals(adresse.getKommunenummer()) &&
                             !"VALEN".equals(adresseDTO.getTilleggsnavn())) {
                         adresseDTO.setKommunenummer(adresse.getKommunenummer());
@@ -114,7 +116,7 @@ public class AdresseServiceConsumer {
             var historiske = kodeverkConsumer.getKommunerMedHistoriske();
             var kommunenavn = historiske.get(kommunenummer);
             if (isNotBlank(kommunenavn) && kommunenavn.endsWith(HISTORISK)) {
-                var gjeldendeKommunenavn = remove(kommunenavn, HISTORISK).trim();
+                var gjeldendeKommunenavn = historiskeKommunerMedNyttNavn(remove(kommunenavn, HISTORISK).trim());
                 return historiske.entrySet().stream()
                         .filter(kommune -> kommune.getValue().equals(gjeldendeKommunenavn))
                         .map(Map.Entry::getKey)
@@ -123,5 +125,78 @@ public class AdresseServiceConsumer {
             }
         }
         return kommunenummer;
+    }
+
+    private String historiskeKommunerMedNyttNavn(String kommunenavn) {
+
+        return switch (kommunenavn) {
+            case "Agdenes", "Meldal", "Orkdal", "Snillfjord" -> "Orkland";
+            case "Andebu", "Stokke" -> "Sandefjord";
+            case "Askim", "Eidsberg", "Fet", "Hobøl", "Spydeberg", "Trøgstad" -> "Indre Østfold";
+            case "Audnedal" -> "Lyngdal";
+            case "Balestrand", "Leikanger" -> "Sogndal";
+            case "Ballangen" -> "Narvik";
+            case "Berg", "Lenvik", "Torsken", "Tranøy" -> "Senja";
+            case "Bjarkøy" -> "Harstad";
+            case "Bjugn" -> "Ørland";
+            case "Deatnu Tana" -> "Tana";
+            case "Eid", "Selje" -> "Stad";
+            case "Eide", "Fræna" -> "Hustadvika";
+            case "Finnøy" -> "Stavanger";
+            case "Fjell" -> "Øygarden";
+            case "Flora" -> "Kinn";
+            case "Forsand" -> "Sandnes";
+            case "Fosnes", "Namdalseid" -> "Namsos";
+            case "Frei" -> "Kristiansund";
+            case "Fusa", "Os" -> "Bjørnafjorden";
+            case "Førde", "Gaular", "Jølster", "Naustdal" -> "Sunnfjord";
+            case "Granvin" -> "Voss";
+            case "Guovdageaidnu Kautokeino" -> "Kautokeino";
+            case "Gáivuotna Kåfjord" -> "Kåfjord";
+            case "Halsa", "Hemne" -> "Heim";
+            case "Hof" -> "Åsnes";
+            case "Hornindal" -> "Volda";
+            case "Hurum", "Røyken" -> "Asker";
+            case "Jondal", "Odda" -> "Ullensvang";
+            case "Klæbu" -> "Trondheim";
+            case "Kvalsund" -> "Hammerfest";
+            case "Kárásjohka Karasjok" -> "Karasjok";
+            case "Lardal" -> "Larvik";
+            case "Leksvik", "Rissa" -> "Indre Fosen";
+            case "Lindås", "Meland", "Radøy" -> "Alver";
+            case "Mandal", "Marnardal" -> "Lindesnes";
+            case "Midsund", "Nesset" -> "Molde";
+            case "Mosvik" -> "Inderøy";
+            case "Nedre Eiker", "Svelvik" -> "Drammen";
+            case "Nes (Ak.)" -> "Nes";
+            case "Nes (Busk.)" -> "Nesbyen";
+            case "Norddal", "Stordal" -> "Fjord";
+            case "Nærøy", "Vikna" -> "Nærøysund";
+            case "Nøtterøy" -> "Ferder";
+            case "Oppegård", "Ski" -> "Nordre Follo";
+            case "Porsanger Porsángu Porsanki" -> "Porsanger";
+            case "Re" -> "Tønsberg";
+            case "Rennesøy" -> "Stavanger";
+            case "Roan" -> "Åfjord";
+            case "Rygge" -> "Moss";
+            case "Rømskog" -> "Aurskog-Høland";
+            case "Røyrvik" -> "Raarvikhe – Røyrvik";
+            case "Sandøy", "Skodje", "Ørskog" -> "Ålesund";
+            case "Sauherad" -> "Midt-Telemark";
+            case "Skedsmo", "Sørum" -> "Lillestrøm";
+            case "Skånland" -> "Tjeldsund";
+            case "Snåsa" -> "Snåase-Snåsa";
+            case "Songdalen", "Søgne" -> "Kristiansand";
+            case "Sund" -> "Øygarden";
+            case "Tjøme" -> "Færder";
+            case "Tustna" -> "Aure";
+            case "Tysfjord" -> "Narvik";
+            case "Unjárga Nesseby" -> "Nesseby";
+            case "Verran" -> "Steinkjer";
+            case "Vågsøy" -> "Kinn";
+            case "Våler (Viken)" -> "Våler";
+            case "Ølen" -> "Vindafjord";
+            default -> kommunenavn;
+        };
     }
 }
