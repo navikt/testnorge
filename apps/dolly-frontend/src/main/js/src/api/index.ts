@@ -7,7 +7,7 @@ import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Logger } from '@/logger/Logger'
 
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 9000
 
 const fetchRetry = fetch_retry(originalFetch)
 
