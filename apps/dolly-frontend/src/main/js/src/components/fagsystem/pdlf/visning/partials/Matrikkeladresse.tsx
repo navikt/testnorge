@@ -58,7 +58,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				</TitleValue>
 				<TitleValue title="Kommunenummer">
 					{kommunenummer && (
-						<KodeverkConnector navn="Kommuner" value={kommunenummer}>
+						<KodeverkConnector navn="KommunerMedHistoriske" value={kommunenummer}>
 							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : kommunenummer}</span>
 							)}
