@@ -22,6 +22,8 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-dolly-proxy
   image: "{{image}}"
   port: 8080
   tokenx:
