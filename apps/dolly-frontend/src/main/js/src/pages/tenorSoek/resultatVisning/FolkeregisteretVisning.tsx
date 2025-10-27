@@ -32,7 +32,7 @@ export const FolkeregisteretVisning = ({ data }: any) => {
 				<TitleValue title="Fødselsdato" value={formatDate(foedselsDato)} />
 				<TitleValue
 					title="Alder"
-					value={isDate(foedselsDato) && differenceInYears(new Date(), foedselsDato)}
+					value={isDate(foedselsDato) ? differenceInYears(new Date(), foedselsDato) : undefined}
 				/>
 				<TitleValue title="Kjønn" value={codeToNorskLabel(data.kjoenn)} />
 				<TitleValue title="Personstatus" value={codeToNorskLabel(data.personstatus)} />
