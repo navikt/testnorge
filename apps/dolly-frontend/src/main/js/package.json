@@ -40,7 +40,7 @@
     "react-confetti-explosion": "^3.0.3",
     "react-dom": "^19.0.0",
     "react-highlight-words": "^0.21.0",
-    "react-hook-form": "^7.53.1",
+    "react-hook-form": "^8.0.0-alpha.5",
     "react-inlinesvg": "^4.1.4",
     "react-modal": "^3.16.1",
     "react-select": "^5.8.2",
