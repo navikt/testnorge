@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { FormProvider, useFormContext } from 'react-hook-form'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
