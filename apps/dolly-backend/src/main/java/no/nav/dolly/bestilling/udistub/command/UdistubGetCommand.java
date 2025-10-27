@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
 
-    private static final String UDISTUB_PERSON = "/api/v1/person";
+    private static final String UDISTUB_PERSON = "/udistub/api/v1/person";
 
     private final WebClient webClient;
     private final String ident;
