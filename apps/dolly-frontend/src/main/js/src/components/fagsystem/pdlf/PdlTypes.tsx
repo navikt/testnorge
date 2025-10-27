@@ -14,6 +14,8 @@ export type Relasjon = {
 export type PersonData = {
 	master?: string
 	ident?: string
+	identtype?: string
+	id2032?: boolean
 	navn?: Array<Navn>
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>

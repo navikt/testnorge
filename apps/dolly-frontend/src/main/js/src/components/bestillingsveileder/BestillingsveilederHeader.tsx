@@ -19,6 +19,12 @@ export const BestillingsveilederHeader = ({
 	const ident = getLeggTilIdent(context.personFoerLeggTil, context.identMaster) || ''
 	const importFra = context.is?.leggTil && context.identMaster === 'PDL' ? 'Test-Norge' : ''
 
+	const getIdenttype = () => {
+		if (!context.identtype) return null
+		if (context.id2032) return `${context.identtype} (id 2032)`
+		return context.identtype
+	}
+
 	if (
 		context.is?.nyOrganisasjon ||
 		context.is?.nyStandardOrganisasjon ||
@@ -47,7 +53,7 @@ export const BestillingsveilederHeader = ({
 					}`}
 				/>
 				{!context.is?.opprettFraIdenter && !context.is?.leggTilPaaGruppe && (
-					<Header.TitleValue title="Identtype" value={context.identtype || ''} />
+					<Header.TitleValue title="Identtype" value={getIdenttype()} />
 				)}
 				{context.is?.opprettFraIdenter && (
 					<Header.TitleValue
