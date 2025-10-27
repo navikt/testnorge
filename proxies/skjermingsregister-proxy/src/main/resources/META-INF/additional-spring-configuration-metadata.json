@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "consumers.skjermingsregister.url",
-      "type": "java.net.URL",
-      "description": "URL to service skjermede-personer."
-  }
-] }
