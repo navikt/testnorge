@@ -26,6 +26,8 @@ I Dolly kan du opprette syntetiske personer med forskjellige egenskaper, og tilg
 
 Link til Dolly: https://dolly.ekstern.dev.nav.no/
 
+Et omfattende eksempel på bestilling av tilgang til dolly samt noe bruk av dolly er tilgjengelig på team helsearbeidsgiver sine docs her: https://github.com/navikt/sykepenger-im-lps-api/wiki/Testdata
+
 [[palogging]]
 ==== Pålogging
 
