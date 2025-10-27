@@ -13,8 +13,10 @@ spec:
   image: "{{image}}"
   port: 8080
   openSearch:
-    instance: bestillinger
-    access: read
+    - instance: bestillinger
+      access: read
+    - instance: pdl-sok-preprod
+      access: read
   tokenx:
     enabled: true
   azure:
