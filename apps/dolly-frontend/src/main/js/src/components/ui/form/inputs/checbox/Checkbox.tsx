@@ -101,5 +101,5 @@ export const FormCheckbox: React.FC<FormCheckboxProps> = ({
 	}
 
 	if (!vis) return null
-	return <DollyCheckbox {...rest} name={name} vis checked={checked} onChange={handleChange} />
+	return <DollyCheckbox name={name} vis checked={checked} onChange={handleChange} {...rest} />
 }

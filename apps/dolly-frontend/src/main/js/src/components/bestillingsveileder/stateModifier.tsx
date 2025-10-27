@@ -1,6 +1,9 @@
 import { useContext } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { BestillingsveilederContext, BestillingsveilederContextType } from './BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from './BestillingsveilederContext'
 import * as _ from 'lodash-es'
 
 export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: any) => {
