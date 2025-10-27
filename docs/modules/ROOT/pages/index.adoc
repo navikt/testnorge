@@ -81,6 +81,15 @@ De resterende egenskapene vil systemet sette.
 . Angi verdier på egenskapene du valgte i steg 1.
 . Oppsummering og valg av hvilke testmiljø personene skal sendes til.
 
+
+[[velg_identtype]]
+===== Velg identtype, antall og gruppe
+
+image::dolly/velg_ny_person.png[Velg ny person]
+
+I dette vinduet velger du om du ønsker å opprette personer med nye identer eller om du ønsker å opprette personer med eksisterende identer.
+Man kan også velge antall personer som skal opprettes og hvilken gruppe de skal legges til i, samt eventuell mal for bestillingen.
+
 [[velg_egenskaper]]
 ===== Velg egenskaper
 
@@ -104,7 +113,8 @@ For mer informasjon om NAVs testmiljøer se: https://confluence.adeo.no/pages/vi
 
 image::dolly/miljoe_valg.png[Miljøvalg]
 
-Velg miljø og trykk Opprett.
+Velg miljø, og opprett en mal dersom denne bestillingen skal gjentas senere.
+Kommentar kan brukes til å gjenkjenne identen senere, da denne vil vises ved hover i personlisten.
 
 image::dolly/opprettet_gruppe.png[Opprettet gruppe]
 
