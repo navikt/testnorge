@@ -172,7 +172,7 @@ public class AdresseServiceConsumer {
             case "Nes (Busk.)" -> "Nesbyen";
             case "Norddal", "Stordal" -> "Fjord";
             case "Nærøy", "Vikna" -> "Nærøysund";
-            case "Nøtterøy" -> "Ferder";
+            case "Nøtterøy", "Tjøme" -> "Færder";
             case "Oppegård", "Ski" -> "Nordre Follo";
             case "Porsanger Porsángu Porsanki" -> "Porsanger";
             case "Re" -> "Tønsberg";
@@ -188,7 +188,6 @@ public class AdresseServiceConsumer {
             case "Snåsa" -> "Snåase-Snåsa";
             case "Songdalen", "Søgne" -> "Kristiansand";
             case "Sund" -> "Øygarden";
-            case "Tjøme" -> "Færder";
             case "Tustna" -> "Aure";
             case "Tysfjord" -> "Narvik";
             case "Unjárga Nesseby" -> "Nesseby";
