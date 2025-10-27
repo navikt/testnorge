@@ -1,10 +1,11 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { formatDate, arrayToString, codeToNorskLabel } from '@/utils/DataFormatter'
+import { arrayToString, codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
 import styled from 'styled-components'
 import { manualOptions } from '@/pages/tenorSoek/utils'
+import { differenceInYears, isDate } from 'date-fns'
 
 const RelasjonerTittel = styled.h3`
 	width: 100%;
@@ -18,6 +19,9 @@ export const FolkeregisteretVisning = ({ data }: any) => {
 		return null
 	}
 
+	const foedselsDato = data?.foedselsdato
+		? new Date(data.foedselsdato)
+		: new Date(data?.foedselsaar)
 	const relasjoner = data.tenorRelasjoner?.freg
 
 	return (
@@ -25,7 +29,11 @@ export const FolkeregisteretVisning = ({ data }: any) => {
 			<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
 				<TitleValue title="Identifikator" value={arrayToString(data.identifikator, ', ')} />
 				<TitleValue title="Navn" value={data.visningnavn} />
-				<TitleValue title="Fødselsdato" value={formatDate(data.foedselsdato)} />
+				<TitleValue title="Fødselsdato" value={formatDate(foedselsDato)} />
+				<TitleValue
+					title="Alder"
+					value={isDate(foedselsDato) && differenceInYears(new Date(), foedselsDato)}
+				/>
 				<TitleValue title="Kjønn" value={codeToNorskLabel(data.kjoenn)} />
 				<TitleValue title="Personstatus" value={codeToNorskLabel(data.personstatus)} />
 				<TitleValue title="Sivilstand" value={codeToNorskLabel(data.sivilstand)} />
