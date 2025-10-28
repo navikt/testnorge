@@ -389,7 +389,14 @@ Under Test-Norge fanen i Dolly er det mulig å søke opp Test-Norge identiteter 
 Videoen under viser en demo.
 
 ++++
-<video src="https://user-images.githubusercontent.com/58416744/174292316-cc1b2c47-b855-4390-b77f-66bc8e426a39.mov" controls="controls" style="max-width: 730px;"></video>
+<figure>
+  <video aria-label="Demo som viser søk i Tenor og import av ident til Dolly"
+         controls
+         src="_images/dolly/videos/finnperson-tenor.mp4"
+         style="max-width:730px">
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
 ++++
 
 For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor brukes: https://www.skatteetaten.no/skjema/testdata
@@ -406,11 +413,10 @@ image::dolly/import_partner.png[Import med partner]
 
 Det er også mulig å importere partner etter opprinnelig import.
 Dette kan gjøres direkte i personvisning.
-Videoen under viser en demo.
 
-++++
-<video src="https://user-images.githubusercontent.com/58416744/169964561-975783ea-3279-467b-8448-7aba3fecbac0.mov" controls="controls" style="max-width: 730px;"></video>
-++++
+[[demo_finnperson_tenor]]
+===== Demo: Søk i Tenor og import til Dolly
+
 
 NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
 
