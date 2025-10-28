@@ -2,7 +2,7 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -28,8 +28,8 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWebTestClient
 class RouteLocatorConfigTest {
 
-    @MockitoBean
-    private TokenExchange tokenExchange;
+    @MockitoSpyBean
+    private AzureNavTokenService navTokenService;
 
     @Autowired
     private WebTestClient webClient;
@@ -49,7 +49,7 @@ class RouteLocatorConfigTest {
 
     @BeforeEach
     public void setup() {
-        when(tokenExchange.exchange(any()))
+        when(navTokenService.exchange(any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-token")));
     }
 

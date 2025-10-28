@@ -3,6 +3,7 @@ package no.nav.dolly.proxy.route;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -24,7 +25,7 @@ class Udistub {
     private static final String NAMESPACE = "dolly";
 
     private final Targets targets;
-    private final TokenExchange tokenExchange;
+    private final AzureNavTokenService tokenService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
         return spec -> spec
@@ -40,7 +41,7 @@ class Udistub {
         var serverProperties = ServerProperties.of(CLUSTER, NAME, NAMESPACE, targets.udistub);
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
-                        () -> tokenExchange
+                        () -> tokenService
                                 .exchange(serverProperties)
                                 .map(AccessToken::getTokenValue));
     }

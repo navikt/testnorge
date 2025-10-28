@@ -2,6 +2,22 @@
 apiVersion: nais.io/v1
 kind: AzureAdApplication
 metadata:
+  name: testnav-dolly-proxy-nav
+  namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+  labels:
+    team: dolly
+spec:
+  secretName: azure-nav-testnav-dolly-proxy
+  secretKeyPrefix: "AZURE_NAV"
+  tenant: nav.no
+---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
   name: testnav-dolly-proxy-trygdeetaten
   namespace: dolly
   labels:
@@ -23,6 +39,7 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
   envFrom:
+    - secret: azure-nav-testnav-dolly-proxy
     - secret: azure-trygdeetaten-testnav-dolly-proxy
   image: "{{image}}"
   port: 8080
