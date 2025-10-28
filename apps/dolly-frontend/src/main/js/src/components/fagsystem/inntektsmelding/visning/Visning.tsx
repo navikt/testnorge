@@ -1,10 +1,6 @@
 import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import {
-	Bestilling,
-	BestillingData,
-	Inntekt,
-} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { Bestilling, Inntekt } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
 import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
@@ -15,30 +11,37 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { mergeMiljoData } from '@/components/ui/miljoTabs/utils'
 
 interface InntektsmeldingVisningProps {
-	liste: Array<BestillingData>
-	ident: string
+	liste?: any[]
+	data?: any[]
+	ident?: string
+	loading?: boolean
+	bestillingIdListe?: any
+	tilgjengeligMiljoe?: string
+	bestillinger?: any[]
 }
 
-export const sjekkManglerInntektsmeldingData = (inntektsmeldingData) => {
+export const sjekkManglerInntektsmeldingData = (inntektsmeldingData: any[] | undefined) => {
 	return (
 		!inntektsmeldingData ||
-		inntektsmeldingData?.length < 1 ||
-		inntektsmeldingData?.every((miljoData) => !miljoData.data)
+		inntektsmeldingData.length < 1 ||
+		inntektsmeldingData.every((miljoData: any) => !miljoData.data)
 	)
 }
 
-export const sjekkManglerInntektsmeldingBestilling = (inntektsmeldingBestilling) => {
-	return !inntektsmeldingBestilling || inntektsmeldingBestilling?.length < 1
+export const sjekkManglerInntektsmeldingBestilling = (inntektsmeldingBestilling: any) => {
+	return !inntektsmeldingBestilling || inntektsmeldingBestilling.length < 1
 }
 
 export const InntektsmeldingVisning = ({
-	data,
+	liste,
+	data: dataProp,
 	loading,
 	bestillingIdListe,
 	tilgjengeligMiljoe,
 	bestillinger,
 }: InntektsmeldingVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'INNTKMELD')
+	let data: any[] | undefined = liste || dataProp
 
 	if (loading) {
 		return <Loading label="Laster inntektsmelding-data" />
@@ -51,15 +54,15 @@ export const InntektsmeldingVisning = ({
 	const manglerFagsystemData =
 		sjekkManglerInntektsmeldingData(data) && sjekkManglerInntektsmeldingBestilling(bestillinger)
 
-	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
-	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
+	const miljoerMedData = data?.map((miljoData: any) => miljoData.data && miljoData.miljo)
+	const errorMiljoer = bestilteMiljoer?.filter((miljo: string) => !miljoerMedData?.includes(miljo))
 
-	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
+	const forsteMiljo = data?.find((miljoData: any) => miljoData?.data)?.miljo
 
-	const harTransaksjonsidData = data?.every((inntekt) => inntekt?.data?.request)
+	const harTransaksjonsidData = data?.every((inntekt: any) => inntekt?.data?.request)
 
 	const setTransaksjonsidData = () => {
-		return data?.map((miljo) => {
+		return data?.map((miljo: any) => {
 			const request = miljo?.data?.request
 			const dokument = miljo?.data?.dokument
 			return {
@@ -69,7 +72,7 @@ export const InntektsmeldingVisning = ({
 						? request
 						: {
 								inntekter: bestillinger?.flatMap(
-									(bestilling) => bestilling?.data.inntektsmelding.inntekter,
+									(bestilling: any) => bestilling?.data.inntektsmelding.inntekter,
 								),
 								miljoe: miljo.miljo,
 							},
@@ -83,10 +86,10 @@ export const InntektsmeldingVisning = ({
 		data = setTransaksjonsidData()
 	}
 
-	const mergetData = mergeMiljoData(data)
+	const mergetData: any[] | undefined = data ? mergeMiljoData(data as any[]) : undefined
 
 	const filteredData =
-		tilgjengeligMiljoe && mergetData?.filter((item) => item?.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && mergetData?.filter((item: any) => item?.miljo === tilgjengeligMiljoe)
 
 	return (
 		<>
@@ -97,12 +100,14 @@ export const InntektsmeldingVisning = ({
 				</Alert>
 			) : (
 				<MiljoTabs
-					bestilteMiljoer={bestilteMiljoer}
-					errorMiljoer={errorMiljoer}
-					forsteMiljo={forsteMiljo}
-					data={filteredData ? filteredData : mergetData}
+					bestilteMiljoer={bestilteMiljoer as any}
+					errorMiljoer={errorMiljoer as any}
+					forsteMiljo={forsteMiljo as any}
+					data={(filteredData ? filteredData : mergetData) as any}
 				>
-					<EnkelInntektsmeldingVisning />
+					<EnkelInntektsmeldingVisning
+						data={(filteredData ? filteredData : mergetData)?.map((m: any) => m.data) || []}
+					/>
 				</MiljoTabs>
 			)}
 		</>

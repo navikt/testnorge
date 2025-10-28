@@ -20,10 +20,17 @@ import {
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import * as _ from 'lodash-es'
 import { initialValuesArbeidssoekerregisteret } from '@/components/fagsystem/arbeidssoekerregisteret/form/initialValues'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useContext } from 'react'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
-export const ArbeidssoekerPanel = ({ stateModifier, formValues }) => {
+export const ArbeidssoekerPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(ArbeidssoekerPanel.initialValues)
-
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const cvTimeout = getTimeoutAttr('ARBEIDSPLASSENCV', opts)
 	return (
 		<Panel
 			heading={ArbeidssoekerPanel.heading}
@@ -36,18 +43,54 @@ export const ArbeidssoekerPanel = ({ stateModifier, formValues }) => {
 				<Attributt attr={sm.attrs.arbeidssoekerregisteret} />
 			</AttributtKategori>
 			<AttributtKategori title="Nav CV" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.jobboensker} />
-				<Attributt attr={sm.attrs.utdanning} />
-				<Attributt attr={sm.attrs.fagbrev} />
-				<Attributt attr={sm.attrs.arbeidserfaring} />
-				<Attributt attr={sm.attrs.annenErfaring} />
-				<Attributt attr={sm.attrs.kompetanser} />
-				<Attributt attr={sm.attrs.offentligeGodkjenninger} />
-				<Attributt attr={sm.attrs.andreGodkjenninger} />
-				<Attributt attr={sm.attrs.spraak} />
-				<Attributt attr={sm.attrs.foererkort} />
-				<Attributt attr={sm.attrs.kurs} />
-				<Attributt attr={sm.attrs.sammendrag} />
+				<Attributt
+					attr={sm.attrs.jobboensker}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt
+					attr={sm.attrs.utdanning}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt attr={sm.attrs.fagbrev} disabled={cvTimeout.disabled} title={cvTimeout.title} />
+				<Attributt
+					attr={sm.attrs.arbeidserfaring}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt
+					attr={sm.attrs.annenErfaring}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt
+					attr={sm.attrs.kompetanser}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt
+					attr={sm.attrs.offentligeGodkjenninger}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt
+					attr={sm.attrs.andreGodkjenninger}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt attr={sm.attrs.spraak} disabled={cvTimeout.disabled} title={cvTimeout.title} />
+				<Attributt
+					attr={sm.attrs.foererkort}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
+				<Attributt attr={sm.attrs.kurs} disabled={cvTimeout.disabled} title={cvTimeout.title} />
+				<Attributt
+					attr={sm.attrs.sammendrag}
+					disabled={cvTimeout.disabled}
+					title={cvTimeout.title}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)
@@ -55,10 +98,9 @@ export const ArbeidssoekerPanel = ({ stateModifier, formValues }) => {
 
 ArbeidssoekerPanel.heading = 'Arbeidssøker'
 
-ArbeidssoekerPanel.initialValues = ({ set, setMulti, opts, del, has, values }) => {
+ArbeidssoekerPanel.initialValues = ({ set, setMulti, opts, del, has, values }: any) => {
 	const { personFoerLeggTil } = opts
 	const personFoerLeggTilHarHjemmel = personFoerLeggTil?.arbeidsplassenCV?.harHjemmel
-
 	const hjemmel = () => {
 		if (has('arbeidsplassenCV.harHjemmel')) {
 			return values('arbeidsplassenCV.harHjemmel')
@@ -67,7 +109,6 @@ ArbeidssoekerPanel.initialValues = ({ set, setMulti, opts, del, has, values }) =
 		}
 		return true
 	}
-
 	const fjernHjemmelPath = (fjernPath: string) => {
 		const selected = values()
 		if (
@@ -80,7 +121,6 @@ ArbeidssoekerPanel.initialValues = ({ set, setMulti, opts, del, has, values }) =
 		}
 		return fjernPath
 	}
-
 	return {
 		arbeidssoekerregisteret: {
 			label: 'Er arbeidssøker',

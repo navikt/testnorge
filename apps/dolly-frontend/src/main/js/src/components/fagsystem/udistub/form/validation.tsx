@@ -10,18 +10,6 @@ const checkUndefined = (value) => {
 	return Yup.mixed().notRequired()
 }
 
-const aliaser = Yup.array().of(
-	Yup.object({
-		nyIdent: requiredBoolean,
-		identtype: Yup.string()
-			.when('nyIdent', {
-				is: true,
-				then: () => requiredString,
-			})
-			.nullable(),
-	}),
-)
-
 const arbeidsadgang = Yup.object({
 	arbeidsOmfang: Yup.string().nullable(),
 	harArbeidsAdgang: requiredString,
@@ -86,7 +74,6 @@ export const validation = {
 	udistub: ifPresent(
 		'$udistub',
 		Yup.object({
-			aliaser: ifPresent('$udistub.aliaser', aliaser),
 			arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
 			flyktning: ifPresent('$udistub.flyktning', requiredBoolean),
 			oppholdStatus: ifPresent('$udistub.oppholdStatus', oppholdStatus),
