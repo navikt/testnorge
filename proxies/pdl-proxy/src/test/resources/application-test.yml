@@ -4,3 +4,9 @@ app:
     password: placeholder
   hendelse.lager.api.key: placeholder
   person.aktor.api.key: placeholder
+
+OPEN_SEARCH_URI: placeholder
+OPEN_SEARCH_HOST: placeholder
+OPEN_SEARCH_PORT: placeholder
+OPEN_SEARCH_USERNAME: placeholder
+OPEN_SEARCH_PASSWORD: placeholder
