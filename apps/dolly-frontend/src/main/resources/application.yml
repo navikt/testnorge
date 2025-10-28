@@ -258,6 +258,11 @@ consumers:
     namespace: dolly
     name: testnav-nom-proxy
     url: http://testnav-nom-proxy.dolly.svc.cluster.local
+  testnav-ident-pool:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-ident-pool
+    url: http://testnav-ident-pool.dolly.svc.cluster.local
 
 server:
   max-http-request-header-size: 128KB

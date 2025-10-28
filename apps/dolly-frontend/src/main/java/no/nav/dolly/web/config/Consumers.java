@@ -71,4 +71,5 @@ public class Consumers {
     private ServerProperties testnavAltinn3TilgangService;
     private ServerProperties testnavArbeidssoekerregisteretProxy;
     private ServerProperties testnavApiOversiktService;
+    private ServerProperties testnavIdentPool;
 }
