@@ -10,6 +10,7 @@ export interface BestillingsveilederContextType {
 	identMaster?: string
 	antall?: number
 	identtype?: string
+	id2032?: boolean
 	importPersoner?: Person[]
 	tidligereBestillinger?: BestillingData[]
 	opprettFraIdenter?: string[]

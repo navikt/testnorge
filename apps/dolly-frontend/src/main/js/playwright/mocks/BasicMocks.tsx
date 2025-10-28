@@ -95,6 +95,7 @@ export const uferdigBestillingMock = {
 		pdldata: {
 			opprettNyPerson: {
 				identtype: 'FNR',
+				id2032: false,
 				syntetisk: true,
 			},
 		},
@@ -1687,6 +1688,7 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
+					id2032: false,
 					alder: 30,
 				},
 				person: {
@@ -1993,6 +1995,7 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
+					id2032: false,
 					syntetisk: true,
 				},
 			},

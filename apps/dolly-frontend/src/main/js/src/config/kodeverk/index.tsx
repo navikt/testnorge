@@ -21,7 +21,7 @@ export enum FullmaktKodeverk {
 export enum AdresseKodeverk {
 	Postnummer = 'Postnummer',
 	PostnummerUtenPostboks = 'Postnummer vegadresser',
-	Kommunenummer = 'Kommuner',
+	Kommunenummer = 'KommunerMedHistoriske',
 
 	PostadresseLand = 'LandAdresserFreg',
 	StatsborgerskapLand = 'StatsborgerskapFreg',

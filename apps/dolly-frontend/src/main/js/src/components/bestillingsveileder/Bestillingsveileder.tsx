@@ -43,6 +43,7 @@ export const Bestillingsveileder = () => {
 		location.state = {
 			antall: '1',
 			identtype: 'FNR',
+			id2032: false,
 			mal: null,
 		}
 	}

@@ -16,6 +16,7 @@ export const BVOptions = (
 	{
 		antall = 1,
 		identtype = 'FNR',
+		id2032 = false,
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
@@ -37,6 +38,7 @@ export const BVOptions = (
 			opprettNyPerson: {
 				identtype: identtype || 'FNR',
 				syntetisk: true,
+				id2032: id2032 || false,
 			},
 		},
 		importPersoner: null,
@@ -184,6 +186,7 @@ export const BVOptions = (
 		gruppeId,
 		antall,
 		identtype,
+		id2032,
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
