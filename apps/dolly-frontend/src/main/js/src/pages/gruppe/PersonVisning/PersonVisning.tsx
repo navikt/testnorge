@@ -304,9 +304,6 @@ export default (props: PersonVisningProps) => {
 		ident.ident,
 	) as any
 
-	const shouldRenderSykemelding =
-		loadingSykemeldingData || (sykemeldingData && !sjekkManglerSykemeldingData(sykemeldingData))
-
 	const { loading: loadingYrkesskadeData, data: yrkesskadeData } = useTransaksjonIdData(
 		ident.ident,
 		'YRKESSKADE',
@@ -344,63 +341,86 @@ export default (props: PersonVisningProps) => {
 
 	const { inntektstub, brregstub, krrstub } = data
 
-	const manglerFagsystemdata = () => {
-		if ([inntektstub, krrstub].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)) {
-			return true
-		}
-		if (arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold) {
-			return true
-		}
-		if (poppData && sjekkManglerPensjonData(poppData)) {
-			return true
-		}
-		if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) {
-			return true
-		}
-		if (apData && sjekkManglerApData(apData)) {
-			return true
-		}
-		if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) {
-			return true
-		}
-		if (brregstub && sjekkManglerBrregData(brregstub)) {
-			return true
-		}
-		if (instData && sjekkManglerInstData(instData)) {
-			return true
-		}
-		if (
-			sykemeldingData &&
-			sjekkManglerSykemeldingData(sykemeldingData) &&
-			harSykemeldingBestilling(bestillingerFagsystemer) &&
-			sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
-		) {
-			return true
-		}
-		if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) {
-			return true
-		}
-		if (
-			(udistub && sjekkManglerUdiData(udistub)) ||
-			(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
-		) {
-			return true
-		}
-		if (
-			(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
-			(harMedlBestilling(bestillingerFagsystemer) &&
-				medl?.response &&
-				Array.isArray(medl.response) &&
-				medl.response.length === 0)
-		) {
-			return true
-		}
-		if (
-			harArbeidsplassenBestilling(bestillingerFagsystemer) &&
-			!arbeidsplassencvData &&
-			arbeidsplassencvError
-		) {
-			return true
+	const manglerFagsystemdata = (): boolean => {
+		const checks: Array<{ condition: boolean; reason: string }> = [
+			{
+				condition: [inntektstub, krrstub].some((fs) => Array.isArray(fs) && fs.length === 0),
+				reason: 'Tomt inntektstub eller krrstub',
+			},
+			{
+				condition: !!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
+				reason: 'Aareg mangler data',
+			},
+			{
+				condition: !!(poppData && sjekkManglerPensjonData(poppData)),
+				reason: 'Pensjon (POPP) mangler data',
+			},
+			{
+				condition: !!(tpDataForhold && sjekkManglerTpData(tpDataForhold)),
+				reason: 'Tjenestepensjon mangler data',
+			},
+			{
+				condition: !!(apData && sjekkManglerApData(apData)),
+				reason: 'Alderspensjon mangler data',
+			},
+			{
+				condition: !!(uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)),
+				reason: 'Uføretrygd mangler data',
+			},
+			{
+				condition: !!(brregstub && sjekkManglerBrregData(brregstub)),
+				reason: 'Brreg mangler data',
+			},
+			{
+				condition: !!(instData && sjekkManglerInstData(instData)),
+				reason: 'Inst mangler data',
+			},
+			{
+				condition: !!(
+					sykemeldingData &&
+					!_.isEmpty(sykemeldingData) &&
+					sjekkManglerSykemeldingData(sykemeldingData) &&
+					harSykemeldingBestilling(bestillingerFagsystemer) &&
+					sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
+				),
+				reason: 'Sykemelding mangler data eller feilet',
+			},
+			{
+				condition: !!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
+				reason: 'Yrkesskade mangler data eller feilet',
+			},
+			{
+				condition: !!(
+					(udistub && sjekkManglerUdiData(udistub)) ||
+					(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
+				),
+				reason: 'UDI mangler data eller feilet',
+			},
+			{
+				condition: !!(
+					(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
+					(harMedlBestilling(bestillingerFagsystemer) &&
+						medl?.response &&
+						Array.isArray(medl.response) &&
+						medl.response.length === 0)
+				),
+				reason: 'MEDL mangler data eller feilet',
+			},
+			{
+				condition: !!(
+					harArbeidsplassenBestilling(bestillingerFagsystemer) &&
+					!arbeidsplassencvData &&
+					arbeidsplassencvError
+				),
+				reason: 'Arbeidsplassen CV mangler data eller feilet',
+			},
+		]
+
+		for (const { condition, reason } of checks) {
+			if (condition) {
+				console.warn('manglerFagsystemdata:', reason)
+				return true
+			}
 		}
 		return false
 	}
@@ -670,20 +690,18 @@ export default (props: PersonVisningProps) => {
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 					harArenaBestilling={harArenaBestilling(bestillingerFagsystemer)}
 				/>
-				{shouldRenderSykemelding && (
-					<SykemeldingVisning
-						ident={ident}
-						data={(sykemeldingData as any) || ([] as any)}
-						loading={loadingSykemeldingData}
-						bestillingIdListe={bestillingIdListe}
-						tilgjengeligMiljoe={tilgjengeligMiljoe || ''}
-						bestillinger={
-							harSykemeldingBestilling(bestillingerFagsystemer)
-								? (sykemeldingBestilling as any)
-								: null
-						}
-					/>
-				)}
+				<SykemeldingVisning
+					ident={ident}
+					data={(sykemeldingData as any) || ([] as any)}
+					loading={loadingSykemeldingData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe || ''}
+					bestillinger={
+						harSykemeldingBestilling(bestillingerFagsystemer)
+							? (sykemeldingBestilling as any)
+							: null
+					}
+				/>
 				<YrkesskaderVisning data={yrkesskadeData as any} loading={loadingYrkesskadeData} />
 				<BrregVisning data={brregstub} loading={loading.brregstub} />
 				<InstVisning

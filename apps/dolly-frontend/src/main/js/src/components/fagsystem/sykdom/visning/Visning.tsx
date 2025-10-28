@@ -97,11 +97,16 @@ export const SykemeldingVisning = ({
 		bestillinger ? DEFAULT_RETRY_COUNT : 0,
 	)
 
-	if (loading || nySykemeldingLoading) {
+	const hasAnyData =
+		(sykemeldinger && sykemeldinger.length > 0) ||
+		(data && !sjekkManglerSykemeldingData(data)) ||
+		(bestillinger && bestillinger.length > 0)
+
+	if ((loading || nySykemeldingLoading) && !hasAnyData) {
 		return <Loading label="Laster sykemelding-data" />
 	}
 
-	if (!data && !bestillinger && sykemeldinger?.length === 0) {
+	if ((!data || _.isEmpty(data)) && !bestillinger && sykemeldinger?.length === 0) {
 		return null
 	}
 
@@ -145,14 +150,14 @@ export const SykemeldingVisning = ({
 	} else if (sjekkManglerSykemeldingData(data) && sykemeldinger?.length === 0) {
 		render = <VisningAvBestilling bestillinger={bestillinger} />
 	} else if (sykemeldinger?.length > 0) {
-		render = <NySykemeldingVisning ident={ident} />
+		render = <NySykemeldingVisning ident={ident} sykemeldinger={sykemeldinger} />
 	} else {
 		render = (
 			<MiljoTabs
 				bestilteMiljoer={bestilteMiljoer}
 				errorMiljoer={errorMiljoer}
 				forsteMiljo={forsteMiljo}
-				data={filteredData ?? mergetData}
+				data={filteredData || mergetData}
 			>
 				<Visning />
 			</MiljoTabs>
