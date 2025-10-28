@@ -390,10 +390,8 @@ Videoen under viser en demo.
 
 ++++
 <figure>
-  <video aria-label="Demo som viser søk i Tenor og import av ident til Dolly"
-         controls
-         src="_images/dolly/videos/finnperson-tenor.mp4"
-         style="max-width:730px">
+  <video aria-label="Demo som viser søk i Tenor og import av ident til Dolly" controls style="max-width:730px">
+    <source src="{imagesdir}/videos/finnperson-tenor.mp4" type="video/mp4"/>
     Din nettleser støtter ikke innebygde videoer.
   </video>
 </figure>
@@ -416,7 +414,6 @@ Dette kan gjøres direkte i personvisning.
 
 [[demo_finnperson_tenor]]
 ===== Demo: Søk i Tenor og import til Dolly
-
 
 NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
 
