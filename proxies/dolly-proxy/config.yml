@@ -2,7 +2,7 @@
 apiVersion: nais.io/v1
 kind: AzureAdApplication
 metadata:
-  name: testnav-dolly-proxy-nav
+  name: testnav-dolly-proxy
   namespace: dolly
   annotations:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
