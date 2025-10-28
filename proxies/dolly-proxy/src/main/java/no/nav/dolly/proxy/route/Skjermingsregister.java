@@ -34,7 +34,7 @@ public class Skjermingsregister {
     }
 
     private GatewayFilter getAuthenticationFilter() {
-        var serverProperties = ServerProperties.of(CLUSTER, NAME, NAMESPACE, targets.skjermingsregister);
+        var serverProperties = ServerProperties.of(CLUSTER, NAMESPACE, NAME, targets.skjermingsregister);
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(() -> tokenService
                         .exchange(serverProperties)
