@@ -25,7 +25,7 @@ class Udistub {
     private static final String NAMESPACE = "dolly";
 
     private final Targets targets;
-    private final AzureNavTokenService tokenService;
+    private final TokenExchange tokenExchange;
 
     Function<PredicateSpec, Buildable<Route>> build() {
         return spec -> spec
@@ -41,7 +41,7 @@ class Udistub {
         var serverProperties = ServerProperties.of(CLUSTER, NAME, NAMESPACE, targets.udistub);
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
-                        () -> tokenService
+                        () -> tokenExchange
                                 .exchange(serverProperties)
                                 .map(AccessToken::getTokenValue));
     }

@@ -2,7 +2,9 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -28,8 +31,14 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWebTestClient
 class RouteLocatorConfigTest {
 
+    @MockitoBean
+    private TokenExchange tokenExchange;
+
     @MockitoSpyBean
     private AzureNavTokenService navTokenService;
+
+    @MockitoSpyBean
+    private AzureTrygdeetatenTokenService trygdeetatenTokenService;
 
     @Autowired
     private WebTestClient webClient;
@@ -44,13 +53,19 @@ class RouteLocatorConfigTest {
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("targets.histark", () -> wireMockServer.baseUrl());
         registry.add("targets.inntektstub", () -> wireMockServer.baseUrl());
+        registry.add("targets.skjermingsregister", () -> wireMockServer.baseUrl());
+        registry.add("targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("targets.udistub", () -> wireMockServer.baseUrl());
     }
 
     @BeforeEach
     public void setup() {
+        when(tokenExchange.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
         when(navTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-token")));
+                .thenReturn(Mono.just(new AccessToken("dummy-nav-token")));
+        when(trygdeetatenTokenService.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
     }
 
     @Test
@@ -102,6 +117,55 @@ class RouteLocatorConfigTest {
     }
 
     @Test
+    void testSigrunstub() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked sigrunstub";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/sigrunstub" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @Test
+    void testSkjermingsregister() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked skjermingsregister";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/skjermingsregister" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @Test
     void testUdistub() {
 
         var downstreamPath = "/api/v1/testdata";
@@ -122,7 +186,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-tokenx-token")));
 
     }
 
