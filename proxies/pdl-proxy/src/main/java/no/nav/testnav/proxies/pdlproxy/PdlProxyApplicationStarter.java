@@ -38,13 +38,16 @@ public class PdlProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-                                           CredentialsHolder credentialsHolder,
+                                           CredentialsElasticHolder credentialsElasticHolder,
+                                           CredentialsOpenSearchHolder credentialsOpenSearchHolder,
                                            AzureTrygdeetatenTokenService tokenService,
                                            Consumers consumers) {
         var addHendelselagerApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
-                .apiKeyAuthenticationHeaderFilter(credentialsHolder.hendelselagerApiKey());
+                .apiKeyAuthenticationHeaderFilter(credentialsElasticHolder.hendelselagerApiKey());
         var addElasticSearchBasicAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
-                .basicAuthAuthenticationHeaderFilter(credentialsHolder.elasticUsername(), credentialsHolder.elasticPassword());
+                .basicAuthAuthenticationHeaderFilter(credentialsElasticHolder.elasticUsername(), credentialsElasticHolder.elasticPassword());
+        var addOpenSearchBasicAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
+                .basicAuthAuthenticationHeaderFilter(credentialsOpenSearchHolder.username(), credentialsOpenSearchHolder.password());
 
         return builder
                 .routes()
@@ -53,6 +56,7 @@ public class PdlProxyApplicationStarter {
                 .route(createRoute(consumers.getPdlTestdata(), tokenService))
                 .route(createRoute("pdl-identhendelse", "http://pdl-identhendelse-lager.pdl.svc.nais.local", addHendelselagerApiKeyAuthenticationHeader))
                 .route(createRoute("pdl-elastic", "https://pdl-es-q.adeo.no", addElasticSearchBasicAuthenticationHeader))
+                .route(createRoute("pdl-opensearch", credentialsOpenSearchHolder.host()+':'+credentialsOpenSearchHolder.port(), addOpenSearchBasicAuthenticationHeader))
                 .build();
     }
 

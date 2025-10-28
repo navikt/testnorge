@@ -25,6 +25,9 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
     nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
 spec:
+  openSearch:
+    instance: pdl-sok-preprod
+    access: read
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod

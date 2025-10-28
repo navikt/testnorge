@@ -1,6 +1,7 @@
 package no.nav.testnav.proxies.pdlproxy.config;
 
-import no.nav.testnav.proxies.pdlproxy.CredentialsHolder;
+import no.nav.testnav.proxies.pdlproxy.CredentialsElasticHolder;
+import no.nav.testnav.proxies.pdlproxy.CredentialsOpenSearchHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +22,17 @@ public class CredentialsConfig {
     private String elasticPassword;
 
     @Bean
-    CredentialsHolder credentialsHolder() {
-        return new CredentialsHolder(hendelselagerApiKey, aktoerAdminApiKey, elasticUsername, elasticPassword);
+    CredentialsElasticHolder credentialsElasticHolder() {
+        return new CredentialsElasticHolder(hendelselagerApiKey, aktoerAdminApiKey, elasticUsername, elasticPassword);
     }
 
+    @Bean
+    CredentialsOpenSearchHolder credentialsOpenSearchHolder(
+            @Value("${OPEN_SEARCH_URI}") String uri,
+            @Value("${OPEN_SEARCH_HOST}") String host,
+            @Value("${OPEN_SEARCH_PORT}") String port,
+            @Value("${OPEN_SEARCH_USERNAME}") String username,
+            @Value("${OPEN_SEARCH_PASSWORD}") String password) {
+        return new CredentialsOpenSearchHolder(uri, host, port, username, password);
+    }
 }
