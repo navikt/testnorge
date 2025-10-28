@@ -91,6 +91,7 @@ const mapBestillingsinformasjon = (
 				),
 				obj('Type person', getTypePerson(firstIdent)),
 				obj('Identtype', identtype),
+				obj('Ny ident (2032)', oversettBoolean(bestillingsinformasjon.id2032)),
 				obj('Sist oppdatert', formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)),
 				obj(
 					'Gjenopprettet fra',
@@ -111,7 +112,7 @@ const mapPdlNyPerson = (bestillingData, data, bestilling) => {
 		pdlNyPersonKriterier &&
 		(bestilling
 			? _.has(pdlNyPersonKriterier, 'alder')
-			: !isEmpty(pdlNyPersonKriterier, ['identtype', 'syntetisk']))
+			: !isEmpty(pdlNyPersonKriterier, ['identtype', 'syntetisk', 'id2032']))
 	) {
 		const { alder, foedtEtter, foedtFoer } = pdlNyPersonKriterier
 		const nyPersonData = {

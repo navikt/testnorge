@@ -70,6 +70,14 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 			opts.mal = mal.data
 			const options = BVOptions(opts, gruppeId, dollyEnvironments)
 			formMethods.reset(options.initialValues)
+			formMethods.setValue(
+				'pdldata.opprettNyPerson.identtype',
+				mal?.data?.bestilling?.pdldata?.opprettNyPerson?.identtype ?? 'FNR',
+			)
+			formMethods.setValue(
+				'pdldata.opprettNyPerson.id2032',
+				mal?.data?.bestilling?.pdldata?.opprettNyPerson?.id2032 ?? false,
+			)
 			formMethods.setValue('mal', mal.value)
 			formMethods.setValue('gruppeId', gruppeId)
 		} else {

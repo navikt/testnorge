@@ -1,7 +1,7 @@
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
-import { addDays, addWeeks } from 'date-fns'
+import { addDays, addHours, addWeeks } from 'date-fns'
 
 const initialValuesAktivitet = {
 	fom: new Date(),
@@ -26,6 +26,9 @@ export const NySykemelding = () => {
 						: new Date()
 					if (lastEntryTom.getDay() === 5 || lastEntryTom.getDay() === 6) {
 						lastEntryTom = addDays(lastEntryTom, lastEntryTom.getDay() === 5 ? 2 : 1)
+					}
+					if (lastEntryTom.getHours() === 0) {
+						lastEntryTom = addHours(lastEntryTom, 2)
 					}
 					const newAktivitet = {
 						fom: addDays(lastEntryTom, 1),
