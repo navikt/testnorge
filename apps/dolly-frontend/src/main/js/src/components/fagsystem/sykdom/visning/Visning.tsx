@@ -53,7 +53,8 @@ const VisningAvTransaksjonsId = ({ data }) => {
 	}
 
 	const syntSykemelding = _.get(data, 'syntSykemeldingRequest')
-	const detaljertSykemelding = _.get(data, 'detaljertSykemeldingRequestDTO')
+	const detaljertSykemelding =
+		_.get(data, 'detaljertSykemeldingRequestDTO') || _.get(data, 'detaljertSykemeldingRequest')
 	const sykemeldingId = _.get(data, 'sykemeldingId')
 
 	if (syntSykemelding) {
