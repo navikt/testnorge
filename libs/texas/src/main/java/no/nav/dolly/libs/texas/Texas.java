@@ -1,5 +1,7 @@
 package no.nav.dolly.libs.texas;
 
+import com.github.benmanes.caffeine.cache.AsyncCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -58,6 +61,7 @@ public class Texas {
     private final TexasConsumers consumers;
     private final ConcurrentHashMap<String, WebClient> webClientsForConsumers = new ConcurrentHashMap<>();
     private final TexasTokenCache tokenCache = new TexasTokenCache();
+    private final TexasIntrospectionCache introspectionCache = new TexasIntrospectionCache();
 
     @PostConstruct
     void postConstruct() {
@@ -156,22 +160,32 @@ public class Texas {
         return exchange(consumer.getAudience(), token);
     }
 
+    /**
+     * Introspects a given token to validate it.
+     * <p>
+     * The result of the introspection is cached for a short duration to improve performance
+     * on repeated lookups of the same token.
+     *
+     * @param token The token to introspect.
+     * @return A {@link Mono} that emits the introspection result when it is available.
+     * @throws TexasException If the token could not be introspected.
+     */
     public Mono<String> introspect(String token)
             throws TexasException {
-        return webClient
-                .post()
-                .uri(introspectUrl)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(JSON_INTROSPECTION_REQUEST.formatted(token))
-                .headers(headers -> {
-                    if (localSecret != null) {
-                        headers.add(HttpHeaders.AUTHORIZATION, "Dolly " + localSecret);
-                    }
-                })
-                .retrieve()
-                .bodyToMono(String.class)
-                .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientError.logTo(log))
+        return introspectionCache.get(token, tok -> webClient
+                        .post()
+                        .uri(introspectUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(JSON_INTROSPECTION_REQUEST.formatted(tok))
+                        .headers(headers -> {
+                            if (localSecret != null) {
+                                headers.add(HttpHeaders.AUTHORIZATION, "Dolly " + localSecret);
+                            }
+                        })
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .retryWhen(WebClientError.is5xxException())
+                        .doOnError(WebClientError.logTo(log)))
                 .onErrorMap(error -> new TexasException(INTROSPECT_FAILED, error));
     }
 

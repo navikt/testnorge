@@ -22,7 +22,7 @@ spring:
       Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
     version: Versjon 1
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   main:
     allow-bean-definition-overriding: true
     web-application-type: reactive
@@ -129,20 +129,15 @@ consumers:
     namespace: dolly
     url: https://testnav-medl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-inntektstub-proxy:
-    name: testnav-inntektstub-proxy
+  testnav-dolly-proxy:
+    name: testnav-dolly-proxy
     namespace: dolly
-    url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-inst-proxy:
     name: testnav-inst-proxy
     namespace: dolly
     url: https://testnav-inst-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-  testnav-skjermingsregister-proxy:
-    name: testnav-skjermingsregister-proxy
-    namespace: dolly
-    url: https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-arena-forvalteren-proxy:
     name: testnav-arena-forvalteren-proxy
@@ -154,20 +149,10 @@ consumers:
     namespace: dolly
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-sigrunstub-proxy:
-    name: testnav-sigrunstub-proxy
-    namespace: dolly
-    url: https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-pensjon-testdata-facade-proxy:
     name: testnav-pensjon-testdata-facade-proxy
     namespace: dolly
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-  testnav-histark-proxy:
-    name: testnav-histark-proxy
-    namespace: dolly
-    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter
@@ -184,11 +169,6 @@ consumers:
     namespace: dolly
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-udistub-proxy:
-    name: testnav-udistub-proxy
-    namespace: dolly
-    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-sykemelding-proxy:
     name: testnav-sykemelding-proxy
     namespace: dolly

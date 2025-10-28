@@ -21,7 +21,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 @Slf4j
 public class SigrunstubPensjonsgivendeDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
 
-    private static final String SIGRUNSTUB_DELETE_URL = "/api/v1/pensjonsgivendeinntektforfolketrygden";
+    private static final String SIGRUNSTUB_DELETE_URL = "/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden";
 
     private final WebClient webClient;
     private final String ident;
