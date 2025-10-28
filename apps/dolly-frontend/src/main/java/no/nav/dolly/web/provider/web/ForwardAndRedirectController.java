@@ -36,6 +36,7 @@ public class ForwardAndRedirectController {
                 .andRoute(RequestPredicates.GET("/admin/levendearbeidsforhold/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/admin/infostriper/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/nyansettelser/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/identvalidator/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/oversikt/**"), indexHandler);
     }
 }

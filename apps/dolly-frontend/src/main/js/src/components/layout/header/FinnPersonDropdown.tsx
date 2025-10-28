@@ -18,7 +18,8 @@ export const FinnPersonDropdown = () => {
 		setIsActive(
 			location?.pathname === '/dollysoek' ||
 				location?.pathname === '/nyansettelser' ||
-				location?.pathname === '/tenor/personer',
+				location?.pathname === '/tenor/personer' ||
+				location?.pathname === '/identvalidator',
 		)
 	}, [location])
 
@@ -56,6 +57,10 @@ export const FinnPersonDropdown = () => {
 				>
 					Søk i Tenor (Test-Norge)
 				</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+			<PreloadableActionMenuItem route="/identvalidator" style={{ color: '#212529' }}>
+				<Icon kind="arena" fontSize="1.5rem" />
+				<DropdownStyledLink href="/identvalidator">Valider fødselsnummer</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/nyansettelser" style={{ color: '#212529' }}>
 				<Icon kind="ansettelse" fontSize="1.5rem" />

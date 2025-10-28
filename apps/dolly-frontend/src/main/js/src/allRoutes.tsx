@@ -23,6 +23,9 @@ const InfostripePage = lazyWithPreload(
 )
 const ApiOversiktPage = lazyWithPreload(() => import('@/pages/apiOversikt/ApiOversiktPage'))
 const TeamOversiktPage = lazyWithPreload(() => import('@/pages/teamOversikt/TeamOversiktPage'))
+const IdentValidatorPage = lazyWithPreload(
+	() => import('@/pages/identvalidator/IdentvalidatorPage'),
+)
 
 const GruppeBreadcrumb = (props: any) => <span>Gruppe #{props.params?.gruppeId}</span>
 
@@ -138,6 +141,11 @@ const allRoutes = [
 		path: '/team',
 		handle: { crumb: () => 'Team-oversikt' },
 		element: TeamOversiktPage,
+	},
+	{
+		path: '/identvalidator',
+		handle: { crumb: () => 'Valider fødselsnummer' },
+		element: IdentValidatorPage,
 	},
 ]
 
