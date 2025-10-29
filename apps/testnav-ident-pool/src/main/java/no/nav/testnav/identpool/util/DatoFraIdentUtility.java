@@ -45,12 +45,7 @@ public class DatoFraIdentUtility {
 
     private static int getMonth(String ident) {
         // Fix B-number and syntetisk
-        if (ident.charAt(2) >= '6') {
-            return parseInt(ident.substring(2, 4)) - 60;
-        } else if (ident.charAt(2) >= '4') {
-            return parseInt(ident.substring(2, 4)) - 40;
-        } else {
-            return parseInt(ident.substring(2, 4));
-        }
+        return (Character.getNumericValue(ident.charAt(2)) % 2) * 10
+                + Character.getNumericValue(ident.charAt(3));
     }
 }
