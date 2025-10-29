@@ -7,8 +7,6 @@ import {
 import * as _ from 'lodash-es'
 
 export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: any) => {
-	'use no memo' // Skip compilation for this component
-
 	const { setValue, watch, resetField, getValues, reset } = formMethods
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
