@@ -102,7 +102,7 @@ class BrukerControllerTest {
                 .brukerId(BRUKERID)
                 .build();
 
-        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchBrukerOrTeam()).thenReturn(Mono.just(bruker));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
         when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any())).thenReturn(brukerAndClaims);
         when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
