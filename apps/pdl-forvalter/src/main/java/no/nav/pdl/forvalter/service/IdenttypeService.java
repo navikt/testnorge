@@ -121,6 +121,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                     .foedtFoer(getFoedtFoer(request, person.getIdent()))
                     .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
                     .syntetisk(isSyntetisk(request, person.getIdent()))
+                    .id2032(nonNull(request.getId2032()) ? request.getId2032() : person.getId2032())
                     .build();
 
             if (nyRequest.getFoedtFoer().isBefore(nyRequest.getFoedtEtter())) {
