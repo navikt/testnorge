@@ -26,11 +26,12 @@ export const BVOptions = (
 		opprettOrganisasjon = null,
 		leggTilPaaGruppe = null,
 		gruppe,
+		timedOutFagsystemer,
 	}: any = {},
 	gruppeId: number,
 	dollyEnvironments: any,
 ) => {
-	let initialValues = {
+	let initialValues: any = {
 		antall: antall || 1,
 		beskrivelse: null,
 		pdldata: {
@@ -45,34 +46,59 @@ export const BVOptions = (
 
 	const initialValuesLeggTil = Object.freeze({
 		antall: antall || 1,
-		environments: [],
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: null,
 		},
+		importPersoner: null,
+		environments: [],
 	})
 
 	const initialValuesLeggTilPaaGruppe = Object.freeze({
-		environments: [],
+		antall: antall || 1,
+		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: null,
 		},
+		importPersoner: null,
+		environments: [],
 	})
 
 	const initialValuesOpprettFraIdenter = Object.freeze({
+		antall: antall || 1,
+		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {},
 		},
+		importPersoner: null,
 		opprettFraIdenter: opprettFraIdenter,
 	})
 
 	const initialValuesOrganisasjon = Object.freeze({
+		antall: antall || 1,
+		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: {
+				identtype: identtype || 'FNR',
+				syntetisk: true,
+			},
+		},
+		importPersoner: null,
 		organisasjon: {
 			enhetstype: '',
 		},
 	})
 
 	const initialValuesStandardOrganisasjon = Object.freeze({
+		antall: antall || 1,
+		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: {
+				identtype: identtype || 'FNR',
+				syntetisk: true,
+			},
+		},
+		importPersoner: null,
 		organisasjon: {
 			enhetstype: 'AS',
 			naeringskode: '01.451',
@@ -97,7 +123,7 @@ export const BVOptions = (
 		},
 	})
 
-	let bestType = TYPE.NY_BESTILLING
+	let bestType: string = TYPE.NY_BESTILLING
 
 	if (opprettFraIdenter) {
 		bestType = TYPE.OPPRETT_FRA_IDENTER
@@ -116,9 +142,12 @@ export const BVOptions = (
 
 	if (importPersoner) {
 		bestType = TYPE.IMPORT_TESTNORGE
-		initialValues.antall = importPersoner.length
-		initialValues.pdldata = undefined
-		initialValues.importPersoner = importPersoner
+		initialValues = {
+			...initialValues,
+			antall: importPersoner.length,
+			pdldata: undefined,
+			importPersoner,
+		}
 		antall = importPersoner.length
 	}
 
@@ -144,8 +173,12 @@ export const BVOptions = (
 			}
 		} else {
 			bestType = TYPE.NY_ORGANISASJON
-			initialValues = { ...initialValuesOrganisasjon }
+			initialValues = initialValuesOrganisasjon
 		}
+	}
+
+	if (personFoerLeggTil && !timedOutFagsystemer && personFoerLeggTil.timedOutFagsystemer) {
+		timedOutFagsystemer = personFoerLeggTil.timedOutFagsystemer
 	}
 
 	return {
@@ -163,6 +196,7 @@ export const BVOptions = (
 		tidligereBestillinger,
 		opprettOrganisasjon,
 		gruppe,
+		timedOutFagsystemer,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,
 			nyBestillingFraMal: bestType === TYPE.NY_BESTILLING_FRA_MAL,

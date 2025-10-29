@@ -39,13 +39,6 @@ public class TexasAutoConfiguration {
         );
     }
 
-//    @Bean
-//    @ConditionalOnMissingBean
-//    @Profile("!test")
-//    ReactiveJwtDecoder texasJwtDecoder(Texas texas, ObjectMapper objectMapper) {
-//        return new TexasJwtDecoder(texas, objectMapper);
-//    }
-
     @Bean
     @ConditionalOnMissingBean
     @Profile("test")
@@ -59,6 +52,14 @@ public class TexasAutoConfiguration {
                 .ofNullable(url)
                 .or(() -> Optional.ofNullable(System.getenv(fallback)))
                 .orElseThrow(() -> new TexasException(message));
+    }
+
+    @Bean
+    TexasTokenIntrospector texasTokenIntrospector(
+            Texas texas,
+            ObjectMapper objectMapper
+    ) {
+        return new TexasTokenIntrospector(texas, objectMapper);
     }
 
 }

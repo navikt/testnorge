@@ -40,7 +40,7 @@ public class SkjermingsRegisterConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavSkjermingsregisterProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -51,7 +51,8 @@ public class SkjermingsRegisterConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "skjermingsdata-slett"})
     public Mono<List<SkjermingDataResponse>> deleteSkjerming(List<String> identer) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenService
+                .exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(100))
                         .map(index -> new SkjermingsregisterPutCommand(webClient,
@@ -105,7 +106,7 @@ public class SkjermingsRegisterConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-skjermingsregister-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

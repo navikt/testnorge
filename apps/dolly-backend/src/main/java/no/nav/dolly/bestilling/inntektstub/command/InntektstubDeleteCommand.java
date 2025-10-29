@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class InntektstubDeleteCommand implements Callable<Flux<String>> {
 
-    private static final String DELETE_INNTEKTER_URL = "/api/v2/personer";
+    private static final String DELETE_INNTEKTER_URL = "/inntektstub/api/v2/personer";
     private static final String NORSKE_IDENTER_QUERY = "norske-identer";
 
     private final WebClient webClient;

@@ -38,7 +38,7 @@ public class InntektstubConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavInntektstubProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -82,6 +82,6 @@ public class InntektstubConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-inntektstub-proxy";
+        return "testnav-dolly-proxy";
     }
 }
