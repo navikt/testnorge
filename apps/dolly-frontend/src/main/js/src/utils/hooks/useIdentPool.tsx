@@ -1,17 +1,10 @@
 import useSWR from 'swr'
-import Request from '@/service/services/Request'
+import { fetcher } from '@/api'
 
 const identPoolUrl = (ident: string) => `/testnav-ident-pool/api/v2/ident/valider/${ident}`
 
 export const useValiderIdent = (ident: string) => {
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
-
-	const { data, isLoading, error } = useSWR(identPoolUrl(ident), (url: string) => Request.get(url))
+	const { data, isLoading, error } = useSWR<any, Error>(ident ? identPoolUrl(ident) : null, fetcher)
 
 	return {
 		validering: data,
