@@ -71,6 +71,10 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
+        - application: repr-fullmakt
+          namespace: repr
+        - application: skjermede-personer
+          namespace: nom
         - application: logging
           namespace: nais-system
   liveness:
