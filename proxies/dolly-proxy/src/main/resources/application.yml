@@ -33,9 +33,13 @@ springdoc:
 #        url: http://inntektstub.team-inntekt/v3/api-docs/a-ordningen%20api
     urls-primary-name: Downstream Services
 
-targets:
-  histark: https://histarkimport.dev.intern.nav.no
-  inntektstub: http://inntektstub.team-inntekt
-  sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
-  skjermingsregister: https://skjermede-personer.dev.adeo.no
-  udistub: http://testnav-udi-stub.dolly
+app:
+  fakedings:
+    url: https://fakedings.intern.dev.nav.no
+  targets:
+    fullmakt: http://repr-fullmakt.repr.svc.nais.local
+    histark: https://histarkimport.dev.intern.nav.no
+    inntektstub: http://inntektstub.team-inntekt
+    sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
+    skjermingsregister: https://skjermede-personer.dev.adeo.no
+    udistub: http://testnav-udi-stub.dolly

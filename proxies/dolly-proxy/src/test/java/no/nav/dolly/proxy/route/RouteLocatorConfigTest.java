@@ -2,9 +2,11 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.proxy.auth.FakedingsCommand;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -40,6 +46,9 @@ class RouteLocatorConfigTest {
     @MockitoSpyBean
     private AzureTrygdeetatenTokenService trygdeetatenTokenService;
 
+    @MockitoBean
+    private TokenXService tokenXService;
+
     @Autowired
     private WebTestClient webClient;
 
@@ -51,11 +60,12 @@ class RouteLocatorConfigTest {
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("targets.histark", () -> wireMockServer.baseUrl());
-        registry.add("targets.inntektstub", () -> wireMockServer.baseUrl());
-        registry.add("targets.skjermingsregister", () -> wireMockServer.baseUrl());
-        registry.add("targets.sigrunstub", () -> wireMockServer.baseUrl());
-        registry.add("targets.udistub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
     }
 
     @BeforeEach
@@ -66,6 +76,33 @@ class RouteLocatorConfigTest {
                 .thenReturn(Mono.just(new AccessToken("dummy-nav-token")));
         when(trygdeetatenTokenService.exchange(any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
+        when(tokenXService.exchange(any(), any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+    }
+
+    @Test
+    void testFullmakt() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked fullmakt";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/fullmakt" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("application/json; charset=UTF-8")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-tokenx-token")));
+
     }
 
     @Test
