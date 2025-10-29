@@ -8,6 +8,9 @@
 
 Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjoner som støtter tjenester knyttet til Dolly og syntetiske testdata.
 
+// TODO: Video for Teams
+// TODO: Video for flytte personer og bytte eier
+
 === Om
 
 Dette er en samlet dokumentasjon for applikasjoner, retningslinjer og støtteverktøy relatert til syntetiske testdata i NAV.
