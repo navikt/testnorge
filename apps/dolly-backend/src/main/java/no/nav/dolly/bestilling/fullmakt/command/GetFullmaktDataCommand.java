@@ -21,7 +21,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 @Slf4j
 public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostResponse.Fullmakt>> {
 
-    private static final String HENT_FULLMAKT_URL = "/api/fullmaktsgiver";
+    private static final String HENT_FULLMAKT_URL = "/fullmakt/api/fullmaktsgiver";
 
     private final WebClient webClient;
     private final String ident;

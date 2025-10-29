@@ -57,6 +57,9 @@
   "/testnav-dolly-proxy/inntektstub": {
     "changeOrigin": true
   },
+  "/testnav-dolly-proxy/fullmakt": {
+    "changeOrigin": true
+  },
   "/testnav-norg2-proxy/norg2": {
     "changeOrigin": true
   },
@@ -67,9 +70,6 @@
     "changeOrigin": true
   },
   "/testnav-krrstub-proxy/api": {
-    "changeOrigin": true
-  },
-  "/testnav-fullmakt-proxy/api": {
     "changeOrigin": true
   },
   "/testnav-inst-proxy/api": {
