@@ -86,6 +86,14 @@ public class BrukerService {
             return getUserInfo.call()
                     .map(UserInfoExtended::id)
                     .flatMap(brukerRepository::findByBrukerId)
+                    .flatMap(bruker -> {
+                        if (isNull(bruker.getRepresentererTeam())) {
+                            return Mono.just(bruker);
+                        } else {
+                            return teamRepository.findById(bruker.getRepresentererTeam())
+                                    .flatMap(team -> brukerRepository.findByBrukernavn(team.getNavn()));
+                        }
+                    })
                     .switchIfEmpty(createBruker());
         } else {
             return brukerRepository.findByBrukerId(brukerId)
