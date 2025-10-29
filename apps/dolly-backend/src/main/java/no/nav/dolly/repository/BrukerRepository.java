@@ -30,6 +30,8 @@ public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
             """)
     Mono<Bruker> findByBrukerId(String brukerId);
 
+    Mono<Bruker> findByBrukernavn(String navn);
+
     @Modifying
     @Query("""
             delete from bruker_favoritter bf

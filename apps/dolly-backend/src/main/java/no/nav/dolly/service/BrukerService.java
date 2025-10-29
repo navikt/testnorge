@@ -64,13 +64,6 @@ public class BrukerService {
         return fetchOrCreateBruker(null);
     }
 
-    public Mono<Bruker> fetchBrukerOrTeam() {
-
-        return getUserInfo.call()
-                .map(UserInfoExtended::id)
-                .flatMap(this::fetchBrukerOrTeam);
-    }
-
     private Mono<Bruker> fetchBrukerOrTeam(String brukerId) {
 
         return brukerRepository.findByBrukerId(brukerId)
