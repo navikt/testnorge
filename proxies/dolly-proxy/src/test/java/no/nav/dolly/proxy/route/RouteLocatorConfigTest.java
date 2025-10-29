@@ -2,7 +2,6 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.dolly.proxy.auth.FakedingsCommand;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
@@ -21,21 +20,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@DollySpringBootTest(properties = {
-        "management.endpoints.web.exposure.include=health",
-        "management.endpoints.web.base-path=/internal"
-})
+@DollySpringBootTest
 @AutoConfigureWebTestClient
 class RouteLocatorConfigTest {
 
@@ -68,14 +58,11 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
+        registry.add("app.fakedings.url", () -> wireMockServer.baseUrl());
     }
 
     @BeforeEach
     public void setup() {
-        webClient = webClient
-                .mutate()
-                .responseTimeout(Duration.ofSeconds(30))
-                .build();
         when(tokenExchange.exchange(any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
         when(navTokenService.exchange(any()))
@@ -92,6 +79,11 @@ class RouteLocatorConfigTest {
         var downstreamPath = "/api/v1/testdata";
         var responseBody = "Success from mocked fullmakt";
 
+        wireMockServer.stubFor(get(urlMatching("/fake/tokenx.*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("dummy-fakedings-token")));
+
         wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -101,6 +93,7 @@ class RouteLocatorConfigTest {
         webClient
                 .get()
                 .uri("/fullmakt" + downstreamPath)
+                .header("fnr", "12345678901")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("application/json; charset=UTF-8")

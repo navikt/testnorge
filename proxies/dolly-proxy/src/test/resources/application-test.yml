@@ -1,4 +1,9 @@
 management:
+  endpoints:
+    web:
+      base-path: "/internal"
+      exposure:
+        include: "health"
   prometheus:
     metrics:
       export:
