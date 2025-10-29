@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 
 const initialValues = {
 	ident: '',
@@ -31,17 +32,19 @@ export default () => {
 		<>
 			<h1>Valider fødselsnummer</h1>
 			<p>Skriv inn en test-ident for å validere.</p>
-			<FormProvider {...formMethods}>
-				<form onSubmit={formMethods.handleSubmit(handleValidate)}>
-					<div className="flexbox--flex-wrap">
-						<DollyTextInput name="ident" />
-						<NavButton variant={'primary'} type={'submit'} loading={loading}>
-							Valider
-						</NavButton>
-					</div>
-				</form>
-			</FormProvider>
-			<VStack gap="space-16"></VStack>
+			<VStack gap="space-16">
+				<FormProvider {...formMethods}>
+					<form onSubmit={formMethods.handleSubmit(handleValidate)}>
+						<div className="flexbox--flex-wrap">
+							<DollyTextInput name="ident" />
+							<NavButton variant={'primary'} type={'submit'} loading={loading}>
+								Valider
+							</NavButton>
+						</div>
+					</form>
+				</FormProvider>
+				<IdentvalidatorVisning data={validering} />
+			</VStack>
 		</>
 	)
 }
