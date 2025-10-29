@@ -76,7 +76,7 @@ public class BrukerController {
     @Operation(description = "Hent pålogget Bruker")
     public Mono<RsBruker> getCurrentBruker() {
 
-        return brukerService.fetchBrukerWithoutTeam()
+        return brukerService.fetchBrukerOrTeam()
                 .flatMap(this::mapFavoritter);
     }
 
