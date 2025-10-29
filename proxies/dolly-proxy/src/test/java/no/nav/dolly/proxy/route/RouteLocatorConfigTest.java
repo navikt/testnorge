@@ -21,6 +21,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -70,6 +72,10 @@ class RouteLocatorConfigTest {
 
     @BeforeEach
     public void setup() {
+        webClient = webClient
+                .mutate()
+                .responseTimeout(Duration.ofSeconds(30))
+                .build();
         when(tokenExchange.exchange(any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
         when(navTokenService.exchange(any()))
