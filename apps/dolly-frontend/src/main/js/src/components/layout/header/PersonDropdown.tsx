@@ -10,25 +10,34 @@ import {
 	tenorSoekStateLocalStorageKey,
 } from '@/pages/tenorSoek/TenorSoekPage'
 
-export const FinnPersonDropdown = () => {
+export const PersonDropdown = () => {
 	const location = useLocation()
 	const [isActive, setIsActive] = useState(false)
 
 	useEffect(() => {
 		setIsActive(
-			location?.pathname === '/dollysoek' ||
+			location?.pathname === '/gruppe' ||
+				location?.pathname === '/dollysoek' ||
 				location?.pathname === '/nyansettelser' ||
-				location?.pathname === '/tenor/personer' ||
+				location?.pathname === '/tenorpersoner' ||
 				location?.pathname === '/identvalidator',
 		)
 	}, [location])
 
 	return (
 		<ActionMenuWrapper
-			title="Finn person"
+			title="Personer"
 			isActive={isActive}
 			dataTestId={TestComponentSelectors.BUTTON_HEADER_FINNPERSON}
 		>
+			<PreloadableActionMenuItem
+				route="/gruppe"
+				dataTestId={TestComponentSelectors.BUTTON_HEADER_PERSONER}
+				style={{ color: '#212529' }}
+			>
+				<Icon kind="person" fontSize="1.5rem" />
+				<DropdownStyledLink href="/gruppe">Mine personer</DropdownStyledLink>
+			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem
 				route="/dollysoek"
 				dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK}
@@ -43,7 +52,7 @@ export const FinnPersonDropdown = () => {
 				</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem
-				route="/tenor/personer"
+				route="/tenorpersoner"
 				dataTestId={TestComponentSelectors.BUTTON_HEADER_TENOR}
 				style={{ color: '#212529' }}
 			>
@@ -53,7 +62,7 @@ export const FinnPersonDropdown = () => {
 						localStorage.removeItem(tenorSoekLocalStorageKey)
 						localStorage.removeItem(tenorSoekStateLocalStorageKey)
 					}}
-					href="/tenor/personer"
+					href="/tenorpersoner"
 				>
 					Søk i Tenor (Test-Norge)
 				</DropdownStyledLink>

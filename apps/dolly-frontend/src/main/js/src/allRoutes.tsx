@@ -73,7 +73,7 @@ const allRoutes = [
 		element: Organisasjon,
 	},
 	{
-		path: '/tenor/organisasjoner',
+		path: '/tenororganisasjoner',
 		handle: {
 			crumb: () => 'Søk etter organisasjoner i Tenor',
 		},
@@ -93,12 +93,7 @@ const allRoutes = [
 		element: DollySoekPage,
 	},
 	{
-		path: '/tenor',
-		handle: { crumb: () => 'Tenor' },
-		element: () => <Navigate to="/tenor/personer" />,
-	},
-	{
-		path: '/tenor/personer',
+		path: '/tenorpersoner',
 		handle: { crumb: () => 'Søk etter personer i Tenor' },
 		element: TenorSoekPage,
 	},
@@ -113,17 +108,17 @@ const allRoutes = [
 		element: Endringsmelding,
 	},
 	{
-		path: '/admin/orgtilgang',
+		path: '/orgtilgang',
 		handle: { crumb: () => 'Organisasjon-tilgang' },
 		element: OrgtilgangPage,
 	},
 	{
-		path: '/admin/levendearbeidsforhold',
+		path: '/levendearbeidsforhold',
 		handle: { crumb: () => 'Levende arbeidsforhold' },
 		element: LevendeArbeidsforholdPage,
 	},
 	{
-		path: '/admin/infostriper',
+		path: '/infostriper',
 		handle: { crumb: () => 'Dolly infostriper' },
 		element: InfostripePage,
 	},
