@@ -1,5 +1,6 @@
 package no.nav.dolly.proxy.auth;
 
+import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +13,8 @@ class FakedingsConfig {
     private String url;
 
     @Bean
-    FakedingsService fakedingsService(WebClient webClient) {
-        return new FakedingsService(webClient, url);
+    FakedingsService fakedingsService(TokenXService tokenXService, WebClient webClient) {
+        return new FakedingsService(tokenXService, webClient, url);
     }
 
 }
