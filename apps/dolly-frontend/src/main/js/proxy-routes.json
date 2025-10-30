@@ -72,7 +72,7 @@
   "/testnav-krrstub-proxy/api": {
     "changeOrigin": true
   },
-  "/testnav-inst-proxy/api": {
+  "/testnav-dolly-proxy/inst/api": {
     "changeOrigin": true
   },
   "/testnav-dolly-proxy/sigrunstub/api": {

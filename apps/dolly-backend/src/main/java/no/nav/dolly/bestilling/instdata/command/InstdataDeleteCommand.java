@@ -18,7 +18,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
 
-    private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person/slett";
+    private static final String INSTDATA_URL = "/inst/api/v1/institusjonsopphold/person/slett";
 
     private final WebClient webClient;
     private final String ident;

@@ -168,11 +168,6 @@ consumers:
     namespace: dolly
     url: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-inst-proxy:
-    name: testnav-inst-proxy
-    namespace: dolly
-    url: https://testnav-inst-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-arbeidsplassencv-proxy:
     name: testnav-arbeidsplassencv-proxy
     namespace: dolly
