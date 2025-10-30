@@ -55,7 +55,6 @@ public class DollyFrontendApplicationStarter {
 
         return builder
                 .routes()
-                .route(createRoute(consumers.getTestnavKontoregisterPersonProxy()))
                 .route(createRoute(consumers.getTestnavOrganisasjonFasteDataService()))
                 .route(createRoute(consumers.getTestnavAdresseService()))
                 .route(createRoute(consumers.getOppsummeringsdokumentService(), "oppsummeringsdokument-service"))

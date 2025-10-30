@@ -164,11 +164,6 @@ consumers:
     namespace: dolly
     url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-kontoregister-person-proxy:
-    name: testnav-kontoregister-person-proxy
-    namespace: dolly
-    url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-arbeidsplassencv-proxy:
     name: testnav-arbeidsplassencv-proxy
     namespace: dolly
