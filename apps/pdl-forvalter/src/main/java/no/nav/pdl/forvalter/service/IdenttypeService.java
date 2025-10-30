@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.LocalDate.now;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
@@ -104,6 +106,11 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private PersonDTO handle(IdentRequestDTO request, PersonDTO person) {
 
         PersonDTO nyPerson;
+
+        person.getNavPersonIdentifikator().stream()
+                .filter(navIdent -> isNull(navIdent.getGyldigTilOgMed()))
+                .forEach(navIdent ->
+                        navIdent.setGyldigTilOgMed(now().minusDays(1)));
 
         if (isNotBlank(request.getEksisterendeIdent())) {
 
