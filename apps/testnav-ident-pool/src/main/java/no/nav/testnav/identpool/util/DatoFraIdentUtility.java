@@ -44,7 +44,8 @@ public class DatoFraIdentUtility {
     }
 
     private static int getMonth(String ident) {
-        // Fix B-number and syntetisk
+
+        // Fix NPID/BOST, syntetisk og Testnorge ident
         return (Character.getNumericValue(ident.charAt(2)) % 2) * 10
                 + Character.getNumericValue(ident.charAt(3));
     }
