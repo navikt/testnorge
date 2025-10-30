@@ -10,6 +10,8 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.http.HttpHeaders;
@@ -52,6 +54,8 @@ class RouteLocatorConfigTest {
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
+        registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
+
         registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
         registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
@@ -71,6 +75,32 @@ class RouteLocatorConfigTest {
                 .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
         when(tokenXService.exchange(any(), any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2", "q4"})
+    void testEreg(String miljo) {
+
+        var requestedPath = "/api/%s/some/nested/path".formatted(miljo);
+        var servedPath = "/some/nested/path";
+        var responseBody = "Success from mocked ereg-" + miljo;
+
+        wireMockServer.stubFor(get(urlEqualTo(servedPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/ereg" + requestedPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath)));
+
     }
 
     @Test

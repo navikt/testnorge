@@ -15,6 +15,7 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter
 class Targets {
 
+    String ereg;
     String fullmakt;
     String histark;
     String inntektstub;
