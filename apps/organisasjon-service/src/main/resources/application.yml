@@ -14,8 +14,8 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 consumers:
-  testnav-ereg-proxy:
-    url: https://testnav-ereg-proxy.dev-fss-pub.nais.io
-    name: testnav-ereg-proxy
+  testnav-dolly-proxy:
     cluster: dev-fss
+    name: testnav-dolly-proxy
     namespace: dolly
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io

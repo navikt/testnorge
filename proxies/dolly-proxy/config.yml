@@ -65,6 +65,8 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-organisasjon-service
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service

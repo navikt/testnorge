@@ -24,7 +24,7 @@ public class EregConsumer {
             TokenExchange tokenExchange,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavEregProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
