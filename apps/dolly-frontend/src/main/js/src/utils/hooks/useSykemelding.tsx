@@ -17,23 +17,20 @@ type SykemeldingResponse = {
 }
 
 type TsmSykemeldingResponse = {
-	sykmeldinger: [
-		{
-			sykmeldingId: string
-			aktivitet: [
-				{
-					fom: any
-					tom: any
-				},
-			]
-			ident: string
-		},
-	]
+	sykmeldinger: Array<{
+		sykmeldingId: string
+		aktivitet: Array<{
+			fom: any
+			tom: any
+		}>
+		ident: string
+	}>
 }
 
 export const useTsmSykemelding = (ident: string, retryCount = 8) => {
+	const shouldFetch = !!ident
 	const { data, isLoading, error } = useSWR<TsmSykemeldingResponse, AxiosError<any>>(
-		['/testnav-sykemelding-proxy/tsm/api/sykmelding/ident', ident],
+		shouldFetch ? ['/testnav-sykemelding-proxy/tsm/api/sykmelding/ident', ident] : null,
 		([url, _ident]) =>
 			fetcher(url, {
 				'X-ident': ident,

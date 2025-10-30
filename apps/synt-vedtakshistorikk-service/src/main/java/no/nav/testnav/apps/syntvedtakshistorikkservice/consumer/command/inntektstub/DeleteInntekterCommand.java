@@ -23,7 +23,7 @@ public class DeleteInntekterCommand implements Callable<Mono<Void>> {
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/api/v2/personer")
+                        .path("/inntektstub/api/v2/personer")
                         .queryParam("norske-identer", identer)
                         .build())
                 .headers(WebClientHeader.bearer(token))

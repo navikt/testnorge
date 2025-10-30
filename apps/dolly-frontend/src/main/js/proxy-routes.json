@@ -48,13 +48,13 @@
 	"/testnav-joark-dokument-service/api": {
 		"changeOrigin": true
 	},
-	"/testnav-histark-proxy/api": {
+	"/testnav-dolly-proxy/histark": {
 		"changeOrigin": true
 	},
-	"/testnav-udistub-proxy/api": {
+	"/testnav-dolly-proxy/udistub/api": {
 		"changeOrigin": true
 	},
-	"/testnav-inntektstub-proxy/api": {
+	"/testnav-dolly-proxy/inntektstub": {
 		"changeOrigin": true
 	},
 	"/testnav-norg2-proxy/norg2": {
@@ -75,7 +75,7 @@
 	"/testnav-inst-proxy/api": {
 		"changeOrigin": true
 	},
-	"/testnav-sigrunstub-proxy/api": {
+	"/testnav-dolly-proxy/sigrunstub/api": {
 		"changeOrigin": true
 	},
 	"/testnav-aareg-proxy/": {
@@ -126,7 +126,7 @@
 	"/testnav-kontoregister-person-proxy/api/system": {
 		"changeOrigin": true
 	},
-	"/testnav-skjermingsregister-proxy/api": {
+	"/testnav-dolly-proxy/skjermingsregister/api": {
 		"changeOrigin": true
 	},
 	"/testnav-dokarkiv-proxy": {

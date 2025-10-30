@@ -656,7 +656,6 @@ export const instMock = [
 
 export const udistubMock = {
 	person: {
-		aliaser: [],
 		arbeidsadgang: {
 			harArbeidsAdgang: 'JA',
 			typeArbeidsadgang: 'BESTEMT_ARBEIDSGIVER_ELLER_OPPDRAGSGIVER',
@@ -1564,11 +1563,6 @@ export const backendBestillingerMock = [
 				],
 			},
 			udistub: {
-				aliaser: [
-					{
-						nyIdent: false,
-					},
-				],
 				arbeidsadgang: {
 					harArbeidsAdgang: 'JA',
 					periode: {},

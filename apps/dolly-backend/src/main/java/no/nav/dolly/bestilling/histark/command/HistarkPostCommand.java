@@ -33,7 +33,7 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
         return webClient
                 .post()
                 .uri(builder ->
-                        builder.path("/api/saksmapper/import") // requestParam metadata er overflødig
+                        builder.path("/histark/api/saksmapper/import") // requestParam metadata er overflødig
                                 .build())
                 .headers(WebClientHeader.bearer(token))
                 .contentType(MediaType.MULTIPART_FORM_DATA)

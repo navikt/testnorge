@@ -65,7 +65,8 @@ public class TestgruppeController {
     @Transactional
     @PutMapping(value = "/{gruppeId}")
     @Operation(description = "Oppdater testgruppe")
-    public Mono<Testgruppe> oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
+    public Mono<Testgruppe> oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId,
+                                               @RequestBody RsOpprettEndreTestgruppe testgruppe) {
 
         return testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
     }
@@ -140,7 +141,9 @@ public class TestgruppeController {
     @Operation(description = "Hent testgrupper")
     @Transactional
     public Mono<RsTestgruppePage> getTestgrupper(
-            @RequestParam(value = "pageNo", required = false, defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", required = false, defaultValue = "10000") Integer pageSize, @RequestParam(name = "brukerId", required = false) String brukerId) {
+            @RequestParam(value = "pageNo", required = false, defaultValue = "0") Integer pageNo,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10000") Integer pageSize,
+            @RequestParam(name = "brukerId", required = false) String brukerId) {
 
         return testgruppeService.getTestgruppeByBrukerId(pageNo, pageSize, brukerId);
     }
@@ -148,7 +151,8 @@ public class TestgruppeController {
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/page/{pageNo}")
     @Operation(description = "Hent paginerte testgrupper")
-    public Mono<RsTestgruppePage> getTestgrupper(@PathVariable(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize) {
+    public Mono<RsTestgruppePage> getTestgrupper(@PathVariable(value = "pageNo") Integer pageNo,
+                                                 @RequestParam(value = "pageSize") Integer pageSize) {
 
         return testgruppeService.getAllTestgrupper(pageNo, pageSize);
 
@@ -166,7 +170,8 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     @Operation(description = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
-    public Mono<RsBestillingStatus> opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
+    public Mono<RsBestillingStatus> opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId,
+                                                           @RequestBody RsDollyBestillingRequest request) {
 
         return bestillingService.saveBestilling(gruppeId, request,
                         request.getAntall(), null, request.getNavSyntetiskIdent(), request.getBeskrivelse())
@@ -180,7 +185,8 @@ public class TestgruppeController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
-    public Mono<RsBestillingStatus> opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
+    public Mono<RsBestillingStatus> opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId,
+                                                                     @RequestBody RsDollyBestillingFraIdenterRequest request) {
 
         return bestillingService.saveBestilling(gruppeId, request,
                         request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter(), null, null)
@@ -194,7 +200,8 @@ public class TestgruppeController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/importfrapdl")
-    public Mono<RsBestillingStatus> importAvIdenterFraPdlBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyImportFraPdlRequest request) {
+    public Mono<RsBestillingStatus> importAvIdenterFraPdlBestilling(@PathVariable("gruppeId") Long gruppeId,
+                                                                    @RequestBody RsDollyImportFraPdlRequest request) {
 
         return bestillingService.saveBestilling(gruppeId, request)
                 .map(bestilling -> {
@@ -207,7 +214,8 @@ public class TestgruppeController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{gruppeId}/leggtilpaagruppe")
-    public Mono<RsBestillingStatus> endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
+    public Mono<RsBestillingStatus> endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId,
+                                                       @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
 
         return bestillingService.saveBestilling(gruppeId, request)
                 .map(bestilling -> {

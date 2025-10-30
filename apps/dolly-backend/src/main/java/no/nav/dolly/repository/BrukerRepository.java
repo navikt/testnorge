@@ -17,7 +17,7 @@ public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
     @Query("""
             select *
             from Bruker b
-            where b.brukertype='AZURE'
+            where b.brukertype='AZURE' OR b.brukertype='TEAM'
             order by b.brukernavn
             """)
     Flux<Bruker> findByOrderById();
@@ -29,6 +29,8 @@ public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
             where b.bruker_id = :brukerId
             """)
     Mono<Bruker> findByBrukerId(String brukerId);
+
+    Mono<Bruker> findByBrukernavn(String navn);
 
     @Modifying
     @Query("""

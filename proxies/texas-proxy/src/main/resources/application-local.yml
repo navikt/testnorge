@@ -1,3 +1,7 @@
+spring:
+  config:
+    import: "sm://"
+
 dolly:
   texas:
     url:
