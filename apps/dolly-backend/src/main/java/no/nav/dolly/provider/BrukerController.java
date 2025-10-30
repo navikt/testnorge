@@ -153,11 +153,17 @@ public class BrukerController {
 
         return Mono.zip(
                         Mono.just(bruker),
-                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
-                                .map(BrukerFavoritter::getGruppeId)
-                                .collectList()
-                                .flatMapMany(testgruppeRepository::findByIdIn)
-                                .collectList(),
+                        (isNull(bruker.getRepresentererTeam()) ?
+                                Mono.just(bruker) :
+                                teamRepository.findById(bruker.getRepresentererTeam())
+                                        .map(Team::getNavn)
+                                        .flatMap(brukerRepository::findByBrukernavn))
+                                .flatMap(bruker2 ->
+                                        brukerFavoritterRepository.findByBrukerId(bruker2.getId())
+                                                .map(BrukerFavoritter::getGruppeId)
+                                                .collectList()
+                                                .flatMapMany(testgruppeRepository::findByIdIn)
+                                                .collectList()),
                         brukerRepository.findAll()
                                 .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
                                     map.put(bruker1.getId(), bruker1);
