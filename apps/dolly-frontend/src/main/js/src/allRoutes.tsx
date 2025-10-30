@@ -144,7 +144,7 @@ const allRoutes = [
 	},
 	{
 		path: '/identvalidator',
-		handle: { crumb: () => 'Valider fødselsnummer' },
+		handle: { crumb: () => 'Valider ident' },
 		element: IdentValidatorPage,
 	},
 ]

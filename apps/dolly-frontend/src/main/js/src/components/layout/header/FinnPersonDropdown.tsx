@@ -60,7 +60,7 @@ export const FinnPersonDropdown = () => {
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/identvalidator" style={{ color: '#212529' }}>
 				<Icon kind="arena" fontSize="1.5rem" />
-				<DropdownStyledLink href="/identvalidator">Valider fødselsnummer</DropdownStyledLink>
+				<DropdownStyledLink href="/identvalidator">Valider ident</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/nyansettelser" style={{ color: '#212529' }}>
 				<Icon kind="ansettelse" fontSize="1.5rem" />

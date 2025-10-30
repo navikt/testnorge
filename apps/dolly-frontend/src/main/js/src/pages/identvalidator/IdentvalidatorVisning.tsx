@@ -37,11 +37,14 @@ export const IdentvalidatorVisning = ({ data }) => {
 
 	return (
 		<Box
-			// background={data.erGyldig ? 'surface-success-subtle' : 'surface-danger-subtle'}
-			background={'surface-default'}
 			padding="6"
+			// background={'surface-default'}
+			background={data.erGyldig ? 'surface-success-subtle' : 'surface-danger-subtle'}
+			borderRadius="large"
+			borderWidth="2"
+			borderColor={data.erGyldig ? 'border-success' : 'border-danger'}
 		>
-			<h2 style={{ paddingLeft: '8px', marginTop: '8px' }}>{data.ident}</h2>
+			<h2 style={{ paddingLeft: '8px', marginTop: '8px' }}>Validering av ident {data.ident}</h2>
 			<Table>
 				<Table.Body>
 					{mappedData.map((item, index) => {
