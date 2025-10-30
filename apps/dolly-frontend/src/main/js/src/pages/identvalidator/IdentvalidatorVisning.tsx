@@ -27,7 +27,6 @@ export const IdentvalidatorVisning = ({ data }) => {
 			value: oversettBoolean(data.erTestnorgeIdent),
 			icon: getIcon(data.erTestnorgeIdent),
 		},
-		// { label: 'Ident', value: data.ident },
 		{ label: 'Identtype', value: data.identtype },
 		{ label: 'Fødselsdato', value: formatDate(data.foedselsdato) },
 		{ label: 'Kjønn', value: data.kjoenn },
@@ -52,11 +51,7 @@ export const IdentvalidatorVisning = ({ data }) => {
 							return null
 						}
 						return (
-							<Table.Row
-								key={index + item.label}
-								shadeOnHover={false}
-								// style={{ verticalAlign: 'top' }}
-							>
+							<Table.Row key={index + item.label} shadeOnHover={false}>
 								<Table.DataCell width="30%">
 									<strong>{item.label}</strong>
 								</Table.DataCell>

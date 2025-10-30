@@ -1,6 +1,6 @@
 import { useValiderIdent } from '@/utils/hooks/useIdentPool'
-import { Box, VStack } from '@navikt/ds-react'
-import { useState } from 'react'
+import { Alert, Box, VStack } from '@navikt/ds-react'
+import React, { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -60,6 +60,11 @@ export default () => {
 						</form>
 					</FormProvider>
 				</Box>
+				{error && (
+					<Alert variant={'error'} size={'small'}>
+						Feil ved validering: {error.message}
+					</Alert>
+				)}
 				<IdentvalidatorVisning data={validering} />
 			</VStack>
 		</>
