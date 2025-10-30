@@ -61,6 +61,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
@@ -205,6 +206,36 @@ class RouteLocatorConfigTest {
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @Test
+    void testKontoregister() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked kontoregister";
+
+        wireMockServer.stubFor(get(urlMatching("/fake/tokenx.*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("dummy-fakedings-token")));
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/kontoregister" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-tokenx-token")));
 
     }
 

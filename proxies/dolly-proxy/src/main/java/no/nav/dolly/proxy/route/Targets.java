@@ -20,6 +20,7 @@ class Targets {
     String histark;
     String inntektstub;
     String inst;
+    String kontoregister;
     String sigrunstub;
     String skjermingsregister;
     String udistub;
