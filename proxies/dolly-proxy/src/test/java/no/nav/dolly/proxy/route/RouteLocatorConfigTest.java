@@ -62,6 +62,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
@@ -236,6 +237,31 @@ class RouteLocatorConfigTest {
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-tokenx-token")));
+
+    }
+
+    @Test
+    void testKrrstub() {
+
+        var downstreamPath = "/api/v2/something";
+        var responseBody = "Success from mocked krrstub";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/krrstub" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
 
     }
 

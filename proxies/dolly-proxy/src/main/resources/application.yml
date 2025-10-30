@@ -43,6 +43,7 @@ app:
     inntektstub: http://inntektstub.team-inntekt
     inst: http://opphold-testdata.team-rocket.svc.nais.local
     kontoregister: https://sokos-kontoregister-person.intern.dev.nav.no
+    krrstub: https://digdir-krr-stub.intern.dev.nav.no
     sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
     skjermingsregister: https://skjermede-personer.dev.adeo.no
     udistub: http://testnav-udi-stub.dolly

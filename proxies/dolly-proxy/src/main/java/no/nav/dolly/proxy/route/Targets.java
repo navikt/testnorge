@@ -21,6 +21,7 @@ class Targets {
     String inntektstub;
     String inst;
     String kontoregister;
+    String krrstub;
     String sigrunstub;
     String skjermingsregister;
     String udistub;

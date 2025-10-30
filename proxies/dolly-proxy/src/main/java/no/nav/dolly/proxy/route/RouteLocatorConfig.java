@@ -16,6 +16,7 @@ class RouteLocatorConfig {
     private final Inntektstub inntektstub;
     private final Inst inst;
     private final Kontoregister kontoregister;
+    private final Krrstub krrstub;
     private final Sigrunstub sigrunstub;
     private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
@@ -32,6 +33,7 @@ class RouteLocatorConfig {
                 .route("inntektstub", inntektstub.build())
                 .route("inst", inst.build())
                 .route("kontoregister", kontoregister.build())
+                .route("krrstub", krrstub.build())
                 .route("sigrunstub", sigrunstub.build())
                 .route("skjermingsregister", skjermingsregister.build())
                 .route("udistub", udistub.build())
