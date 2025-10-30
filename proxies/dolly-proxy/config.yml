@@ -73,6 +73,8 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
+        - application: opphold-testdata
+          namespace: team-rocket
         - application: repr-fullmakt
           namespace: repr
         - application: skjermede-personer

@@ -14,6 +14,7 @@ class RouteLocatorConfig {
     private final Fullmakt fullmakt;
     private final Histark histark;
     private final Inntektstub inntektstub;
+    private final Inst inst;
     private final Sigrunstub sigrunstub;
     private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
@@ -28,6 +29,7 @@ class RouteLocatorConfig {
                 .route("fullmakt", fullmakt.build())
                 .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
+                .route("inst", inst.build())
                 .route("sigrunstub", sigrunstub.build())
                 .route("skjermingsregister", skjermingsregister.build())
                 .route("udistub", udistub.build())

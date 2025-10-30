@@ -19,6 +19,7 @@ class Targets {
     String fullmakt;
     String histark;
     String inntektstub;
+    String inst;
     String sigrunstub;
     String skjermingsregister;
     String udistub;

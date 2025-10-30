@@ -54,15 +54,16 @@ class RouteLocatorConfigTest {
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
+        registry.add("app.fakedings.url", () -> wireMockServer.baseUrl());
 
+        registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
         registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
         registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
-        registry.add("app.fakedings.url", () -> wireMockServer.baseUrl());
     }
 
     @BeforeEach
@@ -179,6 +180,31 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @Test
+    void testInst() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked inst";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/inst" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
 
     }
 
