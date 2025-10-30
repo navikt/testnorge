@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="oppdragService"
+                  targetNamespace="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceGrensesnitt"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceGrensesnitt"
+>
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceGrensesnitt"
+                    xmlns:feil="http://nav.no/system/os/tjenester/oppdragService/feil"
+                    xmlns:serviceTypes="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceServiceTypes">
+
+            <xsd:import namespace="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceServiceTypes" schemaLocation="oppdragServiceServiceTypes.xsd"/>
+            <xsd:import namespace="http://nav.no/system/os/tjenester/oppdragService/feil"                       schemaLocation="feil.xsd"/>
+
+            <!--sendInnOppdrag-->
+            <xsd:element name="sendInnOppdragRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="request" type="serviceTypes:sendInnOppdragRequest"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="sendInnOppdragResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="response" type="serviceTypes:sendInnOppdragResponse"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="sendInnOppdragFeilUnderBehandling" type="feil:feilUnderBehandling"/>
+
+            <!--simulerBeregning-->
+            <xsd:element name="simulerBeregningRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="request" type="serviceTypes:simulerBeregningRequest"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="simulerBeregningResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="response" type="serviceTypes:simulerBeregningResponse"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="simulerBeregningFeilUnderBehandling" type="feil:feilUnderBehandling"/>
+
+        </xsd:schema>
+    </wsdl:types>
+
+    <!--sendInnOppdrag-->
+    <wsdl:message name="sendInnOppdragRequest">
+        <wsdl:part name="parameters" element="tns:sendInnOppdragRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="sendInnOppdragResponse">
+        <wsdl:part name="parameters" element="tns:sendInnOppdragResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="sendInnOppdrag_FeilUnderBehandling">
+        <wsdl:part name="feilUnderBehandling" element="tns:sendInnOppdragFeilUnderBehandling">
+        </wsdl:part>
+    </wsdl:message>
+
+    <!--simulerBeregning-->
+    <wsdl:message name="simulerBeregningRequest">
+        <wsdl:part name="parameters" element="tns:simulerBeregningRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="simulerBeregningResponse">
+        <wsdl:part name="parameters" element="tns:simulerBeregningResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="simulerBeregning_FeilUnderBehandling">
+        <wsdl:part name="feilUnderBehandling" element="tns:simulerBeregningFeilUnderBehandling">
+        </wsdl:part>
+    </wsdl:message>
+
+    <!--Service med alle operasjoner-->
+    <wsdl:portType name="oppdragService">
+        <wsdl:operation name="sendInnOppdrag">
+            <wsdl:documentation>Operasjonen tilbyr innsending og registrering av ny/endret oppdrag som følge av nytt/endring på vedtak</wsdl:documentation>
+            <wsdl:input message="tns:sendInnOppdragRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:sendInnOppdragResponse">
+            </wsdl:output>
+            <wsdl:fault name="feilUnderBehandling" message="tns:sendInnOppdrag_FeilUnderBehandling">
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="simulerBeregning">
+            <wsdl:documentation>Operasjonen tilbyr simuleringsberegning</wsdl:documentation>
+            <wsdl:input message="tns:simulerBeregningRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:simulerBeregningResponse">
+            </wsdl:output>
+            <wsdl:fault name="feilUnderBehandling" message="tns:simulerBeregning_FeilUnderBehandling">
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:portType>
+
+</wsdl:definitions>
