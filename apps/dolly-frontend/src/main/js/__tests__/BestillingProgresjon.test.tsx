@@ -3,7 +3,7 @@ import { BestillingProgresjon } from '@/components/bestilling/statusListe/Bestil
 import React, { act } from 'react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { dollyTest } from '../vitest.setup'
-import { userEvent } from '@vitest/browser/context'
+import { userEvent } from 'vitest/browser'
 import { uferdigBestillingMock } from '#/mocks/BasicMocks'
 import { worker } from './mocks/browser'
 import { http, HttpResponse } from 'msw'
