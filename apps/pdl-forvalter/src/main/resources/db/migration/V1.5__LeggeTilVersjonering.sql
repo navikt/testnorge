@@ -3,10 +3,10 @@
 -------------------------------
 
 alter table person
-    add column versjon smallint default 0;
+    add column versjon integer default 0;
 
 alter table relasjon
-    add column versjon smallint default 0;
+    add column versjon integer default 0;
 
 alter table alias
-    add column versjon smallint default 0;
+    add column versjon integer default 0;
