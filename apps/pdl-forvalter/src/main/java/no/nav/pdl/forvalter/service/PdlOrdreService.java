@@ -235,7 +235,6 @@ public class PdlOrdreService {
                                 .flatMap(Collection::stream)
                                 .toList())
                         .oppretting(opprettinger.stream()
-                                .filter(oppretting -> !aliasRepository.existsByTidligereIdent(oppretting.getPerson().getIdent()))
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
                                 .map(this::personOpprett)
                                 .flatMap(Collection::stream)
