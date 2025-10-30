@@ -1,11 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
+import no.nav.dolly.proxy.auth.AzureService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -22,24 +18,16 @@ public class Inst {
     private static final String NAMESPACE = "team-rocket";
 
     private final Targets targets;
-    private final AzureTrygdeetatenTokenService trygdeetatenTokenService;
+    private final AzureService azureService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
+        var authenticationFilter = azureService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.inst);
         return spec -> spec
                 .path("/inst/**")
                 .filters(f -> f
                         .stripPrefix(1)
-                        .filter(getAuthenticationFilter()))
+                        .filter(authenticationFilter))
                 .uri(targets.inst);
-    }
-
-    private GatewayFilter getAuthenticationFilter() {
-        var serverProperties = ServerProperties.of(CLUSTER, NAMESPACE, NAME, targets.inst);
-        return AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(
-                        () -> trygdeetatenTokenService
-                                .exchange(serverProperties)
-                                .map(AccessToken::getTokenValue));
     }
 
 }
