@@ -1,7 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.proxy.auth.AzureService;
+import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -18,10 +18,10 @@ public class Skjermingsregister {
     private static final String NAMESPACE = "nom";
 
     private final Targets targets;
-    private final AzureService azureService;
+    private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = azureService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.skjermingsregister);
+        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.skjermingsregister);
         return spec -> spec
                 .path("/skjermingsregister/**")
                 .filters(f -> f

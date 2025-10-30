@@ -1,10 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.proxy.auth.FakedingsService;
-import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
+import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -21,23 +18,17 @@ public class Fullmakt {
     private static final String NAME = "repr-fullmakt";
 
     private final Targets targets;
-    private final FakedingsService fakedingsService;
-    private final TokenXService tokenXService;
+    private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
+        var authenticationFilter = authenticationFilterService.getFakedingsAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.fullmakt);
         return spec -> spec
                 .path("/fullmakt/**")
                 .filters(f -> f
                         .stripPrefix(1)
                         .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
-                        .filter(getAuthenticationFilter()))
+                        .filter(authenticationFilter))
                 .uri(targets.fullmakt);
-    }
-
-    private GatewayFilter getAuthenticationFilter() {
-        var serverProperties = ServerProperties.of(CLUSTER, NAMESPACE, NAME, targets.fullmakt);
-        return fakedingsService
-                .bearerAuthenticationHeaderFilter(fakedingsService, tokenXService, serverProperties);
     }
 
 }

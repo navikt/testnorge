@@ -7,7 +7,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class FakedingsService {
+class FakedingsService {
 
     private final WebClient webClient;
 
@@ -22,7 +22,7 @@ public class FakedingsService {
         return new FakedingsCommand(webClient, ident).call();
     }
 
-    public GatewayFilter bearerAuthenticationHeaderFilter(
+    GatewayFilter bearerAuthenticationHeaderFilter(
             FakedingsService fakedings,
             TokenXService tokenx,
             ServerProperties serverProperties
