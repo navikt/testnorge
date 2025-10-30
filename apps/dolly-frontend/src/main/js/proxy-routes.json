@@ -69,7 +69,7 @@
   "/testnav-arena-forvalteren-proxy": {
     "changeOrigin": true
   },
-  "/testnav-krrstub-proxy/api": {
+  "/testnav-dolly-proxy/api": {
     "changeOrigin": true
   },
   "/testnav-dolly-proxy/inst/api": {

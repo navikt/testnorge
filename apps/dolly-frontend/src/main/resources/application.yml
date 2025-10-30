@@ -78,11 +78,6 @@ consumers:
     namespace: dolly
     name: testnav-arena-forvalteren-proxy
     url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-  testnav-krrstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-krrstub-proxy
-    url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
   testnav-pensjon-testdata-facade-proxy:
     cluster: dev-fss
     namespace: dolly

@@ -72,7 +72,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavBrregstubProxy()))
                 .route(createRoute(consumers.getTestnavAaregProxy()))
                 .route(createRoute(consumers.getTestnavArenaForvalterenProxy()))
-                .route(createRoute(consumers.getTestnavKrrstubProxy(), "testnav-krrstub-proxy"))
                 .route(createRoute(consumers.getTestnavMedlProxy(), "testnav-medl-proxy"))
                 .route(createRoute(consumers.getTestnavNorg2Proxy(), "testnav-norg2-proxy"))
                 .route(createRoute(consumers.getTestnavOrganisasjonService()))
