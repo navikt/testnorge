@@ -63,6 +63,10 @@ spec:
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-idporten
+        - application: dolly-frontend-dev-unstable
     outbound:
       rules:
         - application: testnav-tps-messaging-service
