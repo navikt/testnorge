@@ -9,6 +9,6 @@ export const useValiderIdent = (ident: string) => {
 	return {
 		validering: data,
 		loading: isLoading,
-		error: error,
+		error,
 	}
 }

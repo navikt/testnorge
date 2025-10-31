@@ -1,7 +1,24 @@
 import { Alert, Box, Table } from '@navikt/ds-react'
 import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 
-export const IdentvalidatorVisning = ({ data }) => {
+interface IdentvalidatorData {
+	erGyldig: boolean
+	erPersonnummer2032: boolean
+	erSyntetisk: boolean
+	erTestnorgeIdent: boolean
+	identtype: string
+	foedselsdato: string
+	kjoenn: string
+	kommentar: string
+	feilmelding: string
+	ident: string
+}
+
+interface IdentvalidatorVisningProps {
+	data: IdentvalidatorData
+}
+
+export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	if (!data) {
 		return null
 	}
@@ -50,7 +67,7 @@ export const IdentvalidatorVisning = ({ data }) => {
 							return null
 						}
 						return (
-							<Table.Row key={index + item.label} shadeOnHover={false}>
+							<Table.Row key={item.label} shadeOnHover={false}>
 								<Table.DataCell width="30%">
 									<strong>{item.label}</strong>
 								</Table.DataCell>

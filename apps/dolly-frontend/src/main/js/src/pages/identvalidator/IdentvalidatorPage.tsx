@@ -35,7 +35,7 @@ export default () => {
 		defaultValues: initialValues,
 	})
 
-	const handleValidate = (data: any) => {
+	const handleValidate = (data: { ident: string }) => {
 		setIdent(data?.ident)
 		formMethods.reset(initialValues)
 	}
