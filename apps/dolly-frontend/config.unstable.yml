@@ -53,6 +53,7 @@ spec:
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-sykemelding-proxy
         - application: testnav-api-oversikt-service
+        - application: testnav-ident-pool
         - application: logging
           namespace: nais-system
       external:

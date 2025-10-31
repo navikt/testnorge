@@ -123,7 +123,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 						data-testid={TestComponentSelectors.BUTTON_IMPORTER_PERSONER}
 						variant={bankIdBruker ? 'primary' : 'secondary'}
 						onClick={() =>
-							navigate(`/tenor/personer`, {
+							navigate(`/tenorpersoner`, {
 								state: {
 									gruppe: gruppe,
 								},

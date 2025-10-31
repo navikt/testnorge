@@ -10,7 +10,7 @@ export const OrganisasjonDropdown = () => {
 	const [isActive, setIsActive] = useState(false)
 	useEffect(() => {
 		setIsActive(
-			location?.pathname === '/organisasjoner' || location?.pathname === '/tenor/organisasjoner',
+			location?.pathname === '/organisasjoner' || location?.pathname === '/tenororganisasjoner',
 		)
 	}, [location])
 
@@ -29,12 +29,14 @@ export const OrganisasjonDropdown = () => {
 				<DropdownStyledLink href="/organisasjoner">Mine organisasjoner</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem
-				route="/tenor/organisasjoner"
+				route="/tenororganisasjoner"
 				dataTestId={TestComponentSelectors.BUTTON_HEADER_TENOR_ORGANISASJONER}
 				style={{ color: '#212529' }}
 			>
 				<Icon kind="search" fontSize="1.5rem" />
-				<DropdownStyledLink href="/tenor/organisasjoner">Søk i Tenor</DropdownStyledLink>
+				<DropdownStyledLink href="/tenororganisasjoner">
+					Søk i Tenor (Test-Norge)
+				</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 		</ActionMenuWrapper>
 	)

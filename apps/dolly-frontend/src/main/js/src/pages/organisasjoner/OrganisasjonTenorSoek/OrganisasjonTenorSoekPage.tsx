@@ -81,7 +81,7 @@ export default () => {
 	return (
 		<div>
 			<div className="flexbox--align-center--justify-start">
-				<Title title="Søk etter organisasjoner i Tenor" />
+				<Title title="Søk etter organisasjoner i Tenor (Test-Norge)" />
 			</div>
 			<div className="flexbox--flex-wrap" id="soek">
 				<NavigateButton

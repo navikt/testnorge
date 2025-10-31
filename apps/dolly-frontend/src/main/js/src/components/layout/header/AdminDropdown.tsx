@@ -9,26 +9,27 @@ export const AdminDropdown = () => {
 	const [isActive, setIsActive] = useState(false)
 	useEffect(() => {
 		setIsActive(
-			location?.pathname === '/admin/orgtilgang' ||
-				location?.pathname === '/admin/levendearbeidsforhold',
+			location?.pathname === '/orgtilgang' ||
+				location?.pathname === '/levendearbeidsforhold' ||
+				location?.pathname === '/infostriper',
 		)
 	}, [location])
 
 	return (
 		<ActionMenuWrapper title="Admin" isActive={isActive}>
-			<PreloadableActionMenuItem route="/admin/orgtilgang" style={{ color: '#212529' }}>
+			<PreloadableActionMenuItem route="/orgtilgang" style={{ color: '#212529' }}>
 				<TenancyIcon title="a11y-title" fontSize="1.5rem" />
-				<DropdownStyledLink href="/admin/orgtilgang">Organisasjon-tilgang</DropdownStyledLink>
+				<DropdownStyledLink href="/orgtilgang">Organisasjon-tilgang</DropdownStyledLink>
 			</PreloadableActionMenuItem>
-			<PreloadableActionMenuItem route="/admin/levendearbeidsforhold" style={{ color: '#212529' }}>
+			<PreloadableActionMenuItem route="/levendearbeidsforhold" style={{ color: '#212529' }}>
 				<FingerButtonIcon title="a11y-title" fontSize="1.5rem" />
-				<DropdownStyledLink href="/admin/levendearbeidsforhold">
+				<DropdownStyledLink href="/levendearbeidsforhold">
 					Levende arbeidsforhold
 				</DropdownStyledLink>
 			</PreloadableActionMenuItem>
-			<PreloadableActionMenuItem route="/admin/infostriper" style={{ color: '#212529' }}>
+			<PreloadableActionMenuItem route="/infostriper" style={{ color: '#212529' }}>
 				<InformationSquareIcon title="a11y-title" fontSize="1.5rem" />
-				<DropdownStyledLink href="/admin/infostriper">Administrer infostriper</DropdownStyledLink>
+				<DropdownStyledLink href="/infostriper">Administrer infostriper</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 		</ActionMenuWrapper>
 	)
