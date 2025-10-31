@@ -62,7 +62,6 @@ export const TextInput = ({
 	useControlled = false,
 	...props
 }: TextInputProps) => {
-	'use no memo' // Skip compilation for this component
 	const { register, formState, setValue, watch } = useFormContext() || {}
 	const { showError } = React.useContext(ShowErrorContext) || {}
 

@@ -18,6 +18,7 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -35,6 +36,7 @@ import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUti
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_REVURDERING_AP;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SAMBOER_REGISTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.getPeriodeId;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Slf4j
 @Service
@@ -47,6 +49,7 @@ public class PensjonPersondataService {
     private final PdlDataConsumer pdlDataConsumer;
     private final PensjonforvalterHelper pensjonforvalterHelper;
     private final MapperFacade mapperFacade;
+    private final TransaksjonMappingService transaksjonMappingService;
 
     public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata,
                                         RsDollyBestilling bestilling, String navEnhet, Set<String> miljoer,
@@ -115,31 +118,35 @@ public class PensjonPersondataService {
         }
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> pensjonforvalterHelper.hentForrigeVedtakAP(ident, miljoe, getSivilstandDato(bestilling))
-                        .flatMap(vedtak -> {
-                            var context = new MappingContext.Factory().getContext();
-                            context.setProperty(NAV_ENHET, navEnhetId);
-                            context.setProperty(SIVILSTAND, persondata.stream()
-                                    .filter(personBolk -> personBolk.getIdent().equals(ident))
-                                    .map(PdlPersonBolk.PersonBolk::getPerson)
-                                    .map(PdlPerson.Person::getSivilstand)
-                                    .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
-                            return Mono.just(mapperFacade.map(vedtak, RevurderingVedtakRequest.class, context))
-                                    .zipWith(Mono.just(vedtak));
-                        })
-                        .flatMapMany(tuple -> {
-                            if (isRevurderingValid(tuple.getT1(), tuple.getT2())) {
-                                return pensjonforvalterConsumer.lagreRevurderingVedtak(tuple.getT1())
-                                        .flatMap(response -> isNoMatch(tuple.getT2(), tuple.getT1()) ?
-                                                pensjonforvalterHelper.saveTransaksjonId(ident, miljoe,
-                                                                bestilling.getId(), SystemTyper.PEN_AP_REVURDERING, tuple.getT1())
-                                                        .thenReturn(response) :
-                                                Mono.just(response));
-                            } else {
+                .flatMap(miljoe -> transaksjonMappingService.existsByIdentAndMiljoe(ident, miljoe)
+                        .zipWith(Mono.just(miljoe)))
+                .flatMap(tuple -> isFalse(tuple.getT1()) ? Mono.empty() : Mono.just(tuple.getT2()))
+                .flatMap(miljoe ->
+                        pensjonforvalterHelper.hentForrigeVedtakAP(ident, miljoe, getSivilstandDato(bestilling))
+                                .flatMap(vedtak -> {
+                                    var context = new MappingContext.Factory().getContext();
+                                    context.setProperty(NAV_ENHET, navEnhetId);
+                                    context.setProperty(SIVILSTAND, persondata.stream()
+                                            .filter(personBolk -> personBolk.getIdent().equals(ident))
+                                            .map(PdlPersonBolk.PersonBolk::getPerson)
+                                            .map(PdlPerson.Person::getSivilstand)
+                                            .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
+                                    return Mono.just(mapperFacade.map(vedtak, RevurderingVedtakRequest.class, context))
+                                            .zipWith(Mono.just(vedtak));
+                                })
+                                .flatMapMany(tuple -> {
+                                    if (isRevurderingValid(tuple.getT1(), tuple.getT2())) {
+                                        return pensjonforvalterConsumer.lagreRevurderingVedtak(tuple.getT1())
+                                                .flatMap(response -> isNoMatch(tuple.getT2(), tuple.getT1()) ?
+                                                        pensjonforvalterHelper.saveTransaksjonId(ident, miljoe,
+                                                                        bestilling.getId(), SystemTyper.PEN_AP_REVURDERING, tuple.getT1())
+                                                                .thenReturn(response) :
+                                                        Mono.just(response));
+                                    } else {
 
-                                return miscRevurderingResponse(tuple.getT1(), tuple.getT2(), miljoe, isUpdateEndre);
-                            }
-                        }));
+                                        return miscRevurderingResponse(tuple.getT1(), tuple.getT2(), miljoe, isUpdateEndre);
+                                    }
+                                }));
     }
 
     private static LocalDate getSivilstandDato(RsDollyBestilling bestilling) {
