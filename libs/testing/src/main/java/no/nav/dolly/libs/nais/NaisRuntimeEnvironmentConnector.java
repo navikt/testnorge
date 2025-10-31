@@ -34,12 +34,8 @@ class NaisRuntimeEnvironmentConnector {
             var environmentVariables = getVariablesFromEnvironment(cluster, pod, requestedKeys);
             var secretVariables = getVariablesFromSecrets(cluster, requestedSecrets, requestedKeys);
             var result = new HashMap<String, String>();
-            if (!environmentVariables.isEmpty()) {
-                result.putAll(environmentVariables);
-            }
-            if (!secretVariables.isEmpty()) {
-                result.putAll(secretVariables);
-            }
+            result.putAll(environmentVariables);
+            result.putAll(secretVariables);
             return result;
         } catch (NaisEnvironmentException e) {
             throw e;
