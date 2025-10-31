@@ -76,6 +76,12 @@ spec:
         - application: digdir-krr-stub
           namespace: team-rocket
           cluster: dev-gcp
+        - application: ereg-services-q1
+          namespace: arbeidsforhold
+        - application: ereg-services-q2
+          namespace: arbeidsforhold
+        - application: ereg-services-q4
+          namespace: arbeidsforhold
         - application: opphold-testdata
           namespace: team-rocket
         - application: repr-fullmakt
