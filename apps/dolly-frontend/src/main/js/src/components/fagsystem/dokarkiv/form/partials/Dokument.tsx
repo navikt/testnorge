@@ -21,7 +21,7 @@ type Skjema = {
 	value: string
 }
 
-enum Kodeverk {
+export enum Kodeverk {
 	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema',
 	BEHANDLINGSTEMA = 'Behandlingstema',
