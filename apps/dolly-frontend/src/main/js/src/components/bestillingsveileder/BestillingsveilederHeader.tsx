@@ -4,6 +4,7 @@ import { arrayToString } from '@/utils/DataFormatter'
 import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useWatch } from 'react-hook-form'
 import { BestillingsveilederContextType } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const BestillingsveilederHeader = ({
@@ -13,31 +14,63 @@ export const BestillingsveilederHeader = ({
 	context: BestillingsveilederContextType
 	formMethods: UseFormReturn
 }) => {
-	const formGruppeId = formMethods.watch('gruppeId') || ''
-	const { gruppe } = useGruppeById(formGruppeId || context.gruppeId || context.gruppe?.id)
+	const formGruppeId = useWatch({ control: formMethods.control, name: 'gruppeId' }) || ''
+	const malWatchValue = useWatch({ control: formMethods.control, name: 'mal' }) || ''
+	const antallWatch = useWatch({ control: formMethods.control, name: 'antall' })
+	const identtypeWatch = useWatch({
+		control: formMethods.control,
+		name: 'pdldata.opprettNyPerson.identtype',
+	})
+	const id2032Watch = useWatch({
+		control: formMethods.control,
+		name: 'pdldata.opprettNyPerson.id2032',
+	})
+	const opprettFraIdenterWatch = useWatch({
+		control: formMethods.control,
+		name: 'opprettFraIdenter',
+	})
 
-	const ident = getLeggTilIdent(context.personFoerLeggTil, context.identMaster) || ''
-	const importFra = context.is?.leggTil && context.identMaster === 'PDL' ? 'Test-Norge' : ''
+	const ctx = { ...context }
+	const {
+		is,
+		gruppeId,
+		gruppe,
+		personFoerLeggTil,
+		identMaster,
+		identtype,
+		id2032,
+		mal,
+		antall,
+		opprettFraIdenter,
+	} = ctx
 
-	const getIdenttype = () => {
-		if (!context.identtype) return null
-		if (context.id2032) return `${context.identtype} (id 2032)`
-		return context.identtype
-	}
+	const valgtGruppeId = formGruppeId || gruppeId || gruppe?.id
+	const { gruppe: valgtGruppe } = useGruppeById(valgtGruppeId)
 
-	if (
-		context.is?.nyOrganisasjon ||
-		context.is?.nyStandardOrganisasjon ||
-		context.is?.nyOrganisasjonFraMal
-	) {
-		const titleValue = context.is?.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
+	const ident = getLeggTilIdent(personFoerLeggTil, identMaster) || ''
+	const importFra = is?.leggTil && identMaster === 'PDL' ? 'Test-Norge' : ''
+
+	const effectiveAntall = antallWatch ?? antall
+	const effectiveIdenttype = identtypeWatch ?? identtype
+	const effectiveId2032 = id2032Watch ?? id2032
+	const effectiveOpprettFraIdenter = opprettFraIdenterWatch ?? opprettFraIdenter
+
+	const identtypeValue = effectiveIdenttype
+		? effectiveId2032
+			? `${effectiveIdenttype} (id 2032)`
+			: effectiveIdenttype
+		: ''
+
+	const malNavn = mal?.malNavn || ''
+	const showMalNavn = !!malNavn && !!malWatchValue
+
+	if (is?.nyOrganisasjon || is?.nyStandardOrganisasjon || is?.nyOrganisasjonFraMal) {
+		const titleValue = is?.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (
 			<Header icon="organisasjon" iconClassName="org">
 				<div className="flexbox">
 					<Header.TitleValue title="Opprett ny" value={titleValue} />
-					{context.is?.nyOrganisasjonFraMal && (
-						<Header.TitleValue title="Basert på mal" value={context.mal?.malNavn || ''} />
-					)}
+					{showMalNavn && <Header.TitleValue title="Basert på mal" value={malNavn} />}
 				</div>
 			</Header>
 		)
@@ -48,37 +81,29 @@ export const BestillingsveilederHeader = ({
 			<div className="flexbox">
 				<Header.TitleValue
 					title="Antall"
-					value={`${context.antall ?? 0} ${
-						context.antall && context.antall > 1 ? 'personer' : 'person'
-					}`}
+					value={`${effectiveAntall ?? 0} ${effectiveAntall && effectiveAntall > 1 ? 'personer' : 'person'}`}
 				/>
-				{!context.is?.opprettFraIdenter && !context.is?.leggTilPaaGruppe && (
-					<Header.TitleValue title="Identtype" value={getIdenttype()} />
+				{!is?.opprettFraIdenter && !is?.leggTilPaaGruppe && (
+					<Header.TitleValue title="Identtype" value={identtypeValue} />
 				)}
-				{context.is?.opprettFraIdenter && (
+				{is?.opprettFraIdenter && (
 					<Header.TitleValue
 						title="Opprett fra eksisterende personer"
-						value={arrayToString(context.opprettFraIdenter) || ''}
+						value={arrayToString(effectiveOpprettFraIdenter) || ''}
 					/>
 				)}
-				{context.is?.nyBestillingFraMal && (
-					<Header.TitleValue title="Basert på mal" value={context.mal?.malNavn || ''} />
-				)}
-				{context.is?.importTestnorge && (
-					<Header.TitleValue title="Importer fra" value="Test-Norge" />
-				)}
-				{context.is?.leggTil && (
-					<Header.TitleValue title="Legg til/endre på person" value={ident} />
-				)}
-				{context.is?.leggTilPaaGruppe && (
+				{showMalNavn && <Header.TitleValue title="Basert på mal" value={malNavn} />}
+				{is?.importTestnorge && <Header.TitleValue title="Importer fra" value="Test-Norge" />}
+				{is?.leggTil && <Header.TitleValue title="Legg til/endre på person" value={ident} />}
+				{is?.leggTilPaaGruppe && (
 					<Header.TitleValue
 						title="Legg til på / endre alle personer"
-						value={`Gruppe #${formGruppeId || context.gruppeId || ''} - ${gruppe?.navn || ''}`}
+						value={`Gruppe #${valgtGruppeId || ''} - ${valgtGruppe?.navn || ''}`}
 					/>
 				)}
 				{importFra && <Header.TitleValue title="Importert fra" value={importFra} />}
-				{!context.is?.leggTilPaaGruppe && (
-					<Header.TitleValue title="Gruppe" value={gruppe?.navn || ''} />
+				{!is?.leggTilPaaGruppe && (
+					<Header.TitleValue title="Gruppe" value={valgtGruppe?.navn || ''} />
 				)}
 			</div>
 		</Header>
