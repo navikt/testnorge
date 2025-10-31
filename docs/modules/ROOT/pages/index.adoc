@@ -216,6 +216,54 @@ Etter innmelding kan du på samme måte som over bytte representasjon til teamet
 * Gruppene som allerede tilhører din egen bruker kan enkelt flyttes til et team ved å gå til gruppen mens du representerer deg selv og velge "Bytt Eier" i gruppe-menyen
 * Kontroller at du representerer ønsket team eller deg selv før du oppretter nye data
 
+[[dolly_testnorge]]
+==== Test-Norge
+
+Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i forbindelse med nytt folkeregister.
+Populasjonen er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv.
+Populasjonen har syntetiske fnr/dnr hvor det er lagt til 80 på måned.
+Hele Test-Norge populasjonen er tilgjengelig i PDL.
+
+[[dolly_testnorge_sok_import]]
+===== Søk og import
+
+Under Test-Norge fanen i Dolly er det mulig å søke opp Test-Norge identiteter i Dolly, velge identiteter man ønsker å ta i bruk, velge ekstra informasjon som skal legges til og importere dem inn i en ønsket gruppe i Dolly.
+Videoen under viser en demo.
+
+++++
+<figure>
+  <video aria-label="Demo som viser søk i Tenor og import av ident til Dolly" controls style="max-width:730px" poster="_images/videos/finnperson-tenor.png">
+    <source src="_images/videos/finnperson-tenor.mp4" type="video/mp4" >
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
+++++
+
+For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor brukes: https://www.skatteetaten.no/skjema/testdata
+Tenor er ikke koblet opp mot Dolly, men identiteter funnet i Tenor kan søkes opp i Dolly og importeres til en ønsket gruppe.
+
+[[dolly_testnorge_import_partner]]
+===== Import av partner
+
+Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd.
+Hvis valgt person har en partner som ikke allerede er valgt kan man huke av for IMPORT MED PARTNER for å inkludere den.
+Bildet under viser et tilfelle hvor import av partner er valgt.
+
+image::dolly/import_partner.png[Import med partner]
+
+Det er også mulig å importere partner etter opprinnelig import.
+Dette kan gjøres direkte i personvisning.
+
+[[demo_finnperson_tenor]]
+===== Demo: Søk i Tenor og import til Dolly
+
+NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
+
+[[dolly_testnorge_idporten]]
+===== ID-Porten
+
+Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident.
+
 [[demo]]
 ==== Diverse demoer av Dolly
 
@@ -437,56 +485,6 @@ Opprett gjerne issue med forslag eller feil før PR.
 xref:index.adoc#brukerveiledning[Brukerveiledning]
 
 xref:index.adoc#dolly_retningslinjer[Retningslinjer]
-
-xref:index.adoc#dolly_testnorge[Test-Norge]
-
-[[dolly_testnorge]]
-=== Test-Norge
-
-Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i forbindelse med nytt folkeregister.
-Populasjonen er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv.
-Populasjonen har syntetiske fnr/dnr hvor det er lagt til 80 på måned.
-Hele Test-Norge populasjonen er tilgjengelig i PDL.
-
-[[dolly_testnorge_sok_import]]
-==== Søk og import
-
-Under Test-Norge fanen i Dolly er det mulig å søke opp Test-Norge identiteter i Dolly, velge identiteter man ønsker å ta i bruk, velge ekstra informasjon som skal legges til og importere dem inn i en ønsket gruppe i Dolly.
-Videoen under viser en demo.
-
-++++
-<figure>
-  <video aria-label="Demo som viser søk i Tenor og import av ident til Dolly" controls style="max-width:730px" poster="_images/videos/finnperson-tenor.png">
-    <source src="_images/videos/finnperson-tenor.mp4" type="video/mp4" >
-    Din nettleser støtter ikke innebygde videoer.
-  </video>
-</figure>
-++++
-
-For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor brukes: https://www.skatteetaten.no/skjema/testdata
-Tenor er ikke koblet opp mot Dolly, men identiteter funnet i Tenor kan søkes opp i Dolly og importeres til en ønsket gruppe.
-
-[[dolly_testnorge_import_partner]]
-==== Import av partner
-
-Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd.
-Hvis valgt person har en partner som ikke allerede er valgt kan man huke av for IMPORT MED PARTNER for å inkludere den.
-Bildet under viser et tilfelle hvor import av partner er valgt.
-
-image::dolly/import_partner.png[Import med partner]
-
-Det er også mulig å importere partner etter opprinnelig import.
-Dette kan gjøres direkte i personvisning.
-
-[[demo_finnperson_tenor]]
-===== Demo: Søk i Tenor og import til Dolly
-
-NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
-
-[[dolly_testnorge_idporten]]
-==== ID-Porten
-
-Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident.
 
 [[proxyer]]
 == Proxyer
