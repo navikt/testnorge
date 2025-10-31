@@ -37,7 +37,6 @@ export const IdentvalidatorVisning = ({ data }) => {
 	return (
 		<Box
 			padding="6"
-			// background={'surface-default'}
 			background={data.erGyldig ? 'surface-success-subtle' : 'surface-danger-subtle'}
 			borderRadius="large"
 			borderWidth="2"
