@@ -73,12 +73,19 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
+        - application: digdir-krr-stub
+          namespace: team-rocket
+          cluster: dev-gcp
         - application: opphold-testdata
           namespace: team-rocket
         - application: repr-fullmakt
           namespace: repr
         - application: skjermede-personer
           namespace: nom
+        - application: sokos-kontoregister-person
+          namespace: okonomi
+          cluster: dev-gcp
+        - application: testnav-udi-stub
         - application: logging
           namespace: nais-system
   liveness:
