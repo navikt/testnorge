@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { dollyTest } from '../vitest.setup'
-import { userEvent } from '@vitest/browser/context'
+import { userEvent } from 'vitest/browser'
 import React from 'react'
 import { vi } from 'vitest'
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'

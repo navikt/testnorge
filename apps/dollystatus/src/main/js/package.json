@@ -1,6 +1,6 @@
 {
   "name": "status-frontend",
-  "version": "1.1.21",
+  "version": "1.1.22",
   "type": "module",
   "private": true,
   "dependencies": {

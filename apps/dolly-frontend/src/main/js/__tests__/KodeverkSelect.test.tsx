@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { dollyTest } from '../vitest.setup'
 import { worker } from './mocks/browser'
-import { userEvent } from '@vitest/browser/context'
+import { userEvent } from 'vitest/browser'
 import { act } from 'react'
 
 dollyTest(
