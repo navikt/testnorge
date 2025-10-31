@@ -87,6 +87,7 @@ test('skal disable AAREG checkbox ved legg til/endre når Aareg timeout oppstår
 	await expect(page.getByTestId(TestComponentSelectors.CHECKBOX_AAREG)).toBeDisabled()
 
 	// Sjekker at ny ident fortsatt kan opprettes med arbeidsforhold selv om AAREG hadde timeout
+	await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_FINNPERSON).click()
 	await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_PERSONER).click()
 
 	await page
