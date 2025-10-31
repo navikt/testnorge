@@ -19,9 +19,8 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
     // Testing solution to https://nvd.nist.gov/vuln/detail/CVE-2025-55754
-    implementation 'org.springframework.boot:spring-boot-starter-undertow'
-    implementation('org.springframework.boot:spring-boot-starter-web') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    implementation "org.springframework.boot:spring-boot-starter-undertow"
+    implementation("org.springframework.boot:spring-boot-starter-webflux") {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-reactor-netty"
     }
-    implementation "org.springframework.boot:spring-boot-starter-webflux"
 }
