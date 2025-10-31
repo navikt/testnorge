@@ -8,7 +8,6 @@
 
 Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjoner som støtter tjenester knyttet til Dolly og syntetiske testdata.
 
-// TODO: Video for Teams
 // TODO: Video for flytte personer og bytte eier
 
 === Om
@@ -129,30 +128,6 @@ Trykk på pil ned til høyre på raden for detaljinformasjon per person.
 
 For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisning for personen, trykk LEGG TIL/ENDRE og velg egenskaper.
 
-[[demo]]
-==== Demo
-
-[[demo_opprette_tilfeldige]]
-===== Opprette personer med tilfeldige verdier
-
-++++
-<video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov" controls="controls" style="max-width: 730px;"></video>
-++++
-
-[[demo_opprette_onskede]]
-===== Opprette person med ønskede verdier
-
-++++
-<video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov" controls="controls" style="max-width: 730px;"></video>
-++++
-
-[[demo_endre_person]]
-===== Legg til eller endre person
-
-++++
-<video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov" controls="controls" style="max-width: 730px;"></video>
-++++
-
 [[maler]]
 ==== Opprette og bruke maler
 
@@ -175,6 +150,89 @@ Du kan endre verdier før innsending.
 
 ++++
 <video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[team_samarbeid]]
+==== Team-funksjonalitet
+
+Team gjør det mulig å samarbeide på de samme gruppene i Dolly.
+Et team er en samling av Dolly-brukere som alle har tilgang på de samme dataene.
+Du kan velge om du representerer deg selv eller et team.
+Når du representerer et team vil alt du oppretter av grupper, personer og maler tilhøre teamet og ikke deg selv.
+
+===== Valg av representasjon
+
+Brukermenyen øverst til høyre viser deg selv og alle team du er medlem av.
+Når du velger et team endres visninger som mine grupper til å heller vise teamets grupper.
+Øverst til høyre ser du alltid hvem du representerer.
+
+===== Team-oversikt
+
+I brukermenyen finnes nå ett nytt valg for team-oversikt.
+Denne siden viser alle team du er medlem av og lar deg forlate, redigere og slette team.
+
+Her kan du:
+* Opprette nye team * Slette team du eier som ikke har medlemmer eller data * Legge til eller fjerne medlemmer i team du er medlem av * Bli med i eller forlate eksisterende team
+
+===== Opprette nytt team
+
+1. Åpne Team-oversikt
+2. Velg Opprett team
+3. Fyll inn navn og beskrivelse
+4. Legg til medlemmer (kan eventuelt gjøres senere)
+5. Lagre
+
+Dette teamet kan nå velges ved å trykke på brukernavnet ditt øverst til høyre og velge team isteden.
+Mens du representerer teamet lagres nye grupper, personer og maler på teamet.
+
+===== Bli med i eksisterende team
+
+1. Åpne Team-oversikt
+2. Velg Bli med i team
+3. Finn og velg team
+4. Bekreft
+
+Etter innmelding kan du på samme måte som over bytte representasjon til teamet fra brukermenyen.
+
+===== Demo: Team-funksjonalitet
+
+++++
+<figure>
+  <video aria-label="Demo som viser team-funksjonalitet" controls poster="_images/videos/team-funksjonalitet.png" style="max-width:730px">
+    <source src="_images/videos/team-funksjoalitet.mp4" type="video/mp4" >
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
+++++
+
+===== Tips
+
+* Bytt tilbake til deg selv for personlige grupper og maler
+* Gruppene som allerede tilhører din egen bruker kan enkelt flyttes til et team ved å gå til gruppen mens du representerer deg selv og velge "Bytt Eier" i gruppe-menyen
+* Kontroller at du representerer ønsket team eller deg selv før du oppretter nye data
+
+[[demo]]
+==== Diverse demoer av Dolly
+
+[[demo_opprette_tilfeldige]]
+===== Opprette personer med tilfeldige verdier
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[demo_opprette_onskede]]
+===== Opprette person med ønskede verdier
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov" controls="controls" style="max-width: 730px;"></video>
+++++
+
+[[demo_endre_person]]
+===== Legg til eller endre person
+
+++++
+<video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov" controls="controls" style="max-width: 730px;"></video>
 ++++
 
 [[endringsmelding_status]]
