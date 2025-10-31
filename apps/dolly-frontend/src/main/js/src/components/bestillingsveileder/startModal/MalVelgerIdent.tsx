@@ -47,7 +47,7 @@ export function getMalOptions(malbestillinger: Mal[] | undefined) {
 	}))
 }
 
-export const MalVelgerIdent = ({ gruppeId }: MalVelgerProps) => {
+export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()

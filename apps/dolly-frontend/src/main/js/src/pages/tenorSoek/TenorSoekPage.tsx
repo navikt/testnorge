@@ -39,6 +39,7 @@ export const tenorSoekLocalStorageKey = 'tenorSoek'
 export const tenorSoekStateLocalStorageKey = 'tenorSoekState'
 
 export default () => {
+	'use no memo' // Skip compilation for this component
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
 	const lagreSoekRequestRef = useRef(lagreSoekRequest)
 
