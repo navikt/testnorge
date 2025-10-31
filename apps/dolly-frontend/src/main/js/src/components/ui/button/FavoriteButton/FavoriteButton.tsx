@@ -4,10 +4,6 @@ import { REGEX_BACKEND_BRUKER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { useDispatch } from 'react-redux'
 import { addFavorite, removeFavorite } from '@/ducks/bruker'
 
-function mutateUserOptimisticly(mutate, response) {
-	return mutate(REGEX_BACKEND_BRUKER, response)
-}
-
 export default function FavoriteButton({ hideLabel, groupId }: any) {
 	const dispatch = useDispatch()
 
@@ -23,12 +19,8 @@ export default function FavoriteButton({ hideLabel, groupId }: any) {
 
 	const handleClick = () =>
 		isFavorite
-			? dispatch(removeFavorite(groupId)).then((resp) =>
-					mutateUserOptimisticly(mutate, resp?.value?.data),
-				)
-			: dispatch(addFavorite(groupId)).then((resp) =>
-					mutateUserOptimisticly(mutate, resp?.value?.data),
-				)
+			? dispatch(removeFavorite(groupId)).then(() => mutate(REGEX_BACKEND_BRUKER))
+			: dispatch(addFavorite(groupId)).then(() => mutate(REGEX_BACKEND_BRUKER))
 
 	return (
 		<Button
