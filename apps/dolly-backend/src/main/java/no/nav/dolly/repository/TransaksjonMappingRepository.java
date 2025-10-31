@@ -16,7 +16,7 @@ public interface TransaksjonMappingRepository extends ReactiveCrudRepository<Tra
 
     Flux<TransaksjonMapping> findAllByIdentAndMiljoe(String ident, String miljoe);
 
-    Flux<TransaksjonMapping> findAllBySystemAndIdentAndMiljoe(String system, String ident, String miljoe);
+    Mono<Boolean> existsByIdentAndMiljoe(String ident, String miljoe);
 
     @Query("""
             select * from transaksjon_mapping t

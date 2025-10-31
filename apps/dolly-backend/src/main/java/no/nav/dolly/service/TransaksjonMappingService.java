@@ -54,6 +54,11 @@ public class TransaksjonMappingService {
         return transaksjonMappingRepository.findAllByIdentAndMiljoe(ident, miljoe);
     }
 
+    public Mono<Boolean> existsByIdentAndMiljoe(String ident, String miljoe) {
+
+        return transaksjonMappingRepository.existsByIdentAndMiljoe(ident, miljoe);
+    }
+
     public Mono<Boolean> existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
