@@ -123,8 +123,8 @@ class NaisRuntimeEnvironmentConnector {
         var raw = output.get(1).split("\0");
         var variables = Arrays
                 .stream(raw)
-                .map(line -> line.split("="))
-                .filter(elements -> requestedKeys.contains(elements[0]))
+                .map(line -> line.split("=", 2))
+                .filter(elements -> elements.length == 2 && requestedKeys.contains(elements[0]))
                 .collect(Collectors.toMap(
                         elements -> elements[0],
                         elements -> elements[1],
