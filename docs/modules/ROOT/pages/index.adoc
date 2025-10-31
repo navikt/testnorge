@@ -204,7 +204,7 @@ Etter innmelding kan du på samme måte som over bytte representasjon til teamet
 ++++
 <figure>
   <video aria-label="Demo som viser team-funksjonalitet" controls poster="_images/videos/team-funksjonalitet.png" style="max-width:730px">
-    <source src="_images/videos/team-funksjoalitet.mp4" type="video/mp4" >
+    <source src="_images/videos/team-funksjonalitet.mp4" type="video/mp4" >
     Din nettleser støtter ikke innebygde videoer.
   </video>
 </figure>
