@@ -201,8 +201,10 @@ class NaisRuntimeEnvironmentConnector {
             }
             var status = process.waitFor();
             if (status != 0) {
-                log.warn("Command terminated with status {}: {}", status, command);
-                process.getErrorStream().transferTo(System.err);
+                var errorOutput = new BufferedReader(new InputStreamReader(process.getErrorStream()))
+                        .lines()
+                        .collect(Collectors.joining("\n"));
+                log.error("Command terminated with status {}: {}\n{}", status, command, errorOutput);
             }
             return output;
         } catch (InterruptedException e) {
