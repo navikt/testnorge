@@ -160,12 +160,14 @@ Et team er en samling av Dolly-brukere som alle har tilgang på de samme dataene
 Du kan velge om du representerer deg selv eller et team.
 Når du representerer et team vil alt du oppretter av grupper, personer og maler tilhøre teamet og ikke deg selv.
 
+[[valg_representasjon]]
 ===== Valg av representasjon
 
 Brukermenyen øverst til høyre viser deg selv og alle team du er medlem av.
 Når du velger et team endres visninger som mine grupper til å heller vise teamets grupper.
 Øverst til høyre ser du alltid hvem du representerer.
 
+[[team_oversikt]]
 ===== Team-oversikt
 
 I brukermenyen finnes nå ett nytt valg for team-oversikt.
@@ -174,6 +176,7 @@ Denne siden viser alle team du er medlem av og lar deg forlate, redigere og slet
 Her kan du:
 * Opprette nye team * Slette team du eier som ikke har medlemmer eller data * Legge til eller fjerne medlemmer i team du er medlem av * Bli med i eller forlate eksisterende team
 
+[[opprette_nytt_team]]
 ===== Opprette nytt team
 
 1. Åpne Team-oversikt
@@ -185,6 +188,7 @@ Her kan du:
 Dette teamet kan nå velges ved å trykke på brukernavnet ditt øverst til høyre og velge team isteden.
 Mens du representerer teamet lagres nye grupper, personer og maler på teamet.
 
+[[bli_med_eksisterende_team]]
 ===== Bli med i eksisterende team
 
 1. Åpne Team-oversikt
@@ -194,6 +198,7 @@ Mens du representerer teamet lagres nye grupper, personer og maler på teamet.
 
 Etter innmelding kan du på samme måte som over bytte representasjon til teamet fra brukermenyen.
 
+[[demo_team_funksjonalitet]]
 ===== Demo: Team-funksjonalitet
 
 ++++
