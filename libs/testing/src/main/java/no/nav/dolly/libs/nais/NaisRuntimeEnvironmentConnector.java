@@ -6,10 +6,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,13 +24,23 @@ class NaisRuntimeEnvironmentConnector {
         try {
             var applicationName = resolveApplicationName();
             var requestedKeys = resolveRequestedKeys();
-            if (applicationName == null || requestedKeys.isEmpty()) {
+            var requestedSecrets = resolveRequestedSecrets();
+            if (applicationName == null || (requestedKeys.isEmpty() && requestedSecrets.isEmpty())) {
                 log.info("Application is not configured for dynamic environment variables from NAIS");
                 return Map.of();
             }
             var cluster = resolveCluster();
             var pod = resolvePod(cluster, applicationName);
-            return getVariables(cluster, pod, requestedKeys);
+            var environmentVariables = getVariablesFromEnvironment(cluster, pod, requestedKeys);
+            var secretVariables = getVariablesFromSecrets(cluster, requestedSecrets, requestedKeys);
+            var result = new HashMap<String, String>();
+            if (!environmentVariables.isEmpty()) {
+                result.putAll(environmentVariables);
+            }
+            if (!secretVariables.isEmpty()) {
+                result.putAll(secretVariables);
+            }
+            return result;
         } catch (NaisEnvironmentException e) {
             throw e;
         } catch (Exception e) {
@@ -47,6 +54,20 @@ class NaisRuntimeEnvironmentConnector {
         var keys = new ArrayList<String>();
         for (int i = 0; ; i++) {
             var key = "dolly.nais.variables[%d]".formatted(i);
+            if (!environment.containsProperty(key)) {
+                break;
+            }
+            keys.add(environment.getProperty(key));
+        }
+        return keys;
+
+    }
+
+    private List<String> resolveRequestedSecrets() {
+
+        var keys = new ArrayList<String>();
+        for (int i = 0; ; i++) {
+            var key = "dolly.nais.secrets[%d]".formatted(i);
             if (!environment.containsProperty(key)) {
                 break;
             }
@@ -91,24 +112,67 @@ class NaisRuntimeEnvironmentConnector {
 
     }
 
-    private Map<String, String> getVariables(String cluster, String pod, List<String> requestedKeys)
+    private Map<String, String> getVariablesFromEnvironment(String cluster, String pod, List<String> requestedKeys)
             throws NaisEnvironmentException {
 
-        var command = "kubectl exec --cluster=%s --namespace=dolly %s -- env"
+        if (requestedKeys.isEmpty()) {
+            return Map.of();
+        }
+        var command = "kubectl debug --cluster=%s --namespace=dolly -it %s --image=\"europe-north1-docker.pkg.dev/nais-io/nais/images/debug:latest\" --profile=restricted -- cat /proc/1/environ"
                 .formatted(cluster, pod);
         var output = execute(command);
-        var variables = output
-                .stream()
+        if (output.size() < 2) {
+            throw new NaisEnvironmentException("Failed to retrieve environment variables from pod %s:%s".formatted(cluster, pod));
+        }
+        var raw = output.get(1).split("\0");
+        var variables = Arrays
+                .stream(raw)
                 .map(line -> line.split("="))
                 .filter(elements -> requestedKeys.contains(elements[0]))
                 .collect(Collectors.toMap(
                         elements -> elements[0],
                         elements -> elements[1],
                         (a, b) -> a));
-        log.info("Retrieved {}/{} keys from pod {}:{}", variables.size(), requestedKeys.size(), cluster, pod);
+        log.info("Retrieved {}/{} key(s) from pod {}:{}", variables.size(), requestedKeys.size(), cluster, pod);
         return variables;
 
     }
+
+    private Map<String, String> getVariablesFromSecrets(String cluster, List<String> secrets, List<String> requestedKeys)
+            throws NaisEnvironmentException {
+
+        if (secrets.isEmpty() || requestedKeys.isEmpty()) {
+            return Map.of();
+        }
+        var variables = new HashMap<String, String>();
+        for (String secret : secrets) {
+
+            var command = "kubectl get secret %s --cluster=%s --namespace=dolly -o jsonpath='{.data}'"
+                    .formatted(secret, cluster);
+            var output = execute(command);
+            if (output.isEmpty()) {
+                log.warn("Failed to retrieve secret {} from cluster {}", secret, cluster);
+                continue;
+            }
+            var raw = output
+                    .getFirst()
+                    .replace("'", "")
+                    .replaceAll("[{}\"]", "")
+                    .split(",");
+            Arrays
+                    .stream(raw)
+                    .map(entry -> entry.split(":", 2))
+                    .filter(elements -> elements.length == 2 && requestedKeys.contains(elements[0]))
+                    .forEach(elements -> {
+                        var decodedValue = new String(Base64.getDecoder().decode(elements[1]));
+                        variables.put(elements[0], decodedValue);
+                    });
+
+        }
+        log.info("Retrieved {}/{} key(s) from secrets in {}", variables.size(), requestedKeys.size(), cluster);
+        return variables;
+    }
+
 
     private List<String> getAllPodsInClusterWithName(String cluster, String name)
             throws NaisEnvironmentException {
@@ -138,6 +202,7 @@ class NaisRuntimeEnvironmentConnector {
             var status = process.waitFor();
             if (status != 0) {
                 log.warn("Command terminated with status {}: {}", status, command);
+                process.getErrorStream().transferTo(System.err);
             }
             return output;
         } catch (InterruptedException e) {

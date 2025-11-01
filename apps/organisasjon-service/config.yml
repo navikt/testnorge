@@ -36,7 +36,7 @@ spec:
           cluster: dev-fss
     outbound:
       external:
-        - host: testnav-ereg-proxy.dev-fss-pub.nais.io
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
       rules:
         - application: logging
           namespace: nais-system

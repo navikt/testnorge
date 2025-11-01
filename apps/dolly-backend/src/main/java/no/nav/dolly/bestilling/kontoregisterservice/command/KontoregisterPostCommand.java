@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResponseDTO>> {
 
-    private static final String KONTOREGISTER_API_URL = "/api/system/v1/oppdater-konto";
+    private static final String KONTOREGISTER_API_URL = "/kontoregister/api/system/v1/oppdater-konto";
 
     private final WebClient webClient;
     private final OppdaterKontoRequestDTO body;

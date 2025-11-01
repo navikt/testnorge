@@ -17,7 +17,7 @@ type FullmaktKodeverkType = {
 export const useFullmektig = (ident: string) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		[
-			ident && '/testnav-fullmakt-proxy/api/fullmaktsgiver',
+			ident && '/testnav-dolly-proxy/fullmakt/api/fullmaktsgiver',
 			{ accept: 'application/json', 'Content-Type': 'application/json', fnr: ident },
 		],
 		([url, headers]) => fetcher(url, headers),
@@ -33,7 +33,7 @@ export const useFullmektig = (ident: string) => {
 export const useFullmaktOmraader = () => {
 	const { data, isLoading, error } = useSWRImmutable<FullmaktKodeverkType, Error>(
 		[
-			'/testnav-fullmakt-proxy/api/omraade',
+			'/testnav-dolly-proxy/fullmakt/api/omraade',
 			{ accept: 'application/json', 'Content-Type': 'application/json', fnr: '12808012345' },
 		],
 		([url, headers]) => fetcher(url, headers),

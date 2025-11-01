@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
 
-    private static final String INSTMILJO_URL = "/api/v1/environment";
+    private static final String INSTMILJO_URL = "/inst/api/v1/environment";
 
     private final WebClient webClient;
     private final String token;

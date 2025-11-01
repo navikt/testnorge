@@ -40,7 +40,7 @@ const tpYtelseUrl = (miljo, ordningNr) =>
 
 const instUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-inst-proxy/api/v1/institusjonsopphold/person?environments=${miljo}`,
+		url: `/testnav-dolly-proxy/inst/api/v1/institusjonsopphold/person?environments=${miljo}`,
 		miljo: miljo,
 	}))
 

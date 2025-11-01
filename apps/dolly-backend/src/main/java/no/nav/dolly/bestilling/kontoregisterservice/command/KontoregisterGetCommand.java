@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseDTO>> {
 
-    private static final String KONTOREGISTER_API_URL = "/api/system/v1/hent-aktiv-konto";
+    private static final String KONTOREGISTER_API_URL = "/kontoregister/api/system/v1/hent-aktiv-konto";
 
     private final WebClient webClient;
     private final HentKontoRequestDTO body;

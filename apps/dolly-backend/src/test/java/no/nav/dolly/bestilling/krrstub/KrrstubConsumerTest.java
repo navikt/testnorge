@@ -135,11 +135,11 @@ class KrrstubConsumerTest extends AbstractConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
 
-        var deletStub = stubFor(delete(urlPathMatching("(.*)/api/v2/person/kontaktinformasjon"))
+        var deletStub = stubFor(delete(urlPathMatching("(.*)/krrstub/api/v2/person/kontaktinformasjon"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
 
-        stubFor(get(urlPathMatching("(.*)/api/v2/person/kontaktinformasjon"))
+        stubFor(get(urlPathMatching("(.*)/krrstub/api/v2/person/kontaktinformasjon"))
                 .withHeader(CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT, WireMock.equalTo(IDENT))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")

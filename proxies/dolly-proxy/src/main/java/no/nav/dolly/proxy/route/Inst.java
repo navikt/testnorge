@@ -9,28 +9,25 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-
 @Component
 @RequiredArgsConstructor
-class Udistub {
+public class Inst {
 
     private static final String CLUSTER = "dev-fss";
-    private static final String NAME = "testnav-udi-stub";
-    private static final String NAMESPACE = "dolly";
+    private static final String NAME = "opphold-testdata";
+    private static final String NAMESPACE = "team-rocket";
 
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService.getNavAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.udistub);
+        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.inst);
         return spec -> spec
-                .path("/udistub/**")
+                .path("/inst/**")
                 .filters(f -> f
                         .stripPrefix(1)
-                        .setResponseHeader(CONTENT_TYPE, "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
-                .uri(targets.udistub);
+                .uri(targets.inst);
     }
 
 }

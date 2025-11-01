@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdRespons>> {
 
-    private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person/soek";
+    private static final String INSTDATA_URL = "/inst/api/v1/institusjonsopphold/person/soek";
 
     private final WebClient webClient;
     private final String ident;

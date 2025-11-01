@@ -27,7 +27,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
             return webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/{miljo}/v2/organisasjon/{orgnummer}")
+                            .path("/ereg/api/{miljo}/v2/organisasjon/{orgnummer}")
                             .queryParam("inkluderHierarki", true)
                             .queryParam("inkluderHistorikk", false)
                             .build(miljo, orgnummer)
