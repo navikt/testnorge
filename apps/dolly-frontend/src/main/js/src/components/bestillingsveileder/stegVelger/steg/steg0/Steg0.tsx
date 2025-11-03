@@ -95,7 +95,7 @@ const Steg0 = () => {
 			return
 		}
 
-		opts.gruppeId = numericGruppeId
+		opts.updateContext && opts.updateContext({ gruppeId: String(numericGruppeId) })
 
 		handleAttributeUpdates(formMethods, opts)
 	}, [numericGruppeId, formMethods, opts])

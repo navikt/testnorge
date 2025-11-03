@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useState } from 'react'
+import React, { Suspense, useContext, useEffect, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -9,7 +9,7 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { Stepper } from '@navikt/ds-react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	BestillingsveilederContext,
@@ -32,23 +32,35 @@ import Steg2 from './steg/steg2/Steg2'
 import Steg3 from './steg/steg3/Steg3'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 import * as _ from 'lodash-es'
+import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 
-Steg0.label = 'Velg gruppe/mal'
-Steg1.label = 'Velg egenskaper'
-Steg2.label = 'Velg verdier'
-Steg3.label = 'Oppsummering'
+interface StepDef {
+	component: React.ComponentType<any>
+	label: string
+}
+const STEPS: StepDef[] = [
+	{ component: Steg0, label: 'Velg gruppe/mal' },
+	{ component: Steg1, label: 'Velg egenskaper' },
+	{ component: Steg2, label: 'Velg verdier' },
+	{ component: Steg3, label: 'Oppsummering' },
+]
 
 const DisplayFormState = lazyWithPreload(() => import('@/utils/DisplayFormState'))
 const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 
-let STEPS = [Steg0, Steg1, Steg2, Steg3]
 const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
 
 export const devEnabled =
 	window.location.hostname.includes('localhost') ||
 	window.location.hostname.includes('dolly-frontend-dev')
 
-export const StegVelger = ({ initialValues, onSubmit }) => {
+export const StegVelger = ({
+	initialValues,
+	onSubmit,
+}: {
+	initialValues: any
+	onSubmit: (values: any) => (vals: any) => void
+}) => {
 	'use no memo' // Skip compilation for this component
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
@@ -65,7 +77,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const [loading, setLoading] = useState(false)
 	const [step, setStep] = useState(0)
 
-	const CurrentStepComponent: any = STEPS[step]
+	const CurrentStepComponent = STEPS[step].component
 	const stepMaxIndex = STEPS.length - 1
 	const formMethods = useForm({
 		mode: 'onChange',
@@ -105,14 +117,14 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	}
 
 	const handleNext = () => {
-		if ((STEPS[step] === Steg2 || STEPS[step] === Steg0) && formMutate) {
+		if ((STEPS[step].component === Steg2 || STEPS[step].component === Steg0) && formMutate) {
 			formMethods.clearErrors(manualMutateFields)
 			errorContext?.setShowError(true)
 			setMutateLoading(true)
 			formMutate?.()
-				.then((response) => {
+				.then((response: any) => {
 					setMutateLoading(false)
-					if (response.status === 'INVALID') {
+					if (response?.status === 'INVALID') {
 						return
 					}
 					validateForm()
@@ -131,7 +143,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		if (step !== 0) setStep(step - 1)
 	}
 
-	const _handleSubmit = (values) => {
+	const _handleSubmit = (values: any) => {
 		if (!isLastStep()) {
 			handleNext()
 			return
@@ -150,6 +162,59 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
+	const prevMalIdRef = React.useRef<string | undefined>(undefined)
+
+	useEffect(() => {
+		const currentMalId = context.mal?.id
+		if (!currentMalId) {
+			prevMalIdRef.current = undefined
+			return
+		}
+		if (prevMalIdRef.current === currentMalId) return
+		prevMalIdRef.current = currentMalId
+		try {
+			const environments = formMethods.getValues('environments')
+			const malValues = initialValuesBasedOnMal(context.mal, environments)
+			Object.entries(malValues).forEach(([key, value]) => {
+				formMethods.setValue(key as any, value as any, { shouldValidate: false, shouldDirty: true })
+			})
+			formMethods.setValue('mal', currentMalId, { shouldValidate: false })
+			const identtypeFraMal = _.get(malValues, 'pdldata.opprettNyPerson.identtype')
+			if (identtypeFraMal) {
+				formMethods.setValue('pdldata.opprettNyPerson.identtype', identtypeFraMal, {
+					shouldValidate: true,
+				})
+			}
+			const id2032FraMal = _.get(malValues, 'pdldata.opprettNyPerson.id2032')
+			if (typeof id2032FraMal === 'boolean') {
+				formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032FraMal, {
+					shouldValidate: true,
+				})
+			}
+		} catch (e) {
+			console.warn('Klarte ikke å sette mal-verdier i form', e)
+		}
+	}, [context.mal])
+
+	useEffect(() => {
+		const currentId2032 = formMethods.getValues('pdldata.opprettNyPerson.id2032')
+		if (typeof context.id2032 === 'boolean' && context.id2032 !== currentId2032) {
+			formMethods.setValue('pdldata.opprettNyPerson.id2032', context.id2032, {
+				shouldValidate: true,
+			})
+		}
+	}, [context.id2032])
+
+	const malWatch = useWatch({ control: formMethods.control, name: 'mal' })
+	const identtypeWatch = useWatch({
+		control: formMethods.control,
+		name: 'pdldata.opprettNyPerson.identtype',
+	})
+	const id2032Watch = useWatch({
+		control: formMethods.control,
+		name: 'pdldata.opprettNyPerson.id2032',
+	})
+
 	return (
 		<SwrMutateContext.Provider value={setFormMutate}>
 			<FormProvider {...formMethods}>
@@ -165,6 +230,10 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					))}
 				</Stepper>
 				<BestillingsveilederHeader context={context} formMethods={formMethods} />
+				<div style={{ display: 'none' }} data-testid="stegevelger-form-snapshot">
+					mal:{malWatch}|identtype:{identtypeWatch}|id2032:{String(id2032Watch)}|sivilstand:
+					{JSON.stringify(formMethods.getValues('pdldata.person.sivilstand'))}
+				</div>
 				<Suspense fallback={<Loading label="Laster komponenter" />}>
 					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 				</Suspense>

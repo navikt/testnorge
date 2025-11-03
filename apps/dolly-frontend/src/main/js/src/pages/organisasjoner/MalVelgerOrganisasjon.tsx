@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
@@ -11,62 +11,61 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { BVOptions } from '@/components/bestillingsveileder/options/options'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 type MalVelgerProps = {
 	brukernavn: string
 	gruppeId: number | undefined
 }
 
-export function getBrukerOptions(malbestillinger: Record<string, Mal[]>) {
+export function getBrukerOptions(malbestillinger: Record<string, Mal[]> | undefined) {
 	return Object.keys(malbestillinger || {}).map((ident) => ({
 		value: ident,
 		label: ident,
 	}))
 }
 
-export function getMalOptions(malbestillinger: Record<string, Mal[]>, bruker: string) {
+export function getMalOptions(malbestillinger: Record<string, Mal[]> | undefined, bruker: string) {
 	if (!malbestillinger || !malbestillinger[bruker]) return []
 	return malbestillinger[bruker].map((mal) => ({
 		value: mal.id,
 		label: mal.malNavn,
-		data: { bestilling: mal.bestilling, malNavn: mal.malNavn, id: mal.id },
+		data: {
+			bestilling: (mal as any).malBestilling || (mal as any).bestilling,
+			malNavn: mal.malNavn,
+			id: mal.id,
+		},
 	}))
 }
 
-export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) => {
+export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId: _gruppeId }: MalVelgerProps) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const { dollyEnvironments } = useDollyEnvironments()
 	const formMethods = useFormContext()
 	const { maler, loading } = useDollyOrganisasjonMaler()
 	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal') || false)
 
-	const brukerOptions = getBrukerOptions(maler)
-	const malOptions = getMalOptions(maler, bruker)
+	const brukerOptions = getBrukerOptions(maler as any)
+	const malOptions = getMalOptions(maler as any, bruker)
 
 	const handleMalChange = (mal: { value: string; label: string; data: any }) => {
 		if (mal) {
-			opts.mal = mal.data
-			const options = BVOptions(opts, gruppeId, dollyEnvironments)
-			formMethods.reset(options.initialValues)
+			opts.updateContext && opts.updateContext({ mal: mal.data })
 			formMethods.setValue('mal', mal.value)
 		} else {
-			opts.mal = undefined
+			opts.updateContext && opts.updateContext({ mal: undefined })
 			formMethods.setValue('mal', null)
-			const options = BVOptions(opts, gruppeId, dollyEnvironments)
-			formMethods.reset(options.initialValues)
 		}
 	}
 
 	const handleMalEnable = () => {
-		opts.mal = undefined
+		opts.updateContext && opts.updateContext({ mal: undefined })
 		toggleMalAktiv()
 		formMethods.setValue('mal', null)
-		const options = BVOptions(opts, gruppeId, dollyEnvironments)
-		formMethods.reset(options.initialValues)
 	}
+
+	useEffect(() => {
+		formMethods.reset(opts.initialValues)
+	}, [opts.mal, opts.initialValues])
 
 	const handleBrukerChange = (event: { value: string }) => {
 		setBruker(event.value)
@@ -81,7 +80,6 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) 
 				onChange={handleMalEnable}
 				label="Opprett fra mal"
 				checked={malAktiv}
-				wrapperSize={'none'}
 				size={'small'}
 				isSwitch
 			/>

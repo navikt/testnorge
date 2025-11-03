@@ -14,8 +14,8 @@ export default defineConfig({
 	test: {
 		environment: 'jsdom',
 		globals: true,
-		root: '__tests__',
 		setupFiles: ['./vitest.setup.ts'],
+		include: ['**/__tests__/**/*.test.{ts,tsx}'],
 		browser: {
 			enabled: true,
 			provider: playwright(),

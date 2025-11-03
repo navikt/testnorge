@@ -61,7 +61,7 @@ export const BestillingsveilederHeader = ({
 						value={arrayToString(context.opprettFraIdenter) || ''}
 					/>
 				)}
-				{context.is?.nyBestillingFraMal && (
+				{context.mal?.malNavn && (
 					<Header.TitleValue title="Basert på mal" value={context.mal?.malNavn || ''} />
 				)}
 				{context.is?.importTestnorge && (

@@ -10,11 +10,15 @@ export interface BestillingsveilederContextType {
 	identMaster?: string
 	antall?: number
 	identtype?: string
+	setIdenttype?: (identtype: string) => void
+	setGruppeId?: (gruppeId: number) => void
+	setMal?: (mal: any | undefined) => void
+	updateContext?: (patch: Partial<BestillingsveilederContextType>) => void
 	id2032?: boolean
 	importPersoner?: Person[]
 	tidligereBestillinger?: BestillingData[]
 	opprettFraIdenter?: string[]
-	mal?: { malNavn?: string }
+	mal?: { malNavn?: string; [key: string]: any }
 	is?: {
 		nyBestilling?: boolean
 		nyBestillingFraMal?: boolean
@@ -32,6 +36,10 @@ export interface BestillingsveilederContextType {
 const defaultContextValue: BestillingsveilederContextType = {
 	initialValues: {},
 	timedOutFagsystemer: [],
+	setIdenttype: () => {},
+	setGruppeId: () => {},
+	setMal: () => {},
+	updateContext: () => {},
 }
 
 export const BestillingsveilederContext: Context<BestillingsveilederContextType> =
