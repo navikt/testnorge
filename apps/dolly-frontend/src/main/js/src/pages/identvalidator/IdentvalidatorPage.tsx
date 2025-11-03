@@ -1,6 +1,6 @@
 import { useValiderIdent } from '@/utils/hooks/useIdentPool'
 import { Alert, Box, VStack } from '@navikt/ds-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -35,10 +35,14 @@ export default () => {
 		defaultValues: initialValues,
 	})
 
+	useEffect(() => {
+		if (validering && !loading && !error) {
+			formMethods.reset(initialValues)
+		}
+	}, [validering])
+
 	const handleValidate = (data: { ident: string }) => {
 		setIdent(data?.ident)
-		formMethods.reset(initialValues)
-		//TODO: Vente med å tømme feltet til validering er ferdig?
 	}
 
 	return (
