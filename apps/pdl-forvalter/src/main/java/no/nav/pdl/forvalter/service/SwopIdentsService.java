@@ -13,11 +13,13 @@ import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -111,6 +113,7 @@ public class SwopIdentsService {
                 .forEach(bostedsadresse -> addBostedsadresse(person1.getPerson(), bostedsadresse));
         person2.getPerson().getStatsborgerskap()
                 .forEach(statsborgerskap -> addStatsborgerskap(person1.getPerson(), statsborgerskap));
+        addInnvandretFra(person1.getPerson());
 
         person1.getPerson().setNyident(null);
         person2.getPerson().setNyident(null);
@@ -134,6 +137,32 @@ public class SwopIdentsService {
                         .sistOppdatert(now())
                         .build())
                 .toList());
+    }
+
+    private void addInnvandretFra(PersonDTO person) {
+
+        if (person.getInnflytting().isEmpty() &&
+                person.getStatsborgerskap().stream()
+                        .anyMatch(StatsborgerskapDTO::isNorskStatsborger) &&
+                person.getStatsborgerskap().stream()
+                        .anyMatch(StatsborgerskapDTO::isUtenlandskStatsborger)) {
+
+            person.getInnflytting().add(InnflyttingDTO.builder()
+                    .fraflyttingsland(person.getBostedsadresse().stream()
+                            .filter(BostedadresseDTO::isAdresseUtland)
+                            .map(BostedadresseDTO::getUtenlandskAdresse)
+                            .map(UtenlandskAdresseDTO::getLandkode)
+                            .findFirst()
+                            .orElse(person.getStatsborgerskap().stream()
+                                    .filter(StatsborgerskapDTO::isUtenlandskStatsborger)
+                                    .map(StatsborgerskapDTO::getLandkode)
+                                    .findFirst()
+                                    .orElse(null)))
+                    .innflyttingsdato(now())
+                    .master(isNotNpidIdent(person.getIdent()) ? FREG : PDL)
+                    .kilde("Dolly")
+                    .build());
+        }
     }
 
     private void addBostedsadresse(PersonDTO person, BostedadresseDTO bostedsadresse) {
