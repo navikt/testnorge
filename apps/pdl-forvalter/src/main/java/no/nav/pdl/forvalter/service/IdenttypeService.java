@@ -12,14 +12,12 @@ import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.IdentRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.isNull;
@@ -58,7 +56,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     public PersonDTO convert(PersonDTO person) {
 
         var nyPerson = person;
-        var nyident = person.getNyident();
+        var nyident = mapperFacade.mapAsList(person.getNyident(), IdentRequestDTO.class);
         for (int index = 0; index < nyident.size(); index++) {
             var type = nyident.get(index);
 
@@ -139,19 +137,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
 
         return oppdatertPerson;
-    }
-
-    private static NavnDTO getNavn(PersonDTO person, PersonDTO nyPerson) {
-
-        var navn = person.getNavn().stream()
-                .findFirst()
-                .orElse(nyPerson.getNavn().stream().findFirst().orElse(new NavnDTO()));
-        navn.setMellomnavn(nyPerson.getNavn().stream()
-                .map(NavnDTO::getMellomnavn)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null));
-        return navn;
     }
 
     private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
