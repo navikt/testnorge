@@ -99,3 +99,5 @@ consumers:
     url: https://testnav-nom-proxy.intern.dev.nav.no
   testnav-ident-pool:
     url: https://testnav-ident-pool.intern.dev.nav.no
+  testnav-arbeidsplassencv-proxy:
+    url: https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no
