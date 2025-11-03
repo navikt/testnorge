@@ -8,7 +8,6 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
-import no.nav.pdl.forvalter.dto.MergeElement;
 import no.nav.pdl.forvalter.dto.MergeIdent;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OpprettRequest;
@@ -47,13 +46,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
@@ -87,7 +86,6 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -269,33 +267,30 @@ public class PdlOrdreService {
 
     private List<Ordre> npidMerge(OpprettRequest oppretting) {
 
+
         if (oppretting.getPerson().getAlias().stream()
                 .map(DbAlias::getTidligereIdent)
                 .anyMatch(IdenttypeUtility::isNpidIdent)) {
 
-            var stack = new Stack<MergeElement>();
-            oppretting.getPerson().getAlias().stream()
-                    .sorted(Comparator.comparing(DbAlias::getId))
-                    .forEach(alias -> {
-
-                        checkAndUpdate(stack, alias.getTidligereIdent());
-
-                        if (IdenttypeUtility.isNpidIdent(alias.getTidligereIdent())) {
-                            stack.push(MergeElement.builder()
-                                    .npid(alias.getTidligereIdent())
-                                    .build());
-                        }
-                    });
-
-            checkAndUpdate(stack, oppretting.getPerson().getIdent());
-
-            return stack.stream()
-                    .map(element -> deployService.createOrdre(PDL_PERSON_MERGE, element.getIdent(),
-                            List.of(MergeIdent.builder()
-                                    .npid(element.getNpid())
-                                    .build())))
-                    .flatMap(Collection::stream)
+            var aliaser = oppretting.getPerson().getAlias().stream()
+                    .sorted(Comparator.comparing(DbAlias::getSistOppdatert))
                     .toList();
+
+            var ordrer = new ArrayList<Ordre>();
+
+            for (int i = 0; i < aliaser.size(); i++) {
+
+                if (isNpidIdent(aliaser.get(i).getTidligereIdent())) {
+                    ordrer.addAll(deployService.createOrdre(PDL_PERSON_MERGE,
+                            i + 1 < aliaser.size() ?
+                                    aliaser.get(i + 1).getTidligereIdent() : oppretting.getPerson().getIdent(),
+                            List.of(MergeIdent.builder()
+                                    .npid(aliaser.get(i).getTidligereIdent())
+                                    .build())));
+                }
+            }
+            return ordrer;
+
         } else {
 
             return emptyList();
@@ -384,16 +379,5 @@ public class PdlOrdreService {
                                 .build())
                         .toList() :
                 emptyList();
-    }
-
-    private static void checkAndUpdate(Stack<MergeElement> stack, String oppretting) {
-
-        if (!stack.isEmpty()) {
-            var eksisterende = stack.pop();
-            if (isBlank(eksisterende.getIdent())) {
-                eksisterende.setIdent(oppretting);
-            }
-            stack.push(eksisterende);
-        }
     }
 }

@@ -57,9 +57,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
         var nyPerson = person;
         var nyident = mapperFacade.mapAsList(person.getNyident(), IdentRequestDTO.class);
-        for (int index = 0; index < nyident.size(); index++) {
-            var type = nyident.get(index);
-
+        for (IdentRequestDTO type : nyident) {
             if (isTrue(type.getIsNew())) {
 
                 nyPerson = handle(type, nyPerson);
