@@ -50,6 +50,7 @@ export const useCurrentBruker = () => {
 		fetcher,
 		{
 			revalidateOnFocus: true,
+			dedupingInterval: 2000,
 		},
 	)
 
