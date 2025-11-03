@@ -1,4 +1,4 @@
-import { Alert, Box, Table } from '@navikt/ds-react'
+import { Alert, Box, HStack, Table } from '@navikt/ds-react'
 import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 
 interface IdentvalidatorData {
@@ -18,17 +18,37 @@ interface IdentvalidatorVisningProps {
 	data: IdentvalidatorData
 }
 
+const IconComponent = ({ item }) => {
+	return item.icon === 'none' ? (
+		<HStack gap="space-16">
+			<div style={{ width: '20px', textAlign: 'center' }}>-</div>
+			{item.value}
+		</HStack>
+	) : (
+		<Alert variant={item.icon} inline>
+			{item.value}
+		</Alert>
+	)
+}
+
 export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	if (!data) {
 		return null
 	}
 
-	const getIcon = (isValid: boolean) => {
-		return isValid ? 'success' : 'error'
+	const getIcon = (isValid: boolean, showError = false) => {
+		if (showError) {
+			return isValid ? 'success' : 'error'
+		}
+		return isValid ? 'success' : 'none'
 	}
 
 	const mappedData = [
-		{ label: 'Er gyldig', value: oversettBoolean(data.erGyldig), icon: getIcon(data.erGyldig) },
+		{
+			label: 'Er gyldig',
+			value: oversettBoolean(data.erGyldig),
+			icon: getIcon(data.erGyldig, true),
+		},
 		{
 			label: 'Er ny ident (2032)',
 			value: oversettBoolean(data.erPersonnummer2032),
@@ -62,7 +82,7 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 			<h2 style={{ paddingLeft: '8px', marginTop: '8px' }}>Validering av ident {data.ident}</h2>
 			<Table>
 				<Table.Body>
-					{mappedData.map((item, index) => {
+					{mappedData.map((item) => {
 						if (item.value === null || item.value === undefined || item.value === '') {
 							return null
 						}
@@ -72,13 +92,7 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 									<strong>{item.label}</strong>
 								</Table.DataCell>
 								<Table.DataCell>
-									{item.icon ? (
-										<Alert variant={item.icon} inline>
-											{item.value}
-										</Alert>
-									) : (
-										item.value
-									)}
+									{item.icon ? <IconComponent item={item} /> : item.value}
 								</Table.DataCell>
 							</Table.Row>
 						)
