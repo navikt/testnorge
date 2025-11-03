@@ -88,7 +88,8 @@ test('should handle new user login flow through BrukerModal', async ({ page }) =
 	await page.getByRole('button', { name: 'Gå videre til Dolly' }).click()
 
 	await page.waitForURL('/')
-	await expect(page.getByRole('link', { name: 'Personer' })).toBeVisible()
+	await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_FINNPERSON).click()
+	await expect(page.getByRole('link', { name: 'Mine personer' })).toBeVisible()
 })
 
 test('should handle existing user without email', async ({ page }) => {
@@ -136,7 +137,8 @@ test('should handle existing user without email', async ({ page }) => {
 	await page.getByRole('button', { name: 'Gå videre til Dolly' }).click()
 
 	await page.waitForURL('/')
-	await expect(page.getByRole('link', { name: 'Personer' })).toBeVisible()
+	await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_FINNPERSON).click()
+	await expect(page.getByRole('link', { name: 'Mine personer' })).toBeVisible()
 })
 
 test('should handle new BankID user flow', async ({ page }) => {
