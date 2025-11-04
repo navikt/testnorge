@@ -6,11 +6,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
-import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.IdentRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
@@ -20,7 +18,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Comparator;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.isNull;
@@ -59,13 +57,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     public PersonDTO convert(PersonDTO person) {
 
         var nyPerson = person;
-        List<IdentRequestDTO> nyident = person.getNyident();
-        for (int index = 0; index < nyident.size(); index++) {
-            var type = nyident.get(index);
-
+        var nyeIdenter = mapperFacade.mapAsList(person.getNyident(), IdentRequestDTO.class);
+        nyeIdenter.forEach(nyIdent -> nyIdent.setIdenttype(
+                nonNull(nyIdent.getIdenttype()) ? nyIdent.getIdenttype() : IdenttypeUtility.getIdenttype(person.getIdent())));
+        nyeIdenter.sort(sortIdenter());
+        for (IdentRequestDTO type : nyeIdenter) {
             if (isTrue(type.getIsNew())) {
-
-                type.setFoedtEtter(FoedselsdatoUtility.getFoedselsdato(person).plusDays(index + 1L));
 
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(getKilde(type));
@@ -123,9 +120,9 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
             var nyRequest = PersonRequestDTO.builder()
                     .eksisterendeIdent(request.getEksisterendeIdent())
                     .identtype(getIdenttype(request, person.getIdent()))
-                    .kjoenn(getKjoenn(request, person.getIdent()))
-                    .foedtEtter(getFoedtEtter(request, person.getIdent()))
-                    .foedtFoer(getFoedtFoer(request, person.getIdent()))
+                    .kjoenn(getKjoenn(request, person))
+                    .foedtEtter(getFoedtEtter(request, person))
+                    .foedtFoer(getFoedtFoer(request, person))
                     .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
                     .syntetisk(isSyntetisk(request, person.getIdent()))
                     .id2032(nonNull(request.getId2032()) ? request.getId2032() : person.getId2032())
@@ -141,7 +138,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
         relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
 
-        return nonNull(oppdatertPerson) ? oppdatertPerson : person;
+        return oppdatertPerson;
     }
 
     private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
@@ -152,40 +149,56 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         return isNotBlank(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
     }
 
-    private static Kjoenn getKjoenn(IdentRequestDTO request, String ident) {
+    private static Kjoenn getKjoenn(IdentRequestDTO request, PersonDTO person) {
 
         if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
             return request.getKjoenn();
         }
-        return isNotBlank(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : KjoennUtility.getKjoenn();
+        return KjoennFraIdentUtility.getKjoenn(person);
     }
 
-    private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
+    private static LocalDateTime getFoedtFoer(IdentRequestDTO request, PersonDTO person) {
 
         if (nonNull(request.getFoedtFoer())) {
             return request.getFoedtFoer();
 
         } else if (nonNull(request.getAlder())) {
-            return LocalDateTime.now().minusYears(request.getAlder()).minusMonths(3);
+            return LocalDateTime.now().minusYears(request.getAlder());
         }
-        return isNotBlank(ident) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
-                LocalDateTime.now().minusYears(18);
+        return FoedselsdatoUtility.getFoedselsdato(person);
     }
 
-    private static LocalDateTime getFoedtEtter(IdentRequestDTO request, String ident) {
+    private static LocalDateTime getFoedtEtter(IdentRequestDTO request, PersonDTO person) {
 
         if (nonNull(request.getFoedtEtter())) {
             return request.getFoedtEtter();
+
         } else if (nonNull(request.getAlder())) {
-            return LocalDateTime.now().minusYears(request.getAlder()).plusDays(1);
+            return LocalDateTime.now().minusYears(request.getAlder());
         }
-        return isNotBlank(ident) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
-                LocalDateTime.now().minusYears(67);
+        return FoedselsdatoUtility.getFoedselsdato(person);
     }
 
     private static boolean isSyntetisk(IdentRequestDTO request, String ident) {
 
         return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
                 SyntetiskFraIdentUtility.isSyntetisk(ident);
+    }
+
+    private Comparator<IdentRequestDTO> sortIdenter() {
+
+        return (ir1, ir2) -> {
+            if (ir1.getIdenttype() == (ir2.getIdenttype())) {
+                return 0;
+            } else if (ir1.getIdenttype() == NPID) {
+                return -1;
+            } else if (ir2.getIdenttype() == NPID) {
+                return 1;
+            } else if (ir1.getIdenttype() == DNR && ir2.getIdenttype() == FNR) {
+                return -1;
+            } else {
+                return 1;
+            }
+        };
     }
 }
