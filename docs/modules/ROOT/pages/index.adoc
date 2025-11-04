@@ -8,8 +8,6 @@
 
 Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjoner som støtter tjenester knyttet til Dolly og syntetiske testdata.
 
-// TODO: Video for flytte personer og bytte eier
-
 === Om
 
 Dette er en samlet dokumentasjon for applikasjoner, retningslinjer og støtteverktøy relatert til syntetiske testdata i NAV.
@@ -74,10 +72,11 @@ Det kommer opp en boks der du får to valg:
 
 Vi velger å opprette nye og angir at vi ønsker 10 personer i bestillingen.
 
-Opprettelse av personer følger en prosess med tre steg:
+Opprettelse av personer følger en prosess med fire steg:
 
-image::dolly/opprettelse_prossess.png[Opprettelse prosess]
+image::dolly/opprettelse_prosess.png[Opprettelse prosess]
 
+. Angi identtype, antall identer og hvilken gruppe disse skal havne i.
 . Velg hvilke egenskaper du selv ønsker å bestemme.
 De resterende egenskapene vil systemet sette.
 . Angi verdier på egenskapene du valgte i steg 1.
@@ -126,7 +125,20 @@ Trykk på pil ned til høyre på raden for detaljinformasjon per person.
 [[leggtil_endre_person]]
 ==== Legg til eller endre person
 
+Denne funksjonaliteten lar deg legge til ekstra egenskaper på en eksisterende ident eller endre verdier på allerede eksisterende egenskaper.
 For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisning for personen, trykk LEGG TIL/ENDRE og velg egenskaper.
+
+[[demo_legg-til-endre]]
+===== Demo - Legg til/endre
+
+++++
+<figure>
+  <video aria-label="Demo som viser legg til/endre funksjonalitet i Dolly" controls poster="_images/videos/legg-til-endre.png" style="max-width:730px">
+    <source src="_images/videos/legg-til-endre.mp4" type="video/mp4" >
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
+++++
 
 [[flytte_identer]]
 ==== Flytte identer mellom grupper
@@ -137,7 +149,7 @@ Dette kan være nyttig hvis du ønsker å samle personer med lignende egenskaper
 image::dolly/flytte_identer.png[Flytte identer]
 
 [[demo_flytte_identer]]
-===== Demo
+===== Demo - Flytte identer
 
 ++++
 <figure>
@@ -166,7 +178,7 @@ image::dolly/bruk_mal.png[Bruk mal]
 Du kan endre verdier før innsending.
 
 [[demo_maler]]
-===== Demo
+===== Demo - Opprette og bruke maler
 
 ++++
 <video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" controls="controls" style="max-width: 730px;"></video>
