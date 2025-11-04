@@ -25,7 +25,7 @@ export const NavAnsatt = () => {
 					erForsteEllerTest(formMethods.getValues(), skjermingPaths)
 				}
 			>
-				<Kategori title="Nav-ansatt (NOM)" vis={nomdataPath}>
+				<Kategori title="Nav-ident (NOM)" vis={nomdataPath}>
 					<NomForm />
 				</Kategori>
 				<Kategori title="Skjerming" vis={skjermingPaths}>
