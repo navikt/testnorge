@@ -102,7 +102,6 @@ export const ArenaVisning = ({
 					return []
 				})
 			if (mountedRef.current) {
-				setTagsloading(false)
 				setHarArenasyntTag(resp && resp.includes(ARENASYNT))
 			}
 		}
