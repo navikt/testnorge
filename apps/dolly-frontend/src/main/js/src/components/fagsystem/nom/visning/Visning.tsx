@@ -19,7 +19,7 @@ export const NavAnsattVisning = ({ nomData, nomLoading, skjermingData }) => {
 			<ErrorBoundary>
 				{nomData && (
 					<>
-						<h4 style={{ marginTop: '0px' }}>Nav-ansatt (NOM)</h4>
+						<h4 style={{ marginTop: '0px' }}>Nav-ident (NOM)</h4>
 						<div className="person-visning_content">
 							<TitleValue title="Nav-ident" value={nomData.navident} />
 							<TitleValue title="Startdato" value={formatDate(nomData.startDato)} />

@@ -79,7 +79,7 @@ export const ArenaVisning = ({
 	harArenaBestilling,
 }) => {
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
-	const [tagsloading, setTagsLoading] = useState(false)
+	const [tagsloading, setTagsloading] = useState(false)
 	const mountedRef = useRef(true)
 
 	const { bestilteMiljoer: bestilteMiljoerNye } = useBestilteMiljoer(
@@ -91,16 +91,17 @@ export const ArenaVisning = ({
 
 	const execute = useCallback(() => {
 		const getTags = async () => {
-			setTagsLoading(true)
+			setTagsloading(true)
 			const resp = await DollyApi.getTagsForIdent(ident.ident)
 				.then((response) => {
+					setTagsloading(false)
 					return response.data
 				})
 				.catch((_e) => {
+					setTagsloading(false)
 					return []
 				})
 			if (mountedRef.current) {
-				setTagsLoading(false)
 				setHarArenasyntTag(resp && resp.includes(ARENASYNT))
 			}
 		}

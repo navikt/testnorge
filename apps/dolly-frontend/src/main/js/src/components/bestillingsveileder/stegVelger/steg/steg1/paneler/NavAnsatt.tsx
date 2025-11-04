@@ -23,8 +23,10 @@ export const NavAnsattPanel = ({ stateModifier, formValues }) => {
 			])}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt attr={sm.attrs.nom} />
-				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+				<div style={{ display: 'flex', flexWrap: 'wrap' }}>
+					<Attributt attr={sm.attrs.nom} />
+					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+				</div>
 			</AttributtKategori>
 		</Panel>
 	)
@@ -53,7 +55,7 @@ NavAnsattPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 
 	return {
 		nom: {
-			label: 'Er Nav-ansatt (NOM)',
+			label: 'Har Nav-ident (NOM)',
 			checked: has(paths.nom),
 			add: () =>
 				set(paths.nom, {

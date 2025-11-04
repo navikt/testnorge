@@ -9,6 +9,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { Alert } from '@navikt/ds-react'
 
 type GjenopprettModalProps = {
 	gjenopprettHeader: any
@@ -37,6 +38,18 @@ export const GjenopprettModal = ({
 		resolver: yupResolver(schemaValidation),
 	})
 
+	const getWarningText = () => {
+		if (
+			bestilling?.bestilling?.arbeidsplassenCV &&
+			(!bestilling?.bestilling?.arenaforvalter || !bestilling?.bestilling?.arbeidssoekerregisteret)
+		) {
+			return 'Gjenoppretting av Nav CV vil ikke fungere om person mangler oppføring i Arbeidssøkerregisteret og Arena.'
+		}
+		return null
+	}
+
+	const warningText = getWarningText()
+
 	return (
 		<FormProvider {...formMethods}>
 			<DollyModal isOpen={true} closeModal={closeModal} width="50%" overflow="auto">
@@ -49,7 +62,11 @@ export const GjenopprettModal = ({
 							bankIdBruker={brukertype && brukertype === 'BANKID'}
 							alleredeValgtMiljoe={[]}
 						/>
-
+						{warningText && (
+							<div style={{ padding: '0 20px' }}>
+								<Alert variant={'warning'}>{warningText}</Alert>
+							</div>
+						)}
 						<div className="dollymodal_buttons">
 							<NavButton variant={'danger'} onClick={closeModal}>
 								Avbryt
