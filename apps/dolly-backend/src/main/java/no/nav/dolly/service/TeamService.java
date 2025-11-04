@@ -68,16 +68,27 @@ public class TeamService {
                                                 .opprettetTidspunkt(now())
                                                 .brukerId(brukerTeam.getId())
                                                 .build())
-                                        .flatMap(lagretTeam -> teamBrukerRepository.save(TeamBruker.builder()
-                                                        .brukerId(bruker.getId())
-                                                        .teamId(lagretTeam.getId())
-                                                        .opprettetTidspunkt(now())
-                                                        .build())
-                                                .map(ignore -> {
+                                        .flatMap(lagretTeam -> saveTeamBruker(lagretTeam.getId(), bruker.getId())
+                                                .then(brukerRepository.findByBrukerIdIn(team.getBrukere())
+                                                        .map(Bruker::getId)
+                                                        .flatMap(id -> saveTeamBruker(lagretTeam.getId(), id))
+                                                        .collectList())
+                                                        .then(brukerRepository.findByBrukerIdIn(team.getBrukere())
+                                                        .collectList())
+                                                .map(teamBrukere -> {
                                                     lagretTeam.setOpprettetAv(bruker);
                                                     lagretTeam.getBrukere().add(bruker);
+                                                    lagretTeam.getBrukere().addAll(teamBrukere);
                                                     return lagretTeam;
                                                 })))));
+    }
+
+    private Mono<TeamBruker> saveTeamBruker(Long teamId, Long brukerId) {
+        return teamBrukerRepository.save(TeamBruker.builder()
+                .teamId(teamId)
+                .brukerId(brukerId)
+                .opprettetTidspunkt(now())
+                .build());
     }
 
     @Transactional
