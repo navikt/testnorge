@@ -91,12 +91,14 @@ public class PdlTestdataConsumer {
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.concat(
                         Flux.fromIterable(orders.getSletting())
+                                .parallel()
                                 .flatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOppretting())
-                                .flatMap(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getMerge())
-                                .flatMap(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOpplysninger())
+                                .parallel()
                                 .flatMap(order -> order.apply(accessToken))
                 ));
     }
