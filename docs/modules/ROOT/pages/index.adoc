@@ -177,11 +177,20 @@ image::dolly/bruk_mal.png[Bruk mal]
 
 Du kan endre verdier før innsending.
 
+Du vil også finne en oversikt over maler på "Min side" i menyen øverst til høyre.
+
+image::dolly/minside.png[Min side]
+
 [[demo_maler]]
 ===== Demo - Opprette og bruke maler
 
 ++++
-<video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" controls="controls" style="max-width: 730px;"></video>
+<figure>
+  <video aria-label="Demo som viser mal-funksjonalitet" controls poster="_images/videos/maler-minside.png" style="max-width:730px">
+    <source src="_images/videos/maler-minside.mp4" type="video/mp4" >
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
 ++++
 
 [[team_samarbeid]]
