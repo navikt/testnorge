@@ -18,6 +18,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.isNull;
@@ -56,8 +57,11 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     public PersonDTO convert(PersonDTO person) {
 
         var nyPerson = person;
-        var nyident = mapperFacade.mapAsList(person.getNyident(), IdentRequestDTO.class);
-        for (IdentRequestDTO type : nyident) {
+        var nyeIdenter = mapperFacade.mapAsList(person.getNyident(), IdentRequestDTO.class);
+        nyeIdenter.forEach(nyIdent -> nyIdent.setIdenttype(
+                nonNull(nyIdent.getIdenttype()) ? nyIdent.getIdenttype() : IdenttypeUtility.getIdenttype(person.getIdent())));
+        nyeIdenter.sort(sortIdenter());
+        for (IdentRequestDTO type : nyeIdenter) {
             if (isTrue(type.getIsNew())) {
 
                 nyPerson = handle(type, nyPerson);
@@ -179,5 +183,22 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
         return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
                 SyntetiskFraIdentUtility.isSyntetisk(ident);
+    }
+
+    private Comparator<IdentRequestDTO> sortIdenter() {
+
+        return (ir1, ir2) -> {
+            if (ir1.getIdenttype() == (ir2.getIdenttype())) {
+                return 0;
+            } else if (ir1.getIdenttype() == NPID) {
+                return -1;
+            } else if (ir2.getIdenttype() == NPID) {
+                return 1;
+            } else if (ir1.getIdenttype() == DNR && ir2.getIdenttype() == FNR) {
+                return -1;
+            } else {
+                return 1;
+            }
+        };
     }
 }

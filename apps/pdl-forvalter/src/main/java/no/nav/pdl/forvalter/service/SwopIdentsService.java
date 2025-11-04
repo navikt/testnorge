@@ -161,6 +161,7 @@ public class SwopIdentsService {
                     .innflyttingsdato(now())
                     .master(isNotNpidIdent(person.getIdent()) ? FREG : PDL)
                     .kilde("Dolly")
+                    .id(1)
                     .build());
         }
     }
