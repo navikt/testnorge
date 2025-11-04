@@ -128,6 +128,26 @@ Trykk på pil ned til høyre på raden for detaljinformasjon per person.
 
 For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisning for personen, trykk LEGG TIL/ENDRE og velg egenskaper.
 
+[[flytte_identer]]
+==== Flytte identer mellom grupper
+
+Dolly har mulighet til å flytte identer mellom grupper ved å trykke "Flytt personer" i menyen under header på en gruppe.
+Dette kan være nyttig hvis du ønsker å samle personer med lignende egenskaper i samme gruppe, eller ønsker at noen andre skal ta over eierskap til visse identer.
+
+image::dolly/flytte_identer.png[Flytte identer]
+
+[[demo_flytte_identer]]
+===== Demo
+
+++++
+<figure>
+  <video aria-label="Demo som viser flytting av identer i Dolly" controls poster="_images/videos/flytt-identer.png" style="max-width:730px">
+    <source src="_images/videos/flytt-identer.mp4" type="video/mp4" >
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
+++++
+
 [[maler]]
 ==== Opprette og bruke maler
 
