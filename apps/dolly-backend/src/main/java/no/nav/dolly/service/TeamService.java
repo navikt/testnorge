@@ -173,7 +173,7 @@ public class TeamService {
                                 return Mono.just(bruker);
                             }
                         }))
-                .flatMap(teamBruker -> teamBrukerRepository.deleteByBrukerId(teamBruker.getId()));
+                .flatMap(teamBruker -> teamBrukerRepository.deleteByTeamIdAndBrukerId(teamId, teamBruker.getId()));
     }
 
     public Flux<Team> fetchTeam(Supplier<Flux<Team>> teamSupplier) {
