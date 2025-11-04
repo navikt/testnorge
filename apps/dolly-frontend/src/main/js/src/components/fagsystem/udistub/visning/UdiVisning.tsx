@@ -3,31 +3,44 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import Loading from '@/components/ui/loading/Loading'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
-import { Aliaser } from './partials/Aliaser'
 import { Annet } from './partials/Annet'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { hasProperty } from 'dot-prop'
 import { Alert } from '@navikt/ds-react'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { getFagsystemTimeoutTitle } from '@/components/fagsystem/utils'
 
-const kunTommeObjekter = (udiData) => {
-	const { oppholdStatus, arbeidsadgang, aliaser } = udiData
+type UdiData = {
+	oppholdStatus?: any
+	arbeidsadgang?: any
+	flyktning?: boolean
+	soeknadOmBeskyttelseUnderBehandling?: boolean
+	harOppholdsTillatelse?: boolean
+}
+
+type UdiVisningProps = {
+	data?: UdiData
+	loading?: boolean
+	timedOutFagsystemer?: string[]
+}
+
+const kunTommeObjekter = (udiData: UdiData) => {
+	const { oppholdStatus, arbeidsadgang } = udiData
 	return (
-		(isEmpty(oppholdStatus) || Object.keys(oppholdStatus)?.length < 1) &&
-		(_.isEmpty(arbeidsadgang) || Object.keys(arbeidsadgang)?.length < 1) &&
-		(_.isEmpty(aliaser) || (Array.isArray(aliaser) && aliaser.length < 1)) &&
+		(isEmpty(oppholdStatus) || Object.keys(oppholdStatus || {})?.length < 1) &&
+		(_.isEmpty(arbeidsadgang) || Object.keys(arbeidsadgang || {})?.length < 1) &&
 		!udiData?.flyktning &&
 		!hasProperty(udiData, 'soeknadOmBeskyttelseUnderBehandling')
 	)
 }
 
-export const sjekkManglerUdiData = (udiData) => {
+export const sjekkManglerUdiData = (udiData: UdiData) => {
 	return kunTommeObjekter(udiData) && !udiData?.harOppholdsTillatelse
 }
 
-export const UdiVisning = ({ data, loading }) => {
+export const UdiVisning = ({ data, loading, timedOutFagsystemer = [] }: UdiVisningProps) => {
 	if (loading) return <Loading label="Laster UDI-data" />
-	if (!data || Object.keys(data).length === 0) return false
+	if (!data || Object.keys(data).length === 0) return null
 
 	const manglerFagsystemdata = sjekkManglerUdiData(data)
 	const visHarOppholdstillatelse = kunTommeObjekter(data) && data.harOppholdsTillatelse
@@ -35,7 +48,12 @@ export const UdiVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<ErrorBoundary>
-				<SubOverskrift label="UDI" iconKind="udi" isWarning={manglerFagsystemdata} />
+				<SubOverskrift
+					label="UDI"
+					iconKind="udi"
+					isWarning={manglerFagsystemdata}
+					title={timedOutFagsystemer?.includes('UDI') ? getFagsystemTimeoutTitle('UDI') : undefined}
+				/>
 				{manglerFagsystemdata ? (
 					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 						Fant ikke UDI-data på person
@@ -47,7 +65,6 @@ export const UdiVisning = ({ data, loading }) => {
 							oppholdstillatelse={visHarOppholdstillatelse}
 						/>
 						<Arbeidsadgang arbeidsadgang={data.arbeidsadgang} />
-						<Aliaser aliaser={data.aliaser} />
 						<Annet data={data} />
 					</div>
 				)}
@@ -56,12 +73,14 @@ export const UdiVisning = ({ data, loading }) => {
 	)
 }
 
-UdiVisning.filterValues = (data, bestKriterier) => {
+UdiVisning.filterValues = (
+	data: UdiData,
+	bestKriterier?: { soeknadOmBeskyttelseUnderBehandling?: boolean },
+): UdiData => {
 	if (!bestKriterier) return data
 
-	// Asylsøker
 	if (!bestKriterier.soeknadOmBeskyttelseUnderBehandling)
-		data = _.omit(data, 'soeknadOmBeskyttelseUnderBehandling')
+		data = _.omit(data, 'soeknadOmBeskyttelseUnderBehandling') as UdiData
 
 	return data
 }

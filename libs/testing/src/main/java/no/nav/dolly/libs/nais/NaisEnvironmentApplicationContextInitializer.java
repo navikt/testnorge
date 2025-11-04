@@ -77,27 +77,38 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("dolly.texas.preload", FALSE); // Don't preload Texas tokens in test profile.
 
         // These will be set to value "dummy".
-        Stream
-                .of(
-                        "spring.cloud.vault.token", // For apps using no.nav.testnav.libs:vault.
+        Stream.of(
+
+                        // For apps using no.nav.testnav.libs:vault.
+                        "spring.cloud.vault.token",
+
+                        "ALTINN_API_KEY",
+
+                        "JWT_SECRET",
+                        "MASKINPORTEN_CLIENT_ID",
+                        "MASKINPORTEN_CLIENT_JWK",
+                        "MASKINPORTEN_SCOPES",
+
+                        "TOKEN_X_CLIENT_ID"
+                )
+                .forEach(key -> properties.putIfAbsent(key, DUMMY));
+
+        // These will be set to value "http://dummy".
+        Stream.of(
 
                         // For apps using Texas.
                         "dolly.texas.url.exchange",
                         "dolly.texas.url.introspect",
                         "dolly.texas.url.token",
 
-                        "ALTINN_API_KEY",
                         "AZURE_OPENID_CONFIG_ISSUER",
                         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
-                        "JWT_SECRET",
-                        "MASKINPORTEN_CLIENT_ID",
-                        "MASKINPORTEN_CLIENT_JWK",
-                        "MASKINPORTEN_SCOPES",
                         "MASKINPORTEN_WELL_KNOWN_URL",
-                        "TOKEN_X_CLIENT_ID",
                         "TOKEN_X_ISSUER"
+
                 )
-                .forEach(key -> properties.putIfAbsent(key, DUMMY));
+                .forEach(key -> properties.putIfAbsent(key, "http://" + DUMMY));
+
 
     }
 

@@ -110,6 +110,7 @@ export enum TestComponentSelectors {
 	CHECKBOX_KONTAKT_ANONYM = 'checkbox-kontakt-anonym',
 	CHECKBOX_TENORSOEK = 'checkbox-tenorsoek',
 	CHECKBOX_ORGANISASJONER_TENORSOEK = 'checkbox-organisasjoner-tenorsoek',
+	CHECKBOX_AAREG = 'checkbox-aareg',
 	ERROR_MESSAGE_NAVIGERING = 'error-message-navigering',
 	EXPANDABLE_PERSONINFORMASJON = 'expandable-personinformasjon',
 	EXPANDABLE_TEAM = 'expandable-team',

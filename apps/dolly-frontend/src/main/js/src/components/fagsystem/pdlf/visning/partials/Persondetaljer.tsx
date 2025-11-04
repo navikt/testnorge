@@ -56,9 +56,16 @@ const PersondetaljerLes = ({ person, redigertPerson, harFlerePersonstatuser }: P
 	const personstatus =
 		redigertPerson?.folkeregisterPersonstatus || person?.folkeregisterPersonstatus
 
+	const getIdenttype = () => {
+		if (!person.identtype) return ''
+		if (person.id2032) return `${person.identtype} (id 2032)`
+		return person.identtype
+	}
+
 	return (
 		<div className="person-visning_redigerbar">
 			<TitleValue title="Ident" value={person?.ident} />
+			<TitleValue title="Identtype" value={getIdenttype()} />
 			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 			{personstatus?.length === 1 && !harFlerePersonstatuser && (

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -22,6 +23,7 @@ public class SecurityConfig {
     private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
+    @ConditionalOnMissingBean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)

@@ -53,11 +53,6 @@ consumers:
     namespace: dolly
     name: testnav-brregstub-proxy
     url: https://testnav-brregstub-proxy.dev-fss-pub.nais.io
-  testnav-udistub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-udistub-proxy
-    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io
   testnav-aareg-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -68,11 +63,11 @@ consumers:
     namespace: dolly
     name: testnav-medl-proxy
     url: https://testnav-medl-proxy.dev-fss-pub.nais.io
-  testnav-inntektstub-proxy:
+  testnav-dolly-proxy:
     cluster: dev-fss
     namespace: dolly
-    name: testnav-inntektstub-proxy
-    url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+    name: testnav-dolly-proxy
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
   testnav-norg2-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -93,11 +88,6 @@ consumers:
     namespace: dolly
     name: testnav-fullmakt-proxy
     url: https://testnav-fullmakt-proxy.dev-fss-pub.nais.io
-  testnav-sigrunstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-sigrunstub-proxy
-    url: https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io
   testnav-pensjon-testdata-facade-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -178,11 +168,6 @@ consumers:
     namespace: dolly
     url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-skjermingsregister-proxy:
-    name: testnav-skjermingsregister-proxy
-    namespace: dolly
-    url: https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-dokarkiv-proxy:
     name: testnav-dokarkiv-proxy
     namespace: dolly
@@ -203,11 +188,6 @@ consumers:
     namespace: dolly
     url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-histark-proxy:
-    name: testnav-histark-proxy
-    namespace: dolly
-    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-kodeverk-service:
     name: testnav-kodeverk-service
     namespace: dolly
@@ -258,6 +238,11 @@ consumers:
     namespace: dolly
     name: testnav-nom-proxy
     url: http://testnav-nom-proxy.dolly.svc.cluster.local
+  testnav-ident-pool:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-ident-pool
+    url: http://testnav-ident-pool.dolly.svc.cluster.local
 
 server:
   max-http-request-header-size: 128KB

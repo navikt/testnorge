@@ -95,6 +95,7 @@ export const uferdigBestillingMock = {
 		pdldata: {
 			opprettNyPerson: {
 				identtype: 'FNR',
+				id2032: false,
 				syntetisk: true,
 			},
 		},
@@ -655,7 +656,6 @@ export const instMock = [
 
 export const udistubMock = {
 	person: {
-		aliaser: [],
 		arbeidsadgang: {
 			harArbeidsAdgang: 'JA',
 			typeArbeidsadgang: 'BESTEMT_ARBEIDSGIVER_ELLER_OPPDRAGSGIVER',
@@ -1563,11 +1563,6 @@ export const backendBestillingerMock = [
 				],
 			},
 			udistub: {
-				aliaser: [
-					{
-						nyIdent: false,
-					},
-				],
 				arbeidsadgang: {
 					harArbeidsAdgang: 'JA',
 					periode: {},
@@ -1693,6 +1688,7 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
+					id2032: false,
 					alder: 30,
 				},
 				person: {
@@ -1999,6 +1995,7 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
+					id2032: false,
 					syntetisk: true,
 				},
 			},

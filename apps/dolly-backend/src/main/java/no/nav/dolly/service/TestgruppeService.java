@@ -208,7 +208,8 @@ public class TestgruppeService {
                                         .collectList(),
                                 testgruppeRepository.countByOpprettetAvId(bruker.getId()));
 
-                    } else if (bruker.getBrukertype() == Brukertype.AZURE) {
+                    } else if (bruker.getBrukertype() == Brukertype.AZURE ||
+                            bruker.getBrukertype() == Brukertype.TEAM) {
 
                         return Mono.zip(Mono.just(bruker),
                                 testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))

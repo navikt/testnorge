@@ -101,7 +101,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .filter(BestillingProgress::isIdentGyldig)
                 .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
-                .concatMap(tuple -> (!tuple.getT1().getIdent().equals(tuple.getT2().getIdent()) ?
+                .concatMap(tuple -> (!tuple.getT1().getIdent().equals(testident.getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
                         .doOnNext(nyident -> counterCustomRegistry.invoke(bestKriterier))
                         .then(gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)

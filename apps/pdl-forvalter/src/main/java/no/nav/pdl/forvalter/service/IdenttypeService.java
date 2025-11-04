@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.LocalDate.now;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
@@ -105,6 +107,11 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
         PersonDTO nyPerson;
 
+        person.getNavPersonIdentifikator().stream()
+                .filter(navIdent -> isNull(navIdent.getGyldigTilOgMed()))
+                .forEach(navIdent ->
+                        navIdent.setGyldigTilOgMed(now().minusDays(1)));
+
         if (isNotBlank(request.getEksisterendeIdent())) {
 
             nyPerson = personRepository.findByIdent(request.getEksisterendeIdent())
@@ -121,6 +128,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                     .foedtFoer(getFoedtFoer(request, person.getIdent()))
                     .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
                     .syntetisk(isSyntetisk(request, person.getIdent()))
+                    .id2032(nonNull(request.getId2032()) ? request.getId2032() : person.getId2032())
                     .build();
 
             if (nyRequest.getFoedtFoer().isBefore(nyRequest.getFoedtEtter())) {

@@ -29,7 +29,8 @@ spec:
       rules:
         - application: dolly-frontend-dev
         - application: dolly-frontend-dev-unstable
-        - application: dolly-proxy
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: dolly-texas-proxy
         - application: team-dolly-lokal-app
         - application: testnav-bruker-service-dev

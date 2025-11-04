@@ -91,6 +91,7 @@ const mapBestillingsinformasjon = (
 				),
 				obj('Type person', getTypePerson(firstIdent)),
 				obj('Identtype', identtype),
+				obj('Ny ident (2032)', oversettBoolean(bestillingsinformasjon.id2032)),
 				obj('Sist oppdatert', formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)),
 				obj(
 					'Gjenopprettet fra',
@@ -111,7 +112,7 @@ const mapPdlNyPerson = (bestillingData, data, bestilling) => {
 		pdlNyPersonKriterier &&
 		(bestilling
 			? _.has(pdlNyPersonKriterier, 'alder')
-			: !isEmpty(pdlNyPersonKriterier, ['identtype', 'syntetisk']))
+			: !isEmpty(pdlNyPersonKriterier, ['identtype', 'syntetisk', 'id2032']))
 	) {
 		const { alder, foedtEtter, foedtFoer } = pdlNyPersonKriterier
 		const nyPersonData = {
@@ -987,10 +988,10 @@ const mapNomData = (bestillingData, data) => {
 	if (bestillingData?.nomdata) {
 		const { startDato, sluttDato } = bestillingData.nomdata
 		const nomdata = {
-			header: 'Nav-ansatt (NOM)',
+			header: 'Nav-ident (NOM)',
 			items:
 				!startDato && !sluttDato
-					? [obj('Nav-ansatt', 'Ingen verdier satt')]
+					? [obj('Nav-ident', 'Ingen verdier satt')]
 					: [obj('Startdato', formatDate(startDato)), obj('Sluttdato', formatDate(sluttDato))],
 		}
 		data.push(nomdata)
@@ -1854,20 +1855,6 @@ const getTredjelandsborgerStatus = (oppholdKriterier, udiStubKriterier) => {
 	return null
 }
 
-const getAliasListe = (udiStubKriterier) => {
-	const aliaserListe = []
-	if (udiStubKriterier.aliaser) {
-		udiStubKriterier.aliaser.forEach((alias, i) => {
-			if (alias.nyIdent === false) {
-				aliaserListe.push(`#${i + 1} Navn\n`)
-			} else {
-				aliaserListe.push(`#${i + 1} ID-nummer - ${alias.identtype}\n`)
-			}
-		})
-	}
-	return aliaserListe
-}
-
 const mapUdiStub = (bestillingData, data) => {
 	const udiStubKriterier = bestillingData.udistub
 
@@ -1890,8 +1877,6 @@ const mapUdiStub = (bestillingData, data) => {
 
 		const oppholdsrett = Boolean(currentOppholdsrettType)
 		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus) ? 'Tredjelandsborger' : null
-
-		const aliaserListe = getAliasListe(udiStubKriterier)
 
 		const udistub = {
 			header: 'UDI',
@@ -1970,7 +1955,6 @@ const mapUdiStub = (bestillingData, data) => {
 				obj('Arbeidsadgang til dato', formatDate(_.get(arbeidsadgangKriterier, 'periode.til'))),
 				obj('Hjemmel', _.get(arbeidsadgangKriterier, 'hjemmel')),
 				obj('Forklaring', _.get(arbeidsadgangKriterier, 'forklaring')),
-				obj('Alias', aliaserListe?.length > 0 && aliaserListe),
 				obj('Flyktningstatus', oversettBoolean(udiStubKriterier.flyktning)),
 				obj(
 					'Asylsøker',

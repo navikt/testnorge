@@ -70,7 +70,8 @@ public class BrukerService {
                 .flatMap(bruker -> isNull(bruker.getRepresentererTeam()) ?
                         Mono.just(bruker) :
                         teamRepository.findById(bruker.getRepresentererTeam())
-                                .flatMap(team -> brukerRepository.findById(team.getBrukerId())));
+                                .flatMap(team -> brukerRepository.findById(team.getBrukerId())))
+                .switchIfEmpty(createBruker());
     }
 
     @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)

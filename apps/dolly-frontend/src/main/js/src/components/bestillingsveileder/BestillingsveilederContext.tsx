@@ -10,6 +10,7 @@ export interface BestillingsveilederContextType {
 	identMaster?: string
 	antall?: number
 	identtype?: string
+	id2032?: boolean
 	importPersoner?: Person[]
 	tidligereBestillinger?: BestillingData[]
 	opprettFraIdenter?: string[]
@@ -25,10 +26,12 @@ export interface BestillingsveilederContextType {
 		nyStandardOrganisasjon?: boolean
 		importTestnorge?: boolean
 	}
+	timedOutFagsystemer?: string[]
 }
 
 const defaultContextValue: BestillingsveilederContextType = {
 	initialValues: {},
+	timedOutFagsystemer: [],
 }
 
 export const BestillingsveilederContext: Context<BestillingsveilederContextType> =

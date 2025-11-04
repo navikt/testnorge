@@ -6,7 +6,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.Id2032FraIdentUtility.isId2032;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 
 @UtilityClass
@@ -25,7 +24,7 @@ public class EgenskaperFraHovedperson {
             request.setSyntetisk(isSyntetisk(hovedperson.getIdent()));
         }
         if (isNull(request.getId2032())) {
-            request.setId2032(isId2032(hovedperson.getIdent()));
+            request.setId2032(hovedperson.getId2032());
         }
     }
 

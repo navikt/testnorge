@@ -18,21 +18,27 @@ import {
 	getInitialSummertSkattegrunnlag,
 	sigrunstubSummertSkattegrunnlagAttributt,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
+import { useContext } from 'react'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
-export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
+export const ArbeidInntektPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
-
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
 		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.' +
 		'\n\nSkattekort: Dataene blir lagt til i SOKOS.'
-
+	const aaregTimeout = getTimeoutAttr('AAREG', opts)
 	return (
 		<Panel
 			heading={ArbeidInntektPanel.heading}
-			informasjonstekst={infoTekst}
-			checkAttributeArray={sm.batchAdd}
-			uncheckAttributeArray={sm.batchRemove}
+			informasjonstekst={infoTekst as any}
+			checkAttributeArray={sm.batchAdd as any}
+			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="arbeid"
 			startOpen={harValgtAttributt(formValues, [
 				aaregAttributt,
@@ -44,7 +50,12 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.aareg} />
+				<Attributt
+					attr={sm.attrs.aareg}
+					data-testid="checkbox-aareg"
+					disabled={aaregTimeout.disabled}
+					title={aaregTimeout.title}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Inntekt (Sigrun)" attr={sm.attrs}>
 				<div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -67,9 +78,8 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
-ArbeidInntektPanel.initialValues = ({ set, opts, del, has }) => {
+ArbeidInntektPanel.initialValues = ({ set, opts, del, has }: any) => {
 	const eksisterendeAaregData = hentAaregEksisterendeData(opts?.personFoerLeggTil)
-
 	return {
 		aareg: {
 			label: 'Har arbeidsforhold',

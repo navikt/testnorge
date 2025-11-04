@@ -54,16 +54,14 @@ export const DokumentasjonDropdown = () => {
 					</DropdownStyledLink>
 				</ActionMenu.Item>
 				{currentBruker?.brukertype === 'AZURE' && (
-					<>
-						<PreloadableActionMenuItem
-							route="/oversikt"
-							dataTestId={TestComponentSelectors.BUTTON_HEADER_OVERSIKT}
-							style={{ color: '#212529' }}
-						>
-							<Icon kind="file-code" fontSize="1.5rem" />
-							<DropdownStyledLink href="/oversikt">API-oversikt</DropdownStyledLink>
-						</PreloadableActionMenuItem>
-					</>
+					<PreloadableActionMenuItem
+						route="/oversikt"
+						dataTestId={TestComponentSelectors.BUTTON_HEADER_OVERSIKT}
+						style={{ color: '#212529' }}
+					>
+						<Icon kind="file-code" fontSize="1.5rem" />
+						<DropdownStyledLink href="/oversikt">API-oversikt</DropdownStyledLink>
+					</PreloadableActionMenuItem>
 				)}
 			</>
 		</ActionMenuWrapper>

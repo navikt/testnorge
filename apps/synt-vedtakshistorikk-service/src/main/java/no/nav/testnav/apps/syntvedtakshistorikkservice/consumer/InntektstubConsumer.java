@@ -27,7 +27,7 @@ public class InntektstubConsumer {
             TokenExchange tokenExchange,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavInntektstubProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.time.LocalDate.now;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -19,6 +20,7 @@ public class NavPersonIdentifikatorService implements Validation<NavPersonIdenti
             if (isTrue(type.getIsNew())) {
 
                 type.setIdentifikator(person.getIdent());
+                type.setGyldigFraOgMed(now().minusWeeks(1));
                 type.setKilde(getKilde(type));
                 type.setMaster(getMaster(type, person));
             }

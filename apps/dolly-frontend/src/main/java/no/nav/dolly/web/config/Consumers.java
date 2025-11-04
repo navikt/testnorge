@@ -35,8 +35,7 @@ public class Consumers {
     private ServerProperties testnavBrukerService;
     private ServerProperties testnavDokarkivProxy;
     private ServerProperties testnavHelsepersonellService;
-    private ServerProperties testnavHistarkProxy;
-    private ServerProperties testnavInntektstubProxy;
+    private ServerProperties testnavDollyProxy;
     private ServerProperties testnavInstProxy;
     private ServerProperties testnavJoarkDokumentService;
     private ServerProperties testnavKodeverkService;
@@ -71,4 +70,5 @@ public class Consumers {
     private ServerProperties testnavAltinn3TilgangService;
     private ServerProperties testnavArbeidssoekerregisteretProxy;
     private ServerProperties testnavApiOversiktService;
+    private ServerProperties testnavIdentPool;
 }

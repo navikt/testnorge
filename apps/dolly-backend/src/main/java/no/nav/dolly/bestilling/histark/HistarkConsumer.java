@@ -34,7 +34,7 @@ public class HistarkConsumer extends ConsumerStatus {
             ObjectMapper objectMapper,
             WebClient webClient) {
 
-        serverProperties = consumers.getTestnavHistarkProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
                 .mutate()
@@ -65,6 +65,6 @@ public class HistarkConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-histark-proxy";
+        return "testnav-dolly-proxy";
     }
 }

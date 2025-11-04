@@ -58,7 +58,7 @@ const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
 			<TitleValue title="Fødested" value={foedsel.foedested} />
 			<TitleValue title="Fødekommune">
 				{foedsel.foedekommune && (
-					<KodeverkConnector navn="Kommuner" value={foedsel.foedekommune}>
+					<KodeverkConnector navn="KommunerMedHistoriske" value={foedsel.foedekommune}>
 						{(_v: Kodeverk, verdi: KodeverkValues) => (
 							<span>{verdi ? verdi.label : foedsel.foedekommune}</span>
 						)}

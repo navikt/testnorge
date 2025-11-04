@@ -41,6 +41,7 @@ export default function BestillingSammendrag({
 						opprettetFraId: bestilling.opprettetFraId,
 						opprettetFraGruppeId: bestilling.opprettetFraGruppeId,
 						navSyntetiskIdent: bestilling?.bestilling?.pdldata?.opprettNyPerson?.syntetisk,
+						id2032: bestilling?.bestilling?.pdldata?.opprettNyPerson?.id2032,
 						beskrivelse: bestilling?.bestilling?.beskrivelse,
 					}}
 					header="Bestillingskriterier"

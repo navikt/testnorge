@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { dollyTest } from '../vitest.setup'
-import { userEvent } from '@vitest/browser/context'
+import { userEvent } from 'vitest/browser'
 import React, { act } from 'react'
 import { vi } from 'vitest'
 import BrukernavnVelger from '@/pages/brukerPage/BrukernavnVelger'
