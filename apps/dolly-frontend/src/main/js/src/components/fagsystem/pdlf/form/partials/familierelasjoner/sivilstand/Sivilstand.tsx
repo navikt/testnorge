@@ -102,7 +102,7 @@ export const SivilstandForm = ({
 				name={`${path}.borIkkeSammen`}
 				id={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
-				isDisabled={!kanHaRelatertPerson}
+				disabled={!kanHaRelatertPerson}
 				vis={!isTestnorgeIdent}
 				checkboxMargin
 			/>

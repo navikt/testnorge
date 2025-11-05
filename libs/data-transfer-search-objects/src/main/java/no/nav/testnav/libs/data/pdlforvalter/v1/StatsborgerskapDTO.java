@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.data.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,4 +26,16 @@ public class StatsborgerskapDTO extends DbVersjonDTO {
     private LocalDateTime gyldigTilOgMed;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime bekreftelsesdato;
+
+    @JsonIgnore
+    public boolean isNorskStatsborger(){
+
+        return "NOR".equalsIgnoreCase(landkode);
+    }
+
+    @JsonIgnore
+    public boolean isUtenlandskStatsborger(){
+
+        return !isNorskStatsborger();
+    }
 }

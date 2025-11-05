@@ -115,7 +115,7 @@ export const PdlNyPerson = ({
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				id={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
-				isDisabled={hasEksisterendePerson}
+				disabled={hasEksisterendePerson}
 				checkboxMargin={true}
 			/>
 		</div>
