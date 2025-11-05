@@ -7,11 +7,8 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.ARBEIDSPLASSEN_CALL_ID;
@@ -46,9 +43,7 @@ public class ArbeidsplassenGodtaVilkaarCommand implements Callable<Mono<Arbeidsp
                         .uuid(uuid)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
-                        .filter(throwable -> !(throwable instanceof WebClientResponseException internal &&
-                                internal.getResponseBodyAsString().contains("Greide ikke å godta gjeldende hjemmel"))))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));
     }
 }
