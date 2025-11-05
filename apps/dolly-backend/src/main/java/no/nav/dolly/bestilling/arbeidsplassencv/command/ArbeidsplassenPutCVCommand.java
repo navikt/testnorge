@@ -54,7 +54,8 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(Retry.fixedDelay(25, ofSeconds(5))
-                        .filter(throwable -> throwable instanceof WebClientResponseException.Forbidden forbidden &&
+                        .filter(throwable ->
+                                throwable instanceof WebClientResponseException.Forbidden forbidden &&
                                 forbidden.getResponseBodyAsString().contains(FORBIDDEN_TEXT))
                         .doAfterRetry(logRetries))
                 .retryWhen(WebClientError.is5xxException())
