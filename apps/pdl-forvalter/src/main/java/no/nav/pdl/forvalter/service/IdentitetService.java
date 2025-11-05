@@ -59,6 +59,7 @@ public class IdentitetService {
     }
 
     private List<DbPerson> searchPerson(String query, Paginering paginering) {
+
         Optional<String> ident = Stream.of(query.split(" "))
                 .filter(StringUtils::isNumeric)
                 .findFirst();
