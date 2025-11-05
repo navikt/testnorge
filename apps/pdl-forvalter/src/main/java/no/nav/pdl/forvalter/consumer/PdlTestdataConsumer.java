@@ -92,16 +92,15 @@ public class PdlTestdataConsumer {
                 .flatMapMany(accessToken -> Flux.concat(
                         Flux.fromIterable(orders.getSletting())
                                 .parallel()
-                                .map(order -> order.apply(accessToken)),
+                                .flatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOppretting())
-                                .map(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getMerge())
-                                .map(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOpplysninger())
                                 .parallel()
-                                .map(order -> order.apply(accessToken))
-                ))
-                .flatMap(Flux::from);
+                                .flatMap(order -> order.apply(accessToken))
+                ));
     }
 
     public Mono<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {

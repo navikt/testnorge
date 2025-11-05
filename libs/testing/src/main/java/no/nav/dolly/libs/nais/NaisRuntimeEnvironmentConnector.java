@@ -34,12 +34,8 @@ class NaisRuntimeEnvironmentConnector {
             var environmentVariables = getVariablesFromEnvironment(cluster, pod, requestedKeys);
             var secretVariables = getVariablesFromSecrets(cluster, requestedSecrets, requestedKeys);
             var result = new HashMap<String, String>();
-            if (!environmentVariables.isEmpty()) {
-                result.putAll(environmentVariables);
-            }
-            if (!secretVariables.isEmpty()) {
-                result.putAll(secretVariables);
-            }
+            result.putAll(environmentVariables);
+            result.putAll(secretVariables);
             return result;
         } catch (NaisEnvironmentException e) {
             throw e;
@@ -127,8 +123,8 @@ class NaisRuntimeEnvironmentConnector {
         var raw = output.get(1).split("\0");
         var variables = Arrays
                 .stream(raw)
-                .map(line -> line.split("="))
-                .filter(elements -> requestedKeys.contains(elements[0]))
+                .map(line -> line.split("=", 2))
+                .filter(elements -> elements.length == 2 && requestedKeys.contains(elements[0]))
                 .collect(Collectors.toMap(
                         elements -> elements[0],
                         elements -> elements[1],
@@ -201,8 +197,10 @@ class NaisRuntimeEnvironmentConnector {
             }
             var status = process.waitFor();
             if (status != 0) {
-                log.warn("Command terminated with status {}: {}", status, command);
-                process.getErrorStream().transferTo(System.err);
+                var errorOutput = new BufferedReader(new InputStreamReader(process.getErrorStream()))
+                        .lines()
+                        .collect(Collectors.joining("\n"));
+                log.error("Command terminated with status {}: {}\n{}", status, command, errorOutput);
             }
             return output;
         } catch (InterruptedException e) {

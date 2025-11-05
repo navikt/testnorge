@@ -33,6 +33,7 @@ const Soekefelt = styled.div`
 `
 
 export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCategory }: any) => {
+	'use no memo' // Skip compilation for this component
 	const { getValues, control, watch }: any = formMethods
 
 	const devEnabled =

@@ -26,16 +26,17 @@ public class ForwardAndRedirectController {
                 .andRoute(RequestPredicates.GET("/testnorge/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/endringsmelding/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/organisasjoner/**"), indexHandler)
-                .andRoute(RequestPredicates.GET("/tenor/organisasjoner/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/tenororganisasjoner/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/login/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/bruker/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/team/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/dollysoek/**"), indexHandler)
-                .andRoute(RequestPredicates.GET("/tenor/personer/**"), indexHandler)
-                .andRoute(RequestPredicates.GET("/admin/orgtilgang/**"), indexHandler)
-                .andRoute(RequestPredicates.GET("/admin/levendearbeidsforhold/**"), indexHandler)
-                .andRoute(RequestPredicates.GET("/admin/infostriper/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/tenorpersoner/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/orgtilgang/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/levendearbeidsforhold/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/infostriper/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/nyansettelser/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/identvalidator/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/oversikt/**"), indexHandler);
     }
 }

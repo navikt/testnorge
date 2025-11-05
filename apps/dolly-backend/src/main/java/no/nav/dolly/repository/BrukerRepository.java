@@ -40,4 +40,6 @@ public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
     Mono<Void> deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
 
     Flux<Bruker> findByIdIn(List<Long> brukerIds);
+
+    Flux<Bruker> findByBrukerIdIn(List<String> brukere);
 }

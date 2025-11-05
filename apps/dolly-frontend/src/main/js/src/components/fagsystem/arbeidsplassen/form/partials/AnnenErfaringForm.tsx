@@ -60,7 +60,7 @@ export const AnnenErfaringForm = () => {
 								name={`${annenErfaringPath}.ongoing`}
 								label="Pågående"
 								wrapperSize="inherit"
-								isDisabled={_.get(formMethods.getValues(), `${annenErfaringPath}.toDate`)}
+								disabled={_.get(formMethods.getValues(), `${annenErfaringPath}.toDate`)}
 								checkboxMargin
 							/>
 						</div>

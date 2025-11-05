@@ -93,6 +93,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavAltinn3TilgangService(), "testnav-altinn3-tilgang-service"))
                 .route(createRoute(consumers.getTestnavArbeidssoekerregisteretProxy()))
                 .route(createRoute(consumers.getTestnavApiOversiktService(), "testnav-oversikt-service"))
+                .route(createRoute(consumers.getTestnavIdentPool()))
                 .build();
     }
 

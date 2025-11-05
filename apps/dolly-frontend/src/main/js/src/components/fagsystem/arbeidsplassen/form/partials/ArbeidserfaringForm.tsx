@@ -86,7 +86,7 @@ export const ArbeidserfaringForm = () => {
 								name={`${arbeidsforholdPath}.ongoing`}
 								label="Nåværende jobb"
 								wrapperSize="inherit"
-								isDisabled={formMethods.getValues(`${arbeidsforholdPath}.toDate`)}
+								disabled={formMethods.getValues(`${arbeidsforholdPath}.toDate`)}
 								checkboxMargin
 							/>
 						</div>

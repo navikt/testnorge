@@ -32,7 +32,7 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 						name={`${path}.tilfeldigKontonummer`}
 						label="Har tilfeldig kontonummer"
 						size="medium"
-						isDisabled={kontonummer}
+						disabled={kontonummer}
 					/>
 				</div>
 			</div>

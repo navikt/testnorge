@@ -988,10 +988,10 @@ const mapNomData = (bestillingData, data) => {
 	if (bestillingData?.nomdata) {
 		const { startDato, sluttDato } = bestillingData.nomdata
 		const nomdata = {
-			header: 'Nav-ansatt (NOM)',
+			header: 'Nav-ident (NOM)',
 			items:
 				!startDato && !sluttDato
-					? [obj('Nav-ansatt', 'Ingen verdier satt')]
+					? [obj('Nav-ident', 'Ingen verdier satt')]
 					: [obj('Startdato', formatDate(startDato)), obj('Sluttdato', formatDate(sluttDato))],
 		}
 		data.push(nomdata)

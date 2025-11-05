@@ -19,7 +19,7 @@
     {
       "name": "dolly.nais.variables",
       "type": "java.util.List",
-      "description": "List of environment variables to be read from the NAIS environment, and set as system properties when running in local profile. If dolly.nais.secrets is also set, the variables will also be looked for in the references secrets."
+      "description": "List of environment variables to be read from the NAIS environment, and set as system properties when running in local profile. If dolly.nais.secrets is also set, the variables will also be looked for in the referenced secrets."
     }
   ]
 }
