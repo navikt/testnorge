@@ -9,6 +9,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
@@ -34,6 +35,7 @@ public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(NyeBrukereResponse.class)
+                .timeout(Duration.ofSeconds(30))
                 .doOnError(WebClientError.logTo(log));
     }
 

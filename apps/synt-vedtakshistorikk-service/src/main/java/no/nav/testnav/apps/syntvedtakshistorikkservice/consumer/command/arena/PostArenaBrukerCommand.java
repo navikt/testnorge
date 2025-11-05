@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
                         REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(NyeBrukereResponse.class)
+                .timeout(Duration.ofSeconds(30))
                 .doOnError(WebClientError.logTo(log));
     }
 
