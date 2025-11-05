@@ -108,7 +108,8 @@ public class FullmaktClient implements ClientRegister {
     private String getStatus(List<FullmaktPostResponse> response) {
 
         return response.stream()
-                .filter(status1 -> nonNull(status1.getStatus()))
+                .filter(status1 -> nonNull(status1.getStatus()) &&
+                        !status1.getMelding().contains("finnes fra før"))
                 .findFirst()
                 .map(error -> errorStatusDecoder.getErrorText(error.getStatus(), error.getMelding()))
                 .orElse("OK");
