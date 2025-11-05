@@ -59,9 +59,8 @@ export const StegVelger = ({
 	onSubmit,
 }: {
 	initialValues: any
-	onSubmit: (values: any) => (vals: any) => void
+	onSubmit: (values: any) => Promise<void> | void
 }) => {
-	'use no memo' // Skip compilation for this component
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const erOrganisasjon =
@@ -106,7 +105,7 @@ export const StegVelger = ({
 				errorContext?.setShowError(true)
 				return
 			}
-			if (errorFelter.length > 0 && STEPS[step] === Steg2 && !kunEnvironmentError) {
+			if (errorFelter.length > 0 && STEPS[step].component === Steg2 && !kunEnvironmentError) {
 				console.warn('Feil i form, stopper navigering videre')
 				console.error(formMethods.formState.errors)
 				errorContext?.setShowError(true)
@@ -143,7 +142,7 @@ export const StegVelger = ({
 		if (step !== 0) setStep(step - 1)
 	}
 
-	const _handleSubmit = (values: any) => {
+	const _handleSubmit = async (values: any) => {
 		if (!isLastStep()) {
 			handleNext()
 			return
@@ -152,7 +151,7 @@ export const StegVelger = ({
 		setLoading(true)
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
-		formMethods.handleSubmit(onSubmit(values))
+		await onSubmit(values)
 
 		formMethods.reset()
 		matchMutate(REGEX_BACKEND_GRUPPER)
@@ -163,28 +162,62 @@ export const StegVelger = ({
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
 	const prevMalIdRef = React.useRef<string | undefined>(undefined)
+	const originalImportPersonerRef = React.useRef<any>(null)
+	const originalGruppeIdRef = React.useRef<any>(null)
 
 	useEffect(() => {
 		const currentMalId = context.mal?.id
 		if (!currentMalId) {
-			prevMalIdRef.current = undefined
+			if (prevMalIdRef.current) {
+				const currentImportPersoner = formMethods.getValues('importPersoner')
+				const currentGruppeId = formMethods.getValues('gruppeId')
+				const cleaned = {
+					antall: '1',
+					beskrivelse: null as any,
+					pdldata: {
+						opprettNyPerson: {
+							identtype: 'FNR',
+							syntetisk: true,
+							id2032: false,
+						},
+					},
+					importPersoner: currentImportPersoner ?? originalImportPersonerRef.current ?? null,
+					gruppeId:
+						currentGruppeId && currentGruppeId !== 0
+							? currentGruppeId
+							: originalGruppeIdRef.current && originalGruppeIdRef.current !== 0
+								? originalGruppeIdRef.current
+								: null,
+				}
+				formMethods.reset(cleaned)
+				context.setIdenttype && context.setIdenttype('FNR')
+				context.updateContext && context.updateContext({ identtype: 'FNR' })
+				prevMalIdRef.current = undefined
+				originalImportPersonerRef.current = null
+				originalGruppeIdRef.current = null
+			}
 			return
 		}
 		if (prevMalIdRef.current === currentMalId) return
 		prevMalIdRef.current = currentMalId
+		originalImportPersonerRef.current = formMethods.getValues('importPersoner')
+		originalGruppeIdRef.current = formMethods.getValues('gruppeId')
 		try {
 			const environments = formMethods.getValues('environments')
 			const malValues = initialValuesBasedOnMal(context.mal, environments)
 			Object.entries(malValues).forEach(([key, value]) => {
-				formMethods.setValue(key as any, value as any, { shouldValidate: false, shouldDirty: true })
+				formMethods.setValue(key as any, value as any)
 			})
-			formMethods.setValue('mal', currentMalId, { shouldValidate: false })
+			formMethods.setValue('mal', currentMalId)
 			const identtypeFraMal = _.get(malValues, 'pdldata.opprettNyPerson.identtype')
 			if (identtypeFraMal) {
 				formMethods.setValue('pdldata.opprettNyPerson.identtype', identtypeFraMal, {
 					shouldValidate: true,
 				})
+				context.setIdenttype && context.setIdenttype(identtypeFraMal)
+				context.updateContext && context.updateContext({ identtype: identtypeFraMal })
 			}
+
 			const id2032FraMal = _.get(malValues, 'pdldata.opprettNyPerson.id2032')
 			if (typeof id2032FraMal === 'boolean') {
 				formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032FraMal, {
@@ -195,6 +228,15 @@ export const StegVelger = ({
 			console.warn('Klarte ikke å sette mal-verdier i form', e)
 		}
 	}, [context.mal])
+
+	useEffect(() => {
+		const currentIdenttype = formMethods.getValues('pdldata.opprettNyPerson.identtype')
+		if (context.identtype && context.identtype !== currentIdenttype) {
+			formMethods.setValue('pdldata.opprettNyPerson.identtype', context.identtype, {
+				shouldValidate: true,
+			})
+		}
+	}, [context.identtype])
 
 	useEffect(() => {
 		const currentId2032 = formMethods.getValues('pdldata.opprettNyPerson.id2032')
@@ -249,9 +291,7 @@ export const StegVelger = ({
 						mutateLoading={mutateLoading}
 						onPrevious={handleBack}
 						isLastStep={isLastStep()}
-						handleSubmit={() => {
-							return _handleSubmit(formMethods.getValues())
-						}}
+						handleSubmit={() => _handleSubmit(formMethods.getValues())}
 					/>
 				)}
 			</FormProvider>

@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType,
+	BestillingsveilederContextType
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 import { sendBestilling } from '@/ducks/bestilling'
@@ -46,7 +46,7 @@ export const Bestillingsveileder = () => {
 
 	const [baseConfig, setBaseConfig] = useState<any>({
 		...location.state,
-		gruppeId: gruppeId ? parseInt(gruppeId, 10) : 0,
+		gruppeId: gruppeId ? parseInt(gruppeId, 10) : (location.state?.gruppeId ?? null),
 	})
 	const options = useMemo(
 		() => deriveBestillingsveilederState(baseConfig, dollyEnvironments),
@@ -54,7 +54,7 @@ export const Bestillingsveileder = () => {
 	) as any
 	const setIdenttype = (value: string) =>
 		setBaseConfig((prev: any) => ({ ...prev, identtype: value }))
-	const setGruppeId = (value: number) =>
+	const setGruppeId = (value: number | null) =>
 		setBaseConfig((prev: any) => ({ ...prev, gruppeId: value }))
 	const setMal = (mal: any | undefined) => setBaseConfig((prev: any) => ({ ...prev, mal }))
 	const updateContext = (patch: Partial<BestillingsveilederContextType>) =>
@@ -65,7 +65,7 @@ export const Bestillingsveileder = () => {
 			identtype: options.identtype,
 			setIdenttype,
 			updateContext,
-			gruppeId: String(baseConfig.gruppeId),
+			gruppeId: options.gruppeId,
 			setGruppeId,
 			setMal,
 		}),
@@ -89,7 +89,7 @@ export const Bestillingsveileder = () => {
 			<ErrorBoundary>
 				<ShowErrorContext.Provider value={contextValue}>
 					<BestillingsveilederContext.Provider value={providedContext}>
-						<StegVelger initialValues={options.initialValues} onSubmit={handleSubmit} />
+						<StegVelger initialValues={options.initialValues} onSubmit={handleSubmit as any} />
 					</BestillingsveilederContext.Provider>
 				</ShowErrorContext.Provider>
 			</ErrorBoundary>

@@ -37,11 +37,15 @@ export function getBrukerOptions(brukere: Brukere[] | undefined) {
 }
 
 export function getMalOptions(malbestillinger: Mal[] | undefined) {
-	if (!malbestillinger || malbestillinger?.length < 1) return []
+	if (!Array.isArray(malbestillinger) || malbestillinger.length < 1) return []
 	return malbestillinger.map((mal) => ({
 		value: mal.id,
 		label: mal.malNavn,
-		data: { bestilling: mal.malBestilling, malNavn: mal.malNavn, id: mal.id },
+		data: {
+			bestilling: (mal as any).malBestilling ?? (mal as any).bestilling,
+			malNavn: mal.malNavn,
+			id: mal.id,
+		},
 	}))
 }
 

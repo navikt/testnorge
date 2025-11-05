@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -14,8 +14,8 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -24,13 +24,13 @@ interface SikkerhetstiltakProps {
 }
 
 export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const [randomNavUsers, setRandomNavUsers] = useState([])
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
+	const [randomNavUsers, setRandomNavUsers] = useState<{ value: string; label: string }[]>([])
 
 	const { navEnheter } = useNavEnheter()
 
 	useEffect(() => {
-		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
+		setRandomNavUsers(genererTilfeldigeNavPersonidenter() as { value: string; label: string }[])
 	}, [])
 
 	const rootPath = 'pdldata.person.sikkerhetstiltak'
@@ -92,7 +92,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									options={
 										_.isEmpty(personident)
 											? randomNavUsers
-											: randomNavUsers.concat({ value: personident, label: personident })
+											: [...randomNavUsers, { value: personident, label: personident }]
 									}
 									isClearable={false}
 									name={`${path}.kontaktperson.personident`}

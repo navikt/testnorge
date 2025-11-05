@@ -1,12 +1,10 @@
-import React, { Context } from 'react'
-import { Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import { BestillingData } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import React, { Context, useContext } from 'react'
 
 export interface BestillingsveilederContextType {
-	gruppeId?: string
+	gruppeId?: number | null
 	initialValues: any
 	gruppe?: { id?: string; navn?: string }
-	personFoerLeggTil?: string
+	personFoerLeggTil?: any
 	identMaster?: string
 	antall?: number
 	identtype?: string
@@ -15,8 +13,8 @@ export interface BestillingsveilederContextType {
 	setMal?: (mal: any | undefined) => void
 	updateContext?: (patch: Partial<BestillingsveilederContextType>) => void
 	id2032?: boolean
-	importPersoner?: Person[]
-	tidligereBestillinger?: BestillingData[]
+	importPersoner?: any[]
+	idligereBestillinger?: any[]
 	opprettFraIdenter?: string[]
 	mal?: { malNavn?: string; [key: string]: any }
 	is?: {
@@ -35,7 +33,7 @@ export interface BestillingsveilederContextType {
 
 const defaultContextValue: BestillingsveilederContextType = {
 	initialValues: {},
-	timedOutFagsystemer: [],
+	gruppeId: null,
 	setIdenttype: () => {},
 	setGruppeId: () => {},
 	setMal: () => {},
@@ -44,3 +42,6 @@ const defaultContextValue: BestillingsveilederContextType = {
 
 export const BestillingsveilederContext: Context<BestillingsveilederContextType> =
 	React.createContext(defaultContextValue)
+
+export const useBestillingsveileder = (): BestillingsveilederContextType =>
+	useContext(BestillingsveilederContext)

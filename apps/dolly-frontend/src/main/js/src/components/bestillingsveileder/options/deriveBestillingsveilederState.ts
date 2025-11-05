@@ -19,7 +19,7 @@ export interface RawBestillingsveilederConfig {
 
 export interface BestillingsveilederDerivedState {
 	initialValues: any
-	gruppeId: string
+	gruppeId: number | null
 	antall: number
 	identtype: string
 	id2032: boolean
@@ -97,7 +97,7 @@ export const deriveBestillingsveilederState = (
 	const initialValuesLeggTil = {
 		antall: antall,
 		beskrivelse: null,
-		pdldata: { opprettNyPerson: null },
+		// pdldata: { opprettNyPerson: null },
 		importPersoner: null,
 		environments: [],
 	}
@@ -105,7 +105,7 @@ export const deriveBestillingsveilederState = (
 	const initialValuesLeggTilPaaGruppe = {
 		antall: antall,
 		beskrivelse: null,
-		pdldata: { opprettNyPerson: null },
+		// pdldata: { opprettNyPerson: null },
 		importPersoner: null,
 		environments: [],
 	}
@@ -113,23 +113,18 @@ export const deriveBestillingsveilederState = (
 	const initialValuesOpprettFraIdenter = {
 		antall: antall,
 		beskrivelse: null,
-		pdldata: { opprettNyPerson: {} },
+		// pdldata: { opprettNyPerson: {} },
 		importPersoner: null,
 		opprettFraIdenter,
 	}
 
 	const initialValuesOrganisasjon = {
 		antall: antall,
-		beskrivelse: null,
-		pdldata: { opprettNyPerson: { identtype, syntetisk: true } },
-		importPersoner: null,
 		organisasjon: { enhetstype: '' },
 	}
 
 	const initialValuesStandardOrganisasjon = {
 		antall: antall,
-		beskrivelse: null,
-		pdldata: { opprettNyPerson: { identtype, syntetisk: true } },
 		importPersoner: null,
 		organisasjon: {
 			enhetstype: 'AS',
@@ -175,7 +170,6 @@ export const deriveBestillingsveilederState = (
 		initialValues = {
 			...initialValues,
 			antall: importPersoner.length,
-			pdldata: undefined,
 			importPersoner,
 		}
 	}
@@ -206,7 +200,7 @@ export const deriveBestillingsveilederState = (
 
 	return {
 		initialValues,
-		gruppeId: String(gruppeId),
+		gruppeId: gruppeId === 0 ? null : gruppeId,
 		antall,
 		identtype,
 		id2032,

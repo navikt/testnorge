@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
@@ -8,8 +8,8 @@ import { useFormContext } from 'react-hook-form'
 import Button from '@/components/ui/button/Button'
 import { NavLink } from 'react-router'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type MalVelgerProps = {
@@ -38,7 +38,7 @@ export function getMalOptions(malbestillinger: Record<string, Mal[]> | undefined
 }
 
 export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId: _gruppeId }: MalVelgerProps) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const formMethods = useFormContext()
 	const { maler, loading } = useDollyOrganisasjonMaler()
 	const [bruker, setBruker] = useState(brukernavn)
