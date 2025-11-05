@@ -12,7 +12,7 @@ public abstract class PdlTestdataCommand implements Callable<Flux<OrdreResponseD
 
     static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
     static final String TEMA = "Tema";
-    static final Duration TIMEOUT = Duration.ofSeconds(10); // Seconds.
+    static final Duration TIMEOUT = Duration.ofSeconds(10);
 
     OrdreResponseDTO.HendelseDTO errorHandling(Throwable error, Integer id) {
         return OrdreResponseDTO.HendelseDTO
