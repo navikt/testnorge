@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -19,5 +20,7 @@ public class RsTeam {
 
     private String navn;
     private String beskrivelse;
-    private List<String> brukere;
+
+    @Builder.Default
+    private List<String> brukere = new ArrayList<>();
 }
