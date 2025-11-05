@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -18,9 +19,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.FULLMAKT;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
@@ -39,6 +42,8 @@ public class FullmaktClient implements ClientRegister {
         if (bestilling.getFullmakt().isEmpty()) {
             return Mono.empty();
         }
+
+        fiksDatoerForGjenoppretting(bestilling.getFullmakt(), isOpprettEndre);
 
         return oppdaterStatus(progress, getInfoVenter(FULLMAKT.name()))
                 .then(Flux.fromIterable(bestilling.getFullmakt())
@@ -63,6 +68,24 @@ public class FullmaktClient implements ClientRegister {
                         .collectList()
                         .map(this::getStatus)
                     .flatMap(status -> oppdaterStatus(progress, status)));
+    }
+
+    /**
+     * Noen datoer kan måtte fikses ved gjenoppretting av fullmakt
+     */
+    private static void fiksDatoerForGjenoppretting(List<RsFullmakt> fullmakter, Boolean isOpprettEndre) {
+
+        if (isFalse(isOpprettEndre)) {
+            fullmakter.forEach(fullmakt -> {
+                if (nonNull(fullmakt.getGyldigFraOgMed()) && fullmakt.getGyldigFraOgMed().isBefore(now())) {
+                    fullmakt.setGyldigFraOgMed(now());
+                }
+                if (nonNull(fullmakt.getGyldigTilOgMed())
+                        && fullmakt.getGyldigTilOgMed().isBefore(fullmakt.getGyldigFraOgMed())) {
+                    fullmakt.setGyldigTilOgMed(fullmakt.getGyldigFraOgMed().plusYears(1));
+                }
+            });
+        }
     }
 
     @Override
