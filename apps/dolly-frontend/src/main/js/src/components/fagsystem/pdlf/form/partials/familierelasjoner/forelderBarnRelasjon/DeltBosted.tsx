@@ -8,6 +8,7 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { gyldigeSivilstander } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
+import { forelderTyper } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 
 interface DeltBostedValues {
 	formMethods: UseFormReturn
@@ -48,19 +49,30 @@ export const DeltBostedForm = ({ formMethods, path }: DeltBostedValues) => {
 
 	const harForelderBarnRelasjon = gyldigeBarn?.length > 0 || harEksisterendeFamilierelasjonBarn
 
+	const gyldigeForeldre = formMethods
+		.watch('pdldata.person.forelderBarnRelasjon')
+		?.filter((forelderBarn: any) => forelderTyper.includes(forelderBarn.relatertPersonsRolle))
+
+	const eksisterendeForeldre = opts.personFoerLeggTil?.pdlforvalter?.relasjoner?.filter(
+		(relasjon: any) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER',
+	)
+
+	const antallForeldre = (gyldigeForeldre?.length || 0) + (eksisterendeForeldre?.length || 0)
+	const gyldigAntallForeldre = 2
+
 	return (
 		<>
-			{!harPartner && (
+			{!harPartner && antallForeldre < gyldigAntallForeldre && (
 				<StyledAlert variant={'warning'} size={'small'}>
 					For at delt bosted skal fungere, må personen ha en gjeldende partner med en annen adresse.
 					Velg sivilstand (partner) i steg 2 under familierelasjoner-panelet, og huk av for "bor
 					ikke sammen" i steg 3.
 				</StyledAlert>
 			)}
-			{!harForelderBarnRelasjon && (
+			{!harForelderBarnRelasjon && antallForeldre < gyldigAntallForeldre && (
 				<StyledAlert variant={'warning'} size={'small'}>
-					For at delt bosted skal fungere, må personen ha en relasjon til et barn. Dette kan velges
-					i steg 2 under familierelasjoner-panelet.
+					For at delt bosted skal fungere, må personen ha en relasjon til et barn, eller til to
+					foreldre. Dette kan velges i steg 2 under familierelasjoner-panelet.
 				</StyledAlert>
 			)}
 			<div className="flexbox--flex-wrap">
