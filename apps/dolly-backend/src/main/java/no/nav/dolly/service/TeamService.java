@@ -70,17 +70,17 @@ public class TeamService {
                                                 .build())
                                         .flatMap(lagretTeam -> saveTeamBruker(lagretTeam.getId(), bruker.getId())
                                                 .then(brukerRepository.findByBrukerIdIn(team.getBrukere())
+                                                        .collectList())
+                                                .flatMap(brukere -> Flux.fromIterable(brukere)
                                                         .map(Bruker::getId)
                                                         .flatMap(id -> saveTeamBruker(lagretTeam.getId(), id))
-                                                        .collectList())
-                                                        .then(brukerRepository.findByBrukerIdIn(team.getBrukere())
-                                                        .collectList())
-                                                .map(teamBrukere -> {
-                                                    lagretTeam.setOpprettetAv(bruker);
-                                                    lagretTeam.getBrukere().add(bruker);
-                                                    lagretTeam.getBrukere().addAll(teamBrukere);
-                                                    return lagretTeam;
-                                                })))));
+                                                        .collectList()
+                                                        .map(teamBrukere -> {
+                                                            lagretTeam.setOpprettetAv(bruker);
+                                                            lagretTeam.getBrukere().add(bruker);
+                                                            lagretTeam.getBrukere().addAll(brukere);
+                                                            return lagretTeam;
+                                                        }))))));
     }
 
     private Mono<TeamBruker> saveTeamBruker(Long teamId, Long brukerId) {
