@@ -56,7 +56,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 						checkboxMargin
 						onChange={() => setDeltBosted(!deltBosted)}
 						size="small"
-						isDisabled={opts?.identtype === 'NPID'}
+						disabled={opts?.identtype === 'NPID'}
 						vis={!testnorgePerson}
 						title={
 							opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
