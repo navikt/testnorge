@@ -1,35 +1,104 @@
 plugins {
     id "dolly-libs"
-
-    id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
 
 sonarqube {
     skipProject = true
 }
 
-group = 'no.nav.testnav.xsd'
+group = "no.nav.testnav.xsd"
+
+configurations {
+    xjc
+}
 
 dependencies {
     implementation "jakarta.activation:jakarta.activation-api:$versions.jakartaActivation"
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
 
-    xjc "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
-    xjc 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
+    xjc "org.glassfish.jaxb:jaxb-xjc:4.0.5"
     xjc "com.sun.xml.bind:jaxb-impl:$versions.jaxb"
-    xjc 'com.sun.istack:istack-commons-runtime:4.2.0'
+    xjc "com.sun.istack:istack-commons-runtime:4.2.0"
 }
 
-xjcGeneration {
-    defaultAdditionalXjcOptions = ['encoding': 'UTF-8']
-    schemas {
-        v2_0 {
-            schemaFile = 'a-arbeidsforhold_v2_0.xsd'
-            javaPackageName = 'no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0'
+def xjcOutputDir_v2_0 = layout.buildDirectory.dir("generated/sources/xjc/v2_0")
+def xjcOutputDir_v2_1 = layout.buildDirectory.dir("generated/sources/xjc/v2_1")
+
+tasks.register("xjcGenerate_v2_0", JavaExec) {
+    def schemaDir = "src/main/schemas/xjc"
+    def schemaFile = "a-arbeidsforhold_v2_0.xsd"
+    def outputDirProvider = xjcOutputDir_v2_0
+
+    inputs.files(fileTree(schemaDir) { include schemaFile })
+    outputs.dir(outputDirProvider)
+
+    classpath = configurations.xjc
+    mainClass = "com.sun.tools.xjc.XJCFacade"
+
+    argumentProviders.add(new CommandLineArgumentProvider() {
+        @Override
+        Iterable<String> asArguments() {
+            return [
+                "-encoding", "UTF-8",
+                "-d", outputDirProvider.get().asFile.absolutePath,
+                "-p", "no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0",
+                "${schemaDir}/${schemaFile}"
+            ]
         }
-        v2_1 {
-            schemaFile = 'a-arbeidsforhold_v2_1.xsd'
-            javaPackageName = 'no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1'
+    })
+
+    doFirst {
+        def outputDir = outputDirProvider.get().asFile
+        if (outputDir.exists()) {
+            outputDir.deleteDir()
+        }
+        outputDir.mkdirs()
+    }
+}
+
+tasks.register("xjcGenerate_v2_1", JavaExec) {
+    def schemaDir = "src/main/schemas/xjc"
+    def schemaFile = "a-arbeidsforhold_v2_1.xsd"
+    def outputDirProvider = xjcOutputDir_v2_1
+
+    inputs.files(fileTree(schemaDir) { include schemaFile })
+    outputs.dir(outputDirProvider)
+
+    classpath = configurations.xjc
+    mainClass = "com.sun.tools.xjc.XJCFacade"
+
+    argumentProviders.add(new CommandLineArgumentProvider() {
+        @Override
+        Iterable<String> asArguments() {
+            return [
+                "-encoding", "UTF-8",
+                "-d", outputDirProvider.get().asFile.absolutePath,
+                "-p", "no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1",
+                "${schemaDir}/${schemaFile}"
+            ]
+        }
+    })
+
+    doFirst {
+        def outputDir = outputDirProvider.get().asFile
+        if (outputDir.exists()) {
+            outputDir.deleteDir()
+        }
+        outputDir.mkdirs()
+    }
+}
+
+tasks.register("xjcGenerate") {
+    dependsOn xjcGenerate_v2_0, xjcGenerate_v2_1
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir xjcOutputDir_v2_0
+            srcDir xjcOutputDir_v2_1
         }
     }
 }
+
+compileJava.dependsOn xjcGenerate
