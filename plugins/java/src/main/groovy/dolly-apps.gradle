@@ -40,7 +40,9 @@ dependencies {
 
     testAnnotationProcessor "org.projectlombok:lombok"
 
+    testImplementation platform("org.junit:junit-bom:$versions.junit")
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 dependencyManagement {
@@ -63,7 +65,7 @@ repositories {
     maven {
         name = "GitHub Packages"
         url = uri("https://maven.pkg.github.com/navikt/maven-release")
-        credentials(PasswordCredentials) {
+        credentials {
             username = "token"
             password = System.getenv("NAV_TOKEN")
         }
