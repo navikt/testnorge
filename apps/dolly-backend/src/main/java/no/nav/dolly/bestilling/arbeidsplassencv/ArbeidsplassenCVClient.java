@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
