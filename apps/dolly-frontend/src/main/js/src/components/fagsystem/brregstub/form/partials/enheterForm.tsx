@@ -1,10 +1,10 @@
-import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray';
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker';
-import { FormSelect } from '@/components/ui/form/inputs/select/Select';
-import { PersonrollerForm } from '@/components/fagsystem/brregstub/form/partials/personrollerForm';
-import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle';
-import React from 'react';
-import { useBrregRoller } from '@/utils/hooks/useBrreg';
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { PersonrollerForm } from '@/components/fagsystem/brregstub/form/partials/personrollerForm'
+import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle'
+import React from 'react'
+import { useBrregRoller } from '@/utils/hooks/useBrreg'
 
 const initialValues = {
 	rolle: '',
