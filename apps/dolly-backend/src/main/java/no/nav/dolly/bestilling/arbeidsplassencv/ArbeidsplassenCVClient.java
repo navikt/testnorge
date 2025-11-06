@@ -51,11 +51,8 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 })
                 .flatMap(oppdatertOrdre -> Mono.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                .flatMap(response2 ->
-                                    isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel()) ?
-                                        arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid) :
-                                        Mono.just("Fortsetter uten godtatt hjemmel og repetert vilkaar"))
-                                .flatMap(response4 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
+                                .then(arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid))
+                                .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
                                         .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
                                                         request, uuid, logRetries(progress))
                                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
@@ -71,8 +68,8 @@ public class ArbeidsplassenCVClient implements ClientRegister {
         return retrySignal -> {
 
             String retryStatus = "%s (antall forsøk: %d)".formatted(
-                            getInfoVenter("Arbeidsplassen"),
-                            retrySignal.totalRetries() + 2);
+                    getInfoVenter("Arbeidsplassen"),
+                    retrySignal.totalRetries() + 2);
 
             oppdaterStatus(progress, retryStatus)
                     .subscribe();
