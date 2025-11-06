@@ -160,7 +160,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 					name={`${path}.hasMellomnavn`}
 					id={`${path}.hasMellomnavn`}
 					label="Har tilfeldig mellomnavn"
-					isDisabled={!_.isEmpty(selectedMellomnavn)}
+					disabled={!_.isEmpty(selectedMellomnavn)}
 					checkboxMargin
 				/>
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
