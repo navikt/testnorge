@@ -62,13 +62,9 @@ public class PensjonforvalterClient implements ClientRegister {
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));
                     return Flux.just(bestilling)
-                            .flatMap(bestilling1 -> {
-                                if (!dollyPerson.isOrdre()) {
-                                    return oppdaterStatus(dollyPerson, progress, prepInitStatus(tilgjengeligeMiljoer))
-                                            .thenReturn(bestilling1);
-                                }
-                                return Mono.just(bestilling1);
-                            })
+                            .flatMap(bestilling1 ->
+                                    oppdaterStatus(dollyPerson, progress, prepInitStatus(tilgjengeligeMiljoer))
+                                            .thenReturn(bestilling1))
                             .flatMap(bestilling1 -> pensjonPdlPersonService.getUtvidetPersondata(dollyPerson.getIdent())
                                     .flatMapMany(utvidetPersondata ->
                                             Flux.concat(

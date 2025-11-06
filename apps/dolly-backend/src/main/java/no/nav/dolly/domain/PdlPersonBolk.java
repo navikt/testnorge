@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,9 +24,12 @@ public class PdlPersonBolk {
     @AllArgsConstructor
     public static class Data {
 
-        private List<PersonBolk> hentPersonBolk;
-        private List<GeografiskTilknytningBolk> hentGeografiskTilknytningBolk;
-        private List<IdenterBolk> hentIdenterBolk;
+        @Builder.Default
+        private List<PersonBolk> hentPersonBolk = new ArrayList<>();
+        @Builder.Default
+        private List<GeografiskTilknytningBolk> hentGeografiskTilknytningBolk = new ArrayList<>();
+        @Builder.Default
+        private List<IdenterBolk> hentIdenterBolk = new ArrayList<>();
     }
 
     @lombok.Data
