@@ -18,8 +18,11 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
@@ -181,6 +184,11 @@ public class NavigasjonService {
                                 person.getPerson().getFullmakt().stream()
                                         .map(FullmaktDTO::getMotpartsPersonident)
                                         .filter(Objects::nonNull),
+                                person.getRelasjoner().stream()
+                                        .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.FULLMEKTIG ||
+                                                relasjon.getRelasjonType() == RelasjonType.FULLMAKTSGIVER)
+                                        .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                        .map(PersonDTO::getIdent),
                                 person.getPerson().getVergemaal().stream()
                                         .map(VergemaalDTO::getVergeIdent)
                                         .filter(Objects::nonNull),

@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClientRequest;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -44,14 +43,11 @@ public class EgenansattPostCommand implements Callable<Flux<TpsMeldingResponseDT
                         .queryParamIfPresent(MILJOER_PARAM, nonNull(miljoer) ? Optional.of(miljoer) : Optional.empty())
                         .queryParam(EGENANSATT_FRA_PARAM, datoFra)
                         .build(ident))
-                .httpRequest(httpRequest -> {
-                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
-                })
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(TpsMeldingResponseDTO.class)
+                .timeout(Duration.ofSeconds(REQUEST_DURATION))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO

@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClientRequest;
 
 import java.time.Duration;
 import java.util.List;
@@ -41,15 +40,12 @@ public class TpsMessagingPostCommand implements Callable<Flux<TpsMeldingResponse
                         .path(urlPath)
                         .queryParamIfPresent(MILJOER_PARAM, nonNull(miljoer) ? Optional.of(miljoer) : Optional.empty())
                         .build(ident))
-                .httpRequest(httpRequest -> {
-                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
-                })
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(body)
                 .retrieve()
                 .bodyToFlux(TpsMeldingResponseDTO.class)
+                .timeout(Duration.ofSeconds(REQUEST_DURATION))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO

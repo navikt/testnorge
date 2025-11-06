@@ -9,7 +9,6 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClientRequest;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
@@ -38,16 +37,13 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                 .uri(uriBuilder -> uriBuilder
                         .path(POPP_INNTEKT_URL)
                         .build())
-                .httpRequest(httpRequest -> {
-                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
-                })
                 .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonPoppInntektRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
+                .timeout(Duration.ofSeconds(REQUEST_DURATION))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {

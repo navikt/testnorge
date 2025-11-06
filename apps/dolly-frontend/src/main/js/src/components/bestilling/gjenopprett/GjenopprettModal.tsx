@@ -41,9 +41,9 @@ export const GjenopprettModal = ({
 	const getWarningText = () => {
 		if (
 			bestilling?.bestilling?.arbeidsplassenCV &&
-			(!bestilling?.bestilling?.arenaforvalter || !bestilling?.bestilling?.arbeidssoekerregisteret)
+			!bestilling?.bestilling?.arbeidssoekerregisteret
 		) {
-			return 'Gjenoppretting av Nav CV vil ikke fungere om person mangler oppføring i Arbeidssøkerregisteret og Arena.'
+			return 'Gjenoppretting av Nav CV vil ikke fungere om person mangler oppføring i Arbeidssøkerregisteret.'
 		}
 		return null
 	}

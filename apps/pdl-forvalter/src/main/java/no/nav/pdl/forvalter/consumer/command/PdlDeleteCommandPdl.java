@@ -39,6 +39,7 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .retrieve()
                 .bodyToFlux(PdlBestillingResponse.class)
+                .timeout(TIMEOUT)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                         .status(PdlStatus.OK)
                         .deletedOpplysninger(response.getDeletedOpplysninger())

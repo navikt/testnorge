@@ -42,7 +42,7 @@ type Target = {
 const RELASJON_BARN = 'BARN'
 const RELASJON_FORELDER = 'FORELDER'
 
-const forelderTyper = ['FORELDER', 'MOR', 'MEDMOR', 'FAR']
+export const forelderTyper = ['FORELDER', 'MOR', 'MEDMOR', 'FAR']
 
 export const ForelderBarnRelasjonForm = ({
 	formMethods,

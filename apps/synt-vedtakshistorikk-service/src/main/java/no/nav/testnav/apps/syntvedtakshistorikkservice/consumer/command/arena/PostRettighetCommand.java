@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
@@ -36,6 +37,7 @@ public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> 
                 .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetRequest.class))
                 .retrieve()
                 .bodyToMono(NyttVedtakResponse.class)
+                .timeout(Duration.ofSeconds(30))
                 .doOnError(WebClientError.logTo(log));
     }
 
