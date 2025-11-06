@@ -21,6 +21,10 @@ import java.util.stream.Collectors;
 public abstract class DollyBuildValidationTask extends DefaultTask {
 
     static final String TARGET_GROUP_ID = "no.nav.testnav.libs";
+    private static final Set<String> PROJECTS_WITHOUT_WORKFLOW_FILE = Set.of(
+            "maskinporten-mock",
+            "tokendings-mock"
+    );
 
     @Input
     public abstract Property<String> getCurrentProjectName();
@@ -47,7 +51,10 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
         var errorsFromSettingsGradle = validateSettingsGradle(log, librariesInBuildGradle);
 
         // Check GitHub Workflow triggers against build.gradle.
-        var errorsFromGitHubWorkflow = validateGitHubWorkflowTriggers(log, librariesInBuildGradle);
+        var errorsFromGitHubWorkflow = false;
+        if (!PROJECTS_WITHOUT_WORKFLOW_FILE.contains(getCurrentProjectName().get())) {
+            errorsFromGitHubWorkflow = validateGitHubWorkflowTriggers(log, librariesInBuildGradle);
+        }
 
         if (errorsFromSettingsGradle || errorsFromGitHubWorkflow) {
             throw new GradleException("Dolly build validation failed. See logs for details.");
