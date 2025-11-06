@@ -43,9 +43,11 @@ export const DeltBosted = ({ deltBosted }: DeltBostedTypes) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Delt bosted</BestillingTitle>
-				<BestillingData>
-					<DeltBostedVisning deltBosted={deltBosted} />
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<DeltBostedVisning deltBosted={deltBosted} />
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

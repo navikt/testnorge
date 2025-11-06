@@ -68,6 +68,8 @@ export const BestillingData = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	margin-bottom: 10px;
+	//padding-left: 10px;
+	//border-left: 2px solid #eee;
 
 	&& {
 		.title-value {

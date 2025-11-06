@@ -21,15 +21,17 @@ export const GenerertPensjonsgivendeInntekt = ({
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Generert pensjonsgivende inntekt (POPP)</BestillingTitle>
-				<BestillingData>
-					<TitleValue title="Fra og med år" value={pensjon?.fomAar} />
-					<TitleValue title="Til og med år" value={pensjon?.tomAar} />
-					<TitleValue title="Gjennomsnitt G-verdi" value={pensjon?.averageG} />
-					<TitleValue
-						title="Tillat inntekt under 1G"
-						value={oversettBoolean(pensjon?.tillatInntektUnder1G)}
-					/>
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue title="Fra og med år" value={pensjon?.fomAar} />
+						<TitleValue title="Til og med år" value={pensjon?.tomAar} />
+						<TitleValue title="Gjennomsnitt G-verdi" value={pensjon?.averageG} />
+						<TitleValue
+							title="Tillat inntekt under 1G"
+							value={oversettBoolean(pensjon?.tillatInntektUnder1G)}
+						/>
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

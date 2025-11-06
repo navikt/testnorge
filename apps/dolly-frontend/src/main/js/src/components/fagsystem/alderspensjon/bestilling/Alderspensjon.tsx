@@ -28,18 +28,23 @@ export const Alderspensjon = ({ pensjon }: AlderspensjonProps) => {
 				<BestillingTitle>
 					{'Alderspensjon: ' + (pensjon?.soknad ? 'Søknad' : 'Vedtak')}
 				</BestillingTitle>
-				<BestillingData>
-					<TitleValue title="Krav fremsatt dato" value={formatDate(pensjon?.kravFremsattDato)} />
-					<TitleValue title="Iverksettelsesdato" value={formatDate(pensjon?.iverksettelsesdato)} />
-					<TitleValue title="Saksbehandler" value={pensjon?.saksbehandler} />
-					<TitleValue title="Attesterer" value={pensjon?.attesterer} />
-					<TitleValue title="Uttaksgrad" value={`${pensjon?.uttaksgrad}%`} />
-					<TitleValue title="NAV-kontor" value={navEnhetLabel || pensjon?.navEnhetId} />
-					<TitleValue
-						title="Ektefelle/partners inntekt"
-						value={pensjon?.relasjoner?.[0]?.sumAvForvArbKapPenInntekt}
-					/>
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue title="Krav fremsatt dato" value={formatDate(pensjon?.kravFremsattDato)} />
+						<TitleValue
+							title="Iverksettelsesdato"
+							value={formatDate(pensjon?.iverksettelsesdato)}
+						/>
+						<TitleValue title="Saksbehandler" value={pensjon?.saksbehandler} />
+						<TitleValue title="Attesterer" value={pensjon?.attesterer} />
+						<TitleValue title="Uttaksgrad" value={`${pensjon?.uttaksgrad}%`} />
+						<TitleValue title="NAV-kontor" value={navEnhetLabel || pensjon?.navEnhetId} />
+						<TitleValue
+							title="Ektefelle/partners inntekt"
+							value={pensjon?.relasjoner?.[0]?.sumAvForvArbKapPenInntekt}
+						/>
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

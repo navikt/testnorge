@@ -27,11 +27,10 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 					label={'Kontonummer'}
 					isDisabled={harTilfeldig}
 				/>
-				<div style={{ marginTop: '17px' }}>
+				<div style={{ marginTop: '25px' }}>
 					<FormCheckbox
 						name={`${path}.tilfeldigKontonummer`}
 						label="Har tilfeldig kontonummer"
-						size="medium"
 						disabled={kontonummer}
 					/>
 				</div>

@@ -20,16 +20,18 @@ export const NavAnsatt = ({ nomdata }: NomdataTypes) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Nav-ansatt (NOM)</BestillingTitle>
-				<BestillingData>
-					{!nomdata.startDato && !nomdata.sluttDato ? (
-						<TitleValue title="Nav-ansatt" value="Ingen verdier satt" />
-					) : (
-						<>
-							<TitleValue title="Startdato" value={formatDate(nomdata.startDato)} />
-							<TitleValue title="Sluttdato" value={formatDate(nomdata.sluttDato)} />
-						</>
-					)}
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						{!nomdata.startDato && !nomdata.sluttDato ? (
+							<TitleValue title="Nav-ansatt" value="Ingen verdier satt" />
+						) : (
+							<>
+								<TitleValue title="Startdato" value={formatDate(nomdata.startDato)} />
+								<TitleValue title="Sluttdato" value={formatDate(nomdata.sluttDato)} />
+							</>
+						)}
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

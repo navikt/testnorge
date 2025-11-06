@@ -22,24 +22,26 @@ export const Histark = ({ histark }: HistarkProps) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Dokumenter (Histark)</BestillingTitle>
-				<BestillingData>
-					<TitleValue
-						title="Temakoder"
-						value={arrayToString(
-							dokument?.temakoder?.map((kode) => showKodeverkLabel(Kodeverk.TEMA, kode)),
-						)}
-					/>
-					<TitleValue title="Nav-enhet" value={dokument?.enhetsnavn} />
-					<TitleValue title="Startår" value={dokument?.startYear} />
-					<TitleValue title="Sluttår" value={dokument?.endYear} />
-					<TitleValue
-						title="Skanningstidspunkt"
-						value={formatDateTime(dokument?.skanningsTidspunkt)}
-					/>
-					<TitleValue title="Skanner" value={dokument?.skanner} />
-					<TitleValue title="Skannested" value={dokument?.skannested} />
-					<TitleValue title="Vedlegg tittel" value={dokument?.tittel} />
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue
+							title="Temakoder"
+							value={arrayToString(
+								dokument?.temakoder?.map((kode) => showKodeverkLabel(Kodeverk.TEMA, kode)),
+							)}
+						/>
+						<TitleValue title="Nav-enhet" value={dokument?.enhetsnavn} />
+						<TitleValue title="Startår" value={dokument?.startYear} />
+						<TitleValue title="Sluttår" value={dokument?.endYear} />
+						<TitleValue
+							title="Skanningstidspunkt"
+							value={formatDateTime(dokument?.skanningsTidspunkt)}
+						/>
+						<TitleValue title="Skanner" value={dokument?.skanner} />
+						<TitleValue title="Skannested" value={dokument?.skannested} />
+						<TitleValue title="Vedlegg tittel" value={dokument?.tittel} />
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

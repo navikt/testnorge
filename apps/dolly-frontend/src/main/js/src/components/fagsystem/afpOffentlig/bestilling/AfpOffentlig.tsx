@@ -25,36 +25,40 @@ export const AfpOffentlig = ({ pensjon }: AfpOffentligProps) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>AFP offentlig</BestillingTitle>
-				<BestillingData>
-					<TitleValue
-						title="Direktekall"
-						value={pensjon.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')}
-						size="xlarge"
-					/>
-					<DollyFieldArray header="AFP offentlig" data={pensjon?.mocksvar}>
-						{(afpOffentlig: MocksvarTypes, idx: number) => (
-							<React.Fragment key={idx}>
-								<TitleValue title="TP-ordning" value={showTpNavn(afpOffentlig.tpId)} />
-								<TitleValue
-									title="Status AFP"
-									value={showLabel('statusAfp', afpOffentlig.statusAfp)}
-								/>
-								<TitleValue title="Virkningsdato" value={formatDate(afpOffentlig.virkningsDato)} />
-								<TitleValue title="Sist benyttet G" value={afpOffentlig.sistBenyttetG} />
-								{afpOffentlig.belopsListe?.length > 0 && (
-									<DollyFieldArray header="Beløp" data={afpOffentlig.belopsListe} nested>
-										{(belop: BeloepTypes, idy: number) => (
-											<React.Fragment key={idy}>
-												<TitleValue title="F.o.m. dato" value={formatDate(belop.fomDato)} />
-												<TitleValue title="Beløp" value={belop.belop} />
-											</React.Fragment>
-										)}
-									</DollyFieldArray>
-								)}
-							</React.Fragment>
-						)}
-					</DollyFieldArray>
-				</BestillingData>
+				{pensjon.direktekall?.length > 0 && (
+					<div className="bestilling-blokk">
+						<BestillingData>
+							<TitleValue
+								title="Direktekall"
+								value={pensjon.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')}
+								size="xlarge"
+							/>
+						</BestillingData>
+					</div>
+				)}
+				<DollyFieldArray header="AFP offentlig" data={pensjon?.mocksvar}>
+					{(afpOffentlig: MocksvarTypes, idx: number) => (
+						<React.Fragment key={idx}>
+							<TitleValue title="TP-ordning" value={showTpNavn(afpOffentlig.tpId)} />
+							<TitleValue
+								title="Status AFP"
+								value={showLabel('statusAfp', afpOffentlig.statusAfp)}
+							/>
+							<TitleValue title="Virkningsdato" value={formatDate(afpOffentlig.virkningsDato)} />
+							<TitleValue title="Sist benyttet G" value={afpOffentlig.sistBenyttetG} />
+							{afpOffentlig.belopsListe?.length > 0 && (
+								<DollyFieldArray header="Beløp" data={afpOffentlig.belopsListe} nested>
+									{(belop: BeloepTypes, idy: number) => (
+										<React.Fragment key={idy}>
+											<TitleValue title="F.o.m. dato" value={formatDate(belop.fomDato)} />
+											<TitleValue title="Beløp" value={belop.belop} />
+										</React.Fragment>
+									)}
+								</DollyFieldArray>
+							)}
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>
 	)

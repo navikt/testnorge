@@ -26,13 +26,15 @@ export const AlderspensjonNyUttaksgrad = ({ apNy }: AlderspensjonNyUttaksgradPro
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Alderspensjon: Ny uttaksgrad</BestillingTitle>
-				<BestillingData>
-					<TitleValue title="Ny uttaksgrad" value={`${apNy.nyUttaksgrad}%`} />
-					<TitleValue title="Dato f.o.m." value={formatDate(apNy.fom)} />
-					<TitleValue title="Saksbehandler" value={apNy?.saksbehandler} />
-					<TitleValue title="Attesterer" value={apNy?.attesterer} />
-					<TitleValue title="NAV-kontor" value={navEnhetLabel || apNy?.navEnhetId} />
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue title="Ny uttaksgrad" value={`${apNy.nyUttaksgrad}%`} />
+						<TitleValue title="Dato f.o.m." value={formatDate(apNy.fom)} />
+						<TitleValue title="Saksbehandler" value={apNy?.saksbehandler} />
+						<TitleValue title="Attesterer" value={apNy?.attesterer} />
+						<TitleValue title="NAV-kontor" value={navEnhetLabel || apNy?.navEnhetId} />
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

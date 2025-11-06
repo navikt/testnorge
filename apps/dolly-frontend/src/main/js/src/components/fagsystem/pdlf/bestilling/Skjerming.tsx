@@ -20,10 +20,12 @@ export const Skjerming = ({ skjerming }: SkjermingTypes) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Skjerming</BestillingTitle>
-				<BestillingData>
-					<TitleValue title="Skjerming fra" value={formatDate(skjerming.egenAnsattDatoFom)} />
-					<TitleValue title="Skjerming til" value={formatDate(skjerming.egenAnsattDatoTom)} />
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue title="Skjerming fra" value={formatDate(skjerming.egenAnsattDatoFom)} />
+						<TitleValue title="Skjerming til" value={formatDate(skjerming.egenAnsattDatoTom)} />
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

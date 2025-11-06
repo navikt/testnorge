@@ -23,69 +23,71 @@ export const Arbeidssoekerregisteret = ({
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Arbeidssøkerregisteret</BestillingTitle>
-				<BestillingData>
-					<TitleValue
-						title="Utført av"
-						value={showTyperLabel('BRUKERTYPE', arbeidssoekerregisteret.utfoertAv)}
-					/>
-					<TitleValue title="Kilde" value={arbeidssoekerregisteret.kilde} />
-					<TitleValue title="Årsak" value={arbeidssoekerregisteret.aarsak} />
-					<TitleValue
-						title="Utdanningsnivå"
-						value={showTyperLabel('NUSKODE', arbeidssoekerregisteret.nuskode)}
-					/>
-					<TitleValue
-						title="Beskrivelse av jobbsituasjonen"
-						value={showTyperLabel(
-							'JOBBSITUASJONSBESKRIVELSE',
-							arbeidssoekerregisteret.jobbsituasjonsbeskrivelse,
-						)}
-					/>
-					<TitleValue
-						title="Utdanning bestått"
-						value={oversettBoolean(arbeidssoekerregisteret.utdanningBestaatt)}
-					/>
-					<TitleValue
-						title="Utdanning godkjent"
-						value={oversettBoolean(arbeidssoekerregisteret.utdanningGodkjent)}
-					/>
-					<TitleValue
-						title="Helsetilstand hindrer arbeid"
-						value={oversettBoolean(arbeidssoekerregisteret.helsetilstandHindrerArbeid)}
-					/>
-					<TitleValue
-						title="Andre forhold hindrer arbeid"
-						value={oversettBoolean(arbeidssoekerregisteret.andreForholdHindrerArbeid)}
-					/>
-				</BestillingData>
-				{jobbsituasjonsdetaljer && !isEmpty(jobbsituasjonsdetaljer) && (
-					<>
-						<h3>Detaljer om jobbsituasjonen</h3>
-						<BestillingData>
-							<TitleValue
-								title="Gjelder fra dato"
-								value={formatDate(jobbsituasjonsdetaljer?.gjelderFraDato)}
-							/>
-							<TitleValue
-								title="Gjelder til dato"
-								value={formatDate(jobbsituasjonsdetaljer?.gjelderTilDato)}
-							/>
-							<TitleValue title="Stilling" value={jobbsituasjonsdetaljer?.stillingstittel} />
-							<TitleValue
-								title="Stillingsprosent"
-								value={jobbsituasjonsdetaljer?.stillingsprosent}
-							/>
-							<TitleValue
-								title="Siste dag med lønn"
-								value={formatDate(jobbsituasjonsdetaljer?.sisteDagMedLoenn)}
-							/>
-							<TitleValue
-								title="Siste arbeidsdag"
-								value={formatDate(jobbsituasjonsdetaljer?.sisteArbeidsdag)}
-							/>
-						</BestillingData>
-					</>
-				)}
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue
+							title="Utført av"
+							value={showTyperLabel('BRUKERTYPE', arbeidssoekerregisteret.utfoertAv)}
+						/>
+						<TitleValue title="Kilde" value={arbeidssoekerregisteret.kilde} />
+						<TitleValue title="Årsak" value={arbeidssoekerregisteret.aarsak} />
+						<TitleValue
+							title="Utdanningsnivå"
+							value={showTyperLabel('NUSKODE', arbeidssoekerregisteret.nuskode)}
+						/>
+						<TitleValue
+							title="Beskrivelse av jobbsituasjonen"
+							value={showTyperLabel(
+								'JOBBSITUASJONSBESKRIVELSE',
+								arbeidssoekerregisteret.jobbsituasjonsbeskrivelse,
+							)}
+						/>
+						<TitleValue
+							title="Utdanning bestått"
+							value={oversettBoolean(arbeidssoekerregisteret.utdanningBestaatt)}
+						/>
+						<TitleValue
+							title="Utdanning godkjent"
+							value={oversettBoolean(arbeidssoekerregisteret.utdanningGodkjent)}
+						/>
+						<TitleValue
+							title="Helsetilstand hindrer arbeid"
+							value={oversettBoolean(arbeidssoekerregisteret.helsetilstandHindrerArbeid)}
+						/>
+						<TitleValue
+							title="Andre forhold hindrer arbeid"
+							value={oversettBoolean(arbeidssoekerregisteret.andreForholdHindrerArbeid)}
+						/>
+					</BestillingData>
+					{jobbsituasjonsdetaljer && !isEmpty(jobbsituasjonsdetaljer) && (
+						<>
+							<h3>Detaljer om jobbsituasjonen</h3>
+							<BestillingData>
+								<TitleValue
+									title="Gjelder fra dato"
+									value={formatDate(jobbsituasjonsdetaljer?.gjelderFraDato)}
+								/>
+								<TitleValue
+									title="Gjelder til dato"
+									value={formatDate(jobbsituasjonsdetaljer?.gjelderTilDato)}
+								/>
+								<TitleValue title="Stilling" value={jobbsituasjonsdetaljer?.stillingstittel} />
+								<TitleValue
+									title="Stillingsprosent"
+									value={jobbsituasjonsdetaljer?.stillingsprosent}
+								/>
+								<TitleValue
+									title="Siste dag med lønn"
+									value={formatDate(jobbsituasjonsdetaljer?.sisteDagMedLoenn)}
+								/>
+								<TitleValue
+									title="Siste arbeidsdag"
+									value={formatDate(jobbsituasjonsdetaljer?.sisteArbeidsdag)}
+								/>
+							</BestillingData>
+						</>
+					)}
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

@@ -18,13 +18,15 @@ export const NorskBankkonto = ({ norskBankkonto }: NorskBankkontoTypes) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Norsk bankkonto</BestillingTitle>
-				<BestillingData>
-					<TitleValue title="Kontonummer" value={norskBankkonto.kontonummer} />
-					<TitleValue
-						title="Tilfeldig kontonummer"
-						value={norskBankkonto.tilfeldigKontonummer && 'Ja'}
-					/>
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue title="Kontonummer" value={norskBankkonto.kontonummer} />
+						<TitleValue
+							title="Tilfeldig kontonummer"
+							value={norskBankkonto.tilfeldigKontonummer && 'Ja'}
+						/>
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)

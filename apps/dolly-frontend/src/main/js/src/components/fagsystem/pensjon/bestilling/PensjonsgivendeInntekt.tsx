@@ -19,15 +19,17 @@ export const PensjonsgivendeInntekt = ({ pensjon }: PensjonsgivendeInntektProps)
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Pensjonsgivende inntekt (POPP)</BestillingTitle>
-				<BestillingData>
-					<TitleValue title="Fra og med år" value={pensjon?.fomAar} />
-					<TitleValue title="Til og med år" value={pensjon?.tomAar} />
-					<TitleValue title="Beløp" value={pensjon?.belop} />
-					<TitleValue
-						title="Nedjuster med grunnbeløp"
-						value={oversettBoolean(pensjon?.redusertMedGrunnbelop)}
-					/>
-				</BestillingData>
+				<div className="bestilling-blokk">
+					<BestillingData>
+						<TitleValue title="Fra og med år" value={pensjon?.fomAar} />
+						<TitleValue title="Til og med år" value={pensjon?.tomAar} />
+						<TitleValue title="Beløp" value={pensjon?.belop} />
+						<TitleValue
+							title="Nedjuster med grunnbeløp"
+							value={oversettBoolean(pensjon?.redusertMedGrunnbelop)}
+						/>
+					</BestillingData>
+				</div>
 			</ErrorBoundary>
 		</div>
 	)
