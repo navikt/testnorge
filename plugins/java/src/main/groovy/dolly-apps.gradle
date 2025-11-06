@@ -26,7 +26,6 @@ dependencies {
 
     implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
-    implementation "no.nav.testnav.libs:testing"
     implementation "org.glassfish.expressly:expressly:$versions.expressly"
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.projectlombok:lombok"

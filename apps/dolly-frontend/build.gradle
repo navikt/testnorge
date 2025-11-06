@@ -20,6 +20,7 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:reactive-session-security"
     implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
 
     // Session
     implementation 'io.valkey:valkey-java:5.4.0'
