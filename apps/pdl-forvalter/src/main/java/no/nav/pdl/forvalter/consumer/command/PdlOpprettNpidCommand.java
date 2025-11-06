@@ -34,6 +34,7 @@ public class PdlOpprettNpidCommand extends PdlTestdataCommand {
                         Flux.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(PdlStatus.OK)
                                 .build()))
+                .timeout(TIMEOUT)
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(errorHandling(error, null)));

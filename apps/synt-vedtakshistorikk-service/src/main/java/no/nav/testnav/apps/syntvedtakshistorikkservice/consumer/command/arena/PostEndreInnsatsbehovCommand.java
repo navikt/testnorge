@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
@@ -38,6 +39,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
                 .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
                 .retrieve()
                 .bodyToMono(EndreInnsatsbehovResponse.class)
+                .timeout(Duration.ofSeconds(30))
                 .doOnError(WebClientError.logTo(log));
     }
 

@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdldata.command;
 
-import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -11,6 +10,7 @@ import reactor.core.publisher.Flux;
 
 import java.net.http.HttpTimeoutException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +29,6 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(Void.class)
-
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on DELETE of ident %s".formatted(ident)))
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
