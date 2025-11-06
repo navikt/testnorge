@@ -17,13 +17,14 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-frontend"
     implementation "no.nav.testnav.libs:reactive-security"
-    implementation("no.nav.testnav.libs:reactive-session-security")
-    implementation("no.nav.testnav.libs:security-core")
+    implementation "no.nav.testnav.libs:reactive-session-security"
+    implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:testing"
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
 
     implementation "org.springframework.cloud:spring-cloud-starter-gateway"
 

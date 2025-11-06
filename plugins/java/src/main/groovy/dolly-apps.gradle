@@ -31,7 +31,6 @@ dependencies {
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.projectlombok:lombok"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-webflux"
 
     runtimeOnly "io.micrometer:micrometer-registry-prometheus"
 
