@@ -27,7 +27,7 @@ dependencies {
 
     implementation "no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:$versions.navAltinnInntektsmelding"
 
-    implementation "org.apache.commons:commons-io:1.3.2"
+    implementation "commons-io:commons-io:2.20.0"
 
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
