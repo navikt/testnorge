@@ -29,17 +29,18 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 	const { pdlfEksistens, loading, error } = usePdlfEksistens(submittedIds as string[] | null)
 
 	useEffect(() => {
+		if (!pdlfEksistens) return
 		const gyldigeIdenter = pdlfEksistens
-			?.filter((status: { available: boolean }) => status.available)
+			.filter((status: { available: boolean }) => status.available)
 			.map((status: { ident: string }) => status.ident)
-		opts.updateContext && opts.updateContext({ opprettFraIdenter: gyldigeIdenter })
+		opts.updateContext &&
+			opts.updateContext({
+				opprettFraIdenter: gyldigeIdenter,
+				is: { ...opts.is, opprettFraIdenter: true },
+			})
 		formMethods.setValue('opprettFraIdenter', gyldigeIdenter)
 		formMethods.setValue('gruppeId', gruppeId)
-	}, [pdlfEksistens])
-
-	useEffect(() => {
-		formMethods.reset(opts.initialValues)
-	}, [opts.initialValues])
+	}, [pdlfEksistens, gruppeId])
 
 	const hasInvalidIdentifiers = pdlfEksistens?.some(
 		(status: { available: boolean }) => !status.available,
@@ -52,14 +53,19 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 	const resetEksisterende = () => {
 		setSubmittedIds(null)
 		setInput('')
-		formMethods.setValue('opprettFraIdenter', null)
+		formMethods.setValue('opprettFraIdenter', [])
+		opts.updateContext &&
+			opts.updateContext({
+				opprettFraIdenter: undefined,
+				is: { ...opts.is, opprettFraIdenter: false },
+			})
 	}
 
 	return (
 		<div className="eksisterende-ident-form">
 			{error && (
 				<Alert variant="error">
-					<Icon kind="advarsel" size="medium" />
+					<Icon kind="report-problem-triangle" />
 					{error.message}
 				</Alert>
 			)}

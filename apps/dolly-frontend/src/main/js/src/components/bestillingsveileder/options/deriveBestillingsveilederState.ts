@@ -56,6 +56,22 @@ const TYPE = {
 	NY_ORGANISASJON_FRA_MAL: 'NY_ORGANISASJON_FRA_MAL',
 	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON',
 	IMPORT_TESTNORGE: 'IMPORT_TESTNORGE',
+} as const
+
+type Mode = (typeof TYPE)[keyof typeof TYPE]
+
+const detectMode = (config: RawBestillingsveilederConfig): Mode => {
+	if (config.opprettOrganisasjon) {
+		if (config.opprettOrganisasjon === 'STANDARD') return TYPE.NY_STANDARD_ORGANISASJON
+		if (config.mal) return TYPE.NY_ORGANISASJON_FRA_MAL
+		return TYPE.NY_ORGANISASJON
+	}
+	if (config.opprettFraIdenter) return TYPE.OPPRETT_FRA_IDENTER
+	if (config.personFoerLeggTil) return TYPE.LEGG_TIL
+	if (config.leggTilPaaGruppe) return TYPE.LEGG_TIL_PAA_GRUPPE
+	if (config.importPersoner) return TYPE.IMPORT_TESTNORGE
+	if (config.mal) return TYPE.NY_BESTILLING_FRA_MAL
+	return TYPE.NY_BESTILLING
 }
 
 export const deriveBestillingsveilederState = (
@@ -63,7 +79,6 @@ export const deriveBestillingsveilederState = (
 	environments: any,
 ): BestillingsveilederDerivedState => {
 	const {
-		gruppeId = 0,
 		antall = 1,
 		identtype = 'FNR',
 		id2032 = false,
@@ -76,13 +91,14 @@ export const deriveBestillingsveilederState = (
 		opprettOrganisasjon = null,
 		leggTilPaaGruppe = null,
 		gruppe,
+		gruppeId = null,
 		timedOutFagsystemer,
 	} = config
 
-	let bestType = TYPE.NY_BESTILLING
+	const mode = detectMode(config)
 
-	let initialValues: any = {
-		antall: antall,
+	const buildBasePerson = () => ({
+		antall,
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
@@ -91,116 +107,105 @@ export const deriveBestillingsveilederState = (
 				id2032,
 			},
 		},
-		importPersoner: null,
-	}
+		importPersoner: undefined,
+	})
 
-	const initialValuesLeggTil = {
-		antall: antall,
-		beskrivelse: null,
-		// pdldata: { opprettNyPerson: null },
-		importPersoner: null,
-		environments: [],
-	}
-
-	const initialValuesLeggTilPaaGruppe = {
-		antall: antall,
-		beskrivelse: null,
-		// pdldata: { opprettNyPerson: null },
-		importPersoner: null,
-		environments: [],
-	}
-
-	const initialValuesOpprettFraIdenter = {
-		antall: antall,
-		beskrivelse: null,
-		// pdldata: { opprettNyPerson: {} },
-		importPersoner: null,
-		opprettFraIdenter,
-	}
-
-	const initialValuesOrganisasjon = {
-		antall: antall,
-		organisasjon: { enhetstype: '' },
-	}
-
-	const initialValuesStandardOrganisasjon = {
-		antall: antall,
-		importPersoner: null,
-		organisasjon: {
-			enhetstype: 'AS',
-			naeringskode: '01.451',
-			forretningsadresse: {
-				adresselinjer: ['', '', ''],
-				postnr: '',
-				kommunenr: '',
-				landkode: 'NO',
-			},
-			underenheter: [
-				{
-					enhetstype: 'BEDR',
-					naeringskode: '01.451',
-					forretningsadresse: {
-						adresselinjer: ['', '', ''],
-						postnr: '',
-						kommunenr: '',
-						landkode: 'NO',
-					},
+	const builders: Record<Mode, () => any> = {
+		[TYPE.NY_BESTILLING]: () => buildBasePerson(),
+		[TYPE.NY_BESTILLING_FRA_MAL]: () => ({
+			...buildBasePerson(),
+			...initialValuesBasedOnMal(mal, environments),
+			mal: mal.id,
+		}),
+		[TYPE.OPPRETT_FRA_IDENTER]: () => ({
+			antall,
+			beskrivelse: null,
+			pdldata: undefined,
+			importPersoner: undefined,
+			opprettFraIdenter,
+			...(mal ? { mal: mal.id } : {}),
+		}),
+		[TYPE.LEGG_TIL]: () => ({
+			antall,
+			beskrivelse: null,
+			pdldata: undefined,
+			importPersoner: undefined,
+			environments: [],
+			...(mal ? { mal: mal.id } : {}),
+		}),
+		[TYPE.LEGG_TIL_PAA_GRUPPE]: () => ({
+			antall,
+			beskrivelse: null,
+			pdldata: undefined,
+			importPersoner: undefined,
+			environments: [],
+			...(mal ? { mal: mal.id } : {}),
+		}),
+		[TYPE.IMPORT_TESTNORGE]: () => {
+			const base = {
+				antall: importPersoner ? importPersoner.length : antall,
+				beskrivelse: null,
+				importPersoner,
+				...(mal ? { mal: mal.id } : {}),
+			}
+			if (mal?.bestilling?.pdldata?.person) {
+				const malVals = initialValuesBasedOnMal(mal, environments)
+				const person = malVals?.pdldata?.person
+				return { ...base, pdldata: { person } }
+			}
+			return { ...base, pdldata: undefined }
+		},
+		[TYPE.NY_ORGANISASJON]: () => ({
+			antall,
+			organisasjon: { enhetstype: '' },
+		}),
+		[TYPE.NY_STANDARD_ORGANISASJON]: () => ({
+			antall,
+			organisasjon: {
+				enhetstype: 'AS',
+				naeringskode: '01.451',
+				forretningsadresse: {
+					adresselinjer: ['', '', ''],
+					postnr: '',
+					kommunenr: '',
+					landkode: 'NO',
 				},
-			],
+				underenheter: [
+					{
+						enhetstype: 'BEDR',
+						naeringskode: '01.451',
+						forretningsadresse: {
+							adresselinjer: ['', '', ''],
+							postnr: '',
+							kommunenr: '',
+							landkode: 'NO',
+						},
+					},
+				],
+			},
+		}),
+		[TYPE.NY_ORGANISASJON_FRA_MAL]: () => {
+			const malVals = initialValuesBasedOnMal(mal, environments)
+			const { pdldata: _ignorePdldata, ...rest } = malVals || {}
+			return {
+				antall,
+				organisasjon: { enhetstype: '' },
+				...rest,
+				mal: mal.id,
+			}
 		},
 	}
 
-	if (opprettFraIdenter) {
-		bestType = TYPE.OPPRETT_FRA_IDENTER
-		initialValues = initialValuesOpprettFraIdenter
-	}
-
-	if (personFoerLeggTil) {
-		bestType = TYPE.LEGG_TIL
-		initialValues = initialValuesLeggTil
-	}
-
-	if (leggTilPaaGruppe) {
-		bestType = TYPE.LEGG_TIL_PAA_GRUPPE
-		initialValues = initialValuesLeggTilPaaGruppe
-	}
-
-	if (importPersoner) {
-		bestType = TYPE.IMPORT_TESTNORGE
-		initialValues = {
-			...initialValues,
-			antall: importPersoner.length,
-			importPersoner,
+	const initialValues = builders[mode]()
+	if (![TYPE.NY_BESTILLING, TYPE.NY_BESTILLING_FRA_MAL, TYPE.IMPORT_TESTNORGE].includes(mode)) {
+		if (initialValues.pdldata !== undefined) {
+			delete initialValues.pdldata
 		}
 	}
-
-	if (mal) {
-		if (bestType === TYPE.NY_BESTILLING) bestType = TYPE.NY_BESTILLING_FRA_MAL
-		initialValues = { ...initialValues, ...initialValuesBasedOnMal(mal, environments), mal: mal.id }
-	}
-
-	if (opprettOrganisasjon) {
-		if (opprettOrganisasjon === 'STANDARD') {
-			bestType = TYPE.NY_STANDARD_ORGANISASJON
-			initialValues = initialValuesStandardOrganisasjon
-		} else if (mal) {
-			bestType = TYPE.NY_ORGANISASJON_FRA_MAL
-			initialValues = {
-				...initialValuesOrganisasjon,
-				...initialValuesBasedOnMal(mal, environments),
-				mal: mal.id,
-			}
-		} else {
-			bestType = TYPE.NY_ORGANISASJON
-			initialValues = initialValuesOrganisasjon
-		}
-	}
-
 	const effectiveTimedOut = timedOutFagsystemer ?? personFoerLeggTil?.timedOutFagsystemer
-
 	return {
 		initialValues,
-		gruppeId: gruppeId === 0 ? null : gruppeId,
+		gruppeId: gruppeId ?? null,
 		antall,
 		identtype,
 		id2032,
@@ -215,15 +220,15 @@ export const deriveBestillingsveilederState = (
 		gruppe,
 		timedOutFagsystemer: effectiveTimedOut,
 		is: {
-			nyBestilling: bestType === TYPE.NY_BESTILLING,
-			nyBestillingFraMal: bestType === TYPE.NY_BESTILLING_FRA_MAL,
-			opprettFraIdenter: bestType === TYPE.OPPRETT_FRA_IDENTER,
-			leggTil: bestType === TYPE.LEGG_TIL,
-			leggTilPaaGruppe: bestType === TYPE.LEGG_TIL_PAA_GRUPPE,
-			nyOrganisasjon: bestType === TYPE.NY_ORGANISASJON,
-			nyOrganisasjonFraMal: bestType === TYPE.NY_ORGANISASJON_FRA_MAL,
-			nyStandardOrganisasjon: bestType === TYPE.NY_STANDARD_ORGANISASJON,
-			importTestnorge: bestType === TYPE.IMPORT_TESTNORGE,
+			nyBestilling: mode === TYPE.NY_BESTILLING,
+			nyBestillingFraMal: mode === TYPE.NY_BESTILLING_FRA_MAL,
+			opprettFraIdenter: mode === TYPE.OPPRETT_FRA_IDENTER,
+			leggTil: mode === TYPE.LEGG_TIL,
+			leggTilPaaGruppe: mode === TYPE.LEGG_TIL_PAA_GRUPPE,
+			nyOrganisasjon: mode === TYPE.NY_ORGANISASJON,
+			nyOrganisasjonFraMal: mode === TYPE.NY_ORGANISASJON_FRA_MAL,
+			nyStandardOrganisasjon: mode === TYPE.NY_STANDARD_ORGANISASJON,
+			importTestnorge: mode === TYPE.IMPORT_TESTNORGE,
 		},
 	}
 }

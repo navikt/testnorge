@@ -165,87 +165,178 @@ export const StegVelger = ({
 	const originalImportPersonerRef = React.useRef<any>(null)
 	const originalGruppeIdRef = React.useRef<any>(null)
 
+	const sanitizePdldata = (pdldata: any) => {
+		if (!pdldata || typeof pdldata !== 'object') return undefined
+		const { opprettNyPerson, ...rest } = pdldata
+		if (Object.keys(rest).length === 0) return undefined
+		return rest
+	}
+
 	useEffect(() => {
 		const currentMalId = context.mal?.id
+		const isNy = context.is.nyBestilling || context.is.nyBestillingFraMal
+		const isLeggTil = context.is.leggTil || context.is.leggTilPaaGruppe
+		const isImport = context.is.importTestnorge
+		const isFraIdenter = context.is.opprettFraIdenter
+
 		if (!currentMalId) {
 			if (prevMalIdRef.current) {
-				const currentImportPersoner = formMethods.getValues('importPersoner')
-				const currentGruppeId = formMethods.getValues('gruppeId')
-				const cleaned = {
-					antall: '1',
-					beskrivelse: null as any,
-					pdldata: {
-						opprettNyPerson: {
-							identtype: 'FNR',
-							syntetisk: true,
-							id2032: false,
+				if (isNy) {
+					const cleaned = {
+						antall: '1',
+						beskrivelse: null as any,
+						pdldata: {
+							opprettNyPerson: {
+								identtype: 'FNR',
+								syntetisk: true,
+								id2032: false,
+							},
 						},
-					},
-					importPersoner: currentImportPersoner ?? originalImportPersonerRef.current ?? null,
-					gruppeId:
-						currentGruppeId && currentGruppeId !== 0
-							? currentGruppeId
-							: originalGruppeIdRef.current && originalGruppeIdRef.current !== 0
-								? originalGruppeIdRef.current
-								: null,
+						gruppeId: formMethods.getValues('gruppeId') || null,
+					}
+					formMethods.reset(cleaned)
+					context.setIdenttype && context.setIdenttype('FNR')
+					context.updateContext && context.updateContext({ identtype: 'FNR' })
+				} else {
+					// Non-ny modes revert to baseline without mal-specific fields
+					const baseline: any = {
+						gruppeId: formMethods.getValues('gruppeId') || null,
+						antall: formMethods.getValues('antall') || '1',
+					}
+					if (isImport) baseline.importPersoner = formMethods.getValues('importPersoner') || []
+					if (isFraIdenter)
+						baseline.opprettFraIdenter = formMethods.getValues('opprettFraIdenter') || []
+					formMethods.reset(baseline)
 				}
-				formMethods.reset(cleaned)
-				context.setIdenttype && context.setIdenttype('FNR')
-				context.updateContext && context.updateContext({ identtype: 'FNR' })
-				prevMalIdRef.current = undefined
-				originalImportPersonerRef.current = null
-				originalGruppeIdRef.current = null
 			}
+			prevMalIdRef.current = undefined
 			return
 		}
+
 		if (prevMalIdRef.current === currentMalId) return
 		prevMalIdRef.current = currentMalId
-		originalImportPersonerRef.current = formMethods.getValues('importPersoner')
-		originalGruppeIdRef.current = formMethods.getValues('gruppeId')
+
 		try {
 			const environments = formMethods.getValues('environments')
 			const malValues = initialValuesBasedOnMal(context.mal, environments)
-			Object.entries(malValues).forEach(([key, value]) => {
-				formMethods.setValue(key as any, value as any)
-			})
-			formMethods.setValue('mal', currentMalId)
-			const identtypeFraMal = _.get(malValues, 'pdldata.opprettNyPerson.identtype')
-			if (identtypeFraMal) {
-				formMethods.setValue('pdldata.opprettNyPerson.identtype', identtypeFraMal, {
-					shouldValidate: true,
-				})
-				context.setIdenttype && context.setIdenttype(identtypeFraMal)
-				context.updateContext && context.updateContext({ identtype: identtypeFraMal })
+			let nextValues: any = {}
+			if (isNy) {
+				nextValues = {
+					...malValues,
+					mal: currentMalId,
+				}
+			} else if (isLeggTil) {
+				const sanitized = sanitizePdldata(malValues.pdldata)
+				nextValues = {
+					gruppeId: formMethods.getValues('gruppeId') || null,
+					mal: currentMalId,
+					...malValues,
+					pdldata: sanitized,
+				}
+			} else if (isImport) {
+				const sanitized = sanitizePdldata(malValues.pdldata)
+				nextValues = {
+					gruppeId: formMethods.getValues('gruppeId') || null,
+					mal: currentMalId,
+					importPersoner: formMethods.getValues('importPersoner') || [],
+					...malValues,
+					pdldata: sanitized,
+				}
+			} else if (isFraIdenter) {
+				const sanitized = sanitizePdldata(malValues.pdldata)
+				nextValues = {
+					gruppeId: formMethods.getValues('gruppeId') || null,
+					mal: currentMalId,
+					opprettFraIdenter: formMethods.getValues('opprettFraIdenter') || [],
+					...malValues,
+					pdldata: sanitized,
+				}
+			} else {
+				nextValues = { ...malValues, mal: currentMalId }
 			}
 
-			const id2032FraMal = _.get(malValues, 'pdldata.opprettNyPerson.id2032')
-			if (typeof id2032FraMal === 'boolean') {
-				formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032FraMal, {
-					shouldValidate: true,
-				})
+			// Remove opprettNyPerson for non-ny modes explicitly
+			if (!isNy && nextValues.pdldata?.opprettNyPerson) {
+				delete nextValues.pdldata.opprettNyPerson
+				if (Object.keys(nextValues.pdldata).length === 0) {
+					delete nextValues.pdldata
+				}
 			}
-		} catch (e) {
-			console.warn('Klarte ikke å sette mal-verdier i form', e)
-		}
-	}, [context.mal])
+
+			formMethods.reset(nextValues)
+
+			// Sync identtype for ny modes only
+			if (isNy) {
+				const identtypeFraMal = _.get(malValues, 'pdldata.opprettNyPerson.identtype')
+				if (identtypeFraMal) {
+					context.setIdenttype && context.setIdenttype(identtypeFraMal)
+					context.updateContext && context.updateContext({ identtype: identtypeFraMal })
+				}
+				const id2032FraMal = _.get(malValues, 'pdldata.opprettNyPerson.id2032')
+				if (typeof id2032FraMal === 'boolean') {
+					formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032FraMal, {
+						shouldValidate: true,
+					})
+				}
+			}
+		} catch (e) {}
+	}, [
+		context.mal,
+		context.is.nyBestilling,
+		context.is.nyBestillingFraMal,
+		context.is.leggTil,
+		context.is.leggTilPaaGruppe,
+		context.is.importTestnorge,
+		context.is.opprettFraIdenter,
+	])
 
 	useEffect(() => {
+		if (
+			erOrganisasjon ||
+			context.is.leggTil ||
+			context.is.leggTilPaaGruppe ||
+			context.is.importTestnorge ||
+			context.is.opprettFraIdenter
+		)
+			return
 		const currentIdenttype = formMethods.getValues('pdldata.opprettNyPerson.identtype')
 		if (context.identtype && context.identtype !== currentIdenttype) {
 			formMethods.setValue('pdldata.opprettNyPerson.identtype', context.identtype, {
 				shouldValidate: true,
 			})
 		}
-	}, [context.identtype])
+	}, [
+		context.identtype,
+		erOrganisasjon,
+		context.is.leggTil,
+		context.is.leggTilPaaGruppe,
+		context.is.importTestnorge,
+		context.is.opprettFraIdenter,
+	])
 
 	useEffect(() => {
+		if (
+			erOrganisasjon ||
+			context.is.leggTil ||
+			context.is.leggTilPaaGruppe ||
+			context.is.importTestnorge ||
+			context.is.opprettFraIdenter
+		)
+			return
 		const currentId2032 = formMethods.getValues('pdldata.opprettNyPerson.id2032')
 		if (typeof context.id2032 === 'boolean' && context.id2032 !== currentId2032) {
 			formMethods.setValue('pdldata.opprettNyPerson.id2032', context.id2032, {
 				shouldValidate: true,
 			})
 		}
-	}, [context.id2032])
+	}, [
+		context.id2032,
+		erOrganisasjon,
+		context.is.leggTil,
+		context.is.leggTilPaaGruppe,
+		context.is.importTestnorge,
+		context.is.opprettFraIdenter,
+	])
 
 	const malWatch = useWatch({ control: formMethods.control, name: 'mal' })
 	const identtypeWatch = useWatch({
