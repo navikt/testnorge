@@ -22,7 +22,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-webflux" // This is an inconsistency, but needed as a workaround because of reactive libs being used.
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
