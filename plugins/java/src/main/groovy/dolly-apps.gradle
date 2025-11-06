@@ -3,6 +3,7 @@ plugins {
     id "dolly-versions"
     id "no.nav.dolly.plugins.buildValidation"
 
+    id "idea"
     id "io.spring.dependency-management"
     id "java"
     id "org.springframework.boot"
@@ -85,5 +86,12 @@ tasks.test {
     doFirst {
         jvmArgs += '-javaagent:' + configurations.testRuntimeClasspath.find { it.name.contains("byte-buddy-agent") }
         jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
     }
 }
