@@ -2,24 +2,21 @@ import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { EnheterForm } from './partials/enheterForm'
-import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { useFormContext } from 'react-hook-form'
+import { useBrregUnderstatuser } from '@/utils/hooks/useBrreg'
 
 export const brregAttributt = 'brregstub'
 
 export const BrregstubForm = () => {
 	const formMethods = useFormContext()
+	const { understatuserOptions, loading } = useBrregUnderstatuser()
 
 	if (!formMethods.watch(brregAttributt)) {
 		return null
 	}
-
-	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
-	const understatuserOptions = SelectOptionsFormat.formatOptions('understatuser', understatuser)
 
 	return (
 		<Vis attributt={brregAttributt}>
@@ -34,7 +31,7 @@ export const BrregstubForm = () => {
 						name="brregstub.understatuser"
 						label="Understatuser"
 						options={understatuserOptions}
-						isLoading={understatuser.loading}
+						isLoading={loading}
 						isMulti={true}
 						size="grow"
 						isClearable={false}
