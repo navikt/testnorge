@@ -1,7 +1,5 @@
 plugins {
     id "dolly-apps"
-
-    id "org.unbroken-dome.xjc" version "2.0.0"
 }
 
 sonarqube {
@@ -11,16 +9,52 @@ sonarqube {
     }
 }
 
-sourceSets {
-    main {
-        xjcBinding.srcDirs = ["resources/xjb"]
+configurations {
+    xjc
+}
+
+def xjcOutputDir = layout.buildDirectory.dir("generated/sources/xjc")
+
+tasks.register("xjcGenerate", JavaExec) {
+    def schemaDir = "src/main/resources/schema"
+    def outputDirProvider = xjcOutputDir
+
+    inputs.files(fileTree(schemaDir) { include "*.xsd" })
+    outputs.dir(outputDirProvider)
+
+    classpath = configurations.xjc
+    mainClass = "com.sun.tools.xjc.XJCFacade"
+
+    argumentProviders.add(new CommandLineArgumentProvider() {
+        @Override
+        Iterable<String> asArguments() {
+            return [
+                "-encoding", "UTF-8",
+                "-extension",
+                "-d", outputDirProvider.get().asFile.absolutePath,
+                "${schemaDir}/skattekorttilarbeidsgiver_v3.0.xsd"
+            ]
+        }
+    })
+
+    doFirst {
+        def outputDir = outputDirProvider.get().asFile
+        if (outputDir.exists()) {
+            outputDir.deleteDir()
+        }
+        outputDir.mkdirs()
     }
 }
 
-xjc {
-    xjcVersion = "3.0"
-    srcDirName = "resources/schema"
+sourceSets {
+    main {
+        java {
+            srcDir xjcOutputDir
+        }
+    }
 }
+
+compileJava.dependsOn xjcGenerate
 
 dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
@@ -40,4 +74,10 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
+
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
+
+    xjc "org.glassfish.jaxb:jaxb-xjc:4.0.5"
+    xjc "com.sun.xml.bind:jaxb-impl:$versions.jaxb"
+    xjc "com.sun.istack:istack-commons-runtime:4.2.0"
 }
