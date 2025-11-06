@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCVCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaHjemmelCommand;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaVilkaarCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostPersonCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCVCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
@@ -60,20 +59,12 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
                 .doOnNext(resultat -> log.info("Oppdatert CV for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_godtaVilkaar"})
-    public Mono<ArbeidsplassenCVStatusDTO> godtaVilkaar(String ident, String uuid) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMap(token -> new ArbeidsplassenGodtaVilkaarCommand(webClient, ident, uuid, token.getTokenValue()).call())
-                .doOnNext(resultat -> log.info("Opprettet vilkaar for ident {} {}", ident, resultat));
-    }
-
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_godtaHjemmel"})
     public Mono<ArbeidsplassenCVStatusDTO> godtaHjemmel(String ident, String uuid) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new ArbeidsplassenGodtaHjemmelCommand(webClient, ident, uuid, token.getTokenValue()).call())
-                .doOnNext(resultat -> log.info("Opprettet hjemmel for ident {} {}", ident, resultat));
+                .doOnNext(resultat -> log.info("Godtatt hjemmel for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_opprettPerson"})

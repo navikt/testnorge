@@ -51,15 +51,10 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 })
                 .flatMap(oppdatertOrdre -> Mono.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                .flatMap(response -> arbeidsplassenCVConsumer.godtaVilkaar(dollyPerson.getIdent(), uuid))
-                                .flatMap(response2 -> {
-                                    if (isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel())) {
-                                        return arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid)
-                                                .flatMap(response3 -> arbeidsplassenCVConsumer.godtaVilkaar(dollyPerson.getIdent(), uuid));
-                                    } else {
-                                        return Mono.just("Fortsetter uten hjemmel og repetert vilkaar");
-                                    }
-                                })
+                                .flatMap(response2 ->
+                                    isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel()) ?
+                                        arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid) :
+                                        Mono.just("Fortsetter uten godtatt hjemmel og repetert vilkaar"))
                                 .flatMap(response4 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
                                         .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
                                                         request, uuid, logRetries(progress))
