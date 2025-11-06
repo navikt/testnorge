@@ -18,7 +18,7 @@ export const TilrettelagtKommunikasjon = ({
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Tilrettelagt kommunikasjon</BestillingTitle>
 				<DollyFieldArray header="Tolk" data={tilrettelagtKommunikasjonListe}>

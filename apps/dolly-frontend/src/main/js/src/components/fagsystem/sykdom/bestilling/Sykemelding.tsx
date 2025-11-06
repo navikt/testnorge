@@ -34,11 +34,11 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Sykemelding</BestillingTitle>
 				{detaljertSykemelding && (
-					<>
+					<div className="bestilling-blokk">
 						<BestillingData>
 							<TitleValue title="Startdato" value={formatDate(detaljertSykemelding.startDato)} />
 							<TitleValue
@@ -160,7 +160,7 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 								</BestillingData>
 							</>
 						)}
-					</>
+					</div>
 				)}
 				{nySykemelding && (
 					<BestillingData>

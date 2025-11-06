@@ -15,7 +15,7 @@ export const NorskBankkonto = ({ norskBankkonto }: NorskBankkontoTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Norsk bankkonto</BestillingTitle>
 				<BestillingData>

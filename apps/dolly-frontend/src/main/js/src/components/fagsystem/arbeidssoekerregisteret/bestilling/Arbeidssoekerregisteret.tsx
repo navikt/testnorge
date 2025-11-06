@@ -20,7 +20,7 @@ export const Arbeidssoekerregisteret = ({
 	const jobbsituasjonsdetaljer = arbeidssoekerregisteret.jobbsituasjonsdetaljer
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Arbeidssøkerregisteret</BestillingTitle>
 				<BestillingData>

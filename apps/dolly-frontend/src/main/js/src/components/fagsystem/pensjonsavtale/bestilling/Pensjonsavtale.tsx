@@ -19,7 +19,7 @@ export const Pensjonsavtale = ({ pensjon }: PensjonsavtaleProps) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Pensjonsavtale (PEN)</BestillingTitle>
 				<DollyFieldArray header="Pensjonsavtale" data={pensjon}>

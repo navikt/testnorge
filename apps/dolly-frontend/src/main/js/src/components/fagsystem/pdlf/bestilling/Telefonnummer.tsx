@@ -15,7 +15,7 @@ export const Telefonnummer = ({ telefonnummerListe }: TelefonnummerTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Telefonnummer</BestillingTitle>
 				<DollyFieldArray header="Telefonnummer" data={telefonnummerListe}>

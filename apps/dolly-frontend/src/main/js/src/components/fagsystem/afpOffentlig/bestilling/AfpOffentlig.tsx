@@ -22,7 +22,7 @@ export const AfpOffentlig = ({ pensjon }: AfpOffentligProps) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>AFP offentlig</BestillingTitle>
 				<BestillingData>

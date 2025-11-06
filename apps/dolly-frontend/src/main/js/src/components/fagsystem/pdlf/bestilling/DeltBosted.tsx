@@ -40,7 +40,7 @@ export const DeltBosted = ({ deltBosted }: DeltBostedTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Delt bosted</BestillingTitle>
 				<BestillingData>

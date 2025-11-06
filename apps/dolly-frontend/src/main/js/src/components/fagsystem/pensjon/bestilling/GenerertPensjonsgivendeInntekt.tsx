@@ -18,7 +18,7 @@ export const GenerertPensjonsgivendeInntekt = ({
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Generert pensjonsgivende inntekt (POPP)</BestillingTitle>
 				<BestillingData>

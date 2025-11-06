@@ -247,7 +247,7 @@ export const Inntektsmelding = ({ inntektsmelding }: BestillingVisning) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Inntektsmelding (fra Altinn)</BestillingTitle>
 				<DollyFieldArray header="Inntekt" data={inntektsmelding.inntekter}>

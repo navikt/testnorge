@@ -43,7 +43,7 @@ export const Arbeidsplassen = ({ arbeidsplassenCV }: ArbeidsplassenCVTypes) => {
 	const harHjemmel = arbeidsplassenCV?.harHjemmel
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Nav CV</BestillingTitle>
 				{jobboensker && (

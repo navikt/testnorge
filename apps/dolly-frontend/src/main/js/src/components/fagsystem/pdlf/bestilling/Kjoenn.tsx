@@ -16,7 +16,7 @@ export const Kjoenn = ({ kjoennListe }: KjoennTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Kjønn</BestillingTitle>
 				<DollyFieldArray header="Kjønn" data={kjoennListe}>

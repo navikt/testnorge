@@ -17,7 +17,7 @@ export const Skjerming = ({ skjerming }: SkjermingTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Skjerming</BestillingTitle>
 				<BestillingData>

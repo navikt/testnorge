@@ -1,0 +1,37 @@
+@import (reference) '@/styles/variables.less';
+
+.bestilling-data {
+
+  .bestilling-visning {
+    //display: flex;
+    //flex-wrap: wrap;
+    width: 100%;
+    //margin-bottom: 10px;
+    //padding: 0 6px 3px 6px;
+    //border-bottom: 1px solid @color-bg-divider;
+    //margin-bottom: 20px;
+    //background-color: red;
+
+    //TODO: Sett bestilling-blokk alle steder det er relevant (rundt <BestillimgData>)
+    .bestilling-blokk {
+      //display: flex;
+      //flex-wrap: wrap;
+      //margin-bottom: 10px;
+      padding-left: 10px;
+      border-left: 2px solid #eee;
+    }
+
+    .dfa-blokk {
+      padding-right: 0;
+    }
+
+    .title-value {
+      margin-bottom: 10px;
+    }
+  }
+
+  .bestilling-visning + .bestilling-visning {
+    padding-top: 10px;
+    border-top: 1px solid @color-bg-divider;
+  }
+}

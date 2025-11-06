@@ -24,7 +24,7 @@ export const Bostedsadresse = ({ bostedsadresseListe }: BostedsadresseTypes) => 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Bostedsadresse</BestillingTitle>
 				<DollyFieldArray header="Adresse" getHeader={getHeader} data={bostedsadresseListe}>

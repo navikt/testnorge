@@ -24,7 +24,7 @@ export const Tjenestepensjon = ({ pensjon }: TjenestepensjonProps) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Tjenestepensjon (TP)</BestillingTitle>
 				<DollyFieldArray header="Ordning" data={pensjon}>

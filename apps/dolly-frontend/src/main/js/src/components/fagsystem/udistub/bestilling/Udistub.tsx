@@ -44,7 +44,7 @@ export const Udistub = ({ udistub }: any) => {
 	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus) ? 'Tredjelandsborger' : null
 
 	return (
-		<div className={'person-visning'}>
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>UDI</BestillingTitle>
 				{oppholdStatus && (

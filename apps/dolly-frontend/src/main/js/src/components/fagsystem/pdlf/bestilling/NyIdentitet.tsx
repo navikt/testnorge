@@ -17,7 +17,7 @@ export const NyIdentitet = ({ nyIdentitetListe }: NyIdentitetTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Ny identitet</BestillingTitle>
 				<DollyFieldArray header="Ny identitet" data={nyIdentitetListe}>

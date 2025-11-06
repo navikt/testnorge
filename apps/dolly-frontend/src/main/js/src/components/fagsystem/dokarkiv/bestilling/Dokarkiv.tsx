@@ -17,7 +17,7 @@ export const Dokarkiv = ({ dokarkivListe }: DokarkivProps) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Dokumenter (Joark)</BestillingTitle>
 				<DollyFieldArray header="Dokument" data={dokarkivListe}>

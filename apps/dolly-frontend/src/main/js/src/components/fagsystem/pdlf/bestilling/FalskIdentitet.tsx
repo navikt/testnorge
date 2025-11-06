@@ -27,7 +27,7 @@ export const FalskIdentitet = ({ falskIdentitetListe }: FalskIdentitetTypes) => 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Falsk identitet</BestillingTitle>
 				<DollyFieldArray header="Falsk identitet" data={falskIdentitetListe}>

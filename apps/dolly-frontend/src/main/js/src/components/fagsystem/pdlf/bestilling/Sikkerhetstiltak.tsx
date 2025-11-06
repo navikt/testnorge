@@ -16,7 +16,7 @@ export const Sikkerhetstiltak = ({ sikkerhetstiltakListe }: SikkerhetstiltakType
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Sikkerhetstiltak</BestillingTitle>
 				<DollyFieldArray header="Sikkerhetstiltak" data={sikkerhetstiltakListe}>

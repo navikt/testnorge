@@ -16,7 +16,7 @@ export const Inst = ({ inst }: InstProps) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Institusjonsopphold</BestillingTitle>
 				<DollyFieldArray header="Opphold" data={inst}>

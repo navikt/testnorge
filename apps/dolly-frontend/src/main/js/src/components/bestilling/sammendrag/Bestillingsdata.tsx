@@ -58,6 +58,7 @@ import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/DeltBosted'
 import { NavAnsatt } from '@/components/fagsystem/nom/bestilling/NavAnsatt'
 import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/bestilling/AlderspensjonNyUttaksgrad'
 import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/bestilling/SigrunstubSummertSkattegrunnlag'
+import './Bestillingsdata.less'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -87,7 +88,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
 
 	return (
-		<>
+		<div className="bestilling-data">
 			<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
 			<Foedested foedestedListe={bestilling.pdldata?.person?.foedested} />
 			<Foedselsdato foedselsdatoListe={bestilling.pdldata?.person?.foedselsdato} />
@@ -160,6 +161,6 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Udistub udistub={bestilling.udistub} />
 			<Dokarkiv dokarkivListe={bestilling.dokarkiv} />
 			<Histark histark={bestilling.histark} />
-		</>
+		</div>
 	)
 }

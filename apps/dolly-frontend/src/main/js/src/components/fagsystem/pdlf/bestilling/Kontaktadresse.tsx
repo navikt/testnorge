@@ -23,7 +23,7 @@ export const Kontaktadresse = ({ kontaktadresseListe }: KontaktadresseTypes) => 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Kontaktadresse</BestillingTitle>
 				<DollyFieldArray header="Adresse" getHeader={getHeader} data={kontaktadresseListe}>

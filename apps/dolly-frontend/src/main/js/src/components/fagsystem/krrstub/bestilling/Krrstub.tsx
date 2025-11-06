@@ -22,7 +22,7 @@ export const Krrstub = ({ krrstub }: KrrProps) => {
 			?.navn || krrstub.sdpLeverandoer
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Kontakt- og reservasjonsregisteret</BestillingTitle>
 				<BestillingData>

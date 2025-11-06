@@ -26,7 +26,7 @@ export const Brregstub = ({ brregstub }: BrregProps) => {
 	const rolleLabel = (rolle: string) => roller?.value?.data?.[rolle] || rolle
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Brønnøysundregistrene</BestillingTitle>
 				<TitleValue

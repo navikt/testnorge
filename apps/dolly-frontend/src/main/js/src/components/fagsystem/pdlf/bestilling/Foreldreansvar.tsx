@@ -19,7 +19,7 @@ export const Foreldreansvar = ({ foreldreansvarListe }: ForeldreansvarTypes) => 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Foreldreansvar</BestillingTitle>
 				<DollyFieldArray header="Foreldreansvar" data={foreldreansvarListe}>

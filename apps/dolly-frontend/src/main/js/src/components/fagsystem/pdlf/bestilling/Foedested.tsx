@@ -17,7 +17,7 @@ export const Foedested = ({ foedestedListe }: FoedestedTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Fødested</BestillingTitle>
 				<DollyFieldArray header="Fødested" data={foedestedListe}>

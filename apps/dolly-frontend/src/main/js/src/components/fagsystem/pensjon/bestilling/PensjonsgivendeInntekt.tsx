@@ -16,7 +16,7 @@ export const PensjonsgivendeInntekt = ({ pensjon }: PensjonsgivendeInntektProps)
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Pensjonsgivende inntekt (POPP)</BestillingTitle>
 				<BestillingData>

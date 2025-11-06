@@ -16,7 +16,7 @@ export const Navn = ({ navnListe }: NavnTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Navn</BestillingTitle>
 				<DollyFieldArray header="Navn" data={navnListe}>

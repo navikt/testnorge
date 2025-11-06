@@ -17,7 +17,7 @@ export const Foedselsdato = ({ foedselsdatoListe }: FoedselsdatoTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Fødselsdato</BestillingTitle>
 				<DollyFieldArray header="Fødselsdato" data={foedselsdatoListe}>

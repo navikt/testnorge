@@ -17,7 +17,7 @@ export const NavAnsatt = ({ nomdata }: NomdataTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Nav-ansatt (NOM)</BestillingTitle>
 				<BestillingData>

@@ -27,7 +27,7 @@ export const Uforetrygd = ({ pensjon }: UforetrygdProps) => {
 	)?.label
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Uføretrygd</BestillingTitle>
 				<BestillingData>

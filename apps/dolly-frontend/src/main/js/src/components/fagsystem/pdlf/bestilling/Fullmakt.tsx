@@ -47,7 +47,7 @@ export const Fullmakt = ({ fullmaktListe }: FullmaktTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Fullmakt</BestillingTitle>
 				<DollyFieldArray header="Fullmakt" data={fullmaktListe}>

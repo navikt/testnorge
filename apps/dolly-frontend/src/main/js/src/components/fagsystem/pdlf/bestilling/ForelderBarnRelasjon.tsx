@@ -25,7 +25,7 @@ export const ForelderBarnRelasjon = ({ forelderBarnListe }: ForelderBarnTypes) =
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Barn/foreldre</BestillingTitle>
 				<DollyFieldArray header="Relasjon" getHeader={getHeader} data={forelderBarnListe}>

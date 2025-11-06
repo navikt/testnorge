@@ -16,7 +16,7 @@ export const Medl = ({ medl }: MedlProps) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Medlemskap (MEDL)</BestillingTitle>
 				<BestillingData>

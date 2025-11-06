@@ -23,7 +23,7 @@ export const Alderspensjon = ({ pensjon }: AlderspensjonProps) => {
 	)?.label
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>
 					{'Alderspensjon: ' + (pensjon?.soknad ? 'Søknad' : 'Vedtak')}

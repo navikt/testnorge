@@ -16,7 +16,7 @@ export const Doedsfall = ({ doedsfallListe }: DoedsfallTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Dødsfall</BestillingTitle>
 				<DollyFieldArray header="Dødsfall" data={doedsfallListe}>

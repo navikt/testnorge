@@ -20,6 +20,7 @@ export const BrregstubForm = () => {
 
 	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
 	const understatuserOptions = SelectOptionsFormat.formatOptions('understatuser', understatuser)
+	console.log('understatuser: ', understatuser) //TODO - SLETT MEG
 
 	return (
 		<Vis attributt={brregAttributt}>

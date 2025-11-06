@@ -19,7 +19,7 @@ export const Sivilstand = ({ sivilstandListe }: SivilstandTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Sivilstand (partner)</BestillingTitle>
 				<DollyFieldArray header="Sivilstand" data={sivilstandListe}>

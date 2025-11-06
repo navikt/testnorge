@@ -175,7 +175,7 @@ export const Inntektstub = ({ inntektstub }: InntektstubTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>A-ordningen (Inntektstub)</BestillingTitle>
 				<DollyFieldArray header="Inntektsinformasjon" data={inntektstub.inntektsinformasjon}>

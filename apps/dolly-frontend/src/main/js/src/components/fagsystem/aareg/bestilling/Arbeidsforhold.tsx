@@ -214,7 +214,7 @@ export const Arbeidsforhold = ({ arbeidsforholdListe }: ArbeidsforholdData) => {
 	const harAmelding = arbeidsforholdListe[0]?.amelding?.length > 0
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Arbeidsforhold (Aareg)</BestillingTitle>
 				{harAmelding ? (

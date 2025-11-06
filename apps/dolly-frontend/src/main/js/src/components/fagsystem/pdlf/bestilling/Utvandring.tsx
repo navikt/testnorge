@@ -17,7 +17,7 @@ export const Utvandring = ({ utvandringListe }: UtvandringTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Utvandring</BestillingTitle>
 				<DollyFieldArray header="Utvandring" data={utvandringListe}>

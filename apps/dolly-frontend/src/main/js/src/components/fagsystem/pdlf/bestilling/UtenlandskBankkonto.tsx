@@ -24,7 +24,7 @@ export const UtenlandskBankkonto = ({ utenlandskBankkonto }: UtenlandskBankkonto
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Utenlandsk bankkonto</BestillingTitle>
 				<BestillingData>

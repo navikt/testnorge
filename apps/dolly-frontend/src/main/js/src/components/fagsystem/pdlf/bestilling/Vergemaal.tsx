@@ -20,7 +20,7 @@ export const Vergemaal = ({ vergemaalListe }: VergemaalTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Vergemål</BestillingTitle>
 				<DollyFieldArray header="Vergemål" data={vergemaalListe}>

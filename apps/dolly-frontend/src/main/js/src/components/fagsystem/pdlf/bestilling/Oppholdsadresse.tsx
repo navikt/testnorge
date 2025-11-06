@@ -23,7 +23,7 @@ export const Oppholdsadresse = ({ oppholdsadresseListe }: OppholdsadresseTypes) 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Oppholdsadresse</BestillingTitle>
 				<DollyFieldArray header="Adresse" getHeader={getHeader} data={oppholdsadresseListe}>

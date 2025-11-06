@@ -18,7 +18,7 @@ export const Foedsel = ({ foedselListe }: FoedselTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Fødsel</BestillingTitle>
 				<DollyFieldArray header="Fødsel" data={foedselListe}>

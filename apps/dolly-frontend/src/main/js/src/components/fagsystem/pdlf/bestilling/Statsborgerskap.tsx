@@ -17,7 +17,7 @@ export const Statsborgerskap = ({ statsborgerskapListe }: StatsborgerskapTypes) 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Statsborgerskap</BestillingTitle>
 				<DollyFieldArray header="Statsborgerskap" data={statsborgerskapListe}>

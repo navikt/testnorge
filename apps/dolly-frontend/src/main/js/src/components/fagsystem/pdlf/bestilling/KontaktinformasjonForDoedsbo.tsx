@@ -37,7 +37,7 @@ export const KontaktinformasjonForDoedsbo = ({
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Kontaktinformasjon for dødsbo</BestillingTitle>
 				<DollyFieldArray

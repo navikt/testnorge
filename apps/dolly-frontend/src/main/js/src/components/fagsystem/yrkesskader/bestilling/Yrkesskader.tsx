@@ -16,7 +16,7 @@ export const Yrkesskader = ({ yrkesskader }: YrkesskaderTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Yrkesskader</BestillingTitle>
 				<DollyFieldArray header="Yrkesskade" data={yrkesskader}>

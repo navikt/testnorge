@@ -16,7 +16,7 @@ export const Adressebeskyttelse = ({ adressebeskyttelseListe }: Adressebeskyttel
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Adressebeskyttelse</BestillingTitle>
 				<DollyFieldArray header="Adressebeskyttelse" data={adressebeskyttelseListe}>

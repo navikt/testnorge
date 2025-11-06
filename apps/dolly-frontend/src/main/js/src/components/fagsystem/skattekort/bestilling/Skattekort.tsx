@@ -18,7 +18,7 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Skattekort (SOKOS)</BestillingTitle>
 				<DollyFieldArray header="Skattekort" data={skattekort?.arbeidsgiverSkatt}>

@@ -72,7 +72,7 @@ export const SigrunstubSummertSkattegrunnlag = ({ summertSkattegrunnlagListe }) 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Summert skattegrunnlag (Sigrun)</BestillingTitle>
 				<DollyFieldArray header="Summert skattegrunnlag" data={summertSkattegrunnlagListe}>

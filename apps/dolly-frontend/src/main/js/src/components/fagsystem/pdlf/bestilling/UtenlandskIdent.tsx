@@ -17,7 +17,7 @@ export const UtenlandskIdent = ({ utenlandskIdentListe }: UtenlandskIdentTypes) 
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Utenlandsk identifikasjonsnummer</BestillingTitle>
 				<DollyFieldArray header="Utenlandsk ID" data={utenlandskIdentListe}>

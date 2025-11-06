@@ -24,7 +24,7 @@ export const SigrunstubPensjonsgivende = ({
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Pensjonsgivende inntekt (Sigrun)</BestillingTitle>
 				<DollyFieldArray header="Pensjonsgivende inntekt" data={sigrunstubPensjonsgivendeListe}>

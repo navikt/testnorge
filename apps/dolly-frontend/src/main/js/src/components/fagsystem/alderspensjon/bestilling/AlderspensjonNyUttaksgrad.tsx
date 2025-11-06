@@ -23,7 +23,7 @@ export const AlderspensjonNyUttaksgrad = ({ apNy }: AlderspensjonNyUttaksgradPro
 	)?.label
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Alderspensjon: Ny uttaksgrad</BestillingTitle>
 				<BestillingData>

@@ -19,7 +19,7 @@ export const Histark = ({ histark }: HistarkProps) => {
 	const dokument = histark.dokumenter?.[0]
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Dokumenter (Histark)</BestillingTitle>
 				<BestillingData>

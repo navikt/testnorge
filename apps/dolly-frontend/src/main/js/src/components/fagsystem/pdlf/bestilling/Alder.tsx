@@ -20,18 +20,20 @@ export const Alder = ({ opprettNyPerson }: AlderTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Alder</BestillingTitle>
 				<>
 					{isEmpty(opprettNyPerson, ['identtype', 'syntetisk']) ? (
 						<EmptyObject />
 					) : (
-						<BestillingData>
-							<TitleValue title="Alder" value={opprettNyPerson.alder} />
-							<TitleValue title="Født etter" value={formatDate(opprettNyPerson.foedtEtter)} />
-							<TitleValue title="Født før" value={formatDate(opprettNyPerson.foedtFoer)} />
-						</BestillingData>
+						<div className="bestilling-blokk">
+							<BestillingData>
+								<TitleValue title="Alder" value={opprettNyPerson.alder} />
+								<TitleValue title="Født etter" value={formatDate(opprettNyPerson.foedtEtter)} />
+								<TitleValue title="Født før" value={formatDate(opprettNyPerson.foedtFoer)} />
+							</BestillingData>
+						</div>
 					)}
 				</>
 			</ErrorBoundary>

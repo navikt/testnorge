@@ -16,7 +16,7 @@ export const DoedfoedtBarn = ({ doedfoedtBarnListe }: DoedfoedtBarnTypes) => {
 	}
 
 	return (
-		<div className="person-visning">
+		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Dødfødt barn</BestillingTitle>
 				<DollyFieldArray header="Dødfødt barn" data={doedfoedtBarnListe}>
