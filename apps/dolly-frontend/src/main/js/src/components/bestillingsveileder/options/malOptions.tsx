@@ -140,7 +140,11 @@ const getUpdatedArenaforvalterData = (arenaforvalterData) => {
 const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {
 	return Object.fromEntries(
 		Object.entries(arbeidsplassenData)?.filter((kategori) => {
-			return (kategori?.[0] === 'jobboensker' && kategori?.[1]) || kategori?.[1]?.length > 0
+			return (
+				(kategori?.[0] === 'jobboensker' && kategori?.[1]) ||
+				kategori?.[1]?.length > 0 ||
+				_.isBoolean(kategori?.[1])
+			)
 		}),
 	)
 }

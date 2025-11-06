@@ -32,9 +32,6 @@ export const ArbeidsplassenForm = () => {
 	const harArbeidssoekerregisteret =
 		_.has(formMethods.getValues(), 'arbeidssoekerregisteret') ||
 		_.has(personFoerLeggTil, 'arbeidssoekerregisteret')
-	const harArbeidsytelser =
-		formMethods.getValues()?.arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV' ||
-		personFoerLeggTil?.arenaforvalteren?.length > 0
 
 	return (
 		<Vis attributt={arbeidsplassenAttributt}>
@@ -44,24 +41,14 @@ export const ArbeidsplassenForm = () => {
 				iconType="cv"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>
-				{(!harArbeidssoekerregisteret || !harArbeidsytelser) && (
-					<StyledAlert variant={'warning'} size={'small'} style={{ marginBottom: 0 }}>
-						{
-							<>
-								<p style={{ margin: 0 }}>
-									For å kunne registrere CV må personen være under oppfølging av Nav. Følgende må
-									derfor også velges på forrige steg:
-								</p>
-								<ul style={{ margin: 0 }}>
-									{!harArbeidssoekerregisteret && (
-										<li>"Er arbeidssøker" under Arbeidssøkerregisteret.</li>
-									)}
-									{!harArbeidsytelser && (
-										<li>Minst ett valg for aktiv bruker under Arbeidsytelser.</li>
-									)}
-								</ul>
-							</>
-						}
+				{!harArbeidssoekerregisteret && (
+					<StyledAlert
+						variant={'warning'}
+						size={'small'}
+						style={{ marginBottom: 0, wordBreak: 'auto-phrase' }}
+					>
+						For å kunne registrere CV må personen være under oppfølging av Nav. Derfor må "Er
+						arbeidssøker" under Arbeidssøkerregisteret velges på forrige steg.
 					</StyledAlert>
 				)}
 				<div className="flexbox--flex-wrap cv-form">
