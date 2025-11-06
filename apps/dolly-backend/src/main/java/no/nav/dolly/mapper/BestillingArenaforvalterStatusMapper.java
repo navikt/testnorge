@@ -41,10 +41,12 @@ public final class BestillingArenaforvalterStatusMapper {
             if (isNotBlank(progress.getArenaforvalterStatus())) {
                 List.of(progress.getArenaforvalterStatus().split(",")).forEach(
                         entry -> {
-                            var envStatus = entry.split("\\$");
-                            var environment = envStatus[0];
-                            var status = decodeMsg(envStatus.length > 1 ? envStatus[envStatus.length - 1] : "");
-                            insertArtifact(meldStatusMiljoeIdents, status, environment, progress.getIdent());
+                            if (isNotBlank(entry)) {
+                                var envStatus = entry.split("\\$");
+                                var environment = envStatus[0];
+                                var status = decodeMsg(envStatus.length > 1 ? envStatus[envStatus.length - 1] : "");
+                                insertArtifact(meldStatusMiljoeIdents, status, environment, progress.getIdent());
+                            }
                         });
             }
         });
