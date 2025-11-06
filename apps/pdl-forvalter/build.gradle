@@ -22,10 +22,11 @@ dependencies {
     implementation "no.nav.testnav.libs:servlet-insecure-security"
     implementation "no.nav.testnav.libs:testing"
 
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-webflux" // This is an inconsistency, but needed as a workaround because of reactive libs being used.
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
