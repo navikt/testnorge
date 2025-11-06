@@ -70,9 +70,6 @@ public class FullmaktClient implements ClientRegister {
                     .flatMap(status -> oppdaterStatus(progress, status)));
     }
 
-    /**
-     * Noen datoer kan måtte fikses ved gjenoppretting av fullmakt
-     */
     private static void fiksDatoerForGjenoppretting(List<RsFullmakt> fullmakter, Boolean isOpprettEndre) {
 
         if (isFalse(isOpprettEndre)) {
