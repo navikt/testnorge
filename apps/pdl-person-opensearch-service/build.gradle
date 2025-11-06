@@ -1,0 +1,38 @@
+plugins {
+    id "dolly-apps"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-pdl-person-opensearch-service"
+        property "sonar.projectName", "testnav-pdl-person-opensearch-service"
+    }
+}
+
+dependencies {
+    implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    implementation "no.nav.testnav.libs:avro-schema"
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:kafka-config"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:servlet-insecure-security"
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
+
+    implementation "org.springframework.kafka:spring-kafka"
+    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
+
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+}
