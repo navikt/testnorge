@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { deriveBestillingsveilederState } from './deriveBestillingsveilederState'
+import { deriveBestillingsveilederState } from '@/components/bestillingsveileder/options/deriveBestillingsveilederState'
 
 const environmentsStub = [{ value: 'q1' }, { value: 'q2' }]
 
@@ -7,7 +7,7 @@ describe('deriveBestillingsveilederState', () => {
 	it('should derive NY_BESTILLING defaults', () => {
 		const state = deriveBestillingsveilederState({ gruppeId: 1 }, environmentsStub)
 		expect(state.is.nyBestilling).toBe(true)
-		expect(state.gruppeId).toBe('1')
+		expect(state.gruppeId).toBe(1)
 		expect(state.initialValues.pdldata.opprettNyPerson.identtype).toBe('FNR')
 	})
 
@@ -35,7 +35,7 @@ describe('deriveBestillingsveilederState', () => {
 			environmentsStub,
 		)
 		expect(state.is.leggTil).toBe(true)
-		expect(state.initialValues.pdldata.opprettNyPerson).toBeNull()
+		expect(state.initialValues.pdldata).toBeUndefined()
 	})
 
 	it('should derive LEGG_TIL_PAA_GRUPPE', () => {
@@ -44,7 +44,7 @@ describe('deriveBestillingsveilederState', () => {
 			environmentsStub,
 		)
 		expect(state.is.leggTilPaaGruppe).toBe(true)
-		expect(state.initialValues.pdldata.opprettNyPerson).toBeNull()
+		expect(state.initialValues.pdldata).toBeUndefined()
 	})
 
 	it('should derive IMPORT_TESTNORGE', () => {
@@ -53,6 +53,25 @@ describe('deriveBestillingsveilederState', () => {
 		expect(state.is.importTestnorge).toBe(true)
 		expect(state.initialValues.importPersoner).toEqual(importPersoner)
 		expect(state.initialValues.pdldata).toBeUndefined()
+	})
+
+	it('should sanitize pdldata for IMPORT_TESTNORGE with mal', () => {
+		const mal = {
+			bestilling: {
+				pdldata: {
+					opprettNyPerson: { identtype: 'DNR' },
+					person: { navn: [{ fornavn: 'X', etternavn: 'Y' }] },
+				},
+			},
+		}
+		const importPersoner = [{ ident: 'a' }]
+		const state = deriveBestillingsveilederState(
+			{ importPersoner, mal, gruppeId: 10 },
+			environmentsStub,
+		)
+		expect(state.is.importTestnorge).toBe(true)
+		expect(state.initialValues.pdldata?.opprettNyPerson).toBeUndefined()
+		expect(state.initialValues.pdldata?.person).toBeDefined()
 	})
 
 	it('should derive NY_STANDARD_ORGANISASJON', () => {

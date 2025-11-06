@@ -27,7 +27,7 @@ const InitialWrapper = ({ children }: { children: React.ReactNode }) => {
 		id2032: false,
 		mal: undefined,
 		is: { nyBestilling: true },
-		gruppeId: '1',
+		gruppeId: 1,
 	})
 	const value: BestillingsveilederContextType = {
 		...state,
@@ -61,7 +61,7 @@ describe('Mal selection sync', () => {
 					<SetMalTrigger mal={malMock} />
 					<StegVelger
 						initialValues={{ pdldata: { opprettNyPerson: { identtype: 'FNR', id2032: false } } }}
-						onSubmit={() => () => {}}
+						onSubmit={async () => {}}
 					/>
 				</InitialWrapper>
 			</MemoryRouter>,
