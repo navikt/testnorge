@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -50,7 +51,9 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 })
                 .flatMap(oppdatertOrdre -> Mono.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                .then(arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid))
+                                .flatMap(response -> isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel()) ?
+                                        arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid) :
+                                        Mono.just("Fortsetter uten hjemmel og repetert vilkaar"))
                                 .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
                                         .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
                                                         request, uuid, logRetries(progress))
