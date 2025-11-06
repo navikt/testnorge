@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -36,6 +37,7 @@ public class SlettArenaBrukerCommand implements Callable<Mono<ResponseEntity<Jso
                 .header(Headers.CONSUMER_ID, Headers.NAV_CONSUMER_ID)
                 .retrieve()
                 .toEntity(JsonNode.class)
+                .timeout(Duration.ofSeconds(30))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
