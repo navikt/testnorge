@@ -40,10 +40,10 @@ public class PdlPersonDokumentListener {
     private String personIndex;
 
     @KafkaListener(
-            id = "pdl-sok",
-            clientIdPrefix = "pdl-sok-legacy-person",
-            topics = "${app.kafka.topic.persondokument.name}",
-            groupId = "${app.kafka.group-id-prefix}-pdlDokumenter-v1",
+            id = "pdl-data-lagre-service",
+            clientIdPrefix = "pdl-sok-person",
+            topics = "pdl-persondokument-tagged-v1",
+            groupId = "testnav-pdl-data-lagre-service-pdlDokumenter-v1",
             containerFactory = "pdlDokumentKafkaFactory"
     )
     @Timed(value = KAFKA_CONSUMER_TIMED, extraTags = {KEY, "pdldokument"}, percentiles = {.99, .75, .50, .25})
@@ -55,15 +55,15 @@ public class PdlPersonDokumentListener {
         CollectionUtils.chunk(documentList, 15).forEach(service::processBulk);
     }
 
-    private OpensearchDocumentData convert(ConsumerRecord<String, String> record) {
+    private OpensearchDocumentData convert(ConsumerRecord<String, String> post) {
         try {
-            KafkaUtilities.appendToMdc(record, true);
+            KafkaUtilities.appendToMdc(post, true);
 
-            if (isNull(record.value())) {
-                return new OpensearchDocumentData(personIndex, record.key(), null);
+            if (isNull(post.value())) {
+                return new OpensearchDocumentData(personIndex, post.key(), null);
             } else {
-                val dokument = mapper.readValue(record.value(), HashMap.class);
-                return new OpensearchDocumentData(personIndex, record.key(), dokument);
+                val dokument = mapper.readValue(post.value(), HashMap.class);
+                return new OpensearchDocumentData(personIndex, post.key(), dokument);
             }
         } catch (RuntimeException | IOException exception) {
 
