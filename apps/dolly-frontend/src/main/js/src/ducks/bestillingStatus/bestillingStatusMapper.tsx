@@ -83,7 +83,6 @@ const extractBestillingstatusKode = (
 }
 
 function getBestillingTag(data: Bestilling) {
-	console.log('data: ', data) //TODO - SLETT MEG
 	if (data?.opprettetFraId) return 'Gjenopprett bestilling'
 	if (data?.gjenopprettetFraIdent) return 'Gjenopprett person'
 	if (data?.opprettetFraGruppeId) return 'Gjenopprett gruppe'
