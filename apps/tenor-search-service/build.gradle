@@ -14,12 +14,12 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
 
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
     testImplementation "no.nav.testnav.libs:integration-test"
-    implementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

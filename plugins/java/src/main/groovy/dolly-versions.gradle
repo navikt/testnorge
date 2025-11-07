@@ -35,6 +35,6 @@ class DollyVersionCatalog {
     String opensearch = "1.6.3" // https://github.com/opensearch-project/spring-data-opensearch/releases
     String orika = "1.5.4"
     String reactorTest = "3.7.6"
-    String springdoc = "2.8.8"
+    String springdoc = "2.8.14"
     String swagger = "2.2.30"
 }

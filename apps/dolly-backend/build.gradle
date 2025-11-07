@@ -10,49 +10,50 @@ sonarqube {
 }
 
 test {
-    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+    jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
 }
 
 dependencies {
-    implementation 'no.nav.testnav.libs:servlet-insecure-security'
-    implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:data-transfer-search-objects'
-    implementation 'no.nav.testnav.libs:reactive-core'
-    implementation 'no.nav.testnav.libs:reactive-security'
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:data-transfer-search-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:servlet-insecure-security"
+    implementation "no.nav.testnav.libs:testing"
 
-    implementation 'org.aspectj:aspectjweaver:1.9.21'
-    implementation 'org.aspectj:aspectjrt:1.9.21'
+    implementation "org.aspectj:aspectjweaver:1.9.21"
+    implementation "org.aspectj:aspectjrt:1.9.21"
 
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.retry:spring-retry'
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.retry:spring-retry"
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    implementation "org.springframework.boot:spring-boot-starter-data-elasticsearch"
     implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
 
-    implementation 'org.apache.commons:commons-lang3'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation "org.apache.commons:commons-lang3"
+    implementation "org.springframework.boot:spring-boot-starter-cache"
+    implementation "com.github.ben-manes.caffeine:caffeine"
 
-    implementation 'org.ehcache:ehcache:3.10.8'
+    implementation "org.ehcache:ehcache:3.10.8"
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
 
-    runtimeOnly 'org.postgresql:r2dbc-postgresql'
-    runtimeOnly 'io.r2dbc:r2dbc-pool'
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
+    runtimeOnly "io.r2dbc:r2dbc-pool"
 
-    runtimeOnly 'org.postgresql:postgresql'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.flywaydb:flyway-database-postgresql'
+    runtimeOnly "org.postgresql:postgresql"
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-database-postgresql"
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
-    implementation 'org.codehaus.jettison:jettison:1.5.4'
+    implementation "org.codehaus.jettison:jettison:1.5.4"
     implementation "org.apache.poi:poi:$versions.apachePoi"
     implementation "org.apache.poi:poi-ooxml:$versions.apachePoi"
 
@@ -61,13 +62,12 @@ dependencies {
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
     testImplementation "org.opensearch:opensearch-testcontainers:3.0.1"
     testImplementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.boot:spring-boot-testcontainers"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.testcontainers:junit-jupiter:1.21.3"
     testImplementation "org.testcontainers:postgresql:1.21.3"
 
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 
-    implementation 'net.java.dev.jna:jna:5.14.0'
+    implementation "net.java.dev.jna:jna:5.14.0"
 }
