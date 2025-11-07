@@ -15,3 +15,8 @@ export type Omraade = {
 	tema: string
 	handling: string[]
 }
+
+export const FullmaktHandling = {
+	les: ['LES', 'KOMMUNISER'],
+	lesOgSkriv: ['LES', 'KOMMUNISER', 'SKRIV'],
+}
