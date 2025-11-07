@@ -15,11 +15,19 @@ configurations {
 
 def xjcOutputDir = layout.buildDirectory.dir("generated/sources/xjc")
 
+static def resetOutputDir(Provider outputDirProvider) {
+    def outputDir = outputDirProvider.get().asFile
+    if (outputDir.exists()) {
+        outputDir.deleteDir()
+    }
+    outputDir.mkdirs()
+}
+
 tasks.register("xjcGenerate", JavaExec) {
     def schemaDir = "src/main/resources/schema"
     def outputDirProvider = xjcOutputDir
 
-    inputs.files(fileTree(schemaDir) { include "*.xsd" })
+    inputs.files(fileTree(schemaDir) { include "skattekorttilarbeidsgiver_v3.0.xsd" })
     outputs.dir(outputDirProvider)
 
     classpath = configurations.xjc
@@ -38,11 +46,7 @@ tasks.register("xjcGenerate", JavaExec) {
     })
 
     doFirst {
-        def outputDir = outputDirProvider.get().asFile
-        if (outputDir.exists()) {
-            outputDir.deleteDir()
-        }
-        outputDir.mkdirs()
+        resetOutputDir(outputDirProvider)
     }
 }
 
