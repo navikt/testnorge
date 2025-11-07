@@ -1,7 +1,11 @@
 package no.nav.skattekortservice.provider;
 
 import no.nav.skattekortservice.service.SkattekortService;
-import no.nav.testnav.libs.dto.skattekortservice.v1.*;
+import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
+import no.nav.testnav.libs.dto.skattekortservice.v1.IdentifikatorForEnhetEllerPerson;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortResponseDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
