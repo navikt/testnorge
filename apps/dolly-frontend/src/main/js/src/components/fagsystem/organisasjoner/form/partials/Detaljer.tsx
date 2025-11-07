@@ -38,9 +38,9 @@ export const Detaljer = ({
 	number,
 	maaHaUnderenhet = true,
 }: DetaljerProps) => {
-	const initialValues = _.omit(formMethods.getValues().organisasjon, ['underenheter', 'sektorkode'])
-	const underenheter = formMethods.getValues('organisasjon.underenheter')
-	const sektorkodeErValgt = formMethods.getValues('organisasjon.sektorkode')
+	const currentOrgValues = formMethods.getValues(path === 'organisasjon' ? 'organisasjon' : path)
+	const initialValues = _.omit(currentOrgValues || {}, ['underenheter', 'sektorkode'])
+	const sektorkodeErValgt = formMethods.getValues(`${path}.sektorkode`)
 
 	const getTypeUnderenhet = () => {
 		return (
@@ -53,13 +53,6 @@ export const Detaljer = ({
 	}
 
 	const [typeUnderenhet, setTypeUnderenhet] = useState(getTypeUnderenhet())
-
-	useEffect(() => {
-		if (level === 0 && _.isEmpty(formMethods.getValues(`${path}.underenheter`))) {
-			formMethods.setValue(`${path}.underenheter`, underenheter || [initialValues])
-			formMethods.trigger(`${path}.underenheter`)
-		}
-	}, [])
 
 	useEffect(() => {
 		setTypeUnderenhet(getTypeUnderenhet())
