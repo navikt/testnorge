@@ -312,14 +312,24 @@ Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert 
 ===== Opprette personer med tilfeldige verdier
 
 ++++
-<video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov" controls="controls" style="max-width: 730px;"></video>
+<figure>
+  <video aria-label="Demo som viser oppretting av personer med tilfeldige verdier" controls poster="_images/videos/person-tilfeldige-verdier.png" style="max-width:730px">
+    <source src="_images/videos/person-tilfeldige-verdier.mp4" type="video/mp4" >
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
 ++++
 
 [[demo_opprette_onskede]]
 ===== Opprette person med ønskede verdier
 
 ++++
-<video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov" controls="controls" style="max-width: 730px;"></video>
+<figure>
+  <video aria-label="Demo som viser oppretting av personer med spesifikke verdier" controls poster="_images/videos/person-spesifikke-verdier.png" style="max-width:730px">
+    <source src="_images/videos/person-spesifikke-verdier.mp4" type="video/mp4" >
+    Din nettleser støtter ikke innebygde videoer.
+  </video>
+</figure>
 ++++
 
 [[endringsmelding_status]]
