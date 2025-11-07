@@ -1,11 +1,10 @@
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { PersonrollerForm } from '@/components/fagsystem/brregstub/form/partials/personrollerForm'
 import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle'
-import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import React from 'react'
+import { useBrregRoller } from '@/utils/hooks/useBrreg'
 
 const initialValues = {
 	rolle: '',
@@ -18,8 +17,7 @@ const initialValues = {
 }
 
 export const EnheterForm = ({ formMethods }) => {
-	const roller = SelectOptionsOppslag.hentRollerFraBrregstub()
-	const rollerOptions = SelectOptionsFormat.formatOptions('roller', roller)
+	const { rollerOptions, loading } = useBrregRoller()
 
 	const setEnhetsinfo = (org, path) => {
 		const currentValues = formMethods.watch(path)
@@ -65,7 +63,7 @@ export const EnheterForm = ({ formMethods }) => {
 						name={`${path}.rolle`}
 						label="Rolle"
 						options={rollerOptions}
-						isLoading={roller.loading}
+						isLoading={loading}
 						size="large"
 						isClearable={false}
 					/>

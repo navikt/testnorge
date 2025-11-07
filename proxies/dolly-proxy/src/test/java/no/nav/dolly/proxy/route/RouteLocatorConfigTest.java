@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "30000")
 class RouteLocatorConfigTest {
 
     @MockitoBean

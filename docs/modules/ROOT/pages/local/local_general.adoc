@@ -3,7 +3,7 @@
 
 Dette er felles for alle applikasjoner som er ment å kunne kjøres lokalt.
 
-* Bruk Spring profile `local`. NB: Noen applikasjoner/proxyer bruker fortsatt andre profiler (f.eks. `dev`). Vurder å endre til standard `local` der det gjelder.
+* Bruk Spring profile `local`.
 * Bruk JVM option: `--add-opens java.base/java.lang=ALL-UNNAMED` (kan settes i IntelliJ Run Configuration VM options).
 * Swagger (hvis satt opp) er normalt tilgjengelig på http://localhost:8080/swagger .
 

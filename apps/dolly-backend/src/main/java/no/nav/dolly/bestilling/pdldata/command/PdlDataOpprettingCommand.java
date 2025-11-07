@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdldata.command;
 
-import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
@@ -12,11 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClientRequest;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
@@ -34,15 +33,12 @@ public class PdlDataOpprettingCommand implements Callable<Mono<PdlResponse>> {
         return webClient
                 .post()
                 .uri(PDL_FORVALTER_PERSONER_URL)
-                .httpRequest(httpRequest -> {
-                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
-                })
                 .headers(WebClientHeader.bearer(token))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(body))
                 .retrieve()
                 .bodyToMono(String.class)
+                .timeout(Duration.ofSeconds(REQUEST_DURATION))
                 .map(resultat -> PdlResponse.builder()
                         .ident(resultat)
                         .status(HttpStatus.OK)

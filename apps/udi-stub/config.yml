@@ -22,6 +22,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: udi-proxy
+          namespace: medlemskap
+          cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-gcp
         - application: dolly-frontend

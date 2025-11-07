@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdldata.command;
 
-import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
@@ -14,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.net.http.HttpTimeoutException;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 import static java.lang.String.join;
 
@@ -42,7 +42,6 @@ public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
                 .bodyToFlux(FullPersonDTO.class)
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on GET of idents %s".formatted(join(",", identer))))
                 .doOnError(WebClientError.logTo(log))
-
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
