@@ -149,6 +149,7 @@ class TeamServiceTest {
         when(brukerRepository.save(any(Bruker.class))).thenReturn(Mono.just(teamBruker1));
         when(teamBrukerRepository.save(any(TeamBruker.class))).thenReturn(Mono.just(new TeamBruker()));
         when(teamRepository.findByNavn(anyString())).thenReturn(Mono.empty());
+        when(brukerRepository.findByBrukerIdIn(any())).thenReturn(Flux.just(teamBruker1));
 
         StepVerifier.create(teamService.opprettTeam(rsTeam))
                 .assertNext(result -> {
@@ -290,7 +291,7 @@ class TeamServiceTest {
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
         when(brukerRepository.findByBrukerId("member_to_remove")).thenReturn(Mono.just(memberToRemove));
-        when(teamBrukerRepository.deleteByBrukerId(any(Long.class))).thenReturn(Mono.empty());
+        when(teamBrukerRepository.deleteByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.empty());
         when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));
         when(teamBrukerRepository.findByTeamId(10L)).thenReturn(Flux.just(teamBruker, teamBruker));
 
@@ -298,7 +299,7 @@ class TeamServiceTest {
                 .expectComplete()
                 .verify();
 
-        verify(teamBrukerRepository).deleteByBrukerId(any(Long.class));
+        verify(teamBrukerRepository).deleteByTeamIdAndBrukerId(anyLong(), anyLong());
     }
 
     @Test

@@ -75,7 +75,7 @@ export const UtdanningForm = () => {
 									name={`${utdanningPath}.ongoing`}
 									label="Pågående utdanning"
 									wrapperSize="inherit"
-									isDisabled={formMethods.getValues(`${utdanningPath}.endDate`)}
+									disabled={formMethods.getValues(`${utdanningPath}.endDate`)}
 									checkboxMargin
 								/>
 							</div>

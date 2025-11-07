@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -24,7 +23,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -35,8 +33,6 @@ import static no.nav.dolly.bestilling.aareg.util.AaregUtility.getMaxPermisjonPer
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isNyttArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
-import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -67,17 +63,12 @@ public class AaregClient implements ClientRegister {
                 .filter(MILJOER_SUPPORTED::contains)
                 .collect(Collectors.toSet());
 
-        if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
-            miljoer = crossConnect(miljoer, Q1_AND_Q2);
-        }
-        var miljoerTrygg = new AtomicReference<>(miljoer);
-
         return oppdaterStatus(progress, miljoer.stream()
                 .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SYSTEM)))
                 .collect(Collectors.joining(",")))
-                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre)
+                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoer, isOpprettEndre)
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                        .onErrorResume(error -> getErrors(error, miljoerTrygg.get()))
+                        .onErrorResume(error -> getErrors(error, miljoer))
                         .flatMap(status -> oppdaterStatus(progress, status)));
     }
 

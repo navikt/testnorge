@@ -19,6 +19,9 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 - use isNull from java.util.Objects.
 - Logging: SLF4J, no `System.out`.
 - Avoid deprecated Spring APIs.
+- Always use explicit, fully qualified Java imports.
+- Never use wildcard imports (e.g., `import com.example.package.*`).
+- Ensure all necessary classes are imported individually.
 
 ## REST
 

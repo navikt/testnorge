@@ -1,15 +1,15 @@
 package no.nav.pdl.forvalter.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MergeIdent extends DbVersjonDTO {

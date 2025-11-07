@@ -79,20 +79,6 @@ export const SelectOptionsFormat = {
 					}
 				})
 			return options
-		} else if (type === 'understatuser') {
-			const statuser = kodeverk ? Object.entries(kodeverk) : []
-			const options: Option[] = []
-			statuser.forEach((status) => {
-				options.push({ value: parseInt(status[0]), label: `${status[0]}: ${status[1]}` })
-			})
-			return options
-		} else if (type === 'roller') {
-			const roller = kodeverk ? Object.entries(kodeverk) : []
-			const options: Option[] = []
-			roller.forEach((rolle: [string, string]) => {
-				options.push({ value: rolle[0], label: rolle[1] })
-			})
-			return options
 		} else if (type === 'telefonLandkoder') {
 			const landkoder =
 				kodeverk?.sort?.((land1, land2) => {

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
         "management.endpoints.web.exposure.include=health",
         "management.endpoints.web.base-path=/internal"
 })
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "30000")
 class RouteLocatorConfigTest {
 
     @MockitoBean

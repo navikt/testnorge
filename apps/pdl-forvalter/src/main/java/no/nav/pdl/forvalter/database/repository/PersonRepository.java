@@ -31,10 +31,13 @@ public interface PersonRepository extends JpaRepository<DbPerson, Long> {
 
     boolean existsByIdent(String ident);
 
-    @Query("from DbPerson p "
-            + "where (:partialIdent is null or :partialIdent is not null and p.ident like %:partialIdent%)"
-            + "and (:partialNavn1 is null or :partialNavn1 is not null and (upper(p.etternavn) like %:partialNavn1% or upper(p.fornavn) like %:partialNavn1%))"
-            + "and (:partialNavn2 is null or :partialNavn2 is not null and (upper(p.etternavn) like %:partialNavn2% or upper(p.fornavn) like %:partialNavn2%))")
+    @Query("""
+            from DbPerson p
+            where (:partialIdent is null or :partialIdent is not null and p.ident like %:partialIdent%)
+            and (:partialNavn1 is null or :partialNavn1 is not null and (upper(p.etternavn) like %:partialNavn1% or upper(p.fornavn) like %:partialNavn1%))
+            and (:partialNavn2 is null or :partialNavn2 is not null and (upper(p.etternavn) like %:partialNavn2% or upper(p.fornavn) like %:partialNavn2%))
+            and (not exists (from DbAlias a where a.tidligereIdent = p.ident) or :partialNavn1 is null and :partialNavn2 is null)
+            """)
     List<DbPerson> findByWildcardIdent(@Param("partialIdent") String partialIdent,
                                        @Param("partialNavn1") String partialNavn1,
                                        @Param("partialNavn2") String partialNavn2,

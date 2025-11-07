@@ -8,14 +8,9 @@ import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdR
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
-
-import java.time.Duration;
 
 @Slf4j
 @Component
@@ -34,15 +29,6 @@ public class AaregConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .clientConnector(
-                        new ReactorClientHttpConnector(
-                                HttpClient
-                                        .create(ConnectionProvider.builder("AaregConsumer")
-                                                .maxConnections(1)
-                                                .pendingAcquireMaxCount(10000)
-                                                .pendingAcquireTimeout(Duration.ofSeconds(3000))
-                                                .build())
-                        ))
                 .build();
     }
 

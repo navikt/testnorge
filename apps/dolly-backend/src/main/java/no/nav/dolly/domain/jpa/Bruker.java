@@ -50,6 +50,7 @@ public class Bruker implements Serializable {
     private Long representererTeam;
 
     @Transient
+    @Builder.Default
     private Set<Team> teamMedlemskap = new HashSet<>();
 
     @Override

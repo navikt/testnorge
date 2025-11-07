@@ -14,15 +14,12 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -54,8 +51,6 @@ public class PdlTestdataConsumer {
         serverProperties = consumers.getPdlProxy();
         this.webClient = webClient
                 .mutate()
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
-                        .responseTimeout(Duration.ofSeconds(10))))
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
@@ -92,16 +87,15 @@ public class PdlTestdataConsumer {
                 .flatMapMany(accessToken -> Flux.concat(
                         Flux.fromIterable(orders.getSletting())
                                 .parallel()
-                                .map(order -> order.apply(accessToken)),
+                                .flatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOppretting())
-                                .map(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getMerge())
-                                .map(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOpplysninger())
                                 .parallel()
-                                .map(order -> order.apply(accessToken))
-                ))
-                .flatMap(Flux::from);
+                                .flatMap(order -> order.apply(accessToken))
+                ));
     }
 
     public Mono<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
