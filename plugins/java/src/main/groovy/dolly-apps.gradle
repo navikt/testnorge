@@ -3,6 +3,7 @@ plugins {
     id "dolly-versions"
     id "no.nav.dolly.plugins.buildValidation"
 
+    id "idea"
     id "io.spring.dependency-management"
     id "java"
     id "org.springframework.boot"
@@ -26,7 +27,6 @@ dependencies {
 
     implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
-    implementation "no.nav.testnav.libs:testing"
     implementation "org.glassfish.expressly:expressly:$versions.expressly"
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.projectlombok:lombok"
@@ -40,7 +40,9 @@ dependencies {
 
     testAnnotationProcessor "org.projectlombok:lombok"
 
+    testImplementation platform("org.junit:junit-bom:$versions.junit")
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 dependencyManagement {
@@ -63,7 +65,7 @@ repositories {
     maven {
         name = "GitHub Packages"
         url = uri("https://maven.pkg.github.com/navikt/maven-release")
-        credentials(PasswordCredentials) {
+        credentials {
             username = "token"
             password = System.getenv("NAV_TOKEN")
         }
@@ -89,5 +91,12 @@ tasks.test {
     doFirst {
         jvmArgs += '-javaagent:' + configurations.testRuntimeClasspath.find { it.name.contains("byte-buddy-agent") }
         jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
     }
 }
