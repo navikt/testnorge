@@ -9,7 +9,6 @@ import no.nav.testnav.pdldatalagreservice.config.kafka.KafkaContainerUtils;
 import no.nav.testnav.pdldatalagreservice.config.kafka.KafkaHealthIndicator;
 import no.nav.testnav.pdldatalagreservice.config.kafka.RestartingErrorHandler;
 import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -21,9 +20,6 @@ import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @EnableKafka
 @Profile("kafka")
@@ -64,22 +60,4 @@ class KafkaConfig {
         val consumerFactory = KafkaBeanUtilities.stringStringConsumerFactory(kafkaConsumerFactory.getConfigurationProperties());
         return KafkaContainerUtils.containerFactory(configurer, consumerFactory, 1000);
     }
-
-    @Bean("pdlAdresseKafkaFactory")
-    ConcurrentKafkaListenerContainerFactory<?, ?> adresseKafkaListenerContainerFactory(
-            ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
-            ConsumerFactory<Object, Object> kafkaConsumerFactory) {
-
-        val consumerFactory = KafkaBeanUtilities.longStringConsumerFactory(kafkaConsumerFactory.getConfigurationProperties());
-        return KafkaContainerUtils.containerFactory(configurer, consumerFactory, 1000);
-    }
-
-
-    private Map<String, Object> consumerConfigs(Map<String, Object> oldConfigurationProperties, String keyDeserializerClass, String valueDeserializerClass) {
-        val newConfigurationProperties = new HashMap<>(oldConfigurationProperties);
-        newConfigurationProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeserializerClass);
-        newConfigurationProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializerClass);
-        return newConfigurationProperties;
-    }
-
 }
