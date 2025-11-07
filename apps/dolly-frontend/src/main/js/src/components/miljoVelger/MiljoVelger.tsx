@@ -91,12 +91,8 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 	const isChecked = (id) => values.includes(id)
 
 	const toggleEnvironment = (id: string) => {
-		if (alleredeValgtMiljoe?.includes(id) && values.includes(id)) {
-			console.warn('Miljøet er påkrevd')
-		} else {
-			const next = isChecked(id) ? values.filter((value) => value !== id) : values.concat(id)
-			formMethods.setValue('environments', next)
-		}
+		const next = isChecked(id) ? values.filter((value) => value !== id) : values.concat(id)
+		formMethods.setValue('environments', next)
 		formMethods.trigger('environments')
 	}
 
