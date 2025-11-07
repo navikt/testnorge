@@ -40,10 +40,10 @@ public class PdlPersonDokumentListener {
     private String personIndex;
 
     @KafkaListener(
-            id = "pdl-data-lagre-service",
+            id = "pdl-lagre-service",
             clientIdPrefix = "pdl-sok-person",
             topics = "pdl-persondokument-tagged-v1",
-            groupId = "testnav-pdl-data-lagre-service-pdlDokumenter-v1",
+            groupId = "testnav-pdl-lagre-service-pdlDokumenter-v1",
             containerFactory = "pdlDokumentKafkaFactory"
     )
     @Timed(value = KAFKA_CONSUMER_TIMED, extraTags = {KEY, "pdldokument"}, percentiles = {.99, .75, .50, .25})
