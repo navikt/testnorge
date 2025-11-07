@@ -16,7 +16,7 @@ export const validation = {
 						.of(
 							Yup.object({
 								tema: requiredString,
-								handling: Yup.array().min(1, 'Må inneholde minst en handling').of(requiredString),
+								handling: Yup.array().min(1, 'Feltet er påkrevd').of(requiredString),
 							}),
 						),
 					gyldigFraOgMed: requiredDate.test(
