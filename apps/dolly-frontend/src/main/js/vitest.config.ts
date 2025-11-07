@@ -11,6 +11,17 @@ export default defineConfig({
 		},
 	},
 	plugins: [react()],
+	optimizeDeps: {
+		include: [
+			'react-dom/client',
+			'redux',
+			'redux-thunk',
+			'redux-promise-middleware',
+			'history',
+			'react-toastify',
+			'@navikt/ds-icons',
+		],
+	},
 	test: {
 		environment: 'jsdom',
 		globals: true,
