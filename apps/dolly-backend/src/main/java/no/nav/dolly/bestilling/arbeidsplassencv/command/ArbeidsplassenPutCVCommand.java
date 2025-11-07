@@ -24,6 +24,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
 
     private static final String ARBEIDSPLASSEN_CV_URL = "/rest/v3/cv";
     private static final String FORBIDDEN_TEXT = "Bruker er ikke under oppfølging";
+    private static final String FORBIDDEN_TEXT_2 = "Mangler Samtykke/Hjemmel";
     private static final String FNR = "fnr";
 
     private final WebClient webClient;
@@ -54,8 +55,10 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(Retry.fixedDelay(25, ofSeconds(5))
-                        .filter(throwable -> throwable instanceof WebClientResponseException.Forbidden forbidden &&
-                                forbidden.getResponseBodyAsString().contains(FORBIDDEN_TEXT))
+                        .filter(throwable ->
+                                throwable instanceof WebClientResponseException.Forbidden forbidden &&
+                                        (forbidden.getResponseBodyAsString().contains(FORBIDDEN_TEXT) ||
+                                                forbidden.getResponseBodyAsString().contains(FORBIDDEN_TEXT_2)))
                         .doAfterRetry(logRetries))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));

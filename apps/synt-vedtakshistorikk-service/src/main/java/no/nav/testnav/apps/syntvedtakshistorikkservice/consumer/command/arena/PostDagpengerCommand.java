@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
@@ -36,6 +37,7 @@ public class PostDagpengerCommand implements Callable<Mono<DagpengerResponseDTO>
                 .body(BodyInserters.fromPublisher(Mono.just(request), DagpengerRequestDTO.class))
                 .retrieve()
                 .bodyToMono(DagpengerResponseDTO.class)
+                .timeout(Duration.ofSeconds(30))
                 .doOnError(WebClientError.logTo(log));
     }
 

@@ -103,7 +103,8 @@ public class PensjonforvalterHelper {
                 return encodeStatus(
                         "Feil: " + response.getMessage().split("\\{")[1].split("}")[0].replace("message\":", ""));
             } else {
-                return encodeStatus("Feil: " + response.getMessage());
+                return encodeStatus("Feil: " + (response.getMessage().contains("msg:") ?
+                        response.getMessage().split("msg:")[1] : response.getMessage()));
             }
 
         } else {

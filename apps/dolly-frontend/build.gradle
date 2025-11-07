@@ -20,16 +20,17 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:reactive-session-security"
     implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
 
     // Session
     implementation 'io.valkey:valkey-java:5.4.0'
     implementation "org.springframework.session:spring-session-core"
     implementation "org.springframework.session:spring-session-data-redis"
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
     implementation "org.springframework.cloud:spring-cloud-starter-gateway"
 

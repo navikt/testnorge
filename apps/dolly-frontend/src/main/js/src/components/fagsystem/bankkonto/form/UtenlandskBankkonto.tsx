@@ -47,7 +47,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 							name={`${path}.tilfeldigKontonummer`}
 							label="Har tilfeldig kontonummer"
 							size="medium"
-							isDisabled={disableTilfeldigKontonummer}
+							disabled={disableTilfeldigKontonummer}
 						/>
 					</div>
 				</div>

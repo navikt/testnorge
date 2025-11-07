@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdldata.command;
 
-import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AvailibilityResponseDTO;
@@ -14,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.net.http.HttpTimeoutException;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 import static java.lang.String.join;
 

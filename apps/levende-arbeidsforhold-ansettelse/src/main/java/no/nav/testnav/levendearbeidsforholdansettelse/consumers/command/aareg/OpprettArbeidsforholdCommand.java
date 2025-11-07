@@ -7,14 +7,13 @@ import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
-
-import static io.netty.handler.codec.http.HttpResponseStatus.CREATED;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -38,8 +37,9 @@ public class OpprettArbeidsforholdCommand implements Callable<Mono<Arbeidsforhol
                 .bodyValue(requests)
                 .retrieve()
                 .bodyToMono(String.class)
-                .map(payload -> ArbeidsforholdResponseDTO.builder()
-                        .statusCode(HttpStatusCode.valueOf(CREATED.code()))
+                .map(payload -> ArbeidsforholdResponseDTO
+                        .builder()
+                        .statusCode(HttpStatusCode.valueOf(HttpStatus.CREATED.value()))
                         .payload(payload)
                         .build())
                 .retryWhen(WebClientError.is5xxException())

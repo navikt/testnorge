@@ -215,7 +215,7 @@ I brukermenyen finnes nå ett nytt valg for team-oversikt.
 Denne siden viser alle team du er medlem av og lar deg forlate, redigere og slette team.
 
 Her kan du:
-* Opprette nye team * Slette team du eier som ikke har medlemmer eller data * Legge til eller fjerne medlemmer i team du er medlem av * Bli med i eller forlate eksisterende team
+* Opprette nye team * Slette team du eier som ikke har medlemmer eller data * Legge til eller fjerne medlemmer i team du er medlem av * Bli med i eller forlate eksisterende team.
 
 [[opprette_nytt_team]]
 ===== Opprette nytt team
