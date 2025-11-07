@@ -1,6 +1,0 @@
-spring:
-  config:
-    import: "sm://"
-
-kafka:
-  group-id: testnav-pdl-person-opensearch-service
