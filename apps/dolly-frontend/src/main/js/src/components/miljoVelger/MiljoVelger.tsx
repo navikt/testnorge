@@ -1,6 +1,6 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
-import { act, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'
@@ -95,10 +95,8 @@ export const MiljoVelger = ({
 
 	useEffect(() => {
 		if (disableAllEnvironments && values.length > 0) {
-			act(() => {
-				formMethods.setValue('environments', [])
-				formMethods.trigger('environments')
-			})
+			formMethods.setValue('environments', [])
+			formMethods.trigger('environments')
 		}
 	}, [disableAllEnvironments, values, formMethods])
 
@@ -106,10 +104,8 @@ export const MiljoVelger = ({
 
 	const toggleEnvironment = (id: string) => {
 		const next = isChecked(id) ? values.filter((value: string) => value !== id) : values.concat(id)
-		act(() => {
-			formMethods.setValue('environments', next)
-			formMethods.trigger('environments')
-		})
+		formMethods.setValue('environments', next)
+		formMethods.trigger('environments')
 	}
 
 	return (

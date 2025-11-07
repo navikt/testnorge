@@ -183,7 +183,7 @@ export const StegVelger = ({
 			if (prevMalIdRef.current) {
 				if (isNy) {
 					const cleaned = {
-						antall: '1',
+						antall: 1,
 						beskrivelse: null as any,
 						pdldata: {
 							opprettNyPerson: {
@@ -198,10 +198,12 @@ export const StegVelger = ({
 					context.setIdenttype && context.setIdenttype('FNR')
 					context.updateContext && context.updateContext({ identtype: 'FNR' })
 				} else {
-					// Non-ny modes revert to baseline without mal-specific fields
+					const prevAntallRaw = formMethods.getValues('antall')
+					const prevAntall =
+						typeof prevAntallRaw === 'number' ? prevAntallRaw : parseInt(prevAntallRaw || '1', 10)
 					const baseline: any = {
 						gruppeId: formMethods.getValues('gruppeId') || null,
-						antall: formMethods.getValues('antall') || '1',
+						antall: prevAntall || 1,
 					}
 					if (isImport) baseline.importPersoner = formMethods.getValues('importPersoner') || []
 					if (isFraIdenter)
@@ -255,7 +257,16 @@ export const StegVelger = ({
 				nextValues = { ...malValues, mal: currentMalId }
 			}
 
-			// Remove opprettNyPerson for non-ny modes explicitly
+			const prevAntallRaw = formMethods.getValues('antall')
+			const prevAntall =
+				typeof prevAntallRaw === 'number' ? prevAntallRaw : parseInt(prevAntallRaw || '1', 10)
+			if (typeof nextValues.antall !== 'number') {
+				const malAntallRaw = malValues?.antall
+				const malAntall =
+					typeof malAntallRaw === 'number' ? malAntallRaw : parseInt(malAntallRaw || '', 10)
+				nextValues.antall = malAntall || prevAntall || 1
+			}
+
 			if (!isNy && nextValues.pdldata?.opprettNyPerson) {
 				delete nextValues.pdldata.opprettNyPerson
 				if (Object.keys(nextValues.pdldata).length === 0) {
@@ -265,7 +276,6 @@ export const StegVelger = ({
 
 			formMethods.reset(nextValues)
 
-			// Sync identtype for ny modes only
 			if (isNy) {
 				const identtypeFraMal = _.get(malValues, 'pdldata.opprettNyPerson.identtype')
 				if (identtypeFraMal) {

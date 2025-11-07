@@ -3,6 +3,7 @@ import * as matchers from '@testing-library/jest-dom/matchers'
 
 import { test as testBase } from 'vitest'
 import { worker } from './__tests__/mocks/browser.js'
+;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 export const dollyTest = testBase.extend({
 	worker: [
