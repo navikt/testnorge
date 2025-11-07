@@ -1,10 +1,10 @@
-name: testnav-pdl-data-lagre-service
+name: testnav-pdl-lagre-service
 
 on:
   push:
     paths:
-      - .github/workflows/app.pdl-data-lagre-service.yml
-      - apps/pdl-data-lagre-service/**
+      - .github/workflows/app.pdl-lagre-service.yml
+      - apps/pdl-lagre-service/**
       - libs/avro-schema/**
       - libs/data-transfer-objects/**
       - libs/kafka-config/**
@@ -19,8 +19,8 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/pdl-data-lagre-service"
-      deploy-tag: "#deploy-pdl-data-lagre-service"
+      working-directory: "apps/pdl-lagre-service"
+      deploy-tag: "#deploy-pdl-lagre-service"
     permissions:
       contents: read
       id-token: write
