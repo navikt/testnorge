@@ -174,7 +174,7 @@ export const BestillingProgresjon = ({
 			<div>
 				<Line percent={percentFinished} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 			</div>
-			{timedOut && (
+			{timedOut && !erOrganisasjon && (
 				<div className="cancel-container">
 					<div>
 						<Icon kind={'report-problem-circle'} />

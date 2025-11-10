@@ -81,17 +81,13 @@ export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) =>
 
 	return (
 		<>
-			<Kategori
-				title={!number ? 'Organisasjon' : undefined}
-				vis={organisasjonPaths as any}
-				flexRow={true}
-			>
+			<Kategori title={!number ? 'Organisasjon' : undefined} vis={organisasjonPaths} flexRow={true}>
 				<div className="toggle--wrapper">
 					{level > 0 && (
 						<StyledToggleGroup
 							size={'small'}
 							onChange={(v: string) => handleToggleChange(v as TypeUnderenhet)}
-							value={typeUnderenhet as unknown as string}
+							value={typeUnderenhet}
 						>
 							<ToggleGroup.Item
 								key={TypeUnderenhet.JURIDISKENHET}
@@ -178,16 +174,15 @@ export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) =>
 				disabled={level > 3 || typeUnderenhet === TypeUnderenhet.VIRKSOMHET}
 				title={
 					level > 3
-						? ('Du kan maksimalt lage fire nivåer av underenheter' as any)
+						? 'Du kan maksimalt lage fire nivåer av underenheter'
 						: typeUnderenhet === TypeUnderenhet.VIRKSOMHET
-							? ('Du kan ikke legge til underenheter på enhet av type virksomhet' as any)
-							: (undefined as any)
+							? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
+							: undefined
 				}
-				canBeEmpty={(!mustHaveUnderenhet || enhetstype === 'ENK' || !enhetstype) as any}
-				tag={number as any}
+				canBeEmpty={!mustHaveUnderenhet || enhetstype === 'ENK' || !enhetstype}
+				tag={number}
 				isOrganisasjon={true}
-				// remove maxEntries limit on top level
-				maxEntries={level === 0 ? (undefined as any) : 1}
+				maxEntries={level === 0 ? undefined : 1}
 				leafOnlyDelete={true}
 			>
 				{(childPath: string, _idx: number, _curr: any, childNumber: string, fieldId: string) => (

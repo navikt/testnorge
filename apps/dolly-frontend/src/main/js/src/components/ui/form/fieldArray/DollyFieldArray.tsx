@@ -103,7 +103,7 @@ export const DollyFaBlokkOrg = ({
 	showDeleteButton,
 	number,
 }) => {
-	const nivaa = (number.match(/@/g) || []).length + 1
+	const nivaa = number ? number.split('.').length : 1
 	const name = nivaa % 2 === 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
 	const getNivaaColor = () => {
 		switch (nivaa) {
