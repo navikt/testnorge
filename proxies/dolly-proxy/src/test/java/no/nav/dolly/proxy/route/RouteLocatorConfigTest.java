@@ -112,11 +112,6 @@ class RouteLocatorConfigTest {
         var downstreamPath = "/api/v1/testdata";
         var responseBody = "Success from mocked fullmakt";
 
-        wireMockServer.stubFor(get(urlMatching("/fake/tokenx.*"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withBody("dummy-fakedings-token")));
-
         wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -133,7 +128,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-tokenx-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
 
     }
 
