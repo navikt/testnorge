@@ -48,6 +48,11 @@ public class PdlPersonDokumentListener {
     )
     @Timed(value = KAFKA_CONSUMER_TIMED, extraTags = {KEY, "pdldokument"}, percentiles = {.99, .75, .50, .25})
     public void onMessage(ConsumerRecords<String, String> records) {
+
+        log.info("Received {} records", records.count());
+        records.forEach(record1 -> 
+                log.info(String.format("Received record: %s, %s", record1.key(), record1.value())));
+
         val documentList = KafkaUtilities.asStream(records)
                 .map(this::convert)
                 .collect(Collectors.toList());
