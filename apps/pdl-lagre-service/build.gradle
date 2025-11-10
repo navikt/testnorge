@@ -16,6 +16,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation 'org.springframework.retry:spring-retry'
 
     implementation "no.nav.testnav.libs:avro-schema"
     implementation "no.nav.testnav.libs:data-transfer-objects"
@@ -38,6 +39,7 @@ dependencies {
 //    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 //    implementation "org.opensearch.client:spring-data-opensearch:2.0.3"
 
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.1'
     implementation "org.springframework.kafka:spring-kafka"
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"

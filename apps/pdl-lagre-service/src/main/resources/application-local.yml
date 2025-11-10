@@ -4,3 +4,7 @@ spring:
 
 kafka:
   group-id: testnav-pdl-lagre-service
+
+OPEN_SEARCH_HOST: tada
+OPEN_SEARCH_USERNAME: tada
+OPEN_SEARCH_PASSWORD: tada

@@ -2,7 +2,7 @@ spring:
   application:
     name: testnav-pdl-lagre-service
     version: 1
-    description: App for å ta imot Kafka-hendelser og lagre i opensearch.
+    description: App for å ta imot Kafka-hendelser og lagre i opensearch instans.
   config:
     import: "classpath:dolly-application.yml"
   security:
