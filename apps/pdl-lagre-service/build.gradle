@@ -28,7 +28,6 @@ dependencies {
     implementation "no.nav.testnav.libs:testing"
 
     implementation 'org.opensearch.client:opensearch-java:3.6.0'
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 
     implementation ('org.opensearch.client:spring-data-opensearch-starter:2.0.2') {
         exclude group: 'org.opensearch.client', module: 'opensearch-rest-high-level-client'
