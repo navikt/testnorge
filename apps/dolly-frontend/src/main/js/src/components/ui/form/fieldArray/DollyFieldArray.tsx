@@ -223,17 +223,18 @@ export const FormDollyFieldArray = ({
 	buttonText = null as unknown as string,
 	errorText = null,
 	lockedEntriesLength = 0 as unknown as number,
+	leafOnlyDelete = false,
 }) => {
 	const formMethods = useFormContext()
 	const { fields, append, remove } = useFieldArray({ control: formMethods.control, name })
 	const values = formMethods.watch(name) || []
 
 	useEffect(() => {
-		if (!canBeEmpty && fields.length === 0) {
+		if (!canBeEmpty && fields.length === 0 && !(leafOnlyDelete && isOrganisasjon)) {
 			append(newEntry)
 			formMethods.trigger(name)
 		}
-	}, [canBeEmpty, fields.length, append, formMethods, name])
+	}, [canBeEmpty, fields.length, append, formMethods, name, leafOnlyDelete, isOrganisasjon])
 
 	const addNewEntry = () => {
 		if (handleNewEntry) {
@@ -252,12 +253,18 @@ export const FormDollyFieldArray = ({
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 				{fields.map((field, idx) => {
-					const showDeleteButton = canBeEmpty
-						? true
-						: values.length >= 2 && idx >= lockedEntriesLength
+					const curr = values[idx]
 					const path = `${name}.${idx}`
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
-					const curr = values[idx]
+					const isLeaf = !curr || !curr.underenheter || curr.underenheter.length === 0
+					let showDeleteButton
+					if (leafOnlyDelete && isOrganisasjon) {
+						if (!isLeaf) showDeleteButton = false
+						else
+							showDeleteButton = !(values.length === 1 && !canBeEmpty && idx < lockedEntriesLength)
+					} else {
+						showDeleteButton = canBeEmpty ? true : values.length >= 2 && idx >= lockedEntriesLength
+					}
 					const handleRemove = () => {
 						remove(idx)
 						if (handleRemoveEntry) handleRemoveEntry(idx)
@@ -272,7 +279,7 @@ export const FormDollyFieldArray = ({
 								showDeleteButton={showDeleteButton}
 								whiteBackground={whiteBackground}
 							>
-								{children(path, idx, curr)}
+								{children(path, idx, curr, number, field.id)}
 							</DollyFaBlokkNested>
 						)
 					if (isOrganisasjon)
@@ -283,10 +290,10 @@ export const FormDollyFieldArray = ({
 								number={number}
 								header={header}
 								hjelpetekst={hjelpetekst}
-								handleRemove={handleRemove}
+								handleRemove={showDeleteButton ? handleRemove : null}
 								showDeleteButton={showDeleteButton}
 							>
-								{children(path, idx, curr, number)}
+								{children(path, idx, curr, number, field.id)}
 							</DollyFaBlokkOrg>
 						)
 					return (
@@ -296,11 +303,11 @@ export const FormDollyFieldArray = ({
 							number={number}
 							header={header}
 							hjelpetekst={hjelpetekst}
-							handleRemove={handleRemove}
+							handleRemove={showDeleteButton ? handleRemove : null}
 							showDeleteButton={showDeleteButton}
 							whiteBackground={whiteBackground}
 						>
-							{children(path, idx, curr, number)}
+							{children(path, idx, curr, number, field.id)}
 						</DollyFaBlokk>
 					)
 				})}

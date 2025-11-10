@@ -19,7 +19,6 @@ type DetaljerProps = {
 	path: string
 	level: number
 	number?: string
-	maaHaUnderenhet?: boolean
 }
 
 enum TypeUnderenhet {
@@ -31,62 +30,61 @@ const StyledToggleGroup = styled(ToggleGroup)`
 	margin-bottom: 7px;
 `
 
-export const Detaljer = ({
-	formMethods,
-	path,
-	level,
-	number,
-	maaHaUnderenhet = true,
-}: DetaljerProps) => {
+export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) => {
 	const watchedValues = formMethods.watch(path)
 	const initialValues = useMemo(
-		() => _.omit(watchedValues || {}, ['underenheter', 'sektorkode']),
+		() => _.omit(watchedValues || {}, ['underenheter', 'sektorkode', 'typeUnderenhet']),
 		[watchedValues],
 	)
 	const createNewEntry = () => _.cloneDeep(initialValues)
-	const sektorkodeErValgt = formMethods.getValues(`${path}.sektorkode`)
 
-	const getTypeUnderenhet = () => {
-		return (
-			level === 0 ||
-			(_.has(formMethods.getValues(), `${path}.underenheter`) &&
-			formMethods.watch(`${path}.underenheter`)
-				? TypeUnderenhet.JURIDISKENHET
-				: TypeUnderenhet.VIRKSOMHET)
-		)
+	const computeTypeFromForm = () => {
+		const saved = formMethods.getValues(`${path}.typeUnderenhet`)
+		if (saved === TypeUnderenhet.JURIDISKENHET || saved === TypeUnderenhet.VIRKSOMHET) return saved
+		if (level === 0) return TypeUnderenhet.JURIDISKENHET
+		const under = formMethods.getValues(`${path}.underenheter`)
+		return under && under.length > 0 ? TypeUnderenhet.JURIDISKENHET : TypeUnderenhet.VIRKSOMHET
 	}
 
-	const [typeUnderenhet, setTypeUnderenhet] = useState(getTypeUnderenhet())
+	const [typeUnderenhet, setTypeUnderenhet] = useState(computeTypeFromForm())
 	const previousUnderEnheterRef = useRef<any[] | undefined>(undefined)
+	const enhetstype = formMethods.watch(`${path}.enhetstype`)
+	const hasChildren =
+		Array.isArray(formMethods.getValues(`${path}.underenheter`)) &&
+		formMethods.getValues(`${path}.underenheter`)?.length > 0
 
 	useEffect(() => {
-		setTypeUnderenhet(getTypeUnderenhet())
-	}, [formMethods.watch(`${path}.underenheter`)?.length])
+		const stored = formMethods.getValues(`${path}.typeUnderenhet`)
+		if (!stored) formMethods.setValue(`${path}.typeUnderenhet`, typeUnderenhet)
+	}, [typeUnderenhet, formMethods, path])
 
-	const enhetstype = formMethods.watch(`${path}.enhetstype`)
-
-	const handleToggleChange = (value: TypeUnderenhet) => {
-		setTypeUnderenhet(value)
+	const handleToggleChange = (next: TypeUnderenhet) => {
+		if (next === typeUnderenhet) return
+		formMethods.setValue(`${path}.typeUnderenhet`, next)
 		formMethods.setValue(`${path}.enhetstype`, '')
-		if (value === TypeUnderenhet.VIRKSOMHET) {
+		const sektorkodeErValgt = formMethods.getValues(`${path}.sektorkode`)
+		if (next === TypeUnderenhet.VIRKSOMHET) {
 			previousUnderEnheterRef.current = formMethods.getValues(`${path}.underenheter`) || []
 			formMethods.setValue(`${path}.underenheter`, undefined)
-			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, undefined)
-		} else if (value === TypeUnderenhet.JURIDISKENHET && level < 4) {
+			if (sektorkodeErValgt) formMethods.setValue(`${path}.sektorkode`, undefined)
+		} else if (next === TypeUnderenhet.JURIDISKENHET && level < 4) {
 			if (previousUnderEnheterRef.current && previousUnderEnheterRef.current.length > 0) {
 				formMethods.setValue(`${path}.underenheter`, previousUnderEnheterRef.current)
 			}
-			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, '')
+			if (sektorkodeErValgt) formMethods.setValue(`${path}.sektorkode`, '')
 		}
-		formMethods.trigger(path)
+		setTypeUnderenhet(next)
 	}
+
+	const mustHaveUnderenhet =
+		typeUnderenhet === TypeUnderenhet.JURIDISKENHET && enhetstype && enhetstype !== 'ENK'
 
 	return (
 		<>
 			<Kategori
 				title={!number ? 'Organisasjon' : undefined}
 				vis={organisasjonPaths as any}
-				flexRow={true as any}
+				flexRow={true}
 			>
 				<div className="toggle--wrapper">
 					{level > 0 && (
@@ -101,7 +99,17 @@ export const Detaljer = ({
 							>
 								Juridisk enhet
 							</ToggleGroup.Item>
-							<ToggleGroup.Item key={TypeUnderenhet.VIRKSOMHET} value={TypeUnderenhet.VIRKSOMHET}>
+							<ToggleGroup.Item
+								key={TypeUnderenhet.VIRKSOMHET}
+								value={TypeUnderenhet.VIRKSOMHET}
+								disabled={hasChildren}
+								style={hasChildren ? { opacity: 0.5 } : undefined}
+								title={
+									hasChildren
+										? 'Kan ikke endre til virksomhet når denne enheten har underenheter. Fjern underenheter først.'
+										: undefined
+								}
+							>
 								Virksomhet
 							</ToggleGroup.Item>
 						</StyledToggleGroup>
@@ -167,7 +175,7 @@ export const Detaljer = ({
 				header="Underenhet"
 				newEntry={createNewEntry()}
 				handleNewEntry={(appendFn: any) => appendFn(createNewEntry())}
-				disabled={(level > 3 || typeUnderenhet === TypeUnderenhet.VIRKSOMHET) as any}
+				disabled={level > 3 || typeUnderenhet === TypeUnderenhet.VIRKSOMHET}
 				title={
 					level > 3
 						? ('Du kan maksimalt lage fire nivåer av underenheter' as any)
@@ -175,27 +183,22 @@ export const Detaljer = ({
 							? ('Du kan ikke legge til underenheter på enhet av type virksomhet' as any)
 							: (undefined as any)
 				}
-				canBeEmpty={(!maaHaUnderenhet || enhetstype === 'ENK' || !enhetstype) as any}
+				canBeEmpty={(!mustHaveUnderenhet || enhetstype === 'ENK' || !enhetstype) as any}
 				tag={number as any}
 				isOrganisasjon={true}
-				maxEntries={1}
+				// remove maxEntries limit on top level
+				maxEntries={level === 0 ? (undefined as any) : 1}
+				leafOnlyDelete={true}
 			>
-				{(path: string, idx: number, _curr: any, number: string) => {
-					return (
-						<Detaljer
-							key={idx}
-							formMethods={formMethods}
-							path={path}
-							level={level + 1}
-							number={number ? number : (level + 1).toString()}
-							maaHaUnderenhet={
-								typeUnderenhet === TypeUnderenhet.JURIDISKENHET &&
-								formMethods.watch(`${path}.enhetstype`) &&
-								formMethods.watch(`${path}.enhetstype`) !== 'ENK'
-							}
-						/>
-					)
-				}}
+				{(childPath: string, _idx: number, _curr: any, childNumber: string, fieldId: string) => (
+					<Detaljer
+						key={fieldId}
+						formMethods={formMethods}
+						path={childPath}
+						level={level + 1}
+						number={childNumber ? childNumber : (level + 1).toString()}
+					/>
+				)}
 			</FormDollyFieldArray>
 		</>
 	)

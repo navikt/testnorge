@@ -1,5 +1,5 @@
 import Icon from '@/components/ui/icon/Icon'
-import { Miljostatus, Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
+import { Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import Spinner from '@/components/ui/loading/Spinner'
 import * as React from 'react'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
@@ -31,7 +31,13 @@ const FagsystemText = styled.div`
 	}
 `
 
-export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljostatus) => {
+export const BestillingStatus = ({
+	bestilling,
+	erOrganisasjon = false,
+}: {
+	bestilling: any
+	erOrganisasjon?: boolean
+}) => {
 	const IconTypes = {
 		oppretter: 'loading-spinner',
 		suksess: 'feedback-check-circle',
