@@ -88,13 +88,13 @@ export const Select = ({
 	let formValue = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
 		: options?.filter?.((o) => {
-				return o?.value === val
+				return _.isEqual(o?.value, val)
 			})
 
 	let propValue = isMulti
 		? options?.filter?.((o) => value?.some((el) => el === o?.value))
 		: options?.filter?.((o) => {
-				return o?.value === value
+				return _.isEqual(o?.value, value)
 			})
 
 	if (!onChange) {
