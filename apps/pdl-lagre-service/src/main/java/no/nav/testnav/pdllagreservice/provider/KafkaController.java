@@ -1,18 +1,19 @@
-package no.nav.testnav.pdllagreservice.kafka;
+package no.nav.testnav.pdllagreservice.provider;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.pdllagreservice.kafka.RestartingBeanBatchErrorHandler;
+import no.nav.testnav.pdllagreservice.kafka.RestartingErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
-import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.InetAddress;
@@ -27,8 +28,10 @@ import static java.util.Objects.nonNull;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/internal")
-public class InternalKafkaController {
+@RequestMapping("/kafka")
+public class KafkaController {
+
+    private static final String LISTENER_PATTERN = "^[\\w\\-_]+$";
 
     @Autowired
     private KafkaListenerEndpointRegistry kafkaRegistry;
@@ -37,40 +40,44 @@ public class InternalKafkaController {
     @Autowired(required = false)
     private RestartingBeanBatchErrorHandler beanBatchErrorHandler;
 
-
     @SneakyThrows
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "kafka/{listener}/stop")
-    ResponseEntity<String> stop(@PathVariable(name = "listener") @Pattern(regexp = "^[\\w\\-_]+$") String listener) {
-        MessageListenerContainer listenerContainer = kafkaRegistry.getListenerContainer(listener);
+    String stop(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
+
+        var listenerContainer = kafkaRegistry.getListenerContainer(listener);
         if (listenerContainer.isRunning()) {
             setAutorestart(false);
             listenerContainer.stop();
-            return ResponseEntity.ok(listener + " Stopping... (" + getHostName() + ")");
+            return listener + " Stopping... (" + getHostName() + ")";
         }
-        return ResponseEntity.ok(listener + " Not running (" + getHostName() + ")");
+        return listener + " Not running (" + getHostName() + ")";
     }
 
-
     @SneakyThrows
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "kafka/{listener}/start")
-    ResponseEntity<String> start(@PathVariable(name = "listener") @Pattern(regexp = "^[\\w\\-_]+$") String listener) {
-        MessageListenerContainer listenerContainer = kafkaRegistry.getListenerContainer(listener);
+    String start(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
+
+        var listenerContainer = kafkaRegistry.getListenerContainer(listener);
         if (!listenerContainer.isRunning()) {
             setAutorestart(true);
             listenerContainer.start();
-            return ResponseEntity.ok(listener + " Starting... (" + getHostName() + ")");
+            return listener + " Starting... (" + getHostName() + ")";
         }
-        return ResponseEntity.ok(listener + " Already running (" + getHostName() + ")");
+        return listener + " Already running (" + getHostName() + ")";
     }
 
     @SneakyThrows
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "kafka/{listener}/status")
-    ResponseEntity<String> status(@PathVariable(name = "listener") @Pattern(regexp = "^[\\w\\-_]+$") String listener) {
-        MessageListenerContainer listenerContainer = kafkaRegistry.getListenerContainer(listener);
+    String status(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
+
+        var listenerContainer = kafkaRegistry.getListenerContainer(listener);
         if (listenerContainer.isRunning()) {
-            return ResponseEntity.ok(listener + " Running (" + getHostName() + ")");
+            return listener + " Running (" + getHostName() + ")";
         } else {
-            return ResponseEntity.ok(listener + " Not running (" + getHostName() + ")");
+            return listener + " Not running (" + getHostName() + ")";
         }
 
     }
@@ -84,6 +91,7 @@ public class InternalKafkaController {
     }
 
     private void setAutorestart(boolean newValue) {
+
         if (nonNull(batchErrorHandler)) {
             batchErrorHandler.getEnabled().set(newValue);
         }
