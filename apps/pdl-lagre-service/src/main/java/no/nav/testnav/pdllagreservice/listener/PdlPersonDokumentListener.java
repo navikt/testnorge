@@ -42,7 +42,7 @@ public class PdlPersonDokumentListener {
     @KafkaListener(
             id = "pdl-lagre-service",
             clientIdPrefix = "testnav-sok-person",
-            topics = "pdl-persondokument-tagged-v1",
+            topics = "pdl.pdl-persondokument-tagged-v1",
             groupId = "testnav-pdl-lagre-service-pdlDokumenter-v1",
             containerFactory = "pdlDokumentKafkaFactory"
     )
