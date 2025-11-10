@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import * as _ from 'lodash-es'
 import { organisasjonPaths } from '../paths'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
@@ -38,8 +38,12 @@ export const Detaljer = ({
 	number,
 	maaHaUnderenhet = true,
 }: DetaljerProps) => {
-	const currentOrgValues = formMethods.getValues(path === 'organisasjon' ? 'organisasjon' : path)
-	const initialValues = _.omit(currentOrgValues || {}, ['underenheter', 'sektorkode'])
+	const watchedValues = formMethods.watch(path)
+	const initialValues = useMemo(
+		() => _.omit(watchedValues || {}, ['underenheter', 'sektorkode']),
+		[watchedValues],
+	)
+	const createNewEntry = () => _.cloneDeep(initialValues)
 	const sektorkodeErValgt = formMethods.getValues(`${path}.sektorkode`)
 
 	const getTypeUnderenhet = () => {
@@ -53,30 +57,44 @@ export const Detaljer = ({
 	}
 
 	const [typeUnderenhet, setTypeUnderenhet] = useState(getTypeUnderenhet())
+	const previousUnderEnheterRef = useRef<any[] | undefined>(undefined)
 
 	useEffect(() => {
 		setTypeUnderenhet(getTypeUnderenhet())
 	}, [formMethods.watch(`${path}.underenheter`)?.length])
 
+	const enhetstype = formMethods.watch(`${path}.enhetstype`)
+
 	const handleToggleChange = (value: TypeUnderenhet) => {
 		setTypeUnderenhet(value)
 		formMethods.setValue(`${path}.enhetstype`, '')
 		if (value === TypeUnderenhet.VIRKSOMHET) {
+			previousUnderEnheterRef.current = formMethods.getValues(`${path}.underenheter`) || []
 			formMethods.setValue(`${path}.underenheter`, undefined)
 			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, undefined)
 		} else if (value === TypeUnderenhet.JURIDISKENHET && level < 4) {
-			formMethods.setValue(`${path}.underenheter`, [initialValues])
+			if (previousUnderEnheterRef.current && previousUnderEnheterRef.current.length > 0) {
+				formMethods.setValue(`${path}.underenheter`, previousUnderEnheterRef.current)
+			}
 			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, '')
 		}
-		formMethods.trigger(`${path}`)
+		formMethods.trigger(path)
 	}
 
 	return (
 		<>
-			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths} flexRow={true}>
+			<Kategori
+				title={!number ? 'Organisasjon' : undefined}
+				vis={organisasjonPaths as any}
+				flexRow={true as any}
+			>
 				<div className="toggle--wrapper">
 					{level > 0 && (
-						<StyledToggleGroup size={'small'} onChange={handleToggleChange} value={typeUnderenhet}>
+						<StyledToggleGroup
+							size={'small'}
+							onChange={(v: string) => handleToggleChange(v as TypeUnderenhet)}
+							value={typeUnderenhet as unknown as string}
+						>
 							<ToggleGroup.Item
 								key={TypeUnderenhet.JURIDISKENHET}
 								value={TypeUnderenhet.JURIDISKENHET}
@@ -147,18 +165,20 @@ export const Detaljer = ({
 			<FormDollyFieldArray
 				name={`${path}.underenheter`}
 				header="Underenhet"
-				newEntry={initialValues}
-				disabled={level > 3 || typeUnderenhet === TypeUnderenhet.VIRKSOMHET}
+				newEntry={createNewEntry()}
+				handleNewEntry={(appendFn: any) => appendFn(createNewEntry())}
+				disabled={(level > 3 || typeUnderenhet === TypeUnderenhet.VIRKSOMHET) as any}
 				title={
 					level > 3
-						? 'Du kan maksimalt lage fire nivåer av underenheter'
+						? ('Du kan maksimalt lage fire nivåer av underenheter' as any)
 						: typeUnderenhet === TypeUnderenhet.VIRKSOMHET
-							? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
-							: null
+							? ('Du kan ikke legge til underenheter på enhet av type virksomhet' as any)
+							: (undefined as any)
 				}
-				canBeEmpty={!maaHaUnderenhet || formMethods.watch(`${path}.enhetstype`) === 'ENK'}
-				tag={number}
+				canBeEmpty={(!maaHaUnderenhet || enhetstype === 'ENK' || !enhetstype) as any}
+				tag={number as any}
 				isOrganisasjon={true}
+				maxEntries={1}
 			>
 				{(path: string, idx: number, _curr: any, number: string) => {
 					return (
@@ -169,7 +189,8 @@ export const Detaljer = ({
 							level={level + 1}
 							number={number ? number : (level + 1).toString()}
 							maaHaUnderenhet={
-								typeUnderenhet === 'JURIDISKENHET' &&
+								typeUnderenhet === TypeUnderenhet.JURIDISKENHET &&
+								formMethods.watch(`${path}.enhetstype`) &&
 								formMethods.watch(`${path}.enhetstype`) !== 'ENK'
 							}
 						/>

@@ -103,8 +103,8 @@ export const DollyFaBlokkOrg = ({
 	showDeleteButton,
 	number,
 }) => {
-	const nivaa = (number.match(/\@/g) || []).length + 1
-	const name = nivaa & 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
+	const nivaa = (number.match(/@/g) || []).length + 1
+	const name = nivaa % 2 === 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
 	const getNivaaColor = () => {
 		switch (nivaa) {
 			case 1:
@@ -233,7 +233,7 @@ export const FormDollyFieldArray = ({
 			append(newEntry)
 			formMethods.trigger(name)
 		}
-	}, [canBeEmpty, fields.length, append, formMethods, name, newEntry])
+	}, [canBeEmpty, fields.length, append, formMethods, name])
 
 	const addNewEntry = () => {
 		if (handleNewEntry) {
