@@ -40,7 +40,7 @@ dependencies {
 //    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 //    implementation "org.opensearch.client:spring-data-opensearch:2.0.3"
 
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.1'
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
     implementation "org.springframework.kafka:spring-kafka"
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
