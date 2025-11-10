@@ -26,7 +26,9 @@ public class OpensearchDocumentService {
     public void processBulk(List<OpensearchDocumentData> docs) {
 
         val bulkRequest = buildBulkRequest(docs);
+        log.info("Bulk request: {}, {}", bulkRequest, bulkRequest.operations().size());
         val response = client.bulk(bulkRequest);
+        log.info("Bulk response: {}, {} {}", response, bulkRequest.operations().size(), bulkRequest.operations().getFirst());
 
         if (response.errors()) {
             log.warn("bulk request failed");

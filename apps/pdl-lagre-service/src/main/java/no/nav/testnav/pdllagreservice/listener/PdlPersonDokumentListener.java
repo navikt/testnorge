@@ -50,8 +50,6 @@ public class PdlPersonDokumentListener {
     public void onMessage(ConsumerRecords<String, String> records) {
 
         log.info("Received {} records", records.count());
-        records.forEach(record1 -> 
-                log.info(String.format("Received record: %s, %s", record1.key(), record1.value())));
 
         val documentList = KafkaUtilities.asStream(records)
                 .map(this::convert)
