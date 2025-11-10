@@ -9,14 +9,11 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClientRequest;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 
@@ -40,16 +37,13 @@ public class LagreGenerertPoppInntektCommand implements Callable<Flux<Pensjonfor
                 .uri(uriBuilder -> uriBuilder
                         .path(POPP_INNTEKTSKJEMA_URL)
                         .build())
-                .httpRequest(httpRequest -> {
-                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(SHORT_REQUEST_DURATION));
-                })
                 .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonPoppGenerertInntektRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
+                .timeout(Duration.ofSeconds(SHORT_REQUEST_DURATION))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {

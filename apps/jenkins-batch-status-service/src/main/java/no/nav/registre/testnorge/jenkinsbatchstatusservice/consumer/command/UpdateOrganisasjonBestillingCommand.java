@@ -8,6 +8,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @RequiredArgsConstructor
 public class UpdateOrganisasjonBestillingCommand implements Runnable {
 
@@ -26,6 +28,7 @@ public class UpdateOrganisasjonBestillingCommand implements Runnable {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(Void.class)
+                .timeout(Duration.ofSeconds(10))
                 .retryWhen(WebClientError.is5xxException())
                 .block();
     }

@@ -21,6 +21,7 @@ import {
 	initialFartoy,
 } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
+import { FullmaktHandling } from '@/components/fagsystem/fullmakt/FullmaktType'
 
 export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)
@@ -99,9 +100,28 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 			initialValuesMal.sykemelding.syntSykemelding,
 		)
 	}
+	if (initialValuesMal.fullmakt) {
+		initialValuesMal.fullmakt = getUpdatedFullmaktData(initialValuesMal.fullmakt)
+	}
 
 	initialValuesMal.environments = filterMiljoe(environments, mal.bestilling?.environments)
 	return initialValuesMal
+}
+
+const getUpdatedFullmaktData = (fullmaktData) => {
+	const newHandling = (handling) => {
+		if (handling?.includes('SKRIV')) {
+			return FullmaktHandling.lesOgSkriv
+		}
+		return FullmaktHandling.les
+	}
+	return fullmaktData?.map((fullmakt) => ({
+		...fullmakt,
+		omraade: fullmakt.omraade.map((omraade: any) => ({
+			...omraade,
+			handling: newHandling(omraade.handling),
+		})),
+	}))
 }
 
 const getUpdatedAlderspensjonData = (alderspensjonData) => {
@@ -140,7 +160,11 @@ const getUpdatedArenaforvalterData = (arenaforvalterData) => {
 const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {
 	return Object.fromEntries(
 		Object.entries(arbeidsplassenData)?.filter((kategori) => {
-			return (kategori?.[0] === 'jobboensker' && kategori?.[1]) || kategori?.[1]?.length > 0
+			return (
+				(kategori?.[0] === 'jobboensker' && kategori?.[1]) ||
+				kategori?.[1]?.length > 0 ||
+				_.isBoolean(kategori?.[1])
+			)
 		}),
 	)
 }

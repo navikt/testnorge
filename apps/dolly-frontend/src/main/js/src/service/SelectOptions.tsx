@@ -1,3 +1,5 @@
+import { FullmaktHandling } from '@/components/fagsystem/fullmakt/FullmaktType'
+
 interface SelectOptions {
 	[name: string]: Array<{ value: boolean | string | number; label: string }>
 }
@@ -635,10 +637,8 @@ const selectOptions = {
 	],
 
 	fullmaktHandling: [
-		{ value: '*', label: 'Alle' },
-		{ value: 'LES', label: 'Les' },
-		{ value: 'KOMMUNISER', label: 'Kommuniser' },
-		{ value: 'SKRIV', label: 'Skriv' },
+		{ value: FullmaktHandling.les, label: 'Leserettigheter' },
+		{ value: FullmaktHandling.lesOgSkriv, label: 'Lese- og skriverettigheter' },
 	],
 
 	arbeidsmengde: [
