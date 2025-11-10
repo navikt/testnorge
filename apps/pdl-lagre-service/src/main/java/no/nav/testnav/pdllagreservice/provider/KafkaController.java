@@ -42,7 +42,7 @@ public class KafkaController {
 
     @SneakyThrows
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "kafka/{listener}/stop")
+    @GetMapping(path = "/{listener}/stop")
     String stop(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
 
         var listenerContainer = kafkaRegistry.getListenerContainer(listener);
@@ -56,7 +56,7 @@ public class KafkaController {
 
     @SneakyThrows
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "kafka/{listener}/start")
+    @GetMapping(path = "/{listener}/start")
     String start(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
 
         var listenerContainer = kafkaRegistry.getListenerContainer(listener);
@@ -70,7 +70,7 @@ public class KafkaController {
 
     @SneakyThrows
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "kafka/{listener}/status")
+    @GetMapping(path = "/{listener}/status")
     String status(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
 
         var listenerContainer = kafkaRegistry.getListenerContainer(listener);
