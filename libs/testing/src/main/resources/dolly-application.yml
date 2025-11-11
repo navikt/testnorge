@@ -7,6 +7,10 @@
 #
 
 management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
   endpoints:
     access:
       default: read_only
@@ -16,9 +20,6 @@ management:
         include: prometheus,health
       path-mapping:
         prometheus: metrics
-  health:
-    probes:
-      enabled: true
   prometheus:
     metrics:
       export:
