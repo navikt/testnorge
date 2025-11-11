@@ -87,14 +87,20 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	// const elementHeight = divElement?.[0]?.clientHeight
 	// console.log('elementHeight: ', elementHeight) //TODO - SLETT MEG
 
+	// const windowHeight = window.innerHeight
+	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
+	// const bestillingHeight = windowHeight * 0.5
+	// console.log('bestillingHeight: ', bestillingHeight) //TODO - SLETT MEG
+
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (
+				// <div className="oppsummering" style={{ maxHeight: bestillingHeight, overflowY: 'hidden' }}>
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier ...'} />}>
 						<Bestillingsdata bestilling={formMethods.getValues()} />
 						{/*//TODO: Fjernes naar bestillingsdata er klar*/}
-						<Bestillingskriterier bestilling={formMethods.getValues()} />
+						{/*<Bestillingskriterier bestilling={formMethods.getValues()} />*/}
 					</Suspense>
 				</div>
 			)}
