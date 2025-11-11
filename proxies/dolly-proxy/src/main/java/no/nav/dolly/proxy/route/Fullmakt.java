@@ -21,7 +21,8 @@ public class Fullmakt {
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.fullmakt);
+        var authenticationFilter = authenticationFilterService
+                .getFakedingsAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.fullmakt);
         return spec -> spec
                 .path("/fullmakt/**")
                 .filters(f -> f
