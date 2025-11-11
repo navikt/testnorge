@@ -363,7 +363,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			remove: () => del(paths.vergemaal),
 		},
 		fullmakt: {
-			label: 'Har fullmektig',
+			label: 'Har fullmakt',
 			checked: has(paths.fullmakt) || has(paths.fullmaktPDL),
 			add: () => {
 				set('fullmakt', [
