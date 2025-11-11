@@ -54,7 +54,7 @@ public class PdlPersonDokumentListener {
 
         KafkaUtilities.asStream(records)
                 .peek(record1 -> log.info("Processing record with key: {}, value: {}",
-                        record1.key(), Json.pretty(record1.value())))
+                        record1.key(), "Start: " + record1.value() + " ..."))
                 .findFirst().orElse(null);
 
 //        val documentList = KafkaUtilities.asStream(records)
@@ -81,7 +81,7 @@ public class PdlPersonDokumentListener {
 
             log.error("Failed to process message");
 
-                throw new UnrecoverableException("Failed to process message", exception);
+            throw new UnrecoverableException("Failed to process message", exception);
         } finally {
             MDC.clear();
         }
