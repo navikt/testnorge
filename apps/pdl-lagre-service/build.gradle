@@ -11,40 +11,36 @@ sonarqube {
 
 dependencies {
     implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
-    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "org.springframework.kafka:spring-kafka"
+    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation 'org.springframework.retry:spring-retry'
 
     implementation "no.nav.testnav.libs:avro-schema"
-    implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:kafka-config"
-    implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:servlet-core"
-    implementation "no.nav.testnav.libs:servlet-insecure-security"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:testing"
 
-    implementation 'org.opensearch.client:opensearch-java:3.6.0'
-
-    implementation ('org.opensearch.client:spring-data-opensearch-starter:2.0.2') {
-        exclude group: 'org.opensearch.client', module: 'opensearch-rest-high-level-client'
+    implementation ('org.opensearch.client:opensearch-rest-high-level-client:3.3.1') {
+        exclude group: "commons-logging", module: "commons-logging"
+        exclude group: "com.github.luben", module: "zstd-jni"
     }
 
     implementation 'org.opensearch.client:opensearch-java:3.1.0'
 
     implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.21.0'
-//    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-//    implementation "org.opensearch.client:spring-data-opensearch:2.0.3"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation 'org.apache.httpcomponents.client5:httpclient5'
-    implementation "org.springframework.kafka:spring-kafka"
-    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
-    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
 //    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

@@ -29,7 +29,7 @@ import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KEY;
 
 @Slf4j
 @Component
-@Profile("!test")
+@Profile("prod")
 @RequiredArgsConstructor
 public class PdlPersonDokumentListener {
 
