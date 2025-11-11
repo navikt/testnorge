@@ -2,6 +2,7 @@ package no.nav.testnav.pdllagreservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -51,11 +52,16 @@ public class PdlPersonDokumentListener {
 
         log.info("Received {} records", records.count());
 
-        val documentList = KafkaUtilities.asStream(records)
-                .map(this::convert)
-                .collect(Collectors.toList());
+        KafkaUtilities.asStream(records)
+                .peek(record1 -> log.info("Processing record with key: {}, value: {}",
+                        record1.key(), Json.pretty(record1.value())))
+                .findFirst().orElse(null);
 
-        CollectionUtils.chunk(documentList, 15).forEach(service::processBulk);
+//        val documentList = KafkaUtilities.asStream(records)
+//                .map(this::convert)
+//                .collect(Collectors.toList());
+//
+//        CollectionUtils.chunk(documentList, 15).forEach(service::processBulk);
     }
 
     private OpensearchDocumentData convert(ConsumerRecord<String, String> post) {
