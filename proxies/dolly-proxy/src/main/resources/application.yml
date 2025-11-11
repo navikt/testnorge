@@ -26,10 +26,7 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 springdoc:
-  api-docs:
-    enabled: true # Explicitly set to avoid warning during startup.
   swagger-ui:
-    enabled: true # Explicitly set to avoid warning during startup.
     urls:
 # Not working due to CORS.
 #      - name: histark
@@ -44,7 +41,7 @@ app:
     url: https://fakedings.intern.dev.nav.no
   targets:
     ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
-    fullmakt: https://repr-fullmakt.intern.dev.nav.no
+    fullmakt: https://repr-fullmakt.dev-fss-pub.nais.io
     histark: https://histarkimport.dev.intern.nav.no
     inntektstub: http://inntektstub.team-inntekt
     inst: http://opphold-testdata.team-rocket.svc.nais.local
