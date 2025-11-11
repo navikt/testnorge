@@ -56,14 +56,7 @@ public class PdlPersonDokumentListener {
                 .map(this::convert)
                 .toList();
 
-        log.info("Konvertert dokument {}, {}, {}", documentList.getFirst().getIndex(),
-                documentList.getFirst().getIdentifikator(), documentList.getFirst().getDokumentAsMap().entrySet()
-                        .stream()
-                        .map(entry -> entry.getKey() + "=" + entry.getValue() + "\n")
-                        .peek(log::info)
-                        .collect(Collectors.joining(", ")));
-
-//        CollectionUtils.chunk(documentList, 15).forEach(service::processBulk);
+        CollectionUtils.chunk(documentList, 15).forEach(service::processBulk);
     }
 
     private OpensearchDocumentData convert(ConsumerRecord<String, String> post) {
