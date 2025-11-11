@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = "pdl-lagre-service"
 
-includeBuild "../../libs/avro-schema"
-includeBuild "../../libs/kafka-config"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/reactive-security"
