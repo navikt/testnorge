@@ -37,8 +37,11 @@ spring:
     banner-mode: off
 
 springdoc:
+  api-docs:
+    enabled: true
   swagger-ui:
     disable-swagger-default-url: true
+    enabled: true
     url: /v3/api-docs
 
 ---
