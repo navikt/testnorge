@@ -52,15 +52,17 @@ public class PdlPersonDokumentListener {
 
         log.info("Received {} records", records.count());
 
-        KafkaUtilities.asStream(records)
-                .peek(record1 -> log.info("Processing record with key: {}, value: {}",
-                        record1.key(), "Start: " + record1.value() + " ..."))
-                .findFirst().orElse(null);
+        val documentList = KafkaUtilities.asStream(records)
+                .map(this::convert)
+                .toList();
 
-//        val documentList = KafkaUtilities.asStream(records)
-//                .map(this::convert)
-//                .collect(Collectors.toList());
-//
+        log.info("Konvertert dokument {}, {}, {}", documentList.getFirst().getIndex(),
+                documentList.getFirst().getIdentifikator(), documentList.getFirst().getDokumentAsMap().entrySet()
+                        .stream()
+                        .map(entry -> entry.getKey() + "=" + entry.getValue() + "\n")
+                        .peek(log::info)
+                        .collect(Collectors.joining(", ")));
+
 //        CollectionUtils.chunk(documentList, 15).forEach(service::processBulk);
     }
 
@@ -79,9 +81,9 @@ public class PdlPersonDokumentListener {
             // Merk: ikke ta med exception i UnrecoverableException (den kan inneholde person opplysninger),
             // bruk MDC verdiene for å eventuelt finne meldinger som feiler (gjør unntak for preprod for feilsøking)
 
-            log.error("Failed to process message");
+            log.error("Failed to process message: key: {}, value: {}", post.key(), post.value(), exception);
 
-            throw new UnrecoverableException("Failed to process message", exception);
+            return new OpensearchDocumentData(personIndex, post.key(), null);
         } finally {
             MDC.clear();
         }
