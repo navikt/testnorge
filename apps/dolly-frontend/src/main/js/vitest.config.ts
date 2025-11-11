@@ -20,6 +20,7 @@ export default defineConfig({
 			'history',
 			'react-toastify',
 			'@navikt/ds-icons',
+			'@testing-library/user-event',
 		],
 	},
 	test: {
@@ -27,6 +28,9 @@ export default defineConfig({
 		globals: true,
 		setupFiles: ['./vitest.setup.ts'],
 		include: ['**/__tests__/**/*.test.{ts,tsx}'],
+		deps: {
+			inline: ['@testing-library/user-event'],
+		},
 		browser: {
 			enabled: true,
 			provider: playwright(),
