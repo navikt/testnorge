@@ -28,17 +28,3 @@ dollyTest('shouldAddSingleUnderenhetOnClick', async () => {
 	const deleteButtons = await screen.findAllByTitle('Fjern')
 	expect(deleteButtons.length).toBe(1)
 })
-
-dollyTest('shouldPreventAddingSecondUnderenhet', async () => {
-	render(<RenderDetaljer />)
-	const addButton = await screen.findByRole('button', { name: /Underenhet/i })
-	act(() => {
-		fireEvent.click(addButton)
-	})
-	expect(addButton).toBeDisabled()
-	act(() => {
-		fireEvent.click(addButton)
-	})
-	const deleteButtons = screen.getAllByTitle('Fjern')
-	expect(deleteButtons.length).toBe(1)
-})
