@@ -6,8 +6,6 @@ import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDa
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication(exclude = {
-        org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
         ElasticsearchDataAutoConfiguration.class
 })
 public class PdlLagreServiceApplicationStarter {

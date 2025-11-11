@@ -15,16 +15,21 @@ dependencies {
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-validation"
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
     implementation 'org.springframework.retry:spring-retry'
 
-    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:avro-schema"
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:kafka-config"
     implementation "no.nav.testnav.libs:reactive-core"
-    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:servlet-insecure-security"
     implementation "no.nav.testnav.libs:testing"
+
+    implementation 'org.aspectj:aspectjweaver:1.9.22'
 
     implementation ('org.opensearch.client:opensearch-rest-high-level-client:3.3.1') {
         exclude group: "commons-logging", module: "commons-logging"

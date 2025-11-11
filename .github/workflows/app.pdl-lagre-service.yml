@@ -5,9 +5,11 @@ on:
     paths:
       - .github/workflows/app.pdl-lagre-service.yml
       - apps/pdl-lagre-service/**
+      - libs/avro-schema/**
+      - libs/kafka-config/**
       - libs/security-core/**
-      - libs/reactive-core/**
-      - libs/reactive-security/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
       - libs/testing/**
       - plugins/**
 
