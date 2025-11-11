@@ -63,10 +63,8 @@ export const StegVelger = ({
 }) => {
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-	const erOrganisasjon =
-		context.is?.nyOrganisasjon ||
-		context.is?.nyStandardOrganisasjon ||
-		context.is?.nyOrganisasjonFraMal
+	const is = context.is || {}
+	const erOrganisasjon = is.nyOrganisasjon || is.nyStandardOrganisasjon || is.nyOrganisasjonFraMal
 	const validationResolver: any = erOrganisasjon
 		? DollyOrganisasjonValidation
 		: DollyIdentValidation
@@ -116,6 +114,35 @@ export const StegVelger = ({
 	}
 
 	const handleNext = () => {
+		const isSteg0 = STEPS[step].component === Steg0
+		if (isSteg0) {
+			formMethods.trigger(['gruppeId']).then((validGruppe) => {
+				if (!validGruppe) {
+					errorContext?.setShowError(true)
+					return
+				}
+				if ((STEPS[step].component === Steg2 || STEPS[step].component === Steg0) && formMutate) {
+					formMethods.clearErrors(manualMutateFields)
+					errorContext?.setShowError(true)
+					setMutateLoading(true)
+					formMutate?.()
+						.then((response: any) => {
+							setMutateLoading(false)
+							if (response?.status === 'INVALID') {
+								return
+							}
+							validateForm()
+						})
+						.catch(() => {
+							setMutateLoading(false)
+							validateForm()
+						})
+				} else {
+					validateForm()
+				}
+			})
+			return
+		}
 		if ((STEPS[step].component === Steg2 || STEPS[step].component === Steg0) && formMutate) {
 			formMethods.clearErrors(manualMutateFields)
 			errorContext?.setShowError(true)
@@ -162,8 +189,6 @@ export const StegVelger = ({
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
 	const prevMalIdRef = React.useRef<string | undefined>(undefined)
-	const originalImportPersonerRef = React.useRef<any>(null)
-	const originalGruppeIdRef = React.useRef<any>(null)
 
 	const sanitizePdldata = (pdldata: any) => {
 		if (!pdldata || typeof pdldata !== 'object') return undefined
@@ -174,10 +199,10 @@ export const StegVelger = ({
 
 	useEffect(() => {
 		const currentMalId = context.mal?.id
-		const isNy = context.is.nyBestilling || context.is.nyBestillingFraMal
-		const isLeggTil = context.is.leggTil || context.is.leggTilPaaGruppe
-		const isImport = context.is.importTestnorge
-		const isFraIdenter = context.is.opprettFraIdenter
+		const isNy = is.nyBestilling || is.nyBestillingFraMal
+		const isLeggTil = is.leggTil || is.leggTilPaaGruppe
+		const isImport = is.importTestnorge
+		const isFraIdenter = is.opprettFraIdenter
 
 		if (!currentMalId) {
 			if (prevMalIdRef.current) {
@@ -221,7 +246,7 @@ export const StegVelger = ({
 		try {
 			const environments = formMethods.getValues('environments')
 			const malValues = initialValuesBasedOnMal(context.mal, environments)
-			let nextValues: any = {}
+			let nextValues: any
 			if (isNy) {
 				nextValues = {
 					...malValues,
@@ -292,21 +317,21 @@ export const StegVelger = ({
 		} catch (e) {}
 	}, [
 		context.mal,
-		context.is.nyBestilling,
-		context.is.nyBestillingFraMal,
-		context.is.leggTil,
-		context.is.leggTilPaaGruppe,
-		context.is.importTestnorge,
-		context.is.opprettFraIdenter,
+		is.nyBestilling,
+		is.nyBestillingFraMal,
+		is.leggTil,
+		is.leggTilPaaGruppe,
+		is.importTestnorge,
+		is.opprettFraIdenter,
 	])
 
 	useEffect(() => {
 		if (
 			erOrganisasjon ||
-			context.is.leggTil ||
-			context.is.leggTilPaaGruppe ||
-			context.is.importTestnorge ||
-			context.is.opprettFraIdenter
+			is.leggTil ||
+			is.leggTilPaaGruppe ||
+			is.importTestnorge ||
+			is.opprettFraIdenter
 		)
 			return
 		const currentIdenttype = formMethods.getValues('pdldata.opprettNyPerson.identtype')
@@ -318,19 +343,19 @@ export const StegVelger = ({
 	}, [
 		context.identtype,
 		erOrganisasjon,
-		context.is.leggTil,
-		context.is.leggTilPaaGruppe,
-		context.is.importTestnorge,
-		context.is.opprettFraIdenter,
+		is.leggTil,
+		is.leggTilPaaGruppe,
+		is.importTestnorge,
+		is.opprettFraIdenter,
 	])
 
 	useEffect(() => {
 		if (
 			erOrganisasjon ||
-			context.is.leggTil ||
-			context.is.leggTilPaaGruppe ||
-			context.is.importTestnorge ||
-			context.is.opprettFraIdenter
+			is.leggTil ||
+			is.leggTilPaaGruppe ||
+			is.importTestnorge ||
+			is.opprettFraIdenter
 		)
 			return
 		const currentId2032 = formMethods.getValues('pdldata.opprettNyPerson.id2032')
@@ -342,10 +367,10 @@ export const StegVelger = ({
 	}, [
 		context.id2032,
 		erOrganisasjon,
-		context.is.leggTil,
-		context.is.leggTilPaaGruppe,
-		context.is.importTestnorge,
-		context.is.opprettFraIdenter,
+		is.leggTil,
+		is.leggTilPaaGruppe,
+		is.importTestnorge,
+		is.opprettFraIdenter,
 	])
 
 	const malWatch = useWatch({ control: formMethods.control, name: 'mal' })
