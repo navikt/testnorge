@@ -3,12 +3,14 @@ spring:
     name: testnav-dolly-proxy
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      httpclient:
-        response-timeout: 1200s
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          httpclient:
+            response-timeout: 1200s
   config:
     import: "dolly-application.yml"
   main:
@@ -38,7 +40,7 @@ app:
     url: https://fakedings.intern.dev.nav.no
   targets:
     ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
-    fullmakt: http://repr-fullmakt.repr.svc.nais.local
+    fullmakt: http://repr-fullmakt.intern.dev.nav.no
     histark: https://histarkimport.dev.intern.nav.no
     inntektstub: http://inntektstub.team-inntekt
     inst: http://opphold-testdata.team-rocket.svc.nais.local
