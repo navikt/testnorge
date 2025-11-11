@@ -27,7 +27,7 @@ class FakedingsService {
                     .getHeaders()
                     .getFirst("fnr");
             if (!StringUtils.hasText(ident)) {
-                throw new NullPointerException("Required header 'fnr' header is empty; cannot request Fakedings token with correct pid.");
+                throw new NullPointerException("Required header 'fnr' is empty; cannot request Fakedings token with correct pid.");
             }
             return new FakedingsCommand(webClient, ident)
                     .call()
