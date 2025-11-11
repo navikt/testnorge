@@ -5,9 +5,8 @@ on:
     paths:
       - .github/workflows/app.pdl-forvalter.yml
       - apps/pdl-forvalter/**
-      - libs/avro-schema/**
       - libs/data-transfer-objects/**
-      - libs/kafka-config/**
+      - libs/data-transfer-search-objects/**
       - libs/reactive-core/**
       - libs/security-core/**
       - libs/servlet-core/**
