@@ -44,7 +44,7 @@ app:
     url: https://fakedings.intern.dev.nav.no
   targets:
     ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
-    fullmakt: http://repr-fullmakt.repr
+    fullmakt: https://repr-fullmakt.intern.dev.nav.no
     histark: https://histarkimport.dev.intern.nav.no
     inntektstub: http://inntektstub.team-inntekt
     inst: http://opphold-testdata.team-rocket.svc.nais.local
