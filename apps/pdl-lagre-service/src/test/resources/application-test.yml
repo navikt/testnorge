@@ -1,3 +1,7 @@
 OPEN_SEARCH_URI: tada
 OPEN_SEARCH_USERNAME: tada
 OPEN_SEARCH_PASSWORD: tada
+
+opensearch:
+  index:
+    personer: tada

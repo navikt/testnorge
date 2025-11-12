@@ -37,7 +37,7 @@ public class PdlPersonDokumentListener {
     private final OpensearchDocumentService service;
     private final ObjectMapper mapper;
 
-    @Value("${open.search.index}")
+    @Value("${opensearch.index.personer}")
     private String personIndex;
 
     @KafkaListener(

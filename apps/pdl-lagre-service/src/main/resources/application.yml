@@ -49,7 +49,6 @@ spring:
 spring.jmx.enabled: true
 server.tomcat.mbeanregistry.enabled: true
 
-open:
-  search:
-    total-fields: 2000
-    index: pdl-person
+opensearch:
+  index:
+    personer: pdl-person

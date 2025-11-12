@@ -10,11 +10,13 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
+@EnableWebMvc
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {
 
