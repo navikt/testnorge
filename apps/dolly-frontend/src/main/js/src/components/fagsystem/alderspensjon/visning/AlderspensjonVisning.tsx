@@ -130,6 +130,10 @@ export const AlderspensjonVisning = ({
 	ident,
 }) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'PEN_AP')
+	// Feil i visning: 21455027826
+	// Mange miljoer: 01457816193
+
+	bestilteMiljoer?.sort()
 
 	if (loading) {
 		return <Loading label="Laster alderspensjon-data" />
@@ -146,7 +150,7 @@ export const AlderspensjonVisning = ({
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
-	const mergetData = mergeMiljoData(data)
+	const mergetData = mergeMiljoData(data, bestilteMiljoer)
 
 	const filteredData =
 		tilgjengeligMiljoe && mergetData?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
