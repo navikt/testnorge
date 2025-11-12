@@ -20,7 +20,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 @RequiredArgsConstructor
 public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>> {
 
-    private static final String DELETE_FULLMAKT_URL = "/api/fullmakt/{fullmaktId}";
+    private static final String DELETE_FULLMAKT_URL = "/fullmakt/api/fullmakt/{fullmaktId}";
 
     private final WebClient webClient;
     private final String ident;

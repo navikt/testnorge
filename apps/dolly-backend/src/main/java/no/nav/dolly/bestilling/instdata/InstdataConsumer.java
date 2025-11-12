@@ -35,7 +35,7 @@ public class InstdataConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavInstProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -84,7 +84,7 @@ public class InstdataConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-inst-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

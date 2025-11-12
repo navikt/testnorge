@@ -38,7 +38,7 @@ public class FullmaktConsumer extends ConsumerStatus {
             WebClient webClient){
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavFullmaktProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -81,7 +81,7 @@ public class FullmaktConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-fullmakt-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

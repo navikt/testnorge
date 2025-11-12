@@ -65,12 +65,33 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-organisasjon-service
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
     outbound:
       rules:
+        - application: digdir-krr-stub
+          namespace: team-rocket
+          cluster: dev-gcp
+        - application: ereg-services-q1
+          namespace: arbeidsforhold
+        - application: ereg-services-q2
+          namespace: arbeidsforhold
+        - application: ereg-services-q4
+          namespace: arbeidsforhold
+        - application: opphold-testdata
+          namespace: team-rocket
+        - application: repr-fullmakt
+          namespace: repr
+        - application: skjermede-personer
+          namespace: nom
+        - application: sokos-kontoregister-person
+          namespace: okonomi
+          cluster: dev-gcp
+        - application: testnav-udi-stub
         - application: logging
           namespace: nais-system
   liveness:

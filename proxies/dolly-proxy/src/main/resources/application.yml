@@ -3,12 +3,14 @@ spring:
     name: testnav-dolly-proxy
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      httpclient:
-        response-timeout: 1200s
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          httpclient:
+            response-timeout: 1200s
   config:
     import: "dolly-application.yml"
   main:
@@ -33,9 +35,18 @@ springdoc:
 #        url: http://inntektstub.team-inntekt/v3/api-docs/a-ordningen%20api
     urls-primary-name: Downstream Services
 
-targets:
-  histark: https://histarkimport.dev.intern.nav.no
-  inntektstub: http://inntektstub.team-inntekt
-  sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
-  skjermingsregister: https://skjermede-personer.dev.adeo.no
-  udistub: http://testnav-udi-stub.dolly
+
+app:
+  fakedings:
+    url: https://fakedings.intern.dev.nav.no
+  targets:
+    ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
+    fullmakt: http://repr-fullmakt.repr.svc.nais.local
+    histark: https://histarkimport.dev.intern.nav.no
+    inntektstub: http://inntektstub.team-inntekt
+    inst: http://opphold-testdata.team-rocket.svc.nais.local
+    kontoregister: https://sokos-kontoregister-person.intern.dev.nav.no
+    krrstub: https://digdir-krr-stub.intern.dev.nav.no
+    sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
+    skjermingsregister: https://skjermede-personer.dev.adeo.no
+    udistub: http://testnav-udi-stub.dolly

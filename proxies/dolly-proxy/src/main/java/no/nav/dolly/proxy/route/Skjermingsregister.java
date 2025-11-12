@@ -1,11 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
+import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -22,23 +18,16 @@ public class Skjermingsregister {
     private static final String NAMESPACE = "nom";
 
     private final Targets targets;
-    private final AzureTrygdeetatenTokenService tokenService;
+    private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
+        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.skjermingsregister);
         return spec -> spec
                 .path("/skjermingsregister/**")
                 .filters(f -> f
                         .stripPrefix(1)
-                        .filter(getAuthenticationFilter()))
+                        .filter(authenticationFilter))
                 .uri(targets.skjermingsregister);
-    }
-
-    private GatewayFilter getAuthenticationFilter() {
-        var serverProperties = ServerProperties.of(CLUSTER, NAMESPACE, NAME, targets.skjermingsregister);
-        return AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService
-                        .exchange(serverProperties)
-                        .map(AccessToken::getTokenValue));
     }
 
 }

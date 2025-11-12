@@ -114,16 +114,6 @@ consumers:
     namespace: dolly
     url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-fullmakt-proxy:
-    name: testnav-fullmakt-proxy
-    namespace: dolly
-    url: https://testnav-fullmakt-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-  testnav-krrstub-proxy:
-    name: testnav-krrstub-proxy
-    namespace: dolly
-    url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-medl-proxy:
     name: testnav-medl-proxy
     namespace: dolly
@@ -133,11 +123,6 @@ consumers:
     name: testnav-dolly-proxy
     namespace: dolly
     url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-  testnav-inst-proxy:
-    name: testnav-inst-proxy
-    namespace: dolly
-    url: https://testnav-inst-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-arena-forvalteren-proxy:
     name: testnav-arena-forvalteren-proxy
@@ -174,11 +159,6 @@ consumers:
     namespace: dolly
     url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-kontoregister-person-proxy:
-    name: testnav-kontoregister-person-proxy
-    namespace: dolly
-    url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-arbeidsplassencv-proxy:
     name: testnav-arbeidsplassencv-proxy
     namespace: dolly

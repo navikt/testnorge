@@ -57,6 +57,9 @@
 	"/testnav-dolly-proxy/inntektstub": {
 		"changeOrigin": true
 	},
+  "/testnav-dolly-proxy/fullmakt": {
+    "changeOrigin": true
+  },
 	"/testnav-norg2-proxy/norg2": {
 		"changeOrigin": true
 	},
@@ -66,13 +69,10 @@
 	"/testnav-arena-forvalteren-proxy": {
 		"changeOrigin": true
 	},
-	"/testnav-krrstub-proxy/api": {
+  "/testnav-dolly-proxy/api": {
 		"changeOrigin": true
 	},
-	"/testnav-fullmakt-proxy/api": {
-		"changeOrigin": true
-	},
-	"/testnav-inst-proxy/api": {
+  "/testnav-dolly-proxy/inst/api": {
 		"changeOrigin": true
 	},
 	"/testnav-dolly-proxy/sigrunstub/api": {
@@ -123,7 +123,7 @@
 	"/testnav-bruker-service/api": {
 		"changeOrigin": true
 	},
-	"/testnav-kontoregister-person-proxy/api/system": {
+  "/testnav-dolly-proxy/kontoregister/api/system": {
 		"changeOrigin": true
 	},
 	"/testnav-dolly-proxy/skjermingsregister/api": {
