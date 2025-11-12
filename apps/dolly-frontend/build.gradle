@@ -4,13 +4,19 @@ plugins {
 
 sonarqube {
     properties {
+        def javaSrcDir = project.file('src/main/java')
+        def jsSrcDir = project.file('src/main/js/src')
+        def srcPaths = []
+        if (javaSrcDir.exists()) srcPaths << javaSrcDir.absolutePath
+        if (jsSrcDir.exists()) srcPaths << jsSrcDir.absolutePath
         property "sonar.projectKey", "dolly-frontend"
         property "sonar.projectName", "dolly-frontend"
-        property "sonar.projectBaseDir", project.projectDir
-        property "sonar.sources", "src/main/java,src/main/js/src"
-        property "sonar.inclusions", "src/main/java/**,src/main/js/src/**"
+        property "sonar.projectBaseDir", project.projectDir.absolutePath
+        property "sonar.sources", srcPaths.join(',')
         property "sonar.typescript.tsconfigPaths", "tsconfig.sonar.json"
-        property "sonar.exclusions", "**/node_modules/**,src/main/js/node_modules/**,src/main/js/playwright/**,**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx"
+        property "sonar.exclusions", "**/node_modules/**,**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,**/playwright/**"
+        property "sonar.typescript.exclusions", "**/node_modules/**,**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,**/playwright/**"
+        property "sonar.javascript.exclusions", "**/node_modules/**,**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,**/playwright/**"
     }
 }
 
