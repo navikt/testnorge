@@ -2,9 +2,7 @@ spring:
   config:
     import: "sm://"
 
-kafka:
-  group-id: testnav-pdl-lagre-service
-
 OPEN_SEARCH_HOST: tada
+OPEN_SEARCH_PORT: 9200
 OPEN_SEARCH_USERNAME: tada
 OPEN_SEARCH_PASSWORD: tada
