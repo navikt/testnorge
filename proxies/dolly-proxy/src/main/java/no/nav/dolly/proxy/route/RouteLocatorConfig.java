@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 class RouteLocatorConfig {
 
+    private final Brregstub br;
     private final Ereg ereg;
     private final Fullmakt fullmakt;
     private final Histark histark;
@@ -25,6 +26,7 @@ class RouteLocatorConfig {
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
+                .route("brregstub", br.build())
                 .route("ereg-q1", ereg.build("q1"))
                 .route("ereg-q2", ereg.build("q2"))
                 .route("ereg-q4", ereg.build("q4"))

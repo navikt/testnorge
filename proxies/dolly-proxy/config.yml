@@ -63,6 +63,9 @@ spec:
           cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
+        - application: flex-brreg-proxy # TODO: Notify team Flex to change to this app before removing brregstub-proxy.
+          cluster: dev-gcp
+          namespace: flex
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: testnav-organisasjon-service

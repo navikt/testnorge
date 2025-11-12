@@ -56,6 +56,7 @@ class RouteLocatorConfigTest {
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("app.fakedings.url", () -> wireMockServer.baseUrl());
 
+        registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
         registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
         registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
@@ -78,6 +79,30 @@ class RouteLocatorConfigTest {
                 .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
         when(tokenXService.exchange(any(), any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+    }
+
+    @Test
+    void testBrregstub() {
+
+        var downstreamPath = "/api/foobar/1337";
+        var responseBody = "Success from mocked brregstub";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/brregstub" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
     }
 
     @ParameterizedTest
