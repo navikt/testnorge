@@ -34,9 +34,9 @@ public class OpenSearchConfig {
     private String password;
 
     @Bean
-    public CredentialsProvider credentialsProvider() {
+    public CredentialsProvider credentialsProvider() throws URISyntaxException {
 
-        val httpHost = new HttpHost(uri);
+        val httpHost = HttpHost.create(uri);
         val credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(new AuthScope(httpHost), new UsernamePasswordCredentials(username, password.toCharArray()));
         return credentialsProvider;
