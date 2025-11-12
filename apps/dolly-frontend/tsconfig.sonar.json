@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "include": [
+    "src/main/js/src"
+  ],
+  "exclude": [
+    "**/__tests__/**",
+    "src/main/js/src/**/*.test.ts",
+    "src/main/js/src/**/*.test.tsx",
+    "src/main/js/src/**/*.spec.ts",
+    "src/main/js/src/**/*.spec.tsx",
+    "src/main/js/node_modules"
+  ]
+}
+
