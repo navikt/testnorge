@@ -11,13 +11,11 @@ import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
-import org.opensearch.data.client.orhlc.ClientConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.net.URISyntaxException;
-import java.time.Duration;
 
 @Slf4j
 @Configuration
@@ -54,15 +52,4 @@ public class OpenSearchConfig {
 
         return new OpenSearchClient(transportBuilder);
     }
-
-//    @Bean
-//    public ClientConfiguration clientConfiguration() {
-//        return ClientConfiguration.builder()
-//                .connectedTo(uri)
-//                .usingSsl()
-//                .withBasicAuth(username, password)
-//                .withConnectTimeout(Duration.ofSeconds(10))
-//                .withSocketTimeout(Duration.ofSeconds(5))
-//                .build();
-//    }
 }

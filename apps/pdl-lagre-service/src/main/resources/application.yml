@@ -45,6 +45,14 @@ spring:
       no-poll-threshold: 360
       ack-mode: batch
       type: batch
+  main:
+    allow-bean-definition-overriding: true
+
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
 
 spring.jmx.enabled: true
 server.tomcat.mbeanregistry.enabled: true
