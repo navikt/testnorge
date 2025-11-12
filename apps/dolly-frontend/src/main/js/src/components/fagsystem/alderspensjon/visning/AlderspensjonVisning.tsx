@@ -130,9 +130,6 @@ export const AlderspensjonVisning = ({
 	ident,
 }) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'PEN_AP')
-	// Feil i visning: 21455027826
-	// Mange miljoer: 01457816193
-
 	bestilteMiljoer?.sort()
 
 	if (loading) {
