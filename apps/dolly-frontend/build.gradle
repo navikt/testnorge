@@ -12,6 +12,7 @@ sonarqube {
 
 dependencies {
     implementation "io.grpc:grpc-netty:$versions.grpc"
+    implementation "io.grpc:grpc-netty-shaded:1.76.0"
 
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
