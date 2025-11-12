@@ -61,6 +61,6 @@ spec:
     pool: nav-dev
   openSearch:
     instance: bestillinger
-    access: admin
+    access: readwrite
   ingresses:
     - "https://testnav-pdl-lagre-service.intern.dev.nav.no"
