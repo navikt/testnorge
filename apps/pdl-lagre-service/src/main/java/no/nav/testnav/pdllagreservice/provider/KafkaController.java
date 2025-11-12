@@ -9,7 +9,6 @@ import no.nav.testnav.pdllagreservice.kafka.RestartingErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,6 @@ import static java.util.Objects.nonNull;
  * Controller som lar en skru av Kafka slik at man kan gjøre nødvendig vedlikehold
  */
 @Slf4j
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/kafka")

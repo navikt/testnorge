@@ -51,6 +51,6 @@ public class OpenApiConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui/index.html");
     }
 }
