@@ -2,13 +2,11 @@ package no.nav.testnav.pdllagreservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import no.nav.testnav.pdllagreservice.exception.UnrecoverableException;
-import no.nav.testnav.pdllagreservice.dto.OpensearchDocumentData;
 import no.nav.testnav.pdllagreservice.consumers.OpensearchDocumentService;
+import no.nav.testnav.pdllagreservice.dto.OpensearchDocumentData;
 import no.nav.testnav.pdllagreservice.utility.CollectionUtils;
 import no.nav.testnav.pdllagreservice.utility.KafkaUtilities;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KAFKA_CONSUMER_TIMED;
@@ -41,10 +38,10 @@ public class PdlPersonDokumentListener {
     private String personIndex;
 
     @KafkaListener(
-            id = "pdl-lagre-service",
-            clientIdPrefix = "testnav-sok-person",
+            id = "pdl-lagre-person",
+            clientIdPrefix = "testnav-lagre-person",
             topics = "pdl.pdl-persondokument-tagged-v1",
-            groupId = "testnav-pdl-lagre-service-pdlDokumenter-v1",
+            groupId = "testnav-pdl-lagre-person-v1",
             containerFactory = "pdlDokumentKafkaFactory"
     )
     @Timed(value = KAFKA_CONSUMER_TIMED, extraTags = {KEY, "pdldokument"}, percentiles = {.99, .75, .50, .25})
