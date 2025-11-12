@@ -3,18 +3,13 @@ import {
 	useArenaEnvironments,
 	useDokarkivEnvironments,
 	useInstEnvironments,
-	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
 import { arrayToString } from '@/utils/DataFormatter'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
-	const {
-		pensjonEnvironments,
-		loading: loadingPensjon,
-		error: errorPensjon,
-	} = usePensjonEnvironments()
+	const pensjonEnvironments = ['q1']
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
 	const { instdata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } = bestillingsdata
@@ -73,19 +68,19 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 								', '}
 							{pensjonforvalter?.alderspensjon && 'PESYS'}
 							):&nbsp;
-							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+							<span>{getMiljoer(pensjonEnvironments)}</span>
 						</li>
 					)}
 					{pensjonforvalter?.uforetrygd && (
 						<li>
 							Uføretrygd:&nbsp;
-							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+							<span>{getMiljoer(pensjonEnvironments)}</span>
 						</li>
 					)}
 					{pensjonforvalter?.pensjonsavtale && (
 						<li>
 							Pensjonsavtale (PEN):&nbsp;
-							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+							<span>{getMiljoer(pensjonEnvironments)}</span>
 						</li>
 					)}
 
@@ -108,7 +103,7 @@ export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
 	//men ikke Dolly per dags dato
-	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
+	return utvalgteMiljoer.filter((miljoe) => !dollyMiljoeArray.includes(miljoe))
 }
 
 const flatDollyMiljoe = (dollymiljoe) => {
