@@ -55,14 +55,14 @@ public class OpenSearchConfig {
         return new OpenSearchClient(transportBuilder);
     }
 
-    @Bean
-    public ClientConfiguration clientConfiguration() {
-        return ClientConfiguration.builder()
-                .connectedTo(uri)
-                .usingSsl()
-                .withBasicAuth(username, password)
-                .withConnectTimeout(Duration.ofSeconds(10))
-                .withSocketTimeout(Duration.ofSeconds(5))
-                .build();
-    }
+//    @Bean
+//    public ClientConfiguration clientConfiguration() {
+//        return ClientConfiguration.builder()
+//                .connectedTo(uri)
+//                .usingSsl()
+//                .withBasicAuth(username, password)
+//                .withConnectTimeout(Duration.ofSeconds(10))
+//                .withSocketTimeout(Duration.ofSeconds(5))
+//                .build();
+//    }
 }
