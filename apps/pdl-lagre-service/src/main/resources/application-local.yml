@@ -2,7 +2,6 @@ spring:
   config:
     import: "sm://"
 
-OPEN_SEARCH_HOST: tada
-OPEN_SEARCH_PORT: 9200
+OPEN_SEARCH_URI: tada
 OPEN_SEARCH_USERNAME: tada
 OPEN_SEARCH_PASSWORD: tada

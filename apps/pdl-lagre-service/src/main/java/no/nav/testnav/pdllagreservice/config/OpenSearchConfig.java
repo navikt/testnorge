@@ -24,11 +24,8 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class OpenSearchConfig {
 
-    @Value("${OPEN_SEARCH_HOST}")
-    private String host;
-
-    @Value("${OPEN_SEARCH_PORT}")
-    private Integer port;
+    @Value("${OPEN_SEARCH_URI}")
+    private String uri;
 
     @Value("${OPEN_SEARCH_USERNAME}")
     private String username;
@@ -37,9 +34,9 @@ public class OpenSearchConfig {
     private String password;
 
     @Bean
-    public CredentialsProvider credentialsProvider() throws URISyntaxException {
+    public CredentialsProvider credentialsProvider() {
 
-        val httpHost = HttpHost.create(host + ":" + port);
+        val httpHost = new HttpHost(uri);
         val credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(new AuthScope(httpHost), new UsernamePasswordCredentials(username, password.toCharArray()));
         return credentialsProvider;
@@ -48,20 +45,20 @@ public class OpenSearchConfig {
     @Bean
     public OpenSearchClient opensearchClient(CredentialsProvider credentialsProvider) throws URISyntaxException {
 
-        val build = ApacheHttpClient5TransportBuilder
-                .builder(HttpHost.create(host + ":" + port))
+        val transportBuilder = ApacheHttpClient5TransportBuilder
+                .builder(HttpHost.create(uri))
                 .setMapper(new JacksonJsonpMapper())
                 .setHttpClientConfigCallback(httpClientBuilder ->
                         httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
                 ).build();
 
-        return new OpenSearchClient(build);
+        return new OpenSearchClient(transportBuilder);
     }
 
     @Bean
     public ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder()
-                .connectedTo(host + ":" + port)
+                .connectedTo(uri)
                 .usingSsl()
                 .withBasicAuth(username, password)
                 .withConnectTimeout(Duration.ofSeconds(10))
