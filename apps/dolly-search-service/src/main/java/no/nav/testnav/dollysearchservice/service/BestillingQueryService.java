@@ -7,15 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.BestillingIdenter;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils;
-import org.opensearch.action.search.SearchResponse;
+import org.apache.hc.core5.util.TimeValue;
 import org.opensearch.client.RequestOptions;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.common.unit.TimeValue;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.search.SearchHit;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -43,7 +38,7 @@ public class BestillingQueryService {
     @Value("${open.search.index}")
     private String dollyIndex;
 
-    private final RestHighLevelClient restHighLevelClient;
+    private final OpenSearchClient opensearchClient;
     private final ObjectMapper objectMapper;
 
     @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}")
@@ -62,9 +57,9 @@ public class BestillingQueryService {
         return execQuery(queryBuilder);
     }
 
-    private static BoolQueryBuilder getFagsystemAndMiljoerQuery(SearchRequest request) {
+    private static QueryBuilders getFagsystemAndMiljoerQuery(SearchRequest request) {
 
-        var queryBuilder = QueryBuilders.boolQuery();
+        var queryBuilder = QueryBuilders.bool();
 
         request.getRegistreRequest().stream()
                 .map(FagsystemQueryUtils::getFagsystemQuery)
@@ -93,7 +88,7 @@ public class BestillingQueryService {
         SearchResponse searchResponse;
 
         try {
-            searchResponse = restHighLevelClient.search(new org.opensearch.action.search.SearchRequest(dollyIndex)
+            searchResponse = opensearchClient.search(new org.opensearch.action.search.SearchRequest(dollyIndex)
                     .source(new SearchSourceBuilder()
                             .query(query)
                             .sort("id")

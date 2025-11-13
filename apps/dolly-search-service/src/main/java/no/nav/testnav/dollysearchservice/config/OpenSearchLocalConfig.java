@@ -2,34 +2,37 @@ package no.nav.testnav.dollysearchservice.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.data.client.orhlc.AbstractOpenSearchConfiguration;
-import org.opensearch.data.client.orhlc.ClientConfiguration;
-import org.opensearch.data.client.orhlc.RestClients;
+import lombok.val;
+import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.core5.http.HttpHost;
+import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.time.Duration;
+import java.net.URISyntaxException;
 
 @Slf4j
 @Configuration
 @Profile("local")
 @RequiredArgsConstructor
-public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
+public class OpenSearchLocalConfig {
 
     @Value("${open.search.uri}")
     private String uri;
 
-    @Override
-    @SuppressWarnings("java:S2095")
-    public RestHighLevelClient opensearchClient() {
 
-        return RestClients.create(ClientConfiguration.builder()
-                        .connectedTo(uri.replace("http://", ""))
-                        .withConnectTimeout(Duration.ofSeconds(10))
-                        .withSocketTimeout(Duration.ofSeconds(5))
-                        .build())
-                .rest();
+    @Bean
+    public OpenSearchClient opensearchClient(CredentialsProvider credentialsProvider) throws URISyntaxException {
+
+        val transportBuilder = ApacheHttpClient5TransportBuilder
+                .builder(HttpHost.create(uri))
+                .setMapper(new JacksonJsonpMapper())
+                .build();
+
+        return new OpenSearchClient(transportBuilder);
     }
 }
