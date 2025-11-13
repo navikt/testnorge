@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.pdllagreservice.consumers.OpensearchParamsConsumer;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.indices.IndexSettings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +33,7 @@ public class OpensearchStartup {
 
     private final OpensearchParamsConsumer opensearchParamsConsumer;
     private final ObjectMapper objectMapper;
+    private final OpenSearchClient openSearchClient;
 
     @PostConstruct
     public void opensearchStartup() {
@@ -46,6 +50,12 @@ public class OpensearchStartup {
         try {
             val indexSetting = INDEX_SETTING.formatted(totalFields);
             val command = objectMapper.readTree(indexSetting);
+
+            val existResponse = openSearchClient.indices().exists(i -> i.index(index));
+            if (!existResponse.value()) {
+                openSearchClient.indices().create(i -> i.index(index));
+                log.warn("Opprettet ny index: {}", index);
+            }
 
             return opensearchParamsConsumer.oppdaterParametre(command, index)
                     .doOnNext(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
