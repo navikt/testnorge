@@ -7,6 +7,12 @@ import {
 import { arrayToString } from '@/utils/DataFormatter'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
+export const gyldigeDollyMiljoer = (dollymiljoer: any) => {
+	if (!dollymiljoer) return []
+	if (dollymiljoer.Q) return dollymiljoer.Q.filter((env: any) => env.id !== 'qx')
+	return dollymiljoer
+}
+
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
 	const pensjonEnvironments = ['q1']
@@ -103,10 +109,4 @@ export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
 	//men ikke Dolly per dags dato
 	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
-}
-
-export const gyldigeDollyMiljoer = (dollymiljoer: any) => {
-	if (!dollymiljoer) return []
-	if (dollymiljoer.Q) return dollymiljoer.Q.filter((env: any) => env.id !== 'qx')
-	return dollymiljoer
 }
