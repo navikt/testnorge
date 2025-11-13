@@ -53,6 +53,15 @@ spec:
   accessPolicy:
     inbound:
       rules:
+
+
+
+
+
+
+
+
+
         - application: dolly-backend
           cluster: dev-gcp
         - application: dolly-backend-dev
@@ -66,7 +75,15 @@ spec:
         - application: flex-brreg-proxy # TODO: Notify team Flex to change to this app before removing brregstub-proxy.
           cluster: dev-gcp
           namespace: flex
+        - application: jenkins-batch-status-service
+          cluster: dev-gcp
+        - application: organisasjon-bestilling-service
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: testnav-jenkins-batch-status-service
+          cluster: dev-gcp
+        - application: testnav-organisasjon-mottak-service
           cluster: dev-gcp
         - application: testnav-organisasjon-service
           cluster: dev-gcp
