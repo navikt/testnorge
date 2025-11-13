@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Slf4j
-@Profile("!test")
+@Profile("prod")
 @Component
 @RequiredArgsConstructor
 public class OpensearchStartup {
@@ -60,7 +60,7 @@ public class OpensearchStartup {
             }
 
             return opensearchParamsConsumer.oppdaterParametre(command, index)
-                    .doOnNext(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
+                    .doOnNext(status -> log.info("OpenSearch oppdatert index: {}, status: {}", index, status));
 
         } catch (IOException e) {
 

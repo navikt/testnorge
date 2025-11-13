@@ -3,5 +3,7 @@ OPEN_SEARCH_USERNAME: tada
 OPEN_SEARCH_PASSWORD: tada
 
 opensearch:
+  total-fields: tada
   index:
     personer: tada
+    adresser: tada

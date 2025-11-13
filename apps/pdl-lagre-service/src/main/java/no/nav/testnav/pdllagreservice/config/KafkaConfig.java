@@ -20,16 +20,25 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 class KafkaConfig {
 
     @Bean
-    RestartingErrorHandler restartingErrorHandler(KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry, MeterRegistry meterRegistry) {
+    public RestartingErrorHandler restartingErrorHandler(KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry, MeterRegistry meterRegistry) {
         return new RestartingErrorHandler(kafkaListenerEndpointRegistry, meterRegistry);
     }
 
     @Bean("pdlDokumentKafkaFactory")
-    ConcurrentKafkaListenerContainerFactory<?, ?> pdlDokumentKafkaListenerContainerFactory(
+    public ConcurrentKafkaListenerContainerFactory<?, ?> pdlDokumentKafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
             ConsumerFactory<Object, Object> kafkaConsumerFactory) {
 
         val consumerFactory = KafkaBeanUtilities.stringStringConsumerFactory(kafkaConsumerFactory.getConfigurationProperties());
+        return KafkaContainerUtils.containerFactory(configurer, consumerFactory, 1000);
+    }
+
+    @Bean("pdlAdresseKafkaFactory")
+    public ConcurrentKafkaListenerContainerFactory<?, ?> adresseKafkaListenerContainerFactory(
+            ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
+            ConsumerFactory<Object, Object> kafkaConsumerFactory) {
+
+        val consumerFactory = KafkaBeanUtilities.longStringConsumerFactory(kafkaConsumerFactory.getConfigurationProperties());
         return KafkaContainerUtils.containerFactory(configurer, consumerFactory, 1000);
     }
 }
