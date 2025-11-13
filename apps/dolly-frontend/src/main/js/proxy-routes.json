@@ -84,7 +84,7 @@
 	"/testnav-medl-proxy/rest": {
 		"changeOrigin": true
 	},
-	"/testnav-pensjon-testdata-facade-proxy/": {
+	"/testnav-dolly-proxy/pensjon": {
 		"changeOrigin": true
 	},
 	"/dolly-backend/api": {

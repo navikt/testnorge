@@ -2,7 +2,7 @@ import { fetcher } from '@/api'
 import useSWRImmutable from 'swr/immutable'
 
 const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
-const getPensjonMiljoerUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/miljo'
+const getPensjonMiljoerUrl = '/testnav-dolly-proxy/pensjon/api/v1/miljo'
 const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-dolly-proxy/inst/api/v1/environment'
 const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/rest/miljoe'

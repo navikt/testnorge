@@ -67,7 +67,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavMiljoerService()))
                 .route(createRoute(consumers.getDollyBackend(), "dolly-backend"))
                 .route(createRoute(consumers.getTestnavJoarkDokumentService()))
-                .route(createRoute(consumers.getTestnavPensjonTestdataFacadeProxy()))
                 .route(createRoute(consumers.getTestnavDollyProxy()))
                 .route(createRoute(consumers.getTestnavAaregProxy()))
                 .route(createRoute(consumers.getTestnavArenaForvalterenProxy()))

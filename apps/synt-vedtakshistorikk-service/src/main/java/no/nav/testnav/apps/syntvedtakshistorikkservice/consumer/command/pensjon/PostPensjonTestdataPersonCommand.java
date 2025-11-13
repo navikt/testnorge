@@ -29,7 +29,7 @@ public class PostPensjonTestdataPersonCommand implements Callable<Mono<PensjonTe
         log.info("Oppretter ny pensjon testdata person: \n{}", person);
         return webClient
                 .post()
-                .uri(builder -> builder.path("/api/v1/person").build())
+                .uri(builder -> builder.path("/pensjon/api/v1/person").build())
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

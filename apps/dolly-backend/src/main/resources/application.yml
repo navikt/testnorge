@@ -129,11 +129,6 @@ consumers:
     namespace: dolly
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-pensjon-testdata-facade-proxy:
-    name: testnav-pensjon-testdata-facade-proxy
-    namespace: dolly
-    url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter
     namespace: dolly
