@@ -28,9 +28,9 @@ class RouteLocatorConfig {
         return builder
                 .routes()
                 .route("brregstub", br.build())
-                .route("ereg-q1", ereg.build("q1"))
-                .route("ereg-q2", ereg.build("q2"))
-                .route("ereg-q4", ereg.build("q4"))
+                .route("ereg-q1", ereg.build(Ereg.SpecialCase.Q1))
+                .route("ereg-q2", ereg.build(Ereg.SpecialCase.Q2))
+                .route("ereg-q4", ereg.build(Ereg.SpecialCase.Q4))
                 .route("fullmakt", fullmakt.build())
                 .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
