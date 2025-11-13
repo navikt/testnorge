@@ -56,10 +56,11 @@ dependencies {
 
     implementation "no.nav.common:auth"
     implementation "no.nav.common:util"
-    implementation "no.nav.common:cxf:3.2023.10.17_06.55-4e30d96bba05"
+    implementation "no.nav.common:cxf:3.2025.11.10_14.07-a9f44944d7bc"
 
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     implementation "jakarta.jws:jakarta.jws-api:3.0.0"
+    implementation "io.grpc:grpc-netty-shaded:1.76.0"
 
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:postgresql"
