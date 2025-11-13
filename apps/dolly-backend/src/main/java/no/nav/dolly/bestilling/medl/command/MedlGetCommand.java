@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class MedlGetCommand implements Callable<Flux<MedlDataResponse>> {
 
-    private static final String MEDL_URL = "/rest/v1/person/{ident}";
+    private static final String MEDL_URL = "/medl/rest/v1/person/{ident}";
 
     private final WebClient webClient;
     private final String ident;

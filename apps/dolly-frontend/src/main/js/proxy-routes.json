@@ -81,7 +81,7 @@
 	"/testnav-aareg-proxy/": {
 		"changeOrigin": true
 	},
-	"/testnav-medl-proxy/rest": {
+	"/testnav-dolly-proxy/medl/rest": {
 		"changeOrigin": true
 	},
 	"/testnav-dolly-proxy/pensjon": {

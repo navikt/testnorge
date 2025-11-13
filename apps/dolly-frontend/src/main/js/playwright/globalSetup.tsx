@@ -89,7 +89,7 @@ const afpOffentlig = new RegExp(/testnav-dolly-proxy\/pensjon\/q1\/api\/mock-opp
 const krrstub = new RegExp(/testnav-dolly-proxy\/krrstub\/api\/v2/)
 const udistub = new RegExp(/testnav-dolly-proxy\/udistub\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
-const medl = new RegExp(/testnav-medl-proxy/)
+const medl = new RegExp(/testnav-dolly-proxy\/medl/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\/brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,
