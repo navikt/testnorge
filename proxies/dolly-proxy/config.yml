@@ -87,6 +87,18 @@ spec:
           namespace: arbeidsforhold
         - application: opphold-testdata
           namespace: team-rocket
+        - application: pensjon-afp-offentlig-mock-q1
+          namespace: pensjon-saksbehandling
+          cluster: dev-gcp
+        - application: pensjon-afp-offentlig-mock-q2
+          namespace: pensjon-saksbehandling
+          cluster: dev-gcp
+        - application: pensjon-samboerforhold-backend-q1
+          namespace: pensjon-person
+          cluster: dev-gcp
+        - application: pensjon-samboerforhold-backend-q2
+          namespace: pensjon-person
+          cluster: dev-gcp
         - application: repr-fullmakt
           namespace: repr
         - application: skjermede-personer
