@@ -1,6 +1,6 @@
 import { initialValues } from './utils'
 import * as _ from 'lodash-es'
-import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
+import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoeInfo'
 import {
 	BostedData,
 	KontaktadresseData,
@@ -103,8 +103,8 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	if (initialValuesMal.fullmakt) {
 		initialValuesMal.fullmakt = getUpdatedFullmaktData(initialValuesMal.fullmakt)
 	}
-
-	initialValuesMal.environments = filterMiljoe(environments, mal.bestilling?.environments)
+	const gyldigeEnvironments = gyldigeDollyMiljoer(environments)
+	initialValuesMal.environments = filterMiljoe(gyldigeEnvironments, mal.bestilling?.environments)
 	return initialValuesMal
 }
 

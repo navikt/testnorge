@@ -17,7 +17,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		return null
 	}
 
-	const getMiljoer = (environments, loading, error) => {
+	const getMiljoer = (environments: string[] | undefined, loading?: boolean, error?: any) => {
 		if (loading) {
 			return 'Laster tilgjengelige miljøer..'
 		} else if (error && (!environments || environments.length === 0)) {
@@ -99,18 +99,14 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 
 export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 	if (!utvalgteMiljoer) return []
-	const dollyMiljoeArray = flatDollyMiljoe(dollyMiljoe)
-
+	const dollyMiljoeArray = dollyMiljoe?.map((miljoe) => miljoe?.id)
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
 	//men ikke Dolly per dags dato
-	return utvalgteMiljoer.filter((miljoe) => !dollyMiljoeArray.includes(miljoe))
+	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
 }
 
-const flatDollyMiljoe = (dollymiljoe) => {
-	if (dollymiljoe?.length) {
-		return dollymiljoe
-	}
-	const miljoeArray = []
-	Object.values(dollymiljoe).forEach((miljoe) => miljoeArray.push(miljoe.id))
-	return miljoeArray
+export const gyldigeDollyMiljoer = (dollymiljoer: any) => {
+	if (!dollymiljoer) return []
+	if (dollymiljoer.Q) return dollymiljoer.Q.filter((env: any) => env.id !== 'qx')
+	return dollymiljoer
 }
