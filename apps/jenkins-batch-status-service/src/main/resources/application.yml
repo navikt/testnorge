@@ -4,7 +4,7 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Tjeneste for å hente ut batch status fra EREG.
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:

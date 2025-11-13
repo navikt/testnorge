@@ -3,7 +3,7 @@ spring:
     name: organisasjon-bestilling-service
     description: Tjeneste for å registere og hente ut organiasjonsbestilling status
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:

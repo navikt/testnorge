@@ -5,13 +5,13 @@ import no.nav.registre.testnorge.organisasjonmottak.config.Consumers;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG007Command;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
-import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -45,19 +45,24 @@ public class JenkinsConsumer {
     }
 
     public void send(Flatfil flatFile, String miljo, Set<String> uuids) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
 
-        var server = env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase());
-        if (server == null) {
-            throw new IllegalArgumentException("Finner ikke url for miljo: " + miljo);
-        }
-        JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
-        var id = new StartBEREG007Command(webClient, accessToken.getTokenValue(), server, miljo, jenkinsCrumb, flatFile).call();
+        var accessTokenValue = Optional.ofNullable(tokenExchange
+                        .exchange(serverProperties)
+                        .block())
+                .orElseThrow(() -> new NullPointerException("Failed to retrieve access token"))
+                .getTokenValue();
+        var server = Optional
+                .ofNullable(env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase()))
+                .orElseThrow(() -> new IllegalArgumentException("Finner ikke url for miljo: " + miljo));
+
+        var jenkinsCrumb = new GetCrumbCommand(webClient, accessTokenValue).call();
+        var id = new StartBEREG007Command(webClient, accessTokenValue, server, miljo, jenkinsCrumb, flatFile).call();
 
         uuids.forEach(uuid -> {
             jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
             log.info("Bestilling sendt til jenkins {}.", uuid);
             organisasjonBestillingConsumer.registerBestilling(uuid, miljo, id);
         });
+
     }
 }
