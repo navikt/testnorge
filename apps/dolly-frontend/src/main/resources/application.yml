@@ -48,11 +48,6 @@ consumers:
     namespace: dolly
     name: testnav-joark-dokument-service
     url: http://testnav-joark-dokument-service.dolly.svc.cluster.local
-  testnav-brregstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-brregstub-proxy
-    url: https://testnav-brregstub-proxy.dev-fss-pub.nais.io
   testnav-aareg-proxy:
     cluster: dev-fss
     namespace: dolly
