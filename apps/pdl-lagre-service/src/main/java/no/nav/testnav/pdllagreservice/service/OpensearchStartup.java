@@ -39,10 +39,9 @@ public class OpensearchStartup {
 
         log.info("OpenSearch database oppdatering starter ...");
 
-        Mono.zip(updateIndexSetting(personIndex),
-                        updateIndexSetting(adresseIndex))
-                .doOnNext(status ->
-                        log.info("OpenSearch database oppdatering ferdig"))
+        updateIndexSetting(personIndex)
+                .then(updateIndexSetting(adresseIndex))
+                .then(Mono.fromRunnable(() -> log.info("OpenSearch database oppdatering ferdig")))
                 .block();
     }
 
