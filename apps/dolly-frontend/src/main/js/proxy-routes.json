@@ -60,7 +60,7 @@
   "/testnav-dolly-proxy/fullmakt": {
     "changeOrigin": true
   },
-	"/testnav-norg2-proxy/norg2": {
+	"/testnav-dolly-proxy/norg2": {
 		"changeOrigin": true
 	},
 	"/testnav-dolly-proxy/brregstub/api": {

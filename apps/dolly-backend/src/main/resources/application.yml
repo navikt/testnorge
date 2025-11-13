@@ -84,11 +84,6 @@ consumers:
     namespace: dolly
     url: http://testnav-miljoer-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-norg2-proxy:
-    name: testnav-norg2-proxy
-    namespace: dolly
-    url: https://testnav-norg2-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-person-service:
     name: testnav-person-service
     namespace: dolly

@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
 
-    private static final String NAVKONTOR_URL = "/norg2/api/v1/enhet/navkontor/{geografiskOmraade}";
+    private static final String NAVKONTOR_URL = "/norg2/norg2/api/v1/enhet/navkontor/{geografiskOmraade}";
 
     private final WebClient webClient;
     private final String geografiskOmraade;
