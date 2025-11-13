@@ -22,7 +22,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -64,6 +69,9 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pensjon-afp", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pensjon-samboer", () -> wireMockServer.baseUrl());
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
@@ -275,6 +283,83 @@ class RouteLocatorConfigTest {
         webClient
                 .get()
                 .uri("/krrstub" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @Test
+    void testPensjon() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked pensjon";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/pensjon" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("dolly"))); // Note use of placeholder here.
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2"})
+    void testPensjonAfp(String env) {
+
+        var downstreamPath = "/api/mock-oppsett/test";
+        var responseBody = "Success from mocked pensjon";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/pensjon/%s/%s".formatted(env, downstreamPath))
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2"})
+    void testPensjonSamboer(String env) {
+
+        var downstreamPath = "/api/samboer/test";
+        var responseBody = "Success from mocked pensjon";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/pensjon/%s/%s".formatted(env, downstreamPath))
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("text/plain")

@@ -23,6 +23,9 @@ class Targets {
     String inst;
     String kontoregister;
     String krrstub;
+    String pensjon;
+    String pensjonAfp;
+    String pensjonSamboer;
     String sigrunstub;
     String skjermingsregister;
     String udistub;
