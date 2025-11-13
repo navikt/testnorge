@@ -61,4 +61,3 @@ opensearch:
   total-fields: 2000
   index:
     personer: pdl-person
-    adresser: pdl-adresse
