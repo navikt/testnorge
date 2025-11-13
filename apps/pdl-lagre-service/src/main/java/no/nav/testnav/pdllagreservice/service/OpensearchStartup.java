@@ -6,19 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.pdllagreservice.consumers.OpensearchParamsConsumer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Slf4j
 @Profile("!test")
 @Component
 @RequiredArgsConstructor
-public class OpensearchStartup implements ApplicationListener<ContextRefreshedEvent> {
+public class OpensearchStartup {
 
     private static final String INDEX_SETTING =
             "{\"settings\":{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}}}}";
@@ -35,15 +34,16 @@ public class OpensearchStartup implements ApplicationListener<ContextRefreshedEv
     private final OpensearchParamsConsumer opensearchParamsConsumer;
     private final ObjectMapper objectMapper;
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    @PostConstruct
+    public void opensearchStartup() {
 
         log.info("OpenSearch database oppdatering starter ...");
 
         Mono.zip(updateIndexSetting(personIndex),
                         updateIndexSetting(adresseIndex))
-                .subscribe(status ->
-                        log.info("OpenSearch database oppdatering ferdig"));
+                .doOnNext(status ->
+                        log.info("OpenSearch database oppdatering ferdig"))
+                .block();
     }
 
     private Mono<String> updateIndexSetting(String index) {
