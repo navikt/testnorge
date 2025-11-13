@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-public class Brregstub {
+class Brregstub {
 
     private final Targets targets;
 

@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-public class Ereg {
+class Ereg {
 
     private final Targets targets;
 
