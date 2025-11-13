@@ -85,6 +85,9 @@ spec:
           namespace: arbeidsforhold
         - application: ereg-services-q4
           namespace: arbeidsforhold
+        - application: medlemskap-medl-testdata
+          namespace: team-rocket
+          cluster: dev-gcp
         - application: opphold-testdata
           namespace: team-rocket
         - application: pensjon-afp-offentlig-mock-q1

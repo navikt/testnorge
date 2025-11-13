@@ -48,6 +48,7 @@ app:
     inst: http://opphold-testdata.team-rocket.svc.nais.local
     kontoregister: https://sokos-kontoregister-person.intern.dev.nav.no
     krrstub: https://digdir-krr-stub.intern.dev.nav.no
+    medl: https://medlemskap-medl-testdata.intern.dev.nav.no
     norg2: http://norg2.org.svc.nais.local
     pensjon: http://pensjon-testdata-facade.pensjontestdata
     pensjon-afp: https://pensjon-afp-offentlig-mock-%s.intern.dev.nav.no # Note replacement pattern.

@@ -23,6 +23,7 @@ class Targets {
     String inst;
     String kontoregister;
     String krrstub;
+    String medl;
     String norg2;
     String pensjon;
     String pensjonAfp;
