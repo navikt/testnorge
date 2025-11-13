@@ -2,7 +2,6 @@ package no.nav.testnav.pdllagreservice.consumers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.pdllagreservice.consumers.command.OpensearchDeleteCommand;
 import no.nav.testnav.pdllagreservice.consumers.command.OpensearchPutCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,11 +35,5 @@ public class OpensearchParamsConsumer {
 
         log.info("OpenSearch oppdaterer indeks \"{}\" ...", index);
         return new OpensearchPutCommand(webClient, username, password, index, parametere).call();
-    }
-
-    public Mono<JsonNode> deleteIndex(String index) {
-
-        log.warn("OpenSearch sletter indeks \"{}\" ...", index);
-        return new OpensearchDeleteCommand(webClient, username, password, index).call();
     }
 }
