@@ -25,10 +25,10 @@ public class JenkinsConsumer {
             WebClient webClient
     ) {
         this.tokenExchange = tokenExchange;
-        serverProperties = consumers.getJenkins();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .baseUrl(serverProperties.getUrl())
+                .baseUrl(serverProperties.getUrl() + "/batch")
                 .build();
     }
 

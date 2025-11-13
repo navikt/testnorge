@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties jenkinsBatchStatusService;
-    private ServerProperties jenkins;
     private ServerProperties organisasjonBestillingService;
+    private ServerProperties testnavDollyProxy;
 
 }

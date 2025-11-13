@@ -34,13 +34,13 @@ public class JenkinsConsumer {
             WebClient webClient
     ) {
         this.organisasjonBestillingConsumer = organisasjonBestillingConsumer;
-        serverProperties = consumers.getJenkins();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         this.jenkinsBatchStatusConsumer = jenkinsBatchStatusConsumer;
         this.env = env;
         this.webClient = webClient
                 .mutate()
-                .baseUrl(serverProperties.getUrl())
+                .baseUrl(serverProperties.getUrl() + "/batch")
                 .build();
     }
 
