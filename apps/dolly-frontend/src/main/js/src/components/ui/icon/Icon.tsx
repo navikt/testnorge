@@ -87,6 +87,7 @@ export const icons = {
 	'report-problem-circle': ReportProblemCircle,
 	'feedback-check-circle': CheckCircle,
 	'report-problem-triangle': ProblemTriangle,
+	hourglass: HourglassIcon,
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
 	playwright: Playwright,

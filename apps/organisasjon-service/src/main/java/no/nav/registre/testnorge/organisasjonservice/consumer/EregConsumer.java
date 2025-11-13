@@ -10,6 +10,8 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Optional;
+
 
 @Slf4j
 @Component
@@ -24,7 +26,7 @@ public class EregConsumer {
             TokenExchange tokenExchange,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavEregProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -33,8 +35,11 @@ public class EregConsumer {
     }
 
     public Organisasjon getOrganisasjon(String orgnummer, String miljo) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
-        OrganisasjonDTO dto = new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), miljo, orgnummer).call();
+        var accessToken = Optional
+                .ofNullable(tokenExchange.exchange(serverProperties).block())
+                .orElseThrow(() -> new IllegalStateException("Unable to get token for %s".formatted(serverProperties.getName())))
+                .getTokenValue();
+        OrganisasjonDTO dto = new GetOrganisasjonCommand(webClient, accessToken, miljo, orgnummer).call();
         return dto != null ? new Organisasjon(dto) : null;
     }
 }

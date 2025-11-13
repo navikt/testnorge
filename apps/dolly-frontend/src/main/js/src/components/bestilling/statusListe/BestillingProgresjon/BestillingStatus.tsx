@@ -1,5 +1,5 @@
 import Icon from '@/components/ui/icon/Icon'
-import { Miljostatus, Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
+import { Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import Spinner from '@/components/ui/loading/Spinner'
 import * as React from 'react'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
@@ -31,9 +31,15 @@ const FagsystemText = styled.div`
 	}
 `
 
-export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljostatus) => {
+export const BestillingStatus = ({
+	bestilling,
+	erOrganisasjon = false,
+}: {
+	bestilling: any
+	erOrganisasjon?: boolean
+}) => {
 	const IconTypes = {
-		oppretter: 'loading-spinner',
+		oppretter: 'loading-circle',
 		suksess: 'feedback-check-circle',
 		avvik: 'report-problem-circle',
 		feil: 'report-problem-triangle',
@@ -46,6 +52,15 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljost
 		// Alle statuser er OK
 		if (statuser.every((status) => status.melding === 'OK')) {
 			return IconTypes.suksess
+		} else if (
+			statuser.some(
+				(status) =>
+					status?.melding?.includes('RUNNING') ||
+					status?.melding?.includes('PENDING_COMPLETE') ||
+					status?.melding?.includes('ADDING_TO_QUEUE'),
+			)
+		) {
+			return IconTypes.oppretter
 		}
 		// Denne statusmeldingen gir kun avvik
 		else if (
@@ -64,7 +79,15 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljost
 	return (
 		<div style={{ marginTop: '15px' }}>
 			{bestilling?.status?.map((fagsystem, idx) => {
-				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info'))
+				const oppretter = fagsystem?.statuser?.some((status) => {
+					return (
+						status?.melding?.includes('Info') ||
+						// Ereg statuser for oppretting
+						status?.melding?.includes('ADDING_TO_QUEUE') ||
+						status?.melding?.includes('RUNNING') ||
+						status?.melding?.includes('PENDING_COMPLETE')
+					)
+				})
 
 				const infoString = ['Info', 'INFO', 'info']
 				const infoListe = fagsystem?.statuser?.filter((s) =>

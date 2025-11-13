@@ -1,6 +1,6 @@
 import Request from '@/service/services/Request'
 
-const getKrrUrl = () => '/testnav-krrstub-proxy/api/v2'
+const getKrrUrl = () => '/testnav-dolly-proxy/krrstub/api/v2'
 
 export default {
 	getPerson(ident) {
