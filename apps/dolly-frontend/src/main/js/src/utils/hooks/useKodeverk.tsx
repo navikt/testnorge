@@ -19,7 +19,7 @@ type KodeverkType = {
 
 const getKodeverkUrl = (kodeverkNavn) =>
 	kodeverkNavn.includes('Valuta')
-		? `/testnav-kontoregister-person-proxy/api/system/v1/hent-valutakoder`
+		? `/testnav-dolly-proxy/kontoregister/api/system/v1/hent-valutakoder`
 		: `/testnav-kodeverk-service/api/v1/kodeverk/${kodeverkNavn}`
 
 export const useKodeverk = (kodeverkNavn) => {

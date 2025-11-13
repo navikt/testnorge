@@ -9,14 +9,19 @@ import org.springframework.context.annotation.Configuration;
 import static lombok.AccessLevel.PACKAGE;
 
 @Configuration
-@ConfigurationProperties(prefix = "targets")
+@ConfigurationProperties(prefix = "app.targets")
 @NoArgsConstructor(access = PACKAGE)
 @Getter
 @Setter
 class Targets {
 
+    String ereg;
+    String fullmakt;
     String histark;
     String inntektstub;
+    String inst;
+    String kontoregister;
+    String krrstub;
     String sigrunstub;
     String skjermingsregister;
     String udistub;

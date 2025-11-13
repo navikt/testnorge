@@ -846,7 +846,7 @@ export const kontoregisterMock = {
 	kontonummer: '99999999999',
 	gyldigFom: '2022-01-01T11:58:24.030845',
 	opprettetAv: 'Dolly',
-	kilde: 'testnav-kontoregister-person-proxy-trygdeetaten',
+	kilde: 'testnav-dolly-proxy-trygdeetaten',
 }
 
 export const joarkJournalpostMock = {

@@ -22,7 +22,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 @Slf4j
 public class KontaktadataDeleteCommand implements Callable<Mono<DigitalKontaktdataResponse>> {
 
-    private static final String DIGITAL_KONTAKT_URL = "/api/v2/person/kontaktinformasjon";
+    private static final String DIGITAL_KONTAKT_URL = "/krrstub/api/v2/person/kontaktinformasjon";
 
     private final WebClient webClient;
     private final String ident;

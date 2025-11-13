@@ -40,7 +40,7 @@ public class KontoregisterConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavKontoregisterPersonProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -87,6 +87,6 @@ public class KontoregisterConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-kontoregister-person-proxy";
+        return "testnav-dolly-proxy";
     }
 }

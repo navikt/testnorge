@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
 
-    private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person";
+    private static final String INSTDATA_URL = "/inst/api/v1/institusjonsopphold/person";
     private static final String ENVIRONMENTS = "environments";
 
     private final WebClient webClient;

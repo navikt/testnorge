@@ -72,14 +72,16 @@ export const BestillingProgresjon = ({
 	}
 
 	const calculateStatus = () => {
-		const total = erOrganisasjon ? 1 : bestilling?.antallIdenter
+		const total = erOrganisasjon ? 1 : bestilling?.antallIdenter || 0
 		const sykemelding =
 			!erOrganisasjon &&
 			bestilling?.bestilling?.sykemelding != null &&
 			bestilling?.bestilling?.sykemelding?.syntSykemelding != null
-		const antallLevert = erOrganisasjon ? bestillingStatus?.antallLevert : bestilling?.antallLevert
+		const antallLevert = erOrganisasjon
+			? bestillingStatus?.antallLevert || 0
+			: bestilling?.antallLevert || 0
 
-		let percent = (100 / total) * antallLevert
+		let percent = total > 0 ? (100 / total) * antallLevert : 0
 		let text = `Oppretter ${antallLevert || 0} av ${total}`
 
 		// Indikerer progress hvis ingenting har skjedd enda
@@ -129,13 +131,16 @@ export const BestillingProgresjon = ({
 	if (loading) {
 		return <Loading label={'Henter bestilling ...'} />
 	}
-	if (!bestilling) {
+	if (!bestilling && !bestillingStatus) {
 		return null
 	}
 
 	const { percentFinished, tittel, description } = calculateStatus()
 
-	if (percentFinished === 100 && bestilling?.ferdig === true) {
+	if (
+		percentFinished === 100 &&
+		(bestilling?.ferdig === true || bestillingStatus?.ferdig === true)
+	) {
 		onFinishBestilling?.(bestilling || bestillingStatus)
 		return null
 	}
@@ -150,7 +155,16 @@ export const BestillingProgresjon = ({
 				</div>
 				<hr />
 			</div>
-			<div>{!erOrganisasjon && <BestillingStatus bestilling={bestilling} />}</div>
+			<div>
+				{!erOrganisasjon && bestilling && (
+					<BestillingStatus
+						bestilling={{ ...bestilling, systeminfo: bestilling?.systeminfo || '' }}
+					/>
+				)}
+				{erOrganisasjon && bestillingStatus && (
+					<BestillingStatus bestilling={bestillingStatus} erOrganisasjon />
+				)}
+			</div>
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}
@@ -160,7 +174,7 @@ export const BestillingProgresjon = ({
 			<div>
 				<Line percent={percentFinished} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 			</div>
-			{timedOut && (
+			{timedOut && !erOrganisasjon && (
 				<div className="cancel-container">
 					<div>
 						<Icon kind={'report-problem-circle'} />

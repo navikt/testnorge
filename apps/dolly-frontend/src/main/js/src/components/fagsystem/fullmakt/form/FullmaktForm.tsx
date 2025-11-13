@@ -30,7 +30,7 @@ interface FullmaktProps {
 	eksisterendeNyPerson?: any
 }
 
-const alleHandlinger = ['LES', 'SKRIV', 'KOMMUNISER']
+const alleHandlinger = ['LES', 'KOMMUNISER', 'SKRIV']
 
 const mapLegacyFullmaktTilNyFullmakt = (
 	legacyFullmakt: any,
