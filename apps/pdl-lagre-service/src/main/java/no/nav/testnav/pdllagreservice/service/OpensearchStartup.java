@@ -6,11 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.pdllagreservice.consumers.OpensearchParamsConsumer;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch.indices.IndexSettings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +29,9 @@ public class OpensearchStartup {
     @Value("${opensearch.index.personer}")
     private String personIndex;
 
+    @Value("${opensearch.index.adresser}")
+    private String adresserIndex;
+
     private final OpensearchParamsConsumer opensearchParamsConsumer;
     private final ObjectMapper objectMapper;
     private final OpenSearchClient openSearchClient;
@@ -41,6 +42,7 @@ public class OpensearchStartup {
         log.info("OpenSearch database oppdatering starter ...");
 
         updateIndexSetting(personIndex)
+                .then(updateIndexSetting(adresserIndex))
                 .then(Mono.fromRunnable(() -> log.info("OpenSearch database oppdatering ferdig")))
                 .block();
     }

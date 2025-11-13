@@ -1,14 +1,15 @@
 package no.nav.testnav.pdllagreservice.provider;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.pdllagreservice.consumers.OpensearchParamsConsumer;
+import lombok.val;
+import org.opensearch.client.opensearch.OpenSearchClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -19,13 +20,34 @@ public class OpensearchController {
     @Value("${opensearch.index.personer}")
     private String personerIndex;
 
-    private final OpensearchParamsConsumer paramsConsumer;
+    @Value("${opensearch.index.adresser}")
+    private String adresserIndex;
+
+    private final OpenSearchClient openSearchClient;
 
     @DeleteMapping("/personer")
-    public Mono<JsonNode> deletePersoner() {
+    public String deletePersoner() throws IOException {
 
-        return paramsConsumer.deleteIndex(personerIndex)
-                .doOnNext(response ->
-                        log.warn("Index {} deleted response: {}", personerIndex, response.toString()));
+        return deleteIndex(personerIndex);
+    }
+
+    @DeleteMapping("/adresser")
+    public String deleteAdresser() throws IOException {
+
+        return deleteIndex(adresserIndex);
+    }
+
+    private String deleteIndex(String index) throws IOException {
+
+        val existIndex = openSearchClient.indices().exists(i -> i.index(index));
+        if (existIndex.value()) {
+
+            log.warn("Deleting Index {}", index);
+            return openSearchClient.indices().delete(i -> i.index(index)).toString();
+
+        } else {
+            log.warn("Index {} does not exist", index);
+            return "Index " + index + " eksisterer ikke";
+        }
     }
 }
