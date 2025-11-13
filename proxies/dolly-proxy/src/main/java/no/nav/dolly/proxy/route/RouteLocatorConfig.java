@@ -18,6 +18,7 @@ class RouteLocatorConfig {
     private final Inst inst;
     private final Kontoregister kontoregister;
     private final Krrstub krrstub;
+    private final Norg2 norg2;
     private final Pensjon pensjontestdataFacade;
     private final Sigrunstub sigrunstub;
     private final Skjermingsregister skjermingsregister;
@@ -37,6 +38,7 @@ class RouteLocatorConfig {
                 .route("inst", inst.build())
                 .route("kontoregister", kontoregister.build())
                 .route("krrstub", krrstub.build())
+                .route("norg2", norg2.build())
                 .route("pensjontestdatafacade", pensjontestdataFacade.build())
                 .route("pensjontestdatafacade", pensjontestdataFacade.build(Pensjon.SpecialCase.AFP_Q1))
                 .route("pensjontestdatafacade", pensjontestdataFacade.build(Pensjon.SpecialCase.AFP_Q2))

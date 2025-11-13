@@ -69,6 +69,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon-afp", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon-samboer", () -> wireMockServer.baseUrl());
@@ -290,6 +291,30 @@ class RouteLocatorConfigTest {
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @Test
+    void testNorg2() {
+
+        var downstreamPath = "/some/nested/path";
+        var responseBody = "Success from mocked norg2";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/norg2" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
 
     }
 
