@@ -80,9 +80,13 @@ export const BestillingData = styled.div`
 	}
 `
 
-// const ExpandableBestilling = styled.div`
-// 	max-height: ${props => (props.height)} ;
-// 	`
+const VisMerButton = styled(Button)`
+	width: 100%;
+	align-self: center;
+	margin-bottom: -10px;
+	position: absolute;
+	bottom: 0;
+`
 
 const StyledText = styled.p`
 	margin: 5px 0;
@@ -208,15 +212,15 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			</div>
 			{showVisMerButton &&
 				(visMer ? (
-					<Button onClick={setSkjulMer} kind={'chevron-up'}>
+					<VisMerButton onClick={setSkjulMer} kind={'chevron-up'}>
 						VIS MINDRE
-					</Button>
+					</VisMerButton>
 				) : (
 					<>
 						<div className="gradient-overlay" />
-						<Button onClick={setVisMer} kind={'chevron-down'}>
+						<VisMerButton onClick={setVisMer} kind={'chevron-down'}>
 							VIS MER
-						</Button>
+						</VisMerButton>
 					</>
 				))}
 		</div>

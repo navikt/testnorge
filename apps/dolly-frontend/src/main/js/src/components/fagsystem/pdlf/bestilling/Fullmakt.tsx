@@ -4,11 +4,12 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { FullmaktOmraade, FullmaktValues } from '@/components/fagsystem/pdlf/PdlTypes'
-import { arrayToString, formatDate, showLabel } from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
 import _get from 'lodash/get'
 import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
+import { handlingLabel } from '@/components/fagsystem/fullmakt/visning/Fullmakt'
 
 type FullmaktTypes = {
 	fullmaktListe: Array<FullmaktValues>
@@ -33,12 +34,7 @@ export const Fullmakt = ({ fullmaktListe }: FullmaktTypes) => {
 					return (
 						<React.Fragment key={idx}>
 							<TitleValue title="Tema" value={temaLabel} />
-							<TitleValue
-								title="Handling"
-								value={arrayToString(
-									omraade?.handling?.map((h: string) => showLabel('fullmaktHandling', h)),
-								)}
-							/>
+							<TitleValue title="Handling" value={handlingLabel(omraade?.handling)} />
 						</React.Fragment>
 					)
 				}}
