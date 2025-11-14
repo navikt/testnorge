@@ -5,7 +5,13 @@
 			"@/*": ["./src/*"],
 			"#/*": ["./playwright/*"]
 		},
-		"types": ["vitest/globals", "vite/client", "node"],
+		"types": [
+			"@vitest/browser/providers/playwright",
+			"vitest/globals",
+			"vite/client",
+			"node",
+			"./support"
+		],
 		"noEmit": true,
 		"target": "ESNext",
 		"useDefineForClassFields": true,
@@ -23,10 +29,5 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx"
 	},
-	"include": [
-		"src",
-		"types",
-		"**/*.ts",
-		"**/*.tsx"
-	]
+	"include": ["src"]
 }

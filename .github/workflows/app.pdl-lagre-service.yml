@@ -1,0 +1,23 @@
+name: testnav-pdl-lagre-service
+
+on:
+  push:
+    paths:
+      - .github/workflows/app.pdl-lagre-service.yml
+      - apps/pdl-lagre-service/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/reactive-security/**
+      - libs/testing/**
+      - plugins/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/pdl-lagre-service"
+      deploy-tag: "#deploy-pdl-lagre-service"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

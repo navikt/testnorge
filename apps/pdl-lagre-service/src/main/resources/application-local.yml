@@ -1,0 +1,7 @@
+spring:
+  config:
+    import: "sm://"
+
+OPEN_SEARCH_URI: http://localhost:9200
+OPEN_SEARCH_USERNAME: tada
+OPEN_SEARCH_PASSWORD: tada
