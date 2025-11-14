@@ -20,7 +20,7 @@ import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 @Slf4j
 @RequiredArgsConstructor
 public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterResponse>> {
-    private static final String PENSJON_TP_YTELSE_URL = "/api/v1/tp/ytelse";
+    private static final String PENSJON_TP_YTELSE_URL = "/pensjon/api/v1/tp/ytelse";
 
     private final WebClient webClient;
 

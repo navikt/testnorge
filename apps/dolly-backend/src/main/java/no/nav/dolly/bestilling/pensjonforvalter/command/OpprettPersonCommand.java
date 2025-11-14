@@ -21,7 +21,7 @@ import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 @RequiredArgsConstructor
 public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_OPPRETT_PERSON_URL = "/api/v1/person";
+    private static final String PENSJON_OPPRETT_PERSON_URL = "/pensjon/api/v1/person";
 
     private final WebClient webClient;
     private final PensjonPersonRequest pensjonPersonRequest;

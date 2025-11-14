@@ -54,12 +54,13 @@ spec:
       rules:
         - application: synthdata-arena-dagpenger
         - application: synthdata-arena-vedtakshistorikk
-        - application: testnav-organisasjon-faste-data-service
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: testnav-dolly-search-service
+        - application: testnav-organisasjon-faste-data-service
         - application: logging
           namespace: nais-system
       external:
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   azure:

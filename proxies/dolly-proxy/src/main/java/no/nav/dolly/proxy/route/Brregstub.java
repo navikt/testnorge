@@ -10,15 +10,15 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-class Sigrunstub {
+class Brregstub {
 
     private final Targets targets;
 
     Function<PredicateSpec, Buildable<Route>> build() {
         return spec -> spec
-                .path("/sigrunstub/**")
+                .path("/brregstub/**")
                 .filters(f -> f.stripPrefix(1))
-                .uri(targets.sigrunstub);
+                .uri(targets.brregstub);
     }
 
 }

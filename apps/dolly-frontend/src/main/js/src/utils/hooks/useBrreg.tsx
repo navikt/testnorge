@@ -11,8 +11,8 @@ export type BrregRolleOption = {
 	label: string
 }
 
-const understatusUrl = '/testnav-brregstub-proxy/api/v1/kode/understatus'
-const rollerUrl = '/testnav-brregstub-proxy/api/v1/kode/roller'
+const understatusUrl = '/testnav-dolly-proxy/brregstub/api/v1/kode/understatus'
+const rollerUrl = '/testnav-dolly-proxy/brregstub/api/v1/kode/roller'
 
 export const useBrregUnderstatuser = () => {
 	const { data, isLoading, error } = useSWRImmutable<Record<string, string>, Error>(

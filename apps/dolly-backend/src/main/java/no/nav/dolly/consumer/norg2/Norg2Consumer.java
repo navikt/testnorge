@@ -30,7 +30,7 @@ public class Norg2Consumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = accessTokenService;
-        serverProperties = consumers.getTestnavNorg2Proxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -53,6 +53,6 @@ public class Norg2Consumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-norg2-proxy";
+        return "testnav-dolly-proxy";
     }
 }

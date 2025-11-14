@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class BrregPostCommand implements Callable<Mono<RolleoversiktTo>> {
 
-    private static final String ROLLEOVERSIKT_URL = "/api/v2/rolleoversikt";
+    private static final String ROLLEOVERSIKT_URL = "/brregstub/api/v2/rolleoversikt";
 
     private final WebClient webClient;
     private final RolleoversiktTo rolleoversiktTo;

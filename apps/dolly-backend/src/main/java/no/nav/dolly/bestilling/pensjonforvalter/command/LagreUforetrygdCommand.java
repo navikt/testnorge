@@ -20,7 +20,7 @@ import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 @RequiredArgsConstructor
 public class LagreUforetrygdCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_UT_URL = "/api/v2/vedtak/ut";
+    private static final String PENSJON_UT_URL = "/pensjon/api/v2/vedtak/ut";
 
     private final WebClient webClient;
 

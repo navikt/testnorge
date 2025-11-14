@@ -21,7 +21,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 public class SletteAfpOffentligCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
-    private static final String AFP_OFFENTLIG_URL = "/{miljoe}/api/mock-oppsett/{ident}";
+    private static final String AFP_OFFENTLIG_URL = "/pensjon/{miljoe}/api/mock-oppsett/{ident}";
 
     private final WebClient webClient;
     private final String ident;

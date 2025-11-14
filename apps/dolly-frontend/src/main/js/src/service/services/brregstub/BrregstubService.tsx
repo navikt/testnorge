@@ -1,6 +1,6 @@
 import Request from '@/service/services/Request'
 
-const getBrregstubUrl = () => `/testnav-brregstub-proxy/api/v1`
+const getBrregstubUrl = () => `/testnav-dolly-proxy/brregstub/api/v1`
 
 export default {
 	getRoller() {

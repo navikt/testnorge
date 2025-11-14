@@ -40,6 +40,8 @@ app:
   fakedings:
     url: https://fakedings.intern.dev.nav.no
   targets:
+    batch: https://batch.adeo.no
+    brregstub: http://brreg-stub.dolly
     ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
     fullmakt: http://repr-fullmakt.repr.svc.nais.local
     histark: https://histarkimport.dev.intern.nav.no
@@ -47,6 +49,11 @@ app:
     inst: http://opphold-testdata.team-rocket.svc.nais.local
     kontoregister: https://sokos-kontoregister-person.intern.dev.nav.no
     krrstub: https://digdir-krr-stub.intern.dev.nav.no
+    medl: https://medlemskap-medl-testdata.intern.dev.nav.no
+    norg2: http://norg2.org.svc.nais.local
+    pensjon: http://pensjon-testdata-facade.pensjontestdata
+    pensjon-afp: https://pensjon-afp-offentlig-mock-%s.intern.dev.nav.no # Note replacement pattern.
+    pensjon-samboer: https://pensjon-samboerforhold-backend-%s.intern.dev.nav.no # Note replacement pattern.
     sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
     skjermingsregister: https://skjermede-personer.dev.adeo.no
     udistub: http://testnav-udi-stub.dolly

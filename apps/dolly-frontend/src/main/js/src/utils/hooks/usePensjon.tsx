@@ -3,7 +3,7 @@ import api, { fetcher, multiFetcherAfpOffentlig } from '@/api'
 import { v4 as _uuid } from 'uuid'
 import useSWRMutation from 'swr/mutation'
 
-const baseUrl = '/testnav-pensjon-testdata-facade-proxy'
+const baseUrl = '/testnav-dolly-proxy/pensjon'
 const pensjonVedtakUrl = `${baseUrl}/api/v2/vedtak`
 const pensjonFacadeGenererUrl = `${baseUrl}/api/v1/generate-inntekt-med-gjennomsnitt-g`
 const tpOrdningUrl = `${baseUrl}/api/v1/tp/ordning`

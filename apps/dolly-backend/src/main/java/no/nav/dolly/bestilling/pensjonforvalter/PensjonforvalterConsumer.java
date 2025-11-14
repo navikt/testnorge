@@ -67,7 +67,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavPensjonTestdataFacadeProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -252,7 +252,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-pensjon-testdata-facade-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class MedlPutCommand implements Callable<Mono<MedlPostResponse>> {
 
-    private static final String MEDL_URL = "/rest/v1/medlemskapsperiode";
+    private static final String MEDL_URL = "/medl/rest/v1/medlemskapsperiode";
 
     private final WebClient webClient;
     private final MedlData medlData;

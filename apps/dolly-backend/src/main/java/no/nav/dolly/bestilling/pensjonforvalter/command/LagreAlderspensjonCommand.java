@@ -21,8 +21,8 @@ import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 @RequiredArgsConstructor
 public class LagreAlderspensjonCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_AP_VEDTAK_URL = "/api/v4/vedtak/ap";
-    private static final String PENSJON_AP_SOKNAD_URL = "/api/v4/vedtak/ap/soknad";
+    private static final String PENSJON_AP_VEDTAK_URL = "/pensjon/api/v4/vedtak/ap";
+    private static final String PENSJON_AP_SOKNAD_URL = "/pensjon/api/v4/vedtak/ap/soknad";
 
     private final WebClient webClient;
 

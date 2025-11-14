@@ -19,7 +19,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 @RequiredArgsConstructor
 public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterResponse>> {
-    private static final String PEN_SAMBOER_URL = "/{miljoe}/api/samboer";
+    private static final String PEN_SAMBOER_URL = "/pensjon/{miljoe}/api/samboer";
 
     private final WebClient webClient;
     private final PensjonSamboerRequest pensjonSamboerRequest;

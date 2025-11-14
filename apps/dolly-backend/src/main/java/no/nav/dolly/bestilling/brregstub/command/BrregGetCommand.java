@@ -16,7 +16,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 @Slf4j
 public class BrregGetCommand implements Callable<Mono<RolleoversiktTo>> {
 
-    private static final String ROLLEOVERSIKT_URL = "/api/v2/rolleoversikt";
+    private static final String ROLLEOVERSIKT_URL = "/brregstub/api/v2/rolleoversikt";
 
     private final WebClient webClient;
     private final String ident;

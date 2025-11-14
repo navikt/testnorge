@@ -19,24 +19,24 @@ import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}&miljo=${miljo}`,
+		url: `/testnav-dolly-proxy/pensjon/api/v1/inntekt?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
 const pensjonsavtaleUrl = (miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v2/pensjonsavtale/hent?miljo=${miljo}`,
+		url: `/testnav-dolly-proxy/pensjon/api/v2/pensjonsavtale/hent?miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
 const tpForholdUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
+		url: `/testnav-dolly-proxy/pensjon/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
 const tpYtelseUrl = (miljo, ordningNr) =>
-	`/testnav-pensjon-testdata-facade-proxy/api/v1/tp/ytelse?ordning=${ordningNr}&miljo=${miljo}`
+	`/testnav-dolly-proxy/pensjon/api/v1/tp/ytelse?ordning=${ordningNr}&miljo=${miljo}`
 
 const instUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({

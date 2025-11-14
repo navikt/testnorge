@@ -9,10 +9,10 @@ consumers:
     namespace: dolly
     name: testnav-arena-forvalteren-proxy
     url: http://localhost:${wiremock.server.port:0}
-  testnav-pensjon-testdata-facade-proxy:
+  testnav-dolly-proxy:
     cluster: dummy
     namespace: dolly
-    name: testnav-pensjon-testdata-facade-proxy
+    name: testnav-dolly-proxy
     url: http://localhost:${wiremock.server.port:0}
   testnav-dolly-search-service:
     cluster: dummy

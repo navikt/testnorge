@@ -18,7 +18,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 @RequiredArgsConstructor
 public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>> {
-    private static final String PEN_SAMBOER_URL = "/{miljoe}/api/samboer/{ident}";
+    private static final String PEN_SAMBOER_URL = "/pensjon/{miljoe}/api/samboer/{ident}";
 
     private final WebClient webClient;
     private final String ident;

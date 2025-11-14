@@ -24,10 +24,10 @@ spec:
     outbound:
       rules:
         - application: organisasjon-bestilling-service
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: logging
           namespace: nais-system
-      external:
-        - host: testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
   tokenx:
     enabled: true
   azure:

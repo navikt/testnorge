@@ -18,7 +18,7 @@ public class GetBEREG007LogCommand implements Callable<String> {
     public String call() {
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path("view/All/job/Start_BEREG007/{jobNumber}/logText/progressiveText")
+                .uri(uriBuilder -> uriBuilder.path("/view/All/job/Start_BEREG007/{jobNumber}/logText/progressiveText")
                         .queryParam("start", 0)
                         .build(jobNumber)
                 )

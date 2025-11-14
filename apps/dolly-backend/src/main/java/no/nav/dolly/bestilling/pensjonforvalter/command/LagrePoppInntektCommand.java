@@ -21,7 +21,7 @@ import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 @RequiredArgsConstructor
 public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String POPP_INNTEKT_URL = "/api/v1/inntekt";
+    private static final String POPP_INNTEKT_URL = "/pensjon/api/v1/inntekt";
 
     private final WebClient webClient;
     private final String token;

@@ -38,7 +38,7 @@ public class MedlConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavMedlProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -79,7 +79,7 @@ public class MedlConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-medl-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

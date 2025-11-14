@@ -21,7 +21,7 @@ public class GetBEREG007LogCommand implements Callable<Mono<String>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("view/All/job/Start_BEREG007/{buildId}/logText/progressiveText")
+                        .path("/view/All/job/Start_BEREG007/{buildId}/logText/progressiveText")
                         .queryParam("start", 0)
                         .build(buildId))
                 .headers(WebClientHeader.bearer(token))

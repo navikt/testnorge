@@ -33,11 +33,6 @@ consumers:
     namespace: dolly
     name: testnav-arena-forvalteren-proxy
     url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-  testnav-pensjon-testdata-facade-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-pensjon-testdata-facade-proxy
-    url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
   testnav-dolly-search-service:
     cluster: dev-gcp
     namespace: dolly

@@ -2,7 +2,7 @@ import { fetcher } from '@/api'
 import { Option } from '@/service/SelectOptionsOppslag'
 import useSWRImmutable from 'swr/immutable'
 
-const norg2Url = `/testnav-norg2-proxy/norg2/api/v1/enhet?enhetStatusListe=AKTIV&oppgavebehandlerFilter=KUN_OPPGAVEBEHANDLERE`
+const norg2Url = `/testnav-dolly-proxy/norg2/norg2/api/v1/enhet?enhetStatusListe=AKTIV&oppgavebehandlerFilter=KUN_OPPGAVEBEHANDLERE`
 
 type EnhetType = {
 	enhetNr: string

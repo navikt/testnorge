@@ -20,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @RequiredArgsConstructor
 public class LagreApRevurderingVedtak implements Callable<Mono<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_AP_REVURDERING_VEDTAK_URL = "/api/v1/ap/revurdering-vedtak";
+    private static final String PENSJON_AP_REVURDERING_VEDTAK_URL = "/pensjon/api/v1/ap/revurdering-vedtak";
 
     private final WebClient webClient;
     private final RevurderingVedtakRequest revurderingVedtakRequest;

@@ -20,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @RequiredArgsConstructor
 public class LagreAPNyUttaksgrad implements Callable<Mono<PensjonforvalterResponse>> {
 
-    private static final String ALDERSPENSJON_NY_UTTAKSGRAD_URL = "/api/v1/ap/ny-uttaksgrad";
+    private static final String ALDERSPENSJON_NY_UTTAKSGRAD_URL = "/pensjon/api/v1/ap/ny-uttaksgrad";
 
     private final WebClient webClient;
     private final AlderspensjonNyUtaksgradRequest nyUttaksgradRequest;

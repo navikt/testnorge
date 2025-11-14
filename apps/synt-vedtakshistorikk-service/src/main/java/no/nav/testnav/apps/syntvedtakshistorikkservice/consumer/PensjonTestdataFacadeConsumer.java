@@ -27,7 +27,7 @@ public class PensjonTestdataFacadeConsumer {
             TokenExchange tokenExchange,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavPensjonTestdataFacadeProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
