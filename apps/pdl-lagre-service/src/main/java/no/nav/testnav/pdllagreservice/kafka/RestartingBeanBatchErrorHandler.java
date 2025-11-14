@@ -16,8 +16,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.function.Predicate.not;
 
 /**
- * Kafka listeners som lages "manuelt" vil ikke bli registrert i kafkaListenerEndpointRegistry, men vil  være beans istedet
- * Disse har derfor en litt annen måte å  ble restartet på en den vi har brukt i de andre restarterene.
+ * Kafka listeners som lages "manuelt" vil ikke bli registrert i kafkaListenerEndpointRegistry, men vil være beans istedet
+ * Disse har derfor en litt annen måte å ble restartet på enn den vi har brukt i de andre restarterene.
+ * (kopiert fra team persondata sin RestartingErrorHandler)
  */
 @Slf4j
 @RequiredArgsConstructor
