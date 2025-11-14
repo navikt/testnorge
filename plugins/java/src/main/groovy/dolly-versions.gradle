@@ -33,7 +33,7 @@ class DollyVersionCatalog {
     String logback = "8.1"
     String mq = "3.4.3"
     String okhttp = "4.12.0"
-    String opensearch = "1.6.3" // https://github.com/opensearch-project/spring-data-opensearch/releases
+    String opensearch = "1.8.2" // https://github.com/opensearch-project/spring-data-opensearch/releases
     String orika = "1.5.4"
     String reactorTest = "3.7.6"
     String springdoc = "2.8.14"
