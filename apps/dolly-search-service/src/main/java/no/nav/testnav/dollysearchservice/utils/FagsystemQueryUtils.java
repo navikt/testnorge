@@ -14,6 +14,7 @@ import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.existQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
@@ -21,7 +22,7 @@ public class FagsystemQueryUtils {
 
     private static final String ARBEIDSFORHOLDTYPE = "aareg.arbeidsforholdstype";
 
-    public static ExistsQuery.Builder getFagsystemQuery(ElasticTyper type) {
+    public static ExistsQuery getFagsystemQuery(ElasticTyper type) {
 
         return switch (type) {
             case ARBEIDSFORHOLD -> QueryBuilders.exists().field("aareg");
@@ -33,39 +34,39 @@ public class FagsystemQueryUtils {
                     .query(FieldValue.of("maritimtArbeidsforhold"));
             case ARBEIDSFORHOLD_FORENKLET -> QueryBuilders.match().field(ARBEIDSFORHOLDTYPE)
                             .query(FieldValue.of("forenkletOppgjoersordning"));
-            case ARBEIDSPLASSENCV -> QueryBuilders.exists().field("arbeidsplassenCV");
-            case ARBEIDSSOEKERREGISTERET -> QueryBuilders.exists().field("arbeidssoekerregisteret");
-            case ARENA_AAP -> QueryBuilders.exists().field("arenaforvalter.aap");
-            case ARENA_AAP115 -> QueryBuilders.exists().field("arenaforvalter.aap115");
-            case ARENA_DAGP -> QueryBuilders.exists().field("arenaforvalter.dagpenger");
-            case BANKKONTO -> QueryBuilders.exists().field("bankkonto");
-            case BANKKONTO_NORGE -> QueryBuilders.exists().field("bankkonto.norskBankkonto");
-            case BANKKONTO_UTLAND -> QueryBuilders.exists().field("bankkonto.utenlandskBankkonto");
-            case BRREGSTUB -> QueryBuilders.exists().field("brregstub");
-            case DOKARKIV -> QueryBuilders.exists().field("dokarkiv");
-            case ETTERLATTE -> QueryBuilders.exists().field("etterlatteYtelser");
-            case FULLMAKT -> QueryBuilders.exists().field("fullmakt");
-            case HISTARK -> QueryBuilders.exists().field("histark");
-            case INNTK -> QueryBuilders.exists().field("inntektstub");
-            case INNTKMELD -> QueryBuilders.exists().field("inntektsmelding");
-            case INST -> QueryBuilders.exists().field("instdata");
-            case KRRSTUB -> QueryBuilders.exists().field("krrstub");
-            case MEDL -> QueryBuilders.exists().field("medl");
-            case NOM -> QueryBuilders.exists().field("nomdata");
-            case PEN_AFP_OFFENTLIG -> QueryBuilders.exists().field("pensjonforvalter.afpOffentlig");
-            case PEN_AP -> QueryBuilders.exists().field("pensjonforvalter.alderspensjon");
-            case PEN_AP_NY_UTTAKSGRAD -> QueryBuilders.exists().field("pensjonforvalter.alderspensjonNyUtaksgrad");
-            case PEN_INNTEKT -> QueryBuilders.exists().field("pensjonforvalter.inntekt");
-            case PEN_PENSJONSAVTALE -> QueryBuilders.exists().field("pensjonforvalter.pensjonsavtale");
-            case PEN_TP -> QueryBuilders.exists().field("pensjonforvalter.tp");
-            case PEN_UT -> QueryBuilders.exists().field("pensjonforvalter.uforetrygd");
-            case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.exists().field("sigrunstubPensjonsgivende");
-            case SIGRUN_SUMMERT -> QueryBuilders.exists().field("sigrunstubSummertSkattegrunnlag");
-            case SKATTEKORT -> QueryBuilders.exists().field("skattekort");
-            case SKJERMING -> QueryBuilders.exists().field("skjerming");
-            case SYKEMELDING -> QueryBuilders.exists().field("sykemelding");
-            case UDISTUB -> QueryBuilders.exists().field("udistub");
-            case YRKESSKADE -> QueryBuilders.exists().field("yrkesskader");
+            case ARBEIDSPLASSENCV -> existQuery("arbeidsplassenCV");
+            case ARBEIDSSOEKERREGISTERET -> existQuery("arbeidssoekerregisteret");
+            case ARENA_AAP -> existQuery("arenaforvalter.aap");
+            case ARENA_AAP115 -> existQuery("arenaforvalter.aap115");
+            case ARENA_DAGP -> existQuery("arenaforvalter.dagpenger");
+            case BANKKONTO -> existQuery("bankkonto");
+            case BANKKONTO_NORGE -> existQuery("bankkonto.norskBankkonto");
+            case BANKKONTO_UTLAND -> existQuery("bankkonto.utenlandskBankkonto");
+            case BRREGSTUB -> existQuery("brregstub");
+            case DOKARKIV -> existQuery("dokarkiv");
+            case ETTERLATTE -> existQuery("etterlatteYtelser");
+            case FULLMAKT -> existQuery("fullmakt");
+            case HISTARK -> existQuery("histark");
+            case INNTK -> existQuery("inntektstub");
+            case INNTKMELD -> existQuery("inntektsmelding");
+            case INST -> existQuery("instdata");
+            case KRRSTUB -> existQuery("krrstub");
+            case MEDL -> existQuery("medl");
+            case NOM -> existQuery("nomdata");
+            case PEN_AFP_OFFENTLIG -> existQuery("pensjonforvalter.afpOffentlig");
+            case PEN_AP -> existQuery("pensjonforvalter.alderspensjon");
+            case PEN_AP_NY_UTTAKSGRAD -> existQuery("pensjonforvalter.alderspensjonNyUtaksgrad");
+            case PEN_INNTEKT -> existQuery("pensjonforvalter.inntekt");
+            case PEN_PENSJONSAVTALE -> existQuery("pensjonforvalter.pensjonsavtale");
+            case PEN_TP -> existQuery("pensjonforvalter.tp");
+            case PEN_UT -> existQuery("pensjonforvalter.uforetrygd");
+            case SIGRUN_PENSJONSGIVENDE -> existQuery("sigrunstubPensjonsgivende");
+            case SIGRUN_SUMMERT -> existQuery("sigrunstubSummertSkattegrunnlag");
+            case SKATTEKORT -> existQuery("skattekort");
+            case SKJERMING -> existQuery("skjerming");
+            case SYKEMELDING -> existQuery("sykemelding");
+            case UDISTUB -> existQuery("udistub");
+            case YRKESSKADE -> existQuery("yrkesskader");
         };
     }
 
