@@ -1,6 +1,7 @@
 package no.nav.testnav.pdllagreservice.listener;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import no.nav.testnav.pdllagreservice.dto.OpensearchDocumentData;
 import no.nav.testnav.pdllagreservice.exception.UnrecoverableException;
 import no.nav.testnav.pdllagreservice.utility.CollectionUtils;
 import no.nav.testnav.pdllagreservice.utility.KafkaUtilities;
-import no.nav.testnav.pdllagreservice.utility.MetricUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.slf4j.MDC;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static no.nav.testnav.pdllagreservice.listener.PdlAdresseMapper.createCompletionContexts;
 import static no.nav.testnav.pdllagreservice.listener.PdlAdresseMapper.replaceNumberWithString;
@@ -74,7 +73,8 @@ public class PdlAdresseListener {
     @SneakyThrows
     private Map<String, Object> convert(String json) {
 
-        val data = mapper.readValue(json, HashMap.class);
+        val data = mapper.readValue(json, new TypeReference<HashMap<String, Object>>() {
+        });
         replaceNumberWithString(data);
         createCompletionContexts(data);
         return data;

@@ -27,7 +27,7 @@ public class RestartingBeanBatchErrorHandler {
     private final MeterRegistry meterRegistry;
 
     @Getter
-    private AtomicBoolean enabled = new AtomicBoolean(true);
+    private final AtomicBoolean enabled = new AtomicBoolean(true);
 
 
     @WithSpan

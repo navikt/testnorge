@@ -1,5 +1,6 @@
 package no.nav.testnav.pdllagreservice.listener;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KEY;
 @RequiredArgsConstructor
 public class PdlPersonDokumentListener {
 
-    private final OpensearchDocumentService service;
+    private final OpensearchDocumentService opensearchDocumentService;
     private final ObjectMapper mapper;
 
     @Value("${opensearch.index.personer}")
@@ -53,7 +54,7 @@ public class PdlPersonDokumentListener {
                 .map(this::convert)
                 .toList();
 
-        CollectionUtils.chunk(documentList, 15).forEach(service::processBulk);
+        CollectionUtils.chunk(documentList, 15).forEach(opensearchDocumentService::processBulk);
     }
 
     private OpensearchDocumentData convert(ConsumerRecord<String, String> post) {
@@ -63,7 +64,8 @@ public class PdlPersonDokumentListener {
             if (isNull(post.value())) {
                 return new OpensearchDocumentData(personIndex, post.key(), null);
             } else {
-                val dokument = mapper.readValue(post.value(), HashMap.class);
+                val dokument = mapper.readValue(post.value(), new TypeReference<HashMap<String, Object>>() {
+                });
                 return new OpensearchDocumentData(personIndex, post.key(), dokument);
             }
         } catch (RuntimeException | IOException exception) {
