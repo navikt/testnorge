@@ -2,6 +2,12 @@ package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.search.join.ScoreMode;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
+import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
+import org.opensearch.client.opensearch._types.query_dsl.TermsQueryField;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
@@ -15,27 +21,35 @@ public class OpenSearchQueryUtils {
     public static final String NAVSPERSONIDENTIFIKATOR = "hentPerson.navspersonidentifikator";
     public static final String CONCAT = "%s.%s";
 
-    public static QueryBuilder rangeQuery(String field, Object value1, Object value2) {
+    public static Query.Builder rangeQuery(String field, Object value1, Object value2) {
 
-        return QueryBuilders.rangeQuery(field).from(value1).to(value2);
+        return QueryBuilders.range()
+                .field(field)
+                .from(FieldValue.of(value1))
+                        .to(FieldValue.of(value2));
     }
 
-    public static QueryBuilder matchQuery(String field, Object value) {
+    public static Query.Builder matchQuery(String field, Object value) {
 
-        return QueryBuilders.matchQuery(field, value);
+        return QueryBuilders.match()
+                .field(field)
+                .query(FieldValue.of(value.toString()))
     }
 
-    public static QueryBuilder existQuery(String field) {
+    public static ExistsQuery.Builder existQuery(String field) {
 
-        return QueryBuilders.existsQuery(field);
+        return QueryBuilders.exists().field(field);
     }
 
-    public static QueryBuilder termsQuery(String field, Object[] values) {
+    public static Query.Builder termsQuery(String field, Object[] values) {
 
-        return QueryBuilders.termsQuery(field, values);
+        new FieldValue(values)
+        return QueryBuilders.terms()
+                .field(field)
+                .terms(TermsQueryField.of(builder -> builder.value(FieldValue.of(values)));
     }
 
-    public static QueryBuilder regexpQuery(String field, String value) {
+    public static QueryBuilders regexpQuery(String field, String value) {
 
         return QueryBuilders.regexpQuery(field, value);
     }

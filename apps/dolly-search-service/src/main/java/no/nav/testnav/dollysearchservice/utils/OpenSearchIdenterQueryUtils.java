@@ -4,6 +4,9 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.IdentSearch;
 import org.apache.lucene.search.join.ScoreMode;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
@@ -32,14 +35,14 @@ public class OpenSearchIdenterQueryUtils {
 
     private static final Random RANDOM = new SecureRandom();
 
-    public static BoolQueryBuilder buildTestnorgeIdentSearchQuery(IdentSearch search) {
+    public static BoolQuery buildTestnorgeIdentSearchQuery(IdentSearch search) {
 
         var identer = new HashSet<>(search.getIdenter());
         if (isNotBlank(search.getIdent()) && search.getIdent().length() == 11) {
             identer.add(search.getIdent());
         }
 
-        var queryBuilder = QueryBuilders.boolQuery();
+        var queryBuilder = QueryBuilders.bool();
 
         addTagsQueries(queryBuilder, search.getTags());
         addIdentQuery(queryBuilder, search);
@@ -56,19 +59,22 @@ public class OpenSearchIdenterQueryUtils {
                 .seed(RANDOM.nextInt())));
     }
 
-    private static void addTagsQueries(BoolQueryBuilder queryBuilder, List<String> tags) {
+    private static void addTagsQueries(BoolQuery.Builder queryBuilder, List<String> tags) {
 
-        tags.forEach(tag -> queryBuilder.must(QueryBuilders.matchQuery("tags", tag)));
+        tags.forEach(tag -> queryBuilder.must(QueryBuilders.term()
+                        .field("tags")
+                        .field(FieldValue.of(tags)
+                QueryBuilders.matchQuery("tags", tag)));
     }
 
-    private static void addNameQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {
+    private static void addNameQuery(BoolQuery.Builder queryBuilder, IdentSearch search) {
 
         Optional.ofNullable(search.getNavn())
                 .ifPresent(values -> {
                     if (values.size() == 1) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
+                        queryBuilder.must(QueryBuilders.nested(
                                 "hentPerson.navn",
-                                QueryBuilders.boolQuery()
+                                QueryBuilders.bool()
                                         .should(regexpQuery(PERSON_FORNAVN, ".*" + values.getFirst() + ".*"))
                                         .should(regexpQuery(PERSON_ETTERNAVN, ".*" + values.getFirst() + ".*"))
                                         .minimumShouldMatch(1),
