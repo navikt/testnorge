@@ -5,6 +5,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class SaveOrganisasjonBestillingCommand implements Callable<Long> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(Long.class)
+                .timeout(Duration.ofSeconds(10))
                 .retryWhen(WebClientError.is5xxException())
                 .block();
     }

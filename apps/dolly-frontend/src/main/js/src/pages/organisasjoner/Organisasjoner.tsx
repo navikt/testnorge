@@ -90,6 +90,8 @@ export default () => {
 					</div>
 				</div>
 
+				<OrganisasjonHeader antallOrganisasjoner={antallOrg} />
+
 				{bestillingerById && (
 					// @ts-ignore
 					<StatusListeConnector
@@ -97,8 +99,6 @@ export default () => {
 						bestillingListe={bestillingerById}
 					/>
 				)}
-
-				<OrganisasjonHeader antallOrganisasjoner={antallOrg} />
 
 				<div className="toolbar">
 					<NavButton

@@ -20,7 +20,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 @Slf4j
 public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataResponse>> {
 
-    private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
+    private static final String DIGITAL_KONTAKT_URL = "/krrstub/api/v2/kontaktinformasjon";
 
     private final WebClient webClient;
     private final DigitalKontaktdata digitalKontaktdata;

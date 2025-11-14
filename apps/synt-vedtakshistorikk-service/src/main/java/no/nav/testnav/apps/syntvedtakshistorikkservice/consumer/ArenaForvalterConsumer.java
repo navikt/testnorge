@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.GetArenaBrukereCommand;
@@ -22,12 +21,10 @@ import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDT
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.netty.http.client.HttpClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,10 +50,8 @@ public class ArenaForvalterConsumer {
             WebClient webClient
     ) {
         serverProperties = consumers.getTestnavArenaForvalterenProxy();
-        var httpClient = HttpClient.create().option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000);
         this.webClient = webClient
                 .mutate()
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

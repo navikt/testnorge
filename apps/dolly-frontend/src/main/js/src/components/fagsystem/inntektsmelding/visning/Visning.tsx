@@ -41,6 +41,8 @@ export const InntektsmeldingVisning = ({
 	bestillinger,
 }: InntektsmeldingVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'INNTKMELD')
+	bestilteMiljoer?.sort()
+
 	let data: any[] | undefined = liste || dataProp
 
 	if (loading) {
@@ -86,7 +88,9 @@ export const InntektsmeldingVisning = ({
 		data = setTransaksjonsidData()
 	}
 
-	const mergetData: any[] | undefined = data ? mergeMiljoData(data as any[]) : undefined
+	const mergetData: any[] | undefined = data
+		? mergeMiljoData(data as any[], bestilteMiljoer)
+		: undefined
 
 	const filteredData =
 		tilgjengeligMiljoe && mergetData?.filter((item: any) => item?.miljo === tilgjengeligMiljoe)

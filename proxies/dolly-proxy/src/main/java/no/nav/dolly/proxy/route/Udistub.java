@@ -1,11 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
+import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -24,25 +20,17 @@ class Udistub {
     private static final String NAMESPACE = "dolly";
 
     private final Targets targets;
-    private final AzureNavTokenService tokenExchange;
+    private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
+        var authenticationFilter = authenticationFilterService.getNavAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.udistub);
         return spec -> spec
                 .path("/udistub/**")
                 .filters(f -> f
                         .stripPrefix(1)
                         .setResponseHeader(CONTENT_TYPE, "application/json; charset=UTF-8")
-                        .filter(getAuthenticationFilter()))
+                        .filter(authenticationFilter))
                 .uri(targets.udistub);
-    }
-
-    private GatewayFilter getAuthenticationFilter() {
-        var serverProperties = ServerProperties.of(CLUSTER, NAMESPACE, NAME, targets.udistub);
-        return AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(
-                        () -> tokenExchange
-                                .exchange(serverProperties)
-                                .map(AccessToken::getTokenValue));
     }
 
 }

@@ -30,7 +30,7 @@ interface FullmaktProps {
 	eksisterendeNyPerson?: any
 }
 
-const alleHandlinger = ['LES', 'SKRIV', 'KOMMUNISER']
+const alleHandlinger = ['LES', 'KOMMUNISER', 'SKRIV']
 
 const mapLegacyFullmaktTilNyFullmakt = (
 	legacyFullmakt: any,
@@ -141,7 +141,7 @@ export const Fullmakt = ({
 							options={omraadeKodeverk.filter(
 								(option: Option) => !chosenTemaValues.includes(option.value),
 							)}
-							size="grow"
+							size="xxlarge"
 							isClearable={false}
 							normalFontPlaceholder={true}
 						/>
@@ -149,18 +149,8 @@ export const Fullmakt = ({
 							name={`${path}.handling`}
 							label="Handling"
 							options={Options('fullmaktHandling')}
-							size="xlarge"
-							onChange={(val: Option[]) => {
-								formMethods.setValue(
-									`${path}.handling`,
-									val?.some((opt) => opt.value?.includes('*'))
-										? alleHandlinger
-										: val.map((opt) => opt.value),
-								)
-								formMethods.trigger(path)
-							}}
-							isClearable={true}
-							isMulti={true}
+							size="large"
+							isClearable={false}
 						/>
 					</>
 				)}

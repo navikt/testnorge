@@ -51,16 +51,10 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 })
                 .flatMap(oppdatertOrdre -> Mono.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                .flatMap(response -> arbeidsplassenCVConsumer.godtaVilkaar(dollyPerson.getIdent(), uuid))
-                                .flatMap(response2 -> {
-                                    if (isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel())) {
-                                        return arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid)
-                                                .flatMap(response3 -> arbeidsplassenCVConsumer.godtaVilkaar(dollyPerson.getIdent(), uuid));
-                                    } else {
-                                        return Mono.just("Fortsetter uten hjemmel og repetert vilkaar");
-                                    }
-                                })
-                                .flatMap(response4 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
+                                .flatMap(response -> isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel()) ?
+                                        arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid) :
+                                        Mono.just("Fortsetter uten hjemmel og repetert vilkaar"))
+                                .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
                                         .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
                                                         request, uuid, logRetries(progress))
                                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
@@ -76,8 +70,8 @@ public class ArbeidsplassenCVClient implements ClientRegister {
         return retrySignal -> {
 
             String retryStatus = "%s (antall forsøk: %d)".formatted(
-                            getInfoVenter("Arbeidsplassen"),
-                            retrySignal.totalRetries() + 2);
+                    getInfoVenter("Arbeidsplassen"),
+                    retrySignal.totalRetries() + 2);
 
             oppdaterStatus(progress, retryStatus)
                     .subscribe();

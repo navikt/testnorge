@@ -81,7 +81,7 @@ public class TagController {
                         .map(Testident::getIdent)
                         .collectList()
                         .flatMap(identer -> personServiceConsumer.getPdlPersoner(identer)
-                                .filter(pdlBolk -> nonNull(pdlBolk.getData()))
+                                .filter(pdlBolk -> nonNull(pdlBolk) && nonNull(pdlBolk.getData()))
                                 .map(PdlPersonBolk::getData)
                                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                                 .flatMap(Flux::fromIterable)

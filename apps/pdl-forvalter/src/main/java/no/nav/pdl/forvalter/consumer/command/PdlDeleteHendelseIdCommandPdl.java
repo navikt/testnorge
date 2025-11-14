@@ -42,6 +42,7 @@ public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
                 .header("hendelseId", hendelseId)
                 .retrieve()
                 .bodyToFlux(PdlBestillingResponse.class)
+                .timeout(TIMEOUT)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                         .status(PdlStatus.OK)
                         .deletedOpplysninger(response.getDeletedOpplysninger())

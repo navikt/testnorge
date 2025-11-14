@@ -68,16 +68,27 @@ public class TeamService {
                                                 .opprettetTidspunkt(now())
                                                 .brukerId(brukerTeam.getId())
                                                 .build())
-                                        .flatMap(lagretTeam -> teamBrukerRepository.save(TeamBruker.builder()
-                                                        .brukerId(bruker.getId())
-                                                        .teamId(lagretTeam.getId())
-                                                        .opprettetTidspunkt(now())
-                                                        .build())
-                                                .map(ignore -> {
-                                                    lagretTeam.setOpprettetAv(bruker);
-                                                    lagretTeam.getBrukere().add(bruker);
-                                                    return lagretTeam;
-                                                })))));
+                                        .flatMap(lagretTeam -> saveTeamBruker(lagretTeam.getId(), bruker.getId())
+                                                .then(brukerRepository.findByBrukerIdIn(team.getBrukere())
+                                                        .collectList())
+                                                .flatMap(brukere -> Flux.fromIterable(brukere)
+                                                        .map(Bruker::getId)
+                                                        .flatMap(id -> saveTeamBruker(lagretTeam.getId(), id))
+                                                        .collectList()
+                                                        .map(teamBrukere -> {
+                                                            lagretTeam.setOpprettetAv(bruker);
+                                                            lagretTeam.getBrukere().add(bruker);
+                                                            lagretTeam.getBrukere().addAll(brukere);
+                                                            return lagretTeam;
+                                                        }))))));
+    }
+
+    private Mono<TeamBruker> saveTeamBruker(Long teamId, Long brukerId) {
+        return teamBrukerRepository.save(TeamBruker.builder()
+                .teamId(teamId)
+                .brukerId(brukerId)
+                .opprettetTidspunkt(now())
+                .build());
     }
 
     @Transactional
@@ -173,7 +184,7 @@ public class TeamService {
                                 return Mono.just(bruker);
                             }
                         }))
-                .flatMap(teamBruker -> teamBrukerRepository.deleteByBrukerId(teamBruker.getId()));
+                .flatMap(teamBruker -> teamBrukerRepository.deleteByTeamIdAndBrukerId(teamId, teamBruker.getId()));
     }
 
     public Flux<Team> fetchTeam(Supplier<Flux<Team>> teamSupplier) {

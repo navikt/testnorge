@@ -3,7 +3,7 @@ import { fetcher, multiFetcherAareg } from '@/api'
 import {
 	Organisasjon,
 	OrganisasjonFasteData,
-	OrganisasjonForvalterData
+	OrganisasjonForvalterData,
 } from '@/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -175,7 +175,9 @@ const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
 
 export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
 	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer?.length === 9)
-	const urls = filteredOrgnummere.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
+	const urls = filteredOrgnummere.map((orgnummer) =>
+		getOrganisasjonForvalterUrl(orgnummer as string),
+	)
 
 	const hasBeenCalledRef = useRef<boolean>(false)
 	useEffect(() => {
@@ -220,7 +222,10 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 
 	const bestillingerSorted = data
 		?.sort?.((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
-		.reduce((acc: { [key: string]: Bestillingsstatus }, curr) => ((acc[curr.id] = curr), acc), {})
+		.reduce((acc: { [key: string]: Bestillingsstatus }, curr) => {
+			acc[curr.id] = curr
+			return acc
+		}, {})
 
 	return {
 		bestillinger: data,
@@ -239,7 +244,7 @@ export const useOrganisasjonBestillingStatus = (
 		return bestillingId && erOrganisasjon
 	}
 
-	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
+	const { data, isLoading, error } = useSWR<Bestillingsstatus, Error>(
 		shouldFetch() ? getOrganisasjonBestillingStatusUrl(bestillingId) : null,
 		fetcher,
 		{
@@ -259,8 +264,8 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 	const { dollyEnvironmentList } = useDollyEnvironments()
 	const unsupportedEnvironments = ['qx']
 	const filteredEnvironments = dollyEnvironmentList
-		?.map((miljoe) => miljoe.id)
-		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))
+		?.map((miljoe: { id: string }) => miljoe.id)
+		?.filter((miljoe: string) => !unsupportedEnvironments.includes(miljoe))
 
 	if (!ident) {
 		return {
@@ -279,7 +284,8 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		([url, headers]) => multiFetcherAareg(url, headers),
+		([urlList, headers]: [ReturnType<typeof getArbeidsforholdUrl>, Record<string, string>]) =>
+			multiFetcherAareg(urlList, headers),
 	)
 
 	return {

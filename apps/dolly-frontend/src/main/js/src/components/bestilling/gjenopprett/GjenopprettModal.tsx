@@ -1,5 +1,5 @@
 import { DollyModal } from '@/components/ui/modal/DollyModal'
-import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
+import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoeInfo'
 import React, { Fragment } from 'react'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -32,18 +32,21 @@ export const GjenopprettModal = ({
 	const schemaValidation = yup.object().shape({
 		environments: yup.array().required('Velg minst ett miljø'),
 	})
+
+	const gyldigeEnvironments = gyldigeDollyMiljoer(tilgjengeligeEnvironments)
+
 	const formMethods = useForm({
 		mode: 'onBlur',
-		defaultValues: { environments: filterMiljoe(tilgjengeligeEnvironments, environments) },
+		defaultValues: { environments: filterMiljoe(gyldigeEnvironments, environments) },
 		resolver: yupResolver(schemaValidation),
 	})
 
 	const getWarningText = () => {
 		if (
 			bestilling?.bestilling?.arbeidsplassenCV &&
-			(!bestilling?.bestilling?.arenaforvalter || !bestilling?.bestilling?.arbeidssoekerregisteret)
+			!bestilling?.bestilling?.arbeidssoekerregisteret
 		) {
-			return 'Gjenoppretting av Nav CV vil ikke fungere om person mangler oppføring i Arbeidssøkerregisteret og Arena.'
+			return 'Gjenoppretting av Nav CV vil ikke fungere om person mangler oppføring i Arbeidssøkerregisteret.'
 		}
 		return null
 	}

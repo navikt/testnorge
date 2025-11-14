@@ -22,14 +22,15 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
+    implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.kafka:spring-kafka"
     implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
 
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.cloud:spring-cloud-vault-config-databases"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"

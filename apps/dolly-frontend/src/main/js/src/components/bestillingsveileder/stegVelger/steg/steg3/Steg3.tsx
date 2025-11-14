@@ -54,7 +54,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 		if (!values) {
 			return false
 		}
-		return values.dokarkiv || values.instdata || values.arenaforvalter || values.pensjonforvalter
+		return values.dokarkiv || values.instdata || values.arenaforvalter
 	}
 
 	useEffect(() => {
@@ -66,7 +66,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 			formMethods.setValue('environments', alleredeValgtMiljoe())
 		} else if (erQ1EllerQ2MiljoeAvhengig(formMethods.getValues())) {
 			formMethods.setValue('environments', ['q1', 'q2'])
-		} else if (formMethods.getValues()?.sykemelding) {
+		} else if (formMethods.getValues()?.sykemelding || formMethods.getValues()?.pensjonforvalter) {
 			formMethods.setValue('environments', ['q1'])
 		} else if (!formMethods.getValues()?.environments) {
 			formMethods.setValue('environments', [])

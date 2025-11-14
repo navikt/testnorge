@@ -1,4 +1,4 @@
-export const mergeMiljoData = (data: any[]) => {
+export const mergeMiljoData = (data: any[], bestilteMiljoer: string[] | undefined) => {
 	const mergeMiljo: any[] = []
 	data?.forEach((item) => {
 		const indexOfMiljo = mergeMiljo.findIndex((i) => i?.miljo === item?.miljo)
@@ -9,6 +9,11 @@ export const mergeMiljoData = (data: any[]) => {
 				data: [item.data],
 				miljo: item.miljo,
 			})
+		}
+	})
+	bestilteMiljoer?.forEach((miljo) => {
+		if (!mergeMiljo?.find((i) => i?.miljo === miljo)) {
+			mergeMiljo.push({ data: null, miljo: miljo })
 		}
 	})
 	return mergeMiljo

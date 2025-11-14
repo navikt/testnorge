@@ -39,6 +39,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .retrieve()
                 .bodyToFlux(PdlBestillingResponse.class)
+                .timeout(TIMEOUT)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                         .id(id)
                         .status(PdlStatus.OK)
