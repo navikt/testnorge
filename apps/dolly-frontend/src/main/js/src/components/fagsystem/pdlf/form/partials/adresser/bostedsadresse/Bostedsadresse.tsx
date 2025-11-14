@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -20,8 +20,8 @@ import {
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
@@ -184,7 +184,7 @@ export const BostedsadresseForm = ({
 }
 
 export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 

@@ -5,7 +5,6 @@ import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/uti
 import { v4 as uuid } from 'uuid'
 import * as _ from 'lodash-es'
 import { Logger } from '@/logger/Logger'
-import { BVOptions } from '@/components/bestillingsveileder/options/options'
 
 export const actions = createActions(
 	{
@@ -33,59 +32,65 @@ export default handleActions(
 	initialState,
 )
 
-const trackBestilling = (values) => {
+export interface SendBestillingOptions {
+	is: { [key: string]: boolean }
+	personFoerLeggTil?: any
+	identMaster?: string
+	importPersoner?: { ident: string }[]
+}
+
+const trackBestilling = (values: Record<string, any>) => {
 	const _uuid = uuid()
 	Object.keys(values)
 		.filter((key) => rootPaths.find((value) => value === key))
 		.forEach((key) => {
-			Logger.trace({
-				event: 'Bestilling av omraade: ' + key,
-				uuid: _uuid,
-			})
+			Logger.trace({ event: 'Bestilling av omraade', message: key, uuid: _uuid })
 		})
 }
 
 /**
  * Sender de ulike bestillingstypene fra Bestillingsveileder
  */
-export const sendBestilling = (values, options, gruppeId, navigate) => async (dispatch) => {
-	const opts = BVOptions(options, gruppeId, values.environments)
-	const valgtGruppe = values?.gruppeId || gruppeId
-	let bestillingAction
+export const sendBestilling =
+	(values: any, options: SendBestillingOptions, gruppeId: any, navigate: (url: string) => void) =>
+	async (dispatch: any) => {
+		const opts = options
+		const valgtGruppe = values?.gruppeId || gruppeId
+		let bestillingAction
 
-	if (opts.is.leggTil) {
-		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
-		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
-	} else if (opts.is.leggTilPaaGruppe) {
-		bestillingAction = actions.postBestillingLeggTilPaaGruppe(valgtGruppe, values)
-	} else if (opts.is.opprettFraIdenter) {
-		bestillingAction = actions.postBestillingFraEksisterendeIdenter(valgtGruppe, values)
-	} else if (opts.is.importTestnorge) {
-		values = Object.assign({}, values, {
-			identer: opts.importPersoner.map((person) => person.ident),
-			environments: values.environments || [],
-		})
-		bestillingAction = actions.postTestnorgeBestilling(values.valgtGruppe, values)
-	} else if (values.organisasjon) {
-		trackBestilling(values)
-		bestillingAction = actions.postOrganisasjonBestilling(values)
-	} else {
-		trackBestilling(values)
-		bestillingAction = actions.postBestilling(valgtGruppe, values)
+		if (opts.is.leggTil) {
+			const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
+			bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
+		} else if (opts.is.leggTilPaaGruppe) {
+			bestillingAction = actions.postBestillingLeggTilPaaGruppe(valgtGruppe, values)
+		} else if (opts.is.opprettFraIdenter) {
+			bestillingAction = actions.postBestillingFraEksisterendeIdenter(valgtGruppe, values)
+		} else if (opts.is.importTestnorge) {
+			values = Object.assign({}, values, {
+				identer: (options.importPersoner || []).map((person: { ident: string }) => person.ident),
+				environments: values.environments || [],
+			})
+			bestillingAction = actions.postTestnorgeBestilling(values.valgtGruppe, values)
+		} else if (values.organisasjon) {
+			trackBestilling(values)
+			bestillingAction = actions.postOrganisasjonBestilling(values)
+		} else {
+			trackBestilling(values)
+			bestillingAction = actions.postBestilling(valgtGruppe, values)
+		}
+
+		const response = await dispatch(bestillingAction)
+
+		//IF ALL IS GOOD - REDIRECT
+		const res = _.get(response, 'action.payload.data', null)
+		const type = _.get(response, 'action.type', null)
+		if (res.error) {
+			dispatch(actions.bestillingFeilet(res))
+		} else if (type.includes('OrganisasjonBestilling')) {
+			navigate(`/organisasjoner`)
+		} else if (opts.is.importTestnorge) {
+			navigate(`/gruppe/${valgtGruppe}`)
+		} else {
+			navigate(`/gruppe/${valgtGruppe}`)
+		}
 	}
-
-	const response = await dispatch(bestillingAction)
-
-	//IF ALL IS GOOD - REDIRECT
-	const res = _.get(response, 'action.payload.data', null)
-	const type = _.get(response, 'action.type', null)
-	if (res.error) {
-		dispatch(actions.bestillingFeilet(res))
-	} else if (type.includes('OrganisasjonBestilling')) {
-		navigate(`/organisasjoner`)
-	} else if (opts.is.importTestnorge) {
-		navigate(`/gruppe/${valgtGruppe}`)
-	} else {
-		navigate(`/gruppe/${valgtGruppe}`)
-	}
-}

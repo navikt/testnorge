@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import * as _ from 'lodash-es'
 import {
 	getInitialOppholdsadresse,
@@ -23,8 +23,8 @@ import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partia
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -169,7 +169,7 @@ export const OppholdsadresseForm = ({
 }
 
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (

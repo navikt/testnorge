@@ -52,7 +52,13 @@ export const DollyModal: React.FC<DollyModalProps> = ({
 	}, [isOpen, width, minWidth, overflow])
 
 	return (
-		<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>
+		<Modal
+			isOpen={isOpen}
+			shouldCloseOnEsc
+			onRequestClose={closeModal}
+			style={customStyles}
+			ariaHideApp={process.env.NODE_ENV === 'test' ? false : undefined}
+		>
 			<div className="dollymodal">
 				{children}
 				{!noCloseButton && <CloseButton onClick={closeModal} />}

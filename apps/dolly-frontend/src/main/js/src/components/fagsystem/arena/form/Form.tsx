@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import * as _ from 'lodash-es'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -10,8 +10,8 @@ import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/Al
 import { validation } from '@/components/fagsystem/arena/form/validation'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 
@@ -19,7 +19,7 @@ export const arenaPath = 'arenaforvalter'
 
 export const ArenaForm = () => {
 	const formMethods = useFormContext()
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const leggTilPaaGruppe = opts?.is?.leggTilPaaGruppe
 
 	const servicebehovAktiv = formMethods.watch(`${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'

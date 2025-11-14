@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import * as _ from 'lodash-es'
 import {
 	getInitialKontaktadresse,
@@ -27,8 +27,8 @@ import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
@@ -169,7 +169,7 @@ export const KontaktadresseForm = ({
 }
 
 export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (

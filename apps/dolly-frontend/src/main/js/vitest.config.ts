@@ -11,11 +11,26 @@ export default defineConfig({
 		},
 	},
 	plugins: [react()],
+	optimizeDeps: {
+		include: [
+			'react-dom/client',
+			'redux',
+			'redux-thunk',
+			'redux-promise-middleware',
+			'history',
+			'react-toastify',
+			'@navikt/ds-icons',
+			'@testing-library/user-event',
+		],
+	},
 	test: {
 		environment: 'jsdom',
 		globals: true,
-		root: '__tests__',
 		setupFiles: ['./vitest.setup.ts'],
+		include: ['**/__tests__/**/*.test.{ts,tsx}'],
+		deps: {
+			inline: ['@testing-library/user-event'],
+		},
 		browser: {
 			enabled: true,
 			provider: playwright(),

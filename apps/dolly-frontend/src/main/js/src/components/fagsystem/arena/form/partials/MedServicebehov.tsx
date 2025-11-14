@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -6,8 +6,8 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import * as _ from 'lodash-es'
 import { Alert } from '@navikt/ds-react'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 const errorPaths = [
@@ -21,7 +21,7 @@ const feilmelding67 = 'Person kan ikke ha vedtak etter fylte 67 år. '
 const feilmeldingFiks =
 	'Vennligst endre vedtaksperioden eller sett en spesifikk alder/fødsel på person for å unngå denne feilen.'
 
-const getFeilmelding = (formMethods) => {
+const getFeilmelding = (formMethods: any) => {
 	let melding = ''
 	let har25Feil = false
 	let har67Feil = false
@@ -38,14 +38,14 @@ const getFeilmelding = (formMethods) => {
 	return melding ? melding + feilmeldingFiks : null
 }
 
-export const MedServicebehov = ({ formMethods, path }) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path: string }) => {
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const { arenaforvalter } = formMethods.getValues()
 	const feilmelding = getFeilmelding(formMethods)
 
 	return (
 		<React.Fragment>
-			{!opts.is.leggTil && !opts.is.importTestnorge && feilmelding && (
+			{!opts?.is?.leggTil && !opts?.is?.importTestnorge && feilmelding && (
 				<Alert variant={'warning'} style={{ marginBottom: '20px' }}>
 					{feilmelding}
 				</Alert>
@@ -57,7 +57,7 @@ export const MedServicebehov = ({ formMethods, path }) => {
 					options={Options('kvalifiseringsgruppe')}
 					size="xlarge"
 				/>
-				{!opts.personFoerLeggTil?.arenaforvalteren && (
+				{!opts.personFoerLeggTil?.arenaforvalter && (
 					<FormDatepicker
 						name={`${path}.aktiveringDato`}
 						label="Aktiveringsdato"
@@ -81,10 +81,7 @@ export const MedServicebehov = ({ formMethods, path }) => {
 			)}
 
 			{arenaforvalter.dagpenger && (
-				<Kategori
-					hjelpetekst={'Foreløpig er kun ordinære dagpenger støttet'}
-					title="Dagpengevedtak"
-				>
+				<Kategori title="Dagpengevedtak">
 					<div className="flexbox--flex-wrap">
 						<FormSelect
 							name={`${path}.dagpenger[0].rettighetKode`}

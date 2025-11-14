@@ -129,6 +129,46 @@ export const brukerOrganisasjonMalerMock = {
 	},
 }
 
+export const tenorSearchTestdataMock = {
+	status: 'OK',
+	data: {
+		treff: 1,
+		rader: 1,
+		offset: 0,
+		nesteSide: null,
+		seed: 1111,
+		dokumentListe: [
+			{
+				identifikator: ['12121212345'],
+				identifikatorType: ['foedselsnummer'],
+				id: '12121212345',
+				visningnavn: 'TESTE TESTESEN',
+			},
+		],
+	},
+	query: 'identifikator:12121212345',
+}
+
+export const tenorSearchOversiktMock = {
+	status: 'OK',
+	data: {
+		treff: 1,
+		rader: 1,
+		offset: 0,
+		nesteSide: 1,
+		seed: 1111,
+		personer: [
+			{
+				id: '12121212345',
+				fornavn: 'TESTESEN',
+				etternavn: 'TESTE',
+				tenorRelasjoner: ['Freg'],
+				ibruk: false,
+			},
+		],
+	},
+}
+
 export const organisasjonerForBrukerMock = [
 	{
 		id: 1,

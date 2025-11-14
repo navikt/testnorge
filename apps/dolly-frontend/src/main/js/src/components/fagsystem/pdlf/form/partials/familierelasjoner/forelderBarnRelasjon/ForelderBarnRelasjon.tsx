@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
@@ -20,14 +20,14 @@ import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 interface ForelderForm {
 	formMethods: UseFormReturn
-	path?: string
+	path: string
 	idx?: number
 	eksisterendeNyPerson?: any
 	identtype?: string
@@ -52,14 +52,15 @@ export const ForelderBarnRelasjonForm = ({
 	identtype,
 	ident,
 }: ForelderForm) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	const antall = opts?.antall || 1
 	const identMaster = opts?.identMaster || 'PDLF'
 
-	const [erBarn, setErBarn] = useState(
-		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
-	)
+	const initialRelatertRollePath = path
+		? formMethods.watch(`${path}.relatertPersonsRolle`)
+		: undefined
+	const [erBarn, setErBarn] = useState(initialRelatertRollePath === RELASJON_BARN)
 
 	const relatertPerson = 'relatertPerson'
 	const nyRelatertPerson = 'nyRelatertPerson'
@@ -140,15 +141,16 @@ export const ForelderBarnRelasjonForm = ({
 		<div className="flexbox--flex-wrap">
 			<div className="toggle--wrapper">
 				<ToggleGroup
-					onChange={(value: string) => {
-						setRelatertPersonsRolle(value)
+					onChange={(value) => {
+						const v = (value as any) || ''
+						setRelatertPersonsRolle(v)
 						formMethods.setValue(
 							path,
-							value === RELASJON_BARN
+							v === RELASJON_BARN
 								? { ...getInitialBarn(initiellMaster), id: id }
 								: { ...getInitialForelder(initiellMaster), id: id },
 						)
-						setErBarn(value === RELASJON_BARN)
+						setErBarn(v === RELASJON_BARN)
 						formMethods.trigger(path)
 					}}
 					size={'small'}
@@ -164,7 +166,7 @@ export const ForelderBarnRelasjonForm = ({
 				</ToggleGroup>
 			</div>
 			<div className="flexbox--flex-wrap">
-				{erBarn && <BarnRelasjon formMethods={formMethods} path={path} />}
+				{erBarn && path && <BarnRelasjon formMethods={formMethods} path={path} />}
 				{!erBarn && (
 					<>
 						<FormSelect
@@ -187,11 +189,11 @@ export const ForelderBarnRelasjonForm = ({
 					name={`${path}.typeForelderBarn`}
 					label={erBarn ? 'Type barn' : 'Type forelder'}
 					options={typeAnsvarlig}
-					onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
+					onChange={(target: Target) => handleChangeTypeForelderBarn(target, path!)}
 					size="medium"
-					vis={!testnorgePerson}
 					info={
-						opts?.antall > 1 && '"Eksisterende person" er tilgjengelig for individ, ikke for gruppe'
+						(opts?.antall || 1) > 1 &&
+						'"Eksisterende person" er tilgjengelig for individ, ikke for gruppe'
 					}
 				/>
 			</div>
@@ -252,23 +254,17 @@ export const ForelderBarnRelasjonForm = ({
 				</div>
 			)}
 
-			<AvansertForm path={path} kanVelgeMaster={kanVelgeMaster} />
+			<AvansertForm path={path!} kanVelgeMaster={kanVelgeMaster} />
 		</div>
 	)
 }
 
 export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
-	const { identtype, identMaster, personFoerLeggTil } = useContext(
-		BestillingsveilederContext,
-	) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
+	const identtype = opts.identtype
+	const identMaster = opts.identMaster
+	const personFoerLeggTil = opts.personFoerLeggTil as any
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
-
-	const handleRemoveEntry = (idx: number) => {
-		const forelderBarnListe = formMethods.watch('pdldata.person.forelderBarnRelasjon')
-		const filterForelderBarnListe = forelderBarnListe?.filter((_, index) => index !== idx)
-		formMethods.setValue('pdldata.person.forelderBarnRelasjon', filterForelderBarnListe)
-		formMethods.trigger('pdldata.person.forelderBarnRelasjon')
-	}
 
 	return (
 		<FormDollyFieldArray
@@ -276,7 +272,6 @@ export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
 			header={'Relasjon'}
 			newEntry={getInitialBarn(initiellMaster)}
 			canBeEmpty={false}
-			handleRemoveEntry={handleRemoveEntry}
 		>
 			{(path: string, idx: number) => {
 				return (
@@ -284,7 +279,7 @@ export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
 						formMethods={formMethods}
 						path={path}
 						idx={idx}
-						ident={personFoerLeggTil?.pdl?.ident}
+						ident={(personFoerLeggTil as any)?.pdl?.ident}
 					/>
 				)
 			}}

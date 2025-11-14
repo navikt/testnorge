@@ -1,6 +1,6 @@
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import React, { BaseSyntheticEvent, useContext, useEffect, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, useEffect, useRef, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import Digitalinnsending from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
@@ -10,9 +10,10 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { useDokumenterFraMal } from '@/utils/hooks/useDokumenter'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form'
 
 type Skjema = {
 	data: string
@@ -27,9 +28,29 @@ enum Kodeverk {
 	BEHANDLINGSTEMA = 'Behandlingstema',
 }
 
-export const Dokument = ({ path, formMethods, digitalInnsending }) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const malId = opts?.mal?.id
+type DokumentProps = {
+	path: string
+	formMethods: UseFormReturn
+	digitalInnsending?: boolean
+}
+
+type Dokumentvariant = {
+	filtype: string
+	fysiskDokument: string | ArrayBuffer | undefined
+	variantformat: string
+	/** optional referanse id fra mal */
+	dokumentReferanse?: string
+}
+
+type DokumentObjekt = {
+	tittel: string
+	brevkode: string
+	dokumentvarianter?: Dokumentvariant[]
+}
+
+export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps) => {
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
+	const malId = (opts?.mal as any)?.id
 	const {
 		dokumenter: dokumenterFraMal,
 		loading: loadingDokumenterFraMal,
@@ -44,17 +65,21 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 	}, [dokumenterFraMal])
 
 	const [vedlegg, setVedlegg] = useState<FileObject[]>(formMethods.watch(`${path}.vedlegg`) || [])
-	const [dokumenter, setDokumenter] = useState(formMethods.watch(`${path}.dokumenter`))
-	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch(`${path}.skjema`))
+	const [dokumenter, setDokumenter] = useState<DokumentObjekt[]>(
+		formMethods.watch(`${path}.dokumenter`) || [],
+	)
+	const [skjemaValues, setSkjemaValues] = useState<Skjema | undefined>(
+		formMethods.watch(`${path}.skjema`),
+	)
 
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
 
 	useEffect(() => {
-		if (dokumenterFraMal !== prevDokumenterFraMal && dokumenterFraMal?.length > 0) {
-			const vedleggFraMal = []
-			dokumenterFraMal.forEach((malDokument: any) => {
-				dokumenter?.forEach((dokument: any, idx: number) => {
-					dokument?.dokumentvarianter?.forEach((variant: any, idy: number) => {
+		if (dokumenterFraMal !== prevDokumenterFraMal && (dokumenterFraMal as any)?.length > 0) {
+			const vedleggFraMal: FileObject[] = []
+			;(dokumenterFraMal as any)?.forEach((malDokument: any) => {
+				dokumenter?.forEach((dokument: DokumentObjekt, idx: number) => {
+					dokument?.dokumentvarianter?.forEach((variant: Dokumentvariant, idy: number) => {
 						if (variant?.dokumentReferanse === malDokument?.id) {
 							formMethods.setValue(
 								`${path}.dokumenter[${idx}].dokumentvarianter[${idy}].fysiskDokument`,
@@ -63,10 +88,12 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 						}
 					})
 				})
-				setDokumenter(formMethods.watch(`${path}.dokumenter`))
+				setDokumenter(formMethods.watch(`${path}.dokumenter`) || [])
 
-				const fileName = dokumenter?.find((dok) =>
-					dok?.dokumentvarianter?.find((variant) => variant.dokumentReferanse === malDokument.id),
+				const fileName = dokumenter?.find((dok: DokumentObjekt) =>
+					dok?.dokumentvarianter?.find(
+						(variant: Dokumentvariant) => variant.dokumentReferanse === malDokument.id,
+					),
 				)?.tittel
 				if (fileName) {
 					vedleggFraMal.push({
@@ -101,7 +128,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 		setSkjemaValues(skjema)
 		formMethods.setValue(`${path}.tittel`, skjema.data)
 		formMethods.setValue(`${path}.skjema`, skjema)
-		formMethods.watch(`${path}.dokumenter`)?.forEach((dokument: any, idx: number) => {
+		formMethods.watch(`${path}.dokumenter`)?.forEach((dokument: DokumentObjekt, idx: number) => {
 			formMethods.setValue(`${path}.dokumenter[${idx}].brevkode`, skjema.value)
 			if (!dokument?.tittel) {
 				formMethods.setValue(`${path}.dokumenter[${idx}].tittel`, skjema.data)
@@ -120,7 +147,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 
 	const handleSelectFiles = (selectedFiles: File[]) => {
 		const dokumenterIsEmpty = dokumenter?.length === 1 && !dokumenter[0]?.dokumentvarianter
-		const newDokumenter = dokumenterIsEmpty ? [] : [...dokumenter]
+		const newDokumenter: DokumentObjekt[] = dokumenterIsEmpty ? [] : [...dokumenter]
 
 		selectedFiles.forEach((file: File) => {
 			const reader = new FileReader()
@@ -128,12 +155,12 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {
 				const binaryStr = reader.result?.slice(28)
-				const dokumentvariant = {
+				const dokumentvariant: Dokumentvariant = {
 					filtype: 'PDFA',
 					fysiskDokument: binaryStr,
 					variantformat: 'ARKIV',
 				}
-				const newDokument = {
+				const newDokument: DokumentObjekt = {
 					tittel: file.name,
 					brevkode: skjemaValues?.value || '',
 					dokumentvarianter: [dokumentvariant],
@@ -147,12 +174,14 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 
 	const handleDeleteFile = (file: FileObject) => {
 		setVedlegg(vedlegg.filter((f) => f !== file))
-		const filtrerteDokumenter = dokumenter
-		const index = filtrerteDokumenter.findIndex((d) => d.tittel === file.file.name)
-		filtrerteDokumenter.splice(index, 1)
-		setDokumenter(filtrerteDokumenter)
-		formMethods.setValue(`${path}.dokumenter`, filtrerteDokumenter)
-		formMethods.trigger(`${path}.dokumenter`)
+		const filtrerteDokumenter: DokumentObjekt[] = [...dokumenter]
+		const index = filtrerteDokumenter.findIndex((d: DokumentObjekt) => d.tittel === file.file.name)
+		if (index >= 0) {
+			filtrerteDokumenter.splice(index, 1)
+			setDokumenter(filtrerteDokumenter)
+			formMethods.setValue(`${path}.dokumenter`, filtrerteDokumenter)
+			formMethods.trigger(`${path}.dokumenter`)
+		}
 	}
 
 	const harFagsak = formMethods.watch(`${path}.sak.sakstype`) === 'FAGSAK'
@@ -243,19 +272,14 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 				)}
 				{vedlegg?.length > 0 && (
 					<VStack gap="2">
-						<Heading level="3" size="xsmall">
-							{`Vedlegg (${vedlegg?.length})`}
-						</Heading>
+						<Heading level="3" size="xsmall">{`Vedlegg (${vedlegg?.length})`}</Heading>
 						<VStack as="ul" gap="3">
 							{vedlegg?.map((file, idx) => (
 								<FileUpload.Item
 									as="li"
 									key={file?.file?.name + idx}
 									file={file?.file}
-									button={{
-										action: 'delete',
-										onClick: () => handleDeleteFile(file),
-									}}
+									button={{ action: 'delete', onClick: () => handleDeleteFile(file) }}
 								/>
 							))}
 						</VStack>

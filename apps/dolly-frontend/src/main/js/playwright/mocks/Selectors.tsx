@@ -118,7 +118,6 @@ export enum TestComponentSelectors {
 	CONTAINER_FINN_PERSON_BESTILLING = 'container-finn-person-bestilling',
 	CONTAINER_DOLLY_TABLE = 'container-dolly-table',
 	LOADING_INFOSTRIPER = 'loading-infostriper',
-	PANEL_ADRESSE = 'panel-adresse',
-	ATTRIBUTT_KONTAKTADRESSE = 'attributt-kontaktadresse',
 	ADRESSETYPE_KONTAKTADRESSE = 'select-kontaktadresse-adressetype',
+	VALUES_FORM_STATE = 'values-form-state',
 }
