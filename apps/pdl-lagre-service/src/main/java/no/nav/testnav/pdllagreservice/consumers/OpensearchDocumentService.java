@@ -37,7 +37,8 @@ public class OpensearchDocumentService {
         }
 
         if (nonNull(response)) {
-            log.info("Bulk response status: errors={}, items={}", response.errors(), response.items().size());
+            log.info("Bulk response status: errors: {}, items: {}, took: {}",
+                    response.errors(), response.items().size(), response.took());
 
         } else {
             log.error("Bulk response is null");
@@ -45,7 +46,9 @@ public class OpensearchDocumentService {
     }
 
     private BulkRequest buildBulkRequest(List<OpensearchDocumentData> documents) {
-        BulkRequest.Builder builder = new BulkRequest.Builder();
+
+        val builder = new BulkRequest.Builder()
+                .index(documents.getFirst().getIndex());
 
         for (val doc : documents) {
             builder.operations(op -> {
