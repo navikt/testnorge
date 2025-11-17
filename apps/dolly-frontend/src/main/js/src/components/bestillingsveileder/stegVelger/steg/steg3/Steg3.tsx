@@ -65,7 +65,9 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 			formMethods.setValue('environments', alleredeValgtMiljoe())
 		} else if (erQ1EllerQ2MiljoeAvhengig(formMethods.getValues())) {
 			formMethods.setValue('environments', ['q1', 'q2'])
-		} else if (formMethods.getValues()?.sykemelding || formMethods.getValues()?.pensjonforvalter) {
+		} else if (formMethods.getValues()?.pensjonforvalter) {
+			formMethods.setValue('environments', ['q2'])
+		} else if (formMethods.getValues()?.sykemelding) {
 			formMethods.setValue('environments', ['q1'])
 		} else if (!formMethods.getValues()?.environments) {
 			formMethods.setValue('environments', [])
