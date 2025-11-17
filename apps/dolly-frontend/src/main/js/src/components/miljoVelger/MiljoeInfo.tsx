@@ -15,7 +15,7 @@ export const gyldigeDollyMiljoer = (dollymiljoer: any) => {
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
-	const pensjonEnvironments = ['q1']
+	const pensjonEnvironments = ['q2']
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
 	const { instdata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } = bestillingsdata
