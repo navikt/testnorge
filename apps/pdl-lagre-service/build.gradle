@@ -1,0 +1,40 @@
+plugins {
+    id "dolly-apps"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-pdl-lagre-service"
+        property "sonar.projectName", "testnav-pdl-lagre-service"
+    }
+}
+
+dependencies {
+    implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
+    implementation "org.springframework.kafka:spring-kafka"
+    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
+
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+
+    implementation 'org.springframework.retry:spring-retry'
+
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation 'org.aspectj:aspectjweaver:1.9.22'
+
+    implementation ("org.opensearch.client:spring-data-opensearch-starter:1.8.2") {
+        exclude group: "org.opensearch.client", module: "opensearch-rest-high-level-client"
+    }
+
+    implementation 'org.opensearch.client:opensearch-java:2.26.0'
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
+
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.21.0'
+
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+}
