@@ -68,6 +68,9 @@ jobs:
           git config user.email "dolly@nav.no"
           git config user.name "github-actions"
 
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "Current branch: $BRANCH_NAME"
+
           PACKAGE_NAME=$(npm pkg get name | sed "s/[\"']//g")
           CURRENT_VERSION=$(npm pkg get version | sed "s/[\"']//g")
           
@@ -94,8 +97,8 @@ jobs:
           npm publish
 
           echo "Pushing changes to remote..."
-          git pull --rebase origin master
-          git push origin master --follow-tags
+          git pull --rebase origin "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME" --follow-tags
           
           echo "Successfully published version $CURRENT_VERSION"
         working-directory: ${{ inputs.working-directory }}
