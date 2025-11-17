@@ -69,14 +69,27 @@ jobs:
           git config user.name "github-actions"
 
           BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           echo "Current branch: $BRANCH_NAME"
 
           PACKAGE_NAME=$(npm pkg get name | sed "s/[\"']//g")
           CURRENT_VERSION=$(npm pkg get version | sed "s/[\"']//g")
           
+          echo "Package: $PACKAGE_NAME"
+          echo "Current version in package.json: $CURRENT_VERSION"
           echo "Checking if version $CURRENT_VERSION is already published..."
+          
           if npm view "${PACKAGE_NAME}@${CURRENT_VERSION}" version >/dev/null 2>&1; then
-            echo "Version $CURRENT_VERSION already published; bumping patch version."
+            echo "Version $CURRENT_VERSION is already published."
+          
+            if [ "$BRANCH_NAME" = "master" ] && [[ ! "$COMMIT_MESSAGE" == *"#publish-libs"* ]]; then
+              echo "On master branch without #publish-libs flag and version already published."
+              echo "This likely means the version was already published from a feature branch."
+              echo "Skipping publish to avoid conflict."
+              exit 0
+            fi
+          
+            echo "Bumping patch version..."
             npm version patch --no-git-tag-version
             CURRENT_VERSION=$(npm pkg get version | sed "s/[\"']//g")
             echo "New version after bump: $CURRENT_VERSION"
