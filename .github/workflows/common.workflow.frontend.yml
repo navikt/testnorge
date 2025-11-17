@@ -27,10 +27,6 @@ on:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'idporten' environment on a commit to a non-master branch, e.g. #deploy-idporten-frontend."
         required: false
-      deploy-tag-unstable:
-        type: string
-        description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-unstable-frontend."
-        required: false
       force-deploy:
         type: boolean
         description: "Used to force deployment."
@@ -46,11 +42,6 @@ on:
         description: "Used to force deployment to idporten, only relevant for dolly-frontend. Make sure the working-directory contains a config.idporten.yml!"
         required: false
         default: false
-      force-deploy-unstable:
-        type: boolean
-        description: "Used to force deployment to unstable, only relevant for dolly-frontend. Make sure the working-directory contains a config.unstable.yml!"
-        required: false
-        default: false
       sonar-enabled:
         type: boolean
         description: "Whether to run SonarQube analysis or not."
@@ -64,8 +55,12 @@ on:
       SONAR_TOKEN:
         required: true
 
-jobs:
+permissions:
+  contents: read
+  packages: read
+  id-token: write
 
+jobs:
   start:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
@@ -80,7 +75,6 @@ jobs:
       do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
       do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-test != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
       do-deploy-idporten: ${{ inputs.force-deploy-idporten || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-idporten != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten))) }}
-      do-deploy-unstable: ${{ inputs.force-deploy-unstable || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-unstable != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable))) }}
       artifact: ${{ github.run_id }}-failure
 
   build:
@@ -90,53 +84,67 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: "Setup (Node)"
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@navikt'
+          cache: 'npm'
+          cache-dependency-path: ${{ inputs.working-directory }}/src/main/js/package-lock.json
+
       - name: "Install (Node)"
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
       - name: "Build (Node)"
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm run build
+
       - name: "Move (Node)"
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: mv build ../resources/static
-      - name: "Java"
+
+      - name: "Setup (Java)"
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 21
-      - name: "Gradle"
+
+      - name: "Setup (Gradle)"
         id: gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
+          gradle-home-cache-cleanup: true
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: "Build"
+
+      - name: "Build (Gradle)"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || '' }} --scan
+        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || '' }} --scan --no-daemon
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: "Reporting"
+
+      - name: "Upload test reports"
         if: failure() && steps.gradle.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ needs.start.outputs.artifact}}
+          name: test-reports-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ inputs.working-directory }}/build/reports
           retention-days: 7
-      - name: "Docker"
+          if-no-files-found: warn
+
+      - name: "Build and push Docker image"
         id: docker-build-push
         if: |
-          needs.start.outputs.do-deploy-unstable == 'true' ||
           needs.start.outputs.do-deploy-idporten == 'true' ||
           needs.start.outputs.do-deploy-test == 'true' ||
           needs.start.outputs.do-deploy == 'true'
@@ -151,11 +159,18 @@ jobs:
   deploy:
     needs: [ start, build ]
     if: needs.start.outputs.do-deploy == 'true'
-    concurrency: ${{ inputs.image-suffix }}
+    concurrency:
+      group: ${{ inputs.image-suffix }}-deploy
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            ${{ inputs.working-directory }}/config.yml
+          sparse-checkout-cone-mode: false
+
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v2
         env:
@@ -166,11 +181,18 @@ jobs:
   deploy-test:
     needs: [ start, build ]
     if: needs.start.outputs.do-deploy-test == 'true'
-    concurrency: ${{ inputs.image-suffix }}-test
+    concurrency:
+      group: ${{ inputs.image-suffix }}-test-deploy
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            ${{ inputs.working-directory }}/config.test.yml
+          sparse-checkout-cone-mode: false
+
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v2
         env:
@@ -178,34 +200,24 @@ jobs:
           RESOURCE: "${{ inputs.working-directory }}/config.test.yml"
           VAR: image=${{ needs.build.outputs.image }}
 
-  # Only used by dolly-frontend.
   deploy-idporten:
     needs: [ start, build ]
     if: needs.start.outputs.do-deploy-idporten == 'true'
-    concurrency: ${{ inputs.image-suffix }}-idporten
+    concurrency:
+      group: ${{ inputs.image-suffix }}-idporten-deploy
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            ${{ inputs.working-directory }}/config.idporten.yml
+          sparse-checkout-cone-mode: false
+
       - name: "Deploy (idporten)"
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: "${{ inputs.working-directory }}/config.idporten.yml"
-          VAR: image=${{ needs.build.outputs.image }}
-
-  # Only used by dolly-frontend.
-  deploy-unstable:
-    needs: [ start, build ]
-    if: needs.start.outputs.do-deploy-unstable == 'true'
-    concurrency: ${{ inputs.image-suffix }}-unstable
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
-      - name: "Deploy (unstable)"
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: "${{ inputs.working-directory }}/config.unstable.yml"
           VAR: image=${{ needs.build.outputs.image }}
