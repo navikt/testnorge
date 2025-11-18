@@ -14,7 +14,7 @@ export interface BestillingsveilederContextType {
 	updateContext?: (patch: Partial<BestillingsveilederContextType>) => void
 	id2032?: boolean
 	importPersoner?: any[]
-	idligereBestillinger?: any[]
+	tidligereBestillinger?: any[]
 	opprettFraIdenter?: string[]
 	mal?: { malNavn?: string; [key: string]: any }
 	is?: {
