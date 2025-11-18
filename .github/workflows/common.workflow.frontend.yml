@@ -137,7 +137,7 @@ jobs:
         if: failure() && steps.gradle.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports-${{ github.run_id }}-${{ github.run_attempt }}
+          name: test-reports-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
           path: ${{ inputs.working-directory }}/build/reports
           retention-days: 7
           if-no-files-found: warn
