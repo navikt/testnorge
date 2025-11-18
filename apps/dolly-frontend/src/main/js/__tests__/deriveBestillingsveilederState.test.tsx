@@ -53,6 +53,7 @@ describe('deriveBestillingsveilederState', () => {
 		expect(state.is.importTestnorge).toBe(true)
 		expect(state.initialValues.importPersoner).toEqual(importPersoner)
 		expect(state.initialValues.pdldata).toBeUndefined()
+		expect(state.antall).toBe(2)
 	})
 
 	it('should sanitize pdldata for IMPORT_TESTNORGE with mal', () => {

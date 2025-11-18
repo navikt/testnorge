@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect, useState } from 'react'
+import React, { Suspense, useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -31,8 +31,9 @@ import Steg1 from './steg/steg1/Steg1'
 import Steg2 from './steg/steg2/Steg2'
 import Steg3 from './steg/steg3/Steg3'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
-import * as _ from 'lodash-es'
-import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
+import { useMalFormSync } from './hooks/useMalFormSync'
+import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
+import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
 
 interface StepDef {
 	component: React.ComponentType<any>
@@ -90,77 +91,31 @@ export const StegVelger = ({
 
 	const isLastStep = () => step === STEPS.length - 1
 
-	const validateForm = () => {
-		formMethods.trigger(validationPaths).then(() => {
-			const errors = formMethods.formState.errors
-			const errorFelter = Object.keys(errors)
-			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
-			const hasSteg0Error =
-				_.has(errors, 'gruppeId') ||
-				_.has(errors, 'antall') ||
-				_.has(errors, 'pdldata.opprettNyPerson.identtype')
-			if (hasSteg0Error) {
-				errorContext?.setShowError(true)
-				return
-			}
-			if (errorFelter.length > 0 && STEPS[step].component === Steg2 && !kunEnvironmentError) {
-				console.warn('Feil i form, stopper navigering videre')
-				console.error(formMethods.formState.errors)
-				errorContext?.setShowError(true)
-				return
-			}
-			setStep(step + 1)
-		})
-	}
+	const validationHelpers = { formMethods, errorContext, validationPaths }
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		const isSteg0 = STEPS[step].component === Steg0
+		const isSteg2 = STEPS[step].component === Steg2
+
 		if (isSteg0) {
-			formMethods.trigger(['gruppeId']).then((validGruppe) => {
-				if (!validGruppe) {
-					errorContext?.setShowError(true)
-					return
-				}
-				if ((STEPS[step].component === Steg2 || STEPS[step].component === Steg0) && formMutate) {
-					formMethods.clearErrors(manualMutateFields)
-					errorContext?.setShowError(true)
-					setMutateLoading(true)
-					formMutate?.()
-						.then((response: any) => {
-							setMutateLoading(false)
-							if (response?.status === 'INVALID') {
-								return
-							}
-							validateForm()
-						})
-						.catch(() => {
-							setMutateLoading(false)
-							validateForm()
-						})
-				} else {
-					validateForm()
-				}
-			})
-			return
+			const validGruppe = await formMethods.trigger(['gruppeId'])
+			if (!validGruppe) {
+				errorContext?.setShowError(true)
+				return
+			}
 		}
-		if ((STEPS[step].component === Steg2 || STEPS[step].component === Steg0) && formMutate) {
-			formMethods.clearErrors(manualMutateFields)
-			errorContext?.setShowError(true)
-			setMutateLoading(true)
-			formMutate?.()
-				.then((response: any) => {
-					setMutateLoading(false)
-					if (response?.status === 'INVALID') {
-						return
-					}
-					validateForm()
-				})
-				.catch(() => {
-					setMutateLoading(false)
-					validateForm()
-				})
+
+		if ((isSteg2 || isSteg0) && formMutate) {
+			await executeMutateAndValidate(
+				validationHelpers,
+				step,
+				setStep,
+				formMutate,
+				setMutateLoading,
+				manualMutateFields,
+			)
 		} else {
-			validateForm()
+			await validateAndNavigate(validationHelpers, step, setStep)
 		}
 	}
 
@@ -188,190 +143,9 @@ export const StegVelger = ({
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
-	const prevMalIdRef = React.useRef<string | undefined>(undefined)
-
-	const sanitizePdldata = (pdldata: any) => {
-		if (!pdldata || typeof pdldata !== 'object') return undefined
-		const { opprettNyPerson, ...rest } = pdldata
-		if (Object.keys(rest).length === 0) return undefined
-		return rest
-	}
-
-	useEffect(() => {
-		const currentMalId = context.mal?.id
-		const isNy = is.nyBestilling || is.nyBestillingFraMal
-		const isLeggTil = is.leggTil || is.leggTilPaaGruppe
-		const isImport = is.importTestnorge
-		const isFraIdenter = is.opprettFraIdenter
-
-		if (!currentMalId) {
-			if (prevMalIdRef.current) {
-				if (isNy) {
-					const cleaned = {
-						antall: 1,
-						beskrivelse: null as any,
-						pdldata: {
-							opprettNyPerson: {
-								identtype: 'FNR',
-								syntetisk: true,
-								id2032: false,
-							},
-						},
-						gruppeId: formMethods.getValues('gruppeId') || null,
-					}
-					formMethods.reset(cleaned)
-					context.setIdenttype && context.setIdenttype('FNR')
-					context.updateContext && context.updateContext({ identtype: 'FNR' })
-				} else {
-					const prevAntallRaw = formMethods.getValues('antall')
-					const prevAntall =
-						typeof prevAntallRaw === 'number' ? prevAntallRaw : parseInt(prevAntallRaw || '1', 10)
-					const baseline: any = {
-						gruppeId: formMethods.getValues('gruppeId') || null,
-						antall: prevAntall || 1,
-					}
-					if (isImport) baseline.importPersoner = formMethods.getValues('importPersoner') || []
-					if (isFraIdenter)
-						baseline.opprettFraIdenter = formMethods.getValues('opprettFraIdenter') || []
-					formMethods.reset(baseline)
-				}
-			}
-			prevMalIdRef.current = undefined
-			return
-		}
-
-		if (prevMalIdRef.current === currentMalId) return
-		prevMalIdRef.current = currentMalId
-
-		try {
-			const environments = formMethods.getValues('environments')
-			const malValues = initialValuesBasedOnMal(context.mal, environments)
-			let nextValues: any
-			if (isNy) {
-				nextValues = {
-					...malValues,
-					mal: currentMalId,
-				}
-			} else if (isLeggTil) {
-				const sanitized = sanitizePdldata(malValues.pdldata)
-				nextValues = {
-					gruppeId: formMethods.getValues('gruppeId') || null,
-					mal: currentMalId,
-					...malValues,
-					pdldata: sanitized,
-				}
-			} else if (isImport) {
-				const sanitized = sanitizePdldata(malValues.pdldata)
-				nextValues = {
-					gruppeId: formMethods.getValues('gruppeId') || null,
-					mal: currentMalId,
-					importPersoner: formMethods.getValues('importPersoner') || [],
-					...malValues,
-					pdldata: sanitized,
-				}
-			} else if (isFraIdenter) {
-				const sanitized = sanitizePdldata(malValues.pdldata)
-				nextValues = {
-					gruppeId: formMethods.getValues('gruppeId') || null,
-					mal: currentMalId,
-					opprettFraIdenter: formMethods.getValues('opprettFraIdenter') || [],
-					...malValues,
-					pdldata: sanitized,
-				}
-			} else {
-				nextValues = { ...malValues, mal: currentMalId }
-			}
-
-			const prevAntallRaw = formMethods.getValues('antall')
-			const prevAntall =
-				typeof prevAntallRaw === 'number' ? prevAntallRaw : parseInt(prevAntallRaw || '1', 10)
-			if (typeof nextValues.antall !== 'number') {
-				const malAntallRaw = malValues?.antall
-				const malAntall =
-					typeof malAntallRaw === 'number' ? malAntallRaw : parseInt(malAntallRaw || '', 10)
-				nextValues.antall = malAntall || prevAntall || 1
-			}
-
-			if (!isNy && nextValues.pdldata?.opprettNyPerson) {
-				delete nextValues.pdldata.opprettNyPerson
-				if (Object.keys(nextValues.pdldata).length === 0) {
-					delete nextValues.pdldata
-				}
-			}
-
-			formMethods.reset(nextValues)
-
-			if (isNy) {
-				const identtypeFraMal = _.get(malValues, 'pdldata.opprettNyPerson.identtype')
-				if (identtypeFraMal) {
-					context.setIdenttype && context.setIdenttype(identtypeFraMal)
-					context.updateContext && context.updateContext({ identtype: identtypeFraMal })
-				}
-				const id2032FraMal = _.get(malValues, 'pdldata.opprettNyPerson.id2032')
-				if (typeof id2032FraMal === 'boolean') {
-					formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032FraMal, {
-						shouldValidate: true,
-					})
-				}
-			}
-		} catch (e) {}
-	}, [
-		context.mal,
-		is.nyBestilling,
-		is.nyBestillingFraMal,
-		is.leggTil,
-		is.leggTilPaaGruppe,
-		is.importTestnorge,
-		is.opprettFraIdenter,
-	])
-
-	useEffect(() => {
-		if (
-			erOrganisasjon ||
-			is.leggTil ||
-			is.leggTilPaaGruppe ||
-			is.importTestnorge ||
-			is.opprettFraIdenter
-		)
-			return
-		const currentIdenttype = formMethods.getValues('pdldata.opprettNyPerson.identtype')
-		if (context.identtype && context.identtype !== currentIdenttype) {
-			formMethods.setValue('pdldata.opprettNyPerson.identtype', context.identtype, {
-				shouldValidate: true,
-			})
-		}
-	}, [
-		context.identtype,
-		erOrganisasjon,
-		is.leggTil,
-		is.leggTilPaaGruppe,
-		is.importTestnorge,
-		is.opprettFraIdenter,
-	])
-
-	useEffect(() => {
-		if (
-			erOrganisasjon ||
-			is.leggTil ||
-			is.leggTilPaaGruppe ||
-			is.importTestnorge ||
-			is.opprettFraIdenter
-		)
-			return
-		const currentId2032 = formMethods.getValues('pdldata.opprettNyPerson.id2032')
-		if (typeof context.id2032 === 'boolean' && context.id2032 !== currentId2032) {
-			formMethods.setValue('pdldata.opprettNyPerson.id2032', context.id2032, {
-				shouldValidate: true,
-			})
-		}
-	}, [
-		context.id2032,
-		erOrganisasjon,
-		is.leggTil,
-		is.leggTilPaaGruppe,
-		is.importTestnorge,
-		is.opprettFraIdenter,
-	])
+	useMalFormSync({ context, formMethods, is })
+	useIdenttypeSync({ context, formMethods, erOrganisasjon, is })
+	useId2032Sync({ context, formMethods, erOrganisasjon, is })
 
 	const malWatch = useWatch({ control: formMethods.control, name: 'mal' })
 	const identtypeWatch = useWatch({

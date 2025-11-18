@@ -55,9 +55,16 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 	const { currentBruker } = useCurrentBruker()
 
 	const { brukere, loading: loadingBrukere } = useMalbestillingOversikt()
-	const [bruker, setBruker] = useState(
-		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
-	)
+
+	const getInitialBruker = () => {
+		const storedBruker = formMethods.getValues('malBruker')
+		if (storedBruker) {
+			return storedBruker
+		}
+		return currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId
+	}
+
+	const [bruker, setBruker] = useState(getInitialBruker())
 
 	const { maler, loading: loadingMaler } = useMalbestillingBruker(bruker)
 
@@ -73,8 +80,14 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 			formMethods.setValue('gruppeId', gruppeId)
 			const identtype = _.get(mal.data, 'bestilling.pdldata.opprettNyPerson.identtype')
 			const id2032 = _.get(mal.data, 'bestilling.pdldata.opprettNyPerson.id2032')
-			if (identtype) formMethods.setValue('pdldata.opprettNyPerson.identtype', identtype)
-			if (id2032 !== undefined) formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032)
+			if (identtype) {
+				formMethods.setValue('pdldata.opprettNyPerson.identtype', identtype)
+				opts.updateContext && opts.updateContext({ identtype })
+			}
+			if (id2032 !== undefined) {
+				formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032)
+				opts.updateContext && opts.updateContext({ id2032 })
+			}
 		} else {
 			opts.setMal && opts.setMal(undefined)
 			formMethods.setValue('mal', null)
@@ -93,8 +106,14 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 		if (opts.mal) {
 			const identtype = _.get(opts.mal, 'bestilling.pdldata.opprettNyPerson.identtype')
 			const id2032 = _.get(opts.mal, 'bestilling.pdldata.opprettNyPerson.id2032')
-			if (identtype) formMethods.setValue('pdldata.opprettNyPerson.identtype', identtype)
-			if (id2032 !== undefined) formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032)
+			if (identtype) {
+				formMethods.setValue('pdldata.opprettNyPerson.identtype', identtype)
+				opts.updateContext && opts.updateContext({ identtype })
+			}
+			if (id2032 !== undefined) {
+				formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032)
+				opts.updateContext && opts.updateContext({ id2032 })
+			}
 		}
 	}, [opts.mal])
 
@@ -109,6 +128,7 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 
 	const handleBrukerChange = (event: { value: string }) => {
 		setBruker(event.value)
+		formMethods.setValue('malBruker', event.value)
 		formMethods.setValue('mal', null)
 	}
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
@@ -43,6 +43,7 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId: _gruppeId }: MalVe
 	const { maler, loading } = useDollyOrganisasjonMaler()
 	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal') || false)
+	const prevMalIdRef = useRef<string | undefined>(undefined)
 
 	const brukerOptions = getBrukerOptions(maler as any)
 	const malOptions = getMalOptions(maler as any, bruker)
@@ -64,8 +65,15 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId: _gruppeId }: MalVe
 	}
 
 	useEffect(() => {
-		formMethods.reset(opts.initialValues)
-	}, [opts.mal, opts.initialValues])
+		const currentMalId = opts.mal?.id
+
+		if (currentMalId && currentMalId !== prevMalIdRef.current) {
+			formMethods.reset(opts.initialValues)
+			prevMalIdRef.current = currentMalId
+		} else if (!currentMalId && prevMalIdRef.current) {
+			prevMalIdRef.current = undefined
+		}
+	}, [opts.mal?.id])
 
 	const handleBrukerChange = (event: { value: string }) => {
 		setBruker(event.value)

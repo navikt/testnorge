@@ -187,26 +187,38 @@ export const deriveBestillingsveilederState = (
 		[TYPE.NY_ORGANISASJON_FRA_MAL]: () => {
 			const malVals = initialValuesBasedOnMal(mal, environments)
 			const { pdldata: _ignorePdldata, ...rest } = malVals || {}
-			return {
+			const result = {
 				antall,
-				organisasjon: { enhetstype: '' },
 				...rest,
 				mal: mal.id,
 			}
+			if (!result.organisasjon) {
+				result.organisasjon = { enhetstype: '' }
+			} else if (result.organisasjon.enhetstype === undefined) {
+				result.organisasjon.enhetstype = ''
+			}
+			return result
 		},
 	}
 
+	const modesWithPdldata: Mode[] = [
+		TYPE.NY_BESTILLING,
+		TYPE.NY_BESTILLING_FRA_MAL,
+		TYPE.IMPORT_TESTNORGE,
+	]
 	const initialValues = builders[mode]()
-	if (![TYPE.NY_BESTILLING, TYPE.NY_BESTILLING_FRA_MAL, TYPE.IMPORT_TESTNORGE].includes(mode)) {
+	if (!modesWithPdldata.includes(mode)) {
 		if (initialValues.pdldata !== undefined) {
 			delete initialValues.pdldata
 		}
 	}
 	const effectiveTimedOut = timedOutFagsystemer ?? personFoerLeggTil?.timedOutFagsystemer
+	const effectiveAntall =
+		mode === TYPE.IMPORT_TESTNORGE && importPersoner ? importPersoner.length : antall
 	return {
 		initialValues,
 		gruppeId: gruppeId ?? null,
-		antall,
+		antall: effectiveAntall,
 		identtype,
 		id2032,
 		mal,
