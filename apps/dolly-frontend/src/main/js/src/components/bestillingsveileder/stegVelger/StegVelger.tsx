@@ -95,6 +95,7 @@ export const StegVelger = ({
 
 	const handleNext = async () => {
 		const isSteg0 = STEPS[step].component === Steg0
+		const isSteg1 = STEPS[step].component === Steg1
 		const isSteg2 = STEPS[step].component === Steg2
 
 		if (isSteg0) {
@@ -103,6 +104,12 @@ export const StegVelger = ({
 				errorContext?.setShowError(true)
 				return
 			}
+		}
+
+		if (isSteg1) {
+			errorContext?.setShowError(false)
+			setStep(step + 1)
+			return
 		}
 
 		if ((isSteg2 || isSteg0) && formMutate) {
