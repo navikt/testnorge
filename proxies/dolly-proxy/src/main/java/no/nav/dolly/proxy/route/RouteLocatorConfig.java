@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 class RouteLocatorConfig {
 
+    private final Aareg aareg;
     private final Batch batch;
     private final Brregstub brregstub;
     private final Ereg ereg;
@@ -30,6 +31,12 @@ class RouteLocatorConfig {
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
+                .route("aareg-read-q1", aareg.build(Aareg.SpecialCase.Q1, false))
+                .route("aareg-read-q2", aareg.build(Aareg.SpecialCase.Q2, false))
+                .route("aareg-read-q4", aareg.build(Aareg.SpecialCase.Q2, false))
+                .route("aareg-write-q1", aareg.build(Aareg.SpecialCase.Q1, true))
+                .route("aareg-write-q2", aareg.build(Aareg.SpecialCase.Q2, true))
+                .route("aareg-write-q4", aareg.build(Aareg.SpecialCase.Q2, true))
                 .route("batch", batch.build())
                 .route("brregstub", brregstub.build())
                 .route("ereg-q1", ereg.build(Ereg.SpecialCase.Q1))

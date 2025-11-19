@@ -40,6 +40,8 @@ app:
   fakedings:
     url: https://fakedings.intern.dev.nav.no
   targets:
+    aareg-services: https://aareg-services-%s.dev.intern.nav.no # Note replacement pattern.
+    aareg-vedlikehold: https://aareg-dolly-api-%s.intern.dev.nav.no # Note replacement pattern.
     batch: https://batch.adeo.no
     brregstub: http://brreg-stub.dolly
     ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.

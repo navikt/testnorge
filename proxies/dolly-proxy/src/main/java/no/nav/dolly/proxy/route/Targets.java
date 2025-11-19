@@ -15,6 +15,8 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter
 class Targets {
 
+    String aaregServices;
+    String aaregVedlikehold;
     String batch;
     String brregstub;
     String ereg;
