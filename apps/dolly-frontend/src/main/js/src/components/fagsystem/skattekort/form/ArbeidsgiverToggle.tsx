@@ -154,7 +154,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 							error={error}
 							loading={loading}
 							onTextBlur={(event) => {
-								formMethods.setValue(organisasjonPath, null)
+								formMethods.setValue(organisasjonPath, event.target.value || null)
 							}}
 						/>
 					)}
