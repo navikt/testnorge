@@ -3,10 +3,7 @@ package no.nav.testnav.dollysearchservice.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.CredentialsProvider;
-import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
-import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -20,7 +17,7 @@ import java.net.URISyntaxException;
 
 @Slf4j
 @Configuration
-@Profile("local")
+@Profile({"local","test"})
 @RequiredArgsConstructor
 public class OpenSearchLocalConfig {
 
