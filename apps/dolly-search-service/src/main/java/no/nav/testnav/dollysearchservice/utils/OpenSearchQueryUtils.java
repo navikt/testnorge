@@ -2,28 +2,20 @@ package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
 import lombok.val;
-import org.apache.lucene.search.join.ScoreMode;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
 import org.opensearch.client.opensearch._types.query_dsl.MatchQuery;
 import org.opensearch.client.opensearch._types.query_dsl.NestedQuery;
-import org.opensearch.client.opensearch._types.query_dsl.Query;
-import org.opensearch.client.opensearch._types.query_dsl.QueryBase;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
 import org.opensearch.client.opensearch._types.query_dsl.RegexpQuery;
 import org.opensearch.client.opensearch._types.query_dsl.TermsQuery;
-import org.opensearch.client.opensearch._types.query_dsl.TermsQueryField;
-import org.opensearch.client.util.ObjectBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
 @UtilityClass
 public class OpenSearchQueryUtils {
@@ -77,11 +69,11 @@ public class OpenSearchQueryUtils {
                 .build();
     }
 
-    public static NestedQuery nestedRangeQuery(String path, String field, String value) {
+    public static NestedQuery nestedRangeQuery(String path, String field, Object value1, Object value2) {
 
         return QueryBuilders.nested()
                 .path(path)
-                .query(q -> q.regexp(regexpQuery(CONCAT.formatted(path, field), value)))
+                .query(q -> q.range(rangeQuery(CONCAT.formatted(path, field), value1, value2)))
                 .build();
     }
 
@@ -114,6 +106,20 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.nested()
                 .path(path)
                 .query(q -> q.exists(existQuery(CONCAT.formatted(path, field))))
+                .build();
+    }
+
+    public static BoolQuery mustExistQuery(BoolQuery.Builder queryBuilder, String field) {
+
+        return queryBuilder
+                .must(q -> q.exists(existQuery(field)))
+                .build();
+    }
+
+    public static BoolQuery mustMatchQuery(BoolQuery.Builder queryBuilder, String field, Object value) {
+
+        return queryBuilder
+                .must(q -> q.match(matchQuery(field, value)))
                 .build();
     }
 }

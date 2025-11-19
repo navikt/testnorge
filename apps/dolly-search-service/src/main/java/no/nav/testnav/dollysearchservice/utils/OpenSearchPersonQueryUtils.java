@@ -18,7 +18,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.METAD
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.NAVSPERSONIDENTIFIKATOR;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedExistQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedMatchQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.rangeQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRangeQuery;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -41,19 +41,16 @@ public class OpenSearchPersonQueryUtils {
         var now = LocalDate.now();
         if (nonNull(request.getPersonRequest().getAlderFom()) || nonNull(request.getPersonRequest().getAlderTom())) {
 
-            queryBuilder.must(q1 -> q1.bool(QueryBuilders.bool()
-                    .must(q2 -> q2.nested(nestedMatchQuery("hentPerson.foedselsdato", METADATA_HISTORISK, false)))
-                    .must(q2 -> q2.nested(QueryBuilders.nested().query("hentPerson.foedselsdato",
-                            QueryBuilders.bool().must(q -> q.range(
-                                    rangeQuery("hentPerson.foedselsdato.foedselsdato",
-                                            Optional.ofNullable(request.getPersonRequest().getAlderTom())
-                                                    .map(now::minusYears)
-                                                    .orElse(null),
-                                            Optional.ofNullable(request.getPersonRequest().getAlderFom())
-                                                    .map(now::minusYears)
-                                                    .orElse(null))))
-                                    .build()))
-                    .build()
+            queryBuilder.must(q1 -> q1.nested(nestedMatchQuery("hentPerson.foedselsdato", METADATA_HISTORISK, false)))
+                    .must(q1 -> q1.nested(nestedRangeQuery("hentPerson.foedselsdato",
+                            "foedselsdato",
+                            Optional.ofNullable(request.getPersonRequest().getAlderTom())
+                                    .map(now::minusYears)
+                                    .orElse(null),
+                            Optional.ofNullable(request.getPersonRequest().getAlderFom())
+                                    .map(now::minusYears)
+                                    .orElse(null))))
+                    .build();
         }
     }
 

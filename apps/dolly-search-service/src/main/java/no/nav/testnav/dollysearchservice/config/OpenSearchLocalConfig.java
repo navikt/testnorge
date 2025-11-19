@@ -3,7 +3,10 @@ package no.nav.testnav.dollysearchservice.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -21,9 +24,14 @@ import java.net.URISyntaxException;
 @RequiredArgsConstructor
 public class OpenSearchLocalConfig {
 
+    @Value("${open.search.username}")
+    private String username;
+
+    @Value("${open.search.password}")
+    private String password;
+
     @Value("${open.search.uri}")
     private String uri;
-
 
     @Bean
     public OpenSearchClient opensearchClient(CredentialsProvider credentialsProvider) throws URISyntaxException {

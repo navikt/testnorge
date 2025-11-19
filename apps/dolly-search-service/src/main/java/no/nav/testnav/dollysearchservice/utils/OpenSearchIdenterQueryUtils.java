@@ -3,13 +3,9 @@ package no.nav.testnav.dollysearchservice.utils;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.IdentSearch;
-import org.apache.lucene.search.join.ScoreMode;
-import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
+import org.opensearch.client.opensearch._types.query_dsl.RandomScoreFunction;
 
 import java.security.SecureRandom;
 import java.util.HashSet;
@@ -20,6 +16,7 @@ import java.util.Set;
 
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.FOLKEREGISTERIDENTIFIKATOR;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HENT_IDENTER;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRegexpQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedTermsQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.regexpQuery;
@@ -35,7 +32,7 @@ public class OpenSearchIdenterQueryUtils {
 
     private static final Random RANDOM = new SecureRandom();
 
-    public static BoolQuery buildTestnorgeIdentSearchQuery(IdentSearch search) {
+    public static BoolQuery.Builder buildTestnorgeIdentSearchQuery(IdentSearch search) {
 
         var identer = new HashSet<>(search.getIdenter());
         if (isNotBlank(search.getIdent()) && search.getIdent().length() == 11) {
@@ -53,18 +50,18 @@ public class OpenSearchIdenterQueryUtils {
         return queryBuilder;
     }
 
-    private static void addRandomScoreQuery(BoolQueryBuilder queryBuilder) {
+    private static void addRandomScoreQuery(BoolQuery.Builder queryBuilder) {
 
-        queryBuilder.must(QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder()
-                .seed(RANDOM.nextInt())));
+        queryBuilder.must(q -> q.functionScore(QueryBuilders.functionScore()
+                .functions(q2 -> q2.randomScore(RandomScoreFunction.of(q3 -> q3
+                        .seed(Long.toString(RANDOM.nextLong())))))
+                .build()));
     }
 
     private static void addTagsQueries(BoolQuery.Builder queryBuilder, List<String> tags) {
 
-        tags.forEach(tag -> queryBuilder.must(QueryBuilders.term()
-                        .field("tags")
-                        .field(FieldValue.of(tags)
-                QueryBuilders.matchQuery("tags", tag)));
+        tags.forEach(tag ->
+                queryBuilder.must(q -> q.match(matchQuery("tags", tag))));
     }
 
     private static void addNameQuery(BoolQuery.Builder queryBuilder, IdentSearch search) {
@@ -72,42 +69,47 @@ public class OpenSearchIdenterQueryUtils {
         Optional.ofNullable(search.getNavn())
                 .ifPresent(values -> {
                     if (values.size() == 1) {
-                        queryBuilder.must(QueryBuilders.nested(
-                                "hentPerson.navn",
-                                QueryBuilders.bool()
-                                        .should(regexpQuery(PERSON_FORNAVN, ".*" + values.getFirst() + ".*"))
-                                        .should(regexpQuery(PERSON_ETTERNAVN, ".*" + values.getFirst() + ".*"))
-                                        .minimumShouldMatch(1),
-                                ScoreMode.Avg));
+                        queryBuilder.must(q1 -> q1.nested(QueryBuilders.nested()
+                                .path("hentPerson.navn")
+                                .query(q2 -> q2.bool(QueryBuilders.bool()
+                                        .should(q3 -> q3.regexp(regexpQuery(PERSON_FORNAVN, ".*" + values.getFirst() + ".*")))
+                                        .should(q3 -> q3.regexp(regexpQuery(PERSON_ETTERNAVN, ".*" + values.getFirst() + ".*")))
+                                        .minimumShouldMatch("1")
+                                        .build()))
+                                .build()));
 
                     } else if (values.size() > 1) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.navn",
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.boolQuery()
-                                                .must(regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
-                                                .must(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(1) + ".*")))
-                                        .should(QueryBuilders.boolQuery()
-                                                .must(regexpQuery(PERSON_FORNAVN, ".*" + values.get(1) + ".*"))
-                                                .must(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*")))
-                                        .minimumShouldMatch(1),
-                                ScoreMode.Avg));
+                        queryBuilder.must(q1 -> q1.nested(QueryBuilders.nested()
+                                .path("hentPerson.navn")
+                                .query(q2 -> q2.bool(QueryBuilders.bool()
+                                        .should(q3 -> q3.bool(QueryBuilders.bool()
+                                                .must(q4 -> q4.regexp(regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*")))
+                                                .must(q4 -> q4.regexp(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(1) + ".*")))
+                                                .build()))
+                                        .should(q3 -> q3.bool(QueryBuilders.bool()
+                                                .must(q4 -> q4.regexp(regexpQuery(PERSON_FORNAVN, ".*" + values.get(1) + ".*")))
+                                                .must(q4 -> q4.regexp(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*")))
+                                                .build()))
+                                        .minimumShouldMatch("1")
+                                        .build()))
+                                .build()));
                     }
                 });
     }
 
-    public static void addIdenterQuery(BoolQueryBuilder queryBuilder, Set<String> identer) {
+    public static void addIdenterQuery(BoolQuery.Builder queryBuilder, Set<String> identer) {
 
         queryBuilder
-                .must(nestedTermsQuery(HENT_IDENTER, "ident", identer.toArray(String[]::new)));
+                .must(q -> q.nested(nestedTermsQuery(HENT_IDENTER, "ident", identer)));
     }
 
-    private static void addIdentQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {
+    private static void addIdentQuery(BoolQuery.Builder queryBuilder, IdentSearch search) {
 
         Optional.ofNullable(search.getIdent())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedRegexpQuery(FOLKEREGISTERIDENTIFIKATOR, IDENTIFIKASJONSNUMMER, ".*" + value + ".*"));
+                        queryBuilder.must(q ->
+                                q.nested(nestedRegexpQuery(FOLKEREGISTERIDENTIFIKATOR, IDENTIFIKASJONSNUMMER, ".*" + value + ".*")));
                     }
                 });
     }
