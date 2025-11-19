@@ -19,11 +19,7 @@
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^7.12.2",
     "@navikt/fnrvalidator": "^2.0.7",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^5.0.2",
-    "@vitest/browser": "^4.0.9",
-    "@vitest/ui": "^4.0.9",
     "axios": "^1.12.0",
     "classnames": "^2.3.1",
     "cors": "^2.8.5",
@@ -37,8 +33,7 @@
     "react-router-dom": "^7.5.2",
     "react-select": "^5.4.0",
     "react-syntax-highlighter": "^16.1.0",
-    "styled-components": "^6.0.0",
-    "vitest": "^4.0.9"
+    "styled-components": "^6.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
@@ -49,6 +44,11 @@
     "@types/react-dom": "^19.0.3",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^5.0.2",
+    "vitest": "^4.0.9",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitest/browser": "^4.0.9",
+    "@vitest/ui": "^4.0.9",
     "babel-plugin-styled-components": "^2.0.7",
     "esbuild": ">=0.25.0",
     "isomorphic-fetch": "^3.0.0",
