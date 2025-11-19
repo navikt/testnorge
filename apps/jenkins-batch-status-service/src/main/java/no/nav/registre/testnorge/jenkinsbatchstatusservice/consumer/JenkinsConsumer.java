@@ -11,6 +11,8 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Optional;
+
 @Slf4j
 @Component
 public class JenkinsConsumer {
@@ -25,26 +27,35 @@ public class JenkinsConsumer {
             WebClient webClient
     ) {
         this.tokenExchange = tokenExchange;
-        serverProperties = consumers.getJenkins();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .baseUrl(serverProperties.getUrl())
+                .baseUrl(serverProperties.getUrl() + "/batch")
                 .build();
     }
 
     private JenkinsCrumb getCrumb() {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
-        return new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
+        return new GetCrumbCommand(webClient, getAccessTokenValue())
+                .call();
     }
 
     public Long getJobNumber(Long itemId) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
-        var dto = new GetQueueItemCommand(webClient, accessToken.getTokenValue(), getCrumb(), itemId).call();
-        return dto.getNumber();
+        return new GetQueueItemCommand(webClient, getAccessTokenValue(), getCrumb(), itemId)
+                .call()
+                .getNumber();
     }
 
     public String getJobLog(Long jobNumber) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
-        return new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), jobNumber).call();
+        return new GetBEREG007LogCommand(webClient, getAccessTokenValue(), jobNumber)
+                .call();
     }
+
+    private String getAccessTokenValue() {
+        return Optional.ofNullable(tokenExchange
+                        .exchange(serverProperties)
+                        .block())
+                .orElseThrow(() -> new NullPointerException("Failed to retrieve access token"))
+                .getTokenValue();
+    }
+
 }

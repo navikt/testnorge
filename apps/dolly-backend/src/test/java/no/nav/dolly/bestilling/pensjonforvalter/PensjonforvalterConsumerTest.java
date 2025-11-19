@@ -109,23 +109,36 @@ class PensjonforvalterConsumerTest extends AbstractConsumerTest {
 
         stubPostLagreInntekt(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(PensjonPoppInntektRequest.builder()
-                        .miljoer(List.of("tx"))
-                        .build()))
-                .expectNext(PensjonforvalterResponse.builder()
-                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
-                                .miljo("tx")
-                                .response(PensjonforvalterResponse.Response.builder()
-                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                .status(400)
-                                                .reasonPhrase("Bad Request")
-                                                .build())
-                                        .path("/api/v1/inntekt")
-                                        .message("Feil i POPP-inntekt")
-                                        .build())
-                                .build()))
+        var created = pensjonforvalterConsumer.lagreInntekter(PensjonPoppInntektRequest
+                .builder()
+                .miljoer(List.of("tx"))
+                .build());
+        var response = PensjonforvalterResponse.Response
+                .builder()
+                .httpStatus(PensjonforvalterResponse.HttpStatus
+                        .builder()
+                        .status(400)
+                        .reasonPhrase("Bad Request")
                         .build())
+                .path("/pensjon/api/v1/inntekt")
+                .message("Feil i POPP-inntekt")
+                .build();
+        var status = List.of(
+                PensjonforvalterResponse.ResponseEnvironment
+                        .builder()
+                        .miljo("tx")
+                        .response(response)
+                        .build());
+        var expected = PensjonforvalterResponse
+                .builder()
+                .status(status)
+                .build();
+
+        StepVerifier
+                .create(created)
+                .expectNext(expected)
                 .verifyComplete();
+
     }
 
     @Test

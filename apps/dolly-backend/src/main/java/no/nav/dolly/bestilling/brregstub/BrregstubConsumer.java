@@ -34,7 +34,7 @@ public class BrregstubConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavBrregStubProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -70,7 +70,7 @@ public class BrregstubConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-brregstub-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

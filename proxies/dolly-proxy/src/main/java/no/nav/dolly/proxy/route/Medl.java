@@ -11,25 +11,25 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-class Fullmakt {
+class Medl {
 
-    private static final String CLUSTER = "dev-fss";
-    private static final String NAMESPACE = "repr";
-    private static final String NAME = "repr-fullmakt";
+    private static final String CLUSTER = "dev-gcp";
+    private static final String NAMESPACE = "team-rocket";
+    private static final String NAME = "medlemskap-medl-testdata";
 
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService
-                .getFakedingsAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.fullmakt);
+
+        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.medl);
         return spec -> spec
-                .path("/fullmakt/**")
+                .path("/medl/rest/v1/**")
                 .filters(f -> f
                         .stripPrefix(1)
-                        .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
-                .uri(targets.fullmakt);
+                .uri(targets.medl);
+
     }
 
 }
