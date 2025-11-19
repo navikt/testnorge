@@ -31,7 +31,6 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: testnav-dolly-proxy
         - application: generer-navn-service
@@ -94,7 +93,6 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: generer-navn-service
         - application: organisasjon-bestilling-service

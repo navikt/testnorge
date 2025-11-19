@@ -29,7 +29,6 @@ spec:
       rules:
         - application: dolly-backend-dev
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: team-dolly-lokal-app
         - application: testnav-endringsmelding-frontend
         - application: testnav-faste-data-frontend
