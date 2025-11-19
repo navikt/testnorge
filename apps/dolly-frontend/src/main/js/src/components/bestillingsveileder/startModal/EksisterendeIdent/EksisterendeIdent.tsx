@@ -99,7 +99,7 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 				</Button>
 			</div>
 			{pdlfEksistens?.length > 0 && (
-				<div>
+				<div className="flexbox--full-width" style={{ marginRight: '20px' }}>
 					<Table size="medium" zebraStripes style={{ marginBottom: '20px', marginRight: '20px' }}>
 						<Table.Header>
 							<Table.Row>
