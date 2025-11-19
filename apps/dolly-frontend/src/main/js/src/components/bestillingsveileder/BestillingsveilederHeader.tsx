@@ -48,12 +48,14 @@ export const BestillingsveilederHeader = ({
 	return (
 		<Header>
 			<div className="flexbox">
-				<Header.TitleValue
-					title="Antall"
-					value={`${context.antall ?? 0} ${
-						context.antall && context.antall > 1 ? 'personer' : 'person'
-					}`}
-				/>
+				{context?.antall && (
+					<Header.TitleValue
+						title="Antall"
+						value={`${context.antall} ${
+							context.antall && context.antall > 1 ? 'personer' : 'person'
+						}`}
+					/>
+				)}
 				{!context.is?.opprettFraIdenter && !context.is?.leggTilPaaGruppe && (
 					<Header.TitleValue title="Identtype" value={getIdenttype() ?? ''} />
 				)}

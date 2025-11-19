@@ -6,7 +6,7 @@ export interface BestillingsveilederContextType {
 	gruppe?: { id?: string; navn?: string }
 	personFoerLeggTil?: any
 	identMaster?: string
-	antall?: number
+	antall?: number | null
 	identtype?: string
 	setIdenttype?: (identtype: string) => void
 	setGruppeId?: (gruppeId: number) => void

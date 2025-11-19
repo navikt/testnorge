@@ -118,7 +118,7 @@ export const deriveBestillingsveilederState = (
 			mal: mal.id,
 		}),
 		[TYPE.OPPRETT_FRA_IDENTER]: () => ({
-			antall,
+			antall: 1,
 			beskrivelse: null,
 			pdldata: undefined,
 			importPersoner: undefined,

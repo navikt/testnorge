@@ -26,7 +26,7 @@ export const VelgIdenttype = ({ gruppeId }: any) => {
 		if (value === 'eksisterende') {
 			const config = {
 				gruppeId: gruppeIdValue || undefined,
-				antall: null, // mark antall as not applicable
+				antall: null,
 				identtype: opts.identtype || 'FNR',
 				id2032: opts.id2032 || false,
 				mal: opts.mal,
@@ -37,7 +37,11 @@ export const VelgIdenttype = ({ gruppeId }: any) => {
 			formMethods.setValue('gruppeId', gruppeIdValue)
 			formMethods.unregister('antall')
 			opts.updateContext &&
-				opts.updateContext({ is: { ...opts.is, opprettFraIdenter: true }, opprettFraIdenter: [] })
+				opts.updateContext({
+					is: { ...opts.is, opprettFraIdenter: true },
+					opprettFraIdenter: [],
+					antall: null,
+				})
 		} else {
 			const antallNy = (formMethods.getValues('antall') || 1) as number
 			const config = {
