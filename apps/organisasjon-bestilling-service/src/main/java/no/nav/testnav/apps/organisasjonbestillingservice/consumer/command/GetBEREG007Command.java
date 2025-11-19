@@ -21,7 +21,7 @@ public class GetBEREG007Command implements Callable<Mono<BuildDTO>> {
     public Mono<BuildDTO> call() {
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path("view/All/job/Start_BEREG007/{buildId}/api/json").build(buildId))
+                .uri(uriBuilder -> uriBuilder.path("/view/All/job/Start_BEREG007/{buildId}/api/json").build(buildId))
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(BuildDTO.class)

@@ -81,17 +81,17 @@ const aareg = new RegExp(/testnav-aareg-proxy\/q1\/api\/v1\/arbeidstaker/)
 const arena = new RegExp(/testnav-arena-forvalteren-proxy\/q1\/arena/)
 const inst = new RegExp(/testnav-dolly-proxy\/inst\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
-const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
-const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
-const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
+const pensjon = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/inntekt/)
+const pensjonMiljoer = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/miljo/)
+const pensjonTp = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/tp(.*?)q1/)
 const pensjonPensjonsavtale = new RegExp(
-	/testnav-pensjon-testdata-facade-proxy\/api\/v2\/pensjonsavtale\/hent/,
+	/testnav-dolly-proxy\/pensjon\/api\/v2\/pensjonsavtale\/hent/,
 )
-const afpOffentlig = new RegExp(/testnav-pensjon-testdata-facade-proxy\/q1\/api\/mock-oppsett/)
+const afpOffentlig = new RegExp(/testnav-dolly-proxy\/pensjon\/q1\/api\/mock-oppsett/)
 const krrstub = new RegExp(/testnav-dolly-proxy\/krrstub\/api\/v2/)
 const udistub = new RegExp(/testnav-dolly-proxy\/udistub\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
-const medl = new RegExp(/testnav-medl-proxy/)
+const medl = new RegExp(/testnav-dolly-proxy\/medl/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\/brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,

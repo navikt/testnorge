@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-public class Kontoregister {
+class Kontoregister {
 
     private static final String CLUSTER = "dev-gcp";
     private static final String NAMESPACE = "okonomi";
