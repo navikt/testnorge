@@ -111,6 +111,9 @@ export const StegVelger = ({
 				errorContext?.setShowError(true)
 				return
 			}
+			errorContext?.setShowError(false)
+			setStep(step + 1)
+			return
 		}
 
 		if (isSteg1) {
@@ -119,7 +122,7 @@ export const StegVelger = ({
 			return
 		}
 
-		if ((isSteg2 || isSteg0) && formMutate) {
+		if (isSteg2 && formMutate) {
 			await executeMutateAndValidate(
 				validationHelpers,
 				step,
