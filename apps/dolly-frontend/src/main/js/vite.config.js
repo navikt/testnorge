@@ -30,11 +30,14 @@ export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
-		sourcemap: 'inline',
+		sourcemap: true,
+		minify: 'terser',
 		cssCodeSplit: false,
 		rollupOptions: {
 			external: ['./nais.js'],
 			output: {
+				sourcemap: true,
+				sourcemapExcludeSources: false,
 				manualChunks(id) {
 					if (id.includes('node_modules') && !id.includes('navikt')) {
 						return id.toString().split('node_modules/')[1].split('/')[0].toString()
@@ -42,6 +45,17 @@ export default defineConfig(({ mode }) => ({
 						return 'navikt'
 					}
 				},
+			},
+		},
+		terserOptions: {
+			sourceMap: true,
+			compress: {
+				drop_console: false,
+				drop_debugger: false,
+			},
+			mangle: {
+				keep_classnames: true,
+				keep_fnames: true,
 			},
 		},
 	},
@@ -78,6 +92,8 @@ export default defineConfig(({ mode }) => ({
 						{
 							displayName: true,
 							ssr: false,
+							fileName: true,
+							meaninglessFileNames: ['index', 'styles'],
 						},
 					],
 				],

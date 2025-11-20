@@ -78,7 +78,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		return ignoreKeys
 	}
 
-
 	return (
 		<Panel
 			heading={PersoninformasjonPanel.heading}

@@ -60,6 +60,9 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 			console.log(
 				'💡 TIP: The error is likely in PersoninformasjonPanel or a child component based on previous analysis',
 			)
+			console.log(
+				'🗺️  SOURCE MAPS: Click the error in Console to see original source file (if source maps loaded)',
+			)
 			console.groupEnd()
 		}
 
