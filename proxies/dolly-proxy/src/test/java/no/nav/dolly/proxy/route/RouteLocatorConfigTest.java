@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -26,6 +27,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -61,6 +64,8 @@ class RouteLocatorConfigTest {
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("app.fakedings.url", () -> wireMockServer.baseUrl());
 
+        registry.add("app.targets.aareg-services", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.aareg-vedlikehold", () -> wireMockServer.baseUrl());
         registry.add("app.targets.batch", () -> wireMockServer.baseUrl());
         registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
@@ -90,6 +95,62 @@ class RouteLocatorConfigTest {
                 .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
         when(tokenXService.exchange(any(), any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "q1,false",
+            "q2,false",
+            "q4,false",
+            "q1,true",
+            "q2,true",
+            "q4,true"
+    })
+    void testAareg(String miljo, boolean writeable) {
+
+        var downstreamPath = "/some/aareg/path";
+        var responseBody = "Success from mocked aareg-%s-%s".formatted(writeable ? "write" : "read", miljo);
+
+        if (writeable) {
+
+            wireMockServer.stubFor(post(urlEqualTo(downstreamPath))
+                    .willReturn(aResponse()
+                            .withStatus(200)
+                            .withHeader("Content-Type", "application/json")
+                            .withBody(responseBody)));
+
+            webClient
+                    .post()
+                    .uri("/aareg/" + miljo + downstreamPath)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType("application/json")
+                    .expectBody(String.class).isEqualTo(responseBody);
+
+            wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath)));
+            wireMockServer.verify(0, getRequestedFor(urlEqualTo(downstreamPath)));
+
+        } else {
+
+            wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                    .willReturn(aResponse()
+                            .withStatus(200)
+                            .withHeader("Content-Type", "text/plain")
+                            .withBody(responseBody)));
+
+            webClient
+                    .get()
+                    .uri("/aareg/" + miljo + downstreamPath)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType("text/plain")
+                    .expectBody(String.class).isEqualTo(responseBody);
+
+            wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+            wireMockServer.verify(0, postRequestedFor(urlEqualTo(downstreamPath)));
+
+        }
+
     }
 
     @Test
