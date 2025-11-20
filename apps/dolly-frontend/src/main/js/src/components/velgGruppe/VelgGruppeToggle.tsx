@@ -27,25 +27,36 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) 
 	const formMethods = useFormContext()
 
 	const harGrupper = grupper?.antallElementer > 0
+	const storedGruppevalg = formMethods?.watch('gruppevalg')
 	const harBrukerValg = formMethods?.watch('bruker')
-	const [gruppevalg, setGruppevalg] = useState(
-		harBrukerValg
-			? Gruppevalg.ALLE
-			: harGrupper || runningE2ETest()
-				? Gruppevalg.MINE
-				: Gruppevalg.NY,
-	)
 
-	const handleToggleChange = (value: Gruppevalg) => {
-		setGruppevalg(value)
+	const getInitialGruppevalg = () => {
+		if (storedGruppevalg) {
+			return storedGruppevalg
+		}
+		if (harBrukerValg) {
+			return Gruppevalg.ALLE
+		}
+		if (harGrupper || runningE2ETest()) {
+			return Gruppevalg.MINE
+		}
+		return Gruppevalg.NY
+	}
+
+	const [gruppevalg, setGruppevalg] = useState(getInitialGruppevalg())
+
+	const handleToggleChange = (value: string) => {
+		const gruppeValgValue = value as Gruppevalg
+		setGruppevalg(gruppeValgValue)
+		formMethods.setValue('gruppevalg', gruppeValgValue)
 		formMethods.clearErrors(['gruppeId', 'bruker', 'gruppeNavn', 'gruppeHensikt'])
 		formMethods.setValue('gruppeId', '')
-		if (value === Gruppevalg.ALLE) {
+		if (gruppeValgValue === Gruppevalg.ALLE) {
 			formMethods.setValue('bruker', '')
 		} else {
 			formMethods.setValue('bruker', undefined)
 		}
-		if (value === Gruppevalg.NY) {
+		if (gruppeValgValue === Gruppevalg.NY) {
 			formMethods.setValue('gruppeNavn', '')
 			formMethods.setValue('gruppeHensikt', '')
 		} else {

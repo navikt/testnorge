@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Alert } from '@navikt/ds-react'
@@ -7,8 +7,6 @@ import * as _ from 'lodash-es'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Mal, useMalbestillingBruker, useMalbestillingOversikt } from '@/utils/hooks/useMaler'
-import { BVOptions } from '@/components/bestillingsveileder/options/options'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { useFormContext } from 'react-hook-form'
 import Button from '@/components/ui/button/Button'
 import { NavLink } from 'react-router'
@@ -39,27 +37,37 @@ export function getBrukerOptions(brukere: Brukere[] | undefined) {
 }
 
 export function getMalOptions(malbestillinger: Mal[] | undefined) {
-	if (!malbestillinger || malbestillinger?.length < 1) return []
+	if (!Array.isArray(malbestillinger) || malbestillinger.length < 1) return []
 	return malbestillinger.map((mal) => ({
 		value: mal.id,
 		label: mal.malNavn,
-		data: { bestilling: mal.malBestilling, malNavn: mal.malNavn, id: mal.id },
+		data: {
+			bestilling: (mal as any).malBestilling ?? (mal as any).bestilling,
+			malNavn: mal.malNavn,
+			id: mal.id,
+		},
 	}))
 }
 
-export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
+export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
 
 	const { brukere, loading: loadingBrukere } = useMalbestillingOversikt()
-	const [bruker, setBruker] = useState(
-		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
-	)
+
+	const getInitialBruker = () => {
+		const storedBruker = formMethods.getValues('malBruker')
+		if (storedBruker) {
+			return storedBruker
+		}
+		return currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId
+	}
+
+	const [bruker, setBruker] = useState(getInitialBruker())
 
 	const { maler, loading: loadingMaler } = useMalbestillingBruker(bruker)
 
-	const { dollyEnvironments } = useDollyEnvironments()
 	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal') || false)
 
 	const brukerOptions = getBrukerOptions(brukere)
@@ -67,39 +75,60 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 
 	const handleMalChange = (mal: { value: string; label: string; data: any }) => {
 		if (mal) {
-			opts.mal = mal.data
-			const options = BVOptions(opts, gruppeId, dollyEnvironments)
-			formMethods.reset(options.initialValues)
-			formMethods.setValue(
-				'pdldata.opprettNyPerson.identtype',
-				mal?.data?.bestilling?.pdldata?.opprettNyPerson?.identtype ?? 'FNR',
-			)
-			formMethods.setValue(
-				'pdldata.opprettNyPerson.id2032',
-				mal?.data?.bestilling?.pdldata?.opprettNyPerson?.id2032 ?? false,
-			)
+			opts.setMal && opts.setMal(mal.data)
 			formMethods.setValue('mal', mal.value)
 			formMethods.setValue('gruppeId', gruppeId)
+			const identtype = _.get(mal.data, 'bestilling.pdldata.opprettNyPerson.identtype')
+			const id2032 = _.get(mal.data, 'bestilling.pdldata.opprettNyPerson.id2032')
+			if (identtype) {
+				formMethods.setValue('pdldata.opprettNyPerson.identtype', identtype)
+				opts.updateContext && opts.updateContext({ identtype })
+			}
+			if (id2032 !== undefined) {
+				formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032)
+				opts.updateContext && opts.updateContext({ id2032 })
+			}
 		} else {
-			opts.mal = undefined
-			const options = BVOptions(opts, gruppeId, dollyEnvironments)
-			formMethods.reset(options.initialValues)
+			opts.setMal && opts.setMal(undefined)
 			formMethods.setValue('mal', null)
 			formMethods.setValue('gruppeId', gruppeId)
 		}
 	}
 
 	const handleMalEnable = () => {
-		opts.mal = undefined
-		const options = BVOptions(opts, gruppeId, dollyEnvironments)
+		opts.setMal && opts.setMal(undefined)
 		toggleMalAktiv()
-		formMethods.reset(options.initialValues)
 		formMethods.setValue('mal', null)
 		formMethods.setValue('gruppeId', gruppeId)
 	}
 
+	useEffect(() => {
+		if (opts.mal) {
+			const identtype = _.get(opts.mal, 'bestilling.pdldata.opprettNyPerson.identtype')
+			const id2032 = _.get(opts.mal, 'bestilling.pdldata.opprettNyPerson.id2032')
+			if (identtype) {
+				formMethods.setValue('pdldata.opprettNyPerson.identtype', identtype)
+				opts.updateContext && opts.updateContext({ identtype })
+			}
+			if (id2032 !== undefined) {
+				formMethods.setValue('pdldata.opprettNyPerson.id2032', id2032)
+				opts.updateContext && opts.updateContext({ id2032 })
+			}
+		}
+	}, [opts.mal])
+
+	useEffect(() => {
+		if (opts.mal && opts.identtype) {
+			const current = formMethods.getValues('pdldata.opprettNyPerson.identtype')
+			if (current !== opts.identtype) {
+				formMethods.setValue('pdldata.opprettNyPerson.identtype', opts.identtype)
+			}
+		}
+	}, [opts.mal, opts.identtype])
+
 	const handleBrukerChange = (event: { value: string }) => {
 		setBruker(event.value)
+		formMethods.setValue('malBruker', event.value)
 		formMethods.setValue('mal', null)
 	}
 
@@ -132,7 +161,6 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 				onChange={handleMalEnable}
 				label="Opprett fra mal"
 				checked={malAktiv}
-				wrapperSize={'none'}
 				size={'small'}
 				isSwitch
 			/>
@@ -157,6 +185,7 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 					options={malOptions}
 					size="grow"
 					isDisabled={!malAktiv}
+					value={valgtMalValue}
 				/>
 			</div>
 			<div className="mal-admin">

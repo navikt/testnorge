@@ -1,11 +1,11 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { gyldigeSivilstander } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import { forelderTyper } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
@@ -29,7 +29,7 @@ const sjekkGyldigEksisterende = (pdlForvalterValues: any) => {
 }
 
 export const DeltBostedForm = ({ formMethods, path }: DeltBostedValues) => {
-	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	const { harEksisterendeEktefellePartner, harEksisterendeFamilierelasjonBarn } =
 		sjekkGyldigEksisterende(opts.personFoerLeggTil?.pdlforvalter)

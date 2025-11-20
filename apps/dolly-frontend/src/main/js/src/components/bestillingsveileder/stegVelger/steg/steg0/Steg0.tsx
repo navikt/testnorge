@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType,
+	BestillingsveilederContextType
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { MalVelgerOrganisasjon } from '@/pages/organisasjoner/MalVelgerOrganisasjon'
@@ -10,7 +10,7 @@ import { VelgIdenttype } from '@/components/bestillingsveileder/stegVelger/steg/
 import {
 	getInitialNyIdent,
 	getInitialSivilstand,
-	initialPdlPerson,
+	initialPdlPerson
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
 import { MalVelgerIdent } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
@@ -26,12 +26,12 @@ type AttributeHandlers = {
 	[key: string]: () => void
 }
 
-const handleAttributeUpdates = (formMethods, opts) => {
+const handleAttributeUpdates = (formMethods: any, opts: BestillingsveilederContextType) => {
 	const master = opts.identtype === 'NPID' ? 'PDL' : 'FREG'
 	const attributeHandlers: AttributeHandlers = {
 		fullmakt: () => {
 			const formFullmakt = formMethods.getValues('fullmakt')
-			const newFormFullmakt = formFullmakt?.map((fullmakt, _idx) => {
+			const newFormFullmakt = formFullmakt?.map((fullmakt: any, _idx: any) => {
 				return {
 					...fullmakt,
 					nyfullMektig: initialPdlPerson,
@@ -43,7 +43,7 @@ const handleAttributeUpdates = (formMethods, opts) => {
 		},
 		'pdldata.person.vergemaal': () => {
 			const formVergemaal = formMethods.getValues('pdldata.person.vergemaal')
-			const newFormVergemaal = formVergemaal?.map((vergemaal, _idx) => {
+			const newFormVergemaal = formVergemaal?.map((vergemaal: any, _idx: any) => {
 				return {
 					...vergemaal,
 					nyVergeIdent: initialPdlPerson,
@@ -74,13 +74,14 @@ const Steg0 = () => {
 
 	const isOrganisasjon =
 		opts.is?.nyOrganisasjon || opts.is?.nyStandardOrganisasjon || opts.is?.nyOrganisasjonFraMal
-	const isNyIdent = opts.is?.nyBestilling || opts.is?.nyBestillingFraMal
+	const isNyIdent =
+		opts.is?.nyBestilling || opts.is?.nyBestillingFraMal || opts.is?.opprettFraIdenter
 	const velgGruppeDisabled = opts.is?.leggTil || opts.is?.leggTilPaaGruppe
 
 	const formGruppeId = formMethods.watch('gruppeId')
-	const rawGruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
-	const gruppeId = rawGruppeId ? String(rawGruppeId) : ''
-	const numericGruppeId = gruppeId ? parseInt(gruppeId) : null
+	const rawGruppeId = formGruppeId ?? opts?.gruppeId ?? opts?.gruppe?.id
+	const gruppeId = rawGruppeId !== null && rawGruppeId !== undefined ? String(rawGruppeId) : ''
+	const numericGruppeId: number | null = gruppeId ? Number(gruppeId) : null
 
 	useEffect(() => {
 		if (
@@ -90,12 +91,14 @@ const Steg0 = () => {
 		) {
 			formMethods.setValue('gruppeId', numericGruppeId)
 		}
-		const contextGruppeId = opts.gruppeId && parseInt(opts.gruppeId)
+		const contextGruppeId = typeof opts.gruppeId === 'number' ? opts.gruppeId : null
 		if (!numericGruppeId || contextGruppeId === numericGruppeId) {
 			return
 		}
 
-		opts.gruppeId = numericGruppeId
+		if (numericGruppeId) {
+			opts.updateContext && opts.updateContext({ gruppeId: numericGruppeId })
+		}
 
 		handleAttributeUpdates(formMethods, opts)
 	}, [numericGruppeId, formMethods, opts])
@@ -123,9 +126,9 @@ const Steg0 = () => {
 			)}
 			<div className="dolly-panel dolly-panel-open">
 				{isOrganisasjon ? (
-					<MalVelgerOrganisasjon brukernavn={username} gruppeId={numericGruppeId} />
+					<MalVelgerOrganisasjon brukernavn={username} gruppeId={numericGruppeId ?? undefined} />
 				) : (
-					<MalVelgerIdent brukerId={brukerId} gruppeId={numericGruppeId} />
+					<MalVelgerIdent brukerId={brukerId} gruppeId={numericGruppeId ?? undefined} />
 				)}
 			</div>
 		</div>

@@ -9,7 +9,7 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { Stepper } from '@navikt/ds-react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	BestillingsveilederContext,
@@ -31,31 +31,41 @@ import Steg1 from './steg/steg1/Steg1'
 import Steg2 from './steg/steg2/Steg2'
 import Steg3 from './steg/steg3/Steg3'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
-import * as _ from 'lodash-es'
+import { useMalFormSync } from './hooks/useMalFormSync'
+import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
+import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
 
-Steg0.label = 'Velg gruppe/mal'
-Steg1.label = 'Velg egenskaper'
-Steg2.label = 'Velg verdier'
-Steg3.label = 'Oppsummering'
+interface StepDef {
+	component: React.ComponentType<any>
+	label: string
+}
+const STEPS: StepDef[] = [
+	{ component: Steg0, label: 'Velg gruppe/mal' },
+	{ component: Steg1, label: 'Velg egenskaper' },
+	{ component: Steg2, label: 'Velg verdier' },
+	{ component: Steg3, label: 'Oppsummering' },
+]
 
 const DisplayFormState = lazyWithPreload(() => import('@/utils/DisplayFormState'))
 const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 
-let STEPS = [Steg0, Steg1, Steg2, Steg3]
 const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
 
 export const devEnabled =
 	window.location.hostname.includes('localhost') ||
 	window.location.hostname.includes('dolly-frontend-dev')
 
-export const StegVelger = ({ initialValues, onSubmit }) => {
-	'use no memo' // Skip compilation for this component
+export const StegVelger = ({
+	initialValues,
+	onSubmit,
+}: {
+	initialValues: any
+	onSubmit: (values: any) => Promise<void> | void
+}) => {
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-	const erOrganisasjon =
-		context.is?.nyOrganisasjon ||
-		context.is?.nyStandardOrganisasjon ||
-		context.is?.nyOrganisasjonFraMal
+	const is = context.is || {}
+	const erOrganisasjon = is.nyOrganisasjon || is.nyStandardOrganisasjon || is.nyOrganisasjonFraMal
 	const validationResolver: any = erOrganisasjon
 		? DollyOrganisasjonValidation
 		: DollyIdentValidation
@@ -65,7 +75,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const [loading, setLoading] = useState(false)
 	const [step, setStep] = useState(0)
 
-	const CurrentStepComponent: any = STEPS[step]
+	const CurrentStepComponent = STEPS[step].component
 	const stepMaxIndex = STEPS.length - 1
 	const formMethods = useForm({
 		mode: 'onChange',
@@ -81,48 +91,38 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const isLastStep = () => step === STEPS.length - 1
 
-	const validateForm = () => {
-		formMethods.trigger(validationPaths).then(() => {
-			const errors = formMethods.formState.errors
-			const errorFelter = Object.keys(errors)
-			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
-			const hasSteg0Error =
-				_.has(errors, 'gruppeId') ||
-				_.has(errors, 'antall') ||
-				_.has(errors, 'pdldata.opprettNyPerson.identtype')
-			if (hasSteg0Error) {
-				errorContext?.setShowError(true)
-				return
-			}
-			if (errorFelter.length > 0 && STEPS[step] === Steg2 && !kunEnvironmentError) {
-				console.warn('Feil i form, stopper navigering videre')
-				console.error(formMethods.formState.errors)
-				errorContext?.setShowError(true)
-				return
-			}
-			setStep(step + 1)
-		})
-	}
+	const validationHelpers = { formMethods, errorContext, validationPaths }
 
-	const handleNext = () => {
-		if ((STEPS[step] === Steg2 || STEPS[step] === Steg0) && formMutate) {
-			formMethods.clearErrors(manualMutateFields)
-			errorContext?.setShowError(true)
-			setMutateLoading(true)
-			formMutate?.()
-				.then((response) => {
-					setMutateLoading(false)
-					if (response.status === 'INVALID') {
-						return
-					}
-					validateForm()
-				})
-				.catch(() => {
-					setMutateLoading(false)
-					validateForm()
-				})
+	const handleNext = async () => {
+		const isSteg0 = STEPS[step].component === Steg0
+		const isSteg1 = STEPS[step].component === Steg1
+		const isSteg2 = STEPS[step].component === Steg2
+
+		if (isSteg0) {
+			const validGruppe = await formMethods.trigger(['gruppeId'])
+			if (!validGruppe) {
+				errorContext?.setShowError(true)
+				return
+			}
+		}
+
+		if (isSteg1) {
+			errorContext?.setShowError(false)
+			setStep(step + 1)
+			return
+		}
+
+		if ((isSteg2 || isSteg0) && formMutate) {
+			await executeMutateAndValidate(
+				validationHelpers,
+				step,
+				setStep,
+				formMutate,
+				setMutateLoading,
+				manualMutateFields,
+			)
 		} else {
-			validateForm()
+			await validateAndNavigate(validationHelpers, step, setStep)
 		}
 	}
 
@@ -131,7 +131,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		if (step !== 0) setStep(step - 1)
 	}
 
-	const _handleSubmit = (values) => {
+	const _handleSubmit = async (values: any) => {
 		if (!isLastStep()) {
 			handleNext()
 			return
@@ -140,7 +140,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		setLoading(true)
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
-		formMethods.handleSubmit(onSubmit(values))
+		await onSubmit(values)
 
 		formMethods.reset()
 		matchMutate(REGEX_BACKEND_GRUPPER)
@@ -149,6 +149,20 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	}
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
+
+	useMalFormSync({ context, formMethods, is })
+	useIdenttypeSync({ context, formMethods, erOrganisasjon, is })
+	useId2032Sync({ context, formMethods, erOrganisasjon, is })
+
+	const malWatch = useWatch({ control: formMethods.control, name: 'mal' })
+	const identtypeWatch = useWatch({
+		control: formMethods.control,
+		name: 'pdldata.opprettNyPerson.identtype',
+	})
+	const id2032Watch = useWatch({
+		control: formMethods.control,
+		name: 'pdldata.opprettNyPerson.id2032',
+	})
 
 	return (
 		<SwrMutateContext.Provider value={setFormMutate}>
@@ -165,6 +179,10 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					))}
 				</Stepper>
 				<BestillingsveilederHeader context={context} formMethods={formMethods} />
+				<div style={{ display: 'none' }} data-testid="stegevelger-form-snapshot">
+					mal:{malWatch}|identtype:{identtypeWatch}|id2032:{String(id2032Watch)}|sivilstand:
+					{JSON.stringify(formMethods.getValues('pdldata.person.sivilstand'))}
+				</div>
 				<Suspense fallback={<Loading label="Laster komponenter" />}>
 					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 				</Suspense>
@@ -180,9 +198,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 						mutateLoading={mutateLoading}
 						onPrevious={handleBack}
 						isLastStep={isLastStep()}
-						handleSubmit={() => {
-							return _handleSubmit(formMethods.getValues())
-						}}
+						handleSubmit={() => _handleSubmit(formMethods.getValues())}
 					/>
 				)}
 			</FormProvider>
