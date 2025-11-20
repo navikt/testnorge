@@ -42,8 +42,7 @@ class Aareg {
                     .and()
                     .method(HttpMethod.POST, HttpMethod.PUT)
                     .filters(f -> f
-                            .stripPrefix(1)
-                            .rewritePath("/%s/(?<segment>.*)".formatted(env.getCode()), "/${segment}")
+                            .stripPrefix(2)
                             .filter(authenticationFilter)
                     )
                     .uri(url);
@@ -53,8 +52,7 @@ class Aareg {
                     .and()
                     .method(HttpMethod.GET)
                     .filters(f -> f
-                            .stripPrefix(1)
-                            .rewritePath("/aareg/%s/(?<segment>.*)".formatted(env.getCode()), "/${segment}")
+                            .stripPrefix(2)
                             .filter(authenticationFilter)
                     )
                     .uri(url);
