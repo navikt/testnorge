@@ -88,6 +88,7 @@
     "@vitest/browser": "^4.0.4",
     "@vitest/browser-playwright": "^4.0.4",
     "@vitest/ui": "^4.0.4",
+    "terser": "^5.37.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "babel-plugin-styled-components": "^2.1.4",
     "dot-prop": "^10.0.0",

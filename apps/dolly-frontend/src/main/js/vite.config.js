@@ -36,7 +36,6 @@ export default defineConfig(({ mode }) => ({
 		rollupOptions: {
 			external: ['./nais.js'],
 			output: {
-				sourcemap: true,
 				sourcemapExcludeSources: false,
 				manualChunks(id) {
 					if (id.includes('node_modules') && !id.includes('navikt')) {
