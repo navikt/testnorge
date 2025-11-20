@@ -20,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 @RequiredArgsConstructor
 public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterResponse>> {
-    private static final String PEN_SAMBOER_URL = "/{miljoe}/api/samboer/periode/{periodeId}/annuller";
+    private static final String PEN_SAMBOER_URL = "/pensjon/{miljoe}/api/samboer/periode/{periodeId}/annuller";
 
     private final WebClient webClient;
     private final String periodeId;

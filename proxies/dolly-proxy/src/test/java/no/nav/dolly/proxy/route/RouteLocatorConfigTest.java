@@ -22,7 +22,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -56,6 +61,8 @@ class RouteLocatorConfigTest {
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("app.fakedings.url", () -> wireMockServer.baseUrl());
 
+        registry.add("app.targets.batch", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
         registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
         registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
@@ -63,6 +70,11 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.medl", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pensjon-afp", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pensjon-samboer", () -> wireMockServer.baseUrl());
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
@@ -78,6 +90,54 @@ class RouteLocatorConfigTest {
                 .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
         when(tokenXService.exchange(any(), any()))
                 .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+    }
+
+    @Test
+    void testBatch() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked batch";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/batch" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @Test
+    void testBrregstub() {
+
+        var downstreamPath = "/api/foobar/1337";
+        var responseBody = "Success from mocked brregstub";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/brregstub" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
     }
 
     @ParameterizedTest
@@ -250,6 +310,132 @@ class RouteLocatorConfigTest {
         webClient
                 .get()
                 .uri("/krrstub" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @Test
+    void testMedl() {
+
+        var downstreamPath = "/rest/v1/someendpoint";
+        var responseBody = "Success from mocked medl";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/medl" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @Test
+    void testNorg2() {
+
+        var downstreamPath = "/some/nested/path";
+        var responseBody = "Success from mocked norg2";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/norg2" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @Test
+    void testPensjon() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked pensjon";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/pensjon" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("dolly"))); // Note use of placeholder here.
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2"})
+    void testPensjonAfp(String env) {
+
+        var downstreamPath = "/api/mock-oppsett/test";
+        var responseBody = "Success from mocked pensjon";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/pensjon/%s/%s".formatted(env, downstreamPath))
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2"})
+    void testPensjonSamboer(String env) {
+
+        var downstreamPath = "/api/samboer/test";
+        var responseBody = "Success from mocked pensjon";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/pensjon/%s/%s".formatted(env, downstreamPath))
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("text/plain")

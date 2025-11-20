@@ -10,7 +10,7 @@ class DollyVersionCatalog {
 
     String gcpSecretManager = "5.10.0"
 
-    String apacheAvro = "1.12.0"
+    String apacheAvro = "1.12.1"
     String apacheKafka = "4.0.0"
     String apachePoi = "5.4.1"
     String assertj = "3.27.3"
@@ -18,7 +18,7 @@ class DollyVersionCatalog {
     String bouncyCastle = "1.80"
     String expressly = "5.0.0"
     String guava = "33.4.8-jre"
-    String grpc = "1.72.0"
+    String grpc = "1.76.0"
     String jackson = "2.19.0"
     String jakartaActivation = "2.1.3"
     String jakartaValidation = "3.1.0"
@@ -33,7 +33,7 @@ class DollyVersionCatalog {
     String logback = "8.1"
     String mq = "3.4.3"
     String okhttp = "4.12.0"
-    String opensearch = "1.6.3" // https://github.com/opensearch-project/spring-data-opensearch/releases
+    String opensearch = "1.8.2" // https://github.com/opensearch-project/spring-data-opensearch/releases
     String orika = "1.5.4"
     String reactorTest = "3.7.6"
     String springdoc = "2.8.14"

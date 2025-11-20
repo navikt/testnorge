@@ -1,0 +1,72 @@
+package no.nav.testnav.pdllagreservice.consumers;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import no.nav.testnav.pdllagreservice.dto.OpensearchDocumentData;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.core.BulkRequest;
+import org.opensearch.client.opensearch.core.BulkResponse;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.List;
+
+import static java.util.Objects.nonNull;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class OpensearchDocumentService {
+
+    private final OpenSearchClient client;
+
+    @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2))
+    public void processBulk(List<OpensearchDocumentData> docs) {
+
+        val bulkRequest = buildBulkRequest(docs);
+        log.info("Bulk request to index: {}, size: {}", bulkRequest.index(), bulkRequest.operations().size());
+
+        BulkResponse response = null;
+        try {
+            response = client.bulk(bulkRequest);
+        } catch (IOException e) {
+            log.error("Feil oppstått ved lagring av bulk request {}", e.getMessage(), e);
+        }
+
+        if (nonNull(response)) {
+            log.info("Bulk response status: errors: {}, items: {}, took: {}",
+                    response.errors(), response.items().size(), response.took());
+
+        } else {
+            log.error("Bulk response is null");
+        }
+    }
+
+    private BulkRequest buildBulkRequest(List<OpensearchDocumentData> documents) {
+
+        val builder = new BulkRequest.Builder()
+                .index(documents.getFirst().getIndex());
+
+        for (val doc : documents) {
+            builder.operations(op -> {
+                        if (doc.isTombstone()) {
+                            op.delete(del -> del
+                                    .index(doc.getIndex())
+                                    .id(doc.getIdentifikator()));
+                        } else {
+                            op.index(up -> up
+                                    .index(doc.getIndex())
+                                    .id(doc.getIdentifikator())
+                                    .document(doc.getDokumentAsMap()));
+                        }
+                        return op;
+                    }
+            );
+        }
+
+        return builder.build();
+    }
+}

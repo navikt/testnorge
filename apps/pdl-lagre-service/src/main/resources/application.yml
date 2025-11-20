@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: testnav-pdl-lagre-service
+    version: 1
+    description: App for å ta imot Kafka-hendelser og lagre i opensearch instans.
+  config:
+    import: "classpath:dolly-application.yml"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+  kafka:
+    consumer:
+      group-id: testnav-pdl-lagre-service
+      auto-offset-reset: earliest
+      properties:
+        isolation.level: read_committed
+      #    key-deserializer: "should be overridden in app config"
+      #    value-deserializer: "should be overridden in app config"
+      max-poll-records: 100
+      enable-auto-commit: false
+
+    client-id: ${app.name}
+    bootstrap-servers: ${KAFKA_BROKERS}
+    properties:
+      schema.registry.url: ${KAFKA_SCHEMA_REGISTRY}
+      basic.auth.credentials.source: USER_INFO
+      schema.registry.basic.auth.user.info: ${KAFKA_SCHEMA_REGISTRY_USER}:${KAFKA_SCHEMA_REGISTRY_PASSWORD}
+      security:
+        protocol: SSL
+      ssl:
+        keystore:
+          type: PKCS12
+          location: ${KAFKA_KEYSTORE_PATH}
+          password: ${KAFKA_CREDSTORE_PASSWORD}
+        truststore:
+          location: ${KAFKA_TRUSTSTORE_PATH}
+          password: ${KAFKA_CREDSTORE_PASSWORD}
+        endpoint.identification.algorithm:
+    listener:
+      concurrency: 1
+      poll-timeout: 1000
+      no-poll-threshold: 360
+      ack-mode: batch
+      type: batch
+  main:
+    allow-bean-definition-overriding: true
+
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
+spring.jmx.enabled: true
+server.tomcat.mbeanregistry.enabled: true
+
+opensearch:
+  total-fields: 2000
+  index:
+    personer: pdl-person
+    adresser: pdl-adresse

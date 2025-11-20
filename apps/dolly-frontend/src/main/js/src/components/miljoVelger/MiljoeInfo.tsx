@@ -3,18 +3,19 @@ import {
 	useArenaEnvironments,
 	useDokarkivEnvironments,
 	useInstEnvironments,
-	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
 import { arrayToString } from '@/utils/DataFormatter'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
+export const gyldigeDollyMiljoer = (dollymiljoer: any) => {
+	if (!dollymiljoer) return []
+	if (dollymiljoer.Q) return dollymiljoer.Q.filter((env: any) => env.id !== 'qx')
+	return dollymiljoer
+}
+
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
-	const {
-		pensjonEnvironments,
-		loading: loadingPensjon,
-		error: errorPensjon,
-	} = usePensjonEnvironments()
+	const pensjonEnvironments = ['q2']
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
 	const { instdata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } = bestillingsdata
@@ -22,7 +23,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		return null
 	}
 
-	const getMiljoer = (environments, loading, error) => {
+	const getMiljoer = (environments: string[] | undefined, loading?: boolean, error?: any) => {
 		if (loading) {
 			return 'Laster tilgjengelige miljøer..'
 		} else if (error && (!environments || environments.length === 0)) {
@@ -73,19 +74,19 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 								', '}
 							{pensjonforvalter?.alderspensjon && 'PESYS'}
 							):&nbsp;
-							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+							<span>{getMiljoer(pensjonEnvironments)}</span>
 						</li>
 					)}
 					{pensjonforvalter?.uforetrygd && (
 						<li>
 							Uføretrygd:&nbsp;
-							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+							<span>{getMiljoer(pensjonEnvironments)}</span>
 						</li>
 					)}
 					{pensjonforvalter?.pensjonsavtale && (
 						<li>
 							Pensjonsavtale (PEN):&nbsp;
-							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+							<span>{getMiljoer(pensjonEnvironments)}</span>
 						</li>
 					)}
 
@@ -104,18 +105,8 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 
 export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 	if (!utvalgteMiljoer) return []
-	const dollyMiljoeArray = flatDollyMiljoe(dollyMiljoe)
-
+	const dollyMiljoeArray = dollyMiljoe?.map((miljoe) => miljoe?.id)
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
 	//men ikke Dolly per dags dato
 	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
-}
-
-const flatDollyMiljoe = (dollymiljoe) => {
-	if (dollymiljoe?.length) {
-		return dollymiljoe
-	}
-	const miljoeArray = []
-	Object.values(dollymiljoe).forEach((miljoe) => miljoeArray.push(miljoe.id))
-	return miljoeArray
 }

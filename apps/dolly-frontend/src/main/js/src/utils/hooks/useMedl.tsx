@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
 
-const getMedlUrl = (ident: string) => `/testnav-medl-proxy/rest/v1/person/${ident}`
+const getMedlUrl = (ident: string) => `/testnav-dolly-proxy/medl/rest/v1/person/${ident}`
 
 type MedlResponse = {
 	response: any

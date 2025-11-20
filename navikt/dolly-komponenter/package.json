@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-komponenter",
-  "version": "1.5.9",
+  "version": "1.5.11",
   "description": "Bibliotek for diverse dolly komponenter.",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -42,7 +42,7 @@
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-terser": "^0.4.4",
