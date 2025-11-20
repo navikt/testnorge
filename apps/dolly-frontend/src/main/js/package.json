@@ -7,9 +7,7 @@
   "scripts": {
     "start": "vite --mode local-dev --port 3000 --open",
     "build": "vite build",
-    "build:verify": "vite build && node verify-sourcemaps.js",
     "preview": "vite preview --port 5678",
-    "verify-sourcemaps": "node verify-sourcemaps.js",
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:start": "vite --port 5678",

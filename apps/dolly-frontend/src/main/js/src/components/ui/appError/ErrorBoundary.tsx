@@ -27,7 +27,6 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 	}
 
 	componentDidCatch(error: Error, info: ErrorInfo) {
-		console.error('🔴 ErrorBoundary caught error 🔴')
 		console.error('Error:', error)
 		console.error('Error message:', error.message)
 		console.error('Error name:', error.name)
@@ -41,30 +40,12 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 		const fileLocationDetailed = this.extractDetailedFileLocation(info.componentStack)
 		const isMinified = this.isMinifiedError(error)
 
-		console.group('📊 Error Analysis')
-		console.log('Is minified:', isMinified)
-		console.log('Component chain:', componentNames.join(' → '))
-		console.log('File location:', fileInfo)
-		console.log('Error type:', error.constructor.name)
-		console.groupEnd()
-
 		if (isMinified) {
-			console.group('⚠️ MINIFIED ERROR - Production Build')
 			console.log('Minified component names:', componentNames)
 			console.log('First failing component:', componentNames[0] || 'Unknown')
 			console.log('Detailed file location:', fileLocationDetailed)
 			console.log('Full component stack:', info.componentStack)
 			console.log('Source file:', fileInfo)
-			console.log('🔍 SEARCH HINT: Component "' + componentNames[0] + '" at index.js line ~121')
-			console.log('🔍 Component chain to investigate:', componentNames.slice(0, 5).join(' > '))
-			console.log('💡 TIP: Check React DevTools Components tab for the actual component tree')
-			console.log(
-				'💡 TIP: The error is likely in PersoninformasjonPanel or a child component based on previous analysis',
-			)
-			console.log(
-				'🗺️  SOURCE MAPS: Click the error in Console to see original source file (if source maps loaded)',
-			)
-			console.groupEnd()
 		}
 
 		this.setState({
