@@ -27,32 +27,25 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 	}
 
 	componentDidCatch(error: Error, info: ErrorInfo) {
-		console.error('🔴 ErrorBoundary caught error 🔴')
 		console.error('Error:', error)
 		console.error('Error message:', error.message)
 		console.error('Error name:', error.name)
+		console.error('Error toString:', error.toString())
 		console.error('Component stack (RAW):', info.componentStack)
 		console.error('Error stack (RAW):', error.stack)
 		console.error('Current location:', window.location.href)
 
 		const componentNames = this.extractAllComponentNames(info.componentStack || undefined)
 		const fileInfo = this.extractFileInfo(error.stack)
+		const fileLocationDetailed = this.extractDetailedFileLocation(info.componentStack)
 		const isMinified = this.isMinifiedError(error)
 
-		console.group('📊 Error Analysis')
-		console.log('Is minified:', isMinified)
-		console.log('Component chain:', componentNames.join(' → '))
-		console.log('File location:', fileInfo)
-		console.log('Error type:', error.constructor.name)
-		console.groupEnd()
-
 		if (isMinified) {
-			console.group('⚠️ MINIFIED ERROR - Production Build')
 			console.log('Minified component names:', componentNames)
 			console.log('First failing component:', componentNames[0] || 'Unknown')
+			console.log('Detailed file location:', fileLocationDetailed)
 			console.log('Full component stack:', info.componentStack)
 			console.log('Source file:', fileInfo)
-			console.groupEnd()
 		}
 
 		this.setState({
@@ -62,7 +55,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
 		Logger.error({
 			event: `Global React feil: ${error.message}`,
-			message: `${error.message} | Components: ${componentNames.join(' > ')} | ${isMinified ? '[MINIFIED]' : ''} | File: ${fileInfo} | Stack: ${error.stack || 'N/A'}`,
+			message: `${error.message} | Components: ${componentNames.join(' > ')} | ${isMinified ? '[MINIFIED]' : ''} | File: ${fileInfo} | Location: ${fileLocationDetailed} | Stack: ${error.stack || 'N/A'}`,
 			uuid: window.uuid,
 		})
 	}
@@ -85,6 +78,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 	extractFileInfo(stack: string | undefined): string {
 		if (!stack) return 'Unknown'
 		const match = stack.match(/at\s+(?:\w+\s+)?\(?([^)]+\.js:\d+:\d+)\)?/)
+		return match ? match[1] : 'Unknown'
+	}
+
+	extractDetailedFileLocation(componentStack: string | undefined): string {
+		if (!componentStack) return 'Unknown'
+		const firstLine = componentStack.split('\n')[0]
+		const match = firstLine.match(/\((https?:\/\/[^)]+)\)/)
 		return match ? match[1] : 'Unknown'
 	}
 
