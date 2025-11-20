@@ -24,6 +24,7 @@ class RouteLocatorConfig {
     private final Medl medl;
     private final Norg2 norg2;
     private final Pensjon pensjon;
+    private final Saf saf;
     private final Sigrunstub sigrunstub;
     private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
@@ -60,6 +61,9 @@ class RouteLocatorConfig {
                 .route("pensjon-afp-q2", pensjon.build(Pensjon.SpecialCase.AFP_Q2))
                 .route("pensjon-samboer-q1", pensjon.build(Pensjon.SpecialCase.SAMBOER_Q1))
                 .route("pensjon-samboer-q2", pensjon.build(Pensjon.SpecialCase.SAMBOER_Q2))
+                .route("saf-q1", saf.build(Saf.SpecialCase.Q1))
+                .route("saf-q2", saf.build(Saf.SpecialCase.Q2))
+                .route("saf-q4", saf.build(Saf.SpecialCase.Q4))
                 .route("sigrunstub", sigrunstub.build())
                 .route("skjermingsregister", skjermingsregister.build())
                 .route("udistub", udistub.build())

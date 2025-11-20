@@ -33,6 +33,7 @@ class Targets {
     String pensjon;
     String pensjonAfp;
     String pensjonSamboer;
+    String saf;
     String sigrunstub;
     String skjermingsregister;
     String udistub;
