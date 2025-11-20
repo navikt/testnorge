@@ -37,5 +37,5 @@ class DollyVersionCatalog {
     String orika = "1.5.4"
     String reactorTest = "3.7.6"
     String springdoc = "2.8.14"
-    String swagger = "2.2.30"
+    String swagger = "2.2.40"
 }
