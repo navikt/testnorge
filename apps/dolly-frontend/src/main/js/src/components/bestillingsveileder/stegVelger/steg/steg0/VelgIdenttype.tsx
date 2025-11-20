@@ -19,7 +19,6 @@ export const VelgIdenttype = ({ gruppeId }: any) => {
 	const handleTypeChange = (value: string) => {
 		setType(value)
 		const environments = formMethods.getValues('environments') || []
-		const antall = formMethods.getValues('antall') || 1
 		const rawGruppeId = formMethods.getValues('gruppeId') ?? opts.gruppeId ?? null
 		const gruppeIdValue: number | undefined =
 			typeof rawGruppeId === 'number' ? rawGruppeId : rawGruppeId ? Number(rawGruppeId) : undefined
@@ -27,9 +26,9 @@ export const VelgIdenttype = ({ gruppeId }: any) => {
 			const config = {
 				gruppeId: gruppeIdValue || undefined,
 				antall: null,
-				identtype: opts.identtype || 'FNR',
-				id2032: opts.id2032 || false,
-				mal: opts.mal,
+				identtype: opts?.identtype || 'FNR',
+				id2032: opts?.id2032 || false,
+				mal: opts?.mal,
 				opprettFraIdenter: [],
 			}
 			const derived = deriveBestillingsveilederState(config as any, environments)
@@ -47,9 +46,9 @@ export const VelgIdenttype = ({ gruppeId }: any) => {
 			const config = {
 				gruppeId: gruppeIdValue || undefined,
 				antall: antallNy,
-				identtype: opts.identtype || 'FNR',
-				id2032: opts.id2032 || false,
-				mal: opts.mal,
+				identtype: opts?.identtype || 'FNR',
+				id2032: opts?.id2032 || false,
+				mal: opts?.mal,
 			}
 			const derived = deriveBestillingsveilederState(config as any, environments)
 			formMethods.reset(derived.initialValues)

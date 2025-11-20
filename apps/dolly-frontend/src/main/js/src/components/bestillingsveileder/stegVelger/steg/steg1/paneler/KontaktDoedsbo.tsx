@@ -11,20 +11,24 @@ import {
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { useFormContext } from 'react-hook-form'
 
-export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
+export const KontaktDoedsboPanel = ({ stateModifier, formValues, testnorgeIdent }) => {
 	const formMethods = useFormContext()
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formGruppeId = formMethods.watch('gruppeId')
 
 	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
-	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const { identer } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 
 	const npidPerson = opts?.identtype === 'NPID'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
+
+	if (testnorgeIdent) {
+		return null
+	}
 
 	const getIgnoreKeys = () => {
 		if (npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)) {

@@ -19,12 +19,12 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(IdentifikasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
-	const harNpid = opts.identtype === 'NPID'
+	const harNpid = opts?.identtype === 'NPID'
 	const erTestnorgePerson = opts?.identMaster === 'PDL'
 	const formGruppeId = formMethods.watch('gruppeId')
 
 	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
-	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const { identer } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =

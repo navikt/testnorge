@@ -53,7 +53,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
 
-	const harFnr = opts.identtype === 'FNR'
+	const harFnr = opts?.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	const getIgnoreKeys = () => {
@@ -314,7 +314,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			add: () =>
 				set(paths.norskBankkonto, {
 					kontonummer: '',
-					tilfeldigKontonummer: opts.antall && opts.antall > 1,
+					tilfeldigKontonummer: opts?.antall && opts?.antall > 1,
 				}),
 			remove: () => del(paths.norskBankkonto),
 		},

@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType
+	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { MalVelgerOrganisasjon } from '@/pages/organisasjoner/MalVelgerOrganisasjon'
@@ -10,7 +10,7 @@ import { VelgIdenttype } from '@/components/bestillingsveileder/stegVelger/steg/
 import {
 	getInitialNyIdent,
 	getInitialSivilstand,
-	initialPdlPerson
+	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
 import { MalVelgerIdent } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
@@ -27,7 +27,7 @@ type AttributeHandlers = {
 }
 
 const handleAttributeUpdates = (formMethods: any, opts: BestillingsveilederContextType) => {
-	const master = opts.identtype === 'NPID' ? 'PDL' : 'FREG'
+	const master = opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 	const attributeHandlers: AttributeHandlers = {
 		fullmakt: () => {
 			const formFullmakt = formMethods.getValues('fullmakt')
