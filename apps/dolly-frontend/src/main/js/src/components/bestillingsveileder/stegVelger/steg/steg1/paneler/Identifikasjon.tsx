@@ -24,8 +24,8 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 	const formGruppeId = formMethods.watch('gruppeId')
 
 	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
-	const { identer } = useGruppeIdenter(gruppeId)
-	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const harTestnorgeIdenter = (identer?.filter((ident) => ident.master === 'PDL')?.length ?? 0) > 0
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
