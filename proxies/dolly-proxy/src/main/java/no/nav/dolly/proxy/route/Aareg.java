@@ -1,7 +1,5 @@
 package no.nav.dolly.proxy.route;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
@@ -27,18 +25,18 @@ class Aareg {
     Function<PredicateSpec, Buildable<Route>> build(SpecialCase env, boolean writeable) {
 
         var name = writeable ?
-                NAME_WRITEABLE.formatted(env.getCode()) :
-                NAME_READABLE.formatted(env.getCode());
+                NAME_WRITEABLE.formatted(env.code) :
+                NAME_READABLE.formatted(env.code);
         var url = writeable ?
-                targets.aaregVedlikehold.formatted(env.getCode()) :
-                targets.aaregServices.formatted(env.getCode());
+                targets.aaregVedlikehold.formatted(env.code) :
+                targets.aaregServices.formatted(env.code);
 
         var authenticationFilter = authenticationFilterService
                 .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
 
         if (writeable) {
             return spec -> spec
-                    .path("/aareg/%s/**".formatted(env.getCode()))
+                    .path("/aareg/%s/**".formatted(env.code))
                     .and()
                     .method(HttpMethod.POST, HttpMethod.PUT)
                     .filters(f -> f
@@ -48,7 +46,7 @@ class Aareg {
                     .uri(url);
         } else {
             return spec -> spec
-                    .path("/aareg/%s/**".formatted(env.getCode()))
+                    .path("/aareg/%s/**".formatted(env.code))
                     .and()
                     .method(HttpMethod.GET)
                     .filters(f -> f
@@ -66,9 +64,7 @@ class Aareg {
         Q2("q2"),
         Q4("q4");
 
-        @Getter(AccessLevel.PACKAGE)
         private final String code;
-
     }
 
 }

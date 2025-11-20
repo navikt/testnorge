@@ -1,7 +1,5 @@
 package no.nav.dolly.proxy.route;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
@@ -25,10 +23,10 @@ class Arena {
 
     Function<PredicateSpec, Buildable<Route>> build(SpecialCase env) {
         return spec -> spec
-                .path("/arena/%s/**".formatted(env.getCode()))
+                .path("/arena/%s/**".formatted(env.code))
                 .filters(f -> f
                         .stripPrefix(2))
-                .uri(targets.arenaForvalteren.formatted(env.getCode()));
+                .uri(targets.arenaForvalteren.formatted(env.code));
     }
 
     @RequiredArgsConstructor
@@ -37,7 +35,6 @@ class Arena {
         Q2("q2"),
         Q4("q4");
 
-        @Getter(AccessLevel.PACKAGE)
         private final String code;
 
     }
