@@ -30,19 +30,16 @@ export const Attributt: React.FC<AttributtProps> = ({
 	...props
 }) => {
 	if (!vis) return null
-	if (!attr || !attr.label) {
-		console.error('Attributt: Invalid attr prop', attr)
-		return null
-	}
+
 	return (
 		<div title={title} style={{ display: 'flex', alignItems: 'center' }}>
 			<DollyCheckbox
 				wrapperSize={wrapperSize as any}
-				label={attr.label}
+				label={attr?.label || ''}
 				attributtCheckbox
 				size="small"
-				onChange={(e) => (e.target.checked ? attr.add() : attr.remove())}
-				value={attr.label}
+				onChange={(e) => (e.target.checked ? attr?.add?.() : attr?.remove?.())}
+				value={attr?.label || ''}
 				disabled={disabled}
 				id={id}
 				{...props}
