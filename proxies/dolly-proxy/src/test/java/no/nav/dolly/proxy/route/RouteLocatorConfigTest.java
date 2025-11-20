@@ -66,6 +66,8 @@ class RouteLocatorConfigTest {
 
         registry.add("app.targets.aareg-services", () -> wireMockServer.baseUrl());
         registry.add("app.targets.aareg-vedlikehold", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.arena-forvalteren", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.arena-ords", () -> wireMockServer.baseUrl());
         registry.add("app.targets.batch", () -> wireMockServer.baseUrl());
         registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
@@ -127,7 +129,8 @@ class RouteLocatorConfigTest {
                     .expectHeader().contentType("application/json")
                     .expectBody(String.class).isEqualTo(responseBody);
 
-            wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath)));
+            wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath))
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
             wireMockServer.verify(0, getRequestedFor(urlEqualTo(downstreamPath)));
 
         } else {
@@ -146,10 +149,61 @@ class RouteLocatorConfigTest {
                     .expectHeader().contentType("text/plain")
                     .expectBody(String.class).isEqualTo(responseBody);
 
-            wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+            wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
             wireMockServer.verify(0, postRequestedFor(urlEqualTo(downstreamPath)));
 
         }
+
+
+    }
+
+    @Test
+    void testArenaOrds() {
+
+        var downstreamPath = "/api/test";
+        var responseBody = "Success from mocked arena";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/arena" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2", "q4"})
+    void testArenaForvalteren(String miljo) {
+
+        var downstreamPath = "/some/arena/forvalteren/path";
+        var responseBody = "Success from mocked arena-%s".formatted(miljo);
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/arena/" + miljo + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
 
     }
 

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 class RouteLocatorConfig {
 
     private final Aareg aareg;
+    private final Arena arena;
     private final Batch batch;
     private final Brregstub brregstub;
     private final Ereg ereg;
@@ -37,6 +38,10 @@ class RouteLocatorConfig {
                 .route("aareg-write-q1", aareg.build(Aareg.SpecialCase.Q1, true))
                 .route("aareg-write-q2", aareg.build(Aareg.SpecialCase.Q2, true))
                 .route("aareg-write-q4", aareg.build(Aareg.SpecialCase.Q4, true))
+                .route("arena", arena.build())
+                .route("arena-q1", arena.build(Arena.SpecialCase.Q1))
+                .route("arena-q2", arena.build(Arena.SpecialCase.Q2))
+                .route("arena-q4", arena.build(Arena.SpecialCase.Q4))
                 .route("batch", batch.build())
                 .route("brregstub", brregstub.build())
                 .route("ereg-q1", ereg.build(Ereg.SpecialCase.Q1))

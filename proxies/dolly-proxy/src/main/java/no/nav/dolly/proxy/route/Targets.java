@@ -17,6 +17,8 @@ class Targets {
 
     String aaregServices;
     String aaregVedlikehold;
+    String arenaForvalteren;
+    String arenaOrds;
     String batch;
     String brregstub;
     String ereg;
