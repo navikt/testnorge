@@ -78,6 +78,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		return ignoreKeys
 	}
 
+	if (!sm?.attrs) {
+		console.error('PersoninformasjonPanel: sm.attrs is undefined')
+		return null
+	}
+
 	return (
 		<Panel
 			heading={PersoninformasjonPanel.heading}

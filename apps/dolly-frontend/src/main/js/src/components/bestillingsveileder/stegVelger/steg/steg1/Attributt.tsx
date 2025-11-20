@@ -30,6 +30,10 @@ export const Attributt: React.FC<AttributtProps> = ({
 	...props
 }) => {
 	if (!vis) return null
+	if (!attr || !attr.label) {
+		console.error('Attributt: Invalid attr prop', attr)
+		return null
+	}
 	return (
 		<div title={title} style={{ display: 'flex', alignItems: 'center' }}>
 			<DollyCheckbox
