@@ -49,8 +49,7 @@ public class OpenSearchPersonQueryUtils {
                                     .orElse(null),
                             Optional.ofNullable(request.getPersonRequest().getAlderFom())
                                     .map(now::minusYears)
-                                    .orElse(null))))
-                    .build();
+                                    .orElse(null))));
         }
     }
 

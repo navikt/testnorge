@@ -109,17 +109,15 @@ public class OpenSearchQueryUtils {
                 .build();
     }
 
-    public static BoolQuery mustExistQuery(BoolQuery.Builder queryBuilder, String field) {
+    public static BoolQuery.Builder mustExistQuery(BoolQuery.Builder queryBuilder, String field) {
 
         return queryBuilder
-                .must(q -> q.exists(existQuery(field)))
-                .build();
+                .must(q -> q.exists(existQuery(field)));
     }
 
-    public static BoolQuery mustMatchQuery(BoolQuery.Builder queryBuilder, String field, Object value) {
+    public static BoolQuery.Builder mustMatchQuery(BoolQuery.Builder queryBuilder, String field, Object value) {
 
         return queryBuilder
-                .must(q -> q.match(matchQuery(field, value)))
-                .build();
+                .must(q -> q.match(matchQuery(field, value)));
     }
 }

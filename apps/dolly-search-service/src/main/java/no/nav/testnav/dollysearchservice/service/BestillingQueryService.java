@@ -2,6 +2,7 @@ package no.nav.testnav.dollysearchservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.testnav.dollysearchservice.dto.BestillingIdenter;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils;
@@ -78,7 +79,7 @@ public class BestillingQueryService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<String> execQuery(BoolQuery.Builder query) {
+    private Set<String> execQuery(BoolQuery.Builder queryBuilder) {
 
         var now = System.currentTimeMillis();
 
@@ -86,11 +87,13 @@ public class BestillingQueryService {
         int from = 0;
         SearchResponse<BestillingIdenter> searchResponse;
 
+        val query = queryBuilder.build();
+
         try {
             do {
                 searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                         .index(bestillingIndex)
-                        .query(q -> q.bool(query.build()))
+                        .query(q -> q.bool(query))
                         .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
                         .size(QUERY_SIZE)
                         .from(from)
