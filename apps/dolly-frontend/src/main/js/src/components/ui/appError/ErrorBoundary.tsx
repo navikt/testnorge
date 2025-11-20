@@ -31,6 +31,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 		console.error('Error:', error)
 		console.error('Error message:', error.message)
 		console.error('Error name:', error.name)
+		console.error('Error toString:', error.toString())
 		console.error('Component stack (RAW):', info.componentStack)
 		console.error('Error stack (RAW):', error.stack)
 		console.error('Current location:', window.location.href)
