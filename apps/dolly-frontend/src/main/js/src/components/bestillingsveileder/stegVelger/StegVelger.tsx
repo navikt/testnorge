@@ -34,6 +34,7 @@ import { erDollyAdmin } from '@/utils/DollyAdmin'
 import { useMalFormSync } from './hooks/useMalFormSync'
 import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
 import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
+import StepErrorBoundary from './StepErrorBoundary.tsx'
 
 interface StepDef {
 	component: React.ComponentType<any>
@@ -65,7 +66,11 @@ export const StegVelger = ({
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const is = context.is || {}
-	const erOrganisasjon = is.nyOrganisasjon || is.nyStandardOrganisasjon || is.nyOrganisasjonFraMal
+	const erOrganisasjon: boolean = !!(
+		is.nyOrganisasjon ||
+		is.nyStandardOrganisasjon ||
+		is.nyOrganisasjonFraMal
+	)
 	const validationResolver: any = erOrganisasjon
 		? DollyOrganisasjonValidation
 		: DollyIdentValidation
@@ -151,8 +156,8 @@ export const StegVelger = ({
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
 	useMalFormSync({ context, formMethods, is })
-	useIdenttypeSync({ context, formMethods, erOrganisasjon, is })
-	useId2032Sync({ context, formMethods, erOrganisasjon, is })
+	useIdenttypeSync({ context, formMethods, erOrganisasjon: Boolean(erOrganisasjon), is })
+	useId2032Sync({ context, formMethods, erOrganisasjon: Boolean(erOrganisasjon), is })
 
 	const malWatch = useWatch({ control: formMethods.control, name: 'mal' })
 	const identtypeWatch = useWatch({
@@ -184,7 +189,9 @@ export const StegVelger = ({
 					{JSON.stringify(formMethods.getValues('pdldata.person.sivilstand'))}
 				</div>
 				<Suspense fallback={<Loading label="Laster komponenter" />}>
-					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
+					<StepErrorBoundary stepIndex={step} stepLabel={labels[step].label}>
+						<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
+					</StepErrorBoundary>
 				</Suspense>
 				{(devEnabled || erDollyAdmin()) && (
 					<Suspense>
