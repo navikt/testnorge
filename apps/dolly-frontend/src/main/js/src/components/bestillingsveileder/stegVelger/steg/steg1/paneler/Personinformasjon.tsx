@@ -43,8 +43,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const { identer } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 
-	const opprettFraEksisterende = opts.is.opprettFraIdenter
-	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
+	const opprettFraEksisterende = opts?.is?.opprettFraIdenter
+	const leggTil = opts?.is?.leggTil || opts?.is?.leggTilPaaGruppe
 
 	const npidPerson = opts?.identtype === 'NPID'
 	const ukjentGruppe = !gruppeId

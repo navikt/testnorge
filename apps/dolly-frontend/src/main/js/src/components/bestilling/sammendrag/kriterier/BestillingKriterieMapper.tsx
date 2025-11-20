@@ -2545,7 +2545,9 @@ export function useBestillingData(
 	bestillingsinformasjon?: any,
 	firstIdent?: string,
 ) {
-	const bestilling = useBestillingsveileder() as BestillingsveilederContextType
+	const contextValue = useBestillingsveileder() as BestillingsveilederContextType
+	const hasRealContext = contextValue?.is !== undefined || contextValue?.gruppe !== undefined
+	const bestilling = hasRealContext ? contextValue : undefined
 	const { navEnheter } = useNavEnheter()
 	return buildBestillingData(
 		bestillingData,

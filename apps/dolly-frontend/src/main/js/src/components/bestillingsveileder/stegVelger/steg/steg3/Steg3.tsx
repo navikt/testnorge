@@ -25,7 +25,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	const { organisasjonMiljoe, loading } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
-	const importTestnorge = opts.is.importTestnorge
+	const importTestnorge = opts?.is?.importTestnorge
 
 	const erOrganisasjon = formMethods.getValues('organisasjon')
 
