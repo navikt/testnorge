@@ -1,16 +1,15 @@
-import { useContext } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import {
-	BestillingsveilederContext,
-	BestillingsveilederContextType,
-} from './BestillingsveilederContext'
+import { BestillingsveilederContextType } from './BestillingsveilederContext'
 import * as _ from 'lodash-es'
 
-export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: any) => {
-	'use no memo' // Skip compilation for this component
+export const useStateModifierFns = (
+	formMethods: UseFormReturn,
+	setFormMutate: any,
+	opts: BestillingsveilederContextType,
+) => {
+	'use no memo'
 
 	const { setValue, watch, resetField, getValues, reset } = formMethods
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const set = (path: string, value: any) => setValue(path, value)
 	const has = (path: string) => watch(path) !== undefined

@@ -88,7 +88,7 @@ export const StegVelger = ({
 		resolver: yupResolver(validationResolver),
 		context: context,
 	})
-	const stateModifier = useStateModifierFns(formMethods, setFormMutate)
+	const stateModifier = useStateModifierFns(formMethods, setFormMutate, context)
 
 	const matchMutate = useMatchMutate()
 
