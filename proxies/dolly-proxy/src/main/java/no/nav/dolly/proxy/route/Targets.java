@@ -31,6 +31,9 @@ class Targets {
     String krrstub;
     String medl;
     String norg2;
+    String pdlApi;
+    String pdlApiQ1;
+    String pdlTestdata;
     String pensjon;
     String pensjonAfp;
     String pensjonSamboer;

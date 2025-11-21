@@ -24,6 +24,7 @@ class RouteLocatorConfig {
     private final Krrstub krrstub;
     private final Medl medl;
     private final Norg2 norg2;
+    private final Pdl pdl;
     private final Pensjon pensjon;
     private final Saf saf;
     private final Sigrunstub sigrunstub;
@@ -60,6 +61,9 @@ class RouteLocatorConfig {
                 .route("krrstub", krrstub.build())
                 .route("medl", medl.build())
                 .route("norg2", norg2.build())
+                .route("pdl-api", pdl.build(Pdl.SpecialCase.API))
+                .route("pdl-api-q1", pdl.build(Pdl.SpecialCase.API_Q1))
+                .route("pdl-testdata", pdl.build(Pdl.SpecialCase.TESTDATA))
                 .route("pensjon", pensjon.build())
                 .route("pensjon-afp-q1", pensjon.build(Pensjon.SpecialCase.AFP_Q1))
                 .route("pensjon-afp-q2", pensjon.build(Pensjon.SpecialCase.AFP_Q2))
