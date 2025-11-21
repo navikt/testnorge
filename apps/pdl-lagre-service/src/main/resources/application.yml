@@ -4,7 +4,7 @@ spring:
     version: 1
     description: App for å ta imot Kafka-hendelser og lagre i opensearch instans.
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
