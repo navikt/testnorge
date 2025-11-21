@@ -82,8 +82,9 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon-afp", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon-samboer", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.saf", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
     }
 
@@ -558,6 +559,33 @@ class RouteLocatorConfigTest {
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2", "q4"})
+    void testSaf(String env) {
+
+        var downstreamPath = "/some/random/path";
+        var responseBody = "Success from mocked saf-%s".formatted(env);
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/saf/" + env + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
 
     }
 
