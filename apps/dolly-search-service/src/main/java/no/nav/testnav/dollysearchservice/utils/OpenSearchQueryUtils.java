@@ -1,9 +1,22 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import org.apache.lucene.search.join.ScoreMode;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import lombok.val;
+import org.opensearch.client.json.JsonData;
+import org.opensearch.client.opensearch._types.FieldValue;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.ChildScoreMode;
+import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
+import org.opensearch.client.opensearch._types.query_dsl.MatchQuery;
+import org.opensearch.client.opensearch._types.query_dsl.NestedQuery;
+import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
+import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
+import org.opensearch.client.opensearch._types.query_dsl.RegexpQuery;
+import org.opensearch.client.opensearch._types.query_dsl.TermsQuery;
+
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 @UtilityClass
 public class OpenSearchQueryUtils {
@@ -15,48 +28,102 @@ public class OpenSearchQueryUtils {
     public static final String NAVSPERSONIDENTIFIKATOR = "hentPerson.navspersonidentifikator";
     public static final String CONCAT = "%s.%s";
 
-    public static QueryBuilder rangeQuery(String field, Object value1, Object value2) {
+    public static RangeQuery rangeQuery(String field, Object value1, Object value2) {
 
-        return QueryBuilders.rangeQuery(field).from(value1).to(value2);
+        return QueryBuilders.range()
+                .field(field)
+                .from(JsonData.of(value1))
+                .to(JsonData.of(value2))
+                .build();
     }
 
-    public static QueryBuilder matchQuery(String field, Object value) {
+    public static MatchQuery matchQuery(String field, Object value) {
 
-        return QueryBuilders.matchQuery(field, value);
+        return QueryBuilders.match()
+                .field(field)
+                .query(FieldValue.of(value.toString()))
+                .build();
     }
 
-    public static QueryBuilder existQuery(String field) {
+    public static ExistsQuery existQuery(String field) {
 
-        return QueryBuilders.existsQuery(field);
+        return QueryBuilders.exists().field(field).build();
     }
 
-    public static QueryBuilder termsQuery(String field, Object[] values) {
+    public static TermsQuery termsQuery(String field, Set<String> values) {
 
-        return QueryBuilders.termsQuery(field, values);
+        val fieldValues = Optional.ofNullable(values).orElse(Collections.emptySet()).stream()
+                .map(FieldValue::of)
+                .toList();
+
+        return QueryBuilders.terms()
+                .field(field)
+                .terms(q -> q.value(fieldValues))
+                .build();
     }
 
-    public static QueryBuilder regexpQuery(String field, String value) {
+    public static RegexpQuery regexpQuery(String field, String value) {
 
-        return QueryBuilders.regexpQuery(field, value);
+        return QueryBuilders.regexp()
+                .field(field)
+                .value(value)
+                .build();
     }
 
-    public static QueryBuilder nestedRegexpQuery(String path, String field, String value) {
+    public static NestedQuery nestedRangeQuery(String path, String field, Object value1, Object value2) {
 
-        return QueryBuilders.nestedQuery(path, regexpQuery(CONCAT.formatted(path, field), value), ScoreMode.Avg);
+        return QueryBuilders.nested()
+                .path(path)
+                .query(q -> q.range(rangeQuery(CONCAT.formatted(path, field), value1, value2)))
+                .scoreMode(ChildScoreMode.Avg)
+                .build();
     }
 
-    public static QueryBuilder nestedMatchQuery(String path, String field, Object value) {
+    public static NestedQuery nestedRegexpQuery(String path, String field, String value) {
 
-        return QueryBuilders.nestedQuery(path, matchQuery(CONCAT.formatted(path, field), value), ScoreMode.Avg);
+        return QueryBuilders.nested()
+                .path(path)
+                .query(q -> q.regexp(regexpQuery(CONCAT.formatted(path, field), value)))
+                .scoreMode(ChildScoreMode.Avg)
+                .build();
     }
 
-    public static QueryBuilder nestedTermsQuery(String path, String field, Object[] values) {
+    public static NestedQuery nestedMatchQuery(String path, String field, Object value) {
 
-        return QueryBuilders.nestedQuery(path, termsQuery(CONCAT.formatted(path, field), values), ScoreMode.Avg);
+        return QueryBuilders.nested()
+                .path(path)
+                .query(q -> q.match(matchQuery(CONCAT.formatted(path, field), value)))
+                .scoreMode(ChildScoreMode.Avg)
+                .build();
     }
 
-    public static QueryBuilder nestedExistQuery(String path, String field) {
+    public static NestedQuery nestedTermsQuery(String path, String field, Set<String> values) {
 
-        return QueryBuilders.nestedQuery(path, existQuery(CONCAT.formatted(path, field)), ScoreMode.Avg);
+        return QueryBuilders.nested()
+                .path(path)
+                .query(q -> q.terms(termsQuery(CONCAT.formatted(path, field), values)))
+                .scoreMode(ChildScoreMode.Avg)
+                .build();
+    }
+
+    public static NestedQuery nestedExistQuery(String path, String field) {
+
+        return QueryBuilders.nested()
+                .path(path)
+                .query(q -> q.exists(existQuery(CONCAT.formatted(path, field))))
+                .scoreMode(ChildScoreMode.Avg)
+                .build();
+    }
+
+    public static BoolQuery.Builder mustExistQuery(BoolQuery.Builder queryBuilder, String field) {
+
+        return queryBuilder
+                .must(q -> q.exists(existQuery(field)));
+    }
+
+    public static BoolQuery.Builder mustMatchQuery(BoolQuery.Builder queryBuilder, String field, Object value) {
+
+        return queryBuilder
+                .must(q -> q.match(matchQuery(field, value)));
     }
 }

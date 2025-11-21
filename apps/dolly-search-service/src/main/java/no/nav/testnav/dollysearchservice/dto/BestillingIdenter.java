@@ -13,5 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class BestillingIdenter {
 
+    private Long id;
     private List<String> identer;
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Set;
 
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.termsQuery;
@@ -33,8 +34,8 @@ public class LegacyService {
                 .build();
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(personRequest);
-        query.mustNot(termsQuery("tags", new String[]{"DOLLY", "ARENASYNT"}));
-        query.must(matchQuery("tags", "TESTNORGE"));
+        query.mustNot(q -> q.terms(termsQuery("tags", Set.of("DOLLY", "ARENASYNT"))));
+        query.must(q -> q.match(matchQuery("tags", "TESTNORGE")));
 
         return openSearchQueryService.execQuery(personRequest, query)
                 .map(this::formatResponse)

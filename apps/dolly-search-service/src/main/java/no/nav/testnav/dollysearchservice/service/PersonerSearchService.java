@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -42,7 +42,7 @@ public class PersonerSearchService {
                 no.nav.testnav.dollysearchservice.dto.SearchRequest.class, context);
 
         Set<String> identer;
-        if (isNull(request.getPersonRequest()) || isBlank(request.getPersonRequest().getIdent())) {
+        if (isNull(request.getPersonRequest()) || isNotBlank(request.getPersonRequest().getIdent())) {
 
             identer = bestillingQueryService.execRegisterCacheQuery(request);
         } else {
