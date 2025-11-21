@@ -17,7 +17,9 @@ class Ereg {
     private final Targets targets;
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
+
         var uri = targets.ereg.contains("%s") ? targets.ereg.formatted(env.code) : targets.ereg;
+
         return spec -> spec
                 .path("/ereg/api/%s/**".formatted(env.code))
                 .filters(f -> f
@@ -25,6 +27,7 @@ class Ereg {
                         .rewritePath("/api/%s/(?<segment>.*)".formatted(env.code), "/${segment}")
                         .removeRequestHeader(HttpHeaders.AUTHORIZATION))
                 .uri(uri);
+
     }
 
     @RequiredArgsConstructor

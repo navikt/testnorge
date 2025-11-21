@@ -24,7 +24,9 @@ class Dokarkiv {
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
 
         var url = targets.dokarkiv.formatted(env.nameAndUrlReplacement);
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME.formatted(env.nameAndUrlReplacement), url);
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME.formatted(env.nameAndUrlReplacement), url);
+
         return spec -> spec
                 .path("/dokarkiv/%s/**".formatted(env.code))
                 .filters(f -> f

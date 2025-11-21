@@ -28,7 +28,8 @@ class Pensjon {
         // Special case for AFP in Q1.
         if (SpecialCase.AFP_Q1.equals(env)) {
             var uri = targets.getPensjonAfp().formatted("q1");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q1/api/mock-oppsett/**")
                     .filters(f -> f
@@ -41,7 +42,8 @@ class Pensjon {
         // Special case for AFP in Q2.
         if (SpecialCase.AFP_Q2.equals(env)) {
             var uri = targets.getPensjonAfp().formatted("q2");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q2/api/mock-oppsett/**")
                     .filters(f -> f
@@ -54,7 +56,8 @@ class Pensjon {
         // Special case for samboerforhold in Q1.
         if (SpecialCase.SAMBOER_Q1.equals(env)) {
             var uri = targets.getPensjonSamboer().formatted("q1");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q1/api/samboer/**")
                     .filters(f -> f
@@ -67,7 +70,8 @@ class Pensjon {
         // Special case for samboerforhold in Q2.
         if (SpecialCase.SAMBOER_Q2.equals(env)) {
             var uri = targets.getPensjonSamboer().formatted("q2");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q2/api/samboer/**")
                     .filters(f -> f
@@ -96,7 +100,6 @@ class Pensjon {
 
         private final String namespace;
         private final String name;
-
     }
 
 }

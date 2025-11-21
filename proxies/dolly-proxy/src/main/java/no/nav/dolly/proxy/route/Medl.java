@@ -22,7 +22,9 @@ class Medl {
 
     Function<PredicateSpec, Buildable<Route>> build() {
 
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.medl);
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.medl);
+
         return spec -> spec
                 .path("/medl/rest/v1/**")
                 .filters(f -> f

@@ -25,7 +25,8 @@ class Saf {
 
         var url = targets.saf.formatted(env.nameAndUrlReplacement);
         var name = NAME.formatted(env.nameAndUrlReplacement);
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
 
         return spec -> spec
                 .path("/saf/%s/**".formatted(env.code))
@@ -44,7 +45,6 @@ class Saf {
 
         private final String code;
         private final String nameAndUrlReplacement;
-
     }
 
 }

@@ -37,7 +37,6 @@ class Arena {
         Q4("q4");
 
         private final String code;
-
     }
 
 }

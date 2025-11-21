@@ -27,7 +27,8 @@ class Pdl {
             case API_Q1 -> targets.pdlApiQ1;
             case TESTDATA -> targets.pdlTestdata;
         };
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, env.name, url);
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, env.name, url);
 
         return switch (env) {
 
