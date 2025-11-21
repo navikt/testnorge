@@ -3,15 +3,15 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import * as _ from 'lodash-es'
 import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { Foreldreansvar } from '@/components/fagsystem/pdlf/PdlTypes'
+import { ForeldreansvarData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
 type PdlForeldreansvarProps = {
-	data: Array<Foreldreansvar>
+	data: Array<ForeldreansvarData>
 }
 
 type VisningProps = {
-	data: Foreldreansvar
+	data: ForeldreansvarData
 	idx: number
 }
 
@@ -54,10 +54,10 @@ export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
 	}
 
 	const gyldigeForeldreansvar = data.filter(
-		(foreldreansvar: Foreldreansvar) => !foreldreansvar.metadata?.historisk,
+		(foreldreansvar: ForeldreansvarData) => !foreldreansvar.metadata?.historisk,
 	)
 	const historiskeForeldreansvar = data.filter(
-		(foreldreansvar: Foreldreansvar) => foreldreansvar.metadata?.historisk,
+		(foreldreansvar: ForeldreansvarData) => foreldreansvar.metadata?.historisk,
 	)
 
 	return (
