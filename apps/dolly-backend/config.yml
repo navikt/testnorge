@@ -19,6 +19,9 @@ spec:
       rules:
         - application: dolly-frontend
         - application: dolly-idporten
+        - application: histark-core-api
+          namespace: histark
+          cluster: dev-fss
         - application: etterlatte-testdata
           namespace: etterlatte
         - application: testnav-batch-bestilling-service
