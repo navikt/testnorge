@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import React, { useContext } from 'react'
+import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -16,8 +16,8 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
 import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { YrkesskadeTypes } from '@/components/fagsystem/yrkesskader/YrkesskaderTypes'
 
@@ -25,7 +25,7 @@ export const yrkesskaderAttributt = 'yrkesskader'
 
 export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
-	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	const handleChangeTidstype = (value: any, path: string) => {
 		formMethods.setValue(`${path}.tidstype`, value?.value || null)
@@ -44,8 +44,8 @@ export const YrkesskaderForm = () => {
 			(person: any) => person?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt,
 		)
 		const vergemaalLeggTil =
-			opts?.personFoerLeggTil?.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt ||
-			opts?.personFoerLeggTil?.pdlforvalter?.person?.vergemaal
+			(opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt ||
+			(opts?.personFoerLeggTil as any)?.pdlforvalter?.person?.vergemaal
 
 		return vergemaalForm || vergemaalImport || vergemaalLeggTil
 	}
@@ -58,8 +58,8 @@ export const YrkesskaderForm = () => {
 			?.flatMap((person: any) => person?.data?.hentPerson?.forelderBarnRelasjon)
 			?.filter((relasjon: any) => relasjon?.minRolleForPerson === 'BARN')
 		const forelderLeggTil = (
-			opts?.personFoerLeggTil?.pdl?.hentPerson?.forelderBarnRelasjon ||
-			opts?.personFoerLeggTil?.pdlforvalter?.person?.forelderBarnRelasjon
+			(opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.forelderBarnRelasjon ||
+			(opts?.personFoerLeggTil as any)?.pdlforvalter?.person?.forelderBarnRelasjon
 		)?.filter((relasjon: any) => relasjon?.minRolleForPerson === 'BARN')
 
 		return forelderForm || forelderImport || forelderLeggTil

@@ -75,8 +75,8 @@ const Steg2: React.FC = () => {
 		return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
 	}
 
-	const leggTil = opts.is.leggTil
-	const importTestnorge = opts.is.importTestnorge
+	const leggTil = opts?.is?.leggTil
+	const importTestnorge = opts?.is?.importTestnorge
 
 	if (!harAvhukedeAttributter(getValues())) {
 		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge)}</Alert>

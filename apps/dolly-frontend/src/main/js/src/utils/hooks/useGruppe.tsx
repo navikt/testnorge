@@ -53,14 +53,8 @@ export const useGruppeById = (
 	sortKolonne = null,
 	sortRetning = null,
 ) => {
-	if (!gruppeId) {
-		return {
-			loading: false,
-			error: 'GruppeId mangler!',
-		}
-	}
 	const { data, isLoading, error } = useSWR<Gruppe, Error>(
-		getPaginertGruppeUrl(gruppeId, pageNo, pageSize, sortKolonne, sortRetning),
+		gruppeId ? getPaginertGruppeUrl(gruppeId, pageNo, pageSize, sortKolonne, sortRetning) : null,
 		fetcher,
 		{
 			refreshInterval: autoRefresh ? 2000 : null,
@@ -75,18 +69,12 @@ export const useGruppeById = (
 		}, {}),
 		gruppeId: data?.id,
 		gruppe: data,
-		loading: isLoading,
-		error: error,
+		loading: !gruppeId ? false : isLoading,
+		error: !gruppeId ? 'GruppeId mangler!' : error,
 	}
 }
 
 export const useGruppeIdenter = (gruppeId) => {
-	if (!gruppeId) {
-		return {
-			loading: false,
-			error: 'GruppeId mangler!',
-		}
-	}
 	const { data, isLoading, error } = useSWR<Gruppe, Error>(
 		gruppeId ? getHelGruppeUrl(gruppeId) : null,
 		fetcher,
@@ -99,8 +87,8 @@ export const useGruppeIdenter = (gruppeId) => {
 				master: person.master,
 			}
 		}),
-		loading: isLoading,
-		error: error,
+		loading: !gruppeId ? false : isLoading,
+		error: !gruppeId ? 'GruppeId mangler!' : error,
 	}
 }
 

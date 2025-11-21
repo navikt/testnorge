@@ -46,6 +46,9 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 						<FormCheckbox
 							name={`${path}.tilfeldigKontonummer`}
 							label="Har tilfeldig kontonummer"
+							afterChange={() => {
+								formMethods.trigger(`${path}.kontonummer`)
+							}}
 							size="medium"
 							disabled={disableTilfeldigKontonummer}
 						/>
