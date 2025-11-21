@@ -103,7 +103,7 @@ public class BestillingQueryService {
                 identer.addAll(getIdenter(searchResponse));
                 from += QUERY_SIZE;
 
-            } while (!searchResponse.hits().hits().isEmpty());
+            } while (searchResponse.hits().hits().size() == QUERY_SIZE);
 
         } catch (IOException e) {
             log.error("Feil ved henting av identer", e);

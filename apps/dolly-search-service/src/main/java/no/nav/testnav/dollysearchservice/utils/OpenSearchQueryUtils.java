@@ -5,6 +5,7 @@ import lombok.val;
 import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.ChildScoreMode;
 import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
 import org.opensearch.client.opensearch._types.query_dsl.MatchQuery;
 import org.opensearch.client.opensearch._types.query_dsl.NestedQuery;
@@ -74,6 +75,7 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.nested()
                 .path(path)
                 .query(q -> q.range(rangeQuery(CONCAT.formatted(path, field), value1, value2)))
+                .scoreMode(ChildScoreMode.Avg)
                 .build();
     }
 
@@ -82,6 +84,7 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.nested()
                 .path(path)
                 .query(q -> q.regexp(regexpQuery(CONCAT.formatted(path, field), value)))
+                .scoreMode(ChildScoreMode.Avg)
                 .build();
     }
 
@@ -90,6 +93,7 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.nested()
                 .path(path)
                 .query(q -> q.match(matchQuery(CONCAT.formatted(path, field), value)))
+                .scoreMode(ChildScoreMode.Avg)
                 .build();
     }
 
@@ -98,6 +102,7 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.nested()
                 .path(path)
                 .query(q -> q.terms(termsQuery(CONCAT.formatted(path, field), values)))
+                .scoreMode(ChildScoreMode.Avg)
                 .build();
     }
 
@@ -106,6 +111,7 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.nested()
                 .path(path)
                 .query(q -> q.exists(existQuery(CONCAT.formatted(path, field))))
+                .scoreMode(ChildScoreMode.Avg)
                 .build();
     }
 

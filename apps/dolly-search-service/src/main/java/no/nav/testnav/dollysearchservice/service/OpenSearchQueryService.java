@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.FieldSort;
+import org.opensearch.client.opensearch._types.SortOptions;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
@@ -28,7 +30,7 @@ public class OpenSearchQueryService {
     private String pdlIndex;
 
     @SneakyThrows
-    public Mono<SearchInternalResponse> execQuery(SearchRequest request, BoolQuery.Builder query) {
+    public Mono<SearchInternalResponse> execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
 
         var now = System.currentTimeMillis();
 
@@ -42,7 +44,8 @@ public class OpenSearchQueryService {
 
         var personSoekResponse = Mono.just(openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                 .index(pdlIndex)
-                .query(q1 -> q1.bool(query.build()))
+                .query(q -> q.bool(queryBuilder.build()))
+                .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
                 .from(request.getSide() * request.getAntall())
                 .size(request.getAntall())
                 .timeout("3s")

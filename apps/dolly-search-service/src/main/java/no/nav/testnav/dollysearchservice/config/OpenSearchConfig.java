@@ -1,5 +1,6 @@
 package no.nav.testnav.dollysearchservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -22,7 +23,7 @@ import java.net.URISyntaxException;
 
 @Slf4j
 @Configuration
-@Profile({"prod","dev"})
+@Profile("!test")
 @RequiredArgsConstructor
 public class OpenSearchConfig  {
 
@@ -34,6 +35,8 @@ public class OpenSearchConfig  {
 
     @Value("${open.search.uri}")
     private String uri;
+
+    private final ObjectMapper objectMapper;
 
     @Bean
     public CredentialsProvider credentialsProvider() throws URISyntaxException {
@@ -49,7 +52,7 @@ public class OpenSearchConfig  {
 
         val transportBuilder = ApacheHttpClient5TransportBuilder
                 .builder(HttpHost.create(uri))
-                .setMapper(new JacksonJsonpMapper())
+                .setMapper(new JacksonJsonpMapper(objectMapper))
                 .setHttpClientConfigCallback(httpClientBuilder ->
                         httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
                 ).build();
