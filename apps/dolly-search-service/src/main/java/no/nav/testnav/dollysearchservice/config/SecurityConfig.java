@@ -14,7 +14,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 @Configuration
-@Profile({"prod", "dev", "local"})
 @RequiredArgsConstructor
 class SecurityConfig {
 
