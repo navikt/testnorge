@@ -21,6 +21,7 @@ class Targets {
     String arenaOrds;
     String batch;
     String brregstub;
+    String dokarkiv;
     String ereg;
     String fullmakt;
     String histark;
