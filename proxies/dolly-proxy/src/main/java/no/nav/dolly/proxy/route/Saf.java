@@ -5,6 +5,7 @@ import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -20,7 +21,7 @@ class Saf {
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;
 
-    Function<PredicateSpec, Buildable<Route>> build(SpecialCase env) {
+    Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
 
         var url = targets.saf.formatted(env.nameAndUrlReplacement);
         var name = NAME.formatted(env.nameAndUrlReplacement);

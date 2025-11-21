@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -22,7 +23,7 @@ class Aareg {
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;
 
-    Function<PredicateSpec, Buildable<Route>> build(SpecialCase env, boolean writeable) {
+    Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env, boolean writeable) {
 
         var name = writeable ?
                 NAME_WRITEABLE.formatted(env.code) :

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -21,7 +22,7 @@ class Arena {
                 .uri(targets.arenaOrds);
     }
 
-    Function<PredicateSpec, Buildable<Route>> build(SpecialCase env) {
+    Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
         return spec -> spec
                 .path("/arena/%s/**".formatted(env.code))
                 .filters(f -> f
