@@ -40,9 +40,9 @@ public class PdlPersonDokumentListener {
 
     @KafkaListener(
             id = "pdl-lagre-person",
-            clientIdPrefix = "testnav-lagre-person",
+            clientIdPrefix = "testnav-lagre-person-v3",
             topics = "pdl.pdl-persondokument-tagged-v1",
-            groupId = "testnav-pdl-lagre-person-v2",
+            groupId = "testnav-pdl-lagre-person-v3",
             containerFactory = "pdlDokumentKafkaFactory"
     )
     @Timed(value = KAFKA_CONSUMER_TIMED, extraTags = {KEY, "pdldokument"}, percentiles = {.99, .75, .50, .25})
