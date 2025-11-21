@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -42,14 +42,15 @@ public class PersonerSearchService {
                 no.nav.testnav.dollysearchservice.dto.SearchRequest.class, context);
 
         Set<String> identer;
-        if (isNull(request.getPersonRequest()) || isNotBlank(request.getPersonRequest().getIdent())) {
-
-            identer = bestillingQueryService.execRegisterCacheQuery(request);
-        } else {
+        if (nonNull(request.getPersonRequest()) && isNotBlank(request.getPersonRequest().getIdent())) {
 
             identer = bestillingQueryService.execRegisterNoCacheQuery(request).stream()
                     .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
                     .collect(Collectors.toSet());
+
+        } else {
+
+            identer = bestillingQueryService.execRegisterCacheQuery(request);
         }
 
         request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);

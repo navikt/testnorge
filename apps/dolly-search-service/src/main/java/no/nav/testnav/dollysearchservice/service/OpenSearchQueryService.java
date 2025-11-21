@@ -1,20 +1,23 @@
 package no.nav.testnav.dollysearchservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.undertow.util.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.FieldSort;
-import org.opensearch.client.opensearch._types.SortOptions;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.io.IOException;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -42,19 +45,27 @@ public class OpenSearchQueryService {
             request.setAntall(10);
         }
 
-        var personSoekResponse = Mono.just(openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
-                .index(pdlIndex)
-                .query(q -> q.bool(queryBuilder.build()))
-                .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
-                .from(request.getSide() * request.getAntall())
-                .size(request.getAntall())
-                .timeout("3s")
-                .build(), JsonNode.class))
-                .map(response -> formatResponse(response, request));
+        try {
+            val personSoekResponse = Mono.just(openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                            .index(pdlIndex)
+                            .query(new Query.Builder()
+                                    .bool(queryBuilder.build())
+                                    .build())
+                            .from(request.getSide() * request.getAntall())
+                            .size(request.getAntall())
+                            .timeout("3s")
+                            .build(), JsonNode.class))
+                    .map(response -> formatResponse(response, request));
 
-        log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
+            log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
-        return personSoekResponse;
+            return personSoekResponse;
+
+        } catch (IOException e) {
+
+            log.error("Feil ved personsøk i OpenSearch", e);
+            throw new BadRequestException("Feil ved personsøk i OpenSearch", e);
+        }
     }
 
     private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
