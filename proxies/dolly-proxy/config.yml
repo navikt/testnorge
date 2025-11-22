@@ -102,6 +102,8 @@ spec:
           namespace: arbeidsforhold
         - application: ereg-services-q4
           namespace: arbeidsforhold
+        - application: testnav-joark-dokument-service
+          cluster: dev-gcp
         - application: medlemskap-medl-testdata
           namespace: team-rocket
           cluster: dev-gcp

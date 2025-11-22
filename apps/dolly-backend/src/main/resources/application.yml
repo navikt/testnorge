@@ -165,11 +165,6 @@ consumers:
     namespace: dolly
     url: http://testnav-bruker-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  saf-proxy:
-    name: testnav-saf-proxy
-    namespace: dolly
-    url: https://testnav-saf-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   etterlatte:
     name: etterlatte-testdata
     namespace: etterlatte

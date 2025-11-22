@@ -29,7 +29,7 @@ public class SafConsumer {
             WebClient webClient
     ) {
         this.tokenExchange = tokenExchange;
-        serverProperties = consumers.getTestnavSafProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .exchangeStrategies(
