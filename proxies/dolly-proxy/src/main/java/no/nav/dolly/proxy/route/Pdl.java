@@ -1,5 +1,7 @@
 package no.nav.dolly.proxy.route;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
@@ -32,13 +34,6 @@ class Pdl {
 
         return switch (env) {
 
-            case TESTDATA -> spec -> spec
-                    .path("/pdl-testdata/**")
-                    .filters(f -> f
-                            .stripPrefix(1)
-                            .filter(authenticationFilter))
-                    .uri(url);
-
             case API -> spec -> spec
                     .path("/pdl-api/**")
                     .filters(f -> f
@@ -53,16 +48,25 @@ class Pdl {
                             .filter(authenticationFilter))
                     .uri(url);
 
+            case TESTDATA -> spec -> spec
+                    .path("/pdl-testdata/**")
+                    .filters(f -> f
+                            .stripPrefix(1)
+                            .filter(authenticationFilter))
+                    .uri(url);
+
+
         };
 
     }
 
     @RequiredArgsConstructor
     enum SpecialCase {
-        TESTDATA("pdl-testdata"),
         API("pdl-api"),
-        API_Q1("pdl-api-q1");
+        API_Q1("pdl-api-q1"),
+        TESTDATA("pdl-testdata");
 
+        @Getter(AccessLevel.PACKAGE)
         private final String name;
     }
 

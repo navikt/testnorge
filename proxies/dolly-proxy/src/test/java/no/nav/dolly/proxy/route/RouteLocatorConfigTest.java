@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -80,6 +81,9 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.medl", () -> wireMockServer.baseUrl());
         registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pdl-api", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pdl-api-q1", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pdl-testdata", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon-afp", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon-samboer", () -> wireMockServer.baseUrl());
@@ -509,6 +513,77 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(Pdl.SpecialCase.class)
+    void testPdl(Pdl.SpecialCase env) {
+
+        var url = "/some/path";
+        switch (env) {
+
+            case Pdl.SpecialCase.API -> {
+                var responseBody = "Success from mocked " + Pdl.SpecialCase.API.getName();
+
+                wireMockServer.stubFor(get(urlEqualTo(url))
+                        .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+                webClient
+                        .get()
+                        .uri("/pdl-api" + url)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectHeader().contentType("text/plain")
+                        .expectBody(String.class).isEqualTo(responseBody);
+
+            }
+
+            case Pdl.SpecialCase.API_Q1 -> {
+
+                var responseBody = "Success from mocked " + Pdl.SpecialCase.API_Q1.getName();
+
+                wireMockServer.stubFor(get(urlEqualTo(url))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "text/plain")
+                                .withBody(responseBody)));
+
+                webClient
+                        .get()
+                        .uri("/pdl-api-q1" + url)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectHeader().contentType("text/plain")
+                        .expectBody(String.class).isEqualTo(responseBody);
+            }
+
+            case Pdl.SpecialCase.TESTDATA -> {
+
+                var responseBody = "Success from mocked " + Pdl.SpecialCase.TESTDATA.getName();
+
+                wireMockServer.stubFor(get(urlEqualTo(url))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "text/plain")
+                                .withBody(responseBody)));
+
+                webClient
+                        .get()
+                        .uri("/pdl-testdata" + url)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectHeader().contentType("text/plain")
+                        .expectBody(String.class).isEqualTo(responseBody);
+
+            }
+
+        }
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
 
     }
 
