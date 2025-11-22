@@ -25,17 +25,6 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    urls:
-# Not working due to CORS.
-#      - name: histark
-#        url: https://histarkimport.teamdokumenthandtering/v3/api-docs
-#      - name: inntektstub
-#        url: http://inntektstub.team-inntekt/v3/api-docs/a-ordningen%20api
-    urls-primary-name: Downstream Services
-
-
 app:
   fakedings:
     url: https://fakedings.intern.dev.nav.no
