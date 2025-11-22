@@ -25,7 +25,7 @@ public class GetPDFCommand implements Callable<Mono<byte[]>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/{miljo}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/ARKIV")
+                        .path("/saf/{miljo}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/ARKIV")
                         .build(miljo, journalpostId, dokumentInfoId)
                 )
                 .headers(WebClientHeader.bearer(token))
