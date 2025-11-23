@@ -265,10 +265,11 @@ class RouteLocatorConfigTest {
     @ValueSource(strings = {"q1", "q2", "q4"})
     void testDokarkiv(String env) {
 
-        var downstreamPath = "/rest/journalpostapi/some/path";
+        var requestedPath = "/dokarkiv/api/%s/some/path".formatted(env);
+        var servedPath = "/rest/journalpostapi/some/path";
         var responseBody = "Success from mocked dokarkiv-%s".formatted(env);
 
-        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+        wireMockServer.stubFor(get(urlEqualTo(servedPath))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/text")
@@ -276,13 +277,13 @@ class RouteLocatorConfigTest {
 
         webClient
                 .get()
-                .uri("/dokarkiv/" + env + downstreamPath)
+                .uri(requestedPath)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("application/text")
                 .expectBody(String.class).isEqualTo(responseBody);
 
-        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
 
     }

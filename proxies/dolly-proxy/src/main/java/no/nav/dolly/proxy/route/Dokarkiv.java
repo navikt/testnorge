@@ -28,9 +28,10 @@ class Dokarkiv {
                 .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME.formatted(env.nameAndUrlReplacement), url);
 
         return spec -> spec
-                .path("/dokarkiv/%s/**".formatted(env.code))
+                .path("/dokarkiv/api/%s/**".formatted(env.code))
                 .filters(f -> f
-                        .stripPrefix(2)
+                        .stripPrefix(1)
+                        .rewritePath("/api/%s/(?<segment>.*)".formatted(env.code), "/rest/journalpostapi/${segment}")
                         .filter(authenticationFilter))
                 .uri(url);
 
