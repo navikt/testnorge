@@ -133,11 +133,6 @@ consumers:
     namespace: dolly
     name: generer-navn-service
     url: http://generer-navn-service.dolly.svc.cluster.local
-  testnav-dokarkiv-proxy:
-    name: testnav-dokarkiv-proxy
-    namespace: dolly
-    url: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-arbeidsplassencv-proxy:
     name: testnav-arbeidsplassencv-proxy
     namespace: dolly

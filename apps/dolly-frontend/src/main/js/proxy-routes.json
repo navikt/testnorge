@@ -129,7 +129,7 @@
 	"/testnav-dolly-proxy/skjermingsregister/api": {
 		"changeOrigin": true
 	},
-	"/testnav-dokarkiv-proxy": {
+	"/testnav-dolly-proxy/dokarkiv": {
 		"changeOrigin": true
 	},
 	"/testnav-arbeidsplassencv-proxy": {
