@@ -19,7 +19,7 @@ class Arena {
         return spec -> spec
                 .path("/arena/api/**")
                 .filters(f -> f.stripPrefix(1))
-                .uri(targets.arenaOrds);
+                .uri(targets.arenaForvalteren);
     }
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
@@ -27,7 +27,7 @@ class Arena {
                 .path("/arena/%s/**".formatted(env.code))
                 .filters(f -> f
                         .stripPrefix(2))
-                .uri(targets.arenaForvalteren.formatted(env.code));
+                .uri(targets.arenaOrds.formatted(env.code));
     }
 
     @RequiredArgsConstructor
