@@ -1,5 +1,6 @@
 package no.nav.dolly.proxy.route;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
@@ -12,7 +13,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-class Dokarkiv {
+public class Dokarkiv {
 
     private static final String CLUSTER = "dev-fss";
     private static final String NAMESPACE = "teamdokumenthandtering";
@@ -38,11 +39,12 @@ class Dokarkiv {
     }
 
     @RequiredArgsConstructor
-    enum SpecialCase {
+    public enum SpecialCase {
         Q1("q1", "-q1"),
         Q2("q2", ""),
         Q4("q4", "-q4");
 
+        @Getter
         private final String code;
         private final String nameAndUrlReplacement;
     }
