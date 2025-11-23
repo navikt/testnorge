@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   jpa:
     properties:
       hibernate:
