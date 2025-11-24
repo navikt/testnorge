@@ -9,15 +9,17 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
 public class OpensearchPutCommand implements Callable<Mono<String>> {
 
-    private static final String ELASTIC_SETTINGS_URL = "/{index}/_settings";
+    private static final String OPENSEARCH_INDEX_URL = "/{index}";
 
     private final WebClient webClient;
+    private final Optional<String> segment;
     private final String username;
     private final String password;
     private final String index;
@@ -25,15 +27,20 @@ public class OpensearchPutCommand implements Callable<Mono<String>> {
 
     @Override
     public Mono<String> call() {
+
         return webClient
                 .put()
-                .uri(builder -> builder.path(ELASTIC_SETTINGS_URL).build(index))
+                .uri(uriBuilder -> {
+                    var builder = uriBuilder.path(OPENSEARCH_INDEX_URL);
+                    if (segment.isPresent()) {
+                        builder = builder.pathSegment(segment.get());
+                    }
+                    return builder.build(index);
+                })
                 .body(BodyInserters.fromValue(params))
                 .headers(WebClientHeader.basic(username, password))
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnError(WebClientError.logTo(log));
-
     }
-
 }
