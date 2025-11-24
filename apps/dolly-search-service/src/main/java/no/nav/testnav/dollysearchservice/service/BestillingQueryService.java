@@ -111,7 +111,13 @@ public class BestillingQueryService {
                 }
 
                 identer.addAll(getIdenter(searchResponse));
-                searchAfter = hits.get(hits.size() - 1).sort();
+                
+                var lastHit = hits.get(hits.size() - 1);
+                var sortValues = lastHit.sort();
+                if (sortValues == null || sortValues.isEmpty()) {
+                    break;
+                }
+                searchAfter = sortValues;
             }
 
         } catch (IOException e) {
