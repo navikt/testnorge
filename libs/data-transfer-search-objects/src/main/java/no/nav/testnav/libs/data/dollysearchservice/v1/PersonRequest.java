@@ -11,6 +11,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -23,6 +25,8 @@ public class PersonRequest {
     private KjoennDTO.Kjoenn kjoenn;
     private Integer alderFom;
     private Integer alderTom;
+    private LocalDate foedselsdatoFom;
+    private LocalDate foedselsdatoTom;
     private SivilstandDTO.Sivilstand sivilstand;
 
     @Schema(description = "erLevende eksluderer erDoed, begge kan ikke være satt")

@@ -1,9 +1,7 @@
 package no.nav.testnav.dollysearchservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.undertow.util.BadRequestException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
@@ -32,7 +30,6 @@ public class OpenSearchQueryService {
     @Value("${open.search.pdl-index}")
     private String pdlIndex;
 
-    @SneakyThrows
     public Mono<SearchInternalResponse> execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
 
         var now = System.currentTimeMillis();
@@ -64,7 +61,7 @@ public class OpenSearchQueryService {
         } catch (IOException e) {
 
             log.error("Feil ved personsøk i OpenSearch", e);
-            throw new BadRequestException("Feil ved personsøk i OpenSearch", e);
+            throw new InternalError("Feil ved personsøk i OpenSearch", e);
         }
     }
 

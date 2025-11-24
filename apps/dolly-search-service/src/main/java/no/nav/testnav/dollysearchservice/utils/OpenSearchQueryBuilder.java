@@ -20,6 +20,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addFoedselsdatoQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnummerQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedUkjentQuery;
@@ -68,6 +69,7 @@ public class OpenSearchQueryBuilder {
                 .ifPresent(value -> {
 
                     addAlderQuery(queryBuilder, request);
+                    addFoedselsdatoQuery(queryBuilder, request);
                     addHarBarnQuery(queryBuilder, request);
                     addHarForeldreQuery(queryBuilder, request);
                     addSivilstandQuery(queryBuilder, request);

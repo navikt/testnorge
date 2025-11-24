@@ -25,6 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class OpenSearchPersonQueryUtils {
 
     private static final String FAMILIE_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
+    private static final String FOEDSLESDATO = "hentPerson.foedselsdato";
     private static final String BOSTEDSADRESSE = "hentPerson.bostedsadresse";
     private static final String OPPHOLDSADRESSE = "hentPerson.oppholdsadresse";
     private static final String KONTAKTADRESSE = "hentPerson.kontaktadresse";
@@ -38,18 +39,25 @@ public class OpenSearchPersonQueryUtils {
     public static void addAlderQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
 
         var now = LocalDate.now();
-        if (nonNull(request.getPersonRequest().getAlderFom()) || nonNull(request.getPersonRequest().getAlderTom())) {
+        if (nonNull(request.getPersonRequest().getAlderFom()) && nonNull(request.getPersonRequest().getAlderTom())) {
 
-            queryBuilder.must(q1 -> q1.nested(nestedMatchQuery("hentPerson.foedselsdato", METADATA_HISTORISK, false)))
-                    .must(q1 -> q1.nested(nestedRangeQuery("hentPerson.foedselsdato",
+            queryBuilder.must(q -> q.nested(nestedMatchQuery(FOEDSLESDATO, METADATA_HISTORISK, false)))
+                    .must(q -> q.nested(nestedRangeQuery(FOEDSLESDATO,
                             "foedselsdato",
-                            Optional.ofNullable(request.getPersonRequest().getAlderTom())
-                                    .map(now::minusYears)
-                                    .map(d -> d.minusYears(1))
-                                    .orElse(null),
-                            Optional.ofNullable(request.getPersonRequest().getAlderFom())
-                                    .map(now::minusYears)
-                                    .orElse(null))));
+                            now.minusYears(request.getPersonRequest().getAlderTom()).minusYears(1),
+                            now.minusYears(request.getPersonRequest().getAlderFom()).minusDays(1))));
+        }
+    }
+
+    public static void addFoedselsdatoQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        if (nonNull(request.getPersonRequest().getFoedselsdatoFom()) && nonNull(request.getPersonRequest().getFoedselsdatoTom())) {
+
+            queryBuilder.must(q -> q.nested(nestedMatchQuery(FOEDSLESDATO, METADATA_HISTORISK, false)))
+                    .must(q -> q.nested(nestedRangeQuery(FOEDSLESDATO,
+                            "foedselsdato",
+                            request.getPersonRequest().getFoedselsdatoFom(),
+                            request.getPersonRequest().getFoedselsdatoTom())));
         }
     }
 
