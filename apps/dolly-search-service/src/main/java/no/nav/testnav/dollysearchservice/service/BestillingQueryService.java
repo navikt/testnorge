@@ -87,12 +87,11 @@ public class BestillingQueryService {
 
         Set<String> identer = new HashSet<>();
         List<String> searchAfter = null;
-        SearchResponse<BestillingIdenter> searchResponse;
 
         val query = queryBuilder.build();
 
         try {
-            do {
+            while (true) {
                 var requestBuilder = new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                         .index(bestillingIndex)
                         .query(q -> q.bool(query))
@@ -104,18 +103,16 @@ public class BestillingQueryService {
                     requestBuilder.searchAfter(searchAfter);
                 }
 
-                searchResponse = opensearchClient.search(requestBuilder.build(), BestillingIdenter.class);
-
+                var searchResponse = opensearchClient.search(requestBuilder.build(), BestillingIdenter.class);
                 var hits = searchResponse.hits().hits();
-                identer.addAll(getIdenter(searchResponse));
 
-                if (!hits.isEmpty()) {
-                    searchAfter = hits.get(hits.size() - 1).sort();
-                } else {
+                if (hits.isEmpty()) {
                     break;
                 }
 
-            } while (true);
+                identer.addAll(getIdenter(searchResponse));
+                searchAfter = hits.get(hits.size() - 1).sort();
+            }
 
         } catch (IOException e) {
             log.error("Feil ved henting av identer", e);
