@@ -15,7 +15,7 @@ import {
 	ForskuddstrekkForm,
 	initialTrekktabell,
 } from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
-import { ArbeidsforholdToggle } from '@/components/shared/ArbeidsforholdToggle'
+import { ArbeidsforholdToggle } from '@/components/shared/ArbeidsforholdToggle/ArbeidsforholdToggle'
 import { validation } from '@/components/fagsystem/skattekort/form/validation'
 
 export const initialArbeidsgiverSkatt = (
