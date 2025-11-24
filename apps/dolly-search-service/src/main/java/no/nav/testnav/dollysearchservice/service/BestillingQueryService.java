@@ -99,7 +99,8 @@ public class BestillingQueryService {
                 .timeout("3s")
                 .build(), BestillingIdenter.class);
 
-            do {
+            while (!searchResponse.hits().hits().isEmpty()) {
+
                 identer.addAll(getIdenter(searchResponse));
 
                 searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
@@ -110,8 +111,7 @@ public class BestillingQueryService {
                         .searchAfter(searchResponse.hits().hits().getLast().sort())
                         .timeout("3s")
                         .build(), BestillingIdenter.class);
-
-            } while (!searchResponse.hits().hits().isEmpty());
+            }
 
         } catch (IOException e) {
             log.error("Feil ved henting av identer", e);
