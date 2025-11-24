@@ -1,0 +1,51 @@
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 4,
+      "number_of_replicas": 1
+    },
+    "analysis": {
+      "normalizer": {
+        "keyword_lowercase": {
+          "filter": [
+            "lowercase"
+          ]
+        }
+      },
+      "filter": {
+        "phonetic_filter": {
+          "type": "phonetic",
+          "encoder": "double_metaphone",
+          "replace": false,
+          "max_code_len": 16
+        }
+      },
+      "analyzer": {
+        "phonetic": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "phonetic_filter"
+          ]
+        },
+        "standard_lowercase": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "scandinavian_normalization"
+          ]
+        },
+        "keyword_lowercase": {
+          "tokenizer": "keyword",
+          "filter": [
+            "lowercase",
+            "scandinavian_normalization"
+          ]
+        },
+        "keyword_case_sensitive": {
+          "tokenizer": "keyword"
+        }
+      }
+    }
+  }
+}

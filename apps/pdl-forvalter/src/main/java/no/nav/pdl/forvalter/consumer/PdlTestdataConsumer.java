@@ -4,17 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
-import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlDeleteHendelseIdCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlMergeNpidCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettNpidCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
-import no.nav.pdl.forvalter.dto.ArtifactValue;
-import no.nav.pdl.forvalter.dto.HendelseIdRequest;
-import no.nav.pdl.forvalter.dto.MergeIdent;
-import no.nav.pdl.forvalter.dto.OpprettIdent;
-import no.nav.pdl.forvalter.dto.OrdreRequest;
+import no.nav.pdl.forvalter.consumer.command.*;
+import no.nav.pdl.forvalter.dto.*;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
@@ -54,11 +45,12 @@ public class PdlTestdataConsumer {
             Consumers consumers,
             ObjectMapper objectMapper,
             PersonServiceConsumer personServiceConsumer,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getPdlProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
@@ -95,16 +87,15 @@ public class PdlTestdataConsumer {
                 .flatMapMany(accessToken -> Flux.concat(
                         Flux.fromIterable(orders.getSletting())
                                 .parallel()
-                                .map(order -> order.apply(accessToken)),
+                                .flatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOppretting())
-                                .map(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getMerge())
-                                .map(order -> order.apply(accessToken)),
+                                .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOpplysninger())
                                 .parallel()
-                                .map(order -> order.apply(accessToken))
-                ))
-                .flatMap(Flux::from);
+                                .flatMap(order -> order.apply(accessToken))
+                ));
     }
 
     public Mono<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {

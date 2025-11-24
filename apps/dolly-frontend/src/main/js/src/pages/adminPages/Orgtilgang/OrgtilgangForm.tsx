@@ -1,7 +1,6 @@
 import { Alert, Box, Button } from '@navikt/ds-react'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
 import { arrayToString } from '@/utils/DataFormatter'
@@ -11,7 +10,6 @@ import Loading from '@/components/ui/loading/Loading'
 
 type Inputs = {
 	organisasjonsnummer: string
-	gyldigTil: string
 	miljoe: string
 }
 
@@ -21,7 +19,6 @@ type Response = {
 
 export type OrgtilgangTypes = {
 	organisasjonsnummer: string
-	gyldigTil: string
 	miljoe: string
 	navn: string
 	organisasjonsform: string
@@ -29,11 +26,10 @@ export type OrgtilgangTypes = {
 
 const initialValues = {
 	organisasjonsnummer: '',
-	gyldigTil: '',
 	miljoe: [],
 }
 
-const miljoer = [
+export const miljoer = [
 	{ label: 'Q1', value: 'q1' },
 	{ label: 'Q2', value: 'q2' },
 ]
@@ -86,7 +82,6 @@ export const OrgtilgangForm = ({ mutate }: any) => {
 							isMulti={true}
 							size="medium"
 						/>
-						<FormDatepicker name={'gyldigTil'} label={'Gyldig til'} />
 					</div>
 					<div className="flexbox--align-center">
 						<Button type="submit" variant="primary" style={{ marginRight: '15px' }}>

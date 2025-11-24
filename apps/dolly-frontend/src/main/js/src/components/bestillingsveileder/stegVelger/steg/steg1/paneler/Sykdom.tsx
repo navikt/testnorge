@@ -1,39 +1,63 @@
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import { sykdomAttributt } from '@/components/fagsystem/sykdom/form/Form'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	nySykemeldingAttributt,
+	sykemeldingAttributt,
+} from '@/components/fagsystem/sykdom/form/Form'
 import { initialYrkesskade } from '@/components/fagsystem/yrkesskader/initialValues'
 import { yrkesskaderAttributt } from '@/components/fagsystem/yrkesskader/form/Form'
+import {
+	initialValuesDetaljertSykemelding,
+	initialValuesNySykemelding,
+} from '@/components/fagsystem/sykdom/form/initialValues'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useContext } from 'react'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
 export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
-
-	const harGyldigSykemeldingBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
-		bestilling.status?.some(
-			(status) =>
-				status.id === 'SYKEMELDING' && status.statuser?.some((item) => item?.melding === 'OK'),
-		),
-	)
-
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const sykemeldingTimeout = getTimeoutAttr('SYKEMELDING', opts)
+	const yrkesskadeTimeout = getTimeoutAttr('YRKESSKADE', opts)
+	const sykemeldingTitle = sykemeldingTimeout.title
+	const nySykemeldingTitle =
+		sykemeldingTitle ||
+		(sm.attrs.sykemelding.checked
+			? 'Personen har allerede detaljert sykemelding i bestillingen'
+			: undefined)
+	const yrkesskadeTitle = yrkesskadeTimeout.title
 	return (
-		// @ts-ignore
 		<Panel
 			heading={SykdomPanel.heading}
-			checkAttributeArray={() => sm.batchAdd(harGyldigSykemeldingBestilling ? ['sykemelding'] : [])}
-			uncheckAttributeArray={sm.batchRemove}
+			checkAttributeArray={(() => sm.batchAdd(['nySykemelding'])) as any}
+			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="sykdom"
-			startOpen={harValgtAttributt(formValues, [sykdomAttributt, yrkesskaderAttributt])}
+			startOpen={harValgtAttributt(formValues, [
+				sykemeldingAttributt,
+				nySykemeldingAttributt,
+				yrkesskaderAttributt,
+			])}
 		>
-			<AttributtKategori title={null} attr={sm.attrs}>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.sykemelding}
-					disabled={harGyldigSykemeldingBestilling}
-					title={harGyldigSykemeldingBestilling ? 'Personen har allerede sykemelding' : null}
+					disabled={sm.attrs.nySykemelding.checked || sykemeldingTimeout.disabled}
+					title={sykemeldingTitle}
 				/>
-				<Attributt attr={sm.attrs.yrkesskader} />
+				<Attributt
+					attr={sm.attrs.nySykemelding}
+					disabled={sm.attrs.sykemelding.checked || sykemeldingTimeout.disabled}
+					title={nySykemeldingTitle}
+				/>
+				<Attributt
+					attr={sm.attrs.yrkesskader}
+					disabled={yrkesskadeTimeout.disabled}
+					title={yrkesskadeTitle}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)
@@ -41,18 +65,23 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 
 SykdomPanel.heading = 'Sykdom og skade'
 
-SykdomPanel.initialValues = ({ set, del, has }: any) => ({
+SykdomPanel.initialValues = ({ set, del, delMutate, has }: any) => ({
 	sykemelding: {
-		label: 'Har sykemelding',
-		checked: has('sykemelding'),
+		label: 'Har detaljert sykemelding',
+		checked: has('sykemelding.detaljertSykemelding'),
 		add() {
-			set('sykemelding', {
-				syntSykemelding: {
-					startDato: new Date(),
-					orgnummer: '',
-					arbeidsforholdId: '',
-				},
-			})
+			set('sykemelding.detaljertSykemelding', initialValuesDetaljertSykemelding)
+		},
+		remove() {
+			del('sykemelding')
+			delMutate?.()
+		},
+	},
+	nySykemelding: {
+		label: 'Har ny sykemelding',
+		checked: has('sykemelding.nySykemelding'),
+		add() {
+			set('sykemelding.nySykemelding', initialValuesNySykemelding)
 		},
 		remove() {
 			del('sykemelding')

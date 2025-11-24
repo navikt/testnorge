@@ -1,13 +1,10 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +23,15 @@ public class ArenaNyeDagpengerResponse extends ArenaResponse {
         this.nyeDagp = nyeDagp;
         this.nyeDagpResponse = nyeDagpResponse;
         this.nyeDagpFeilList = nyeDagpFeilList;
+    }
+
+    public static Flux<ArenaNyeDagpengerResponse> of(WebClientError.Description description, String miljoe) {
+        return Flux.just(ArenaNyeDagpengerResponse
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .miljoe(miljoe)
+                .build());
     }
 
     public enum DagpFeilstatus {DUPLIKAT, MILJOE_IKKE_STOETTET, AKTIVER_DAGP}

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -10,11 +10,13 @@ import { initialFalskIdentitetValues } from '@/components/fagsystem/pdlf/form/in
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const FalskIdentitet = ({ formMethods }) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
@@ -41,7 +43,7 @@ export const FalskIdentitet = ({ formMethods }) => {
 				...advancedValues,
 			})
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 		return e.value
 	}
 

@@ -1,20 +1,17 @@
 import React, { Fragment } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
-import RedigerGruppeConnector from '@/components/redigerGruppe/RedigerGruppeConnector'
-import FavoriteButtonConnector from '@/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
 import { Header } from '@/components/ui/header/Header'
-import { arrayToString, formatStringDates } from '@/utils/DataFormatter'
-
+import { arrayToString, formatBrukerNavn, formatStringDates } from '@/utils/DataFormatter'
 import './GruppeHeader.less'
 import { TagsButton } from '@/components/ui/button/Tags/TagsButton'
 import { GjenopprettGruppe } from '@/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
-import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { FlyttPersonButton } from '@/components/ui/button/FlyttPersonButton/FlyttPersonButton'
 import { LeggTilPaaGruppe } from '@/pages/gruppe/LeggTilPaaGruppe/LeggTilPaaGruppe'
@@ -22,46 +19,66 @@ import cn from 'classnames'
 import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import Loading from '@/components/ui/loading/Loading'
+import FavoriteButton from '@/components/ui/button/FavoriteButton/FavoriteButton'
+import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
+import { actions } from '@/ducks/gruppe'
+import { createLoadingSelector } from '@/ducks/loading'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { EndreTilknytning } from '@/pages/gruppe/EndreTilknytning/EndreTilknytning'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+
+const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
+const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
+const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
 
 type GruppeHeaderProps = {
 	gruppeId: string
-	laasGruppe: Function
-	isLockingGruppe: boolean
-	deleteGruppe: Function
-	isDeletingGruppe: boolean
-	getGruppeExcelFil: Function
-	isFetchingExcel: boolean
-	isSendingTags: boolean
-	sendTags: Function
 }
 
-const GruppeHeader = ({
-	gruppeId,
-	deleteGruppe,
-	isDeletingGruppe,
-	getGruppeExcelFil,
-	isFetchingExcel,
-	laasGruppe,
-	isLockingGruppe,
-	sendTags,
-	isSendingTags,
-}: GruppeHeaderProps) => {
+const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
+	const dispatch = useDispatch<any>()
+	const matchMutate = useMatchMutate()
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
-	const {
-		currentBruker: { brukertype },
-	} = useCurrentBruker()
-	const { gruppe, loading } = useGruppeById(gruppeId)
+	const { currentBruker } = useCurrentBruker()
+	const brukertype = currentBruker?.brukertype
 
-	if (loading) {
+	const isDeletingGruppe = useSelector((state: any) => loadingSelectorSlettGruppe(state))
+	const isSendingTags = useSelector((state: any) => loadingSelectorSendTags(state))
+	const isLockingGruppe = useSelector((state: any) => loadingSelectorLaasGruppe(state))
+
+	const { gruppe, error } = useGruppeById(gruppeId)
+
+	if (error) {
+		return <div>Could not load group</div>
+	}
+	if (!gruppe) {
 		return <Loading label={'Laster gruppe...'} />
 	}
-	const erLaast = gruppe.erLaast
 
+	const laasGruppe = async (id: number) => {
+		await dispatch(actions.laas(id, { erLaast: true, laastBeskrivelse: 'Låst gruppe' }))
+		await matchMutate(REGEX_BACKEND_GRUPPER)
+	}
+	const deleteGruppe = async (id: number) => {
+		await dispatch(actions.remove(id))
+		await matchMutate(REGEX_BACKEND_GRUPPER)
+	}
+
+	const erLaast = gruppe.erLaast
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'locked-group' : 'group'
 	const antallPersoner = gruppe.antallIdenter
+
+	const brukerNavn =
+		(gruppe.opprettetAv as any)?.brukertype === 'TEAM'
+			? gruppe.opprettetAv?.brukernavn + ' (team)'
+			: formatBrukerNavn(gruppe.opprettetAv?.brukernavn)
+
+	const tagsValue = gruppe.tags
+		? arrayToString(gruppe.tags.length > 1 ? [...gruppe.tags].sort() : gruppe.tags)
+		: ''
 
 	return (
 		<Fragment>
@@ -84,26 +101,17 @@ const GruppeHeader = ({
 						<div className={`content-header_icon ${headerClass}`}>
 							<Icon kind={iconType} fontSize={'2.5rem'} />
 						</div>
-						<Header.TitleValue
-							title="Eier"
-							value={gruppe.opprettetAv?.brukernavn || gruppe.opprettetAv?.navIdent}
-						/>
-						<Header.TitleValue title="Antall personer" value={antallPersoner} />
+						<Header.TitleValue title="Eier" value={brukerNavn ?? gruppe.opprettetAv?.navIdent} />
+						<Header.TitleValue title="Antall personer" value={antallPersoner.toString()} />
 						<Header.TitleValue title="Sist endret" value={formatStringDates(gruppe.datoEndret)} />
-						<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
-						{gruppe.tags && (
-							<Header.TitleValue
-								title="Tags"
-								value={arrayToString(
-									gruppe.tags?.length > 1 ? [...gruppe.tags].sort() : gruppe.tags,
-								)}
-							/>
-						)}
+						<Header.TitleValue title="Hensikt" value={String(gruppe.hensikt ?? '')} />
+						{gruppe.tags && <Header.TitleValue title="Tags" value={tagsValue} />}
 					</div>
 					<div className="gruppe-header__border" />
 					<div className="gruppe-header__actions">
 						{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner} gruppeId={gruppe.id} />}
-						{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
+						{!erLaast && <FlyttPersonButton gruppeId={gruppe.id} disabled={antallPersoner < 1} />}
+						{!erLaast && <EndreTilknytning gruppe={gruppe} />}
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<Button
 								data-testid={TestComponentSelectors.BUTTON_REDIGER_GRUPPE}
@@ -118,12 +126,17 @@ const GruppeHeader = ({
 							onClick={visGjenopprettModal}
 							kind="synchronize"
 							disabled={antallPersoner < 1}
-							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
+							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : undefined}
 						>
 							GJENOPPRETT
 						</Button>
-						{!erLaast && (
-							<LaasButton gruppeId={gruppe.id} action={laasGruppe} loading={isLockingGruppe}>
+						{gruppe.erEierAvGruppe && !erLaast && (
+							<LaasButton
+								autoMutate={false}
+								gruppeId={gruppe.id}
+								action={laasGruppe}
+								loading={isLockingGruppe}
+							>
 								Er du sikker på at du vil låse denne gruppen? <br />
 								En gruppe som er låst kan ikke endres, og blir heller ikke <br />
 								påvirket av prodlast i samhandlermiljøet (Q1). <br />
@@ -131,8 +144,9 @@ const GruppeHeader = ({
 								dersom du ønsker å låse den opp igjen.
 							</LaasButton>
 						)}
-						{!erLaast && (
+						{gruppe.erEierAvGruppe && !erLaast && (
 							<SlettButton
+								autoMutate={false}
 								gruppeId={gruppe.id}
 								action={deleteGruppe}
 								loading={isDeletingGruppe}
@@ -143,28 +157,22 @@ const GruppeHeader = ({
 						)}
 						{brukertype !== 'BANKID' && (
 							<TagsButton
-								loading={isSendingTags}
-								action={sendTags}
+								isSending={isSendingTags}
 								gruppeId={gruppe.id}
 								eksisterendeTags={gruppe.tags}
 							/>
 						)}
-						<EksporterExcel
-							exportId={gruppe.id}
-							filPrefix={gruppe.id}
-							action={getGruppeExcelFil}
-							loading={isFetchingExcel}
-						/>
-						{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
+						<EksporterExcel gruppeId={gruppe.id} />
+						{!gruppe.erEierAvGruppe && <FavoriteButton groupId={gruppe.id} />}
 					</div>
 				</div>
 			</header>
-
-			{visRedigerState && <RedigerGruppeConnector gruppeId={gruppeId} onCancel={skjulRediger} />}
+			{visRedigerState && <RedigerGruppe gruppeId={gruppeId} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
 				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppeId={gruppeId} />
 			)}
 		</Fragment>
 	)
 }
+
 export default GruppeHeader

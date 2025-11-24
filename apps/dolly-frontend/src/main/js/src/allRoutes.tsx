@@ -1,90 +1,153 @@
-import React, { lazy } from 'react'
-import { Navigate } from 'react-router-dom'
-import GruppeConnector from '@/pages/gruppe/GruppeConnector'
-import { OrganisasjonTenorSoekPage } from '@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'
-import NyansettelserPage from '@/pages/nyansettelser/NyansettelserPage'
+import React from 'react'
+import { Navigate } from 'react-router'
+import GruppeConnector from './pages/gruppe/GruppeConnector'
+import { lazyWithPreload } from './utils/lazyWithPreload'
+import { Bestillingsveileder } from '@/components/bestillingsveileder/Bestillingsveileder'
 
-const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
-const Organisasjon = lazy(() => import('@/pages/organisasjoner/Organisasjoner'))
-const BestillingsveilederConnector = lazy(
-	() => import('@/components/bestillingsveileder/BestillingsveilederConnector'),
+const OrganisasjonTenorSoekPage = lazyWithPreload(
+	() => import('@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'),
 )
-const MinSide = lazy(() => import('@/pages/minSide/MinSide'))
-const UI = lazy(() => import('@/pages/ui/index'))
-const TestnorgePage = lazy(() => import('@/pages/testnorgePage/index'))
-const Endringsmelding = lazy(() => import('@/pages/endringsmelding/Endringsmelding'))
-const DollySoekPage = lazy(() => import('@/pages/dollySoek/DollySoekPage'))
-const TenorSoekPage = lazy(() => import('@/pages/tenorSoek/TenorSoekPage'))
-const OrgtilgangPage = lazy(() => import('@/pages/adminPages/Orgtilgang/OrgtilgangPage'))
-const LevendeArbeidsforholdPage = lazy(
+const NyansettelserPage = lazyWithPreload(() => import('@/pages/nyansettelser/NyansettelserPage'))
+const GruppeOversikt = lazyWithPreload(() => import('@/pages/gruppeOversikt/GruppeOversikt'))
+const Organisasjon = lazyWithPreload(() => import('@/pages/organisasjoner/Organisasjoner'))
+const MinSide = lazyWithPreload(() => import('@/pages/minSide/MinSide'))
+const Endringsmelding = lazyWithPreload(() => import('@/pages/endringsmelding/Endringsmelding'))
+const DollySoekPage = lazyWithPreload(() => import('@/pages/dollySoek/DollySoekPage'))
+const TenorSoekPage = lazyWithPreload(() => import('@/pages/tenorSoek/TenorSoekPage'))
+const OrgtilgangPage = lazyWithPreload(() => import('@/pages/adminPages/Orgtilgang/OrgtilgangPage'))
+const LevendeArbeidsforholdPage = lazyWithPreload(
 	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
 )
+const InfostripePage = lazyWithPreload(
+	() => import('@/pages/adminPages/dollyInfostriper/DollyInfostripePage'),
+)
+const ApiOversiktPage = lazyWithPreload(() => import('@/pages/apiOversikt/ApiOversiktPage'))
+const TeamOversiktPage = lazyWithPreload(() => import('@/pages/teamOversikt/TeamOversiktPage'))
+const IdentValidatorPage = lazyWithPreload(
+	() => import('@/pages/identvalidator/IdentvalidatorPage'),
+)
 
-const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
+const GruppeBreadcrumb = (props: any) => <span>Gruppe #{props.params?.gruppeId}</span>
 
 const allRoutes = [
-	{ path: '/', breadcrumb: 'Hjem', element: () => <Navigate to="/gruppe" replace /> },
+	{
+		path: '/',
+		handle: {
+			crumb: () => 'Hjem',
+		},
+		element: () => <Navigate to="/gruppe" />,
+	},
 	{
 		path: '/gruppe',
-		breadcrumb: 'Personer',
-		element: () => <GruppeOversikt />,
+		handle: {
+			crumb: () => 'Personer',
+		},
+		element: GruppeOversikt,
 	},
-	{ path: '/gruppe/:gruppeId', breadcrumb: GruppeBreadcrumb, element: () => <GruppeConnector /> },
+	{
+		path: '/gruppe/:gruppeId',
+		handle: {
+			crumb: GruppeBreadcrumb,
+		},
+		element: GruppeConnector,
+	},
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',
-		breadcrumb: 'Legg til/endre',
-		element: () => <BestillingsveilederConnector />,
+		handle: {
+			crumb: () => 'Legg til/endre',
+		},
+		element: Bestillingsveileder,
 	},
 	{
 		path: '/gruppe/:gruppeId/bestilling',
-		breadcrumb: 'Opprett personer',
-		element: () => <BestillingsveilederConnector />,
+		handle: {
+			crumb: () => 'Opprett personer',
+		},
+		element: Bestillingsveileder,
 	},
 	{
 		path: '/organisasjoner',
-		breadcrumb: 'Organisasjoner',
-		element: () => <Organisasjon />,
+		handle: {
+			crumb: () => 'Organisasjoner',
+		},
+		element: Organisasjon,
 	},
 	{
-		path: '/tenor/organisasjoner',
-		breadcrumb: 'Søk i Tenor organisasjoner',
-		element: () => <OrganisasjonTenorSoekPage />,
+		path: '/tenororganisasjoner',
+		handle: {
+			crumb: () => 'Søk etter organisasjoner i Tenor',
+		},
+		element: OrganisasjonTenorSoekPage,
 	},
 	{
 		path: '/organisasjoner/bestilling',
-		breadcrumb: 'Opprett organisasjon',
-		element: () => <BestillingsveilederConnector />,
+		handle: {
+			crumb: () => 'Opprett organisasjon',
+		},
+		element: Bestillingsveileder,
 	},
-	{ path: '/minside', breadcrumb: 'Min side', element: () => <MinSide /> },
-	{ path: '/ui', breadcrumb: 'UI demo', element: () => <UI /> },
-	{ path: '/dollysoek', breadcrumb: 'Søk i Dolly', element: () => <DollySoekPage /> },
-	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: () => <TestnorgePage /> },
-	{ path: '/tenor/personer', breadcrumb: 'Søk i Tenor personer', element: () => <TenorSoekPage /> },
+	{ path: '/minside', handle: { crumb: () => 'Min side' }, element: MinSide },
+	{
+		path: '/dollysoek',
+		handle: { crumb: () => 'Søk i Dolly' },
+		element: DollySoekPage,
+	},
+	{
+		path: '/tenorpersoner',
+		handle: { crumb: () => 'Søk etter personer i Tenor' },
+		element: TenorSoekPage,
+	},
 	{
 		path: '/importer',
-		breadcrumb: 'Importer',
-		element: () => <BestillingsveilederConnector />,
+		handle: { crumb: () => 'Importer' },
+		element: Bestillingsveileder,
 	},
 	{
 		path: '/endringsmelding',
-		breadcrumb: 'Endringsmelding',
-		element: () => <Endringsmelding />,
+		handle: { crumb: () => 'Endringsmelding' },
+		element: Endringsmelding,
 	},
 	{
-		path: '/admin/orgtilgang',
-		breadcrumb: 'Organisasjon-tilgang',
-		element: () => <OrgtilgangPage />,
+		path: '/orgtilgang',
+		handle: { crumb: () => 'Organisasjon-tilgang' },
+		element: OrgtilgangPage,
 	},
 	{
-		path: '/admin/levendearbeidsforhold',
-		breadcrumb: 'Levende-arbeidsforhold',
-		element: () => <LevendeArbeidsforholdPage />,
+		path: '/levendearbeidsforhold',
+		handle: { crumb: () => 'Levende arbeidsforhold' },
+		element: LevendeArbeidsforholdPage,
+	},
+	{
+		path: '/infostriper',
+		handle: { crumb: () => 'Dolly infostriper' },
+		element: InfostripePage,
 	},
 	{
 		path: '/nyansettelser',
-		breadcrumb: 'Nyansettelser',
-		element: () => <NyansettelserPage />,
+		handle: { crumb: () => 'Nyansettelser' },
+		element: NyansettelserPage,
+	},
+	{
+		path: '/oversikt',
+		handle: { crumb: () => 'API-oversikt' },
+		element: ApiOversiktPage,
+	},
+	{
+		path: '/team',
+		handle: { crumb: () => 'Team-oversikt' },
+		element: TeamOversiktPage,
+	},
+	{
+		path: '/identvalidator',
+		handle: { crumb: () => 'Valider ident' },
+		element: IdentValidatorPage,
 	},
 ]
+
+export const preloadComponentOnRoute = (path: string) => {
+	const matchingRoute: any = allRoutes.find((route) => route.path === path)
+
+	matchingRoute?.element?.preload?.()
+}
 
 export default allRoutes

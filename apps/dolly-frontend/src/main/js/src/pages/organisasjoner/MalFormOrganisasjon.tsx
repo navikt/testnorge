@@ -29,13 +29,13 @@ export const MalFormOrganisasjon = ({
 		} else if (value === MalTyper.ENDRE) {
 			setValue('malBestillingNavn', opprettetFraMal || '')
 		}
-		trigger()
+		trigger('malBestillingNavn')
 	}
 
 	const handleCheckboxChange = (value: BaseSyntheticEvent) => {
 		setValue('malBestillingNavn', value.target?.checked ? '' : undefined)
 		setOpprettMal(value.target?.checked)
-		trigger()
+		trigger('malBestillingNavn')
 	}
 
 	return (

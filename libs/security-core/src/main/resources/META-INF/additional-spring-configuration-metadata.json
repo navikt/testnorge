@@ -1,0 +1,50 @@
+{
+  "properties": [
+    {
+      "name": "AZURE_APP_CLIENT_ID",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavClientCredential. Kan erstattes med ${sm\://azure-app-client-id} for lokal kjøring."
+    },
+    {
+      "name": "AZURE_APP_CLIENT_SECRET",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavClientCredential. Kan erstattes med ${sm\://azure-app-client-secret} for lokal kjøring."
+    },
+    {
+      "name": "AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_TRYGDEETATEN\"). Hvis satt må også AZURE_TRYGDEETATEN_APP_CLIENT_ID og AZURE_TRYGDEETATEN_APP_CLIENT_SECRET være satt."
+    },
+    {
+      "name": "AZURE_TRYGDEETATEN_APP_CLIENT_ID",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_TRYGDEETATEN\")."
+    },
+    {
+      "name": "AZURE_TRYGDEETATEN_APP_CLIENT_SECRET",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_TRYGDEETATEN\")."
+    },
+    {
+      "name": "AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_NAV\"). Hvis satt må også AZURE_NAV_APP_CLIENT_ID og AZURE_NAV_APP_CLIENT_SECRET være satt."
+    },
+    {
+      "name": "AZURE_NAV_APP_CLIENT_ID",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_NAV\")."
+    },
+    {
+      "name": "AZURE_NAV_APP_CLIENT_SECRET",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_NAV\")."
+    },
+    {
+      "name": "TOKEN_X_ISSUER",
+      "type": "java.net.URL",
+      "description": "Satt av NAIS i pod hvis NAIS-manifestet har <tt>spec.tokenx.enabled: true<tt>.",
+      "defaultValue": "https://tokenx.dev-gcp.nav.cloud.nais.io"
+    }
+  ]
+}

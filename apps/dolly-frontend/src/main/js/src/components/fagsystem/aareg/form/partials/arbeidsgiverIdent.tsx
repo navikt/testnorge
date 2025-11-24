@@ -9,9 +9,14 @@ import { useNaviger } from '@/utils/hooks/useNaviger'
 type ArbeidsgiverIdentProps = {
 	path: string
 	isDisabled?: boolean
+	title?: string | undefined
 }
 
-export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
+export const ArbeidsgiverIdent = ({
+	path,
+	isDisabled,
+	title = undefined,
+}: ArbeidsgiverIdentProps) => {
 	const formMethods = useFormContext()
 	const [personnummer, setPersonnummer] = useState(formMethods.watch(path))
 	const [success, setSuccess] = useBoolean(false)
@@ -22,10 +27,11 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 			if (result?.identNavigerTil) {
 				formMethods.setValue(path, personnummer, { shouldTouch: true })
 				formMethods.trigger(path)
+				formMethods.clearErrors(`manual.${path}`)
 				formMethods.clearErrors(path)
 				setSuccess(true)
 			} else {
-				formMethods.setError(path, { message: 'Fant ikke arbeidsgiver-ident' })
+				formMethods.setError(`manual.${path}`, { message: 'Fant ikke arbeidsgiver-ident' })
 			}
 		}
 	}, [result, errorNaviger])
@@ -33,7 +39,8 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 	const handleChange = (event: React.ChangeEvent<any>) => {
 		setSuccess(false)
 		const personnr = event.target.value
-		formMethods.setValue(path, '123', { shouldTouch: true })
+		formMethods.setValue(path, personnr, { shouldTouch: true })
+		formMethods.clearErrors(`manual.${path}`)
 		formMethods.trigger(path)
 		setPersonnummer(personnr)
 	}
@@ -47,6 +54,8 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				label={'Arbeidsgiver ident'}
 				onChange={handleChange}
 				isDisabled={loadingNaviger || isDisabled}
+				size="xlarge"
+				title={title}
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>

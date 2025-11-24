@@ -1,5 +1,0 @@
-spring:
-  flyway.enabled: false
-  cloud:
-    vault:
-      enabled: false

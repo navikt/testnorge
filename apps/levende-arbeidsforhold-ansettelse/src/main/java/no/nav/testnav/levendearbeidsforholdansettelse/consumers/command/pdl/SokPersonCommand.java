@@ -1,30 +1,28 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.pdl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.testnav.levendearbeidsforholdansettelse.provider.PdlMiljoer;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.levendearbeidsforholdansettelse.consumers.PdlConsumer.hentQueryResource;
 import static no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.pdl.TemaGrunnlag.GEN;
-import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKeysAndUtils.DOLLY;
-import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKeysAndUtils.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
 
     private static final String TEMA = "Tema";
@@ -40,7 +38,6 @@ public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
 
     @Override
     public Flux<PdlPersonDTO> call() {
-
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -48,7 +45,7 @@ public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
                         .path(pdlMiljoe.equals(PdlMiljoer.Q2) ? "" : "-" + pdlMiljoe.name().toLowerCase())
                         .path(GRAPHQL_URL)
                         .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CONSUMER_ID, DOLLY)
                 .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
                 .header(TEMA, GEN.name())
@@ -57,11 +54,11 @@ public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
                                 Map.of("paging", paging, "criteria", criteria))))
                 .retrieve()
                 .bodyToFlux(PdlPersonDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }
+
 }
 

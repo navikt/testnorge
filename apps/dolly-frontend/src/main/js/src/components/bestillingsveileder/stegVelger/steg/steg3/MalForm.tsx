@@ -1,6 +1,6 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
-import { Mal, useDollyMalerBrukerOgMalnavn } from '@/utils/hooks/useMaler'
+import { Mal, useMalbestillingBruker } from '@/utils/hooks/useMaler'
 import Loading from '@/components/ui/loading/Loading'
 import { MalOppsummering } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -14,7 +14,7 @@ export type MalerFormProps = {
 export const MalForm = ({ brukerId, formMethods, opprettetFraMal }: MalerFormProps) => {
 	const [typeMal, setTypeMal] = useState(MalTyper.OPPRETT)
 	const [opprettMal, setOpprettMal] = useState(false)
-	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
+	const { maler, loading } = useMalbestillingBruker(brukerId)
 
 	if (loading) {
 		return <Loading label="Laster maler..." />

@@ -13,11 +13,11 @@ dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:testing"
 
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
-    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
     runtimeOnly "com.h2database:h2"
     runtimeOnly "org.postgresql:postgresql"

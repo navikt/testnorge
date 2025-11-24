@@ -4,34 +4,23 @@ import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BestillingProgressServiceTest {
 
-    private final static String BRUKERID = "123";
-    private final static String BRUKERNAVN = "BRUKER";
-    private final static String EPOST = "@@@@";
-
     @Mock
-    private BestillingProgressRepository mockRepo;
+    private BestillingProgressRepository bestillingProgressRepository;
 
     @InjectMocks
     private BestillingProgressService progressService;
@@ -42,25 +31,24 @@ class BestillingProgressServiceTest {
     }
 
     @Test
-    void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception {
-        when(mockRepo.findByBestillingId(any())).thenReturn(Optional.empty());
-        Assertions.assertThrows(NotFoundException.class, () ->
-                progressService.fetchBestillingProgressByBestillingsIdFromDB(null));
+    void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() {
+
+        when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.empty());
+
+        StepVerifier.create(progressService.fetchBestillingProgressByBestillingId(1L))
+                .expectError(NotFoundException.class)
+                .verify();
     }
 
     @Test
-    void hviFetchBestillingProgressFinnerObjectSåReturnerObjektet() {
-        BestillingProgress mock = Mockito.mock(BestillingProgress.class);
-        when(mockRepo.findByBestillingId(1l)).thenReturn(Optional.of(Collections.singletonList(mock)));
-        List<BestillingProgress> bes = progressService.fetchBestillingProgressByBestillingsIdFromDB(1l);
-        assertThat(bes.get(0), is(mock));
-    }
+    void hviFetchBestillingProgressFinnerObjectSaaReturnerObjektet() {
 
-    @Test
-    void hvisFetchProgressSomReturnererTomListeHvisIkkeFunnetIkkeFinnerObjektSåReturnerTomListe() {
-        when(mockRepo.findByBestillingId(1l)).thenReturn(Optional.of(new ArrayList<>()));
-        List<BestillingProgress> bes = progressService.fetchBestillingProgressByBestillingId(1l);
-        assertThat(bes.isEmpty(), is(true));
-    }
+        var id = 1L;
+        var progress = BestillingProgress.builder().id(id).build();
+        when(bestillingProgressRepository.findAllByBestillingId(id)).thenReturn(Flux.just(progress));
 
+        StepVerifier.create(progressService.fetchBestillingProgressByBestillingId(id))
+                .expectNext(progress)
+                .verifyComplete();
+    }
 }

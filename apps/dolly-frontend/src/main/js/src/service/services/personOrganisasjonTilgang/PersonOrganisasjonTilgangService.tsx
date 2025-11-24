@@ -1,8 +1,7 @@
 import Request from '@/service/services/Request'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 
-const personOrgTilgangServiceUrl =
-	'/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner'
+const personOrgTilgangServiceUrl = '/altinn/organisasjoner'
 
 export default {
 	getOrganisasjoner() {

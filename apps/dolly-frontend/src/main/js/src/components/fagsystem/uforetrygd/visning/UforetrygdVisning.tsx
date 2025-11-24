@@ -11,6 +11,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import styled from 'styled-components'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const BarnetilleggSamlet = styled.div`
 	margin: 0 0 15px 0;
@@ -56,7 +57,7 @@ const DataVisning = ({ data, miljo }) => {
 		(enhet) => enhet.value === data?.navEnhetId?.toString(),
 	)?.label
 
-	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+	const { vedtakData, loading } = usePensjonVedtak(data?.fnr, miljo)
 	const vedtakUT = vedtakData?.find((vedtak) => vedtak?.sakType === 'UT')
 
 	const getSisteOppdatering = (sisteOppdatering: string) => {
@@ -73,10 +74,15 @@ const DataVisning = ({ data, miljo }) => {
 
 	return (
 		<>
+			{!vedtakUT && !loading && (
+				<StyledAlert variant={'warning'} size={'small'}>
+					Kunne ikke hente vedtaksstatus for person. Dette skyldes enten at vedtaksstatus ikke er
+					klar ennå, eller at opprettelse av uføresak har feilet.
+				</StyledAlert>
+			)}
 			<div className="person-visning_content">
 				<TitleValue title="Vedtaksstatus" value={getSisteOppdatering(vedtakUT?.sisteOppdatering)} />
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
-				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
 				<TitleValue title="Inntekt etter uførhet" value={data?.inntektEtterUforhet} />

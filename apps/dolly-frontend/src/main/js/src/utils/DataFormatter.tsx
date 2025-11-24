@@ -1,9 +1,9 @@
 import { format, isDate } from 'date-fns'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import { convertInputToDate, initDayjs } from '@/components/ui/form/DateFormatUtils'
 
-export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
 export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'
 export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy HH:mm:ss'
@@ -26,10 +26,22 @@ export const formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
 export const formatDate = (date: any, formatString?: string) => {
-	if (!date) return date
-	// Parse date if not date
-	if (!isDate(date)) date = new Date(date)
-	return format(date, formatString || defaultDateFormat)
+	if (!date) {
+		return date
+	}
+	if (date?.length > 19) {
+		date = date.substring(0, 19)
+	}
+	if (isDate(date)) {
+		const customdayjs = initDayjs()
+		return customdayjs(date).format(formatString || 'DD.MM.YYYY')
+	}
+	const dayjsDate = convertInputToDate(date)
+	const valid = dayjsDate?.isValid?.()
+	if (!valid) {
+		return date
+	}
+	return dayjsDate.format(formatString || 'DD.MM.YYYY')
 }
 
 // Format date to readable string format (AAAAMMDD to DD.MM.AAAA)
@@ -40,15 +52,7 @@ export const formatTenorDate = (dateString: any, formatString?: string) => {
 	const month = dateString.substring(4, 6)
 	const day = dateString.substring(6, 8)
 	const date = new Date(year, month - 1, day)
-
-	return format(date, formatString || defaultDateFormat)
-}
-
-export const formatDateToYear = (date) => {
-	if (!date) return date
-	// Parse date if not date
-	if (!isDate(date)) date = new Date(date)
-	return format(date, yearFormat)
+	return Date.parse(date) ? format(date, formatString || defaultDateFormat) : null
 }
 
 // Format dateTime to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA hh:mm)
@@ -168,12 +172,12 @@ export const codeToNorskLabel = (value) => {
 		return null
 	}
 	return uppercaseAndUnderscoreToCapitalized(value)
-		.replace('oe', 'ø')
-		.replace('Oe', 'Ø')
-		.replace('ae', 'æ')
-		.replace('Ae', 'Æ')
-		.replace('aa', 'å')
-		.replace('Aa', 'Å')
+		.replaceAll('oe', 'ø')
+		.replaceAll('Oe', 'Ø')
+		.replaceAll('ae', 'æ')
+		.replaceAll('Ae', 'Æ')
+		.replaceAll('aa', 'å')
+		.replaceAll('Aa', 'Å')
 }
 
 export const oversettBoolean = (value) => {
@@ -239,9 +243,17 @@ export const showKodeverkLabel = (kodeverkNavn, value) => {
 	return kodeverk?.find((kode) => kode?.value === value)?.label
 }
 
-export const getYearRangeOptions = (start, stop) => {
+export const getYearRangeOptions = (start, end) => {
+	let startYear = start
+	let endYear = end
+	if (isDate(start)) {
+		startYear = start.getFullYear()
+	}
+	if (isDate(end)) {
+		endYear = end.getFullYear()
+	}
 	const years = []
-	for (let i = start; i <= stop; i++) {
+	for (let i = startYear; i <= endYear; i++) {
 		years.push({ value: i, label: i.toString() })
 	}
 	return years.reverse()
@@ -260,4 +272,17 @@ export const formatXml = (xml: string, tab = '\t') => {
 		}
 	})
 	return formatted.substring(1, formatted.length - 3)
+}
+
+export const formatBrukerNavn = (brukerNavn: string | undefined) => {
+	if (!brukerNavn) {
+		return ''
+	}
+	const parts = brukerNavn.split(', ')
+	if (parts.length < 2) {
+		return brukerNavn
+	}
+	const firstName = parts[1]
+	const lastName = parts[0]
+	return `${firstName} ${lastName}`
 }

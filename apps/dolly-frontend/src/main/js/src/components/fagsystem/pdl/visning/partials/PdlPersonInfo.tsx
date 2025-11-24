@@ -2,7 +2,6 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
-import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import React from 'react'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
@@ -99,7 +98,6 @@ export const PdlPersonInfo = ({ data, tpsMessagingData, tpsMessagingLoading = fa
 							showMaster={true}
 						/>
 					)}
-					<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />
 				</div>
 			</div>
 		</ErrorBoundary>

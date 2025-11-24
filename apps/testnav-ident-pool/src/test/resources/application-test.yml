@@ -1,0 +1,26 @@
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  r2dbc:
+    url: r2dbc:tc:postgresql:///test?TC_IMAGE_TAG=16.9
+    username: test
+    password: test
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org:
+      springframework:
+        security=TRACE:
+
+server:
+  error:
+    include-message: always

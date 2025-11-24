@@ -47,13 +47,13 @@ class BestillingArenaforvalterStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(RUN_STATUS);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Miljø ikke støttet")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t3")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getMelding(), is(equalTo("Feil: Miljø ikke støttet")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getMiljo(), is(equalTo("t3")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getIdenter(), containsInAnyOrder(IDENT));
 
-        assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("OK")));
-        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
-        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+        assertThat(identStatuses.getFirst().getStatuser().get(1).getMelding(), is(equalTo("OK")));
+        assertThat(identStatuses.getFirst().getStatuser().get(1).getDetaljert().getFirst().getMiljo(), is(equalTo("t4")));
+        assertThat(identStatuses.getFirst().getStatuser().get(1).getDetaljert().getFirst().getIdenter(), containsInAnyOrder(IDENT));
     }
 
     @Test
@@ -61,9 +61,9 @@ class BestillingArenaforvalterStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(ARENA_ORACLE_EXCEPTION);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Det finnes et overlappende vedtak om livsoppholdsytelse for denne perioden.")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q1")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getMelding(), is(equalTo("Feil: Det finnes et overlappende vedtak om livsoppholdsytelse for denne perioden.")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getMiljo(), is(equalTo("q1")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getIdenter(), containsInAnyOrder(IDENT));
     }
 
     @Test
@@ -71,9 +71,9 @@ class BestillingArenaforvalterStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(ARENA_ORACLE_EXCEPTION_DOED);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Person med fødselsnr 12345678912 kan ikke aktiveres fordi denne er død ved forsøk på aktivering med iverksatt 14a-vedtak.")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q2")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getMelding(), is(equalTo("Feil: Person med fødselsnr 12345678912 kan ikke aktiveres fordi denne er død ved forsøk på aktivering med iverksatt 14a-vedtak.")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getMiljo(), is(equalTo("q2")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getIdenter(), containsInAnyOrder(IDENT));
     }
 
     @Test
@@ -81,8 +81,8 @@ class BestillingArenaforvalterStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(ARENA_ORACLE_EXCEPTION_TJENESTE);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: IO error on POST request")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q1")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getMelding(), is(equalTo("Feil: IO error on POST request")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getMiljo(), is(equalTo("q1")));
+        assertThat(identStatuses.getFirst().getStatuser().getFirst().getDetaljert().getFirst().getIdenter(), containsInAnyOrder(IDENT));
     }
 }

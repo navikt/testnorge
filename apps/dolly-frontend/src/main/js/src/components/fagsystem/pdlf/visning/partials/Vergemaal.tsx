@@ -6,7 +6,7 @@ import { formatDate } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { PersonData, Relasjon, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '@/config/kodeverk'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
@@ -77,7 +77,7 @@ const VergemaalLes = ({
 		<>
 			<div className="person-visning_redigerbar" key={idx}>
 				<TitleValue
-					title="Fylkesmannsembete"
+					title="Fylkesembete"
 					kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
 					value={vergemaalData.vergemaalEmbete || vergemaalData.embete}
 				/>

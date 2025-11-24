@@ -3,12 +3,16 @@ name: sykemelding-api
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/avro-schema/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/servlet-core/**"
-      - "apps/sykemelding-api/**"
-      - ".github/workflows/app.sykemelding-api.yml"
+      - .github/workflows/app.sykemelding-api.yml
+      - apps/sykemelding-api/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:
@@ -17,6 +21,7 @@ jobs:
       cluster: "dev-gcp"
       working-directory: "apps/sykemelding-api"
       deploy-tag: "#deploy-sykemelding-api"
+      deploy-tag-test: "#deploy-test-sykemelding-api"
     permissions:
       contents: read
       id-token: write

@@ -2,9 +2,8 @@ import { DollyApi } from '@/service/Api'
 import { createActions } from 'redux-actions'
 import { onFailure, onSuccess } from '@/ducks/utils/requestActions'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
-import { LOCATION_CHANGE } from 'redux-first-history'
 import { VisningType } from '@/pages/gruppe/Gruppe'
-import { isEmpty } from 'lodash'
+import * as _ from 'lodash-es'
 import { ERROR_NAVIGATE_IDENT } from '../errors/ErrorMessages'
 
 export const {
@@ -13,11 +12,13 @@ export const {
 	setSideStoerrelse,
 	setSidetall,
 	setVisning,
+	setGruppeNavigerTil,
 	resetNavigering,
 	resetPaginering,
 	resetFeilmelding,
 	setSorting,
 	setUpdateNow,
+	locationChange,
 } = createActions({
 	navigerTilPerson: DollyApi.navigerTilPerson,
 	navigerTilBestilling: DollyApi.navigerTilBestilling,
@@ -25,10 +26,12 @@ export const {
 	setSideStoerrelse: (sideStoerrelse) => sideStoerrelse,
 	setSorting: (sorting) => sorting,
 	setVisning: (visning) => visning,
-	resetNavigering() {},
-	resetPaginering() {},
-	resetFeilmelding() {},
-	setUpdateNow() {},
+	setGruppeNavigerTil: (gruppeId) => gruppeId,
+	resetNavigering: () => ({}),
+	resetPaginering: () => ({}),
+	resetFeilmelding: () => ({}),
+	setUpdateNow: () => ({}),
+	locationChange: (location) => ({ location }),
 })
 
 const initialState = {
@@ -37,7 +40,7 @@ const initialState = {
 	hovedperson: null,
 	visBestilling: null,
 	navigerTilGruppe: null,
-	feilmelding: undefined,
+	feilmelding: null,
 	sidetall: 0,
 	sideStoerrelse: 10,
 	sorting: null,
@@ -46,43 +49,45 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](_state, action) {
-			if (action.payload.action !== 'REPLACE') return initialState
+		[locationChange]: (state, action) => {
+			const gruppePathRegex = /^\/gruppe\/\d+$/
+			return gruppePathRegex.test(action.payload.location.pathname) ? state : initialState
 		},
-		[onFailure(navigerTilPerson)](state, action) {
-			state.feilmelding = action.payload.data?.message
+		[onFailure(navigerTilPerson)]: (state, action) => {
+			state.feilmelding = action.payload.data?.message || 'Ukjent feil'
 		},
-		[onFailure(navigerTilBestilling)](state, action) {
-			state.feilmelding = action.payload.data?.message
+		[onFailure(navigerTilBestilling)]: (state, action) => {
+			state.feilmelding = action.payload.data?.message || 'Ukjent feil'
 		},
-		[onSuccess(navigerTilPerson)](state, action) {
-			state.feilmelding = isEmpty(action.payload?.data)
-				? ERROR_NAVIGATE_IDENT
-				: action.payload?.data?.message
+		[onSuccess(navigerTilPerson)]: (state, action) => {
+			state.feilmelding =
+				!action.payload?.data || _.isEmpty(action.payload?.data)
+					? ERROR_NAVIGATE_IDENT
+					: action.payload?.data?.message
 			state.hovedperson = action.payload.data.identHovedperson
 			state.visPerson = action.payload.data.identNavigerTil
 			state.sidetall = action.payload.data.sidetall
 			state.navigerTilGruppe = action.payload.data?.gruppe?.id
 			state.visning = VisningType.VISNING_PERSONER
 		},
-		[onSuccess(navigerTilBestilling)](state, action) {
-			state.feilmelding = action.payload?.data?.message
+		[onSuccess(navigerTilBestilling)]: (state, action) => {
+			state.feilmelding = action.payload?.data?.message || null
 			state.visBestilling = action.payload.data.bestillingNavigerTil
 			state.sidetall = action.payload.data.sidetall
 			state.navigerTilGruppe = action.payload.data.gruppe?.id
 			state.visning = VisningType.VISNING_BESTILLING
 		},
-		[setSidetall](state, action) {
+		[setSidetall]: (state, action) => {
 			state.sidetall = action.payload
 		},
-		[resetPaginering](state) {
+		[resetPaginering]: (state) => {
 			state.sidetall = initialState.sidetall
 			state.sideStoerrelse = initialState.sideStoerrelse
 		},
-		[setSideStoerrelse](state, action) {
+		[setSideStoerrelse]: (state, action) => {
 			state.sideStoerrelse = action.payload
 		},
-		[resetNavigering](state) {
+		[resetNavigering]: (state) => {
 			return {
 				...initialState,
 				visning: state.visning,
@@ -90,16 +95,19 @@ export default handleActions(
 				sideStoerrelse: state.sideStoerrelse,
 			}
 		},
-		[resetFeilmelding](state) {
-			state.feilmelding = undefined
+		[resetFeilmelding]: (state) => {
+			state.feilmelding = null
 		},
-		[setVisning](state, action) {
+		[setVisning]: (state, action) => {
 			state.visning = action.payload
 		},
-		[setSorting](state, action) {
+		[setGruppeNavigerTil]: (state, action) => {
+			state.navigerTilGruppe = action.payload
+		},
+		[setSorting]: (state, action) => {
 			state.sorting = action.payload
 		},
-		[setUpdateNow](state) {
+		[setUpdateNow]: (state) => {
 			state.update = new Date()
 		},
 	},

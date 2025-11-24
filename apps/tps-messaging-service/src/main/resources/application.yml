@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: testnav-tps-messaging-service
+  config:
+    import: "classpath:dolly-application.yml"
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+
+config:
+  mq:
+    test:
+      host: 10.52.129.178
+      #      host: d26apvl300.test.local
+      port: 1412
+      queueManager: MTLS03
+      user: ${mq.test.username:#{null}}
+      password: ${mq.test.password:#{null}}
+    preprod:
+      host: b27apvl221.preprod.local
+      port: 1413
+      queueManager: MQLS03
+      user: ${mq.dev.username:#{null}}
+      password: ${mq.dev.password:#{null}}
+
+consumers:
+  testmiljoerService:
+      url: http://testnav-miljoer-service.dolly.svc.cluster.local
+      cluster: dev-gcp
+      namespace: dolly
+      name: testnav-miljoer-service
+
+management:
+  health:
+    elasticsearch:
+      enabled: false

@@ -1,17 +1,20 @@
-CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
-JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
-
+CRYPTOGRAPHY_SECRET: dummy
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
-TOKENDINGS_URL: ${TOKEN_X_ISSUER} 
+
 spring:
-  application:
-    name: testnav-bruker-service-dev
+  config:
+    import: "sm://"
   flyway:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
-  testnav-person-organisasjon-tilgang-service:
-    url: https://testnav-person-organisasjon-tilgang-service-dev.intern.dev.nav.no
-    name: testnav-person-organisasjon-tilgang-service-dev
+  testnav-altinn3-tilgang-service:
+    url: https://testnav-altinn3-tilgang-service.intern.dev.nav.no
+    name: testnav-altinn3-tilgang-service

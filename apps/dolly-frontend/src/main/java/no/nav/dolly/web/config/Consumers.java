@@ -35,8 +35,7 @@ public class Consumers {
     private ServerProperties testnavBrukerService;
     private ServerProperties testnavDokarkivProxy;
     private ServerProperties testnavHelsepersonellService;
-    private ServerProperties testnavHistarkProxy;
-    private ServerProperties testnavInntektstubProxy;
+    private ServerProperties testnavDollyProxy;
     private ServerProperties testnavInstProxy;
     private ServerProperties testnavJoarkDokumentService;
     private ServerProperties testnavKodeverkService;
@@ -49,11 +48,9 @@ public class Consumers {
     private ServerProperties testnavOrganisasjonFasteDataService;
     private ServerProperties testnavOrganisasjonForvalter;
     private ServerProperties testnavOrganisasjonService;
-    private ServerProperties testnavOrganisasjonTilgangService;
     private ServerProperties testnavPdlForvalter;
     private ServerProperties testnavPensjonTestdataFacadeProxy;
-    private ServerProperties testnavPersonOrganisasjonTilgangService;
-    private ServerProperties testnavPersonSearchService;
+    private ServerProperties testnavDollySearchService;
     private ServerProperties testnavPersonService;
     private ServerProperties testnavSigrunstubProxy;
     private ServerProperties testnavSkjermingsregisterProxy;
@@ -63,9 +60,15 @@ public class Consumers {
     private ServerProperties testnorgeProfilApi;
     private ServerProperties testnorgeTilbakemeldingApi;
     private ServerProperties testnavTenorSearchService;
+    private ServerProperties testnavSykemeldingApi;
     private ServerProperties testnavSkattekortService;
     private ServerProperties testnavLevendeArbeidsforholdAnsettelse;
     private ServerProperties testnavLevendeArbeidsforholdScheduler;
     private ServerProperties testnavYrkesskadeProxy;
-
+    private ServerProperties testnavSykemeldingProxy;
+    private ServerProperties testnavNomProxy;
+    private ServerProperties testnavAltinn3TilgangService;
+    private ServerProperties testnavArbeidssoekerregisteretProxy;
+    private ServerProperties testnavApiOversiktService;
+    private ServerProperties testnavIdentPool;
 }

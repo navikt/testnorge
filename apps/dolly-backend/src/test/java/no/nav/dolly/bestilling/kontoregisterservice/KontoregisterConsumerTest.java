@@ -3,28 +3,14 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -37,44 +23,25 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yaml")
-@AutoConfigureWireMock(port = 0)
-class KontoregisterConsumerTest {
+class KontoregisterConsumerTest extends AbstractConsumerTest {
+
     private static final String IDENT = "12345678901";
     private static final String KONTONUMMER = "1234567890";
-
-    @MockBean
-    private TokenExchange tokenService;
-
-    @MockBean
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockBean
-    private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setup() {
-
-        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @AfterEach
     void cleanUp() {
-        WireMock.getAllServeEvents()
-                .stream().forEach(e -> WireMock.removeServeEvent(e.getId()));
+        WireMock
+                .getAllServeEvents()
+                .forEach(e -> WireMock.removeServeEvent(e.getId()));
     }
 
-    private String hentKontoResponse() {
+    private static String hentKontoResponse() {
         return "{\n" +
                 "    \"kontohaver\": \"" + IDENT + "\",\n" +
                 "    \"kontonummer\": \"" + KONTONUMMER + "\",\n" +
@@ -106,7 +73,7 @@ class KontoregisterConsumerTest {
                 .expectNext(KontoregisterResponseDTO.builder()
                         .status(HttpStatus.OK)
                         .build())
-                        .verifyComplete();
+                .verifyComplete();
     }
 
     @Test
@@ -165,10 +132,9 @@ class KontoregisterConsumerTest {
                 })
                 .toList();
 
-        hentBankkontoer.stream()
-                .forEach(b -> {
-                    assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver()));
-                });
+        hentBankkontoer
+                .forEach(b ->
+                        assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver())));
 
         assertThat(hentResponse.getAktivKonto().getKontonummer(), is(equalTo(KONTONUMMER)));
         assertThat(hentResponse.getAktivKonto().getKontohaver(), is(equalTo(IDENT)));

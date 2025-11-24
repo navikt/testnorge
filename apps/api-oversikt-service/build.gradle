@@ -1,0 +1,26 @@
+plugins {
+    id "dolly-apps"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-api-oversikt-service"
+        property "sonar.projectName", "testnav-api-oversikt-service"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+}

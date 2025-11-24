@@ -1,0 +1,20 @@
+plugins {
+    id "dolly-proxies"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-dolly-proxy"
+        property "sonar.projectName", "testnav-dolly-proxy"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-proxy"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+}

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -42,15 +44,18 @@ public class JsonMapperConfig {
                 .addDeserializer(YearMonth.class, new DollyYearMonthDeserializer())
                 .addSerializer(YearMonth.class, new YearMonthSerializer(DateTimeFormatter.ofPattern(YEAR_MONTH)))
                 .addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer())
-                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
+                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
+                .addDeserializer(Instant.class, new DollyInstantDeserializer());
         return JsonMapper
                 .builder()
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build()
+                .registerModule(new JavaTimeModule())
                 .registerModule(simpleModule);
 
     }
@@ -102,6 +107,19 @@ public class JsonMapperConfig {
             }
             var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
+        }
+    }
+
+    private static class DollyInstantDeserializer extends JsonDeserializer<Instant> {
+
+        @Override
+        public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            if (isBlank(node.asText())) {
+                return null;
+            }
+            var timestamp = node.asText();
+            return Instant.parse(timestamp.contains("Z") ? timestamp : timestamp + "Z");
         }
     }
 }

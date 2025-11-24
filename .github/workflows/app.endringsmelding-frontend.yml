@@ -3,13 +3,14 @@ name: endringsmelding-frontend
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-frontend/**"
-      - "libs/reactive-session-security/**"
-      - "libs/security-core/**"
-      - "apps/endringsmelding-frontend/**"
-      - ".github/workflows/app.endringsmelding-frontend.yml"
+      - .github/workflows/app.endringsmelding-frontend.yml
+      - apps/endringsmelding-frontend/**
+      - libs/reactive-core/**
+      - libs/reactive-frontend/**
+      - libs/reactive-session-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:
@@ -20,4 +21,5 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      packages: read
     secrets: inherit

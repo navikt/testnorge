@@ -6,6 +6,7 @@ import { Adressebeskyttelse } from '@/components/fagsystem/pdlf/form/partials/ad
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 
 interface AdresserValues {
 	formMethods: UseFormReturn
@@ -16,6 +17,7 @@ export const adresseAttributter = [
 	'pdldata.person.oppholdsadresse',
 	'pdldata.person.kontaktadresse',
 	'pdldata.person.adressebeskyttelse',
+	'pdldata.person.deltBosted',
 ]
 
 export const Adresser = ({ formMethods }: AdresserValues) => {
@@ -38,6 +40,9 @@ export const Adresser = ({ formMethods }: AdresserValues) => {
 				</Vis>
 				<Vis attributt={'pdldata.person.adressebeskyttelse'}>
 					<Adressebeskyttelse formMethods={formMethods} />
+				</Vis>
+				<Vis attributt={'pdldata.person.deltBosted'}>
+					<DeltBosted formMethods={formMethods} path={'pdldata.person.deltBosted[0]'} />
 				</Vis>
 			</Panel>
 		</Vis>

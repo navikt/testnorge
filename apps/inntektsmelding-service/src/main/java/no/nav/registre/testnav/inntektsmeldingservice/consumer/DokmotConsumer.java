@@ -28,11 +28,12 @@ public class DokmotConsumer {
     public DokmotConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getTestnavDokarkivProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

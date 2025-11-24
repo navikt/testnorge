@@ -8,13 +8,14 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import _get from 'lodash/get'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useFormContext } from 'react-hook-form'
 
-export const ArbeidserfaringForm = ({ formMethods }) => {
+export const ArbeidserfaringForm = () => {
+	const formMethods = useFormContext()
 	const setYrke = (valg, path) => {
 		formMethods.setValue(`${path}.styrkkode`, valg.value)
 		formMethods.setValue(`${path}.jobTitle`, valg.label)
@@ -46,52 +47,46 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								name={`${arbeidsforholdPath}.alternativeJobTitle`}
 								label="Alternativ tittel"
 								size="large"
-								key={`alternativeJobTitle_${_get(
-									formMethods.getValues(),
-									`${arbeidsforholdPath}.alternativeJobTitle`,
-								)}`}
+								key={`alternativeJobTitle_${formMethods.getValues(`${arbeidsforholdPath}.alternativeJobTitle`)}`}
 							/>
 							<FormTextInput
 								name={`${arbeidsforholdPath}.employer`}
 								label="Bedrift"
 								size="large"
-								key={`employer_${_get(formMethods.getValues(), `${arbeidsforholdPath}.employer`)}`}
+								key={`employer_${formMethods.getValues(`${arbeidsforholdPath}.employer`)}`}
 							/>
 							<FormTextInput
 								name={`${arbeidsforholdPath}.location`}
 								label="Sted"
 								size="large"
-								key={`location_${_get(formMethods.getValues(), `${arbeidsforholdPath}.location`)}`}
+								key={`location_${formMethods.getValues(`${arbeidsforholdPath}.location`)}`}
 							/>
 							<Fritekstfelt
 								label="Arbeidsoppgaver"
 								placeholder="Beskrivelse av arbeidsoppgaver"
-								defaultValue={_get(formMethods.getValues(), `${arbeidsforholdPath}.description`)}
+								defaultValue={formMethods.getValues(`${arbeidsforholdPath}.description`)}
 								onBlur={(beskrivelse) =>
 									formMethods.setValue(
 										`${arbeidsforholdPath}.description`,
 										beskrivelse?.target?.value,
 									)
 								}
+								key={`description_${formMethods.getValues(`${arbeidsforholdPath}.description`)}`}
 								size="small"
-								key={`description_${_get(
-									formMethods.getValues(),
-									`${arbeidsforholdPath}.description`,
-								)}`}
 								resize
 							/>
 							<FormDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />
 							<FormDatepicker
 								name={`${arbeidsforholdPath}.toDate`}
 								label="Ansatt til"
-								disabled={_get(formMethods.getValues(), `${arbeidsforholdPath}.ongoing`)}
+								disabled={formMethods.getValues(`${arbeidsforholdPath}.ongoing`)}
 							/>
 							<FormCheckbox
 								id={`${arbeidsforholdPath}.ongoing`}
 								name={`${arbeidsforholdPath}.ongoing`}
 								label="Nåværende jobb"
 								wrapperSize="inherit"
-								isDisabled={_get(formMethods.getValues(), `${arbeidsforholdPath}.toDate`)}
+								disabled={formMethods.getValues(`${arbeidsforholdPath}.toDate`)}
 								checkboxMargin
 							/>
 						</div>

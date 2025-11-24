@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import _ from 'lodash'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import * as _ from 'lodash-es'
 import { organisasjonPaths } from '../paths'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -19,7 +19,6 @@ type DetaljerProps = {
 	path: string
 	level: number
 	number?: string
-	maaHaUnderenhet?: boolean
 }
 
 enum TypeUnderenhet {
@@ -31,73 +30,107 @@ const StyledToggleGroup = styled(ToggleGroup)`
 	margin-bottom: 7px;
 `
 
-export const Detaljer = ({
-	formMethods,
-	path,
-	level,
-	number,
-	maaHaUnderenhet = true,
-}: DetaljerProps) => {
-	const initialValues = _.omit(formMethods.getValues().organisasjon, ['underenheter', 'sektorkode'])
-	const underenheter = formMethods.getValues('organisasjon.underenheter')
-	const sektorkodeErValgt = formMethods.getValues('organisasjon.sektorkode')
+export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) => {
+	const watchedValues = formMethods.watch(path)
+	const initialValues = useMemo(
+		() => _.omit(watchedValues || {}, ['underenheter', 'sektorkode', 'typeUnderenhet']),
+		[watchedValues],
+	)
+	const createNewEntry = () => _.cloneDeep(initialValues)
+
+	const computeTypeFromForm = () => {
+		const saved = formMethods.getValues(`${path}.typeUnderenhet`)
+		if (saved === TypeUnderenhet.JURIDISKENHET || saved === TypeUnderenhet.VIRKSOMHET) return saved
+		if (level === 0) return TypeUnderenhet.JURIDISKENHET
+		const under = formMethods.getValues(`${path}.underenheter`)
+		return under && under.length > 0 ? TypeUnderenhet.JURIDISKENHET : TypeUnderenhet.VIRKSOMHET
+	}
+
+	const [typeUnderenhet, setTypeUnderenhet] = useState(computeTypeFromForm())
+	const previousUnderEnheterRef = useRef<any[] | undefined>(undefined)
+	const enhetstype = formMethods.watch(`${path}.enhetstype`)
+	const hasChildren =
+		Array.isArray(formMethods.getValues(`${path}.underenheter`)) &&
+		formMethods.getValues(`${path}.underenheter`)?.length > 0
 
 	useEffect(() => {
-		if (level === 0 && _.isEmpty(formMethods.getValues(`${path}.underenheter`))) {
-			formMethods.setValue(`${path}.underenheter`, underenheter || [initialValues])
-			formMethods.trigger(`${path}.underenheter`)
-		}
-	}, [])
+		const stored = formMethods.getValues(`${path}.typeUnderenhet`)
+		if (!stored) formMethods.setValue(`${path}.typeUnderenhet`, typeUnderenhet)
+	}, [typeUnderenhet, formMethods, path])
 
-	const [typeUnderenhet, setTypeUnderenhet] = useState(
-		level === 0 ||
-			(_.has(formMethods.getValues(), `${path}.underenheter`) &&
-				formMethods.watch(`${path}.underenheter`))
-			? TypeUnderenhet.JURIDISKENHET
-			: TypeUnderenhet.VIRKSOMHET,
-	)
-
-	const handleToggleChange = (value: TypeUnderenhet) => {
-		setTypeUnderenhet(value)
+	const handleToggleChange = (next: TypeUnderenhet) => {
+		if (next === typeUnderenhet) return
+		formMethods.setValue(`${path}.typeUnderenhet`, next)
 		formMethods.setValue(`${path}.enhetstype`, '')
-		if (value === TypeUnderenhet.VIRKSOMHET) {
+		const sektorkodeErValgt = formMethods.getValues(`${path}.sektorkode`)
+		if (next === TypeUnderenhet.VIRKSOMHET) {
+			previousUnderEnheterRef.current = formMethods.getValues(`${path}.underenheter`) || []
 			formMethods.setValue(`${path}.underenheter`, undefined)
-			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, undefined)
-		} else if (value === TypeUnderenhet.JURIDISKENHET && level < 4) {
-			formMethods.setValue(`${path}.underenheter`, [initialValues])
-			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, '')
+			if (sektorkodeErValgt) formMethods.setValue(`${path}.sektorkode`, undefined)
+		} else if (next === TypeUnderenhet.JURIDISKENHET && level < 4) {
+			if (previousUnderEnheterRef.current && previousUnderEnheterRef.current.length > 0) {
+				formMethods.setValue(`${path}.underenheter`, previousUnderEnheterRef.current)
+			}
+			if (sektorkodeErValgt) formMethods.setValue(`${path}.sektorkode`, '')
 		}
-		formMethods.trigger(`${path}`)
+		setTypeUnderenhet(next)
 	}
+
+	const mustHaveUnderenhet =
+		typeUnderenhet === TypeUnderenhet.JURIDISKENHET && enhetstype && enhetstype !== 'ENK'
 
 	return (
 		<>
-			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths} flexRow={true}>
+			<Kategori title={!number ? 'Organisasjon' : undefined} vis={organisasjonPaths} flexRow={true}>
 				<div className="toggle--wrapper">
 					{level > 0 && (
-						<StyledToggleGroup size={'small'} onChange={handleToggleChange} value={typeUnderenhet}>
+						<StyledToggleGroup
+							size={'small'}
+							onChange={(v: string) => handleToggleChange(v as TypeUnderenhet)}
+							value={typeUnderenhet}
+						>
 							<ToggleGroup.Item
 								key={TypeUnderenhet.JURIDISKENHET}
 								value={TypeUnderenhet.JURIDISKENHET}
 							>
 								Juridisk enhet
 							</ToggleGroup.Item>
-							<ToggleGroup.Item key={TypeUnderenhet.VIRKSOMHET} value={TypeUnderenhet.VIRKSOMHET}>
+							<ToggleGroup.Item
+								key={TypeUnderenhet.VIRKSOMHET}
+								value={TypeUnderenhet.VIRKSOMHET}
+								disabled={hasChildren}
+								style={hasChildren ? { opacity: 0.5 } : undefined}
+								title={
+									hasChildren
+										? 'Kan ikke endre til virksomhet når denne enheten har underenheter. Fjern underenheter først.'
+										: undefined
+								}
+							>
 								Virksomhet
 							</ToggleGroup.Item>
 						</StyledToggleGroup>
 					)}
-					<FormSelect
-						name={`${path}.enhetstype`}
-						label="Enhetstype"
-						kodeverk={
-							typeUnderenhet === TypeUnderenhet.JURIDISKENHET
-								? OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
-								: OrganisasjonKodeverk.EnhetstyperVirksomhet
-						}
-						size="xxlarge"
-						isClearable={false}
-					/>
+					{path === 'organisasjon' ? (
+						<FormSelect
+							name={`${path}.enhetstype`}
+							label="Enhetstype"
+							kodeverk={OrganisasjonKodeverk.EnhetstyperJuridiskEnhet}
+							size="xxlarge"
+							isClearable={false}
+						/>
+					) : (
+						<FormSelect
+							name={`${path}.enhetstype`}
+							label="Enhetstype"
+							kodeverk={
+								typeUnderenhet === TypeUnderenhet.JURIDISKENHET
+									? OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
+									: OrganisasjonKodeverk.EnhetstyperVirksomhet
+							}
+							size="xxlarge"
+							isClearable={false}
+						/>
+					)}
 				</div>
 				<FormSelect
 					name={`${path}.naeringskode`}
@@ -136,34 +169,31 @@ export const Detaljer = ({
 			<FormDollyFieldArray
 				name={`${path}.underenheter`}
 				header="Underenhet"
-				newEntry={initialValues}
+				newEntry={createNewEntry()}
+				handleNewEntry={(appendFn: any) => appendFn(createNewEntry())}
 				disabled={level > 3 || typeUnderenhet === TypeUnderenhet.VIRKSOMHET}
 				title={
 					level > 3
 						? 'Du kan maksimalt lage fire nivåer av underenheter'
 						: typeUnderenhet === TypeUnderenhet.VIRKSOMHET
 							? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
-							: null
+							: undefined
 				}
-				canBeEmpty={!maaHaUnderenhet || formMethods.watch(`${path}.enhetstype`) === 'ENK'}
+				canBeEmpty={!mustHaveUnderenhet || enhetstype === 'ENK' || !enhetstype}
 				tag={number}
 				isOrganisasjon={true}
+				maxEntries={level === 0 ? undefined : 1}
+				leafOnlyDelete={true}
 			>
-				{(path: string, idx: number, _curr: any, number: string) => {
-					return (
-						<Detaljer
-							key={idx}
-							formMethods={formMethods}
-							path={path}
-							level={level + 1}
-							number={number ? number : (level + 1).toString()}
-							maaHaUnderenhet={
-								typeUnderenhet === 'JURIDISKENHET' &&
-								formMethods.watch(`${path}.enhetstype`) !== 'ENK'
-							}
-						/>
-					)
-				}}
+				{(childPath: string, _idx: number, _curr: any, childNumber: string, fieldId: string) => (
+					<Detaljer
+						key={fieldId}
+						formMethods={formMethods}
+						path={childPath}
+						level={level + 1}
+						number={childNumber ? childNumber : (level + 1).toString()}
+					/>
+				)}
 			</FormDollyFieldArray>
 		</>
 	)

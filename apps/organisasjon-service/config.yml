@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   tokenx:
@@ -22,37 +25,38 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-faste-data-frontend
-        - application: testnav-generer-arbeidsforhold-populasjon-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-orgnummer-service
         - application: testnav-oversikt-frontend
-        - application: testnav-synt-sykemelding-api
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
     outbound:
       external:
-        - host: testnav-ereg-proxy.dev-fss-pub.nais.io
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
-    path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -61,8 +65,8 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
   ingresses:

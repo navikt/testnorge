@@ -2,15 +2,15 @@ plugins {
     id "com.gradle.enterprise" version "3.12.3"
 }
 
-rootProject.name = 'skattekort-service'
+rootProject.name = "skattekort-service"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-security'
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/vault'
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/reactive-security"
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/testing"
 
 gradleEnterprise {
     buildScan {

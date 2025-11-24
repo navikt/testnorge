@@ -1,10 +1,4 @@
 spring:
-  cloud:
-    vault:
-      database:
-        enabled: false
-      token: "test"
-      enabled: false
   datasource:
     url: jdbc:tc:postgresql:15:///test?TC_REUSABLE=true
     username: user
@@ -14,5 +8,3 @@ spring:
       ddl-auto: create
   flyway:
     enabled: false
-
-TOKEN_X_ISSUER: dummy

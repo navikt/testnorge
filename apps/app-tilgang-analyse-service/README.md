@@ -10,24 +10,16 @@ Swagger finnes under [/swagger](https://testnav-app-tilgang-analyse-service.inte
 applikasjonen.
 
 ## Lokal kjøring
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
 
-### In Memmory DB
-Ha naisdevice kjørende og kjør AppTilgangAnalyseServiceApplicationStarter med følgende argumenter:
-```
--Dspring.cloud.vault.token=[kopier token fra vault]
--Dspring.profiles.active=local
-```
+En egen Spring profile _localdb_ er satt opp for å kjøre med proxy mot applikasjonens reelle DB.
 
-### GCP DB
-
-Kjør opp `cloud_sql_proxy`
+Kjør `cloud_sql_proxy` i bakgrunnen.
 ```
-./cloud_sql_proxy -instances=dolly-dev-ff83:europe-north1:testnav-app-tilgang-analyse-service=tcp:3306
+> cloud_sql_proxy -instances=dolly-dev-ff83:europe-north1:testnav-app-tilgang-analyse-service=tcp:3306
 ```
-
-Ha naisdevice kjørende og kjør AppTilgangAnalyseServiceApplicationStarter med følgende argumenter:
+Start applikasjonen med Spring profile _localdb_ og definer DB_PASSORD (kan hentes fra pod).
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
--Dspring.profiles.active=localdb
 -DDB_PASSWORD=[passord for testnav-app-tilgang-analyse-service-db]
 ```

@@ -1,4 +1,0 @@
-
-consumers:
-  oppsummeringsdokument-service:
-    url: https://testnav-oppsummeringsdokument-service.intern.dev.nav.no

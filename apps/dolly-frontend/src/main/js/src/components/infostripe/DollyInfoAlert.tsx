@@ -7,7 +7,7 @@ import './DollyInfoAlert.less'
 type DollyInfoAlertType = {
 	id: number
 	text: string
-	type: 'error' | 'warning' | 'info' | 'success'
+	type: 'error' | 'warning' | 'info' | 'success' | any
 	onHide: Function
 }
 

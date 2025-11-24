@@ -1,0 +1,22 @@
+spring:
+  config:
+    import: "sm://"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    username: postgres
+    password:
+  flyway:
+    url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    user: postgres
+    password:
+    locations: classpath:db/migration,classpath:db/local
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    username: postgres
+    password:
+
+consumers:
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
+  testnav-tenor-search-service:
+    url: https://testnav-tenor-search-service.intern.dev.nav.no

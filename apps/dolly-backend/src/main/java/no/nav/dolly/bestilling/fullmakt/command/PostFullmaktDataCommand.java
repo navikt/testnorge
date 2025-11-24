@@ -2,50 +2,47 @@ package no.nav.dolly.bestilling.fullmakt.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.util.RequestHeaderUtil;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> {
+public class PostFullmaktDataCommand implements Callable<Mono<FullmaktPostResponse>> {
 
-    private static final String POST_FULLMAKT_URL = "/api/fullmakt";
+    private static final String POST_FULLMAKT_URL = "/fullmakt/api/fullmakt";
 
     private final WebClient webClient;
     private final String token;
     private final String ident;
     private final RsFullmakt request;
 
-    public Mono<FullmaktResponse> call() {
+    public Mono<FullmaktPostResponse> call() {
 
         if (isBlank(request.getFullmektig())) {
             log.error("Klarte ikke å hente fullmektig relasjon for ident: {} fra PDL forvalter ", ident);
-            return Mono.just(FullmaktResponse.builder()
+            return Mono.just(FullmaktPostResponse.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .melding("Fullmakt mangler fullmektig for ident: " + ident)
                     .build());
         }
 
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(POST_FULLMAKT_URL)
                         .build())
@@ -53,21 +50,22 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("fnr", ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
-                .bodyToMono(FullmaktResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .bodyToMono(FullmaktPostResponse.class)
                 .doOnError(throwable -> {
-                    if (throwable instanceof WebClientResponseException ex) {
-                        if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                            log.error("Bad request mot pdl-fullmakt, response: {}", ex.getResponseBodyAsString());
-                        }
+                    if (throwable instanceof WebClientResponseException webClienResponseException
+                            && !webClienResponseException.getStatusCode().is4xxClientError()) {
+                       WebClientError.logTo(log).accept(throwable);
                     }
                 })
-                .doOnSuccess(response -> log.info("Fullmakt opprettet for person {}, response: {}", ident, response))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(WebClientFilter::logErrorMessage);
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(FullmaktPostResponse.builder()
+                                .melding(description.getMessage())
+                                .status(description.getStatus())
+                        .build());
+                });
     }
 }

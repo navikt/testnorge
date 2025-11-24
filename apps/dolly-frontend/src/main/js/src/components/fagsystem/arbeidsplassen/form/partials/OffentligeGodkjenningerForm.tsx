@@ -10,9 +10,10 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
-import _get from 'lodash/get'
+import { useFormContext } from 'react-hook-form'
 
-export const OffentligeGodkjenningerForm = ({ formMethods }) => {
+export const OffentligeGodkjenningerForm = () => {
+	const formMethods = useFormContext()
 	const offentligeGodkjenningerListePath = 'arbeidsplassenCV.offentligeGodkjenninger'
 
 	return (
@@ -38,10 +39,7 @@ export const OffentligeGodkjenningerForm = ({ formMethods }) => {
 								name={`${offentligGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								key={`issuer_${_get(
-									formMethods.getValues(),
-									`${offentligGodkjenningPath}.issuer`,
-								)}`}
+								key={`issuer_${formMethods.getValues(`${offentligGodkjenningPath}.issuer`)}`}
 							/>
 							<FormDatepicker name={`${offentligGodkjenningPath}.fromDate`} label="Fullført" />
 							<FormDatepicker name={`${offentligGodkjenningPath}.toDate`} label="Utløper" />

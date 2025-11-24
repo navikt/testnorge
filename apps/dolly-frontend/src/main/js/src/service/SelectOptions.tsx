@@ -1,3 +1,5 @@
+import { FullmaktHandling } from '@/components/fagsystem/fullmakt/FullmaktType'
+
 interface SelectOptions {
 	[name: string]: Array<{ value: boolean | string | number; label: string }>
 }
@@ -174,6 +176,11 @@ const selectOptions = {
 		{ value: 'VEGADRESSE', label: adresser.vegadresse },
 		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
 		{ value: 'POSTBOKSADRESSE', label: 'Postboksadresse' },
+		{ value: 'POSTADRESSE_I_FRITT_FORMAT', label: 'Postadresse i fritt format (historisk)' },
+		{
+			value: 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT',
+			label: 'Utenlandsk adresse i fritt format( historisk)',
+		},
 	],
 
 	adressetypeDeltBosted: [
@@ -456,23 +463,36 @@ const selectOptions = {
 
 	fagsaksystem: [
 		{ value: 'AO01', label: 'Arena (AO01)' },
+		{ value: 'ARBEIDSOPPFOLGING', label: 'Arbeidsoppfølging' },
+		{ value: 'ARGUS', label: 'Argus' },
 		{ value: 'BARNEBRILLER', label: 'Barnebriller' },
 		{ value: 'BA', label: 'Barnetrygd (BA)' },
 		{ value: 'BISYS', label: 'Bisys' },
+		{ value: 'DAGPENGER', label: 'Dagpenger' },
 		{ value: 'EF', label: 'Enslig forsørger (EF)' },
 		{ value: 'EY', label: 'Etterlatteytelser (EY)' },
+		{ value: 'FIA', label: 'FIA' },
 		{ value: 'FS36', label: 'Foreldrepengeløsningen (FS36)' },
 		{ value: 'AO11', label: 'Grisen (AO11)' },
+		{ value: 'HELT', label: 'Helt' },
 		{ value: 'HJELPEMIDLER', label: 'Hjelpemidler' },
 		{ value: 'IT01', label: 'Infotrygd (IT01)' },
+		{ value: 'KELVIN', label: 'Kelvin' },
+		{ value: 'KOMPYS', label: 'Kompys' },
 		{ value: 'KONT', label: 'Kontantstøtte (KONT)' },
 		{ value: 'FS38', label: 'Melosys (FS38)' },
+		{ value: 'NEESSI', label: 'Neessi' },
 		{ value: 'OMSORGSPENGER', label: 'Omsorgspenger' },
-		{ value: 'OEBS', label: 'Oracle E-Business Suite (OEBS)' },
+		{ value: 'OEBS', label: 'Oracle E\-Business Suite (OEBS)' },
 		{ value: 'PP01', label: 'Pesys (PP01)' },
+		{ value: 'REMEDY', label: 'Remedy' },
 		{ value: 'SUPSTONAD', label: 'Supplerende stønad (SUPSTONAD)' },
 		{ value: 'K9', label: 'Sykdom i familien (K9)' },
+		{ value: 'TILLEGGSSTONADER', label: 'Tilleggsstønader' },
+		{ value: 'TILTAKSADMINISTRASJON', label: 'Tiltaksadministrasjon' },
+		{ value: 'TILTAKSPENGER', label: 'Tiltakspenger' },
 		{ value: 'UFM', label: 'Unntak fra medlemskap (UFM)' },
+		{ value: 'UNG_SAK', label: 'Ung sak' },
 		{ value: 'OB36', label: 'Utbetalingsreskontro (OB36)' },
 	],
 
@@ -482,6 +502,12 @@ const selectOptions = {
 		{ value: 'GJENLEVENDE', label: 'Gjenlevendepensjon' },
 		{ value: 'BARN', label: 'Barnepensjon' },
 		{ value: 'AFP', label: 'AFP-pensjon' },
+		{ value: 'BETINGET_TP', label: 'Betinget TP' },
+		{ value: 'LIVSVARIG_AFP ', label: 'Livsvarig AFP' },
+		{ value: 'OPPSATT_BTO_PEN', label: 'Oppsatt bruttopensjon' },
+		{ value: 'OVERGANGSTILLEGG', label: 'Overgangstillegg' },
+		{ value: 'PAASLAGSPENSJON', label: 'Påslagspensjon' },
+		{ value: 'SAERALDER', label: 'Særalder' },
 	],
 
 	tpOrdninger: [],
@@ -493,6 +519,13 @@ const selectOptions = {
 		{ value: 'SOKT', label: 'Søkt' },
 		{ value: 'AVSLAG', label: 'Avslag' },
 		{ value: 'IKKE_SOKT', label: 'Ikke søkt' },
+	],
+
+	afpPrivatResultat: [
+		{ value: 'INNVILGET', label: 'Innvilget' },
+		{ value: 'AVSLATT', label: 'Avslått' },
+		{ value: 'TRUKKET', label: 'Trukket' },
+		{ value: 'VENTER_PAA_FELLESORDNINGEN', label: 'Venter på fellesordningen' },
 	],
 
 	// PDL vergemaal:
@@ -586,7 +619,7 @@ const selectOptions = {
 		{ value: 12, label: 'Desember' },
 	],
 
-	// Arbeidsplassen:
+	// Arbeidsplassen / Nav CV:
 	nusKoder: [
 		{ value: '2', label: 'Grunnskole' },
 		{ value: '3', label: 'Folkehøgskole' },
@@ -604,10 +637,8 @@ const selectOptions = {
 	],
 
 	fullmaktHandling: [
-		{ value: '*', label: 'Alle' },
-		{ value: 'LES', label: 'Les' },
-		{ value: 'KOMMUNISER', label: 'Kommuniser' },
-		{ value: 'SKRIV', label: 'Skriv' },
+		{ value: FullmaktHandling.les, label: 'Leserettigheter' },
+		{ value: FullmaktHandling.lesOgSkriv, label: 'Lese- og skriverettigheter' },
 	],
 
 	arbeidsmengde: [
@@ -828,8 +859,10 @@ const selectOptions = {
 	// Yrkesskader:
 	klassifisering: [
 		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
-		{ value: 'MANUELL', label: 'Manuell' },
 		{ value: 'IMPORT', label: 'Import' },
+		{ value: 'MANUELL', label: 'Manuell' },
+		{ value: 'MELLOMSKADER', label: 'Mellomskader' },
+		{ value: 'MULIG_NULLSKADE', label: 'Mulig nullskade' },
 	],
 
 	tidstype: [
@@ -843,39 +876,12 @@ const selectOptions = {
 		{ value: 'AVSLAG', label: 'Avslag' },
 	],
 
-	// Dolly-soek:
-	registerTyper: [
-		{ value: 'AAREG', label: 'Arbeidsforhold (Aareg)' },
-		{ value: 'SIGRUN_LIGNET', label: 'Sigrun lignet inntekt' },
-		{ value: 'SIGRUN_PENSJONSGIVENDE', label: 'Sigrun pensjonsgivende inntekt' },
-		{ value: 'INNTK', label: 'A-ordningen (Inntektstub)' },
-		{ value: 'INNTKMELD', label: 'Inntektsmelding (fra Altinn)' },
-		{ value: 'SKATTEKORT', label: 'Skattekort (SOKOS)' },
-		{ value: 'ARBEIDSPLASSENCV', label: 'Arbeidsplassen (CV)' },
-		{ value: 'PEN_INNTEKT', label: 'Pensjonsgivende inntekt (POPP)' },
-		{ value: 'PEN_TP', label: 'Tjenestepensjon (TP)' },
-		{ value: 'PEN_AP', label: 'Alderspensjon' },
-		{ value: 'PEN_UT', label: 'Uføretrygd' },
-		{ value: 'PEN_AFP_OFFENTLIG', label: 'AFP offentlig' },
-		{ value: 'PEN_PENSJONSAVTALE', label: 'Pensjonsavtale' },
-		{ value: 'ARENA_AAP', label: 'Arena AAP-vedtak' },
-		{ value: 'ARENA_AAP115', label: 'Arena 11.5-vedtak' },
-		{ value: 'ARENA_DAGP', label: 'Arena dagpengevedtak' },
-		{ value: 'SYKEMELDING', label: 'Sykemelding' },
-		{ value: 'YRKESSKADE', label: 'Yrkesskade' },
-		{ value: 'BRREGSTUB', label: 'Brønnøysundregistrene' },
-		{ value: 'INST', label: 'Institusjonsopphold' },
-		{ value: 'KRRSTUB', label: 'Kontakt- og reservasjonsregisteret' },
-		{ value: 'MEDL', label: 'Medlemskap i folketrygden' },
-		{ value: 'UDISTUB', label: 'UDI' },
-		{ value: 'DOKARKIV', label: 'Dokumenter' },
-		{ value: 'FULLMAKT', label: 'Fullmakt (Representasjon)' },
-		{ value: 'HISTARK', label: 'Histark' },
-		{ value: 'SKJERMING', label: 'Skjerming' },
-		{ value: 'BANKKONTO', label: 'Bankkonto' },
-		{ value: 'BANKKONTO_NORGE', label: 'Norsk bankkonto' },
-		{ value: 'BANKKONTO_UTLAND', label: 'Utenlandsk bankkonto' },
+	miljoer: [
+		{ value: 'q1', label: 'Q1' },
+		{ value: 'q2', label: 'Q2' },
+		{ value: 'q4', label: 'Q4' },
 	],
 }
 
-export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
+export const SelectOptionsManager = (attributeId: keyof typeof selectOptions) =>
+	selectOptions[attributeId]

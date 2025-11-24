@@ -1,0 +1,25 @@
+name: altinn3-tilgang-service
+
+on:
+  push:
+    paths:
+      - .github/workflows/app.altinn3-tilgang-service.yml
+      - apps/altinn3-tilgang-service/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/testing/**
+      - plugins/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/altinn3-tilgang-service"
+      deploy-tag: "#deploy-altinn3-tilgang-service"
+      nais-manifest: "config.dev.yml"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
+

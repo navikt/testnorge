@@ -1,7 +1,13 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
+import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
+import {
+	nySykemeldingAttributt,
+	sykemeldingAttributt,
+} from '@/components/fagsystem/sykdom/form/Form'
 
 export const panelError = (attributtPath) => {
 	const {
@@ -13,10 +19,18 @@ export const panelError = (attributtPath) => {
 	// Strings er akseptert, men konverter til Array
 	if (!Array.isArray(attributtPath)) attributtPath = [attributtPath]
 
-	return attributtPath.some((attr) => _.has(errors, attr))
+	return attributtPath.some((attr) => _.has(errors, attr) || _.has(errors, `manual.${attr}`))
 }
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
+
+export const isObjectEmptyDeep = (obj: any): boolean =>
+	_.every(obj, (val) => {
+		if (typeof val === 'object') {
+			return isObjectEmptyDeep(val)
+		}
+		return val === '' || _.isNil(val)
+	})
 
 export const fixTimezone = (date: Date) => {
 	if (!isDate(date) || date.getUTCHours() === 0) {
@@ -39,6 +53,7 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.foedested',
 		'pdldata.person.foedselsdato',
 		'pdldata.person.doedsfall',
+		'pdldata.person.deltBosted',
 		'pdldata.person.statsborgerskap',
 		'pdldata.person.innflytting',
 		'pdldata.person.utflytting',
@@ -49,15 +64,6 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.fullmakt',
 		'pdldata.person.sikkerhetstiltak',
 		'pdldata.person.tilrettelagtKommunikasjon',
-		'tpsMessaging.spraakKode',
-		'tpsMessaging.egenAnsattDatoFom',
-		'tpsMessaging.egenAnsattDatoTom',
-		'skjerming.egenAnsattDatoFom',
-		'skjerming.egenAnsattDatoTom',
-		'tpsMessaging.utenlandskBankkonto',
-		'tpsMessaging.norskBankkonto',
-		'bankkonto.utenlandskBankkonto',
-		'bankkonto.norskBankkonto',
 		'pdldata.person.bostedsadresse',
 		'pdldata.person.oppholdsadresse',
 		'pdldata.person.kontaktadresse',
@@ -70,22 +76,35 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.utenlandskIdentifikasjonsnummer',
 		'pdldata.person.nyident',
 		'pdldata.person.kontaktinformasjonForDoedsbo',
+		'nomdata',
+		'tpsMessaging.egenAnsattDatoFom',
+		'tpsMessaging.egenAnsattDatoTom',
+		'skjerming.egenAnsattDatoFom',
+		'skjerming.egenAnsattDatoTom',
+		'tpsMessaging.utenlandskBankkonto',
+		'tpsMessaging.norskBankkonto',
+		'bankkonto.utenlandskBankkonto',
+		'bankkonto.norskBankkonto',
 		'aareg',
 		'fullmakt',
-		'sigrunstub',
-		'sigrunstubPensjonsgivende',
+		sigrunstubPensjonsgivendeAttributt,
+		sigrunstubSummertSkattegrunnlagAttributt,
 		'inntektstub',
 		'inntektsmelding',
 		'skattekort',
+		'arbeidssoekerregisteret',
 		'arbeidsplassenCV',
 		'pensjonforvalter.inntekt',
+		'pensjonforvalter.generertInntekt',
 		'pensjonforvalter.pensjonsavtale',
 		'pensjonforvalter.tp',
 		'pensjonforvalter.alderspensjon',
+		'pensjonforvalter.alderspensjonNyUtaksgrad',
 		'pensjonforvalter.uforetrygd',
 		'pensjonforvalter.afpOffentlig',
 		'arenaforvalter',
-		'sykemelding',
+		sykemeldingAttributt,
+		nySykemeldingAttributt,
 		'yrkesskader',
 		'brregstub',
 		'instdata',

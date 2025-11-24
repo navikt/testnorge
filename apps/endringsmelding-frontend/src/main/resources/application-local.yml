@@ -1,0 +1,12 @@
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  endringsmelding-service:
+    url: https://testnav-endringsmelding-service.intern.dev.nav.no
+  testnav-bruker-service:
+    name: testnav-bruker-service-dev
+    url: https://testnav-bruker-service-dev.intern.dev.nav.no
+  testnorge-profil-api:
+    url: https://testnorge-profil-api.intern.dev.nav.no

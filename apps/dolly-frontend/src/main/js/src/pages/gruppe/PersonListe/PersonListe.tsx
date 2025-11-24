@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
@@ -9,7 +9,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { KommentarModal } from '@/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '@/ducks/fagsystem'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
@@ -18,7 +18,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -47,7 +47,7 @@ export default function PersonListe({
 	tmpPersoner,
 	sorting,
 	bestillingerById,
-}) {
+}: any) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
@@ -57,10 +57,7 @@ export default function PersonListe({
 
 	const location = useLocation()
 
-	const personListe = useMemo(
-		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, bestillingStatuser, visPerson],
-	)
+	const personListe = sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search)
 
 	useEffect(() => {
 		const idents =
@@ -92,7 +89,7 @@ export default function PersonListe({
 	}
 
 	const getNavnLimited = (tekst) => {
-		const navn = tekst.length > 23 ? tekst.substring(0, 23) + '...' : tekst
+		const navn = tekst.length > 20 ? tekst.substring(0, 20) + '...' : tekst
 		return (
 			<div style={{ maxWidth: '170px' }}>
 				<p>{navn}</p>
@@ -220,7 +217,7 @@ export default function PersonListe({
 	})
 
 	if (isFetching || (personListe?.length === 0 && !_.isEmpty(identer))) {
-		return <Loading label="Laster personer" panel />
+		return <Loading label="Laster personer..." panel />
 	}
 
 	if (_.isEmpty(identer)) {
@@ -286,42 +283,44 @@ export default function PersonListe({
 
 	return (
 		<ErrorBoundary>
-			<DollyTable
-				data={personListe}
-				columns={columns}
-				gruppeDetaljer={{
-					antallElementer: gruppeInfo?.antallIdenter,
-					pageSize: sideStoerrelse,
-				}}
-				pagination
-				iconItem={(bruker) => {
-					if (bruker.kjonn === 'MANN' || bruker.kjonn === 'GUTT') {
-						return <ManIconItem />
-					} else if (bruker.kjonn === 'KVINNE' || bruker.kjonn === 'JENTE') {
-						return <WomanIconItem />
-					} else {
-						return <UnknownIconItem />
-					}
-				}}
-				visSide={location?.state?.sidetall || sidetall}
-				visPerson={location?.state?.visPerson || visPerson}
-				hovedperson={location?.state?.hovedperson || hovedperson}
-				onExpand={(bruker) => (
-					<Suspense fallback={<Loading label={'Laster ident...'} />}>
-						<PersonVisningConnector
-							ident={bruker.ident}
-							personId={bruker.identNr}
-							bestillingIdListe={bruker.ident.bestillingId}
-							iLaastGruppe={iLaastGruppe}
-							brukertype={brukertype}
-						/>
-					</Suspense>
+			<span data-testid={TestComponentSelectors.CONTAINER_DOLLY_TABLE}>
+				<DollyTable
+					data={personListe}
+					columns={columns}
+					gruppeDetaljer={{
+						antallElementer: gruppeInfo?.antallIdenter,
+						pageSize: sideStoerrelse,
+					}}
+					pagination
+					iconItem={(bruker) => {
+						if (bruker.kjonn === 'MANN' || bruker.kjonn === 'GUTT') {
+							return <ManIconItem />
+						} else if (bruker.kjonn === 'KVINNE' || bruker.kjonn === 'JENTE') {
+							return <WomanIconItem />
+						} else {
+							return <UnknownIconItem />
+						}
+					}}
+					visSide={location?.state?.sidetall || sidetall}
+					visPerson={location?.state?.visPerson || visPerson}
+					hovedperson={location?.state?.hovedperson || hovedperson}
+					onExpand={(bruker) => (
+						<Suspense fallback={<Loading label={'Laster ident...'} />}>
+							<PersonVisningConnector
+								ident={bruker.ident}
+								personId={bruker.identNr}
+								bestillingIdListe={bruker.ident.bestillingId}
+								iLaastGruppe={iLaastGruppe}
+								brukertype={brukertype}
+							/>
+						</Suspense>
+					)}
+					onHeaderClick={onHeaderClick}
+				/>
+				{isKommentarModalOpen && selectedIdent && (
+					<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
 				)}
-				onHeaderClick={onHeaderClick}
-			/>
-			{isKommentarModalOpen && selectedIdent && (
-				<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
-			)}
+			</span>
 		</ErrorBoundary>
 	)
 }

@@ -1,20 +1,14 @@
+dolly:
+  texas:
+    consumers:
+      - name: generer-navn-service
+        url: https://generer-navn-service.intern.dev.nav.no
+        audience: api://dev-gcp.dolly.generer-navn-service/.default
+  nais:
+    name: dolly-texas-proxy
+    variables:
+      - DOLLY_TEXAS_PROXY_SHARED_SECRET
+
 spring:
-  cloud:
-    vault:
-      host: vault.adeo.no
-      port: 443
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
-consumers:
-  generer-navn-service:
-    url: "https://generer-navn-service.intern.dev.nav.no"
+  config:
+    import: "sm://"

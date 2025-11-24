@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.personservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.personservice.command.PdlPersonerGetCommand;
 import no.nav.dolly.bestilling.personservice.command.PersonServiceExistCommand;
@@ -24,7 +25,8 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Service
-public class PersonServiceConsumer implements ConsumerStatus {
+@Slf4j
+public class PersonServiceConsumer extends ConsumerStatus {
 
     private static final int BLOCK_SIZE = 100;
     private static final int MAX_RETRIES = 3;
@@ -36,12 +38,13 @@ public class PersonServiceConsumer implements ConsumerStatus {
     public PersonServiceConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder,
+            WebClient webClient,
             ObjectMapper objectMapper) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

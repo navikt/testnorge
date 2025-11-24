@@ -1,5 +1,5 @@
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import React from 'react'
@@ -7,7 +7,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
-	const { domain: relasjonOptions } = useTenorDomain('Relasjon')
+	const { domain: relasjonOptions, loading: loadingRelasjon } = useTenorDomain('Relasjon')
 
 	return (
 		<SoekKategori>
@@ -15,7 +15,10 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 				name="relasjoner.relasjon"
 				options={createOptions(relasjonOptions?.data)}
 				label="Relasjon"
-				onChange={(val: any) => handleChange(val?.value || null, 'relasjoner.relasjon')}
+				onChange={(val: any) =>
+					handleChange(val?.value || null, 'relasjoner.relasjon', `Relasjon: ${val?.label}`)
+				}
+				isLoading={loadingRelasjon}
 			/>
 			<div className="flexbox--flex-wrap">
 				<FormTextInput
@@ -24,7 +27,11 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.fraOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.antallBarn.fraOgMed',
+							`Antall barn f.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
@@ -34,7 +41,11 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.tilOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.antallBarn.tilOgMed',
+							`Antall barn t.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
@@ -46,7 +57,11 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.fraOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.relasjonMedFoedselsaar.fraOgMed',
+							`Relasjon med fødselsår f.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
@@ -56,7 +71,11 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.tilOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.relasjonMedFoedselsaar.tilOgMed',
+							`Relasjon med fødselsår t.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
@@ -66,14 +85,22 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					name="relasjoner.harForeldreAnsvar"
 					label="Har foreldreansvar"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.harForeldreAnsvar')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.harForeldreAnsvar',
+							'Har foreldreansvar',
+						)
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.harDeltBosted"
 					label="Har delt bosted"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.harDeltBosted')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.harDeltBosted',
+							'Har delt bosted',
+						)
 					}
 				/>
 				<FormCheckbox
@@ -83,6 +110,7 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 						handleChange(
 							val?.target?.checked || undefined,
 							'relasjoner.harVergemaalEllerFremtidsfullmakt',
+							'Har vergemål eller fremtidsfullmakt',
 						)
 					}
 				/>
@@ -90,28 +118,36 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					name="relasjoner.borMedMor"
 					label="Bor med mor"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMor')
+						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMor', 'Bor med mor')
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.borMedFar"
 					label="Bor med far"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedFar')
+						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedFar', 'Bor med far')
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.borMedMedmor"
 					label="Bor med medmor"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMedmor')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.borMedMedmor',
+							'Bor med medmor',
+						)
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.foreldreHarSammeAdresse"
 					label="Foreldre har samme adresse"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.foreldreHarSammeAdresse')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.foreldreHarSammeAdresse',
+							'Foreldre har samme adresse',
+						)
 					}
 				/>
 			</div>

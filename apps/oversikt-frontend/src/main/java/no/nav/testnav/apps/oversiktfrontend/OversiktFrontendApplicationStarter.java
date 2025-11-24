@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.oversiktfrontend;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.apps.oversiktfrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
@@ -9,8 +10,8 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerCon
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -34,6 +35,12 @@ public class OversiktFrontendApplicationStarter {
     private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(OversiktFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -44,15 +51,11 @@ public class OversiktFrontendApplicationStarter {
                         addAuthenticationHeaderFilterFrom(consumers.getTestnorgeProfilApi())
                 ))
                 .route(createRoute(
-                        "testnav-organisasjon-tilgang-service",
-                        consumers.getTestnavPersonOrganisasjonTilgangService().getUrl(),
-                        addAuthenticationHeaderFilterFrom(consumers.getTestnavPersonOrganisasjonTilgangService())
+                        "testnav-altinn3-tilgang-service",
+                        consumers.getTestnavAltinn3TilgangService().getUrl(),
+                        addAuthenticationHeaderFilterFrom(consumers.getTestnavAltinn3TilgangService())
                 ))
                 .build();
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(OversiktFrontendApplicationStarter.class, args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {

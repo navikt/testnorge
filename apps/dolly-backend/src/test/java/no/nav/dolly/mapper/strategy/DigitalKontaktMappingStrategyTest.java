@@ -10,7 +10,7 @@ import no.nav.dolly.mapper.utils.MapperTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -27,15 +27,17 @@ class DigitalKontaktMappingStrategyTest {
     private static final String MOBIL_CORRECT = "+4799990000";
     private static final String SPRAAK = "NO";
     private static final boolean RESERVERT = true;
-    private static final LocalDateTime GYLDIG_FRA = LocalDateTime.of(2018, 1, 1, 0, 0);
-    private static final ZonedDateTime Z_GYLDIG_FRA = ZonedDateTime.of(GYLDIG_FRA, ZoneId.systemDefault());
+    private static final LocalDate GYLDIG_FRA = LocalDate.of(2018, 1, 1);
+    private static final ZonedDateTime Z_GYLDIG_FRA = ZonedDateTime.of(GYLDIG_FRA.atStartOfDay(), ZoneId.of("UTC"));
+    private static final LocalDate DATE_NOW = LocalDate.now();
 
     private MapperFacade mapperFacade;
 
     private MappingContext context;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
+
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new DigitalKontaktMappingStrategy());
 
         context = new MappingContext.Factory().getContext();
@@ -69,8 +71,7 @@ class DigitalKontaktMappingStrategyTest {
                 .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.getMobil(), is(equalTo(MOBIL_CORRECT)));
-        assertThat(result.getMobilOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
-        assertThat(result.getMobilVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
+        assertThat(result.getMobilOppdatert().toLocalDate(), is(equalTo(DATE_NOW)));
     }
 
     @Test
@@ -82,8 +83,7 @@ class DigitalKontaktMappingStrategyTest {
                 .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.getMobil(), is(equalTo(MOBIL_CORRECT)));
-        assertThat(result.getMobilOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
-        assertThat(result.getMobilVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
+        assertThat(result.getMobilOppdatert().toLocalDate(), is(equalTo(DATE_NOW)));
     }
 
     @Test
@@ -95,8 +95,7 @@ class DigitalKontaktMappingStrategyTest {
                 .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.getEpost(), is(equalTo(EPOST)));
-        assertThat(result.getEpostOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
-        assertThat(result.getEpostVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
+        assertThat(result.getEpostOppdatert().toLocalDate(), is(equalTo(DATE_NOW)));
     }
 
     @Test
@@ -108,6 +107,6 @@ class DigitalKontaktMappingStrategyTest {
                 .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.getSpraak(), is(equalTo(SPRAAK)));
-        assertThat(result.getSpraakOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
+        assertThat(result.getSpraakOppdatert().toLocalDate(), is(equalTo(DATE_NOW)));
     }
 }

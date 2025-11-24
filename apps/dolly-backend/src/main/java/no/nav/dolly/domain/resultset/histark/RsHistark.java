@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,8 +28,15 @@ public class RsHistark {
 
 
     @Schema(description = "Dokumenter som skal sendes for identen til histark")
-    @Builder.Default
-    private List<RsHistarkDokument> dokumenter = new ArrayList<>();
+    private List<RsHistarkDokument> dokumenter;
+
+    public List<RsHistarkDokument> getDokumenter() {
+
+        if (isNull(dokumenter)) {
+            dokumenter = new ArrayList<>();
+        }
+        return dokumenter;
+    }
 
     @Getter
     @Setter
@@ -63,16 +72,17 @@ public class RsHistark {
                 Konsument må sette journalfoerendeEnhet dersom tjenesten skal ferdigstille journalføringen.""")
         private String enhetsnummer;
 
-        @Schema(description = "Startåret for saksmappen")
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
-        private LocalDate startAar;
+        @Schema(description = "Startåret for saksmappen, for eksempel 2010")
+        private Integer startYear;
 
-        @Schema(description = "Sluttåret for saksmappen")
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
-        private LocalDate sluttAar;
+        @Schema(description = "Sluttåret for saksmappen, for eksempel 2019")
+        private Integer endYear;
 
         @Schema(description = "Selve PDF dokumentet. Ved fysisk dokument brukes bytearray.")
         @Field(enabled = false)
         private String fysiskDokument;
+
+        @Schema(description = "Referanse til dokumentet")
+        private Long dokumentReferanse;
     }
 }

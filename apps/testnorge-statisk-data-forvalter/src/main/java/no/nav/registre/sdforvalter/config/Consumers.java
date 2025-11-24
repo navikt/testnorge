@@ -26,7 +26,7 @@ public class Consumers {
 
     private ServerProperties testnavAaregProxy;
     private ServerProperties genererNavnService;
-    private ServerProperties kodeverkApi;
+    private ServerProperties testnavKodeverkService;
     private ServerProperties testnavOrganisasjonFasteDataService;
     private ServerProperties testnavOrganisasjonService;
     private ServerProperties testnavPersonFasteDataService;

@@ -1,9 +1,13 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { isAfter, isBefore, isEqual } from 'date-fns'
 import { Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 
-export const testDatoFom = (val, tomPath, feilmelding = 'Dato må være før til-dato') => {
-	return val.test('is-before-tom', feilmelding, (value, testContext) => {
+export const testDatoFom = (
+	val: any,
+	tomPath: string,
+	feilmelding = 'Dato må være før til-dato',
+) => {
+	return val.test('is-before-tom', feilmelding, (value: any, testContext: any) => {
 		const datoTom = _.get(testContext.parent, tomPath)
 		if (!value || !datoTom) return true
 		if (isEqual(value, datoTom)) return true
@@ -11,8 +15,12 @@ export const testDatoFom = (val, tomPath, feilmelding = 'Dato må være før til
 	})
 }
 
-export const testDatoTom = (val, fomPath, feilmelding = 'Dato må være etter fra-dato') => {
-	return val.test('is-after-fom', feilmelding, (value, testContext) => {
+export const testDatoTom = (
+	val: any,
+	fomPath: string,
+	feilmelding = 'Dato må være etter fra-dato',
+) => {
+	return val.test('is-after-fom', feilmelding, (value: any, testContext: any) => {
 		const datoFom = _.get(testContext.parent, fomPath)
 		if (!value || !datoFom) return true
 		if (isEqual(value, datoFom)) return true
@@ -22,8 +30,8 @@ export const testDatoTom = (val, fomPath, feilmelding = 'Dato må være etter fr
 
 export const getEksisterendeNyPerson = (
 	relasjoner: Array<Relasjon>,
-	ident: String,
-	relasjonTyper: Array<String>,
+	ident: string,
+	relasjonTyper: Array<string>,
 ) => {
 	const relasjon = relasjoner?.find(
 		(relasjon) =>
@@ -40,7 +48,10 @@ export const getEksisterendeNyPerson = (
 	}
 }
 
-export const getRandomValue = (liste: Array<any>) => {
+export const getFagsystemTimeoutTitle = (code: string): string =>
+	code + ' kan ikke nås fra Dolly, legg til/endre er midlertidig utilgjengelig'
+
+export const getRandomValue = (liste: any) => {
 	if (!liste || liste?.length < 1) {
 		return null
 	}

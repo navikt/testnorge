@@ -8,5 +8,9 @@ export const SyntSykemelding = ({ sykemelding, idx }: SykemeldingSynt) => (
 		<TitleValue title="Startdato" value={formatDate(sykemelding.startDato)} />
 		<TitleValue title="Organisasjonsnummer" value={sykemelding.orgnummer} />
 		<TitleValue title="Arbeidsforhold-ID" value={sykemelding.arbeidsforholdId} />
+		<TitleValue
+			title="Referanse for sporing av innsending"
+			value={sykemelding.sykemeldingId}
+		/>
 	</div>
 )

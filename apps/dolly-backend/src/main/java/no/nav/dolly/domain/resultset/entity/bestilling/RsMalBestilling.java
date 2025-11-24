@@ -5,20 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class RsMalBestilling {
 
     private Long id;
-    private JsonNode bestilling;
-    private String miljoer;
     private String malNavn;
-    private RsBrukerUtenFavoritter bruker;
+    private JsonNode malBestilling;
+    private String miljoer;
     private LocalDateTime sistOppdatert;
 }

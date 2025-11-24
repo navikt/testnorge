@@ -1,6 +1,6 @@
 import { Button } from '@navikt/ds-react'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 import styled from 'styled-components'
@@ -24,7 +24,6 @@ export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 	useEffect(() => {
 		if (result?.gruppe?.id && !window.location.pathname.includes(`/${result?.gruppe?.id}`)) {
 			navigate(`/gruppe/${result?.gruppe?.id}`, {
-				replace: true,
 				state: {
 					hovedperson: result.identHovedperson,
 					visPerson: result.identNavigerTil,
@@ -34,7 +33,7 @@ export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 		}
 	}, [result])
 
-	const handleClick = (event) => {
+	const handleClick = (event: any) => {
 		event.stopPropagation()
 		setValgtIdent(ident)
 	}

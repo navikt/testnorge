@@ -1,70 +1,43 @@
-import React, { useContext } from 'react'
-import './Header.less'
-import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
+import React, { useEffect, useState } from 'react'
+import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
-import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-
-const DropdownToggle = () => {
-	const context = useContext(DropdownContext)
-	const { isOpen } = context
-
-	return (
-		<Dropdown.Toggle
-			className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}
-			style={{ margin: 0, padding: '19px 10px' }}
-			data-testid={TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER}
-		>
-			Organisasjoner
-		</Dropdown.Toggle>
-	)
-}
-
-const StyledA = styled.a`
-	color: #212529 !important;
-	text-decoration: none;
-	font-size: 1em !important;
-
-	&:hover {
-		background-color: #ebfcff !important;
-	}
-
-	padding: 0 !important;
-
-	&&& {
-		margin: 0;
-	}
-`
+import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
+import { useLocation } from 'react-router'
 
 export const OrganisasjonDropdown = () => {
-	const navigate = useNavigate()
+	const location = useLocation()
+	const [isActive, setIsActive] = useState(false)
+	useEffect(() => {
+		setIsActive(
+			location?.pathname === '/organisasjoner' || location?.pathname === '/tenororganisasjoner',
+		)
+	}, [location])
 
 	return (
-		<div style={{ color: 'white', fontSize: '1.2em', margin: '0 10px' }}>
-			<Dropdown>
-				<DropdownToggle />
-				<Dropdown.Menu placement="bottom-start">
-					<Dropdown.Menu.List>
-						<Dropdown.Menu.List.Item
-							data-testid={TestComponentSelectors.BUTTON_HEADER_OPPRETT_ORGANISASJONER}
-							onClick={() => navigate('/organisasjoner')}
-							style={{ color: '#212529' }}
-						>
-							<Icon kind="organisasjon" fontSize="1.5rem" />
-							<StyledA>Mine organisasjoner</StyledA>
-						</Dropdown.Menu.List.Item>
-						<Dropdown.Menu.List.Item
-							onClick={() => navigate('/tenor/organisasjoner')}
-							data-testid={TestComponentSelectors.BUTTON_HEADER_TENOR_ORGANISASJONER}
-							style={{ color: '#212529' }}
-						>
-							<Icon kind="search" fontSize="1.5rem" />
-							<StyledA>Søk i Tenor</StyledA>
-						</Dropdown.Menu.List.Item>
-					</Dropdown.Menu.List>
-				</Dropdown.Menu>
-			</Dropdown>
-		</div>
+		<ActionMenuWrapper
+			title="Organisasjoner"
+			isActive={isActive}
+			dataTestId={TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER}
+		>
+			<PreloadableActionMenuItem
+				route="/organisasjoner"
+				dataTestId={TestComponentSelectors.BUTTON_HEADER_OPPRETT_ORGANISASJONER}
+				style={{ color: '#212529' }}
+			>
+				<Icon kind="organisasjon" fontSize="1.5rem" />
+				<DropdownStyledLink href="/organisasjoner">Mine organisasjoner</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+			<PreloadableActionMenuItem
+				route="/tenororganisasjoner"
+				dataTestId={TestComponentSelectors.BUTTON_HEADER_TENOR_ORGANISASJONER}
+				style={{ color: '#212529' }}
+			>
+				<Icon kind="search" fontSize="1.5rem" />
+				<DropdownStyledLink href="/tenororganisasjoner">
+					Søk i Tenor (Test-Norge)
+				</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+		</ActionMenuWrapper>
 	)
 }

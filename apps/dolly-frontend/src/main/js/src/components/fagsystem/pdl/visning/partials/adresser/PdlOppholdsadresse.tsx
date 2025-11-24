@@ -5,7 +5,7 @@ import {
 } from '@/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 type PdlOppholdsadresseProps = {
 	data: Array<OppholdsadresseData>

@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "vault://"
   datasource:
     url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-udistub?autoReconnect=true&useSSL=false
     hikari:
@@ -8,6 +10,9 @@ spring:
       initialization-fail-timeout: 10000
       jdbc-url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-udistub?autoReconnect=true&useSSL=false
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false # Running in dev-fss.
     vault:
       kv:
         enabled: false
@@ -20,12 +25,9 @@ spring:
         backend: postgresql/preprod-fss
         role: testnav-udistub-admin
         enabled: true
-  config:
-    import: vault://
   security:
     oauth2:
       resourceserver:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}

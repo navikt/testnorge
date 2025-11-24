@@ -18,6 +18,7 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @Component
 public class SafConsumer {
+
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
@@ -25,11 +26,12 @@ public class SafConsumer {
     public SafConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getTestnavSafProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(
                         ExchangeStrategies
                                 .builder()

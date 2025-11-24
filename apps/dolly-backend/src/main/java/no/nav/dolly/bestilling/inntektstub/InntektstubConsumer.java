@@ -23,7 +23,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Service
 @Slf4j
-public class InntektstubConsumer implements ConsumerStatus {
+public class InntektstubConsumer extends ConsumerStatus {
 
     private static final int BLOCK_SIZE = 10;
 
@@ -35,24 +35,25 @@ public class InntektstubConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavInntektstubProxy();
-        this.webClient = webClientBuilder
+        serverProperties = consumers.getTestnavDollyProxy();
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_getInntekter"})
     public Flux<Inntektsinformasjon> getInntekter(String ident) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_deleteInntekter"})
     public Mono<List<String>> deleteInntekter(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
@@ -65,7 +66,7 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_postInntekter"})
     public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
         log.info("Sender inntektstub: {}", inntektsinformasjon);
@@ -81,6 +82,6 @@ public class InntektstubConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-inntektstub-proxy";
+        return "testnav-dolly-proxy";
     }
 }

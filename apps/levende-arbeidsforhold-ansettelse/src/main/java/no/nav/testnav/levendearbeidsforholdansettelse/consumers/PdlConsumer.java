@@ -13,20 +13,16 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.Duration;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -43,11 +39,12 @@ public class PdlConsumer {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getPdlProxy();
         this.tokenService = tokenService;
-        webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(config -> {
@@ -57,14 +54,6 @@ public class PdlConsumer {
                                     .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                         })
                         .build())
-                .clientConnector(
-                        new ReactorClientHttpConnector(
-                                HttpClient
-                                        .create(ConnectionProvider.builder("PDL connections")
-                                                .maxConnections(1)
-                                                .pendingAcquireMaxCount(10000)
-                                                .pendingAcquireTimeout(Duration.ofSeconds(3000))
-                                                .build())))
                 .build();
     }
 

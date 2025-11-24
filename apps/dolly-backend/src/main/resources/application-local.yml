@@ -1,0 +1,72 @@
+dolly:
+  client:
+    general:
+      timeout: 300
+
+spring:
+  cache:
+    type: none
+  config:
+    import: "sm://"
+  flyway:
+    url: jdbc:postgresql://localhost:5432/testnav-dolly-backend-local
+    user: testnav-dolly-backend-local
+    password: ${sm\://testnav-dolly-backend-local}
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-dolly-backend-local
+    username: testnav-dolly-backend-local
+    password: ${sm\://testnav-dolly-backend-local}
+  devtools:
+    restart:
+      enabled: false
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
+open:
+  search:
+    uri: http://localhost:9200
+    username: dummy
+    password: dummy
+    index: local
+
+consumers:
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter-dev
+    url: https://testnav-pdl-forvalter-dev.intern.dev.nav.no
+  testnav-organisasjon-forvalter:
+    url: https://testnav-organisasjon-forvalter.intern.dev.nav.no
+  testnav-inntektsmelding-service:
+    url: https://testnav-inntektsmelding-service.intern.dev.nav.no
+  testnav-tps-messaging-service:
+    url: https://testnav-tps-messaging-service.intern.dev.nav.no
+  testnav-person-service:
+    url: https://testnav-person-service.intern.dev.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.intern.dev.nav.no
+  testnav-sykemelding-api:
+    name: testnav-sykemelding-api-dev
+    url: https://testnav-sykemelding-api-dev.intern.dev.nav.no
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.intern.dev.nav.no
+  testnav-arbeidsplassencv-proxy:
+    url: https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
+  testnav-skattekort-service:
+    url: https://testnav-skattekort-service.intern.dev.nav.no
+  yrkesskade-proxy:
+    url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
+  arbeidssoekerregisteret-proxy:
+    url: https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
+  bruker-service:
+    name: testnav-bruker-service-dev
+    url: https://testnav-bruker-service-dev.intern.dev.nav.no
+  etterlatte:
+    url: https://etterlatte-testdata.intern.dev.nav.no
+  nom-proxy:
+    url: https://testnav-nom-proxy.intern.dev.nav.no
+  testnav-sykemelding-proxy:
+    url: https://testnav-sykemelding-proxy.intern.dev.nav.no

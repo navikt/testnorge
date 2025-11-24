@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.Arbeidsforhold;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.AvtaltFerieListe;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.GraderingIForeldrepengerListe;
-import no.nav.testnav.inntektsmeldinggeneratorservice.provider.adapter.ObjectFactory;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.UtsettelseAvForeldrepengerListe;
+import no.nav.testnav.inntektsmeldinggeneratorservice.provider.adapter.ObjectFactory;
 import org.apache.logging.log4j.util.Strings;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -20,7 +19,7 @@ public class ArbeidsforholdDTO implements ToXmlElement<Arbeidsforhold> {
     @JsonProperty
     private String arbeidsforholdId;
     @JsonProperty
-    private LocalDate foersteFravaersdag;
+    private String foersteFravaersdag;
     @JsonProperty
     private InntektDTO beregnetInntekt;
     @JsonProperty

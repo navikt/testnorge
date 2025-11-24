@@ -6,8 +6,10 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAPNyUttaksgrad;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAfpOffentligCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreApRevurderingVedtak;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreGenerertPoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
@@ -19,8 +21,10 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.PensjonHentVedtakCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteAfpOffentligCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePensjonsavtaleCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AfpOffentligRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonNyUtaksgradRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
@@ -33,6 +37,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -49,7 +54,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class PensjonforvalterConsumer implements ConsumerStatus {
+public class PensjonforvalterConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -59,11 +64,12 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavPensjonTestdataFacadeProxy();
-        this.webClient = webClientBuilder
+        serverProperties = consumers.getTestnavDollyProxy();
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
@@ -113,6 +119,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pen_opprettSamboer"})
     public Flux<PensjonforvalterResponse> lagreSamboer(PensjonSamboerRequest pensjonSamboerRequest,
                                                        String miljoe) {
+        log.info("Oppretter samboerskap i pensjon: {}", pensjonSamboerRequest);
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreSamboerCommand(webClient, pensjonSamboerRequest, miljoe, token.getTokenValue()).call());
@@ -126,18 +133,18 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
-    public Flux<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request) {
+    public Mono<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
+                .flatMap(token ->
                         new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreUforetrygd"})
-    public Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonUforetrygdRequest request) {
+    public Mono<PensjonforvalterResponse> lagreUforetrygd(PensjonUforetrygdRequest request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
+                .flatMap(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
@@ -183,6 +190,17 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .subscribe(resultat -> log.info("Slettet pensjonsavtaler (PEN), alle miljøer"));
     }
 
+    @Timed(name = "providers", tags = {"operation", "pen_slettePoppinntekt"})
+    public void slettePoppinntekt(List<String> identer) {
+
+        tokenService.exchange(serverProperties)
+                .flatMap(token -> Flux.from(new HentMiljoerCommand(webClient, token.getTokenValue()).call())
+                        .flatMap(miljoer -> Flux.fromIterable(identer)
+                                .flatMap(ident -> new SlettePoppInntektCommand(webClient, ident, miljoer, token.getTokenValue()).call()))
+                        .collectList())
+                .subscribe(resultat -> log.info("Slettet POPP-inntekt, alle miljøer"));
+    }
+
     @Timed(name = "providers", tags = {"operation", "pen_hentVedtak"})
     public Flux<PensjonVedtakResponse> hentVedtak(String ident, String miljoe) {
 
@@ -212,6 +230,21 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .subscribe(resultat -> log.info("Slettet AfpOffentlig (PEN), alle miljøer"));
     }
 
+    @Timed(name = "providers", tags = {"operation", "pen_lagreRevurderingVedtakAP"})
+    public Flux<PensjonforvalterResponse> lagreRevurderingVedtak(RevurderingVedtakRequest revurderingVedtakRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreApRevurderingVedtak(webClient, revurderingVedtakRequest, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreAPNyUttaksgrad"})
+    public Flux<PensjonforvalterResponse> lagreAPNyUttaksgrad(AlderspensjonNyUtaksgradRequest nyUtaksgradRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreAPNyUttaksgrad(webClient, nyUtaksgradRequest, token.getTokenValue()).call());
+    }
+
+
     @Override
     public String serviceUrl() {
         return serverProperties.getUrl();
@@ -219,7 +252,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-pensjon-testdata-facade-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

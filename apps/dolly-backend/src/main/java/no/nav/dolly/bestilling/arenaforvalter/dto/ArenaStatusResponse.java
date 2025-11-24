@@ -1,11 +1,9 @@
 package no.nav.dolly.bestilling.arenaforvalter.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,6 +34,15 @@ public class ArenaStatusResponse extends ArenaResponse {
     private String meldeform;
     private String meldegruppe;
     private List<Vedtak> vedtakListe;
+
+    public static Mono<ArenaStatusResponse> of(WebClientError.Description description, String miljoe) {
+        return Mono.just(ArenaStatusResponse
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .miljoe(miljoe)
+                .build());
+    }
 
     public List<Vedtak> getVedtakListe() {
 
@@ -96,7 +103,7 @@ public class ArenaStatusResponse extends ArenaResponse {
 
             return "Ja".equals(utfall) &&
                     ("AAP".equals(rettighet.getKode()) ||
-                    "DAGO".equals(rettighet.getKode()));
+                            "DAGO".equals(rettighet.getKode()));
         }
     }
 }

@@ -2,21 +2,26 @@ package no.nav.registre.testnorge.sykemelding.domain;
 
 import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class Aktivitet {
     private final XMLHelseOpplysningerArbeidsuforhet.Aktivitet xmlAktivitet;
 
     Aktivitet(List<PeriodeDTO> dtos, boolean manglendeTilretteleggingPaaArbeidsplassen) {
+
+        if (dtos.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Perioder må angis");
+        }
         this.xmlAktivitet = new XMLHelseOpplysningerArbeidsuforhet.Aktivitet()
                 .withPeriode(
                         dtos.stream()
                                 .map(value -> new Periode(value, manglendeTilretteleggingPaaArbeidsplassen))
                                 .map(Periode::getXmlObject)
-                                .collect(Collectors.toList())
+                                .toList()
                 );
     }
 

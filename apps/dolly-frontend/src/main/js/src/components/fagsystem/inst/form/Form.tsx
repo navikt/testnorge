@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
@@ -7,7 +7,10 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { validation } from '@/components/fagsystem/inst/form/validation'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
@@ -15,13 +18,14 @@ import { useFormContext } from 'react-hook-form'
 export const initialValues = {
 	institusjonstype: '',
 	startdato: '',
+	forventetSluttdato: '',
 	sluttdato: '',
 }
 export const instAttributt = 'instdata'
 
 export const InstForm = () => {
 	const formMethods = useFormContext()
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const { personFoerLeggTil }: any = opts
 
 	let excludeDates = []
@@ -53,6 +57,12 @@ export const InstForm = () => {
 							<FormDatepicker
 								name={`${path}.startdato`}
 								label="Startdato"
+								excludeDates={excludeDates}
+								maxDate={maxDate}
+							/>
+							<FormDatepicker
+								name={`${path}.forventetSluttdato`}
+								label="Forventet sluttdato"
 								excludeDates={excludeDates}
 								maxDate={maxDate}
 							/>

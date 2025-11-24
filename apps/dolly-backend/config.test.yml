@@ -7,6 +7,7 @@ metadata:
     team: dolly
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
 
@@ -17,7 +18,6 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-batch-bestilling-service
@@ -27,9 +27,7 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-        - application: testnav-amelding-service
-        - application: testnav-arbeidsforhold-service
-        - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-bruker-service-dev
         - application: testnav-inntektsmelding-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
@@ -39,26 +37,28 @@ spec:
         - application: testnav-person-service
         - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
+        - application: testnav-sykemelding-api-dev
         - application: testnav-synt-sykemelding-api
+        - application: testnav-synt-sykemelding-api-dev
         - application: testnav-tps-messaging-service
-        - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api-dev
+        - application: etterlatte-testdata
+          namespace: etterlatte
+        - application: logging
+          namespace: nais-system
+        - application: testnav-yrkesskade-proxy
+        - application: testnav-nom-proxy
+        - application: testnav-sykemelding-proxy
+        - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-arbeidssoekerregisteret-proxy
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-histark-proxy.dev-fss-pub.nais.io
-        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
-        - host: testnav-medl-proxy.dev-fss-pub.nais.io
-        - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
-        - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-        - host: testnav-udistub-proxy.dev-fss-pub.nais.io
+        - host: testnav-saf-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:
@@ -85,7 +85,7 @@ spec:
   ingresses:
     - "https://dolly-backend-dev.intern.dev.nav.no"
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -93,11 +93,12 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -106,7 +107,7 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 200m
+      cpu: 100m
       memory: 1024Mi
     limits:
       memory: 2048Mi

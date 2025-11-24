@@ -1,68 +1,106 @@
-import React, { BaseSyntheticEvent, useState } from 'react'
-import { useAsyncFn } from 'react-use'
-import _ from 'lodash'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { PdlforvalterApi } from '@/service/Api'
-import Loading from '@/components/ui/loading/Loading'
-import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
+import React, { useContext, useEffect, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { Alert, Button, Table, Textarea, VStack } from '@navikt/ds-react'
+import { usePdlfEksistens } from '@/utils/hooks/usePdlForvalter'
 import Icon from '@/components/ui/icon/Icon'
-
 import './eksisterendeIdent.less'
-import { Alert, Table, Textarea } from '@navikt/ds-react'
-import { TestComponentSelectors } from '#/mocks/Selectors'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-export const EksisterendeIdent = ({
-	onAvbryt,
-	onSubmit,
-}: {
-	onSubmit: (arg0: any, arg1?: any) => any
-	onAvbryt: () => void
-}) => {
-	const [text, setText] = useState('')
-	const [state, fetch] = useAsyncFn(async () => {
-		const identListe = text?.trim().split(/[\W\s]+/)
-		const { data } = await PdlforvalterApi.getEksistens(identListe)
-		return data
-	}, [text])
+export const EksisterendeIdent = ({ gruppeId }: any) => {
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const formMethods = useFormContext()
 
-	const _onSubmit = () =>
-		onSubmit({
-			opprettFraIdenter: state.value
-				.filter((v: { available: any }) => v.available)
-				.map((v: { ident: any }) => v.ident),
-		})
+	const formEksisterendeIdenter = formMethods.watch('opprettFraIdenter')
+	const [input, setInput] = useState(formEksisterendeIdenter?.join(','))
+	const [submittedIds, setSubmittedIds] = useState(formEksisterendeIdenter)
 
-	const statuser = _.get(state, 'value', [])
-	const finnesUgyldige = statuser.some((v) => !v.available)
-	const finnesGyldige = statuser.some((v) => v.available)
+	const parseIdentifiers = (text: string): string[] => {
+		return (
+			text
+				?.trim()
+				.split(/[\W\s]+/)
+				.filter(Boolean) || []
+		)
+	}
+
+	const { pdlfEksistens, loading, error } = usePdlfEksistens(submittedIds as string[] | null)
+
+	useEffect(() => {
+		if (!pdlfEksistens) return
+		const gyldigeIdenter = pdlfEksistens
+			.filter((status: { available: boolean }) => status.available)
+			.map((status: { ident: string }) => status.ident)
+		opts.updateContext &&
+			opts.updateContext({
+				antall: gyldigeIdenter.length > 0 ? gyldigeIdenter.length : null,
+				opprettFraIdenter: gyldigeIdenter,
+				is: { ...opts.is, opprettFraIdenter: true },
+			})
+		formMethods.setValue('opprettFraIdenter', gyldigeIdenter)
+		formMethods.setValue('gruppeId', gruppeId)
+	}, [pdlfEksistens, gruppeId])
+
+	const hasInvalidIdentifiers = pdlfEksistens?.some(
+		(status: { available: boolean }) => !status.available,
+	)
+
+	const onSubmit = () => {
+		setSubmittedIds(parseIdentifiers(input))
+	}
+
+	const resetEksisterende = () => {
+		setSubmittedIds(null)
+		setInput('')
+		formMethods.setValue('opprettFraIdenter', [])
+		opts.updateContext &&
+			opts.updateContext({
+				antall: null,
+				opprettFraIdenter: [],
+				is: { ...opts.is, opprettFraIdenter: true },
+			})
+	}
 
 	return (
 		<div className="eksisterende-ident-form">
-			{state.loading && <Loading />}
-
-			{!state.value && !state.loading && (
-				<React.Fragment>
-					<Textarea
-						size={'small'}
-						label="Identer"
-						placeholder="fnr/dnr/npid"
-						value={text}
-						onChange={(e: BaseSyntheticEvent) => setText(e.target?.value)}
-					/>
-
-					<Alert variant="info">
-						Skriv inn fnr/dnr/npid. Disse personene kan ikke eksistere i prod, eller finnes i Dolly
-						fra før.
-					</Alert>
-					<NavButton variant={'primary'} onClick={() => fetch()} disabled={!text.length}>
-						Sjekk gyldige personer
-					</NavButton>
-				</React.Fragment>
+			{error && (
+				<Alert variant="error">
+					<Icon kind="report-problem-triangle" />
+					{error.message}
+				</Alert>
 			)}
-
-			{state.value && (
-				<React.Fragment>
-					<Table size="medium" zebraStripes style={{ marginBottom: '20px' }}>
+			<VStack gap="2" style={{ maxHeight: '20vh', marginRight: '20px' }}>
+				<Textarea
+					UNSAFE_autoScrollbar
+					onChange={(event) => setInput(event.target.value)}
+					value={input}
+					label="Identer"
+					description={
+						<>
+							Skriv inn FNR/DNR/NPID adskilt med mellomrom, komma eller linjeskift. Disse personene
+							kan ikke eksistere i prod, eller finnes i Dolly fra før.
+						</>
+					}
+					autoComplete="off"
+				/>
+			</VStack>
+			<div style={{ width: '-webkit-fill-available' }} className="form-actions">
+				<Button
+					style={{ marginRight: '10px' }}
+					type="submit"
+					onClick={onSubmit}
+					variant="primary"
+					disabled={!input || loading}
+					loading={loading}
+				>
+					Valider identifikatorer
+				</Button>
+			</div>
+			{pdlfEksistens?.length > 0 && (
+				<div className="flexbox--full-width" style={{ marginRight: '20px' }}>
+					<Table size="medium" zebraStripes style={{ marginBottom: '20px', marginRight: '20px' }}>
 						<Table.Header>
 							<Table.Row>
 								<Table.HeaderCell scope="col">Ident</Table.HeaderCell>
@@ -71,36 +109,46 @@ export const EksisterendeIdent = ({
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
-							{state.value.map(({ ident, status, available }, idx) => {
-								return (
-									<Table.Row key={idx}>
-										<Table.HeaderCell scope="row">{ident}</Table.HeaderCell>
-										<Table.HeaderCell>{status}</Table.HeaderCell>
-										<Table.HeaderCell>
-											<Icon kind={available ? 'feedback-check-circle' : 'report-problem-circle'} />
-										</Table.HeaderCell>
-									</Table.Row>
-								)
-							})}
+							{pdlfEksistens?.map(
+								(
+									{
+										ident,
+										status,
+										available,
+									}: { ident: string; status: string; available: boolean },
+									idx: number,
+								) => {
+									return (
+										<Table.Row key={idx}>
+											<Table.HeaderCell scope="row">{ident}</Table.HeaderCell>
+											<Table.HeaderCell>{status}</Table.HeaderCell>
+											<Table.HeaderCell>
+												<Icon
+													kind={available ? 'feedback-check-circle' : 'report-problem-circle'}
+												/>
+											</Table.HeaderCell>
+										</Table.Row>
+									)
+								},
+							)}
 						</Table.Body>
 					</Table>
 
-					{finnesUgyldige && (
-						<Alert variant="warning">
-							Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
-						</Alert>
-					)}
-				</React.Fragment>
+					<Button
+						style={{ marginBottom: '20px' }}
+						type="button"
+						variant="secondary"
+						onClick={resetEksisterende}
+						disabled={loading}
+					>
+						Tøm
+					</Button>
+				</div>
 			)}
-
-			{finnesGyldige && (
-				<ModalActionKnapper
-					data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
-					submitknapp="Start bestilling"
-					onSubmit={_onSubmit}
-					onAvbryt={onAvbryt}
-					center
-				/>
+			{hasInvalidIdentifiers && (
+				<Alert variant="warning" style={{ width: '100%', marginRight: '20px' }}>
+					Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
+				</Alert>
 			)}
 		</div>
 	)

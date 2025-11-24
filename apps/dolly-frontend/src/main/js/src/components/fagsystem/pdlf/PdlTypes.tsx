@@ -14,6 +14,8 @@ export type Relasjon = {
 export type PersonData = {
 	master?: string
 	ident?: string
+	identtype?: string
+	id2032?: boolean
 	navn?: Array<Navn>
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>
@@ -217,6 +219,8 @@ export enum Adressetype {
 	Matrikkel = 'MATRIKKELADRESSE',
 	Postboks = 'POSTBOKSADRESSE',
 	Utenlandsk = 'UTENLANDSK_ADRESSE',
+	PostadresseIFrittFormat = 'POSTADRESSE_I_FRITT_FORMAT',
+	UtenlandskAdresseIFrittFormat = 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT',
 	Ukjent = 'UKJENT_BOSTED',
 	Annet = 'OPPHOLD_ANNET_STED',
 }

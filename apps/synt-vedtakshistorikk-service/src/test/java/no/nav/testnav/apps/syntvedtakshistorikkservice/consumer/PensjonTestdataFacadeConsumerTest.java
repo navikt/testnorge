@@ -2,38 +2,29 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataInntekt;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataPerson;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
 class PensjonTestdataFacadeConsumerTest {
 
-    @MockBean
-    private JwtDecoder jwtDecoder;
-
-    @MockBean
+    @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenExchange;
 
     @Autowired
@@ -48,7 +39,7 @@ class PensjonTestdataFacadeConsumerTest {
             .build();
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
@@ -63,7 +54,7 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubOpprettPerson() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/person"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/person"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/pensjon/pensjon_response.json")))
@@ -79,7 +70,7 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubErrorOpprettPerson() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/person"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/person"))
                 .willReturn(aResponse().withStatus(500))
         );
     }
@@ -94,7 +85,7 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubOpprettInntekt() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/inntekt"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/pensjon/pensjon_response.json")))
@@ -111,8 +102,9 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubErrorOpprettInntekt() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/inntekt"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
                 .willReturn(aResponse().withStatus(500))
         );
     }
+
 }

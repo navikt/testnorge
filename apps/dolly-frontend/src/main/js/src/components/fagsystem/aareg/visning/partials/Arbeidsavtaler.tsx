@@ -2,7 +2,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatStringDates } from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import React from 'react'
 import { Fartoy } from '@/components/fagsystem/aareg/visning/partials/Fartoy'
 
@@ -32,10 +32,15 @@ export const Arbeidsavtaler = ({ data }) => {
 						title="Stillingsprosent"
 						value={detaljer.stillingsprosent === 0 ? '0' : detaljer.stillingsprosent}
 					/>
-					{/* //TODO: Endringsdato stillingsprosent mangler fra Aareg */}
+					<TitleValue
+						title="Endringsdato stillingsprosent"
+						value={formatStringDates(detaljer.sistStillingsendring)}
+					/>
 					<TitleValue
 						title="Endringsdato lønn"
-						value={formatStringDates(detaljer.sisteLoennsendringsdato)}
+						value={formatStringDates(
+							detaljer.sisteLoennsendringsdato || detaljer.sistLoennsendring,
+						)}
 					/>
 					<TitleValue
 						title="Arbeidstidsordning"

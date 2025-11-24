@@ -3,17 +3,16 @@ name: dolly-backend
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/data-transfer-search-objects/**"
-      - "libs/database/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-insecure-security/**"
-      - "libs/servlet-security/**"
-      - "apps/dolly-backend/**"
-      - ".github/workflows/app.dolly-backend.yml"
+      - .github/workflows/app.dolly-backend.yml
+      - apps/dolly-backend/**
+      - libs/data-transfer-objects/**
+      - libs/data-transfer-search-objects/**
+      - libs/security-core/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/servlet-insecure-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

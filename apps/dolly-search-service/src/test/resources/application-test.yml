@@ -1,0 +1,5 @@
+TOKEN_X_ISSUER: https://tokenx.dev-gcp.nav.cloud.nais.io
+
+open:
+  search:
+    index: value-required-but-not-used-for-tests

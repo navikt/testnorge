@@ -1,9 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service.util;
 
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
@@ -12,11 +10,10 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoU
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatoUtilsTest {
+class DatoUtilsTest {
 
     @Test
-    public void shouldCheckIfDatoErInnenforPeriode() {
+    void shouldCheckIfDatoErInnenforPeriode() {
         var dagensDato = LocalDate.now();
         var periodeASlutt = LocalDate.now().plusDays(7);
         var periodeBSlutt = LocalDate.now().minusDays(7);
@@ -33,7 +30,7 @@ public class DatoUtilsTest {
     }
 
     @Test
-    public void shouldSetDatoPeriodeVedtakInnenforMaxAntallMaaneder() {
+    void shouldSetDatoPeriodeVedtakInnenforMaxAntallMaaneder() {
         var ugyldigTilDato = LocalDate.now().plusMonths(SYKEPENGEERSTATNING_MAKS_PERIODE + 1);
         var gyldigTilDato = LocalDate.now().plusMonths(SYKEPENGEERSTATNING_MAKS_PERIODE - 1);
         var tilDatoEtterEndring = LocalDate.now().plusMonths(6);
@@ -58,4 +55,5 @@ public class DatoUtilsTest {
         assertThat(vedtakMedGyldigTilDato.getTilDato()).isEqualTo(gyldigTilDato);
         assertThat(vedtakMedNullTilDato.getTilDato()).isNull();
     }
+
 }

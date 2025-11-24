@@ -21,6 +21,7 @@ public class RsOrganisasjon {
 
     private Long id;
     private String organisasjonsnummer;
+    private String juridiskEnhet;
     private String enhetstype;
     private String naeringskode;
     private String sektorkode;

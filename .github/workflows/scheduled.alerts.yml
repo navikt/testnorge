@@ -1,0 +1,24 @@
+on:
+  schedule:
+    - cron: "0 9 * * MON"
+  push:
+    paths:
+      - ../../.nais/alerts.yml
+  workflow_dispatch:
+
+jobs:
+  apply-alerts:
+    name: Apply alerts to cluster
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: deploy to dev
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: ".nais/alerts.yml"

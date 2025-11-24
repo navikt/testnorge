@@ -1,6 +1,6 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Box, Button, Table } from '@navikt/ds-react'
+import { Alert, Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -10,6 +10,7 @@ import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import * as _ from 'lodash-es'
 
 type Props = {
 	antallEgneMaler: any
@@ -38,6 +39,18 @@ export const MalPanel = ({
 		setUnderRedigering((erUnderRedigering: any[]) =>
 			erUnderRedigering.filter((number) => number !== id),
 		)
+	}
+
+	const harUtdaterteVerdier = (bestilling: any) => {
+		if (bestilling?.aareg?.find((arbforh: any) => arbforh?.amelding?.length > 0)) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
+		if (_.has(bestilling, 'sykemelding.syntSykemelding')) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder syntetisk sykemelding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
+		if (_.has(bestilling, 'sigrunstub')) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder sigrunstub med lignet inntekt, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
@@ -98,10 +111,11 @@ export const MalPanel = ({
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{maler.map(({ malNavn, id, bestilling }) => {
+								{maler.map(({ malNavn, id, malBestilling }) => {
+									const alert = harUtdaterteVerdier(malBestilling)
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
-											bestilling: bestilling,
+											bestilling: malBestilling,
 										},
 										dollyEnvironments,
 									)
@@ -109,7 +123,18 @@ export const MalPanel = ({
 										<Table.ExpandableRow
 											key={id}
 											content={
-												<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+												<>
+													{alert && (
+														<Alert
+															variant={'warning'}
+															size={'small'}
+															style={{ marginBottom: '20px' }}
+														>
+															{alert}
+														</Alert>
+													)}
+													<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+												</>
 											}
 										>
 											<DataCells id={id} bestilling={bestillingBasedOnMal} malNavn={malNavn} />

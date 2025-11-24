@@ -1,35 +1,31 @@
 package no.nav.dolly.config;
 
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
+@Profile("!test")
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
-                        "/internal/**",
-                        "/webjars/**",
-                        "/swagger-resources/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger",
-                        "/error",
-                        "/swagger-ui.html"
-                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
-
-        return httpSecurity.build();
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
+        return httpSecurity
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager))).build();
     }
+
 }

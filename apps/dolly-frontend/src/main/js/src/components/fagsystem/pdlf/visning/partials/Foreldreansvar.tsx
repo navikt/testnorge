@@ -3,14 +3,14 @@ import { getInitialForeldreansvar } from '@/components/fagsystem/pdlf/form/initi
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import * as React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, relasjoner, idx }) => {

@@ -1,7 +1,7 @@
 import Request from '@/service/services/Request'
 
-const kontoregisterHentUrl = '/testnav-kontoregister-person-proxy/api/system/v1/hent-aktiv-konto'
-const kontoregisterSlettUrl = '/testnav-kontoregister-person-proxy/api/system/v1/slett-konto'
+const kontoregisterHentUrl = '/testnav-dolly-proxy/kontoregister/api/system/v1/hent-aktiv-konto'
+const kontoregisterSlettUrl = '/testnav-dolly-proxy/kontoregister/api/system/v1/slett-konto'
 
 export type KontoregisterData = {
 	aktivKonto: {

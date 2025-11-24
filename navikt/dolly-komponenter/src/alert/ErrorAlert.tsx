@@ -1,13 +1,13 @@
 import React from 'react';
-import { ErrorFilled } from '@navikt/ds-icons';
+import {XMarkOctagonFillIcon} from '@navikt/aksel-icons';
 import Alert from './Alert';
 
 export type ErrorAlertProps = {
-  label?: string;
+    label?: string;
 };
 
-const ErrorAlert = ({ label }: ErrorAlertProps) => (
-  <Alert color="#BA3A26" label={label} Icon={ErrorFilled} />
+const ErrorAlert = ({label}: ErrorAlertProps) => (
+    <Alert color="#BA3A26" label={label} Icon={XMarkOctagonFillIcon}/>
 );
 
 ErrorAlert.displayName = 'ErrorAlert';

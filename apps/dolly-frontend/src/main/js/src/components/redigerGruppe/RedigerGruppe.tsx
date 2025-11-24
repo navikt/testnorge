@@ -1,94 +1,96 @@
-import React from 'react'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
-import * as yup from 'yup'
-import Loading from '@/components/ui/loading/Loading'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-
-import './RedigerGruppe.less'
-import { useNavigate } from 'react-router-dom'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
-import { TestComponentSelectors } from '#/mocks/Selectors'
+import { useNavigate } from 'react-router'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
-import _get from 'lodash/get'
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
+import { DollyApi } from '@/service/Api'
+import React, { useState } from 'react'
+import Loading from '@/components/ui/loading/Loading'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import './RedigerGruppe.less'
+import { Alert } from '@navikt/ds-react'
 
 type Props = {
-	gruppeId?: string
-	createGruppe: (arg0: any) => any
-	createOrUpdateFetching: boolean
-	updateGruppe: (arg0: number, arg1: any) => any
-	onCancel: () => void
-	error: {
-		message: string
-	}
+	gruppeId: string
+	onCancel: Function
 }
 
-const validation = () =>
-	yup.object().shape({
-		navn: yup.string().trim().required('Navn er et påkrevd felt').max(30, 'Maksimalt 30 bokstaver'),
-		hensikt: yup
-			.string()
-			.trim()
-			.required('Gi en beskrivelse av hensikten med gruppen')
-			.max(200, 'Maksimalt 200 bokstaver'),
-	})
-const RedigerGruppe = ({
-	gruppeId,
-	createGruppe,
-	createOrUpdateFetching,
-	updateGruppe,
-	onCancel,
-	error,
-}: Props): JSX.Element => {
+const validation = Yup.object().shape({
+	navn: Yup.string().trim().required('Gi gruppen et navn').max(30, 'Maksimalt 30 bokstaver'),
+	hensikt: Yup.string()
+		.trim()
+		.required('Beskriv hensikten med gruppen')
+		.max(200, 'Maksimalt 200 bokstaver'),
+})
+
+export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
+	'use no memo' // Skip compilation for this component
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
-	const erRedigering = gruppe?.id !== undefined
+	const erRedigering = gruppeId !== undefined
+
+	const [feilmelding, setFeilmelding] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
+
 	const initialValues = {
-		navn: _get(gruppe, 'navn', ''),
-		hensikt: _get(gruppe, 'hensikt', ''),
+		navn: gruppe?.navn || '',
+		hensikt: gruppe?.hensikt || '',
 	}
+
 	const mutate = useMatchMutate()
 	const formMethods = useForm({
-		mode: 'onBlur',
+		mode: 'onChange',
 		defaultValues: initialValues,
-		resolver: yupResolver(validation()),
+		resolver: yupResolver(validation),
 	})
 
-	const onHandleSubmit = async (
-		values: {
-			hensikt: any
-			navn: any
-		},
-		_actions: any,
-	) => {
-		const groupValues = {
-			hensikt: values.hensikt,
-			navn: values.navn,
-		}
-		erRedigering
-			? await updateGruppe(gruppe.id, groupValues).then(() => {
-					return mutate(REGEX_BACKEND_GRUPPER)
-				})
-			: await createGruppe(groupValues).then(
-					(response: {
-						value: {
-							data: {
-								id: any
-							}
-						}
-					}) => {
-						const gruppeId = response.value?.data?.id
-						if (gruppeId) {
-							navigate(`/gruppe/${gruppeId}`)
-						}
-					},
-				)
-		return !error && onCancel()
+	const handleCreateGruppe = () => {
+		setIsLoading(true)
+		DollyApi.createGruppe({
+			navn: formMethods.watch('navn'),
+			hensikt: formMethods.watch('hensikt'),
+		}).then((response: any) => {
+			if (response.error) {
+				setFeilmelding('Noe gikk galt under oppretting av gruppe: ' + response.error)
+				setIsLoading(false)
+			} else {
+				setFeilmelding('')
+				setIsLoading(false)
+				const gruppeId = response.data?.id
+				if (gruppeId) {
+					navigate(`/gruppe/${gruppeId}`)
+				}
+			}
+		})
 	}
 
-	if (createOrUpdateFetching) {
-		return <Loading label="oppdaterer gruppe" />
+	const handleUpdateGruppe = () => {
+		setIsLoading(true)
+		DollyApi.updateGruppe(gruppeId, {
+			navn: formMethods.watch('navn'),
+			hensikt: formMethods.watch('hensikt'),
+		}).then((response: any) => {
+			if (response.error) {
+				setFeilmelding('Noe gikk galt under redigering av gruppe: ' + response.error)
+				setIsLoading(false)
+			} else {
+				setFeilmelding('')
+				setIsLoading(false)
+				onCancel()
+				return mutate(REGEX_BACKEND_GRUPPER)
+			}
+		})
+	}
+
+	if (isLoading) {
+		return (
+			<div style={{ marginBottom: '15px' }}>
+				<Loading label="Oppdaterer gruppe ..." />
+			</div>
+		)
 	}
 
 	const buttons = (
@@ -108,37 +110,33 @@ const RedigerGruppe = ({
 
 	return (
 		<FormProvider {...formMethods}>
-			<Form
-				control={formMethods.control}
+			<form
 				className={'opprett-tabellrad'}
 				autoComplete={'off'}
-				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
+				onSubmit={formMethods.handleSubmit(erRedigering ? handleUpdateGruppe : handleCreateGruppe)}
 			>
 				<div className="fields">
-					<FormTextInput
+					<DollyTextInput
 						data-testid={TestComponentSelectors.INPUT_NAVN}
 						name="navn"
 						label="NAVN"
 						size="grow"
-						useOnChange={true}
 						autoFocus
 					/>
-					<FormTextInput
+					<DollyTextInput
 						data-testid={TestComponentSelectors.INPUT_HENSIKT}
 						name="hensikt"
 						label="HENSIKT"
 						size="grow"
-						useOnChange={true}
 					/>
 					{buttons}
 				</div>
-				{error && (
-					<div className="opprett-error">
-						<span>{error.message}</span>
-					</div>
+				{feilmelding && (
+					<Alert variant={'error'} size={'small'} style={{ margin: '0 10px 15px' }}>
+						{feilmelding}
+					</Alert>
 				)}
-			</Form>
+			</form>
 		</FormProvider>
 	)
 }
-export default RedigerGruppe

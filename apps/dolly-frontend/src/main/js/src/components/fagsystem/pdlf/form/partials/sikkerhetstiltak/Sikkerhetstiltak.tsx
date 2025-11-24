@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
@@ -13,7 +13,10 @@ import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SikkerhetstiltakProps {
@@ -21,13 +24,13 @@ interface SikkerhetstiltakProps {
 }
 
 export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
-	const opts = useContext(BestillingsveilederContext)
-	const [randomNavUsers, setRandomNavUsers] = useState([])
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
+	const [randomNavUsers, setRandomNavUsers] = useState<{ value: string; label: string }[]>([])
 
 	const { navEnheter } = useNavEnheter()
 
 	useEffect(() => {
-		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
+		setRandomNavUsers(genererTilfeldigeNavPersonidenter() as { value: string; label: string }[])
 	}, [])
 
 	const rootPath = 'pdldata.person.sikkerhetstiltak'
@@ -89,7 +92,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									options={
 										_.isEmpty(personident)
 											? randomNavUsers
-											: randomNavUsers.concat({ value: personident, label: personident })
+											: [...randomNavUsers, { value: personident, label: personident }]
 									}
 									isClearable={false}
 									name={`${path}.kontaktperson.personident`}

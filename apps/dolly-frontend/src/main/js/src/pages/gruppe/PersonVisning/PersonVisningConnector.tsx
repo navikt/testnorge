@@ -5,10 +5,6 @@ import { createLoadingSelector } from '@/ducks/loading'
 import PersonVisning from '@/pages/gruppe/PersonVisning/PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
-const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
-const loadingSelectorSigrunPensjonsgivende = createLoadingSelector([
-	actions.getSigrunPensjonsgivendeInntekt,
-])
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorPdlForvalter = createLoadingSelector(actions.getPdlForvalter)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
@@ -22,8 +18,6 @@ const loadingSelector = createSelector(
 	(loading) => {
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
-			sigrunstub: loadingSelectorSigrun({ loading }),
-			sigrunstubPensjonsgivende: loadingSelectorSigrunPensjonsgivende({ loading }),
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			pdlforvalter: loadingSelectorPdlForvalter({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
@@ -54,6 +48,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 					tidligereBestillinger: bestillinger,
 					identMaster: master,
 					identtype: type,
+					timedOutFagsystemer: data?.timedOutFagsystemer,
 				},
 			}),
 	}

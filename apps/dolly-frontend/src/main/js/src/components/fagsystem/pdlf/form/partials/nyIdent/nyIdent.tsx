@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { useContext } from 'react'
 import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface NyIdentForm {
@@ -13,7 +15,7 @@ interface NyIdentForm {
 }
 
 export const NyIdent = ({ formMethods }: NyIdentForm) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	return (
 		<FormDollyFieldArray
@@ -30,12 +32,26 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 						return obj
 					}, {})
 
+				const initialNyIdent = {
+					...getInitialNyIdent(),
+					kilde: formMethods.watch(`${path}.kilde`),
+					master: formMethods.watch(`${path}.master`),
+				}
+
+				const initialEksisterendePerson = {
+					eksisterendeIdent: '',
+					kilde: formMethods.watch(`${path}.kilde`),
+					master: formMethods.watch(`${path}.master`),
+				}
+
 				return (
 					<div className="flexbox--flex-wrap">
 						<PdlPersonExpander
 							path={path}
 							nyPersonPath={path}
 							eksisterendePersonPath={`${path}.eksisterendeIdent`}
+							initialNyIdent={initialNyIdent}
+							initialEksisterendePerson={initialEksisterendePerson}
 							label="NY IDENTITET"
 							formMethods={formMethods}
 							nyIdentValg={nyIdentValg}

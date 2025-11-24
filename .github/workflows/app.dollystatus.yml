@@ -3,9 +3,10 @@ name: dollystatus
 on:
   push:
     paths:
-      - "plugins/**"
-      - "apps/dollystatus/**"
-      - ".github/workflows/app.dollystatus.yml"
+      - .github/workflows/app.dollystatus.yml
+      - apps/dollystatus/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:
@@ -16,4 +17,5 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      packages: read
     secrets: inherit

@@ -36,7 +36,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, PersonDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kontaktadresse: kun én adresse skal være satt (vegadresse, " +
-            "postboksadresse, utenlandskAdresse)";
+            "postboksadresse, utenlandskAdresse, postadresseIFrittFormat eller utenlandskAdresseIFrittFormat)";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
@@ -52,29 +52,28 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
     }
 
     private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
+
         if (isBlank(postboksadresse.getPostboks())) {
             throw new InvalidRequestException(VALIDATION_POSTBOKS_ERROR);
         }
         if (isBlank(postboksadresse.getPostnummer()) ||
-                !postboksadresse.getPostnummer().matches("[0-9]{4}")) {
+                !postboksadresse.getPostnummer().matches("\\d{4}")) {
             throw new InvalidRequestException(VALIDATION_POSTNUMMER_ERROR);
         }
     }
 
     public List<KontaktadresseDTO> convert(PersonDTO person, Boolean relaxed) {
 
-        for (var adresse : person.getKontaktadresse()) {
-
-            if (isTrue(adresse.getIsNew())) {
-
-                adresse.setKilde(getKilde(adresse));
-                adresse.setMaster(getMaster(adresse, person));
-
-                if (isNotTrue(relaxed)) {
+        person.getKontaktadresse().stream()
+                .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
+                .forEach(adresse -> {
                     handle(adresse, person);
-                }
-            }
-        }
+                    adresse.setKilde(getKilde(adresse));
+                    adresse.setMaster(getMaster(adresse, person));
+                });
+
+        oppdaterAdressedatoer(person.getBostedsadresse(), person);
+
         return person.getKontaktadresse();
     }
 
@@ -114,13 +113,27 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         if (nonNull(kontaktadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
-            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(kontaktadresse, person.getIdent()) ? vegadresse.getMatrikkelId() : null);
+            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(kontaktadresse, person.getIdent(), vegadresse.getMatrikkelId()));
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
             kontaktadresse.getVegadresse().setKommunenummer(null);
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
             kontaktadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster()));
+
+        } else if (nonNull(kontaktadresse.getUtenlandskAdresseIFrittFormat())) {
+
+            kontaktadresse.setUtenlandskAdresseIFrittFormat(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresseIFrittFormat(), getLandkode(person)));
+
+        } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat()) &&
+                kontaktadresse.getPostadresseIFrittFormat().isEmpty()) {
+
+            var vegadresse =
+                    adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
+                            .postnummer(kontaktadresse.getPostadresseIFrittFormat().getPostnummer())
+                            .build(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
+            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(kontaktadresse, person.getIdent(), vegadresse.getMatrikkelId()));
+            mapperFacade.map(vegadresse, kontaktadresse.getPostadresseIFrittFormat());
         }
 
         if (Master.PDL == kontaktadresse.getMaster()) {

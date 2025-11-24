@@ -24,7 +24,6 @@ import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepenge
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -56,6 +55,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         Avsendertype.ORGNR : Avsendertype.FNR).name());
 
                         inntektsmelding.setArbeidstakerFnr((String) context.getProperty("ident"));
+                        inntektsmelding.setMiljoe((String) context.getProperty("miljoe"));
                     }
                 })
                 .byDefault()
@@ -103,7 +103,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                         inntektsmelding.getAvsendersystem().setSystemnavn("Dolly");
                         inntektsmelding.getAvsendersystem().setSystemversjon("2.0");
 
-                        inntektsmelding.setStartdatoForeldrepengeperiode(toLocalDateTime(rsInntektsmelding.getStartdatoForeldrepengeperiode()));
+                        inntektsmelding.setStartdatoForeldrepengeperiode(nonNull(rsInntektsmelding.getStartdatoForeldrepengeperiode())?
+                                rsInntektsmelding.getStartdatoForeldrepengeperiode().toString() : null);
 
                         inntektsmelding.setArbeidsforhold(mapperFacade.map(rsInntektsmelding.getArbeidsforhold(), RsArbeidsforhold.class));
 
@@ -171,7 +172,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.RsArbeidsforhold rsArbeidsforhold,
                                         RsArbeidsforhold arbeidsforhold, MappingContext context) {
 
-                        arbeidsforhold.setFoersteFravaersdag(toLocalDateTime(rsArbeidsforhold.getFoersteFravaersdag()));
+                        arbeidsforhold.setFoersteFravaersdag(nonNull(rsArbeidsforhold.getFoersteFravaersdag())?
+                                rsArbeidsforhold.getFoersteFravaersdag().toString() : null);
                     }
                 })
                 .exclude("foersteFravaersdag")
@@ -184,7 +186,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.RsDelvisFravaer rsDelvisFravaer,
                                         RsDelvisFravaer delvisFravaer, MappingContext context) {
 
-                        delvisFravaer.setDato(toLocalDateTime(rsDelvisFravaer.getDato()));
+                        delvisFravaer.setDato(nonNull(rsDelvisFravaer.getDato()) ? rsDelvisFravaer.getDato().toString() : null);
                         delvisFravaer.setTimer(rsDelvisFravaer.getTimer());
                     }
                 })
@@ -196,7 +198,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.RsNaturalYtelseDetaljer rsNaturalYtelseDetaljer,
                                         RsNaturalytelseDetaljer naturalytelseDetaljer, MappingContext context) {
 
-                        naturalytelseDetaljer.setFom(toLocalDateTime(rsNaturalYtelseDetaljer.getFom()));
+                        naturalytelseDetaljer.setFom(nonNull(rsNaturalYtelseDetaljer.getFom()) ?
+                                rsNaturalYtelseDetaljer.getFom().toString() : null);
                     }
                 })
                 .exclude("fom")
@@ -209,7 +212,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.RsRefusjon rsRefusjon,
                                         RsRefusjon refusjon, MappingContext context) {
 
-                        refusjon.setRefusjonsopphoersdato(toLocalDateTime(rsRefusjon.getRefusjonsopphoersdato()));
+                        refusjon.setRefusjonsopphoersdato(nonNull(rsRefusjon.getRefusjonsopphoersdato()) ?
+                                rsRefusjon.getRefusjonsopphoersdato().toString() : null);
                         refusjon.setEndringIRefusjonListe(rsRefusjon.getEndringIRefusjonListe().stream()
                                 .map(refusjon1 -> mapperFacade.map(refusjon1, RsEndringIRefusjon.class))
                                 .toList());
@@ -224,7 +228,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.RsEndringIRefusjon rsRefusjon,
                                         RsEndringIRefusjon refusjon, MappingContext context) {
 
-                        refusjon.setEndringsdato(toLocalDateTime(rsRefusjon.getEndringsdato()));
+                        refusjon.setEndringsdato(nonNull(rsRefusjon.getEndringsdato()) ?
+                                rsRefusjon.getEndringsdato().toString() : null);
                         refusjon.setRefusjonsbeloepPrMnd(rsRefusjon.getRefusjonsbeloepPrMnd());
                     }
                 })
@@ -236,8 +241,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.RsPeriode rsPeriode,
                                         RsPeriode periode, MappingContext context) {
 
-                        periode.setFom(toLocalDateTime(rsPeriode.getFom()));
-                        periode.setTom(toLocalDateTime(rsPeriode.getTom()));
+                        periode.setFom(nonNull(rsPeriode.getFom()) ? rsPeriode.getFom().toString() : null);
+                        periode.setTom(nonNull(rsPeriode.getTom()) ? rsPeriode.getTom().toString() : null);
                     }
                 })
                 .register();
@@ -249,10 +254,5 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 .kontaktinformasjonNavn("Dolly Dollesen")
                 .telefonnummer("99999999")
                 .build();
-    }
-
-    private static LocalDateTime toLocalDateTime(LocalDate localDate) {
-
-        return nonNull(localDate) ? localDate.atStartOfDay() : null;
     }
 }

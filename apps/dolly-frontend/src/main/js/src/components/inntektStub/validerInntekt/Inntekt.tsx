@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -8,9 +8,9 @@ import tilleggsinformasjonPaths from '@/components/inntektStub/paths'
 
 const sjekkFelt = (formMethods, field, options, values, path) => {
 	const { watch, getFieldState, setError } = formMethods
-	const fieldValue = watch(path)
-	const existingError = getFieldState(`${path}.${field}`)?.error
 	const fieldPath = tilleggsinformasjonPaths(field)
+	const fieldValue = watch(path)
+	const existingError = getFieldState(`${path}.${fieldPath}`)?.error
 	const val = _.get(fieldValue, fieldPath)
 
 	if (
@@ -18,7 +18,7 @@ const sjekkFelt = (formMethods, field, options, values, path) => {
 		!existingError &&
 		((fieldValue && !val && val !== false) || (!optionsUtfylt(options) && !options.includes(val)))
 	) {
-		setError(`${path}.${field}`, { message: 'Feltet er påkrevd' })
+		setError(`${path}.${fieldPath}`, { message: 'Feltet er påkrevd' })
 	}
 	return null
 }
@@ -63,7 +63,6 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 				visHvisAvhuket={false}
 				name={`${path}.${fieldName}`}
 				label={texts(field)}
-				afterChange={handleChange}
 				feil={sjekkFelt(formMethods, field, options, values, path)}
 			/>
 		)
@@ -80,6 +79,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 			/>
 		)
 	} else if (optionsUtfylt(options)) {
+		sjekkFelt(formMethods, field, options, values, path)
 		return (
 			<FormTextInput
 				key={index}
@@ -88,7 +88,6 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 				label={texts(field)}
 				onSubmit={handleChange}
 				size={numberFields.includes(field) ? 'medium' : 'large'}
-				feil={sjekkFelt(formMethods, field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
 		)

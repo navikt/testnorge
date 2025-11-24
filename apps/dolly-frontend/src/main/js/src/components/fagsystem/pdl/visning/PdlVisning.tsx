@@ -23,8 +23,8 @@ import { PdlDeltBosted } from '@/components/fagsystem/pdl/visning/partials/adres
 import { Doedsfall } from '@/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { PdlVergemaal } from '@/components/fagsystem/pdl/visning/partials/vergemaal/PdlVergemaal'
 import { getBankkontoData } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
-import { FullmaktVisning } from '@/components/fagsystem'
 import React from 'react'
+import FullmaktVisning from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -75,6 +75,8 @@ export const PdlVisning = ({
 	const gjeldendeIdent = hentIdenter?.identer?.find(
 		(id) => !id.historisk && id.gruppe === 'FOLKEREGISTERIDENT',
 	)
+
+	const erDoed = doedsfall?.find((d) => d.doedsdato)
 
 	return (
 		<ErrorBoundary>
@@ -129,7 +131,7 @@ export const PdlVisning = ({
 					erPdlVisning={miljoeVisning}
 				/>
 				<PdlRelasjoner data={hentPerson} />
-				<FullmaktVisning ident={gjeldendeIdent?.ident} />
+				{!erDoed && gjeldendeIdent && <FullmaktVisning ident={gjeldendeIdent?.ident} />}
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<KontaktinformasjonForDoedsbo

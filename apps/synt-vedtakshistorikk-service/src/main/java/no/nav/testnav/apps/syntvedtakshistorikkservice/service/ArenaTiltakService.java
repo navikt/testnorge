@@ -11,15 +11,15 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.re
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.KodeMedSannsynlighet;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

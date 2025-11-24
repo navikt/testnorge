@@ -18,28 +18,29 @@ const StyledButton = styled(dsButton)`
 	}
 `
 
-export const BestillingSammendragModal = ({ bestillinger }) => {
+export const BestillingSammendragModal = ({ bestillinger: usorterteBestillinger }) => {
+	const bestillingerSortert = usorterteBestillinger?.sort?.((a, b) => a?.id - b?.id)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [aktivBestilling, setAktivBestilling] = useState(bestillinger[0])
+	const [aktivBestilling, setAktivBestilling] = useState(bestillingerSortert[0])
 	const [aktivIndex, setAktivIndex] = useState(0)
 
 	useEffect(() => {
-		setAktivBestilling(bestillinger[aktivIndex])
+		setAktivBestilling(bestillingerSortert[aktivIndex])
 	}, [aktivIndex])
 
-	const harFlereBestillinger = bestillinger.length > 1
+	const harFlereBestillinger = bestillingerSortert.length > 1
 
 	const handleChangeBestilling = (index: number) => {
 		if (index < 0) {
 			setAktivIndex(0)
-		} else if (index >= bestillinger.length) {
-			setAktivIndex(bestillinger.length - 1)
+		} else if (index >= bestillingerSortert.length) {
+			setAktivIndex(bestillingerSortert.length - 1)
 		} else {
 			setAktivIndex(index)
 		}
 	}
 
-	if (!bestillinger || bestillinger.length === 0) {
+	if (!bestillingerSortert || bestillingerSortert.length === 0) {
 		return null
 	}
 
@@ -70,13 +71,13 @@ export const BestillingSammendragModal = ({ bestillinger }) => {
 								variant={'tertiary'}
 								title="Neste bestilling"
 								icon={<ArrowRightIcon aria-hidden />}
-								disabled={aktivIndex === bestillinger.length - 1}
+								disabled={aktivIndex === bestillingerSortert.length - 1}
 								onClick={() => handleChangeBestilling(aktivIndex + 1)}
 							/>
 						</div>
 					)) || <h1>Bestilling #{aktivBestilling?.id}</h1>}
 				</div>
-				<BestillingSammendrag bestilling={aktivBestilling} modal />
+				<BestillingSammendrag bestilling={aktivBestilling} closeModal={closeModal} modal />
 			</DollyModal>
 		</div>
 	)

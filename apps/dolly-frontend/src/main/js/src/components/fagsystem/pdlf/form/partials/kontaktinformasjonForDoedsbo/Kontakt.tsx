@@ -3,7 +3,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	initialNyPerson,
 	initialOrganisasjon,
@@ -16,7 +16,10 @@ import { useContext, useEffect } from 'react'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface KontaktValues {
 	formMethods: UseFormReturn
@@ -35,7 +38,7 @@ type OrgValues = {
 }
 
 export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: KontaktValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`

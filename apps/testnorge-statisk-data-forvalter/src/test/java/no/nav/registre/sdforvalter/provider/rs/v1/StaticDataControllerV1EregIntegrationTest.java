@@ -13,16 +13,14 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.Gruppe;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -34,14 +32,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DollySpringBootTest
 @AutoConfigureMockMvc()
-@TestPropertySource(
-        locations = "classpath:application-test.yml"
-)
+@AutoConfigureWireMock(port = 0)
+//@Import(JwtDecoderConfig.class)
 class StaticDataControllerV1EregIntegrationTest {
+
     private static final String EREG_API = "/api/v1/faste-data/ereg";
+
     @Autowired
     private MockMvc mvc;
 
@@ -56,6 +54,50 @@ class StaticDataControllerV1EregIntegrationTest {
 
     @Autowired
     private GruppeRepository gruppeRepository;
+
+    @AfterEach
+    void cleanUp() {
+        eregRepository.deleteAll();
+        gruppeRepository.deleteAll();
+        opprinnelseRepository.deleteAll();
+    }
+
+    private EregListe create(Ereg... eregs) {
+        return new EregListe(Arrays.asList(eregs));
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype, GruppeModel gruppeModel) {
+        return createEregModel(orgnr, enhetstype, null, gruppeModel);
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype, OpprinnelseModel opprinnelseModel) {
+        return createEregModel(orgnr, enhetstype, opprinnelseModel, null);
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype, OpprinnelseModel opprinnelseModel, GruppeModel gruppeModel) {
+        EregModel model = new EregModel();
+        model.setOrgnr(orgnr);
+        model.setEnhetstype(enhetstype);
+        model.setOpprinnelseModel(opprinnelseModel);
+        model.setGruppeModel(gruppeModel);
+        return model;
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype) {
+        return createEregModel(orgnr, enhetstype, null, null);
+    }
+
+    private Ereg createEreg(String orgnr, String enhetstype, String opprinnelse) {
+        return new Ereg(createEregModel(orgnr, enhetstype, new OpprinnelseModel(opprinnelse)), new ArrayList<>());
+    }
+
+    private Ereg createEreg(String orgnr, String enhetstype, Gruppe gruppe) {
+        return new Ereg(createEregModel(orgnr, enhetstype, null, new GruppeModel(null, gruppe.getKode(), gruppe.getBeskrivelse())), new ArrayList<>());
+    }
+
+    private Ereg createEreg(String orgnr, String enhetstype) {
+        return new Ereg(createEregModel(orgnr, enhetstype), new ArrayList<>());
+    }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
@@ -77,7 +119,6 @@ class StaticDataControllerV1EregIntegrationTest {
         assertThat(response.getListe().get(0).isKanHaArbeidsforhold()).isFalse();
         assertThat(response.getListe().get(1).isKanHaArbeidsforhold()).isFalse();
     }
-
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
@@ -126,7 +167,6 @@ class StaticDataControllerV1EregIntegrationTest {
         );
     }
 
-
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void shouldGetEregsWithOpprinnelse() throws Exception {
@@ -158,10 +198,9 @@ class StaticDataControllerV1EregIntegrationTest {
         assertThat(eregRepository.findAll())
                 .hasSize(1)
                 .first()
-                .isEqualToIgnoringGivenFields(
-                        new EregModel(ereg, null, null, null),
-                        "id", "createdAt", "updatedAt"
-                );
+                .usingRecursiveComparison()
+                .ignoringFields("id", "createdAt", "updatedAt")
+                .isEqualTo(new EregModel(ereg, null, null, null));
     }
 
     @Test
@@ -185,7 +224,6 @@ class StaticDataControllerV1EregIntegrationTest {
         EregListe response = objectMapper.readValue(json, EregListe.class);
         assertThat(response.getListe()).containsOnly(new Ereg(eregModel, new ArrayList<>()));
     }
-
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
@@ -216,7 +254,7 @@ class StaticDataControllerV1EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldAddEregWithGrouppe() throws Exception {
+    void shouldAddEregWithGruppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -232,69 +270,27 @@ class StaticDataControllerV1EregIntegrationTest {
         Iterable<EregModel> iterable = eregRepository.findAll();
         assertThat(iterable).hasSize(1);
         assertThat(iterable.iterator().next().getGruppeModel())
-                .isEqualToIgnoringGivenFields(gruppeModel, "id", "updatedAt", "createdAt");
+                .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
+                .isEqualTo(gruppeModel);
     }
-
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
-        Ereg ereg_123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
-        Ereg ereg_987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
+        var ereg123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
+        var ereg987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
         mvc.perform(post(EREG_API)
-                        .content(objectMapper.writeValueAsString(create(ereg_123456789, ereg_987654321)))
+                        .content(objectMapper.writeValueAsString(create(ereg123456789, ereg987654321)))
                         .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
         assertThat(Lists.newArrayList(opprinnelseRepository.findAll()))
                 .hasSize(1)
                 .first()
-                .isEqualToComparingOnlyGivenFields(new OpprinnelseModel(altinn), "navn");
+                .usingRecursiveComparison()
+                .comparingOnlyFields("navn")
+                .isEqualTo(new OpprinnelseModel(altinn));
     }
 
-
-    private EregListe create(Ereg... eregs) {
-        return new EregListe(Arrays.asList(eregs));
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        eregRepository.deleteAll();
-        gruppeRepository.deleteAll();
-        opprinnelseRepository.deleteAll();
-    }
-
-
-    private EregModel createEregModel(String orgnr, String enhetstype, GruppeModel gruppeModel) {
-        return createEregModel(orgnr, enhetstype, null, gruppeModel);
-    }
-
-    private EregModel createEregModel(String orgnr, String enhetstype, OpprinnelseModel opprinnelseModel) {
-        return createEregModel(orgnr, enhetstype, opprinnelseModel, null);
-    }
-
-    private EregModel createEregModel(String orgnr, String enhetstype, OpprinnelseModel opprinnelseModel, GruppeModel gruppeModel) {
-        EregModel model = new EregModel();
-        model.setOrgnr(orgnr);
-        model.setEnhetstype(enhetstype);
-        model.setOpprinnelseModel(opprinnelseModel);
-        model.setGruppeModel(gruppeModel);
-        return model;
-    }
-
-    private EregModel createEregModel(String orgnr, String enhetstype) {
-        return createEregModel(orgnr, enhetstype, null, null);
-    }
-
-    private Ereg createEreg(String orgnr, String enhetstype, String opprinnelse) {
-        return new Ereg(createEregModel(orgnr, enhetstype, new OpprinnelseModel(opprinnelse)), new ArrayList<>());
-    }
-
-    private Ereg createEreg(String orgnr, String enhetstype, Gruppe gruppe) {
-        return new Ereg(createEregModel(orgnr, enhetstype, null, new GruppeModel(null, gruppe.getKode(), gruppe.getBeskrivelse())), new ArrayList<>());
-    }
-
-    private Ereg createEreg(String orgnr, String enhetstype) {
-        return new Ereg(createEregModel(orgnr, enhetstype), new ArrayList<>());
-    }
 }

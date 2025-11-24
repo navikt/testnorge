@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: "testnav-budpro-service"
+  name: testnav-budpro-service
   namespace: "dolly"
   labels:
     "team": "dolly"
@@ -9,38 +9,52 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-texas-proxy
         - application: team-dolly-lokal-app
         - application: testnav-dollystatus
     outbound:
       rules:
+        - application: dolly-texas-proxy
         - application: generer-navn-service
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   ingresses:
     - "https://testnav-budpro-service.intern.dev.nav.no"
   liveness:
     initialDelay: 45
-    path: "/internal/health/liveness"
+    path: /internal/health/liveness
   prometheus:
     enabled: true
-    path: "/internal/prometheus"
+    path: /internal/prometheus
   observability:
-    logging:
-      destinations:
-        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
   readiness:
     initialDelay: 45
-    path: "/internal/health/readiness"
+    path: /internal/health/readiness
   replicas:
     min: 1
     max: 1
+  resources:
+    requests:
+      cpu: 20m
+      memory: 500Mi
+    limits:
+      memory: 2048Mi
   gcp:
     permissions:
       - resource:

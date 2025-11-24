@@ -25,7 +25,7 @@ const multiplePdlPersonUrl = (gruppe) => {
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
-export const usePdlOptions = (gruppe, master = 'PDLF') => {
+export const usePdlOptions = (gruppe, master = 'PDLF', visDetaljertLabel = false) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		master === 'PDLF' ? multiplePdlforvalterUrl(gruppe) : multiplePdlPersonUrl(gruppe),
 		multiFetcherAll,
@@ -64,9 +64,10 @@ export const usePdlOptions = (gruppe, master = 'PDLF') => {
 			id.person?.foedselsdato?.[0]?.foedselsdato || id.person?.foedsel?.[0]?.foedselsdato,
 		)
 		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
+		const label = `${ident} - ${fornavn} ${mellomnavn} ${etternavn}`
 		personData.push({
 			value: ident,
-			label: `${ident} - ${fornavn} ${mellomnavn} ${etternavn} (${kjoenn} ${alder})`,
+			label: visDetaljertLabel ? `${label} (${kjoenn} ${alder})` : label,
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 			alder: alder,
 			kjoenn: kjoenn,

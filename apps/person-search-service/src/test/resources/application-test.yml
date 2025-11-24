@@ -1,7 +1,0 @@
-TOKEN_X_ISSUER: dummy
-
-elasticsearch:
-  client:
-    username: dummy
-    password: dummy
-    host: dummy

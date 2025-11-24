@@ -1,0 +1,20 @@
+ALTINN_URL: ${sm\://altinn-url}
+MASKINPORTEN_CLIENT_ID: ef2960de-7fa6-4396-80a5-2eca00e4af28
+MASKINPORTEN_SCOPES: altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
+
+spring:
+  cache:
+    type: none
+  config:
+    import: "sm://"
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/testnav-altinn3-tilgang-local
+    user: testnav-altinn3-tilgang-local
+    password: ${sm\://testnav-altinn3-tilgang-local}
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-altinn3-tilgang-local
+    username: testnav-altinn3-tilgang-local
+    password: ${sm\://testnav-altinn3-tilgang-local}

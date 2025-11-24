@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   tokenx:
@@ -16,41 +19,42 @@ spec:
       enabled: true
       tenant: nav.no
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true
     path: /internal/metrics
   replicas:
-    min: 1
-    max: 1
+    min: 0
+    max: 0
   vault:
     enabled: true
     paths:
       - kvPath: /serviceuser/data/dev/srvtestnorge
         mountPath: /secret/serviceuser
   resources:
+    requests:
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
-    requests:
-      cpu: 200m
-      memory: 1024Mi
   webproxy: true
   kafka:
     pool: nav-dev
   ingresses:
-    - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no" # dev-fss
+    - "https://testnorge-statisk-data-forvalter.intern.dev.nav.no" # dev-fss
   accessPolicy:
     inbound:
       rules:
@@ -71,6 +75,9 @@ spec:
         - application: krr-stub
         - application: synthdata-aareg
           cluster: dev-fss
-        - application: kodeverk
+        - application: testnav-kodeverk-service
+          cluster: dev-gcp
         - application: testnav-aareg-proxy
           cluster: dev-fss
+        - application: logging
+          namespace: nais-system

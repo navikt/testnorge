@@ -3,7 +3,7 @@ import api, { fetcher, multiFetcherAfpOffentlig } from '@/api'
 import { v4 as _uuid } from 'uuid'
 import useSWRMutation from 'swr/mutation'
 
-const baseUrl = '/testnav-pensjon-testdata-facade-proxy'
+const baseUrl = '/testnav-dolly-proxy/pensjon'
 const pensjonVedtakUrl = `${baseUrl}/api/v2/vedtak`
 const pensjonFacadeGenererUrl = `${baseUrl}/api/v1/generate-inntekt-med-gjennomsnitt-g`
 const tpOrdningUrl = `${baseUrl}/api/v1/tp/ordning`
@@ -46,12 +46,12 @@ type PensjonResponse = {
 const validateBody = (body) => {
 	if (!body) return false
 	const { fomAar, tomAar, averageG } = body
-	return fomAar && tomAar && averageG
+	return !!(fomAar && tomAar && averageG)
 }
 
 export const usePensjonFacadeGenerer = (body: any) => {
 	const { data, error, trigger } = useSWRMutation<PensjonResponse, Error>(
-		validateBody(body) && pensjonFacadeGenererUrl,
+		validateBody(body) ? pensjonFacadeGenererUrl : null,
 		(url) => {
 			return api
 				.fetchJson(
@@ -77,7 +77,7 @@ export const usePensjonFacadeGenerer = (body: any) => {
 	}
 }
 
-export const useTpOrdning = () => {
+export const useTpOrdningKodeverk = () => {
 	const { data, isLoading, error } = useSWR<any, Error>(tpOrdningUrl, fetcher)
 
 	const options = data?.map((tpOrdning: any) => ({
@@ -112,7 +112,7 @@ export const useMockOppsett = (miljoer: Array<string>, ident: string, harBestill
 	const { data, isLoading, error } = useSWR<any, Error>(mockOppsettUrl, multiFetcherAfpOffentlig)
 
 	return {
-		mockOppsett: data?.sort((a, b) => a?.miljo?.localeCompare(b?.miljo)),
+		mockOppsett: data?.sort?.((a, b) => a?.miljo?.localeCompare(b?.miljo)),
 		loading: isLoading,
 		error: error,
 	}

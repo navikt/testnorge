@@ -1,0 +1,7 @@
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  levende-arbeidsforhold-ansettelse:
+    url: https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no

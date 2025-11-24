@@ -1,12 +1,14 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React, { useContext } from 'react'
-import _get from 'lodash/get'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const Alder = ({ formMethods }) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formValues = formMethods.getValues()
 
 	const paths = {
@@ -16,7 +18,7 @@ export const Alder = ({ formMethods }) => {
 	}
 
 	const harFoedsel = () => {
-		const foedselListe = _get(formValues, 'pdldata.person.foedsel')
+		const foedselListe = _.get(formValues, 'pdldata.person.foedsel')
 		return foedselListe?.some((foedsel) => foedsel?.foedselsaar || foedsel?.foedselsdato)
 	}
 

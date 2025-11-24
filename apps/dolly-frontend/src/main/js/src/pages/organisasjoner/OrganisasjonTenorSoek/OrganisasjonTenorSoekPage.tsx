@@ -1,4 +1,4 @@
-import Title from '@/components/Title'
+import Title from '../../../components/title'
 import { useTenorOversiktOrganisasjoner } from '@/utils/hooks/useTenorSoek'
 import React, { useEffect, useState } from 'react'
 import { TreffListeOrg } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/TreffListeOrg'
@@ -29,7 +29,7 @@ const initialState = {
 	nesteSide: null,
 }
 
-export const OrganisasjonTenorSoekPage = () => {
+export default () => {
 	const [request, setRequest] = useState({})
 	const [state, setState] = useState<any>(initialState)
 	const { response, loading, error, mutate } = useTenorOversiktOrganisasjoner(
@@ -81,7 +81,7 @@ export const OrganisasjonTenorSoekPage = () => {
 	return (
 		<div>
 			<div className="flexbox--align-center--justify-start">
-				<Title title="Søk etter organisasjoner i Tenor" />
+				<Title title="Søk etter organisasjoner i Tenor (Test-Norge)" />
 			</div>
 			<div className="flexbox--flex-wrap" id="soek">
 				<NavigateButton

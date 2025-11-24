@@ -44,15 +44,15 @@ on:
         required: false
         default: true
     secrets:
-      NAIS_WORKLOAD_IDENTITY_PROVIDER:
-        required: true
       NAV_TOKEN:
         required: true
       SONAR_TOKEN:
         required: true
 
-jobs:
+env:
+  GRADLE_BUILD_ACTION_CACHE_KEY_PREFIX: "gradle-build-${{ github.workflow }}"
 
+jobs:
   start:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
@@ -70,46 +70,89 @@ jobs:
 
   build:
     needs: start
-    if: github.actor != 'dependabot[bot]'
+    if: >-
+      github.actor != 'dependabot[bot]' && (
+        needs.start.outputs.do-deploy == 'true' || 
+        needs.start.outputs.do-deploy-test == 'false'
+      )
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: "Setup"
+      - name: "Setup Java"
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-      - name: "Gradle"
+      - name: "Setup Gradle"
         id: gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
+          gradle-version: wrapper
           cache-read-only: false
-      - name: "Build"
+      - name: "Build with tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
+        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || ''}} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: "Reporting"
+      - name: "Upload test reports"
         if: failure() && steps.gradle.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.start.outputs.artifact}}
           path: ${{ inputs.working-directory }}/build/reports
           retention-days: 7
-      - name: "Docker"
-        id: docker-build-push
+      - name: "Build and push Docker image"
         if: |
-          needs.start.outputs.do-deploy == 'true' ||
+          needs.start.outputs.do-deploy == 'true' || 
           needs.start.outputs.do-deploy-test == 'true'
+        id: docker-build-push
         uses: nais/docker-build-push@v0
         with:
           team: dolly
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          docker_context: ${{ inputs.working-directory }}
+          image_suffix: ${{ inputs.image-suffix }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+
+  build-no-tests:
+    needs: start
+    if: >-
+      github.actor != 'dependabot[bot]' && 
+      needs.start.outputs.do-deploy != 'true' && 
+      needs.start.outputs.do-deploy-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: "Setup Gradle"
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: wrapper
+          cache-read-only: false
+      - name: "Build without tests"
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew build -x test
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      - name: "Build and push Docker image"
+        if: |
+          needs.start.outputs.do-deploy == 'true' || 
+          needs.start.outputs.do-deploy-test == 'true'
+        id: docker-build-push
+        uses: nais/docker-build-push@v0
+        with:
+          team: dolly
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ inputs.image-suffix }}
     outputs:
@@ -131,8 +174,11 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: [ start, build ]
-    if: needs.start.outputs.do-deploy-test == 'true'
+    needs: [ start, build, build-no-tests ]
+    if: |
+      always() && 
+      needs.start.outputs.do-deploy-test == 'true' &&
+      (needs.build.result == 'success' || needs.build-no-tests.result == 'success')
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
     steps:
@@ -143,4 +189,28 @@ jobs:
         env:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: "${{ inputs.working-directory }}/config.test.yml"
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image != '' && needs.build.outputs.image || needs.build-no-tests.outputs.image }}
+
+  run-tests:
+    needs: [ start, build-no-tests ]
+    if: needs.start.outputs.do-deploy-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+      - name: "Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: "Setup Gradle"
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: wrapper
+          cache-read-only: false
+      - name: "Run Tests"
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || ''}} --scan
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

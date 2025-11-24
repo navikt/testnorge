@@ -3,13 +3,14 @@ import DokarkivVisning from './DokarkivVisning'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
-import { Journalpost } from '@/service/services/JoarkDokumentService'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Journalpost } from '@/utils/hooks/useDokumenter'
 
 interface Form {
 	data?: Array<MiljoDataListe>
 	bestillingIdListe: Array<string>
 	loading: boolean
+	tilgjengeligMiljoe?: string
 }
 
 type MiljoDataListe = {
@@ -25,7 +26,7 @@ const Dokarkiv = ({ data, miljo }: MiljoDataListe) => {
 		return <DokarkivVisning journalpost={data[0]} miljoe={miljo} />
 	}
 	return (
-		<DollyFieldArray header={'Dokument'} data={data}>
+		<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
 			{(dokument: Journalpost) => {
 				return <DokarkivVisning journalpost={dokument} miljoe={miljo} />
 			}}

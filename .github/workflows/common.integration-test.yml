@@ -10,6 +10,7 @@ on:
     secrets:
       NAV_TOKEN:
         required: true
+  workflow_dispatch:
 
 jobs:
   integration-test:
@@ -26,9 +27,13 @@ jobs:
           java-version: 21
           distribution: 'temurin'
       - name: "Gradle"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
+      - name: "Auth"
+        uses: nais/login@v0
+        with:
+          team: dolly
       - name: "Build"
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -44,7 +49,7 @@ jobs:
           echo Wait on service...
           bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' ${{ inputs.healthcheck }})" != "200" ]]; do echo ...; sleep 5; done; echo Service is up;'
       - name: "Run integration tests"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
       - name: "Build"

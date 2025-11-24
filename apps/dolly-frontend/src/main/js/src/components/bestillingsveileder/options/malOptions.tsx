@@ -1,6 +1,6 @@
 import { initialValues } from './utils'
-import _ from 'lodash'
-import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
+import * as _ from 'lodash-es'
+import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoeInfo'
 import {
 	BostedData,
 	KontaktadresseData,
@@ -14,7 +14,14 @@ import {
 	SivilstandData,
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
-import { addMonths, isAfter, setDate } from 'date-fns'
+import { addDays, addMonths, isAfter, setDate, subYears } from 'date-fns'
+import {
+	initialArbeidsavtale,
+	initialArbeidsgiverOrg,
+	initialFartoy,
+} from '@/components/fagsystem/aareg/form/initialValues'
+import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
+import { FullmaktHandling } from '@/components/fagsystem/fullmakt/FullmaktType'
 
 export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)
@@ -85,9 +92,36 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 		)
 		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
 	}
-
-	initialValuesMal.environments = filterMiljoe(environments, mal.bestilling?.environments)
+	if (initialValuesMal.dokarkiv) {
+		initialValuesMal.dokarkiv = getUpdatedDokarkiv(initialValuesMal.dokarkiv)
+	}
+	if (initialValuesMal.sykemelding?.syntSykemelding) {
+		initialValuesMal.sykemelding.detaljertSykemelding = getUpdatedSykemelding(
+			initialValuesMal.sykemelding.syntSykemelding,
+		)
+	}
+	if (initialValuesMal.fullmakt) {
+		initialValuesMal.fullmakt = getUpdatedFullmaktData(initialValuesMal.fullmakt)
+	}
+	const gyldigeEnvironments = gyldigeDollyMiljoer(environments)
+	initialValuesMal.environments = filterMiljoe(gyldigeEnvironments, mal.bestilling?.environments)
 	return initialValuesMal
+}
+
+const getUpdatedFullmaktData = (fullmaktData) => {
+	const newHandling = (handling) => {
+		if (handling?.includes('SKRIV')) {
+			return FullmaktHandling.lesOgSkriv
+		}
+		return FullmaktHandling.les
+	}
+	return fullmaktData?.map((fullmakt) => ({
+		...fullmakt,
+		omraade: fullmakt.omraade.map((omraade: any) => ({
+			...omraade,
+			handling: newHandling(omraade.handling),
+		})),
+	}))
 }
 
 const getUpdatedAlderspensjonData = (alderspensjonData) => {
@@ -126,7 +160,11 @@ const getUpdatedArenaforvalterData = (arenaforvalterData) => {
 const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {
 	return Object.fromEntries(
 		Object.entries(arbeidsplassenData)?.filter((kategori) => {
-			return (kategori?.[0] === 'jobboensker' && kategori?.[1]) || kategori?.[1]?.length > 0
+			return (
+				(kategori?.[0] === 'jobboensker' && kategori?.[1]) ||
+				kategori?.[1]?.length > 0 ||
+				_.isBoolean(kategori?.[1])
+			)
 		}),
 	)
 }
@@ -141,11 +179,27 @@ const getUpdatedInntektstubData = (inntektstubData: any) => {
 
 const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {
-		data = updateData(data, initialValues.aareg[0])
-		if (data.amelding && data.amelding.length > 0) {
-			data.ansettelsesPeriode = undefined
-			data.arbeidsgiver = undefined
-			data.arbeidsavtale = undefined
+		data = updateData(data, initialValues.aareg)
+		data.amelding = undefined
+		data.genererPeriode = undefined
+		data.navArbeidsforholdPeriode = undefined
+		if (!data.ansettelsesPeriode) {
+			data.ansettelsesPeriode = {
+				fom: subYears(new Date(), 20),
+				tom: null,
+				sluttaarsak: null,
+			}
+		}
+		if (!data.arbeidsavtale) {
+			data.arbeidsavtale = initialArbeidsavtale
+		}
+		if (!data.arbeidsgiver) {
+			data.arbeidsgiver = initialArbeidsgiverOrg
+		}
+		if (data.fartoy?.length < 1) {
+			if (data.arbeidsforholdstype === 'maritimtArbeidsforhold') {
+				data.fartoy = initialFartoy
+			} else data.fartoy = undefined
 		}
 		data.permisjon = data.permisjon?.map((permisjon: any) =>
 			updateData(permisjon, initialValues.permisjon),
@@ -156,6 +210,7 @@ const getUpdatedAaregData = (aaregData: any) => {
 		return data
 	})
 }
+
 const getUpdatedInntektsmeldingData = (inntektsmeldingData: any) =>
 	inntektsmeldingData.map((inntekt: any) => updateData(inntekt, initialValues.inntektsmelding))
 
@@ -233,9 +288,12 @@ const getUpdatedPdldata = (pdldata: any) => {
 	const nyPerson = newPdldata?.opprettNyPerson
 	if (nyPerson) {
 		newPdldata.opprettNyPerson.syntetisk = true
+		newPdldata.opprettNyPerson.identtype = nyPerson.identtype ?? 'FNR'
+		newPdldata.opprettNyPerson.id2032 = nyPerson.id2032 ?? false
 		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
 			newPdldata.opprettNyPerson = {
-				identtype: nyPerson.identtype,
+				identtype: nyPerson.identtype ?? 'FNR',
+				id2032: nyPerson.id2032 ?? false,
 				syntetisk: true,
 			}
 		}
@@ -396,6 +454,15 @@ const getUpdatedBankkonto = (bankkonto: any) => {
 	return bankkonto
 }
 
+const getUpdatedSykemelding = (syntSykemelding: any) => {
+	let updatedSykemelding = initialValuesDetaljertSykemelding
+	updatedSykemelding.startDato = new Date()
+	updatedSykemelding.mottaker.orgNr = syntSykemelding.orgnummer
+	updatedSykemelding.perioder[0].fom = addDays(syntSykemelding.startDato, -7)
+	updatedSykemelding.perioder[0].tom = addDays(syntSykemelding.startDato, -1)
+	return updatedSykemelding
+}
+
 const updateKontaktType = (kontaktinfo: any) => {
 	if (kontaktinfo?.advokatSomKontakt) {
 		kontaktinfo.kontaktType = 'ADVOKAT'
@@ -423,6 +490,21 @@ const updateKontaktType = (kontaktinfo: any) => {
 	}
 
 	return kontaktinfo
+}
+
+const getUpdatedDokarkiv = (dokarkiv: any) => {
+	let newDokarkiv = dokarkiv?.map((dok) => {
+		let newDok = { ...dok }
+		if (newDok.avsenderMottaker) {
+			newDok.avsenderMottaker = {
+				id: newDok.avsenderMottaker?.id || '',
+				navn: newDok.avsenderMottaker?.navn || '',
+				idType: newDok.avsenderMottaker?.idType || '',
+			}
+		}
+		return newDok
+	})
+	return newDokarkiv
 }
 
 const updateData = (data: any, initalValues: any) => {

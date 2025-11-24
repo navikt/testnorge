@@ -1,6 +1,6 @@
 import { Alert, Box } from '@navikt/ds-react'
 import React from 'react'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
 import styled from 'styled-components'
 import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
@@ -10,6 +10,7 @@ import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPe
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning/TjenestepensjonsavtaleVisning'
 import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/SkattemeldingVisning'
+import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
 
 type PersonVisningProps = {
 	person: any
@@ -17,6 +18,8 @@ type PersonVisningProps = {
 	ibruk: boolean
 	loading: boolean
 	error: any
+	inkluderPartnere: boolean
+	setInkluderPartnere: any
 }
 
 const PersonVisningWrapper = styled.div`
@@ -33,7 +36,15 @@ const NavnHeader = styled.h2`
 	hyphens: auto;
 `
 
-export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVisningProps) => {
+export const PersonVisning = ({
+	person,
+	ident,
+	ibruk,
+	loading,
+	error,
+	inkluderPartnere,
+	setInkluderPartnere,
+}: PersonVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster person ..." />
 	}
@@ -58,7 +69,12 @@ export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVi
 					{ibruk ? (
 						<NavigerTilPerson ident={ident} />
 					) : (
-						<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
+						<ImporterValgtePersoner
+							identer={[ident]}
+							isMultiple={false}
+							inkluderPartnere={inkluderPartnere}
+							setInkluderPartnere={setInkluderPartnere}
+						/>
 					)}
 				</div>
 				<FolkeregisteretVisning data={personData} />
@@ -68,6 +84,7 @@ export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVi
 				/>
 				<SkattemeldingVisning data={personData?.tenorRelasjoner?.skattemelding} />
 				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
+				<OrganisasjonArbeidsforholdVisning data={personData?.tenorRelasjoner?.arbeidsforhold} />
 			</Box>
 		</PersonVisningWrapper>
 	)

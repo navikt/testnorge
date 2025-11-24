@@ -2,10 +2,11 @@ import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React from 'react'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 
 export const Skattemelding = ({ handleChange }: any) => {
-	const { domain: skattemeldingstypeOptions } = useTenorDomain('Skattemeldingstype')
+	const { domain: skattemeldingstypeOptions, loading: loadingSkattemeldingstype } =
+		useTenorDomain('Skattemeldingstype')
 
 	const getInntektsaarOptions = () => {
 		const inntektsaarListe = []
@@ -24,7 +25,13 @@ export const Skattemelding = ({ handleChange }: any) => {
 				name="skattemelding.inntektsaar"
 				options={inntektsaarOptions}
 				label="Inntektsår"
-				onChange={(val: any) => handleChange(val?.value || null, 'skattemelding.inntektsaar')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'skattemelding.inntektsaar',
+						`Inntektsår skattemelding: ${val?.label}`,
+					)
+				}
 			/>
 			<FormSelect
 				name="skattemelding.skattemeldingstype"
@@ -32,8 +39,13 @@ export const Skattemelding = ({ handleChange }: any) => {
 				label="Type skattemelding"
 				size="large"
 				onChange={(val: any) =>
-					handleChange(val?.value || null, 'skattemelding.skattemeldingstype')
+					handleChange(
+						val?.value || null,
+						'skattemelding.skattemeldingstype',
+						`Type skattemelding: ${val?.label}`,
+					)
 				}
+				isLoading={loadingSkattemeldingstype}
 			/>
 		</SoekKategori>
 	)

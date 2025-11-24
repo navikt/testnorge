@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.histark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.histark.command.HistarkPostCommand;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
@@ -11,7 +12,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class HistarkConsumer {
+public class HistarkConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -31,23 +32,25 @@ public class HistarkConsumer {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder) {
-        serverProperties = consumers.getTestnavHistarkProxy();
+            WebClient webClient) {
+
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenService = tokenService;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
-    public Flux<HistarkResponse> postHistark(HistarkRequest histarkRequest) {
+    @Timed(name = "providers", tags = {"operation", "histark-opprett"})
+    public Mono<HistarkResponse> postHistark(HistarkRequest histarkRequest) {
 
         var callId = getNavCallId();
         log.info("Sender histark melding: callId: {}, consumerId: {}\n{}", callId, CONSUMER, histarkRequest);
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new HistarkPostCommand(webClient, histarkRequest,
+                .flatMap(token -> new HistarkPostCommand(webClient, histarkRequest,
                         token.getTokenValue()).call());
     }
 
@@ -55,4 +58,13 @@ public class HistarkConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
+    @Override
+    public String serviceUrl() {
+        return serverProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-dolly-proxy";
+    }
 }

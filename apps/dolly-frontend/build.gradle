@@ -6,17 +6,18 @@ sonarqube {
     properties {
         property "sonar.projectKey", "dolly-frontend"
         property "sonar.projectName", "dolly-frontend"
-        property "sonar.sources", "src/main/java,src/main/js"
-    }
-}
-
-configurations {
-    configureEach {
-        exclude group: "org.springframework.boot", module: "spring-boot-starter-actuator"
+        property "sonar.sources", "apps/dolly-frontend/src/main/java,apps/dolly-frontend/src/main/js/src"
+        property "sonar.tests", "apps/dolly-frontend/src/test/java,apps/dolly-frontend/src/main/js/src/__tests__"
+        property "sonar.typescript.tsconfigPaths", "apps/dolly-frontend/src/main/js/tsconfig.json"
+        property "sonar.exclusions", "**/node_modules/**,apps/dolly-frontend/src/main/js/build/**,apps/dolly-frontend/src/main/js/dist/**,apps/dolly-frontend/src/main/js/playwright/**"
+        property "sonar.test.inclusions", "**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx"
     }
 }
 
 dependencies {
+    implementation "io.grpc:grpc-netty:$versions.grpc"
+    implementation "io.grpc:grpc-netty-shaded:1.76.0"
+    implementation 'org.apache.commons:commons-lang3:3.19.0'
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-frontend"
@@ -24,19 +25,15 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:reactive-session-security"
     implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:vault"
-
-    // Session
-    implementation "redis.clients:jedis:5.1.2"
+    implementation "no.nav.testnav.libs:testing"
+    implementation 'io.valkey:valkey-java:5.4.0'
     implementation "org.springframework.session:spring-session-core"
     implementation "org.springframework.session:spring-session-data-redis"
-
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-data-redis"
-
-    implementation "org.springframework.cloud:spring-cloud-starter-gateway"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.cloud:spring-cloud-starter-gateway-server-webflux"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

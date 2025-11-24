@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi, SkjermingApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
@@ -66,7 +66,7 @@ const FieldArrayEdit = styled.div`
 			margin-right: 0;
 		}
 
-		button {
+		.navds-button--secondary {
 			position: relative;
 			top: 0;
 			right: 0;
@@ -265,7 +265,6 @@ export const VisningRedigerbarPersondetaljer = ({
 								}
 							})
 							.catch((error) => {
-								console.log('error: ', error) //TODO - SLETT MEG
 								skjermingError(error)
 							})
 					}
@@ -372,7 +371,7 @@ export const VisningRedigerbarPersondetaljer = ({
 										})
 									}}
 								>
-									Skjerming
+									Skjerming (egenansatt)
 								</Checkbox>
 							)}
 						</div>
@@ -423,7 +422,7 @@ export const VisningRedigerbarPersondetaljer = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<FormProvider {...formMethods}>
-					<Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
+					<Form onSubmit={(data) => handleSubmit(data)}>
 						<>
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap">
@@ -444,7 +443,7 @@ export const VisningRedigerbarPersondetaljer = ({
 									</NavButton>
 									<NavButton
 										variant={'primary'}
-										onClick={() => formMethods.handleSubmit(handleSubmit)}
+										onClick={() => handleSubmit(formMethods.watch())}
 										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
 									>
 										Endre

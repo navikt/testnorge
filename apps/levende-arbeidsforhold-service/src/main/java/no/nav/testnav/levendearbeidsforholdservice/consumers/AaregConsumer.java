@@ -23,12 +23,12 @@ public class AaregConsumer {
     public AaregConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
-
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

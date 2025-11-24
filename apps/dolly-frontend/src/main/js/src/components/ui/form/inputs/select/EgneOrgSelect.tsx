@@ -106,7 +106,7 @@ export const EgneOrgSelect = (props: any) => {
 					filterOption={createFilter({ ignoreAccents: false })}
 					onChange={props.onChange}
 					isLoading={props.isLoading}
-					placeholder={'Velg organisasjon..'}
+					placeholder={'Velg organisasjon ...'}
 					className={cn('basic-single', props.className)}
 					classNamePrefix={'select'}
 					components={{
@@ -115,7 +115,8 @@ export const EgneOrgSelect = (props: any) => {
 					}}
 					isClearable={props.isClearable}
 					styles={{ menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
-					menuPortalTarget={document.getElementById('react-select-root')}
+					menuPortalTarget={document.getElementById('root')}
+					isDisabled={props.isDisabled}
 				/>
 			</Label>
 		</InputWrapper>

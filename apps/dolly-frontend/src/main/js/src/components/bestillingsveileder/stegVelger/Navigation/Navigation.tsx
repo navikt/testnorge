@@ -1,45 +1,56 @@
 import React, { useContext } from 'react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
-
 import './Navigation.less'
 import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { useFormContext } from 'react-hook-form'
 import {
-	ShowErrorContext,
-	ShowErrorContextType,
-} from '@/components/bestillingsveileder/ShowErrorContext'
+	BestillingsveilederContext,
+	BestillingsveilederContextType
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useFormContext, useWatch } from 'react-hook-form'
+import { ShowErrorContext, ShowErrorContextType } from '@/components/bestillingsveileder/ShowErrorContext'
 
-export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
+interface NavigationProps {
+	step: number
+	onPrevious: () => void
+	isLastStep: boolean
+	mutateLoading?: boolean
+	handleSubmit: () => void
+}
+
+export const Navigation: React.FC<NavigationProps> = ({
+	step,
+	onPrevious,
+	isLastStep,
+	mutateLoading,
+	handleSubmit,
+}) => {
 	const showPrevious = step > 0
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: BestillingsveilederContextType | any = useContext(BestillingsveilederContext)
 	const importTestnorge = opts?.is?.importTestnorge
-
 	const navigate = useNavigate()
 	const formMethods = useFormContext()
 	const {
-		getValues,
 		formState: { isSubmitting },
-	} = useFormContext()
+	} = formMethods
+
+	const formValues = useWatch()
+	const disabledVidere = step !== 0 && opts?.is?.leggTil && !harAvhukedeAttributter(formValues)
 
 	const onAbort = () => navigate(-1)
 
 	const getLastButtonText = () => {
 		if (importTestnorge) {
-			if (harAvhukedeAttributter(getValues())) {
+			if (harAvhukedeAttributter(formValues)) {
 				return 'Importer og opprett'
-			} else {
-				return 'Importer'
 			}
+			return 'Importer'
 		}
 		return 'Opprett'
 	}
-
-	const disabledVidere = step !== 0 && opts?.is?.leggTil && !harAvhukedeAttributter(getValues())
 
 	return (
 		<div className="step-navknapper-wrapper">
@@ -47,12 +58,11 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 				<AvbrytButton action={onAbort}>
 					Er du sikker på at du vil avbryte bestillingen?
 				</AvbrytButton>
-
 				<div className="step-navknapper--right">
 					{showPrevious && (
 						<NavButton
 							data-testid={TestComponentSelectors.BUTTON_TILBAKE}
-							variant={'secondary'}
+							variant="secondary"
 							onClick={onPrevious}
 						>
 							Tilbake
@@ -61,9 +71,11 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 					{!isLastStep && (
 						<NavButton
 							data-testid={TestComponentSelectors.BUTTON_VIDERE}
-							variant={'primary'}
+							variant="primary"
+							loading={mutateLoading}
 							disabled={isSubmitting || disabledVidere}
 							onClick={handleSubmit}
+							style={{ verticalAlign: 'bottom' }}
 						>
 							Videre
 						</NavButton>
@@ -71,13 +83,11 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 					{isLastStep && (
 						<NavButton
 							data-testid={TestComponentSelectors.BUTTON_FULLFOER_BESTILLING}
-							variant={'primary'}
+							variant="primary"
 							onClick={() => {
 								errorContext?.setShowError(true)
 								formMethods.trigger().then((valid) => {
 									if (!valid) {
-										console.warn('Feil i form')
-										console.error(formMethods.formState.errors)
 										return
 									}
 									handleSubmit()

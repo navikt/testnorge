@@ -1,17 +1,5 @@
 package no.nav.dolly.domain.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,98 +7,87 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BESTILLING")
+@Table("BESTILLING")
 public class Bestilling implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Version
-    @Column(name = "VERSJON")
+    @Column("VERSJON")
     private Long versjon;
 
-    @ManyToOne
-    @JoinColumn(name = "GRUPPE_ID", nullable = false)
-    private Testgruppe gruppe;
+    @Column("GRUPPE_ID")
+    private Long gruppeId;
 
-    @Column(name = "FERDIG", nullable = false)
+    @Column("FERDIG")
     private boolean ferdig;
 
-    @Column(name = "MILJOER", nullable = true)
+    @Column("MILJOER")
     private String miljoer;
 
-    @Column(name = "ANTALL_IDENTER", nullable = false)
+    @Column("ANTALL_IDENTER")
     private Integer antallIdenter;
 
-    @Column(name = "SIST_OPPDATERT", nullable = false)
-    @UpdateTimestamp
+    @Column("SIST_OPPDATERT")
     private LocalDateTime sistOppdatert;
 
-    @Column(name = "STOPPET")
+    @Column("STOPPET")
     private boolean stoppet;
 
-    @Column(name = "FEIL")
+    @Column("FEIL")
     private String feil;
 
-    @Column(name = "OPPRETTET_FRA_ID")
+    @Column("OPPRETTET_FRA_ID")
     private Long opprettetFraId;
 
-    @Column(name = "BEST_KRITERIER")
+    @Column("BEST_KRITERIER")
     private String bestKriterier;
 
-    @Column(name = "OPPRETT_FRA_IDENTER")
+    @Column("OPPRETT_FRA_IDENTER")
     private String opprettFraIdenter;
 
-    @Column(name = "IDENT")
+    @Column("IDENT")
     private String ident;
 
-    @Column(name = "OPPRETT_FRA_GRUPPE")
+    @Column("OPPRETT_FRA_GRUPPE")
     private Long opprettetFraGruppeId;
 
-    @Column(name = "GJENOPPRETTET_FRA_IDENT")
+    @Column("GJENOPPRETTET_FRA_IDENT")
     private String gjenopprettetFraIdent;
 
-    @ManyToOne
-    @JoinColumn(name = "BRUKER_ID")
+    @Transient
     private Bruker bruker;
 
-    @Column(name = "PDL_IMPORT")
+    @Column("BRUKER_ID")
+    private Long brukerId;
+
+    @Column("PDL_IMPORT")
     private String pdlImport;
 
-    @Column(name = "KILDE_MILJOE")
+    @Column("KILDE_MILJOE")
     private String kildeMiljoe;
 
-    @Column(name = "NAV_SYNTETISK_IDENT")
+    @Column("NAV_SYNTETISK_IDENT")
     private Boolean navSyntetiskIdent;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bestilling_id", updatable = false)
-    @Builder.Default
-    private List<BestillingProgress> progresser = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bestilling_id", updatable = false)
-    @Builder.Default
-    private List<BestillingKontroll> kontroller = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bestilling_id", updatable = false)
-    @Builder.Default
-    private List<TransaksjonMapping> transaksjonmapping = new ArrayList<>();
+    @Transient
+    private List<BestillingProgress> progresser;
 
     @Transient
     private String beskrivelse;
@@ -128,7 +105,7 @@ public class Bestilling implements Serializable {
                 .append(stoppet, that.stoppet)
                 .append(id, that.id)
                 .append(versjon, that.versjon)
-                .append(gruppe, that.gruppe)
+                .append(gruppeId, that.gruppeId)
                 .append(miljoer, that.miljoer)
                 .append(antallIdenter, that.antallIdenter)
                 .append(sistOppdatert, that.sistOppdatert)
@@ -152,11 +129,13 @@ public class Bestilling implements Serializable {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(versjon)
-                .append(gruppe)
+                .append(gruppeId)
                 .append(ferdig)
-                .append(miljoer).append(antallIdenter)
+                .append(miljoer)
+                .append(antallIdenter)
                 .append(sistOppdatert)
-                .append(stoppet).append(feil)
+                .append(stoppet)
+                .append(feil)
                 .append(opprettetFraId)
                 .append(bestKriterier)
                 .append(opprettFraIdenter)
@@ -176,7 +155,7 @@ public class Bestilling implements Serializable {
         return "Bestilling{" +
                 "id=" + id +
                 ", versjon=" + versjon +
-                ", gruppe=" + gruppe +
+                ", gruppeId=" + gruppeId +
                 ", ferdig=" + ferdig +
                 ", miljoer='" + miljoer + '\'' +
                 ", antallIdenter=" + antallIdenter +

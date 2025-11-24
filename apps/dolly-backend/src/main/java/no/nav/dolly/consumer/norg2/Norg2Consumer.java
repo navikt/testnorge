@@ -17,7 +17,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class Norg2Consumer implements ConsumerStatus {
+public class Norg2Consumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -27,17 +27,18 @@ public class Norg2Consumer implements ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = accessTokenService;
-        serverProperties = consumers.getTestnavNorg2Proxy();
-        this.webClient = webClientBuilder
+        serverProperties = consumers.getTestnavDollyProxy();
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
+    @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
     public Mono<Norg2EnhetResponse> getNorgEnhet(String geografiskTilhoerighet) {
 
         return tokenService.exchange(serverProperties)
@@ -52,6 +53,6 @@ public class Norg2Consumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-norg2-proxy";
+        return "testnav-dolly-proxy";
     }
 }

@@ -1,0 +1,7 @@
+kafka:
+  bootstrapservers: dummy
+  schemaregistryservers: dummy
+  username: dummy
+  password: dummy
+  truststorepath: dummy
+  credstorepassword: dummy

@@ -1,0 +1,18 @@
+spring:
+  config:
+    import: "sm://"
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  flyway:
+    enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
+    username: sa
+    password:
+
+testnav:
+  config:
+    hosts:
+      - localhost

@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import './Label.less'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
@@ -22,6 +22,7 @@ type LabelProps = {
 	info?: string
 	containerClass?: string
 	children: React.ReactNode
+	manualError?: string
 }
 
 export const Label = ({
@@ -31,17 +32,25 @@ export const Label = ({
 	info = null as unknown as string,
 	containerClass = null as unknown as string,
 	children,
+	manualError = null as unknown as string,
 }: LabelProps) => {
 	const {
 		getFieldState,
-		formState: { touchedFields },
+		formState: { touchedFields, isSubmitted, submitCount },
 	} = useFormContext() || useForm()
 	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
-	const error = getFieldState(fieldName)?.error || getFieldState(name)?.error
+	const hasSubmitted = isSubmitted || submitCount > 0
+	const error =
+		getFieldState(`manual.${name}`)?.error ||
+		getFieldState(name)?.error ||
+		getFieldState(fieldName)?.error
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const feilmelding = error?.message
 	const wrapClass = cn('skjemaelement', containerClass, {
-		error: Boolean(!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched)),
+		error: Boolean(
+			(!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched || hasSubmitted)) ||
+				manualError,
+		),
 		'label-offscreen': _.isNil(label),
 	})
 
@@ -62,9 +71,14 @@ export const Label = ({
 				</StyledLabel>
 			)}
 			{children}
-			{!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched) && (
+			{!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched || hasSubmitted) && (
 				<div role="alert" aria-live="assertive">
 					<div className="skjemaelement__feilmelding">{feilmelding}</div>
+				</div>
+			)}
+			{manualError && (
+				<div role="alert" aria-live="assertive">
+					<div className="skjemaelement__feilmelding">{manualError}</div>
 				</div>
 			)}
 		</div>

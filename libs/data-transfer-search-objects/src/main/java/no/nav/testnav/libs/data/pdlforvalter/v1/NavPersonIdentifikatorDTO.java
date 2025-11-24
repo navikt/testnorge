@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
@@ -14,4 +16,6 @@ import lombok.experimental.SuperBuilder;
 public class NavPersonIdentifikatorDTO extends DbVersjonDTO {
 
     private String identifikator;
+    private LocalDate gyldigFraOgMed;
+    private LocalDate gyldigTilOgMed;
 }

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatStringDates, showLabel } from '@/utils/DataFormatter'
 import { AvslagEllerBortfall, AvslagEllerBortfallVisning } from './AvslagEllerBortfallVisning'

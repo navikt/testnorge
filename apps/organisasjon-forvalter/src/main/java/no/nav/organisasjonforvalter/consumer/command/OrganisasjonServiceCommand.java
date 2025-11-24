@@ -3,14 +3,12 @@ package no.nav.organisasjonforvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -27,21 +25,20 @@ public class OrganisasjonServiceCommand implements Callable<Flux<OrganisasjonDTO
 
     @Override
     public Flux<OrganisasjonDTO> call() {
-
         log.info("Henter organisasjon {} fra miljø {} ", orgnummer, environment);
-
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder.path(STATUS_URL)
                         .build(orgnummer))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(MILJOE, environment)
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> Mono.just(OrganisasjonDTO.builder()
-                        .error(WebClientFilter.getMessage(throwable))
+                        .error(WebClientError.describe(throwable).getMessage())
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -1,5 +1,6 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
+import { useEffect } from 'react'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'
@@ -7,9 +8,9 @@ import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
-import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
+import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { Alert } from '@navikt/ds-react'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -39,7 +40,7 @@ const miljoeavhengig = [
 	'underenheter',
 ]
 
-const erMiljouavhengig = (bestilling) => {
+const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {
 	if (!bestilling) return false
 	let miljoeNotRequired = true
 	miljoeavhengig.forEach((system) => {
@@ -50,7 +51,19 @@ const erMiljouavhengig = (bestilling) => {
 	return miljoeNotRequired
 }
 
-export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
+interface MiljoVelgerProps {
+	bestillingsdata?: Record<string, unknown>
+	heading: string
+	bankIdBruker?: boolean
+	alleredeValgtMiljoe: string[]
+}
+
+export const MiljoVelger = ({
+	bestillingsdata,
+	heading,
+	bankIdBruker,
+	alleredeValgtMiljoe,
+}: MiljoVelgerProps) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
 	const formMethods = useFormContext()
 
@@ -58,10 +71,10 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 		return <Loading label={'Laster miljøer...'} />
 	}
 
-	const filterEnvironments = (miljoer, erBankIdBruker) => {
+	const filterEnvironments = (miljoer: any, erBankIdBruker: boolean | undefined) => {
 		if (erBankIdBruker) {
-			var bankMiljoer = []
-			for (var i = 0; i < alleredeValgtMiljoe.length; i++) {
+			const bankMiljoer = []
+			for (let i = 0; i < alleredeValgtMiljoe.length; i++) {
 				switch (alleredeValgtMiljoe[i]) {
 					case 'q1':
 						bankMiljoer.push(bankIdQ1)
@@ -71,7 +84,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 						break
 				}
 			}
-
 			return bankMiljoer
 		}
 		return miljoer.Q.filter((env: any) => env.id !== 'qx')
@@ -79,23 +91,20 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
-	const values: [] = formMethods.watch('environments')
+	const values = useWatch({ name: 'environments', control: formMethods.control }) || []
 
-	if (disableAllEnvironments && values.length > 0) {
-		formMethods.setValue('environments', [])
-	}
-	const isChecked = (id) => values.includes(id)
-
-	const onClick = (e) => {
-		const { id } = e.target
-		if (alleredeValgtMiljoe?.includes(id) && values.includes(id)) {
-			console.warn('Miljøet er påkrevd')
-		} else {
-			formMethods.setValue(
-				'environments',
-				isChecked(id) ? values.filter((value) => value !== id) : values.concat(id),
-			)
+	useEffect(() => {
+		if (disableAllEnvironments && values.length > 0) {
+			formMethods.setValue('environments', [])
+			formMethods.trigger('environments')
 		}
+	}, [disableAllEnvironments, values, formMethods])
+
+	const isChecked = (id: string) => values.includes(id)
+
+	const toggleEnvironment = (id: string) => {
+		const next = isChecked(id) ? values.filter((value: string) => value !== id) : values.concat(id)
+		formMethods.setValue('environments', next)
 		formMethods.trigger('environments')
 	}
 
@@ -113,20 +122,20 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 			<fieldset name={`Liste over miljøer`}>
 				<StyledH3>Miljøer</StyledH3>
 				<div className="miljo-velger_checkboxes">
-					{filteredEnvironments.map((env) => (
+					{filteredEnvironments.map((env: any) => (
 						<DollyCheckbox
 							key={env.id}
 							id={env.id}
 							disabled={env.disabled || (disableAllEnvironments && values.length < 1)}
 							label={env?.id?.toUpperCase()}
 							checked={values.includes(env.id)}
-							onClick={onClick}
+							onChange={() => toggleEnvironment(env.id)}
 							size={'small'}
 						/>
 					))}
 				</div>
 			</fieldset>
-			<DollyErrorMessage name="environments" />
+			<DollyErrorMessageWrapper name="environments" />
 		</div>
 	)
 }

@@ -13,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class PeriodeDTO implements ToXmlElement<Periode> {
     @JsonProperty
-    private LocalDate fom;
+    private String fom;
     @JsonProperty
-    private LocalDate tom;
+    private String tom;
 
     @Override
     public Periode toXmlElement() {

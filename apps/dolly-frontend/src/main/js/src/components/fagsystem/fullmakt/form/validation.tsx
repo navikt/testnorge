@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoTom } from '@/components/fagsystem/utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { isBefore, subDays } from 'date-fns'
 
 export const validation = {
@@ -16,7 +16,7 @@ export const validation = {
 						.of(
 							Yup.object({
 								tema: requiredString,
-								handling: Yup.array().min(1, 'Må inneholde minst en handling').of(requiredString),
+								handling: Yup.array().min(1, 'Feltet er påkrevd').of(requiredString),
 							}),
 						),
 					gyldigFraOgMed: requiredDate.test(

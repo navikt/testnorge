@@ -17,8 +17,8 @@ export const SkjermingVisning = ({ data }: SkjermingProps) => {
 				title="Har skjerming"
 				value={
 					data.skjermetTil && isBefore(new Date(data.skjermetTil), addDays(new Date(), -1))
-						? 'NEI'
-						: 'JA'
+						? 'Nei'
+						: 'Ja'
 				}
 			/>
 			<TitleValue title="Skjerming fra" value={formatDate(data.skjermetFra)} />

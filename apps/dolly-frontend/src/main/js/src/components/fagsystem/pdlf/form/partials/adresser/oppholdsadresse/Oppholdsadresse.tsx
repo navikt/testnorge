@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react'
-import _ from 'lodash'
+import React, { useEffect } from 'react'
+import * as _ from 'lodash-es'
 import {
 	getInitialOppholdsadresse,
 	initialMatrikkeladresse,
@@ -22,7 +22,10 @@ import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OppholdsadresseValues {
@@ -66,7 +69,7 @@ export const OppholdsadresseForm = ({
 		) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [])
 
 	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
@@ -166,7 +169,7 @@ export const OppholdsadresseForm = ({
 }
 
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (

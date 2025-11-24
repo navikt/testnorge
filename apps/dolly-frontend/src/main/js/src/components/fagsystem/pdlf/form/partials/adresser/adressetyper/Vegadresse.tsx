@@ -39,7 +39,7 @@ export const Vegadresse = ({ formMethods, path }: VegadresseValues) => {
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
 			vegadresseType: formMethods.watch(`${path}.vegadresseType`),
 		})
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const renderAdresse = (postnummerListe: Postnummer) => {

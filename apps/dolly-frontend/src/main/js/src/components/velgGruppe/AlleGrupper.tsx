@@ -1,5 +1,5 @@
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import { useAlleBrukere, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useAlleBrukere } from '@/utils/hooks/useBruker'
 import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
 import React, { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -15,18 +15,14 @@ type Options = {
 
 export default ({ fraGruppe = null }: AlleGrupper) => {
 	const formMethods = useFormContext()
-	const { currentBruker } = useCurrentBruker()
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
-	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || null)
+	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || '')
 
-	const filteredBrukerliste = brukere?.filter(
-		(bruker) => bruker.brukerId !== currentBruker.brukerId,
-	)
-
-	const brukerOptions = filteredBrukerliste?.map((bruker) => {
+	const brukerOptions = brukere?.map((bruker) => {
+		const erTeam = bruker?.brukertype === 'TEAM'
 		return {
 			value: bruker?.brukerId,
-			label: bruker?.brukernavn,
+			label: bruker?.brukernavn + (erTeam ? ' (team)' : ''),
 		}
 	})
 
@@ -45,12 +41,13 @@ export default ({ fraGruppe = null }: AlleGrupper) => {
 		<div className="flexbox--flex-wrap">
 			<DollySelect
 				name={'bruker'}
-				label={'Bruker'}
+				label={'Bruker/team'}
 				options={brukerOptions}
 				size="medium"
 				onChange={(bruker) => {
-					formMethods.setValue('bruker', bruker?.value)
-					setValgtBruker(bruker?.value || null)
+					formMethods?.setValue('bruker', bruker?.value)
+					formMethods?.trigger('bruker')
+					setValgtBruker(bruker?.value || '')
 				}}
 				value={valgtBruker || formMethods?.watch('bruker')}
 				isLoading={loadingBrukere}

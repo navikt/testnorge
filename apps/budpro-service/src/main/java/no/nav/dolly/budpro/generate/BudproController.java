@@ -2,6 +2,7 @@ package no.nav.dolly.budpro.generate;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ class BudproController {
     private final BudProService service;
 
     @GetMapping("/random")
-    List<BudproRecord> getRandomizedBudproData(
+    Flux<BudproRecord> getRandomizedBudproData(
             @RequestParam(required = false) Long seed,
             @RequestParam(required = false, defaultValue = "100") int limit
     ) {
@@ -21,7 +22,7 @@ class BudproController {
     }
 
     @PostMapping("/random")
-    List<BudproRecord> getOverriddenBudproData(
+    Flux<BudproRecord> getOverriddenBudproData(
             @RequestParam(required = false) Long seed,
             @RequestParam(required = false, defaultValue = "100") int limit,
             @RequestBody BudproRecord override

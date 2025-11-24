@@ -28,12 +28,12 @@ public class ProfilController {
     @SneakyThrows
     @GetMapping
     public ResponseEntity<ProfilDTO> getProfile() {
-        var profil = profilService.getProfile();
+        var profil = profilService.getProfile().block();
         return ResponseEntity.ok().cacheControl(cacheControl).body(profil.toDTO());
     }
 
     @GetMapping(value = "/bilde", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getImage() {
+    public ResponseEntity<byte[]> getImage() {
         return profilService
                 .getImage()
                 .map(value -> ResponseEntity.ok().cacheControl(cacheControl).body(value))

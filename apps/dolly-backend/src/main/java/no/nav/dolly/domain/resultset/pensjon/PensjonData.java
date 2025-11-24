@@ -44,6 +44,9 @@ public class PensjonData {
     @Schema(description = "Data for alderspensjon (AP)")
     private Alderspensjon alderspensjon;
 
+    @Schema(description = "Data for endring av AP uttaksgrad")
+    private AlderspensjonNyUtaksgrad alderspensjonNyUtaksgrad;
+
     @Schema(description = "Data for uføretrygd (UT)")
     private Uforetrygd uforetrygd;
 
@@ -68,6 +71,11 @@ public class PensjonData {
     @JsonIgnore
     public boolean hasAlderspensjon() {
         return nonNull(alderspensjon);
+    }
+
+    @JsonIgnore
+    public boolean hasNyUttaksgrad() {
+        return nonNull(alderspensjonNyUtaksgrad);
     }
 
     @JsonIgnore
@@ -103,11 +111,17 @@ public class PensjonData {
     }
 
     public enum TpYtelseType {
-        ALDER,
-        UFORE,
-        GJENLEVENDE,
-        BARN,
         AFP,
+        ALDER,
+        BARN,
+        BETINGET_TP,
+        GJENLEVENDE,
+        LIVSVARIG_AFP,
+        OPPSATT_BTO_PEN,
+        OVERGANGSTILLEGG,
+        PAASLAGSPENSJON,
+        SAERALDER,
+        UFORE,
         UKJENT
     }
 
@@ -281,6 +295,13 @@ public class PensjonData {
     @AllArgsConstructor
     public static class Alderspensjon {
 
+        public enum AfpPrivatResultat{
+            INNVILGET,
+            AVSLATT,
+            TRUKKET,
+            VENTER_PAA_FELLESORDNINGEN
+        }
+
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate iverksettelsesdato;
 
@@ -295,6 +316,9 @@ public class PensjonData {
         private Integer uttaksgrad;
 
         private Boolean soknad;
+
+        private Boolean inkluderAfpPrivat;
+        private AfpPrivatResultat afpPrivatResultat;
 
         @Schema
         private List<SkjemaRelasjon> relasjoner;
@@ -455,4 +479,16 @@ public class PensjonData {
     }
 
     public enum StatusAfp {UKJENT, INNVILGET, SOKT, AVSLAG, IKKE_SOKT}
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AlderspensjonNyUtaksgrad {
+
+        private Integer nyUttaksgrad;
+        private LocalDate fom;
+        private String saksbehandler;
+        private String attesterer;
+        private String navEnhetId;
+    }
 }

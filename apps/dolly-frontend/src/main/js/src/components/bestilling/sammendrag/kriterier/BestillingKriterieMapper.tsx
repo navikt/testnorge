@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	allCapsToCapitalized,
 	arrayToString,
@@ -6,7 +6,6 @@ import {
 	formatDate,
 	formatDateTime,
 	formatDateTimeWithSeconds,
-	formatDateToYear,
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
@@ -17,31 +16,36 @@ import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
-	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
-
-// TODO: Flytte til selector?
-// - Denne kan forminskes ved bruk av hjelpefunksjoner
-// - Når vi får på plass en bedre struktur for bestillingsprosessen, kan
-//   mest sannsynlig visse props fjernes herfra (width?)
+import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
+import {
+	kategoriKodeverk,
+	tekniskNavnKodeverk,
+} from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
+import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon' // TODO: Flytte til selector?
 
 const obj = (label: string, value: any, apiKodeverkId?: any) => ({
 	label,
 	value,
 	apiKodeverkId,
 })
+
+const ingenVerdierSatt = 'Ingen verdier satt'
+
+const mapAdresselinjer = (lines?: string[]) =>
+	(lines || []).filter(Boolean).map((l, i) => obj(`Adresselinje ${i + 1}`, l))
 
 const expandable = (
 	expandableHeader: null | string,
@@ -59,19 +63,19 @@ const expandable = (
 	objects,
 })
 
+export const getTypePerson = (identNr: string) => {
+	if (parseInt(identNr?.charAt(2)) < 4) {
+		return 'Standard'
+	}
+	return parseInt(identNr?.charAt(2)) > 7 ? 'Test-Norge' : 'NAV-syntetisk'
+}
+
 const mapBestillingsinformasjon = (
 	bestillingsinformasjon: any,
 	data: any[],
 	identtype: any,
 	firstIdent: string,
 ) => {
-	const getTypePerson = () => {
-		if (parseInt(firstIdent?.charAt(2)) < 4) {
-			return 'Standard'
-		}
-		return parseInt(firstIdent?.charAt(2)) > 5 ? 'Test-Norge' : 'NAV-syntetisk'
-	}
-
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
 			header: 'Bestillingsinformasjon',
@@ -84,8 +88,9 @@ const mapBestillingsinformasjon = (
 					'Antall levert',
 					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString(),
 				),
-				obj('Type person', getTypePerson()),
+				obj('Type person', getTypePerson(firstIdent)),
 				obj('Identtype', identtype),
+				obj('Ny ident (2032)', oversettBoolean(bestillingsinformasjon.id2032)),
 				obj('Sist oppdatert', formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)),
 				obj(
 					'Gjenopprettet fra',
@@ -106,7 +111,7 @@ const mapPdlNyPerson = (bestillingData, data, bestilling) => {
 		pdlNyPersonKriterier &&
 		(bestilling
 			? _.has(pdlNyPersonKriterier, 'alder')
-			: !isEmpty(pdlNyPersonKriterier, ['identtype', 'syntetisk']))
+			: !isEmpty(pdlNyPersonKriterier, ['identtype', 'syntetisk', 'id2032']))
 	) {
 		const { alder, foedtEtter, foedtFoer } = pdlNyPersonKriterier
 		const nyPersonData = {
@@ -312,7 +317,7 @@ const mapVergemaal = (vergemaal, data) => {
 			itemRows: vergemaal.map((item, idx) => {
 				return [
 					{ numberHeader: `Vergemål ${idx + 1}` },
-					obj('Fylkesmannsembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
+					obj('Fylkesembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
 					obj('Sakstype', item.sakType, VergemaalKodeverk.Sakstype),
 					obj('Mandattype', item.mandatType, VergemaalKodeverk.Mandattype),
 					obj('Gyldig f.o.m.', formatDate(item.gyldigFraOgMed)),
@@ -458,8 +463,6 @@ const mapDoedsfall = (doedsfall, data) => {
 	}
 }
 
-const ingenVerdierSatt = 'Ingen verdier satt'
-
 const adresseVerdi = (adresseData) => {
 	return isEmpty(adresseData) && ingenVerdierSatt
 }
@@ -602,10 +605,48 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
 				}
+				if (item.postadresseIFrittFormat) {
+					const adresseData = item.postadresseIFrittFormat
+					return [
+						{ numberHeader: `Kontaktadresse ${idx + 1}: Postadresse i fritt format` },
+						obj('Postadresse i fritt format', adresseVerdi(adresseData)),
+						...mapAdresselinjer(adresseData.adresselinjer),
+						obj('Postnummer', adresseData.postnummer),
+						...datoer(item),
+						...coAdresse(item.opprettCoAdresseNavn),
+					]
+				}
+				if (item.utenlandskAdresseIFrittFormat) {
+					const adresseData = item.utenlandskAdresseIFrittFormat
+					return [
+						{ numberHeader: `Kontaktadresse ${idx + 1}: Utenlandsk adresse i fritt format` },
+						obj('Utenlandsk adresse i fritt format', adresseVerdi(adresseData)),
+						...mapAdresselinjer(adresseData.adresselinjer),
+						obj('Postkode', adresseData.postkode),
+						obj('By eller sted', adresseData.byEllerStedsnavn),
+						obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
+						...datoer(item),
+						...coAdresse(item.opprettCoAdresseNavn),
+					]
+				}
 				return [obj('Kontaktadresse', ingenVerdierSatt), ...datoer(item)]
 			}),
 		}
 		data.push(kontaktadresseData)
+	}
+}
+
+const mapDeltBosted = (deltBosted, data) => {
+	if (deltBosted?.length > 0) {
+		const deltBostedData = deltBosted[0]
+		data.push({
+			header: 'Delt bosted',
+			items: [
+				obj('Har delt bosted', 'Ja'),
+				obj('Startdato for kontrakt', formatDate(deltBostedData.startdatoForKontrakt)),
+				obj('Sluttdato for kontrakt', formatDate(deltBostedData.sluttdatoForKontrakt)),
+			],
+		})
 	}
 }
 
@@ -665,55 +706,13 @@ const mapSivilstand = (sivilstand, data) => {
 }
 
 const deltBosted = (personData, path) => {
-	if (!personData || !_.get(personData, path)) return [expandable(null, false, null)]
 	const deltBostedData = _.get(personData, path)
-
 	const fellesVerdier = [
-		obj('Adressetype', showLabel('adressetypeDeltBosted', deltBostedData.adressetype)),
-		obj('Startdato for kontrakt', formatDate(deltBostedData.startdatoForKontrakt)),
-		obj('Sluttdato for kontrakt', formatDate(deltBostedData.sluttdatoForKontrakt)),
+		obj('Har delt bosted', 'Ja'),
+		obj('Startdato for kontrakt', formatDate(deltBostedData?.startdatoForKontrakt)),
+		obj('Sluttdato for kontrakt', formatDate(deltBostedData?.sluttdatoForKontrakt)),
 	]
-
-	if (deltBostedData.vegadresse) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Vegadresse',
-					deltBostedData.adressetype === 'VEGADRESSE' &&
-						isEmpty(deltBostedData.vegadresse) &&
-						ingenVerdierSatt,
-				),
-				...vegadresse(deltBostedData.vegadresse),
-			]),
-		]
-	} else if (deltBostedData.matrikkeladresse) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Matrikkeladresse',
-					deltBostedData.adressetype === 'MATRIKKELADRESSE' &&
-						isEmpty(deltBostedData.matrikkeladresse) &&
-						ingenVerdierSatt,
-				),
-				...matrikkeladresse(deltBostedData.matrikkeladresse),
-			]),
-		]
-	} else if (deltBostedData.ukjentBosted) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Bostedskommune',
-					deltBostedData.ukjentBosted.bostedskommune,
-					AdresseKodeverk.Kommunenummer,
-				),
-			]),
-		]
-	} else {
-		return [expandable('DELT BOSTED', !isEmpty(deltBostedData), [...fellesVerdier])]
-	}
+	return [expandable('DELT BOSTED', !!deltBostedData, [...fellesVerdier])]
 }
 
 const mapForelderBarnRelasjon = (forelderBarnRelasjon, data) => {
@@ -984,22 +983,33 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 	}
 }
 
-const mapTpsMessaging = (bestillingData, data) => {
+const mapNomData = (bestillingData, data) => {
+	if (bestillingData?.nomdata) {
+		const { startDato, sluttDato } = bestillingData.nomdata
+		const nomdata = {
+			header: 'Nav-ident (NOM)',
+			items:
+				!startDato && !sluttDato
+					? [obj('Nav-ident', 'Ingen verdier satt')]
+					: [obj('Startdato', formatDate(startDato)), obj('Sluttdato', formatDate(sluttDato))],
+		}
+		data.push(nomdata)
+	}
+}
+
+const mapSkjermingData = (bestillingData, data) => {
 	const tpsMessaging = _.get(bestillingData, 'tpsMessaging')
 	const skjerming = _.get(bestillingData, 'skjerming')
-	const bankkonto = _.get(bestillingData, 'bankkonto')
 
 	if (
-		tpsMessaging?.spraakKode ||
 		skjerming?.egenAnsattDatoFom ||
 		tpsMessaging?.egenAnsattDatoFom ||
 		skjerming?.egenAnsattDatoTom ||
 		tpsMessaging?.egenAnsattDatoTom
 	) {
-		const tpsMessagingData = {
-			header: 'Personinformasjon',
+		const skjermingData = {
+			header: 'Skjerming',
 			items: [
-				obj('Språk', tpsMessaging?.spraakKode, PersoninformasjonKodeverk.Spraak),
 				obj(
 					'Skjerming fra',
 					formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom),
@@ -1010,8 +1020,12 @@ const mapTpsMessaging = (bestillingData, data) => {
 				),
 			],
 		}
-		data.push(tpsMessagingData)
+		data.push(skjermingData)
 	}
+}
+
+const mapBankkonto = (bestillingData, data) => {
+	const bankkonto = _.get(bestillingData, 'bankkonto')
 
 	if (bankkonto?.norskBankkonto || bankkonto?.utenlandskBankkonto) {
 		if (bankkonto.norskBankkonto) {
@@ -1046,14 +1060,14 @@ const mapTpsMessaging = (bestillingData, data) => {
 	}
 }
 
-export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKriterier) => [
+export const arbeidsforholdVisning = (arbeidsforhold, i, aaregKriterier, amelding) => [
 	{
 		numberHeader: `Arbeidsforhold ${i + 1}`,
 	},
+	obj('A-melding', amelding),
 	{
 		label: 'Type arbeidsforhold',
-		value:
-			arbeidsforhold.arbeidsforholdstype || (!harAmelding && aaregKriterier?.arbeidsforholdstype),
+		value: arbeidsforhold.arbeidsforholdstype || aaregKriterier?.arbeidsforholdstype,
 		apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
 	},
 	obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
@@ -1113,6 +1127,7 @@ export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKrite
 	obj('Perioder med permisjon', arbeidsforhold.permisjon?.length),
 	obj('Perioder med permittering', arbeidsforhold.permittering?.length),
 ]
+
 const mapAareg = (bestillingData, data) => {
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
@@ -1124,97 +1139,12 @@ const mapAareg = (bestillingData, data) => {
 			pagineringPages: [],
 		}
 
-		const harAmelding = aaregKriterier[0]?.amelding?.length > 0
-
-		if (harAmelding) {
-			aareg.items.push(
-				{
-					label: 'Type arbeidsforhold',
-					value: aaregKriterier[0]?.arbeidsforholdstype,
-					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
-				},
-				obj('F.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.fom)),
-				obj('T.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.tom)),
-			)
-			aaregKriterier[0]?.amelding?.forEach((maaned) => {
-				const maanedData = {
-					itemRows: [],
-				}
-				maaned.arbeidsforhold?.forEach((arbeidsforhold, i) => {
-					maanedData.itemRows.push(
-						arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier),
-					)
-				})
-				aareg.pagineringPages.push(maaned.maaned)
-				aareg.paginering.push(maanedData)
-			})
-		} else if (aaregKriterier[0]?.arbeidsgiver) {
-			aaregKriterier?.forEach((arbeidsforhold, i) => {
-				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier))
-			})
-		}
+		aaregKriterier?.forEach((arbeidsforhold, i) => {
+			const amelding = arbeidsforhold.amelding?.length > 0 ? 'Ikke lenger støttet' : null
+			aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, aaregKriterier, amelding))
+		})
 
 		data.push(aareg)
-	}
-}
-
-const mapSigrunStub = (bestillingData, data) => {
-	const sigrunStubKriterier = bestillingData.sigrunstub
-
-	if (sigrunStubKriterier) {
-		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
-		const flatSigrunStubKriterier = []
-		sigrunStubKriterier.forEach((inntekt) => {
-			const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
-			inntekt.grunnlag &&
-				inntekt.grunnlag.forEach((gr) => {
-					flatSigrunStubKriterier.push({
-						...inntektObj,
-						grunnlag: gr.tekniskNavn,
-						verdi: gr.tekniskNavn === 'skatteoppgjoersdato' ? formatDate(gr.verdi) : gr.verdi,
-						inntektssted: 'Fastlands-Norge',
-					})
-				})
-			inntekt.svalbardGrunnlag &&
-				inntekt.svalbardGrunnlag.forEach((gr) => {
-					flatSigrunStubKriterier.push({
-						...inntektObj,
-						svalbardGrunnlag: gr.tekniskNavn,
-						verdi: gr.verdi,
-						inntektssted: 'Svalbard',
-					})
-				})
-		})
-
-		const sigrunStub = {
-			header: 'Lignet inntekt (Sigrun)',
-			itemRows: [],
-		}
-
-		flatSigrunStubKriterier.forEach((inntekt, i) => {
-			sigrunStub.itemRows.push([
-				{
-					numberHeader: `Inntekt ${i + 1}`,
-				},
-				obj('År', inntekt.inntektsaar),
-				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Verdi', inntekt.verdi),
-				obj('Tjeneste', uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
-				{
-					label: 'Grunnlag (Fastlands-Norge)',
-					value: inntekt.grunnlag,
-					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
-				},
-				{
-					label: 'Grunnlag (Svalbard)',
-					value: inntekt.svalbardGrunnlag,
-					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
-				},
-			])
-		})
-
-		data.push(sigrunStub)
 	}
 }
 
@@ -1242,7 +1172,7 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 					}
 					return obj(kodeverkKeyToLabel(key), value?.toString())
 				})
-				sigrunstubPensjonsgivende.itemRows[i][3].nestedItemRows.push([
+				sigrunstubPensjonsgivende.itemRows[i][3]?.nestedItemRows?.push([
 					{
 						numberHeader: `Inntekt ${y + 1}`,
 					},
@@ -1254,15 +1184,75 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 	}
 }
 
+const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
+	function mapGrunnlag(grunnlag, header) {
+		return [
+			{ numberHeader: header },
+			[
+				obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
+				obj('Beløp', grunnlag.beloep),
+				obj('Kategori', grunnlag.kategori, kategoriKodeverk),
+				obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
+				obj(
+					'Antall spesifiseringer',
+					grunnlag.spesifisering?.length > 0 && grunnlag.spesifisering?.length,
+				),
+			],
+		]
+	}
+
+	const kriterier = bestillingData.sigrunstubSummertSkattegrunnlag
+
+	if (!kriterier) return
+
+	const summertSkattegrunnlag = {
+		header: 'Summert skattegrunnlag (Sigrun)',
+		itemRows: [],
+	}
+
+	kriterier.forEach((skattegrunnlag, i) => {
+		const baseRow = [
+			{ numberHeader: `Summert skattegrunnlag ${i + 1}` },
+			obj('Inntektsår', skattegrunnlag.inntektsaar),
+			obj('Ajourholdstidspunkt', formatDateTime(skattegrunnlag.ajourholdstidspunkt)),
+			obj('Skatteoppgjørsdato', formatDate(skattegrunnlag.skatteoppgjoersdato)),
+			obj('Skjermet', oversettBoolean(skattegrunnlag.skjermet)),
+			obj('Stadie', skattegrunnlag.stadie),
+		]
+
+		if (
+			skattegrunnlag.grunnlag?.length > 0 ||
+			skattegrunnlag.kildeskattPaaLoennGrunnlag?.length > 0 ||
+			skattegrunnlag.svalbardGrunnlag?.length > 0
+		) {
+			baseRow.push({
+				nestedItemRows: [
+					...skattegrunnlag.grunnlag?.map((grunnlag, idx) => {
+						return mapGrunnlag(grunnlag, `Grunnlag ${idx + 1}`)
+					}),
+
+					...skattegrunnlag.kildeskattPaaLoennGrunnlag?.map((grunnlag, idx) => {
+						return mapGrunnlag(grunnlag, `Kildeskatt på lønnsgrunnlag ${idx + 1}`)
+					}),
+
+					...skattegrunnlag.svalbardGrunnlag?.map((grunnlag, idx) => {
+						return mapGrunnlag(grunnlag, `Svalbard grunnlag ${idx + 1}`)
+					}),
+				],
+			})
+		}
+
+		summertSkattegrunnlag.itemRows.push(baseRow)
+	})
+
+	data.push(summertSkattegrunnlag)
+}
 const mapInntektStub = (bestillingData, data) => {
 	const inntektStubKriterier = bestillingData.inntektstub
 
 	if (inntektStubKriterier) {
 		const inntektStub = {
 			header: 'A-ordningen (Inntektstub)',
-			// items: [
-			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
-			// ],
 			itemRows: [],
 		}
 
@@ -1303,11 +1293,11 @@ const mapInntektStub = (bestillingData, data) => {
 }
 
 const mapArbeidsplassenCV = (bestillingData, data) => {
-	const CVKriterier = _get(bestillingData, 'arbeidsplassenCV')
+	const CVKriterier = _.get(bestillingData, 'arbeidsplassenCV')
 
 	if (CVKriterier) {
 		const arbeidsplassenCV = {
-			header: 'Arbeidsplassen (CV)',
+			header: 'Nav CV',
 			items: [],
 			itemRows: [],
 		}
@@ -1468,7 +1458,7 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 			])
 		}
 
-		if (_has(CVKriterier, 'harHjemmel')) {
+		if (_.has(CVKriterier, 'harHjemmel')) {
 			arbeidsplassenCV.itemRows.push([
 				{ numberHeader: 'Hjemmel' },
 				{
@@ -1481,13 +1471,75 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 		data.push(arbeidsplassenCV)
 	}
 }
+
+const mapArbeidssoekerregisteret = (bestillingData, data) => {
+	const arbeidssoekerregisteretKriterier = _.get(bestillingData, 'arbeidssoekerregisteret')
+
+	if (arbeidssoekerregisteretKriterier) {
+		const arbeidssoekerregisteret = {
+			header: 'Arbeidssøkerregisteret',
+			items: [
+				obj('Utført av', showTyperLabel('BRUKERTYPE', arbeidssoekerregisteretKriterier.utfoertAv)),
+				obj('Kilde', arbeidssoekerregisteretKriterier.kilde),
+				obj('Årsak', arbeidssoekerregisteretKriterier.aarsak),
+				obj('Utdanningsnivå', showTyperLabel('NUSKODE', arbeidssoekerregisteretKriterier.nuskode)),
+				obj(
+					'Beskrivelse av jobbsituasjonen',
+					showTyperLabel(
+						'JOBBSITUASJONSBESKRIVELSE',
+						arbeidssoekerregisteretKriterier.jobbsituasjonsbeskrivelse,
+					),
+				),
+				obj(
+					'Utdanning bestått',
+					oversettBoolean(arbeidssoekerregisteretKriterier.utdanningBestaatt),
+				),
+				obj(
+					'Utdanning godkjent',
+					oversettBoolean(arbeidssoekerregisteretKriterier.utdanningGodkjent),
+				),
+				obj(
+					'Helsetilstand hindrer arbeid',
+					oversettBoolean(arbeidssoekerregisteretKriterier.helsetilstandHindrerArbeid),
+				),
+				obj(
+					'Andre forhold hindrer arbeid',
+					oversettBoolean(arbeidssoekerregisteretKriterier.andreForholdHindrerArbeid),
+				),
+				obj(
+					'Gjelder fra dato',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.gjelderFraDato),
+				),
+				obj(
+					'Gjelder til dato',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.gjelderTilDato),
+				),
+				obj('Stilling', arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingstittel),
+				obj(
+					'Stillingsprosent',
+					arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingsprosent,
+				),
+				obj(
+					'Siste dag med lønn',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.sisteDagMedLoenn),
+				),
+				obj(
+					'Siste arbeidsdag',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.sisteArbeidsdag),
+				),
+			],
+		}
+		data.push(arbeidssoekerregisteret)
+	}
+}
+
 const mapSykemelding = (bestillingData, data) => {
 	const sykemeldingKriterier = _.get(bestillingData, 'sykemelding')
 
 	if (sykemeldingKriterier) {
 		const sykemelding = {
 			header: 'Sykemelding',
-			items: null,
+			items: [] as any,
 		}
 		if (sykemeldingKriterier.syntSykemelding) {
 			sykemelding.items = [
@@ -1495,6 +1547,13 @@ const mapSykemelding = (bestillingData, data) => {
 				obj('Organisasjonsnummer', sykemeldingKriterier.syntSykemelding.orgnummer),
 				obj('Arbeidsforhold-ID', sykemeldingKriterier.syntSykemelding.arbeidsforholdId),
 			]
+		} else if (sykemeldingKriterier.nySykemelding) {
+			sykemeldingKriterier.nySykemelding.aktivitet?.forEach((aktivitet: any) => {
+				sykemelding.items.push(
+					obj('Startdato', formatDate(aktivitet.fom)),
+					obj('Sluttdato', formatDate(aktivitet.tom)),
+				)
+			})
 		} else if (sykemeldingKriterier.detaljertSykemelding) {
 			sykemelding.items = [
 				obj('Startdato', formatDate(sykemeldingKriterier.detaljertSykemelding.startDato)),
@@ -1561,6 +1620,17 @@ const mapSykemelding = (bestillingData, data) => {
 					_.get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.beskrivHensynArbeidsplassen'),
 				),
 				obj(
+					'Begrunnelse ikke kontakt',
+					_.get(
+						sykemeldingKriterier.detaljertSykemelding,
+						'kontaktMedPasient.begrunnelseIkkeKontakt',
+					),
+				),
+				obj(
+					'Kontaktdato',
+					formatDate(sykemeldingKriterier.detaljertSykemelding?.kontaktMedPasient?.kontaktDato),
+				),
+				obj(
 					'Arbeidsfør etter endt periode',
 					sykemeldingKriterier.detaljertSykemelding.detaljer &&
 						oversettBoolean(
@@ -1612,7 +1682,7 @@ const mapBrregstub = (bestillingData, data) => {
 				obj('Rolle', enhet.rolle),
 				obj('Registreringsdato', formatDate(enhet.registreringsdato)),
 				obj('Organisasjonsnummer', enhet.orgNr),
-				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
+				obj('Foretaksnavn', enhet.foretaksNavn?.navn1),
 				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller?.length),
 			])
 		})
@@ -1747,6 +1817,7 @@ const mapInst = (bestillingData, data) => {
 				institusjonstype: i.institusjonstype,
 				varighet: i.varighet,
 				startdato: i.startdato,
+				forventetSluttdato: i.forventetSluttdato,
 				sluttdato: i.sluttdato,
 			})
 		})
@@ -1764,6 +1835,7 @@ const mapInst = (bestillingData, data) => {
 				obj('Institusjonstype', showLabel('institusjonstype', inst.institusjonstype)),
 				obj('Varighet', inst.varighet && showLabel('varighet', inst.varighet)),
 				obj('Startdato', formatDate(inst.startdato)),
+				obj('Forventet sluttdato', formatDate(inst.forventetSluttdato)),
 				obj('Sluttdato', formatDate(inst.sluttdato)),
 			])
 		})
@@ -1780,20 +1852,6 @@ const getTredjelandsborgerStatus = (oppholdKriterier, udiStubKriterier) => {
 		return 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
 	}
 	return null
-}
-
-const getAliasListe = (udiStubKriterier) => {
-	const aliaserListe = []
-	if (udiStubKriterier.aliaser) {
-		udiStubKriterier.aliaser.forEach((alias, i) => {
-			if (alias.nyIdent === false) {
-				aliaserListe.push(`#${i + 1} Navn\n`)
-			} else {
-				aliaserListe.push(`#${i + 1} ID-nummer - ${alias.identtype}\n`)
-			}
-		})
-	}
-	return aliaserListe
 }
 
 const mapUdiStub = (bestillingData, data) => {
@@ -1818,8 +1876,6 @@ const mapUdiStub = (bestillingData, data) => {
 
 		const oppholdsrett = Boolean(currentOppholdsrettType)
 		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus) ? 'Tredjelandsborger' : null
-
-		const aliaserListe = getAliasListe(udiStubKriterier)
 
 		const udistub = {
 			header: 'UDI',
@@ -1898,7 +1954,6 @@ const mapUdiStub = (bestillingData, data) => {
 				obj('Arbeidsadgang til dato', formatDate(_.get(arbeidsadgangKriterier, 'periode.til'))),
 				obj('Hjemmel', _.get(arbeidsadgangKriterier, 'hjemmel')),
 				obj('Forklaring', _.get(arbeidsadgangKriterier, 'forklaring')),
-				obj('Alias', aliaserListe?.length > 0 && aliaserListe),
 				obj('Flyktningstatus', oversettBoolean(udiStubKriterier.flyktning)),
 				obj(
 					'Asylsøker',
@@ -1911,6 +1966,7 @@ const mapUdiStub = (bestillingData, data) => {
 }
 
 const mapPensjon = (bestillingData, data, navEnheter) => {
+	const { tpOrdningData } = useTpOrdningKodeverk()
 	const pensjonKriterier = bestillingData.pensjonforvalter
 
 	if (pensjonKriterier) {
@@ -2022,16 +2078,37 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			const pensjonforvalterAlderspensjon = {
 				header: 'Alderspensjon: ' + (ap.soknad ? 'Søknad' : 'Vedtak'),
 				items: [
-					obj('KravFremsattDato', formatDate(ap.kravFremsattDato)),
 					obj('Iverksettelsesdato', formatDate(ap.iverksettelsesdato)),
 					obj('Saksbehandler', ap.saksbehandler),
 					obj('Attesterer', ap.attesterer),
 					obj('Uttaksgrad', `${ap.uttaksgrad}%`),
 					obj('NAV-kontor', navEnhetLabel || ap.navEnhetId),
 					obj('Ektefelle/partners inntekt', ap.relasjoner?.[0]?.sumAvForvArbKapPenInntekt),
+					obj('Inkluder AFP privat', oversettBoolean(ap.inkluderAfpPrivat)),
+					obj('AFP privat resultat', showLabel('afpPrivatResultat', ap.afpPrivatResultat)),
 				],
 			}
 			data.push(pensjonforvalterAlderspensjon)
+		}
+
+		if (pensjonKriterier.alderspensjonNyUtaksgrad) {
+			const apNy = pensjonKriterier.alderspensjonNyUtaksgrad
+
+			const navEnhetLabel = navEnheter?.find(
+				(enhet) => enhet.value === apNy.navEnhetId?.toString(),
+			)?.label
+
+			const pensjonforvalterAlderspensjonNyUtaksgrad = {
+				header: 'Alderspensjon: Ny uttaksgrad',
+				items: [
+					obj('Ny uttaksgrad', `${apNy.nyUttaksgrad}%`),
+					obj('Dato f.o.m.', formatDate(apNy.fom)),
+					obj('Saksbehandler', apNy.saksbehandler),
+					obj('Attesterer', apNy.attesterer),
+					obj('NAV-kontor', navEnhetLabel || apNy.navEnhetId),
+				],
+			}
+			data.push(pensjonforvalterAlderspensjonNyUtaksgrad)
 		}
 
 		if (pensjonKriterier.uforetrygd) {
@@ -2044,7 +2121,6 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			const pensjonforvalterUforetrygd = {
 				header: 'Uføretrygd',
 				items: [
-					obj('Krav fremsatt dato', formatDate(uforetrygd.kravFremsattDato)),
 					obj('Ønsket virkningsdato', formatDate(uforetrygd.onsketVirkningsDato)),
 					obj('Uføretidspunkt', formatDate(uforetrygd.uforetidspunkt)),
 					obj('Inntekt før uførhet', uforetrygd.inntektForUforhet),
@@ -2081,7 +2157,10 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			const pensjonforvalterAfpOffentlig = {
 				header: 'AFP Offentlig',
 				items: [
-					obj('Direktekall', afpOffentlig.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')),
+					obj(
+						'Direktekall',
+						afpOffentlig.direktekall?.map((tpId) => showTpNavn(tpId, tpOrdningData))?.join(', '),
+					),
 				],
 				itemRows: [],
 			}
@@ -2089,7 +2168,7 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			afpOffentlig?.mocksvar?.forEach((mocksvar, i) => {
 				pensjonforvalterAfpOffentlig.itemRows.push([
 					{ numberHeader: `AFP offentlig ${i + 1}` },
-					obj('TP-ordning', showTpNavn(mocksvar.tpId)),
+					obj('TP-ordning', showTpNavn(mocksvar.tpId, tpOrdningData)),
 					obj('Status AFP', showLabel('statusAfp', mocksvar.statusAfp)),
 					obj('Virkningsdato', formatDate(mocksvar.virkningsDato)),
 					obj('Sist benyttet G', mocksvar.sistBenyttetG),
@@ -2256,21 +2335,22 @@ const mapDokarkiv = (bestillingData, data) => {
 	if (dokarkivKriterier) {
 		const dokarkiv = {
 			header: 'Dokumenter (Joark)',
-			items: [
-				obj('Brevkode', dokarkivKriterier.dokumenter[0].brevkode),
-				obj('Tittel', dokarkivKriterier.tittel),
-				obj('Avsender type', dokarkivKriterier.avsenderMottaker?.idType),
-				obj('Avsender ID', dokarkivKriterier.avsenderMottaker?.id),
-				obj('Avsender navn', dokarkivKriterier.avsenderMottaker?.navn),
-				obj('Tema', dokarkivKriterier.tema),
-				obj('Behandlingstema', dokarkivKriterier.behandlingstema),
-				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
-				obj('Ferdigstill journalpost', oversettBoolean(dokarkivKriterier.ferdigstill)),
-				obj('Sakstype', showLabel('sakstype', dokarkivKriterier.sak?.sakstype)),
-				obj('Fagsaksystem', showLabel('fagsaksystem', dokarkivKriterier.sak?.fagsaksystem)),
-				obj('Fagsak-ID', dokarkivKriterier.sak?.fagsakId),
-				obj('Antall vedlegg', dokarkivKriterier.dokumenter?.length),
-			],
+			itemRows: dokarkivKriterier?.map((dokument, i) => [
+				{ numberHeader: `Dokument ${i + 1}` },
+				obj('Brevkode', dokument.dokumenter[0].brevkode),
+				obj('Tittel', dokument.tittel),
+				obj('Avsender type', dokument.avsenderMottaker?.idType),
+				obj('Avsender ID', dokument.avsenderMottaker?.id),
+				obj('Avsender navn', dokument.avsenderMottaker?.navn),
+				obj('Tema', dokument.tema),
+				obj('Behandlingstema', dokument.behandlingstema),
+				obj('Journalførende enhet', dokument.journalfoerendeEnhet),
+				obj('Ferdigstill journalpost', oversettBoolean(dokument.ferdigstill)),
+				obj('Sakstype', showLabel('sakstype', dokument.sak?.sakstype)),
+				obj('Fagsaksystem', showLabel('fagsaksystem', dokument.sak?.fagsaksystem)),
+				obj('Fagsak-ID', dokument.sak?.fagsakId),
+				obj('Antall vedlegg', dokument.dokumenter?.length),
+			]),
 		}
 
 		data.push(dokarkiv)
@@ -2278,38 +2358,26 @@ const mapDokarkiv = (bestillingData, data) => {
 }
 
 const mapHistark = (bestillingData, data) => {
-	const histarkKriterier = bestillingData.histark
+	const histarkKriterier = bestillingData.histark?.dokumenter
 
 	if (histarkKriterier) {
 		const histark = {
 			header: 'Dokumenter (Histark)',
-			items: [
-				obj('Tittel', histarkKriterier.dokumenter?.[0]?.tittel),
-				obj('Skanner', histarkKriterier.dokumenter?.[0]?.skanner),
-				obj('Skannested', histarkKriterier.dokumenter?.[0]?.skannested),
+			itemRows: histarkKriterier?.map((dokument, i) => [
+				{ numberHeader: `Dokument ${i + 1}` },
+				obj('Temakoder', dokument?.temakoder && arrayToString(dokument?.temakoder)),
+				obj('Enhetsnavn', dokument?.enhetsnavn),
+				obj('Enhetsnummer', dokument?.enhetsnummer),
+				obj('Startår', dokument?.startYear),
+				obj('Sluttår', dokument?.endYear),
 				obj(
 					'Skanningstidspunkt',
-					histarkKriterier.dokumenter?.[0]?.skanningstidspunkt &&
-						formatDate(histarkKriterier.dokumenter?.[0]?.skanningstidspunkt),
+					dokument?.skanningstidspunkt && formatDate(dokument?.skanningstidspunkt),
 				),
-				obj(
-					'Temakoder',
-					histarkKriterier.dokumenter?.[0]?.temakoder &&
-						arrayToString(histarkKriterier.dokumenter?.[0]?.temakoder),
-				),
-				obj('Enhetsnavn', histarkKriterier.dokumenter?.[0]?.enhetsnavn),
-				obj('Enhetsnummer', histarkKriterier.dokumenter?.[0]?.enhetsnummer),
-				obj(
-					'Startår',
-					histarkKriterier.dokumenter?.[0]?.startAar &&
-						formatDateToYear(histarkKriterier.dokumenter?.[0]?.startAar),
-				),
-				obj(
-					'Sluttår',
-					histarkKriterier.dokumenter?.[0]?.sluttAar &&
-						formatDateToYear(histarkKriterier.dokumenter?.[0]?.sluttAar),
-				),
-			],
+				obj('Skanner', dokument?.skanner),
+				obj('Skannested', dokument?.skannested),
+				obj('Filnavn', dokument?.tittel),
+			]),
 		}
 
 		data.push(histark)
@@ -2347,9 +2415,7 @@ const mapOrganisasjon = (bestillingData, data) => {
 					obj('Postnummer', forretningsadresse.postnr),
 					obj('Poststed', forretningsadresse.poststed),
 					obj('Kommunenummer', forretningsadresse.kommunenr),
-					obj('Adresselinje 1', forretningsadresse.adresselinjer[0]),
-					obj('Adresselinje 2', forretningsadresse.adresselinjer[1]),
-					obj('Adresselinje 3', forretningsadresse.adresselinjer[2]),
+					...mapAdresselinjer(forretningsadresse.adresselinjer),
 				],
 			}
 			data.push(forretningsadresseKriterier)
@@ -2362,9 +2428,7 @@ const mapOrganisasjon = (bestillingData, data) => {
 					obj('Postnummer', postadresse.postnr),
 					obj('Poststed', postadresse.poststed),
 					obj('Kommunenummer', postadresse.kommunenr),
-					obj('Adresselinje 1', postadresse.adresselinjer[0]),
-					obj('Adresselinje 2', postadresse.adresselinjer[1]),
-					obj('Adresselinje 3', postadresse.adresselinjer[2]),
+					...mapAdresselinjer(postadresse.adresselinjer),
 				],
 			}
 			data.push(postadresseKriterier)
@@ -2372,16 +2436,19 @@ const mapOrganisasjon = (bestillingData, data) => {
 	}
 }
 
-export function mapBestillingData(bestillingData, bestillingsinformasjon, firstIdent) {
+function buildBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+	bestilling?: BestillingsveilederContextType,
+	navEnheter?: any,
+) {
 	if (!bestillingData) {
 		return null
 	}
 
 	const data: any[] = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
-
-	const bestilling = useContext(BestillingsveilederContext)
-	const { navEnheter } = useNavEnheter()
 
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype, firstIdent)
 	mapPdlNyPerson(bestillingData, data, bestilling)
@@ -2414,6 +2481,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 			doedfoedtBarn,
 			foreldreansvar,
 			nyident,
+			deltBosted,
 		} = pdldataKriterier
 
 		mapFoedsel(foedsel, data)
@@ -2431,6 +2499,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		mapBostedsadresse(bostedsadresse, data)
 		mapOppholdsadresse(oppholdsadresse, data)
 		mapKontaktadresse(kontaktadresse, data)
+		mapDeltBosted(deltBosted, data)
 		mapAdressebeskyttelse(adressebeskyttelse, data)
 		mapSikkerhetstiltak(sikkerhetstiltak, data)
 		mapSivilstand(sivilstand, data)
@@ -2444,13 +2513,16 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	}
 
 	mapFullmakt(bestillingData, data)
-	mapTpsMessaging(bestillingData, data)
+	mapNomData(bestillingData, data)
+	mapSkjermingData(bestillingData, data)
+	mapBankkonto(bestillingData, data)
 	mapAareg(bestillingData, data)
-	mapSigrunStub(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)
+	mapSigrunstubSummertSkattegrunnlag(bestillingData, data)
 	mapInntektStub(bestillingData, data)
 	mapInntektsmelding(bestillingData, data)
 	mapSkattekort(bestillingData, data)
+	mapArbeidssoekerregisteret(bestillingData, data)
 	mapArbeidsplassenCV(bestillingData, data)
 	mapPensjon(bestillingData, data, navEnheter)
 	mapArena(bestillingData, data)
@@ -2466,4 +2538,38 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapOrganisasjon(bestillingData, data)
 
 	return data
+}
+
+export function useBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+) {
+	const contextValue = useBestillingsveileder() as BestillingsveilederContextType
+	const hasRealContext = contextValue?.is !== undefined || contextValue?.gruppe !== undefined
+	const bestilling = hasRealContext ? contextValue : undefined
+	const { navEnheter } = useNavEnheter()
+	return buildBestillingData(
+		bestillingData,
+		bestillingsinformasjon,
+		firstIdent,
+		bestilling,
+		navEnheter,
+	)
+}
+
+export function mapBestillingData(
+	bestillingData: any,
+	bestillingsinformasjon?: any,
+	firstIdent?: string,
+	bestilling?: BestillingsveilederContextType,
+	navEnheter?: any,
+) {
+	return buildBestillingData(
+		bestillingData,
+		bestillingsinformasjon,
+		firstIdent,
+		bestilling,
+		navEnheter,
+	)
 }

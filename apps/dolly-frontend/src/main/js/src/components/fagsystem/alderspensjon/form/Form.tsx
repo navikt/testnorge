@@ -6,15 +6,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
-import _has from 'lodash/has'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { add, getYear, isAfter, isDate, parseISO } from 'date-fns'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { getAlder } from '@/ducks/fagsystem'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
@@ -22,6 +23,7 @@ import {
 	genInitialAlderspensjonVedtak,
 } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { useFormContext } from 'react-hook-form'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -50,13 +52,13 @@ export const AlderspensjonForm = () => {
 		setRandomSaksbehandlere(genererTilfeldigeNavPersonidenter(saksbehandler))
 	}, [])
 
-	const opts = useContext(BestillingsveilederContext)
-	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is || {}
 
 	function sjekkAlderFelt() {
 		const harAlder =
-			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
-			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
+			_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
+			_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
 		const alderNyPerson = formMethods.watch('pdldata.opprettNyPerson.alder')
 		const foedtFoer =
 			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
@@ -74,14 +76,14 @@ export const AlderspensjonForm = () => {
 	const { harAlder, alderNyPerson, foedtFoer, harGyldigAlder } = sjekkAlderFelt()
 
 	const alderLeggTilPerson = getAlder(
-		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedselsdato[0].foedselsdato') ||
-			_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
+		_.get(opts, 'personFoerLeggTil.pdl.hentPerson.foedselsdato[0].foedselsdato') ||
+			_.get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
 	)
 
 	const alderImportertPerson = opts?.importPersoner?.map((person) =>
 		getAlder(
-			_get(person, 'data.hentPerson.foedselsdato[0].foedselsdato') ||
-				_get(person, 'data.hentPerson.foedsel[0].foedselsdato'),
+			_.get(person, 'data.hentPerson.foedselsdato[0].foedselsdato') ||
+				_.get(person, 'data.hentPerson.foedsel[0].foedselsdato'),
 		),
 	)
 
@@ -107,7 +109,7 @@ export const AlderspensjonForm = () => {
 				ugyldigFoedselsaar = true
 			}
 		}
-		const foedsel = _get(formMethods.getValues(), 'pdldata.person.foedsel')
+		const foedsel = _.get(formMethods.getValues(), 'pdldata.person.foedsel')
 		if (foedsel) {
 			const foedselsaar =
 				foedsel[foedsel.length - 1]?.foedselsaar ||
@@ -122,20 +124,20 @@ export const AlderspensjonForm = () => {
 	}
 
 	const harNorskBankkonto =
-		_has(formMethods.getValues(), 'bankkonto.norskBankkonto') ||
-		_has(opts, 'personFoerLeggTil.kontoregister.aktivKonto')
+		_.has(formMethods.getValues(), 'bankkonto.norskBankkonto') ||
+		_.has(opts, 'personFoerLeggTil.kontoregister.aktivKonto')
 
 	const harPopp =
-		_has(formMethods.getValues(), 'pensjonforvalter.inntekt') ||
+		_.has(formMethods.getValues(), 'pensjonforvalter.inntekt') ||
 		opts?.tidligereBestillinger?.some((bestilling) => bestilling.data?.pensjonforvalter?.inntekt)
 
 	const gyldigSivilstand = ['GIFT', 'SAMBOER', 'REGISTRERT_PARTNER']
 
 	const harPartner =
-		_get(formMethods.getValues(), 'pdldata.person.sivilstand')?.some((siv) =>
+		_.get(formMethods.getValues(), 'pdldata.person.sivilstand')?.some((siv) =>
 			gyldigSivilstand.includes(siv?.type),
 		) ||
-		_get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
+		_.get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
 			gyldigSivilstand.includes(siv?.type),
 		)
 
@@ -153,13 +155,20 @@ export const AlderspensjonForm = () => {
 		utland: 'UTLAND',
 	}
 	const valgtAdresseType = () => {
-		const adresseUtenTilDato = _get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.find(
-			(adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed,
-		)
+		const adresseUtenTilDato = _.get(
+			formMethods.getValues(),
+			'pdldata.person.bostedsadresse',
+		)?.find((adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed)
 		const gjeldendeAdresse =
 			adresseUtenTilDato ||
-			_get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
-				if (!prev.gyldigTilOgMed || !curr.gyldigTilOgMed) return null
+			_.get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
+				if (
+					!prev?.gyldigTilOgMed ||
+					!curr?.gyldigTilOgMed ||
+					curr?.gyldigTilOgMed?.isValid?.() === false ||
+					prev?.gyldigTilOgMed?.isValid?.() === false
+				)
+					return null
 				return isAfter(parseISO(prev.gyldigTilOgMed), parseISO(curr.gyldigTilOgMed)) ? prev : curr
 			})
 		return !gjeldendeAdresse || !gjeldendeAdresse?.adressetype
@@ -172,7 +181,7 @@ export const AlderspensjonForm = () => {
 	const harNorskAdresse = () => {
 		if (opts?.personFoerLeggTil) {
 			return (
-				_get(opts?.personFoerLeggTil, 'pdl.hentGeografiskTilknytning.gtType') !== 'UTLAND' ||
+				_.get(opts?.personFoerLeggTil, 'pdl.hentGeografiskTilknytning.gtType') !== 'UTLAND' ||
 				valgtAdresseType() === adressetyper.norge
 			)
 		}
@@ -187,6 +196,17 @@ export const AlderspensjonForm = () => {
 		}
 
 		return opts?.identtype === 'FNR' && valgtAdresseType() !== adressetyper.utland
+	}
+
+	const manglerPoppOpptjening = () => {
+		const harApfPrivat =
+			formMethods.watch(`${alderspensjonPath}.inkluderAfpPrivat`) ||
+			formMethods.watch(`${alderspensjonPath}.afpPrivatResultat`)
+		const poppOpptjeningFom = formMethods.watch('pensjonforvalter.inntekt.fomAar')
+		const poppOpptjeningTom = formMethods.watch('pensjonforvalter.inntekt.tomAar')
+		const poppOpptjeningAntallAar = poppOpptjeningTom - poppOpptjeningFom
+		const poppOpptjeningBelop = formMethods.watch('pensjonforvalter.inntekt.belop')
+		return harApfPrivat && (poppOpptjeningAntallAar < 30 || !poppOpptjeningBelop)
 	}
 
 	const soknad = formMethods.watch(`${alderspensjonPath}.soknad`)
@@ -251,6 +271,12 @@ export const AlderspensjonForm = () => {
 							gyldig.
 						</StyledAlert>
 					)}
+				{manglerPoppOpptjening() && (
+					<StyledAlert variant={'info'} size={'small'}>
+						For å sikre at AFP privat innvilges må personen ha minst 30 år med opptjening i POPP (de
+						siste 5 årene er spesielt viktige), gjerne med inntekt over gjennomsnittet.
+					</StyledAlert>
+				)}
 
 				<div className="flexbox--flex-wrap">
 					<div className="toggle--wrapper">
@@ -275,13 +301,6 @@ export const AlderspensjonForm = () => {
 							</ToggleGroup.Item>
 						</ToggleGroup>
 					</div>
-					{!soknad && (
-						<FormDatepicker
-							name={`${alderspensjonPath}.kravFremsattDato`}
-							label="Krav fremsatt dato"
-							date={formMethods.getValues(`${alderspensjonPath}.kravFremsattDato`)}
-						/>
-					)}
 					<Monthpicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
 						label="Iverksettelsesdato"
@@ -322,11 +341,23 @@ export const AlderspensjonForm = () => {
 						/>
 					)}
 					{soknad && (
-						<FormTextInput
-							name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
-							label="Ektefelle/partners inntekt"
-							type="number"
-						/>
+						<>
+							<FormTextInput
+								name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
+								label="Ektefelle/partners inntekt"
+								type="number"
+							/>
+							<FormCheckbox
+								name={`${alderspensjonPath}.inkluderAfpPrivat`}
+								label="Inkluder AFP privat"
+								checkboxMargin
+							/>
+							<FormSelect
+								name={`${alderspensjonPath}.afpPrivatResultat`}
+								label="AFP privat resultat"
+								options={Options('afpPrivatResultat')}
+							/>
+						</>
 					)}
 				</div>
 			</Panel>

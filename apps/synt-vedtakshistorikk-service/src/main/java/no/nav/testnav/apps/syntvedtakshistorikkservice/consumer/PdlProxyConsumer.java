@@ -40,9 +40,11 @@ public class PdlProxyConsumer {
     public PdlProxyConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         serverProperties = consumers.getPdlApiProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
@@ -110,10 +112,10 @@ public class PdlProxyConsumer {
         }
     }
 
-    public boolean deleteTags(List<String> identer, List<Tags> tags){
+    public boolean deleteTags(List<String> identer, List<Tags> tags) {
         try {
             if (isNull(identer) || identer.isEmpty()) return false;
-            var response =  tokenExchange.exchange(serverProperties)
+            var response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new TagsSlettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
                     .block();
             if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {

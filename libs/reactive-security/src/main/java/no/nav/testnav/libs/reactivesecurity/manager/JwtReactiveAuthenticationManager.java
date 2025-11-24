@@ -3,7 +3,6 @@ package no.nav.testnav.libs.reactivesecurity.manager;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import lombok.SneakyThrows;
-import no.nav.testnav.libs.reactivesecurity.decoder.JwtDecoder;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -18,6 +17,7 @@ import org.springframework.security.oauth2.server.resource.InvalidBearerTokenExc
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -33,6 +33,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
             new ReactiveJwtAuthenticationConverterAdapter(new JwtAuthenticationConverter());
 
     public JwtReactiveAuthenticationManager(
+            WebClient webClient,
             List<ResourceServerProperties> resourceServerProperties,
             String proxy
     ) {
@@ -40,7 +41,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                 .stream()
                 .filter(props -> props.getIssuerUri().equals(getIssuer(jwt)))
                 .findFirst()
-                .map(props -> new JwtDecoder(props, proxy).jwtDecoder())
+                .map(props -> new NonBeanJwtDecoder(webClient, props, proxy).jwtDecoder())
                 .orElseThrow(() -> new AuthenticationServiceException("Finner ikke støtte for issuer " + getIssuer(jwt)));
     }
 

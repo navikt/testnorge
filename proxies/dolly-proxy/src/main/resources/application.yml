@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: testnav-dolly-proxy
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          httpclient:
+            response-timeout: 1200s
+  config:
+    import: "dolly-application.yml"
+  main:
+    web-application-type: reactive
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+springdoc:
+  swagger-ui:
+    urls:
+# Not working due to CORS.
+#      - name: histark
+#        url: https://histarkimport.teamdokumenthandtering/v3/api-docs
+#      - name: inntektstub
+#        url: http://inntektstub.team-inntekt/v3/api-docs/a-ordningen%20api
+    urls-primary-name: Downstream Services
+
+
+app:
+  fakedings:
+    url: https://fakedings.intern.dev.nav.no
+  targets:
+    batch: https://batch.adeo.no
+    brregstub: http://brreg-stub.dolly
+    ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
+    fullmakt: http://repr-fullmakt.repr.svc.nais.local
+    histark: https://histarkimport.dev.intern.nav.no
+    inntektstub: http://inntektstub.team-inntekt
+    inst: http://opphold-testdata.team-rocket.svc.nais.local
+    kontoregister: https://sokos-kontoregister-person.intern.dev.nav.no
+    krrstub: https://digdir-krr-stub.intern.dev.nav.no
+    medl: https://medlemskap-medl-testdata.intern.dev.nav.no
+    norg2: http://norg2.org.svc.nais.local
+    pensjon: http://pensjon-testdata-facade.pensjontestdata
+    pensjon-afp: https://pensjon-afp-offentlig-mock-%s.intern.dev.nav.no # Note replacement pattern.
+    pensjon-samboer: https://pensjon-samboerforhold-backend-%s.intern.dev.nav.no # Note replacement pattern.
+    sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
+    skjermingsregister: https://skjermede-personer.dev.adeo.no
+    udistub: http://testnav-udi-stub.dolly

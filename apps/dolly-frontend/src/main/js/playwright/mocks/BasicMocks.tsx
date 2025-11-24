@@ -19,12 +19,23 @@ export const gjeldendeBankidBrukerMock = {
 	brukertype: 'BANKID',
 }
 
+export const brukerTeamsMock = [
+	{
+		beskrivelse: 'Testytest beskrivelse',
+		brukerId: 'team-bruker-id-90',
+		brukere: [gjeldendeAzureBrukerMock],
+		id: 1,
+		navn: 'Testytest',
+		opprettet: '2022-09-06T10:24:03',
+		opprettetAv: gjeldendeAzureBrukerMock,
+	},
+]
+
 export const personOrgTilgangMock = [
 	{
 		navn: 'testytest',
 		organisasjonsnummer: '12345678',
-		organisasjonsfrom: 'BEDR',
-		gyldigTil: '2100-10-10T10:10:10.100Z',
+		organisasjonsform: 'BEDR',
 	},
 ]
 
@@ -62,24 +73,11 @@ const malBestilling = {
 		egenAnsattDatoFom: '2022-09-06T10:24:03',
 	},
 }
-export const brukerMalerMock = {
-	malbestillinger: {
-		testbruker: [
-			{
-				id: 1,
-				malNavn: 'Teste Playwright',
-				bestilling: malBestilling,
-				bruker: gjeldendeAzureBrukerMock,
-			},
-		],
-	},
-}
-
-export const brukerMalerEndretMock = [
+export const brukerMalerMock = [
 	{
 		id: 1,
-		malNavn: 'Nytt navn på mal',
-		bestilling: malBestilling,
+		malNavn: 'Teste Playwright',
+		malBestilling: malBestilling,
 		bruker: gjeldendeAzureBrukerMock,
 	},
 ]
@@ -97,6 +95,7 @@ export const uferdigBestillingMock = {
 		pdldata: {
 			opprettNyPerson: {
 				identtype: 'FNR',
+				id2032: false,
 				syntetisk: true,
 			},
 		},
@@ -125,6 +124,46 @@ export const brukerOrganisasjonMalerMock = {
 			{
 				id: 3,
 				malNavn: 'Organisasjon issues #3',
+			},
+		],
+	},
+}
+
+export const tenorSearchTestdataMock = {
+	status: 'OK',
+	data: {
+		treff: 1,
+		rader: 1,
+		offset: 0,
+		nesteSide: null,
+		seed: 1111,
+		dokumentListe: [
+			{
+				identifikator: ['12121212345'],
+				identifikatorType: ['foedselsnummer'],
+				id: '12121212345',
+				visningnavn: 'TESTE TESTESEN',
+			},
+		],
+	},
+	query: 'identifikator:12121212345',
+}
+
+export const tenorSearchOversiktMock = {
+	status: 'OK',
+	data: {
+		treff: 1,
+		rader: 1,
+		offset: 0,
+		nesteSide: 1,
+		seed: 1111,
+		personer: [
+			{
+				id: '12121212345',
+				fornavn: 'TESTESEN',
+				etternavn: 'TESTE',
+				tenorRelasjoner: ['Freg'],
+				ibruk: false,
 			},
 		],
 	},
@@ -290,10 +329,12 @@ export const backendTransaksjonMock = [
 		ident: '12345678912',
 		system: 'INNTKMELD',
 		miljoe: 'q1',
-		transaksjonId: {
-			journalpostId: '999999999',
-			dokumentInfoId: '888888888',
-		},
+		transaksjonId: [
+			{
+				journalpostId: '999999999',
+				dokumentInfoId: '888888888',
+			},
+		],
 		datoEndret: '2022-01-01T11:58:58.227916',
 	},
 	{
@@ -302,31 +343,15 @@ export const backendTransaksjonMock = [
 		ident: '12345678912',
 		system: 'INNTKMELD',
 		miljoe: 'q2',
-		transaksjonId: {
-			journalpostId: '999999999',
-			dokumentInfoId: '888888888',
-		},
+		transaksjonId: [
+			{
+				journalpostId: '999999999',
+				dokumentInfoId: '888888888',
+			},
+		],
 		datoEndret: '2022-01-01T11:58:59.289252',
 	},
 ]
-
-export const sigrunstubMock = {
-	responseList: [
-		{
-			personidentifikator: '12345678912',
-			grunnlag: [
-				{
-					inntektsaar: '2022',
-					tjeneste: 'Beregnet skatt',
-					grunnlag: 'formuePrimaerbolig',
-					verdi: '12345',
-					testDataEier: '',
-				},
-			],
-			svalbardGrunnlag: [],
-		},
-	],
-}
 
 export const aaregMock = [
 	{
@@ -403,107 +428,6 @@ export const aaregMock = [
 			endretKilde: 'EDAG',
 			endretKildereferanse: '666bfffc-6e0c-449e-9d76-1305cc140c92',
 		},
-	},
-]
-export const ameldingMock = [
-	{
-		kalendermaaned: '2023-05-01',
-		opplysningspliktigOrganisajonsnummer: '965059946',
-		virksomheter: [
-			{
-				organisajonsnummer: '941559069',
-				personer: [
-					{
-						ident: '12345678912',
-						arbeidsforhold: [
-							{
-								arbeidsforholdId: '1',
-								typeArbeidsforhold: 'ordinaertArbeidsforhold',
-								startdato: '2003-08-23',
-								sluttdato: null,
-								antallTimerPerUke: 37.5,
-								yrke: '3229105',
-								arbeidstidsordning: 'ikkeSkift',
-								stillingsprosent: 100,
-								sisteLoennsendringsdato: null,
-								permisjoner: [],
-								fartoey: null,
-								inntekter: [],
-								avvik: [],
-								historikk: null,
-							},
-						],
-					},
-				],
-			},
-		],
-		version: 1,
-	},
-	{
-		kalendermaaned: '2023-04-01',
-		opplysningspliktigOrganisajonsnummer: '965059946',
-		virksomheter: [
-			{
-				organisajonsnummer: '941559069',
-				personer: [
-					{
-						ident: '12345678912',
-						arbeidsforhold: [
-							{
-								arbeidsforholdId: '1',
-								typeArbeidsforhold: 'ordinaertArbeidsforhold',
-								startdato: '2003-08-23',
-								sluttdato: null,
-								antallTimerPerUke: 37.5,
-								yrke: '3229105',
-								arbeidstidsordning: 'ikkeSkift',
-								stillingsprosent: 100,
-								sisteLoennsendringsdato: null,
-								permisjoner: [],
-								fartoey: null,
-								inntekter: [],
-								avvik: [],
-								historikk: null,
-							},
-						],
-					},
-				],
-			},
-		],
-		version: 1,
-	},
-	{
-		kalendermaaned: '2023-06-01',
-		opplysningspliktigOrganisajonsnummer: '965059946',
-		virksomheter: [
-			{
-				organisajonsnummer: '941559069',
-				personer: [
-					{
-						ident: '12345678912',
-						arbeidsforhold: [
-							{
-								arbeidsforholdId: '1',
-								typeArbeidsforhold: 'ordinaertArbeidsforhold',
-								startdato: '2003-08-23',
-								sluttdato: null,
-								antallTimerPerUke: 37.5,
-								yrke: '3229105',
-								arbeidstidsordning: 'ikkeSkift',
-								stillingsprosent: 100,
-								sisteLoennsendringsdato: null,
-								permisjoner: [],
-								fartoey: null,
-								inntekter: [],
-								avvik: [],
-								historikk: null,
-							},
-						],
-					},
-				],
-			},
-		],
-		version: 1,
 	},
 ]
 
@@ -772,7 +696,6 @@ export const instMock = [
 
 export const udistubMock = {
 	person: {
-		aliaser: [],
 		arbeidsadgang: {
 			harArbeidsAdgang: 'JA',
 			typeArbeidsadgang: 'BESTEMT_ARBEIDSGIVER_ELLER_OPPDRAGSGIVER',
@@ -923,7 +846,7 @@ export const kontoregisterMock = {
 	kontonummer: '99999999999',
 	gyldigFom: '2022-01-01T11:58:24.030845',
 	opprettetAv: 'Dolly',
-	kilde: 'testnav-kontoregister-person-proxy-trygdeetaten',
+	kilde: 'testnav-dolly-proxy-trygdeetaten',
 }
 
 export const joarkJournalpostMock = {
@@ -990,8 +913,6 @@ export const joarkDokumentMock =
 	'</melding>\n'
 
 export const varslingerVelkommenResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY' }]
-
-export const malerMock = { malbestillinger: ['Playwright, Testytest', []] }
 
 export const testnorgeMalBestillinger = [
 	{
@@ -1165,16 +1086,6 @@ export const testnorgeMalBestillinger = [
 				],
 			},
 			{
-				id: 'SIGRUN_LIGNET',
-				navn: 'Lignet skatteinntekt (Sigrunstub)',
-				statuser: [
-					{
-						melding: 'OK',
-						identer: ['31816512345', '06896512345', '08826512345', '06836312345', '04916412345'],
-					},
-				],
-			},
-			{
 				id: 'SIGRUN_PENSJONSGIVENDE',
 				navn: 'Pensjonsgivende inntekt (Sigrunstub)',
 				statuser: [
@@ -1227,7 +1138,6 @@ export const testnorgeMalBestillinger = [
 						aktoertype: 'ORG',
 						orgnummer: '972671234',
 					},
-					amelding: [],
 				},
 			],
 			sigrunstub: [
@@ -1624,7 +1534,6 @@ export const backendBestillingerMock = [
 			],
 			aareg: [
 				{
-					amelding: [{ temp: '' }],
 					arbeidsforholdstype: 'forenkletOppgjoersordning',
 					ansettelsesPeriode: {
 						fom: '2002-10-03T00:00:00',
@@ -1694,11 +1603,6 @@ export const backendBestillingerMock = [
 				],
 			},
 			udistub: {
-				aliaser: [
-					{
-						nyIdent: false,
-					},
-				],
 				arbeidsadgang: {
 					harArbeidsAdgang: 'JA',
 					periode: {},
@@ -1796,21 +1700,23 @@ export const backendBestillingerMock = [
 				],
 				understatuser: [0],
 			},
-			dokarkiv: {
-				tittel: 'Anke',
-				tema: 'AGR',
-				kanal: 'NAV_NO',
-				avsenderMottaker: {
-					id: '12345678912',
-					idType: 'FNR',
-				},
-				dokumenter: [
-					{
-						tittel: 'Anke',
-						brevkode: 'NAV 90-00.08 A',
+			dokarkiv: [
+				{
+					tittel: 'Anke',
+					tema: 'AGR',
+					kanal: 'NAV_NO',
+					avsenderMottaker: {
+						id: '12345678912',
+						idType: 'FNR',
 					},
-				],
-			},
+					dokumenter: [
+						{
+							tittel: 'Anke',
+							brevkode: 'NAV 90-00.08 A',
+						},
+					],
+				},
+			],
 			histark: {},
 			medl: {},
 			sykemelding: {
@@ -1822,6 +1728,7 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
+					id2032: false,
 					alder: 30,
 				},
 				person: {
@@ -2053,9 +1960,6 @@ export const backendBestillingerMock = [
 					],
 				},
 			},
-			tpsMessaging: {
-				spraakKode: 'AB',
-			},
 			bankkonto: {
 				norskBankkonto: {
 					kontonummer: '99999999999',
@@ -2131,6 +2035,7 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
+					id2032: false,
 					syntetisk: true,
 				},
 			},
@@ -2178,6 +2083,12 @@ export const eksisterendeGruppeMock = {
 	erLaast: false,
 	identer: [testidentMock],
 	tags: [],
+}
+
+export const laastGruppeMock = {
+	...eksisterendeGruppeMock,
+	erLaast: true,
+	laastBeskrivelse: 'Låst gruppe',
 }
 
 export const histarkMock = {
@@ -2397,3 +2308,146 @@ export const tenorSoekOrganisasjonTestdataMock = {
 	query: 'organisasjonsnummer:312345678',
 	error: null,
 }
+
+export const dollySearchMock = {
+	antall: 1,
+	error: null,
+	personer: [
+		{
+			hentIdenter: {
+				identer: [
+					{
+						ident: '12345678912',
+						historisk: false,
+						gruppe: 'FOLKEREGISTERIDENT',
+					},
+				],
+			},
+			hentPerson: {
+				foedsel: [
+					{
+						foedselsaar: 1992,
+						foedselsdato: '1992-01-11',
+						foedeland: 'NOR',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: 'c8eb5066-14ec-4bf7-acb5-365cae1deaf3',
+						},
+					},
+				],
+				kjoenn: [
+					{
+						kjoenn: 'MANN',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: '017a6239-91c2-463b-b9d1-1e732c3db5e5',
+						},
+					},
+				],
+				navn: [
+					{
+						fornavn: 'Cafe',
+						etternavn: 'Test',
+						gyldigFraOgMed: '2022-10-03',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: '764dc813-3c85-42c3-abb6-472f6f30d953',
+						},
+					},
+				],
+				vergemaalEllerFremtidsfullmakt: [
+					{
+						type: 'forvaltningUtenforVergemaal',
+						embete: 'Statsforvalteren i Innlandet',
+						vergeEllerFullmektig: {
+							navn: {
+								fornavn: 'Testesen',
+								etternavn: 'Cafe',
+							},
+							motpartsPersonident: '23456789123',
+							omfangetErInnenPersonligOmraade: true,
+						},
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T00:00',
+							gyldighetstidspunkt: '2022-10-03T11:57:42',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:42',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: 'f80d7429-dec4-49af-b933-88d07a143017',
+						},
+					},
+				],
+			},
+		},
+	],
+	seed: 1111,
+	side: 0,
+	totalHits: 1,
+}
+
+export const fagsystemTyperMock = [
+	{
+		type: 'AAREG',
+		beskrivelse: 'Arbeidsgiver/arbeidstaker-register (AAREG)',
+	},
+	{
+		type: 'ARBEIDSPLASSENCV',
+		beskrivelse: 'Nav CV',
+	},
+]

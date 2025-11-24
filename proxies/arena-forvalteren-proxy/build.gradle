@@ -10,7 +10,9 @@ sonarqube {
 }
 
 dependencies {
-    implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:data-transfer-objects"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-proxy"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
 }

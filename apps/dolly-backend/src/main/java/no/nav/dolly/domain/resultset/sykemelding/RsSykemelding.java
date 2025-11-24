@@ -12,7 +12,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +26,20 @@ import static java.util.Objects.nonNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsSykemelding {
 
-    private RsSyntSykemelding syntSykemelding;
     private RsDetaljertSykemelding detaljertSykemelding;
+    private RsNySykemelding nySykemelding;
+
+    @JsonIgnore
+    public boolean hasDetaljertSykemelding() {
+
+        return nonNull(detaljertSykemelding);
+    }
+
+    @JsonIgnore
+    public boolean hasNySykemelding() {
+
+        return nonNull(nySykemelding);
+    }
 
     @Getter
     @Setter
@@ -36,12 +47,31 @@ public class RsSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class RsSyntSykemelding {
+    public static class RsNySykemelding {
 
-        private String arbeidsforholdId;
-        private String orgnummer;
-        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
-        private LocalDateTime startDato;
+        private List<Aktivitet> aktivitet;
+
+        public List<Aktivitet> getAktivitet() {
+            if (isNull(aktivitet)) {
+                aktivitet = new ArrayList<>();
+            }
+            return aktivitet;
+        }
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class Aktivitet {
+
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+            private LocalDate fom;
+
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+            private LocalDate tom;
+        }
     }
 
     @Getter
@@ -53,9 +83,9 @@ public class RsSykemelding {
     public static class RsDetaljertSykemelding {
 
         private Arbeidsgiver arbeidsgiver;
+        private DollyDiagnose hovedDiagnose;
         private List<DollyDiagnose> biDiagnoser;
         private Detaljer detaljer;
-        private DollyDiagnose hovedDiagnose;
         private Helsepersonell helsepersonell;
         private Boolean manglendeTilretteleggingPaaArbeidsplassen;
         private Organisasjon mottaker;
@@ -65,6 +95,7 @@ public class RsSykemelding {
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate startDato;
         private Boolean umiddelbarBistand;
+        private KontaktMedPasient kontaktMedPasient;
 
         public List<DollyDiagnose> getBiDiagnoser() {
             if (isNull(biDiagnoser)) {
@@ -216,17 +247,16 @@ public class RsSykemelding {
             private String land;
             private String postnummer;
         }
-    }
 
-    @JsonIgnore
-    public boolean hasDetaljertSykemelding() {
-
-        return nonNull(detaljertSykemelding);
-    }
-
-    @JsonIgnore
-    public boolean hasSyntSykemelding() {
-
-        return nonNull(syntSykemelding);
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class KontaktMedPasient {
+            private LocalDate kontaktDato;
+            private String begrunnelseIkkeKontakt;
+        }
     }
 }

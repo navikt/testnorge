@@ -4,7 +4,6 @@ const treMaanederFrem = addMonths(new Date(), 3)
 
 export const initialUforetrygd = {
 	uforetidspunkt: setDate(addMonths(new Date(), -1), 1),
-	kravFremsattDato: new Date(),
 	onsketVirkningsDato: setDate(addMonths(new Date(), 1), 1),
 	inntektForUforhet: 550000,
 	inntektEtterUforhet: 10000,

@@ -1,0 +1,36 @@
+plugins {
+    id "dolly-apps"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-altinn3-tilgang-service"
+        property "sonar.projectName", "testnav-altinn3-tilgang-service"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-database-postgresql"
+
+    runtimeOnly "org.postgresql:postgresql"
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
+
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+
+    implementation "io.r2dbc:r2dbc-h2"
+    testRuntimeOnly "com.h2database:h2"
+}
+

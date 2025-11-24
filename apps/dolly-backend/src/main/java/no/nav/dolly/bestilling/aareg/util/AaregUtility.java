@@ -2,76 +2,98 @@ package no.nav.dolly.bestilling.aareg.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdEksistens;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.domain.resultset.aareg.RsAareg.Identifikasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
+import no.nav.testnav.libs.dto.aareg.v1.PermisjonPermittering;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
+import org.apache.commons.lang3.StringUtils;
 
+import java.time.YearMonth;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
 @Slf4j
 public class AaregUtility {
 
-    public static boolean isEqualArbeidsforhold(Arbeidsforhold response, Arbeidsforhold request) {
+    public static boolean isEqualArbeidsforhold(Arbeidsforhold response, Arbeidsforhold request, Map<String, Identifikasjon> identifikasjon) {
 
-        return (isArbeidsgiverOrganisasjonAlike(response, request) ||
-                isArbeidsgiverPersonAlike(response, request)) &&
-                response.getArbeidsforholdId().equals(request.getArbeidsforholdId());
+        return identifikasjon.values().stream().anyMatch(id ->
+                response.getNavArbeidsforholdId().equals(id.getNavArbeidsforholdId())) ||
+                (isArbeidsgiverOrganisasjonAlike(response, request) ||
+                        isArbeidsgiverPersonAlike(response, request)) &&
+                        response.getArbeidsforholdId().equals(request.getArbeidsforholdId());
     }
 
-    public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
-                                                           List<Arbeidsforhold> request,
-                                                           boolean isOpprettEndre) {
+    public static int getMaxArbeidsforholdId(Collection<Arbeidsforhold> arbeidsforholdList) {
 
-        return ArbeidsforholdEksistens.builder()
-                .nyeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                        .noneMatch(response1 ->
-                                                isEqualArbeidsforhold(response1, arbeidsforhold)) ||
-                                isNotTrue(arbeidsforhold.getIsOppdatering()) && isOpprettEndre)
-                        .toList())
-                .eksisterendeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                        .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
-                                && (isTrue(arbeidsforhold.getIsOppdatering()) || !isOpprettEndre))
-                        .toList())
-                .ubestemmeligArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .filter(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold) &&
-                                        isNull(arbeidsforhold.getArbeidsforholdId()) && !isOpprettEndre)
-                                .count() > 1L)
-                        .toList())
-                .build();
+        return arbeidsforholdList.stream()
+                .map(Arbeidsforhold::getArbeidsforholdId)
+                .filter(StringUtils::isNotBlank)
+                .map(Integer::parseInt)
+                .max(Integer::compareTo)
+                .orElse(0);
     }
 
-    public static void appendPermisjonPermitteringId(Arbeidsforhold arbeidsforhold, Arbeidsforhold eksisterende) {
+    public static int getMaxPermisjonPermitteringId(Collection<Arbeidsforhold> arbeidsforholdList) {
 
-        var permisjonPermitteringId = new AtomicInteger(isNull(eksisterende) ? 0 :
-                eksisterende.getPermisjonPermitteringer().size());
+        return arbeidsforholdList.stream()
+                .map(Arbeidsforhold::getPermisjonPermitteringer)
+                .flatMap(Collection::stream)
+                .map(PermisjonPermittering::getPermisjonPermitteringId)
+                .filter(StringUtils::isNotBlank)
+                .map(Integer::parseInt)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
 
-        if (isNull(eksisterende)) {
-            arbeidsforhold.getPermisjonPermitteringer().stream()
-                    .filter(permisjon -> isBlank(permisjon.getPermisjonPermitteringId()))
-                    .forEach(permisjon ->
-                            permisjon.setPermisjonPermitteringId(Integer.toString(permisjonPermitteringId.incrementAndGet())));
+    public static Arbeidsforhold appendArbeidsforholdId(Arbeidsforhold arbeidsforhold, boolean nyttArbeidsforhold,
+                                                        List<Arbeidsforhold> eksisterendeListe, Map<String, Identifikasjon> identifikasjon,
+                                                        AtomicInteger arbeidsforholdId, AtomicInteger permisjonPermitteringId) {
+
+        if (nyttArbeidsforhold) {
+
+            arbeidsforhold.setArbeidsforholdId(Integer.toString(arbeidsforholdId.incrementAndGet()));
+            arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
+                    arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
+            appendPermisjonPermitteringId(arbeidsforhold, permisjonPermitteringId);
+
         } else {
-            arbeidsforhold.getPermisjonPermitteringer().stream()
-                    .filter(permisjon -> isBlank(permisjon.getPermisjonPermitteringId()))
-                    .forEach(permisjon -> permisjon.setPermisjonPermitteringId(eksisterende.getPermisjonPermitteringer().stream()
-                            .anyMatch(eksist -> eksist.equals(permisjon)) ?
-                            eksisterende.getPermisjonPermitteringer().stream()
-                                    .filter(eksist -> eksist.equals(permisjon))
-                                    .findFirst().get().getPermisjonPermitteringId() :
-                            Integer.toString(permisjonPermitteringId.incrementAndGet())));
+
+            var eksisterende = eksisterendeListe.stream()
+                    .filter(eksisterende1 -> isEqualArbeidsforhold(eksisterende1, arbeidsforhold, identifikasjon))
+                    .findFirst().orElse(new Arbeidsforhold());
+            arbeidsforhold.setNavArbeidsforholdId(eksisterende.getNavArbeidsforholdId());
+            arbeidsforhold.setArbeidsforholdId(eksisterende.getArbeidsforholdId());
+            arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(eksisterende.getNavArbeidsforholdPeriode()) ?
+                    eksisterende.getNavArbeidsforholdPeriode() : YearMonth.now());
+            arbeidsforhold.setPermisjonPermitteringer(eksisterende.getPermisjonPermitteringer());
         }
+
+        return arbeidsforhold;
+    }
+
+    public static boolean isNyttArbeidsforhold(List<Arbeidsforhold> response, Arbeidsforhold request) {
+
+        return isBlank(request.getArbeidsforholdId()) &&
+                response.stream().noneMatch(eksisterende ->
+                                (isArbeidsgiverOrganisasjonAlike(eksisterende, request) ||
+                                        isArbeidsgiverPersonAlike(eksisterende, request)) &&
+                                        eksisterende.getType().equals(request.getType()));
+    }
+
+    private static void appendPermisjonPermitteringId(Arbeidsforhold arbeidsforhold, AtomicInteger permisjonPermitteringId) {
+
+        arbeidsforhold.getPermisjonPermitteringer().stream()
+                .filter(permisjon -> isBlank(permisjon.getPermisjonPermitteringId()))
+                .forEach(permisjon ->
+                        permisjon.setPermisjonPermitteringId(Integer.toString(permisjonPermitteringId.incrementAndGet())));
     }
 
     private static boolean isArbeidsgiverPersonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {

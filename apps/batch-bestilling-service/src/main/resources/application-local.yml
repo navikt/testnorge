@@ -1,0 +1,7 @@
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  dolly-backend:
+    url: https://dolly-backend.intern.dev.nav.no

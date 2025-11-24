@@ -159,6 +159,14 @@ export const validation = {
 					fradragsliste: fradragsliste,
 					forskuddstrekksliste: forskuddstrekksliste,
 					arbeidsforholdsliste: arbeidsforholdsliste,
+					historikk: Yup.array().of(
+						Yup.object({
+							inntektsliste: inntektsliste,
+							fradragsliste: fradragsliste,
+							forskuddstrekksliste: forskuddstrekksliste,
+							arbeidsforholdsliste: arbeidsforholdsliste,
+						}),
+					),
 				}),
 			),
 		}),

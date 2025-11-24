@@ -13,6 +13,7 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -20,7 +21,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
@@ -35,11 +35,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,11 +50,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
-import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNotNpidIdent;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -119,39 +116,30 @@ public class PersonService {
                 new NotFoundException(format("Ident %s ble ikke funnet", ident)));
 
         // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
-        var identerSomIkkeSkalSlettesFraIdentpool = new ArrayList<>(dbPerson.getRelasjoner().stream()
-                .filter(relasjon -> (relasjon.getRelasjonType() == NY_IDENTITET || relasjon.getRelasjonType() == GAMMEL_IDENTITET))
-                .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getIdent)
-                .filter(id -> isNpidIdent(id) && isNotNpidIdent(dbPerson.getIdent()) ||
-                        isNotNpidIdent(id) && isNpidIdent(dbPerson.getIdent()))
-                .toList());
+        var utgaatteIdenter = dbPerson.getAlias().stream()
+                .sorted(Comparator.comparing(DbAlias::getSistOppdatert))
+                .map(DbAlias::getTidligereIdent)
+                .toList();
 
-        if (!identerSomIkkeSkalSlettesFraIdentpool.isEmpty()) {
-            identerSomIkkeSkalSlettesFraIdentpool.add(dbPerson.getIdent());
+        var identerSomIkkeSkalSlettesFraIdentpool = new HashSet<String>();
+        for (var i = 0; i < utgaatteIdenter.size(); i++) {
+
+            if (isNpidIdent(utgaatteIdenter.get(i))) {
+                identerSomIkkeSkalSlettesFraIdentpool.add(utgaatteIdenter.get(i));
+                identerSomIkkeSkalSlettesFraIdentpool.add(i < utgaatteIdenter.size() - 1 ? utgaatteIdenter.get(i + 1) : dbPerson.getIdent());
+            }
         }
 
         unhookEksternePersonerService.unhook(dbPerson);
 
-        var identer = Stream.of(List.of(dbPerson.getIdent()),
+        var identer = Stream.of(dbPerson.getRelasjoner().stream(),
                         dbPerson.getRelasjoner().stream()
                                 .map(DbRelasjon::getRelatertPerson)
-                                .filter(Objects::nonNull)
-                                .map(DbPerson::getPerson)
-                                .map(PersonDTO::getIdent)
-                                .toList(),
-                        dbPerson.getRelasjoner().stream()
-                                .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
-                                .map(DbRelasjon::getRelatertPerson)
-                                .filter(Objects::nonNull)
-                                .map(DbPerson::getPerson)
-                                .map(PersonDTO::getForeldreansvar)
-                                .flatMap(Collection::stream)
-                                .filter(ansvar -> !ansvar.isEksisterendePerson())
-                                .map(ForeldreansvarDTO::getAnsvarlig)
-                                .toList())
-                .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
+                                .map(DbPerson::getRelasjoner)
+                                .flatMap(Collection::stream))
+                .flatMap(Function.identity())
+                .map(DbRelasjon::getRelatertPerson)
+                .map(DbPerson::getIdent)
                 .collect(Collectors.toSet());
 
         pdlTestdataConsumer.delete(identer).block();
@@ -200,12 +188,12 @@ public class PersonService {
         }
         relasjonerAlderService.fixRelasjonerAlder(request);
 
+        IdentDTO identifier = null;
         if (isBlank(request.getOpprettFraIdent())) {
-            request.getPerson().setIdent(Objects.requireNonNull(identPoolConsumer.acquireIdents(
-                                    mapperFacade.map(request, HentIdenterRequest.class))
-                            .block())
-                    .getFirst()
-                    .getIdent());
+            identifier = identPoolConsumer.acquireIdents(
+                    mapperFacade.map(request, HentIdenterRequest.class)).block();
+            Objects.requireNonNull(identifier, "Personident fra identpool kan ikke være null");
+            request.getPerson().setIdent(identifier.getIdent());
 
         } else {
             if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
@@ -219,7 +207,10 @@ public class PersonService {
             request.getPerson().getKjoenn().add(new KjoennDTO());
         }
         if (request.getPerson().getFoedselsdato().isEmpty()) {
-            request.getPerson().getFoedselsdato().add(new FoedselsdatoDTO());
+            request.getPerson().getFoedselsdato().add(FoedselsdatoDTO.builder()
+                    .foedselsdato(nonNull(identifier) && nonNull(identifier.getFoedselsdato()) ?
+                            identifier.getFoedselsdato().atStartOfDay() : null)
+                    .build());
         }
         if (request.getPerson().getFoedested().isEmpty()) {
             request.getPerson().getFoedested().add(new FoedestedDTO());

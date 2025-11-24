@@ -1,14 +1,14 @@
 package no.nav.organisasjonforvalter;
 
-import org.springframework.boot.SpringApplication;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class OrganisasjonForvalterApplicationStarter {
-
     public static void main(String[] args) {
-
-        SpringApplication.run(OrganisasjonForvalterApplicationStarter.class, args);
-
+        new SpringApplicationBuilder(OrganisasjonForvalterApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

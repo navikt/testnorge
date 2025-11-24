@@ -4,10 +4,7 @@ import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textI
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import {
-	initialTelefonnummer,
-	initialTpsTelefonnummer,
-} from '@/components/fagsystem/pdlf/form/initialValues'
+import { initialTelefonnummer } from '@/components/fagsystem/pdlf/form/initialValues'
 import styled from 'styled-components'
 import { lookup } from 'country-data-list'
 
@@ -16,15 +13,9 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
-interface TelefonnummerValues {
-	landskode?: string
-	nummer?: string
-}
-
 interface TelefonnummerProps {
 	formMethods: UseFormReturn
 	path: string
-	idx?: number
 }
 
 const StyledAvansert = styled.div`
@@ -67,7 +58,7 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 	)
 }
 
-export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps) => {
+export const TelefonnummerForm = ({ path, formMethods }: TelefonnummerProps) => {
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch(`${path}.land`) || 'NO')
 	const tlfListe = formMethods.watch(path || 'pdldata.person.telefonnummer')
@@ -84,7 +75,7 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {
 			formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-			formMethods.trigger()
+			formMethods.trigger(path)
 		}
 	}, [tlfListe])
 
@@ -103,21 +94,21 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 		}
 	}
 
-	const handleChangeLandkode = (option) => {
+	const handleChangeLandkode = (option: any) => {
 		setLand(option.value)
 		formMethods.setValue(`${path}.landskode`, option.landkode)
 		formMethods.setValue(`${path}.land`, option.value)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const handleChangeNummer = (target: { value: string }) => {
 		formMethods.setValue(`${path}.nummer`, target.value)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const handleChangePrioritet = (value: number) => {
 		formMethods.setValue(`${path}.prioritet`, value)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	return (
@@ -159,16 +150,16 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 		return null
 	}
 
-	const handleNewEntry = () => {
-		formMethods.setValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
-		formMethods.trigger()
+	const handleNewEntry = (append: (value: any) => void, _values: any[]) => {
+		append(initialTelefonnummer)
 	}
 
-	const handleRemoveEntry = (idx: number) => {
-		tlfListe.splice(idx, 1)
-		formMethods.setValue(paths.pdlTelefonnummer, tlfListe)
-		formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-		formMethods.trigger()
+	const handleRemoveEntry = () => {
+		const oppdatertListe = formMethods.watch(paths.pdlTelefonnummer) || []
+		if (oppdatertListe[0]) {
+			formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+			formMethods.trigger(path)
+		}
 	}
 
 	return (

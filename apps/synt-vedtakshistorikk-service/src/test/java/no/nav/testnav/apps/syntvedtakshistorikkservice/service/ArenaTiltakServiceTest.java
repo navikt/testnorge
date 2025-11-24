@@ -3,17 +3,17 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,8 +24,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ArenaTiltakServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ArenaTiltakServiceTest {
 
     @Mock
     private ServiceUtils serviceUtils;
@@ -49,8 +49,8 @@ public class ArenaTiltakServiceTest {
             .ident(fnr1).build();
     private String miljoe = "test";
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         tiltaksdeltakelse = NyttVedtakTiltak.builder()
                 .tiltakAdminKode("AMO")
                 .tiltakYtelse("J")
@@ -76,7 +76,7 @@ public class ArenaTiltakServiceTest {
 
 
     @Test
-    public void shouldFilterOutTiltaksdeltakelseWithoutTiltak() {
+    void shouldFilterOutTiltaksdeltakelseWithoutTiltak() {
         when(arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(
                 person, miljoe, tiltaksdeltakelse.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
 
@@ -91,7 +91,7 @@ public class ArenaTiltakServiceTest {
     }
 
     @Test
-    public void shouldUpdateTiltaksdeltakelse() {
+    void shouldUpdateTiltaksdeltakelse() {
         when(arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(
                 person, miljoe, tiltaksdeltakelse.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
 
@@ -110,7 +110,7 @@ public class ArenaTiltakServiceTest {
     }
 
     @Test
-    public void shouldOpprettTiltakspenger() {
+    void shouldOpprettTiltakspenger() {
         var historikk = Vedtakshistorikk.builder()
                 .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse))
                 .tiltakspenger(Arrays.asList(tiltakspenger, tiltakspenger))
@@ -124,7 +124,7 @@ public class ArenaTiltakServiceTest {
     }
 
     @Test
-    public void shouldNotOpprettTiltakspenger() {
+    void shouldNotOpprettTiltakspenger() {
         var historikk = Vedtakshistorikk.builder()
                 .tiltakspenger(Arrays.asList(tiltakspenger, tiltakspenger))
                 .build();
@@ -137,7 +137,7 @@ public class ArenaTiltakServiceTest {
     }
 
     @Test
-    public void shouldRemoveOverlappingVedtak(){
+    void shouldRemoveOverlappingVedtak() {
         var aap1 = NyttVedtakAap.builder().build();
         aap1.setFraDato(LocalDate.now());
         aap1.setTilDato(LocalDate.now().plusMonths(3));
@@ -154,7 +154,7 @@ public class ArenaTiltakServiceTest {
         tiltak1.setTilDato(LocalDate.now().plusMonths(3));
         tiltak1.setTiltakProsentDeltid(60.00);
 
-        var tiltak2 =  NyttVedtakTiltak.builder().build();
+        var tiltak2 = NyttVedtakTiltak.builder().build();
         tiltak2.setFraDato(LocalDate.now().plusMonths(3));
         tiltak2.setTilDato(LocalDate.now().plusMonths(4));
         tiltak2.setTiltakProsentDeltid(100.00);
@@ -168,4 +168,5 @@ public class ArenaTiltakServiceTest {
         assertThat(response2.get(0).getTiltakProsentDeltid()).isEqualTo(60.0);
         assertThat(response3).hasSize(1);
     }
+
 }

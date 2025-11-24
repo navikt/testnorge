@@ -1,0 +1,31 @@
+
+open:
+  search:
+    index: bestilling-dev
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_HOST}:${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_PORT}/${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_DATABASE}
+    username: ${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_USERNAME}
+    password: ${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_PASSWORD}
+  flyway:
+    url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_HOST}:${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_PORT}/${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_DATABASE}
+    user: ${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_USERNAME}
+    password: ${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_DEV_TESTNAV_DOLLY_BACKEND_DEV_PASSWORD}
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+consumers:
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter-dev
+    url: http://testnav-pdl-forvalter-dev.dolly.svc.cluster.local
+  testnav-sykemelding-api:
+    name: testnav-sykemelding-api-dev
+    url: http://testnav-sykemelding-api-dev.dolly.svc.cluster.local
+  bruker-service:
+    name: testnav-bruker-service-dev
+    url: http://testnav-bruker-service-dev.dolly.svc.cluster.local

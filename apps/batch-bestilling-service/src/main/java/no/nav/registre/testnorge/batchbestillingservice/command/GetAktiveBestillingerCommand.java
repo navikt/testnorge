@@ -2,20 +2,19 @@ package no.nav.registre.testnorge.batchbestillingservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
 public class GetAktiveBestillingerCommand implements Callable<Flux<Object>> {
+
     private final WebClient webClient;
     private final String token;
     private final Long gruppeId;
@@ -29,7 +28,7 @@ public class GetAktiveBestillingerCommand implements Callable<Flux<Object>> {
                         .path("/api/v1/bestilling/gruppe/{gruppeId}/ikkeferdig")
                         .build(gruppeId)
                 )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(Object.class)
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
@@ -37,7 +36,7 @@ public class GetAktiveBestillingerCommand implements Callable<Flux<Object>> {
                             log.warn("Fant ikke gruppe {}.", gruppeId);
                             return Mono.empty();
                         })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

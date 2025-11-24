@@ -26,9 +26,10 @@ public class OrganisasjonServiceConsumer {
     public OrganisasjonServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient) {
         serverProperties = consumers.getTestnavOrganisasjonService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
@@ -36,7 +37,7 @@ public class OrganisasjonServiceConsumer {
 
     public Flux<Map<String, OrganisasjonDTO>> getStatus(String orgnummer, String miljoe) {
 
-       return getStatus(Set.of(orgnummer), Set.of(miljoe));
+        return getStatus(Set.of(orgnummer), Set.of(miljoe));
     }
 
     public Flux<Map<String, OrganisasjonDTO>> getStatus(Set<String> orgnummere, Set<String> miljoer) {
@@ -45,7 +46,7 @@ public class OrganisasjonServiceConsumer {
                 .flatMapMany(token -> Flux.fromIterable(miljoer)
                         .map(miljoe -> Flux.fromIterable(orgnummere)
                                 .flatMap(orgnr -> new OrganisasjonServiceCommand(webClient, orgnr, miljoe, token.getTokenValue()).call())
-                        .collect(Collectors.toMap(orgMap -> miljoe, orgMap -> orgMap))))
+                                .collect(Collectors.toMap(orgMap -> miljoe, orgMap -> orgMap))))
                 .flatMap(Mono::flux);
     }
 }

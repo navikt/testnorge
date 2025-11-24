@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.FinnesIDollyGetCommand;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.REGULAR;
 
+@Slf4j
 @Service
 public class DollyBackendConsumer {
 
@@ -23,12 +25,17 @@ public class DollyBackendConsumer {
     private final ServerProperties dollyBackendProperties;
     private final ServerProperties dollyBackendPropertiesDev;
 
-    public DollyBackendConsumer(TokenExchange tokenExchange, Consumers serverProperties,
-                                WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder
+    public DollyBackendConsumer(
+            TokenExchange tokenExchange,
+            Consumers serverProperties,
+            WebClient webClient
+    ) {
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getDollyBackend().getUrl())
                 .build();
-        this.webClientDev = webClientBuilder
+        this.webClientDev = webClient
+                .mutate()
                 .baseUrl(serverProperties.getDollyBackendDev().getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

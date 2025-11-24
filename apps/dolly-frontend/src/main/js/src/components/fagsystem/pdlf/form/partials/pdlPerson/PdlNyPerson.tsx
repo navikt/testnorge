@@ -5,7 +5,10 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -26,7 +29,7 @@ export const PdlNyPerson = ({
 	gruppeIdenter,
 	eksisterendeNyPerson = null,
 }: PdlNyPersonValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const isLeggTil = opts?.is?.leggTil
 	const disableAlder =
 		formMethods.watch(`${nyPersonPath}.foedtEtter`) != null ||
@@ -110,8 +113,9 @@ export const PdlNyPerson = ({
 			)}
 			<FormCheckbox
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
+				id={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
-				isDisabled={hasEksisterendePerson}
+				disabled={hasEksisterendePerson}
 				checkboxMargin={true}
 			/>
 		</div>

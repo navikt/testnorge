@@ -1,29 +1,33 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
-import {
-	adressebeskyttelse,
-	bostedsadresse,
-	doedfoedtBarn,
-	falskIdentitet,
-	forelderBarnRelasjon,
-	foreldreansvar,
-	innflytting,
-	kontaktadresse,
-	kontaktDoedsbo,
-	oppholdsadresse,
-	sikkerhetstiltak,
-	sivilstand,
-	statsborgerskap,
-	telefonnummer,
-	tilrettelagtKommunikasjon,
-	utenlandskId,
-	utflytting,
-	vergemaal,
-} from '@/components/fagsystem/pdlf/form/validation/partials'
 import { bankkontoValidation } from '@/components/fagsystem/bankkonto/form'
 import { tpsMessagingValidation } from '@/components/fagsystem/tpsmessaging/form/validation'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { isSameDay } from 'date-fns'
+import {
+	adressebeskyttelse,
+	bostedsadresse,
+	kontaktadresse,
+	oppholdsadresse,
+} from '@/components/fagsystem/pdlf/form/validation/partials/adresser'
+import { sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/validation/partials/sikkerhetstiltak'
+import { tilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/validation/partials/tilrettelagtKommunikasjon'
+import {
+	falskIdentitet,
+	utenlandskId,
+} from '@/components/fagsystem/pdlf/form/validation/partials/identifikasjon'
+import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials/telefonnummer'
+import {
+	doedfoedtBarn,
+	forelderBarnRelasjon,
+	foreldreansvar,
+	sivilstand,
+} from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
+import { utflytting } from '@/components/fagsystem/pdlf/form/validation/partials/utflytting'
+import { kontaktDoedsbo } from '@/components/fagsystem/pdlf/form/validation/partials/kontaktinformasjonForDoedsbo'
+import { vergemaal } from '@/components/fagsystem/pdlf/form/validation/partials/vergemaal'
+import { statsborgerskap } from '@/components/fagsystem/pdlf/form/validation/partials/statborgerskap'
+import { innflytting } from '@/components/fagsystem/pdlf/form/validation/partials/innvandring'
 
 const testGyldigFom = (val) => {
 	return val.test('is-unique', (selected: string, testContext: any) => {
@@ -102,19 +106,23 @@ export const validation = {
 	pdldata: ifPresent(
 		'$pdldata',
 		Yup.object({
-			opprettNyPerson: Yup.object({
-				alder: testGyldigAlder(Yup.string().nullable()),
-				foedtEtter: testDatoFom(
-					Yup.date().nullable(),
-					'foedtFoer',
-					'Dato må være før født før-dato',
-				),
-				foedtFoer: testDatoTom(
-					Yup.date().nullable(),
-					'foedtEtter',
-					'Dato må være etter født etter-dato',
-				),
-			}).nullable(),
+			opprettNyPerson: ifPresent(
+				'$opprettNyPerson',
+				Yup.object({
+					alder: testGyldigAlder(Yup.string().nullable()),
+					foedtEtter: testDatoFom(
+						Yup.date().nullable(),
+						'foedtFoer',
+						'Dato må være før født før-dato',
+					),
+					foedtFoer: testDatoTom(
+						Yup.date().nullable(),
+						'foedtEtter',
+						'Dato må være etter født etter-dato',
+					),
+					identtype: ifPresent('$identtype', Yup.string().required('Velg en identtype')),
+				}).nullable(),
+			),
 			person: Yup.object({
 				bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
 				oppholdsadresse: ifPresent(

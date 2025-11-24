@@ -1,0 +1,6 @@
+SLACK_CHANNEL: dummy
+SLACK_TOKEN: dummy
+
+consumers:
+  profil-api:
+    url: https://testnorge-profil-api.intern.dev.nav.no

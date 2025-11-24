@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ajourhold;
 import no.nav.testnav.identpool.domain.BatchStatus;
 import no.nav.testnav.identpool.repository.AjourholdRepository;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
@@ -18,42 +20,39 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
-    public void startGeneratingIdentsBatch() {
+    public Mono<Ajourhold> startGeneratingIdents(Integer yearToGenerate) {
 
-        var ajourhold = new Ajourhold();
-
-        try {
-            updateStatus(ajourhold, BatchStatus.MINING_STARTED);
-            ajourholdService.checkCriticalAndGenerate();
-            updateStatus(ajourhold, BatchStatus.MINING_COMPLETE);
-
-        } catch (Exception e) {
-            ajourhold.setFeilmelding(ExceptionUtils.getStackTrace(e).substring(0, 1023));
-            updateStatus(ajourhold, BatchStatus.MINING_FAILED);
-            log.error(e.getMessage(), e);
-        }
+        return updateStatus(BatchStatus.MINING_STARTED)
+                .flatMap(ajourhold1 -> ajourholdService.checkCriticalAndGenerate(yearToGenerate))
+                .flatMap(melding ->
+                        updateStatus(BatchStatus.MINING_COMPLETED, melding, null))
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(error -> updateStatus(BatchStatus.MINING_FAILED, null,
+                        ExceptionUtils.getStackTrace(error).substring(0, 1023)));
     }
 
-    public void updateDatabaseWithProdStatus() {
+    public Mono<Ajourhold> updateDatabaseWithProdStatus(Integer yearToClean) {
 
-        var ajourhold = new Ajourhold();
-
-        try {
-            updateStatus(ajourhold, BatchStatus.CLEAN_STARTED);
-            ajourholdService.getIdentsAndCheckProd();
-            updateStatus(ajourhold, BatchStatus.CLEAN_COMPLETED);
-
-        } catch (Exception e) {
-            ajourhold.setFeilmelding(ExceptionUtils.getStackTrace(e).substring(0, 1023));
-            updateStatus(ajourhold, BatchStatus.CLEAN_FAILED);
-            log.error(e.getMessage(), e);
-        }
+        return updateStatus(BatchStatus.CLEAN_STARTED)
+                .flatMap(ajourhold -> ajourholdService.getIdentsAndCheckProd(yearToClean))
+                .flatMap(melding -> updateStatus(BatchStatus.CLEAN_COMPLETED, melding, null))
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(error -> updateStatus(BatchStatus.CLEAN_FAILED, null,
+                        ExceptionUtils.getStackTrace(error).substring(0, 1023)));
     }
 
-    private void updateStatus(Ajourhold ajourhold, BatchStatus status) {
+    private Mono<Ajourhold> updateStatus(BatchStatus status) {
 
-        ajourhold.setSistOppdatert(LocalDateTime.now());
-        ajourhold.setStatus(status);
-        ajourholdRepository.save(ajourhold);
+        return updateStatus(status, null, null);
+    }
+
+    private Mono<Ajourhold> updateStatus(BatchStatus status, String melding, String feilmelding) {
+
+        return ajourholdRepository.save(Ajourhold.builder()
+                .sistOppdatert(LocalDateTime.now())
+                .status(status)
+                .melding(melding)
+                .feilmelding(feilmelding)
+                .build());
     }
 }

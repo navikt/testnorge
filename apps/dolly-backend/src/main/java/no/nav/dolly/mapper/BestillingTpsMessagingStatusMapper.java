@@ -28,7 +28,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingTpsMessagingStatusMapper {
 
-    private static final List<String> HIDE_MILJOER = List.of("t13", "q5", "qa", "qx");
+    private static final List<String> HIDE_MILJOER = List.of("q1","q2","qx");
     private static final String OKEY = "OK";
     private static final String ADVARSEL = "Advarsel: ";
     private static final String FEIL = "Feil: ";
@@ -131,7 +131,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     status.toLowerCase().contains("person ikke funnet i tps") ||
                     status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
                     status.toLowerCase().contains("utgått fødselsnr") ||
-                    status.toLowerCase().contains("mottaker svarer ikke") ||
+                    status.toLowerCase().contains("mottaker svarer ikke") && !status.toUpperCase().contains("MELDINGER TIL TPS") ||
                     status.toLowerCase().contains("forbindelsen er ustabil")
                     ? OKEY
                     : status;

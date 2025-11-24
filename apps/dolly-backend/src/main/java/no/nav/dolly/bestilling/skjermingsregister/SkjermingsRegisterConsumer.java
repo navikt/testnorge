@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.skjermingsregister;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterGetCommand;
@@ -28,7 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
-public class SkjermingsRegisterConsumer implements ConsumerStatus {
+public class SkjermingsRegisterConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -38,20 +37,22 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavSkjermingsregisterProxy();
-        this.webClient = webClientBuilder
+        serverProperties = consumers.getTestnavDollyProxy();
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "skjermingsdata-slett" })
+    @Timed(name = "providers", tags = {"operation", "skjermingsdata-slett"})
     public Mono<List<SkjermingDataResponse>> deleteSkjerming(List<String> identer) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenService
+                .exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(100))
                         .map(index -> new SkjermingsregisterPutCommand(webClient,
@@ -64,10 +65,10 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "skjermingsdata-oppdater" })
+    @Timed(name = "providers", tags = {"operation", "skjermingsdata-oppdater"})
     public Mono<SkjermingDataResponse> oppdaterPerson(SkjermingDataRequest skjerming) {
 
-        log.info("Sender forespørsel om skjerming for ident {}: {}", skjerming.getPersonident(), Json.pretty(skjerming));
+        log.info("Sender forespørsel om skjerming for ident {}: {}", skjerming.getPersonident(), skjerming);
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
@@ -105,7 +106,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-skjermingsregister-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

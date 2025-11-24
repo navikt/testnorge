@@ -10,19 +10,16 @@ sonarqube {
 }
 
 dependencies {
+    implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:testing"
 
-    implementation "no.nav.testnav.libs:data-transfer-objects"
-
-    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
-    
-    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 

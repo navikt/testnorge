@@ -1,0 +1,23 @@
+name: api-oversikt-service
+
+on:
+  push:
+    paths:
+      - plugins/**
+      - libs/security-core/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/testing/**
+      - apps/api-oversikt-service/**
+      - .github/workflows/app.api-oversikt-service.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/api-oversikt-service"
+      deploy-tag: "#deploy-api-oversikt-service"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

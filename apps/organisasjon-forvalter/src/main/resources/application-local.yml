@@ -1,14 +1,10 @@
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        project-id: dolly-dev-ff83
   config:
     import: "sm://"
   datasource:
     url: jdbc:postgresql://localhost:5432/testnav-organisasjon-forvalter-local
     username: testnav-organisasjon-forvalter-local
-    password: ${sm://testnav-organisasjon-forvalter-local}
+    password: ${sm\://testnav-organisasjon-forvalter-local}
 
 consumers:
   generer-navn-service:

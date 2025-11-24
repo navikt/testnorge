@@ -1,9 +1,7 @@
 export type Organisasjon = {
 	navn: string
 	organisasjonsnummer: string
-	organisasjonsfrom?: string
 	organisasjonsform?: string
-	gyldigTil?: string
 }
 
 export type OrgResponse = {
@@ -13,6 +11,7 @@ export type OrgResponse = {
 export type Bruker = {
 	id?: string
 	brukernavn: string
+	epost?: string
 	organisasjonsnummer: string
 	opprettet?: string
 	sistInnlogget?: string

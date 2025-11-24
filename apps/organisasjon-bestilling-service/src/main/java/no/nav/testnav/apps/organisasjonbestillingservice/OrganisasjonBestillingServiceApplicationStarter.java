@@ -1,12 +1,14 @@
 package no.nav.testnav.apps.organisasjonbestillingservice;
 
-import org.springframework.boot.SpringApplication;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class OrganisasjonBestillingServiceApplicationStarter {
-
     public static void main(String[] args) {
-        SpringApplication.run(OrganisasjonBestillingServiceApplicationStarter.class, args);
+        new SpringApplicationBuilder(OrganisasjonBestillingServiceApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

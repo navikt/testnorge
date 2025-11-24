@@ -1,40 +1,40 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Outlet } from 'react-router'
 import Header from '@/components/layout/header/Header'
 import Loading from '@/components/ui/loading/Loading'
-import allRoutes from '@/allRoutes'
 import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
-import { Forbedring } from '@/components/feedback/Forbedring'
+import { Kontaktinfo } from '@/components/feedback/Kontaktinfo'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import {
-	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
+	useMalbestillingBruker,
 } from '@/utils/hooks/useMaler'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
-import { FaroErrorBoundary } from '@grafana/faro-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
+import { RouteChangeHandler } from '@/RootComponent'
+import { NavigationTitle } from '@/NavigationTitle'
 
 const logout = (feilmelding: string) => {
+	console.error('Kritisk feil i Dolly, logger ut: ', feilmelding)
 	if (!runningE2ETest()) {
 		navigateToLogin(feilmelding)
 	}
 }
 
 export const App = () => {
-	const [criticalError, setCriticalError] = useState(null)
+	const [criticalError, setCriticalError]: any = useState(null)
 
 	const { loading, error: userError, currentBruker } = useCurrentBruker()
 
-	// Lazyloader miljøer, brukerens maler og profilData så det ligger cachet ved oppstart
 	useDollyEnvironments()
 	useBrukerProfil()
-	useDollyMalerBrukerOgMalnavn(currentBruker?.brukerId)
+	useMalbestillingBruker(currentBruker?.brukerId)
 	useDollyOrganisasjonMalerBrukerOgMalnavn(currentBruker?.brukerId)
 
 	useEffect(() => {
@@ -46,7 +46,7 @@ export const App = () => {
 	useEffect(() => {
 		if (criticalError && !runningE2ETest()) {
 			console.error(criticalError)
-			logout(criticalError.stack)
+			logout(criticalError?.stack)
 		}
 	}, [criticalError])
 
@@ -55,7 +55,8 @@ export const App = () => {
 	}
 
 	return (
-		<FaroErrorBoundary>
+		<ErrorBoundary>
+			<RouteChangeHandler />
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
@@ -63,20 +64,13 @@ export const App = () => {
 			<main>
 				<ErrorBoundary>
 					<Suspense fallback={<Loading label="Laster inn" />}>
-						<Routes>
-							{allRoutes.map((route: { element: any; path: string }, idx: React.Key) =>
-								route.element ? (
-									<Route key={idx} path={route.path} element={<route.element />} />
-								) : (
-									<React.Fragment key={idx} />
-								),
-							)}
-						</Routes>
+						<NavigationTitle />
+						<Outlet />
 					</Suspense>
 				</ErrorBoundary>
 			</main>
-			<Forbedring />
+			<Kontaktinfo />
 			<ToastConnector />
-		</FaroErrorBoundary>
+		</ErrorBoundary>
 	)
 }

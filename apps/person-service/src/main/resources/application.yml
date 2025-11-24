@@ -1,34 +1,23 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnav-person-service
     description: API for opprettelse av personer
+  config:
+    import: "classpath:dolly-application.yml"
   management:
     health:
       elasticsearch:
         enabled: false
-  main:
-    banner-mode: off
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
   jackson:
     serialization:
       write_dates_as_timestamps: false
-  cloud:
-    vault:
-      enabled: false
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
 
 consumers:
   pdl-proxy:
@@ -36,25 +25,3 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure.include: prometheus,heapdump,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

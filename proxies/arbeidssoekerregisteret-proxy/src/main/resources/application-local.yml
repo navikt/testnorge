@@ -1,0 +1,10 @@
+dolly:
+  nais:
+    name: testnav-arbeidssoekerregisteret-proxy
+    variables:
+      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
+      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
+
+spring:
+  config:
+    import: "sm://"

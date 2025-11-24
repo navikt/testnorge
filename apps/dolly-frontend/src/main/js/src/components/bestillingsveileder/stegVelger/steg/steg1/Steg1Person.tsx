@@ -13,11 +13,15 @@ import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
-import { ArbeidsplassenPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidsplassen'
+import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidssoeker'
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
+import { NavAnsattPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/NavAnsatt'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -27,7 +31,7 @@ export const identFraTestnorge = (opts: any) => {
 }
 
 export const Steg1Person = ({ stateModifier }: any) => {
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const { watch } = useFormContext()
 	const testnorgeIdent = identFraTestnorge(opts)
 	const personFoerLeggTil = opts?.personFoerLeggTil
@@ -38,7 +42,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
-		ArbeidsplassenPanel,
+		ArbeidssoekerPanel,
 		SykdomPanel,
 		MedlPanel,
 		BrregPanel,
@@ -50,6 +54,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		UdiPanel,
 		DokarkivPanel,
 		PensjonPanel,
+		NavAnsattPanel,
 	]
 		.map((panel) => ({
 			label: panel.heading,
@@ -68,13 +73,14 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			<AdressePanel stateModifier={stateModifier} formValues={formValues} />
 			<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
-			{!testnorgeIdent && (
-				<>
-					<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
-				</>
-			)}
+			<NavAnsattPanel stateModifier={stateModifier} formValues={formValues} />
+			<KontaktDoedsboPanel
+				stateModifier={stateModifier}
+				formValues={formValues}
+				testnorgeIdent={testnorgeIdent}
+			/>
 			<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
-			<ArbeidsplassenPanel stateModifier={stateModifier} formValues={formValues} />
+			<ArbeidssoekerPanel stateModifier={stateModifier} formValues={formValues} />
 			<PensjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<ArenaPanel stateModifier={stateModifier} formValues={formValues} />
 			<SykdomPanel stateModifier={stateModifier} formValues={formValues} />

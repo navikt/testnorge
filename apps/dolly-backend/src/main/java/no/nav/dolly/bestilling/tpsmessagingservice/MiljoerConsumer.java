@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MiljoerConsumer implements ConsumerStatus {
+public class MiljoerConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -25,11 +25,12 @@ public class MiljoerConsumer implements ConsumerStatus {
     public MiljoerConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavMiljoerService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

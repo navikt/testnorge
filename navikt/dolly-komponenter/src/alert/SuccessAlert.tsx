@@ -1,13 +1,13 @@
 import React from 'react';
-import { SuccessFilled } from '@navikt/ds-icons';
+import {CheckmarkCircleFillIcon} from '@navikt/aksel-icons';
 import Alert from './Alert';
 
 export type SuccessAlertProps = {
-  label?: string;
+    label?: string;
 };
 
-const SuccessAlert = ({ label }: SuccessAlertProps) => (
-  <Alert color="#06893A" label={label} Icon={SuccessFilled} />
+const SuccessAlert = ({label}: SuccessAlertProps) => (
+    <Alert color="#06893A" label={label} Icon={CheckmarkCircleFillIcon}/>
 );
 
 SuccessAlert.displayName = 'SuccessAlert';

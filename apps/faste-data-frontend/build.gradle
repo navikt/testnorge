@@ -6,7 +6,11 @@ sonarqube {
     properties {
         property "sonar.projectKey", "testnav-faste-data-frontend"
         property "sonar.projectName", "testnav-faste-data-frontend"
-        property "sonar.sources", "src/main/java,src/main/js"
+        property "sonar.projectBaseDir", project.projectDir
+        property "sonar.sources", "src/main/java,src/main/js/src"
+        property "sonar.inclusions", "src/main/java/**,src/main/js/src/**"
+        property "sonar.typescript.tsconfigPaths", "src/main/js/tsconfig.json"
+        property "sonar.exclusions", "**/node_modules/**,src/main/js/node_modules/**,src/main/js/playwright/**,**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx"
         property "sonar.tests", "src/test/java"
     }
 }
@@ -18,20 +22,13 @@ configurations {
 }
 
 dependencies {
+    implementation "io.grpc:grpc-netty:$versions.grpc"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-frontend"
-    implementation("no.nav.testnav.libs:reactive-session-security") {
-        exclude group: "org.springframework.session", module: "spring-session-data-redis"
-        exclude group: "org.springframework.boot", module: "spring-boot-starter-data-redis"
-    }
-    implementation("no.nav.testnav.libs:security-core") {
-        exclude group: "org.springframework.session", module: "spring-session-data-redis"
-    }
-    implementation "no.nav.testnav.libs:vault"
-
+    implementation "no.nav.testnav.libs:reactive-session-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-
-    implementation "org.springframework.cloud:spring-cloud-starter-gateway"
-
+    implementation "org.springframework.cloud:spring-cloud-starter-gateway-server-webflux"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

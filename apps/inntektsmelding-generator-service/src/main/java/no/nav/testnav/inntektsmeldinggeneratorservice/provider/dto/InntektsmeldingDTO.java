@@ -5,16 +5,17 @@ import jakarta.xml.bind.JAXBElement;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.GjenopptakelseNaturalytelseListe;
+import no.nav.testnav.inntektsmeldinggeneratorservice.binding.InntektsmeldingM;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.OpphoerAvNaturalytelseListe;
+import no.nav.testnav.inntektsmeldinggeneratorservice.binding.PleiepengerPeriodeListe;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.Skjemainnhold;
 import no.nav.testnav.inntektsmeldinggeneratorservice.provider.adapter.ObjectFactory;
-import no.nav.testnav.inntektsmeldinggeneratorservice.binding.InntektsmeldingM;
-import no.nav.testnav.inntektsmeldinggeneratorservice.binding.PleiepengerPeriodeListe;
 import org.apache.commons.text.CaseUtils;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Data
@@ -44,7 +45,7 @@ public class InntektsmeldingDTO implements ToXmlElement<InntektsmeldingM> {
     @JsonProperty
     private SykepengerIArbeidsgiverperiodenDTO sykepengerIArbeidsgiverperioden;
     @JsonProperty
-    private LocalDate startdatoForeldrepengeperiode;
+    private String startdatoForeldrepengeperiode;
     @JsonProperty
     private List<NaturalYtelseDetaljerDTO> opphoerAvNaturalytelseListe;
     @JsonProperty
@@ -118,7 +119,7 @@ public class InntektsmeldingDTO implements ToXmlElement<InntektsmeldingM> {
         }
 
         xmlSkjemainnhold.setStartdatoForeldrepengeperiode(factory.createSkjemainnholdStartdatoForeldrepengeperiode(
-                startdatoForeldrepengeperiode
+                nonNull(startdatoForeldrepengeperiode) ? LocalDate.parse(startdatoForeldrepengeperiode) : null
         ));
 
         if (omsorgspenger != null) {

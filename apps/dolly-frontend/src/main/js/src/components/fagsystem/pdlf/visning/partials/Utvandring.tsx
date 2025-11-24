@@ -8,7 +8,7 @@ import {
 	InnvandringValues,
 	UtvandringValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'

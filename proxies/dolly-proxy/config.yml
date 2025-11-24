@@ -1,0 +1,160 @@
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-dolly-proxy-nav
+  namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+  labels:
+    team: dolly
+spec:
+  secretName: azure-nav-testnav-dolly-proxy
+  secretKeyPrefix: "AZURE_NAV"
+  tenant: nav.no
+---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-dolly-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-testnav-dolly-proxy
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-dolly-proxy
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+  envFrom:
+    - secret: azure-nav-testnav-dolly-proxy
+    - secret: azure-trygdeetaten-testnav-dolly-proxy
+  image: "{{image}}"
+  port: 8080
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
+        - application: jenkins-batch-status-service
+          cluster: dev-gcp
+        - application: organisasjon-bestilling-service
+          cluster: dev-gcp
+        - application: pensjon-afp-offentlig-mock-q1
+          namespace: pensjon-saksbehandling
+          cluster: dev-gcp
+        - application: pensjon-afp-offentlig-mock-q2
+          namespace: pensjon-saksbehandling
+          cluster: dev-gcp
+        - application: pensjon-samboerforhold-backend-q1
+          namespace: pensjon-person
+          cluster: dev-gcp
+        - application: pensjon-samboerforhold-backend-q2
+          namespace: pensjon-person
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: testnav-jenkins-batch-status-service
+          cluster: dev-gcp
+        - application: testnav-organisasjon-mottak-service
+          cluster: dev-gcp
+        - application: testnav-organisasjon-service
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-synt-vedtakshistorikk-service
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: digdir-krr-stub
+          namespace: team-rocket
+          cluster: dev-gcp
+        - application: ereg-services-q1
+          namespace: arbeidsforhold
+        - application: ereg-services-q2
+          namespace: arbeidsforhold
+        - application: ereg-services-q4
+          namespace: arbeidsforhold
+        - application: medlemskap-medl-testdata
+          namespace: team-rocket
+          cluster: dev-gcp
+        - application: opphold-testdata
+          namespace: team-rocket
+        - application: pensjon-afp-offentlig-mock-q1
+          namespace: pensjon-saksbehandling
+          cluster: dev-gcp
+        - application: pensjon-afp-offentlig-mock-q2
+          namespace: pensjon-saksbehandling
+          cluster: dev-gcp
+        - application: pensjon-samboerforhold-backend-q1
+          namespace: pensjon-person
+          cluster: dev-gcp
+        - application: pensjon-samboerforhold-backend-q2
+          namespace: pensjon-person
+          cluster: dev-gcp
+        - application: repr-fullmakt
+          namespace: repr
+        - application: skjermede-personer
+          namespace: nom
+        - application: sokos-kontoregister-person
+          namespace: okonomi
+          cluster: dev-gcp
+        - application: testnav-udi-stub
+        - application: logging
+          namespace: nais-system
+  liveness:
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  readiness:
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 20m
+      memory: 800Mi
+    limits:
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-dolly-proxy.intern.dev.nav.no"
+    - "https://testnav-dolly-proxy.dev-fss-pub.nais.io"

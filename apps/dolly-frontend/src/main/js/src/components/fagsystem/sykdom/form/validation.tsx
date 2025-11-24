@@ -8,6 +8,8 @@ const testHarArbeidsforhold = (val) => {
 		if (!selected) {
 			return true
 		}
+		const opts = testContext.options as any
+		const personFoerLeggTil = opts?.context?.personFoerLeggTil
 		const detaljertSykemelding = fullForm?.sykemelding?.detaljertSykemelding
 
 		const valgtArbeidsgiver = detaljertSykemelding
@@ -16,7 +18,7 @@ const testHarArbeidsforhold = (val) => {
 
 		const arbeidsgivere = fullForm?.aareg?.map((arbforh) => arbforh?.arbeidsgiver?.orgnummer) || []
 
-		fullForm?.personFoerLeggTil?.aareg?.forEach((miljo) => {
+		personFoerLeggTil?.aareg?.forEach((miljo) => {
 			miljo?.data?.forEach((arbforh) => {
 				const orgnr = arbforh?.arbeidsgiver?.organisasjonsnummer
 				if (orgnr && !arbeidsgivere?.includes(orgnr?.toString())) {
@@ -39,10 +41,17 @@ export const validation = {
 	sykemelding: ifPresent(
 		'$sykemelding',
 		Yup.object({
-			syntSykemelding: ifPresent(
-				'$sykemelding.syntSykemelding',
+			nySykemelding: ifPresent(
+				'$sykemelding.nySykemelding',
 				Yup.object({
-					startDato: requiredDate,
+					aktivitet: Yup.array()
+						.min(1, 'Må ha minst én aktivitet')
+						.of(
+							Yup.object({
+								fom: testDatoFom(requiredDate, 'tom'),
+								tom: testDatoTom(requiredDate, 'fom'),
+							}),
+						),
 					orgnummer: testHarArbeidsforhold(Yup.string().nullable()),
 				}),
 			),
@@ -53,6 +62,17 @@ export const validation = {
 					hovedDiagnose: Yup.object({
 						diagnose: requiredString,
 						diagnosekode: requiredString,
+					}),
+					mottaker: Yup.object({
+						navn: requiredString,
+					}),
+					organisasjon: Yup.object({
+						arbeidsgiver: Yup.object({
+							orgnummer: Yup.string()
+								.required('Må ha gyldig organisasjonsnummer')
+								.min(9, 'Orgnummer må være 9 siffer')
+								.max(9, 'Orgnummer må være 9 siffer'),
+						}),
 					}),
 					biDiagnoser: Yup.array().of(
 						ifPresent(
@@ -70,7 +90,7 @@ export const validation = {
 						hprId: requiredString,
 					}),
 					arbeidsgiver: Yup.object({
-						navn: testHarArbeidsforhold(Yup.string().nullable()),
+						navn: testHarArbeidsforhold(Yup.string().required('Må ha gyldig arbeidsgiver')),
 						stillingsprosent: requiredNumber.transform((num) => (isNaN(num) ? undefined : num)),
 						yrkesbetegnelse: requiredString,
 					}),

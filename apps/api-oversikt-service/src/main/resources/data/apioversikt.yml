@@ -1,0 +1,182 @@
+system:
+  - register: aareg
+    namespace: arbeidsforhold
+    read:
+      kubernetes-name: aareg-services-nais-{env}
+      url:
+        - https://aareg-services-q1.dev.intern.nav.no/swagger-ui/index.html
+        - https://aareg-services-q2.dev.intern.nav.no/swagger-ui/index.html
+        - https://aareg-services-q4.dev.intern.nav.no/swagger-ui/index.html
+  - register: arbeidsplassencv
+    kubernetes-name: pam-cv-api-gcp
+    namespace: teampam
+    write:
+      url: https://pam-cv-api-gcp.intern.dev.nav.no
+      description: https://pam-cv-api-gcp.intern.dev.nav.no/pam-cv-api/internal/swagger
+    cluster: dev-gcp
+  - register: arbeidssoekerregisteret
+    namespace: paw
+    kubernetes-name: paw-arbeidssoekerregisteret-api-dolly
+    cluster: dev-gcp
+    read:
+      url: https://dolly-arbeidssoekerregisteret.intern.dev.nav.no/docs
+  - register: arena
+    namespace: teamarenanais
+    cluster: dev-fss
+    write:
+      url: https://arena-forvalteren.dev.intern.nav.no/swagger-ui/index.html
+    read:
+      namespace: teamarenanais
+      kubernetes-name: arena-services-MILJOE
+      url: https://https://arena-ords-q2.dev.intern.nav.no
+      documentation: https://confluence.adeo.no/display/TEAMARENA/Syntetisering+-+Tjenester+som+tilbys
+  - register: brregstub
+    namespace: dolly
+    kubernetes-name: brreg-stub
+    cluster: dev-fss
+    url: https://brregstub.dev.intern.nav.no/swagger-ui/index.html
+  - register: dokarkiv
+    namespace: teamdokumenthandtering
+    write:
+      kubernets-name:
+      url:
+        - https://dokarkiv-q1.dev.intern.nav.no/swagger-ui/index.html
+        - https://dokarkiv-q2.dev.intern.nav.no/swagger-ui/index.html
+        - https://dokarkiv-q4.dev.intern.nav.no/swagger-ui/index.html
+    read:
+      kubernetes-name: saf-<miljoe>
+      url:
+        - https://saf-q1.dev.intern.nav.no/swagger-ui/index.html
+        - https://saf-q2.dev.intern.nav.no/swagger-ui/index.html
+        - https://saf-q4.dev.intern.nav.no/swagger-ui/index.html
+  - register: fullmakt
+    namespace: repr
+    kubernetes-name: repr-fullmakt
+    url: https://repr-fullmakt.intern.dev.nav.no/swagger-ui/index.html
+    cluster: dev
+  - register: histark
+    namespace: histark
+    kubernetes-name: histarkimport
+    cluster: dev-fss
+    write:
+      url: https://histarkimport.dev.intern.nav.no/swagger-ui/index.html
+  - register: inntektstub
+    namespace: team-inntekt
+    kubernetes-name: inntektstub
+    cluster: dev-fss
+    read:
+      url: https://inntektstub.intern.dev.nav.no/swagger-ui.html
+  - register: inst
+    namespace: team-rocket
+    kubernetes-name: opphold-testdata
+    cluster: dev-fss
+    read:
+      url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/get
+    write:
+      url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/post
+    delete:
+      url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/delete
+  - register: kodeverk
+    namespace: team-rocket
+    kubernetes-name: kodeverk-api
+    url: https://kodeverk-api.nav.no/swagger-ui/index.html
+    cluster: prod-gcp
+  - register: kontoregister
+    name: sokos-kontoregister-person
+    namespace: okonomi
+    cluster: dev-gcp
+    write:
+      url: https://sokos-kontoregister-person.intern.dev.nav.no
+      description: https://sokos-kontoregister-person.intern.dev.nav.no/api/borger/v1/docs/
+  - register: krrstub
+    name: digdir-krr-stub
+    namespace: team-rocket
+    cluster: dev-gcp
+    write:
+      url: https://digdir-krr-stub.intern.dev.nav.no/swagger-ui/index.html
+  - register: nom
+    kubernetes-name: nom-api
+    namespace: nom
+    cluster: dev-gcp
+    read:
+      url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/hentRessurs
+    write:
+      url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/opprettRessurs
+    delete:
+      url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/avsluttRessurs
+  - register: pensjon-testdata
+    write:
+      kubernetes-name: pensjon-testdata-facade
+      namespace: pensjontestdata
+      cluster: dev-fss
+      write:
+        url: https://pensjon-testdata-facade.dev.intern.nav.no/swagger-ui/index.html
+  - register: pensjon-samboer
+    write:
+      kubernetes-name: pensjon-samboerforhold-backend-{miljoe}
+      namespace: pensjon-person
+      cluster: dev-gcp
+      write:
+        url: https://pensjon-samboerforhold-backend-{miljoe}.intern.dev.nav.no
+  - register: pensjon-saksbehandling
+    write:
+      kubernetes-name: pensjon-afp-offentlig-mock-{miljoe}
+      namespace: pensjon-saksbehandling
+      cluster: dev-gcp
+      write:
+        url: https://pensjon-afp-offentlig-mock-{miljoe}.intern.dev.nav.no
+  - register: pdl
+    namespace: pdl
+    cluster: dev-fss
+    write:
+      kubernetes-name: pdl-testdata
+      url: https://pdl-testdata.dev.intern.nav.no/swagger-ui/index.html#/
+    read:
+      kubernetes-name: pdl-api
+      description: https://pdl-docs.ansatt.nav.no/ekstern/index.html#_graphql
+      url:
+      - https://pdl-api.intern.dev.nav.no
+      - https://pdl-api-q1.intern.dev.nav.no
+  - register: medlstub
+    kubernetes-name: medlemskap-medl-testdata
+    namespace: team-rocket
+    cluster: dev-gcp
+    write:
+      url: https://medlemskap-medl-testdata.intern.dev.nav.no
+  - register: norg2
+    kubernetes-name: norg2
+    namespace: org
+    cluster: dev-fss
+    read:
+      url: https://norg2.intern.dev.nav.no/norg2/api
+  - register: skjermingsregister
+    kubernetes-name: skjermede-personer
+    namespace: nom
+    cluster: dev-fss
+    write:
+      url: https://skjermede-personer.dev.adeo.no/swagger-ui/index.html
+  - register: sigrunstub
+    kubernetes-name: sigrun-skd-stub
+    namespace: team-inntekt
+    cluster: dev-gcp
+    write:
+      url: https://sigrun-skd-stub.intern.dev.nav.no/swagger-ui/index.html?urls.primaryName=Endepunkter+for+testdata
+  - register: sykemelding
+    kubernetes-name: syfosmregler
+    namespace: teamsykmelding
+    cluster: dev-gcp
+    write:
+      url:
+      - https://syfosmregler.intern.dev.nav.no/openapi
+      - QA.Q1_SYFOSMMOTTAK.INPUT
+  - register: udistub
+    kubernetes-name: testnav-udi-stub
+    namespace: dolly
+    cluster: dev-fss
+    write:
+      url: https://testnav-udi-stub.intern.dev.nav.no/swagger-ui/index.html
+  - register: yrkesskade
+    kubernetes-name: yrkesskade-datagenerator-service
+    namespace: yrkesskade
+    url: https://yrkesskade-datagenerator-service.intern.dev.nav.no/swagger-ui/index.html
+    cluster: dev-gcp

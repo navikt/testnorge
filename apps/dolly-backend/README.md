@@ -13,26 +13,9 @@ Applikasjonen legger også ved potensielle standard verdier som kreves i API vi 
 trenger å ha noe forhold til under utfylling av bestilling. Noe data blir persistert i postgres db, som f.eks brukerne
 av Dolly, bestillingskriterier, hvem som har sendt de inn og status på disse.
 
-## Utenfor utviklerimage
+## Lokal kjøring
 
-https://dolly.ekstern.dev.nav.no/swagger-ui.html
-
-## Fra utviklerimage
-
-https://dolly-backend.intern.dev.nav.no/swagger-ui.html
-
-## Kjør lokalt
-* Se [generell informasjon](../../docs/local_general.md).
-* Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).
-* Applikasjonen er avhengig av OpenSearch:
-```aiexclude
-> docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YLAgOm}rz#o6#Aq" --name opensearch -d opensearchproject/opensearch:latest
-```
-Legg merke til passord `YLAgOm}rz#o6#Aq` (tilfeldig [generert](https://www.strongpasswordgenerator.org/), men må være "sterkt" ellers vil ikke OpenSearch starte).
-
-**Mac:** For å kjøre tester og bygge appen lokalt må Docker (Colima kan brukes) kjøre og man er nødt til å sette disse miljøvariablene:
-```
-DOCKER_HOST=unix://${HOME}/.colima/default/docker.sock
-TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
-TESTCONTAINERS_RYUK_DISABLED=true
-```
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
+* [Database i GCP.](../../docs/modules/ROOT/pages/local/gcp_db.adoc)
+* [OpenSearch.](../../docs/modules/ROOT/pages/local/local_opensearch.adoc)

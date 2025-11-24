@@ -1,0 +1,15 @@
+spring:
+  config:
+    import: "sm://"
+
+dolly:
+  texas:
+    url:
+      token: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token
+      exchange: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange
+      introspect: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect
+    shared:
+      secret: LOCAL
+
+server:
+  port: 8081

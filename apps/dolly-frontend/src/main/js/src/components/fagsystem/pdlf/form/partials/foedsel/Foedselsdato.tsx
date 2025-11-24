@@ -2,10 +2,14 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
-import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import React, { useContext } from 'react'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { getYearRangeOptions } from '@/utils/DataFormatter'
 
 type FoedselsdatoTypes = {
 	formMethods: UseFormReturn
@@ -13,7 +17,7 @@ type FoedselsdatoTypes = {
 }
 
 export const FoedselsdatoForm = ({ formMethods, path }: FoedselsdatoTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const foedselsaar = formMethods.watch(`${path}.foedselsaar`)
 	const foedselsdato = formMethods.watch(`${path}.foedselsdato`)
@@ -38,19 +42,11 @@ export const FoedselsdatoForm = ({ formMethods, path }: FoedselsdatoTypes) => {
 				maxDate={new Date()}
 				minDate={minDateFoedsel}
 			/>
-			<Yearpicker
-				formMethods={formMethods}
+			<FormSelect
 				name={`${path}.foedselsaar`}
 				label="Fødselsår"
-				date={foedselsaar ? new Date(foedselsaar, 0) : null}
-				handleDateChange={(val) => {
-					formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-					formMethods.trigger()
-				}}
-				maxDate={new Date()}
-				minDate={minDateFoedsel}
-				// @ts-ignore
-				disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
+				options={getYearRangeOptions(minDateFoedsel, new Date())}
+				isDisabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
 			/>
 			<AvansertForm
 				path={path}
@@ -61,7 +57,7 @@ export const FoedselsdatoForm = ({ formMethods, path }: FoedselsdatoTypes) => {
 }
 
 export const Foedselsdato = ({ formMethods }: FoedselsdatoTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
 		<div className="flexbox--flex-wrap">

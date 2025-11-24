@@ -19,18 +19,16 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:testing"
 
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-
-    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
-
     implementation "org.springframework.kafka:spring-kafka"
-    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
-    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
 
+    implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
+    implementation "org.apache.httpcomponents.core5:httpcore5:5.3"
+    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"

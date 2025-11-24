@@ -7,10 +7,10 @@ import { SyntEvent } from '@/components/ui/form/formUtils'
 import './Select.less'
 import MenuList from '@/components/ui/form/inputs/select/MenuList'
 import Option from '@/components/ui/form/inputs/select/Option'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { useController, useFormContext } from 'react-hook-form'
-import { useContext } from 'react'
+import React, { createRef, useContext, useEffect } from 'react'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
@@ -22,10 +22,12 @@ type SelectProps = {
 	name: string
 	fieldName?: string
 	value?: any
+	defaultValue?: any
 	className?: any
 	classNamePrefix?: string
 	onChange?: any
 	onBlur?: any
+	autoFocus?: boolean
 	isDisabled?: boolean
 	isLoading?: boolean
 	isSearchable?: boolean
@@ -52,6 +54,7 @@ export const Select = ({
 	value,
 	className,
 	classNamePrefix = 'select',
+	defaultValue,
 	isDisabled = false,
 	isLoading = false,
 	isSearchable = true,
@@ -63,20 +66,35 @@ export const Select = ({
 	onChange,
 	isInDialog = false,
 	normalFontPlaceholder = false,
+	autoFocus = false,
 	...rest
 }: SelectProps) => {
 	const formMethods = useFormContext()
+	const ref = createRef()
+
+	useEffect(() => {
+		if (autoFocus) {
+			ref?.current?.focus?.()
+		}
+	}, [autoFocus])
+
+	useEffect(() => {
+		if (defaultValue && options.some((option) => option.value === defaultValue)) {
+			formMethods?.setValue(name, defaultValue)
+		}
+	}, [])
+
 	const val = formMethods?.watch(name)
 	let formValue = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
 		: options?.filter?.((o) => {
-				return o?.value === val
+				return _.isEqual(o?.value, val)
 			})
 
 	let propValue = isMulti
 		? options?.filter?.((o) => value?.some((el) => el === o?.value))
 		: options?.filter?.((o) => {
-				return o?.value === value
+				return _.isEqual(o?.value, value)
 			})
 
 	if (!onChange) {
@@ -86,14 +104,26 @@ export const Select = ({
 		}
 	}
 
+	const getPlaceholder = () => {
+		if (isLoading) {
+			return 'Laster ...'
+		} else if (options?.length === 0) {
+			return 'Ingen tilgjengelige verdier'
+		}
+		return placeholder
+	}
+	const placeholderText = getPlaceholder()
+
 	return (
 		<span data-testid={rest['data-testid']}>
 			<ReactSelect
 				value={!_.isEmpty(formValue) ? formValue : propValue}
+				defaultValue={propValue}
+				autoFocus={autoFocus}
 				options={options}
 				name={name}
 				inputId={id || name}
-				placeholder={placeholder}
+				placeholder={placeholderText}
 				filterOption={createFilter({ ignoreAccents: false })}
 				className={cn('basic-single', className)}
 				classNamePrefix={classNamePrefix}
@@ -119,9 +149,10 @@ export const Select = ({
 				menuPortalTarget={
 					isInDialog
 						? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
-						: document.getElementById('react-select-root')
+						: document.getElementById('root')
 				}
 				menuPosition={isInDialog ? 'fixed' : undefined}
+				ref={ref}
 				{...rest}
 			/>
 		</span>
@@ -129,7 +160,27 @@ export const Select = ({
 }
 
 export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: SelectProps) => {
-	const { kodeverk: kodeverkResult, loading } = useKodeverk(kodeverk)
+	const [numRetries, setNumRetries] = React.useState(0)
+	const { kodeverk: kodeverkResult, loading, error, mutate } = useKodeverk(kodeverk)
+
+	useEffect(() => {
+		if (!loading && kodeverkResult?.length === 0 && numRetries < 3) {
+			setTimeout(() => {
+				setNumRetries(numRetries + 1)
+				console.warn('Retry loading kodeverk: ' + kodeverk)
+				mutate()
+			}, 1000)
+		}
+	}, [loading, kodeverkResult])
+
+	if (loading) {
+		return <Select {...rest} isLoading={true} />
+	}
+
+	if (error) {
+		return <Select {...rest} feil={error} />
+	}
+
 	const getSortedKodeverk = (kodeverkVerdier) => {
 		if (label === 'Bostedskommune') {
 			const kodeverkClone = _.cloneDeep(kodeverkVerdier)
@@ -197,10 +248,10 @@ const P_FormSelect = ({ feil, ...props }: SelectProps) => {
 			onChange={handleChange}
 			onBlur={handleBlur}
 			feil={
-				(errorContext?.showError || isTouched) &&
-				(feil ||
-					formMethods?.getFieldState(props.name)?.error ||
-					formMethods?.getFieldState(props.fieldName)?.error)
+				((errorContext?.showError || isTouched) &&
+					(feil || formMethods?.getFieldState(`manual.${props.name}`)?.error)) ||
+				formMethods?.getFieldState(props.name)?.error ||
+				formMethods?.getFieldState(props.fieldName)?.error
 			}
 			{...props}
 		/>

@@ -5,21 +5,27 @@ import {
 	getInitialNyIdent,
 	getInitialUtenlandskIdentifikasjonsnummer,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { identifikasjonAttributter } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import { useFormContext } from 'react-hook-form'
 
 export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
+	const formMethods = useFormContext()
 	const sm = stateModifier(IdentifikasjonPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
-	const harNpid = opts.identtype === 'NPID'
+	const harNpid = opts?.identtype === 'NPID'
 	const erTestnorgePerson = opts?.identMaster === 'PDL'
+	const formGruppeId = formMethods.watch('gruppeId')
 
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
-	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+	const harTestnorgeIdenter = (identer?.filter((ident) => ident.master === 'PDL')?.length ?? 0) > 0
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'

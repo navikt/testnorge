@@ -2,6 +2,7 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
@@ -12,8 +13,8 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerCon
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -22,6 +23,8 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -40,42 +43,36 @@ public class DollyFrontendApplicationStarter {
     private final AccessService accessService;
     private final UserJwtExchange userJwtExchange;
     private final Consumers consumers;
+    private final GatewayFilter removeCookiesFilter = (exchange, chain) -> {
+        ServerWebExchange modifiedExchange = exchange.mutate()
+                .request(r -> r.headers(headers -> headers.remove(HttpHeaders.COOKIE)))
+                .build();
+        return chain.filter(modifiedExchange);
+    };
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+
         return builder
                 .routes()
-                .route(createRoute(consumers.getTestnavKontoregisterPersonProxy()))
                 .route(createRoute(consumers.getTestnavOrganisasjonFasteDataService()))
                 .route(createRoute(consumers.getTestnavAdresseService()))
                 .route(createRoute(consumers.getOppsummeringsdokumentService(), "oppsummeringsdokument-service"))
                 .route(createRoute(consumers.getTestnavOrganisasjonForvalter()))
                 .route(createRoute(consumers.getTestnavVarslingerService(), "testnav-varslinger-service"))
-                .route(createRoute(consumers.getTestnavOrganisasjonTilgangService(), "testnav-organisasjon-tilgang-service"))
                 .route(createRoute(consumers.getTestnavTpsMessagingService(), "testnav-tps-messaging-service"))
                 .route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api"))
+                .route(createRoute(consumers.getTestnavSykemeldingApi(), "testnav-sykemelding-api"))
                 .route(createRoute(consumers.getTestnavBrukerService(), "testnav-bruker-service"))
                 .route(createRoute(consumers.getTestnavMiljoerService()))
                 .route(createRoute(consumers.getDollyBackend(), "dolly-backend"))
                 .route(createRoute(consumers.getTestnavJoarkDokumentService()))
-                .route(createRoute(consumers.getTestnavPensjonTestdataFacadeProxy()))
-                .route(createRoute(consumers.getTestnavInntektstubProxy()))
-                .route(createRoute(consumers.getTestnavBrregstubProxy()))
+                .route(createRoute(consumers.getTestnavDollyProxy()))
                 .route(createRoute(consumers.getTestnavAaregProxy()))
-                .route(createRoute(consumers.getTestnavUdistubProxy(), "testnav-udistub-proxy"))
                 .route(createRoute(consumers.getTestnavArenaForvalterenProxy()))
-                .route(createRoute(consumers.getTestnavKrrstubProxy(), "testnav-krrstub-proxy"))
-                .route(createRoute(consumers.getTestnavFullmaktProxy(), "testnav-fullmakt-proxy"))
-                .route(createRoute(consumers.getTestnavMedlProxy(), "testnav-medl-proxy"))
-                .route(createRoute(consumers.getTestnavNorg2Proxy(), "testnav-norg2-proxy"))
-                .route(createRoute(consumers.getTestnavInstProxy(), "testnav-inst-proxy"))
-                .route(createRoute(consumers.getTestnavHistarkProxy(), "testnav-histark-proxy"))
                 .route(createRoute(consumers.getTestnavOrganisasjonService()))
-                .route(createRoute(consumers.getTestnavSigrunstubProxy()))
                 .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
-                .route(createRoute(consumers.getTestnavPersonSearchService()))
-                .route(createRoute(consumers.getTestnavPersonOrganisasjonTilgangService(), "testnav-person-organisasjon-tilgang-service"))
-                .route(createRoute(consumers.getTestnavSkjermingsregisterProxy()))
+                .route(createRoute(consumers.getTestnavDollySearchService(), "testnav-dolly-search-service"))
                 .route(createRoute(consumers.getTestnavDokarkivProxy()))
                 .route(createRoute(consumers.getTestnavArbeidsplassenCVProxy()))
                 .route(createRoute(consumers.getTestnavHelsepersonellService()))
@@ -87,11 +84,19 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdAnsettelse(), "testnav-levende-arbeidsforhold-ansettelse"))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdScheduler(), "testnav-levende-arbeidsforhold-scheduler"))
                 .route(createRoute(consumers.getTestnavYrkesskadeProxy()))
+                .route(createRoute(consumers.getTestnavSykemeldingProxy()))
+                .route(createRoute(consumers.getTestnavNomProxy()))
+                .route(createRoute(consumers.getTestnavAltinn3TilgangService(), "testnav-altinn3-tilgang-service"))
+                .route(createRoute(consumers.getTestnavArbeidssoekerregisteretProxy()))
+                .route(createRoute(consumers.getTestnavApiOversiktService(), "testnav-oversikt-service"))
+                .route(createRoute(consumers.getTestnavIdentPool()))
                 .build();
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
+        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
@@ -132,7 +137,7 @@ public class DollyFrontendApplicationStarter {
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filters(filter, addUserJwtHeaderFilter())
+                        .filters(filter, removeCookiesFilter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
 }

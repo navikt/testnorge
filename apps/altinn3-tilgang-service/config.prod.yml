@@ -1,0 +1,93 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-altinn3-tilgang-service-prod
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  tokenx:
+    enabled: true
+  image: "{{image}}"
+  port: 8080
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+      claims:
+        groups:
+          - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: altinn:resourceregistry/accesslist.read
+        - name: altinn:resourceregistry/accesslist.write
+        - name: altinn:accessmanagement/authorizedparties.resourceowner
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-altinn3-tilgang-proxy
+          cluster: dev-gcp
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
+        - application: dolly-texas-proxy
+          cluster: dev-gcp
+    outbound:
+      external:
+        - host: platform.altinn.no
+        - host: data.brreg.no
+      rules:
+        - application: logging
+          namespace: nais-system
+  liveness:
+    path: /internal/health/liveness
+    initialDelay: 10
+    periodSeconds: 5
+    failureThreshold: 10
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  readiness:
+    path: /internal/health/readiness
+    initialDelay: 10
+    periodSeconds: 5
+    failureThreshold: 10
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 20m
+      memory: 900Mi
+    limits:
+      memory: 2048Mi
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+  ingresses:
+    - "https://testnav-altinn3-tilgang-service.nav.no"
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_16
+        tier: db-custom-1-3840
+        name: testnav-altinn3-tilgang
+        databases:
+          - name: testnav-altinn3-tilgang
+        autoBackupHour: 2

@@ -1,4 +1,5 @@
 import { createActions } from 'redux-actions'
+import dayjs from 'dayjs'
 import {
 	BankkontoApi,
 	BrregstubApi,
@@ -6,7 +7,6 @@ import {
 	InntektstubApi,
 	KrrApi,
 	PdlforvalterApi,
-	SigrunApi,
 	SkjermingApi,
 	TpsMessagingApi,
 } from '@/service/Api'
@@ -14,30 +14,13 @@ import { onSuccess } from '@/ducks/utils/requestActions'
 import { successMiljoSelector } from '@/ducks/bestillingStatus'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { formatAlder, formatKjonn } from '@/utils/DataFormatter'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
+import { getTypePerson } from '@/components/bestilling/sammendrag/kriterier/BestillingKriterieMapper'
 
 export const actions = createActions(
 	{
 		getTpsMessaging: [
 			TpsMessagingApi.getTpsPersonInfoAllEnvs,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getSigrun: [
-			SigrunApi.getPerson,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getSigrunPensjonsgivendeInntekt: [
-			SigrunApi.getPensjonsgivendeInntekt,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getSigrunSekvensnr: [
-			SigrunApi.getSekvensnummer,
 			(ident) => ({
 				ident,
 			}),
@@ -99,8 +82,6 @@ export const actions = createActions(
 const initialState = {
 	tpsf: {},
 	tpsMessaging: {},
-	sigrunstub: {},
-	sigrunstubPensjonsgivende: {},
 	inntektstub: {},
 	krrstub: {},
 	pdl: {},
@@ -116,24 +97,8 @@ const initialState = {
 
 export default handleActions(
 	{
-		[onSuccess(actions.getSigrun)](state, action) {
-			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
-		},
-		[onSuccess(actions.getSigrunPensjonsgivendeInntekt)](state, action) {
-			state.sigrunstubPensjonsgivende[action.meta.ident] = action.payload.data
-		},
 		[onSuccess(actions.getTpsMessaging)](state, action) {
 			state.tpsMessaging[action.meta.ident] = action?.payload.data?.[0]?.person
-		},
-		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
-			const inntektData = state.sigrunstub[action.meta.ident]
-			if (inntektData) {
-				state.sigrunstub[action.meta.ident] = inntektData.map((i) => {
-					const sekvens = action.payload.data.find((s) => s.gjelderPeriode === i.inntektsaar)
-					const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
-					return { ...i, sekvensnummer }
-				})
-			}
 		},
 		[onSuccess(actions.getInntektstub)](state, action) {
 			state.inntektstub[action.meta.ident] = action.payload.data
@@ -190,8 +155,6 @@ export default handleActions(
 
 const deleteIdentState = (state, ident) => {
 	delete state.tpsf[ident]
-	delete state.sigrunstub[ident]
-	delete state.sigrunstubPensjonsgivende[ident]
 	delete state.inntektstub[ident]
 	delete state.krrstub[ident]
 	delete state.pdl[ident]
@@ -238,14 +201,6 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 		switch (system) {
 			case 'KRRSTUB':
 				return dispatch(actions.getKrr(personId))
-			case 'SIGRUNSTUB':
-				dispatch(actions.getSigrun(personId))
-				return dispatch(actions.getSigrunSekvensnr(personId))
-			case 'SIGRUN_LIGNET':
-				dispatch(actions.getSigrun(personId))
-				return dispatch(actions.getSigrunSekvensnr(personId))
-			case 'SIGRUN_PENSJONSGIVENDE':
-				return dispatch(actions.getSigrunPensjonsgivendeInntekt(personId))
 			case 'INNTK':
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':
@@ -343,13 +298,11 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 	const pdlMellomnavn = formaterPdlMellomnavn(pdlIdent?.navn?.[0]?.mellomnavn)
 	const pdlEtternavn = pdlIdent?.navn?.[0]?.etternavn || ''
 
-	const pdlAlder = (foedselsdato) => {
-		if (!foedselsdato) {
-			return null
-		}
-		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
-		return Math.abs(diff.getUTCFullYear() - 1970)
-	}
+	const alder = getAlder(
+		pdlIdent?.foedsel?.[0]?.foedselsdato || pdlIdent?.foedselsdato?.[0].foedselsdato,
+		getPdlDoedsdato(pdlIdent),
+		pdlIdent.ident,
+	)
 	return {
 		ident,
 		identNr: pdlIdent.ident,
@@ -358,10 +311,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		kilde: 'Dolly',
 		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
-		alder: formatAlder(
-			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato || pdlIdent?.foedselsdato?.[0].foedselsdato),
-			getPdlDoedsdato(pdlIdent),
-		),
+		alder: formatAlder(alder, getPdlDoedsdato(pdlIdent)),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
@@ -382,7 +332,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		} else if (navnListe?.length > 1) {
 			return [...navnListe]
 				?.filter((navn: any) => navn.metadata.historisk === false)
-				?.sort((a, b) => {
+				?.sort?.((a, b) => {
 					const sistEndretA = a.metadata.endringer?.reduce((x, y) => {
 						const dato = new Date(y.registrert)
 						return dato > x ? dato : x
@@ -402,8 +352,9 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
 	const alder = getAlder(
-		person.foedselsdato[0]?.foedselsdato || person.foedsel[0]?.foedselsdato,
-		person.doedsfall[0]?.doedsdato,
+		person.foedselsdato?.[0]?.foedselsdato || person?.foedsel?.[0]?.foedselsdato,
+		person.doedsfall?.[0]?.doedsdato,
+		ident.ident,
 	)
 
 	return {
@@ -412,10 +363,10 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		bestillingId: ident.bestillingId,
 		kilde: 'Test-Norge',
 		importFra: 'Test-Norge',
-		identtype: person?.folkeregisteridentifikator[0]?.type,
+		identtype: person?.folkeregisteridentifikator?.[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: formatKjonn(kjonn, alder),
-		alder: formatAlder(alder, person.doedsfall[0]?.doedsdato),
+		alder: formatAlder(alder, person.doedsfall?.[0]?.doedsdato),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
@@ -438,17 +389,40 @@ const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
 	}
 }
 
-export const getAlder = (datoFoedt, doedsdato = null) => {
-	const foedselsdato = new Date(datoFoedt)
-	let diff_ms = Date.now() - foedselsdato.getTime()
+export const getAlder = (datoFoedt, doedsdato = null, identNr = null as unknown as number) => {
+	var foedselsdato = datoFoedt && dayjs(datoFoedt)
+
+	if ((!foedselsdato || !foedselsdato.isValid()) && identNr) {
+		const identNrString = identNr.toString()
+		const typePerson = getTypePerson(identNrString)
+		const dato = identNrString.substring(0, 6)
+		var monthDigit = null
+
+		switch (typePerson) {
+			case 'Test-Norge':
+				monthDigit = _.toNumber(dato.charAt(2)) - 8
+				break
+			case 'NAV-syntetisk':
+				monthDigit = _.toNumber(dato.charAt(2)) - 4
+				break
+			case 'Standard':
+				monthDigit = _.toNumber(dato.charAt(2))
+				break
+		}
+		const day = dato.substring(0, 2)
+		const month = monthDigit + dato.substring(3, 4)
+		const year = dato.substring(4, 6)
+		foedselsdato = dayjs(year + '-' + month + '-' + day)
+	}
+	const currentDayjsDate = dayjs()
+	let alder = currentDayjsDate.diff(foedselsdato, 'years')
 
 	if (doedsdato && doedsdato !== '') {
-		const ddato = new Date(doedsdato)
-		diff_ms = ddato.getTime() - foedselsdato.getTime()
+		const ddato = dayjs(doedsdato)
+		alder = ddato.diff(foedselsdato, 'years')
 	}
 
-	const age_dt = new Date(diff_ms)
-	return Math.abs(age_dt.getUTCFullYear() - 1970)
+	return alder
 }
 
 export const getKjoenn = (kjoenn) => {
@@ -466,8 +440,6 @@ export const selectDataForIdent = (state, ident) => {
 	return {
 		tpsf: state.fagsystem.tpsf[ident],
 		tpsMessaging: state.fagsystem.tpsMessaging[ident],
-		sigrunstub: state.fagsystem.sigrunstub[ident],
-		sigrunstubPensjonsgivende: state.fagsystem.sigrunstubPensjonsgivende[ident],
 		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
 		pdl: state.fagsystem.pdl[ident],

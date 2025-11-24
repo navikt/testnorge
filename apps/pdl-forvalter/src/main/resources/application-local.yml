@@ -1,0 +1,21 @@
+spring:
+  config:
+    import: "sm://"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testnav-pdl-forvalter-local
+    username: testnav-pdl-forvalter-local
+    password: ${sm\://testnav-pdl-forvalter-local}
+
+consumers:
+  adresse-service:
+    url: https://testnav-adresse-service.intern.dev.nav.no
+  generer-navn-service:
+    url: https://generer-navn-service.intern.dev.nav.no
+  ident-pool:
+    url: https://testnav-ident-pool.intern.dev.nav.no
+  org-forvalter:
+    url: https://testnav-organisasjon-forvalter.intern.dev.nav.no
+  kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
+  person-service:
+    url: https://testnav-person-service.intern.dev.nav.no

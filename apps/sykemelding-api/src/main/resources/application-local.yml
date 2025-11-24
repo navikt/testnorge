@@ -1,0 +1,25 @@
+ibm:
+  mq:
+    queueManager: dummy
+    channel: dummy
+    connName: dummy
+    user: dummy
+    password: dummy
+    application-name: dummy
+    use-authentication-m-q-c-s-p: true
+
+consumers:
+  sykemelding-proxy:
+    url: https://testnav-sykemelding-proxy.intern.dev.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-sykemelding-proxy
+
+spring:
+  config:
+    import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dummy

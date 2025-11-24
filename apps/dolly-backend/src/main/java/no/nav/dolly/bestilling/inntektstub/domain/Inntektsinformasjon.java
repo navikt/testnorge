@@ -1,12 +1,8 @@
 package no.nav.dolly.bestilling.inntektstub.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,6 +41,13 @@ public class Inntektsinformasjon {
 
     @EqualsAndHashCode.Exclude
     private String feilmelding;
+
+    public static Flux<Inntektsinformasjon> of(WebClientError.Description description) {
+        return Flux.just(Inntektsinformasjon
+                .builder()
+                .feilmelding(description.getMessage())
+                .build());
+    }
 
     public List<Inntekt> getInntektsliste() {
         if (isNull(inntektsliste)) {

@@ -1,14 +1,15 @@
-import React, { Suspense, useContext, useEffect, useState } from 'react'
+import React, { Suspense, useContext, useEffect } from 'react'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
-import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
-import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 import { useFormContext } from 'react-hook-form'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
@@ -16,17 +17,15 @@ const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
 )
 
-export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
-	const opts = useContext(BestillingsveilederContext)
+const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
-
-	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
 	const { organisasjonMiljoe, loading } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
-	const importTestnorge = opts.is.importTestnorge
+	const importTestnorge = opts?.is?.importTestnorge
 
 	const erOrganisasjon = formMethods.getValues('organisasjon')
 
@@ -54,7 +53,7 @@ export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => 
 		if (!values) {
 			return false
 		}
-		return values.dokarkiv || values.instdata || values.arenaforvalter || values.pensjonforvalter
+		return values.dokarkiv || values.instdata || values.arenaforvalter
 	}
 
 	useEffect(() => {
@@ -66,6 +65,8 @@ export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => 
 			formMethods.setValue('environments', alleredeValgtMiljoe())
 		} else if (erQ1EllerQ2MiljoeAvhengig(formMethods.getValues())) {
 			formMethods.setValue('environments', ['q1', 'q2'])
+		} else if (formMethods.getValues()?.pensjonforvalter) {
+			formMethods.setValue('environments', ['q2'])
 		} else if (formMethods.getValues()?.sykemelding) {
 			formMethods.setValue('environments', ['q1'])
 		} else if (!formMethods.getValues()?.environments) {
@@ -81,6 +82,7 @@ export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => 
 	if (loadingBestilling) {
 		return <Loading label={'Oppretter bestilling ...'} />
 	}
+
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (
@@ -98,24 +100,6 @@ export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => 
 					orgTilgang={organisasjonMiljoe}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
-			)}
-			{importTestnorge && !opts.gruppe && (
-				<VelgGruppe
-					formMethods={formMethods}
-					title={'Hvilken gruppe vil du importere til?'}
-					gruppevalg={gruppevalg}
-					setGruppevalg={setGruppevalg}
-				/>
-			)}
-			{importTestnorge && opts.gruppe && (
-				<div className="oppsummering">
-					<div className="bestilling-detaljer">
-						<h4>Gruppe for import</h4>
-						<div className="info-text">
-							<div style={{}}>{opts.gruppe.navn}</div>
-						</div>
-					</div>
-				</div>
 			)}
 			{!erOrganisasjon &&
 				!importTestnorge &&
@@ -135,11 +119,9 @@ export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => 
 					opprettetFraMal={opts?.mal?.malNavn}
 				/>
 			)}
-			{!erOrganisasjon && !importTestnorge && (
-				<OppsummeringKommentarForm formMethods={formMethods} />
-			)}
+			{!erOrganisasjon && <OppsummeringKommentarForm formMethods={formMethods} />}
 		</div>
 	)
 }
 
-Steg3.label = 'Oppsummering'
+export default Steg3

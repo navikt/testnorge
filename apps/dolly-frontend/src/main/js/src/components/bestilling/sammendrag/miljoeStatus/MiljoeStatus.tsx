@@ -2,14 +2,15 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import FagsystemStatus from './fagsystemStatus/FagsystemStatus'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import React from 'react'
 
 export type Miljostatus = {
+	closeModal?: () => void
 	bestilling: {
 		status: Bestillingsinformasjon[]
 		systeminfo: string
-		feil: string
+		feil?: any
 		antallIdenter?: number
 		antallLevert?: number
 		opprettetFraGruppeId?: number
@@ -116,7 +117,7 @@ const mergeIdentiskeStatusmeldinger = (statuser: Status[]) => {
 	)
 }
 
-export default function MiljoeStatus({ bestilling }: Miljostatus) {
+export default function MiljoeStatus({ bestilling, closeModal }: Miljostatus) {
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 	const statusrapport = mapStatusrapport(bestilling.status)
 	const { tekst } = antallIdenterOpprettet(bestilling)
@@ -132,7 +133,7 @@ export default function MiljoeStatus({ bestilling }: Miljostatus) {
 					)}
 				</div>
 			)}
-			<FagsystemStatus statusrapport={statusrapport} />
+			<FagsystemStatus statusrapport={statusrapport} closeModal={closeModal} />
 		</div>
 	)
 }

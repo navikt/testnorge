@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.personservice.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -11,8 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 public class PersonServiceExistCommand implements Callable<Mono<PersonServiceResponse>> {
@@ -31,8 +29,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                 .uri(uriBuilder -> uriBuilder.path(PERSON_URL)
                         .queryParamIfPresent("opplysningId", Optional.ofNullable(opplysningId.isEmpty() ? null : opplysningId))
                         .build(ident))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .toEntity(Boolean.class)
                 .map(resultat -> PersonServiceResponse.builder()
@@ -40,6 +37,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .exists(resultat.getBody())
                         .build())
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(PersonServiceResponse.builder()
                         .exists(false)
                         .ident(ident)

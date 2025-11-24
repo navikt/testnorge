@@ -4,7 +4,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
@@ -46,18 +46,16 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 						<FormCheckbox
 							name={`${path}.tilfeldigKontonummer`}
 							label="Har tilfeldig kontonummer"
+							afterChange={() => {
+								formMethods.trigger(`${path}.kontonummer`)
+							}}
 							size="medium"
-							isDisabled={disableTilfeldigKontonummer}
+							disabled={disableTilfeldigKontonummer}
 						/>
 					</div>
 				</div>
 				<div className="flexbox--flex-wrap">
-					<FormTextInput
-						name={`${path}.swift`}
-						label={'Swift kode'}
-						size={'small'}
-						useControlled={true}
-					/>
+					<FormTextInput name={`${path}.swift`} label={'Swift kode'} size={'small'} />
 					<FormSelect
 						name={`${path}.landkode`}
 						label={'Land'}

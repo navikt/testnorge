@@ -17,6 +17,8 @@ public class LogEvent {
     Rating rating;
     Boolean isAnonym;
     String brukerType;
+    String brukernavn;
+    String tilknyttetOrganisasjon;
 
     public LogEvent(LogEventDTO dto, String userAgent, String host) {
         metadata = new LogMetadata(userAgent, host);
@@ -27,6 +29,8 @@ public class LogEvent {
         rating = dto.getRating();
         isAnonym = dto.getIsAnonym();
         brukerType = dto.getBrukerType();
+        brukernavn = dto.getBrukernavn();
+        tilknyttetOrganisasjon = dto.getTilknyttetOrganisasjon();
     }
 
     public Map<String, String> toPropertyMap() {
@@ -42,6 +46,8 @@ public class LogEvent {
         if (brukerType != null) {
             properties.put("bruker_type", brukerType);
         }
+        properties.put("brukernavn", brukernavn);
+        properties.put("tilknyttet_organisasjon", tilknyttetOrganisasjon);
         return properties;
     }
 
@@ -53,6 +59,8 @@ public class LogEvent {
                 .rating(toTilbakemeldingRating(rating))
                 .isAnonym(isAnonym)
                 .brukerType(brukerType)
+                .brukernavn(brukernavn)
+                .tilknyttetOrganisasjon(tilknyttetOrganisasjon)
                 .build();
     }
 

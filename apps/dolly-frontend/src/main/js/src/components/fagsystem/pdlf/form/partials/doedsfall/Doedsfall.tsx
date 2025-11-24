@@ -3,14 +3,17 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialDoedsfall } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type DoedsfallTypes = {
 	path: string
 }
 
 export const DoedsfallForm = ({ path }: DoedsfallTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	return (
 		<>
 			<FormDatepicker name={`${path}.doedsdato`} label="Dødsdato" maxDate={new Date()} />

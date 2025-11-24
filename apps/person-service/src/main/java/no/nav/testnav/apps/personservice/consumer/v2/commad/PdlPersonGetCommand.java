@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.v2.GraphQLRequest;
 import no.nav.testnav.apps.personservice.provider.v2.PdlMiljoer;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.Map;
@@ -19,13 +19,10 @@ import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.personservice.consumer.v2.PdlPersonConsumer.hentQueryResource;
 import static no.nav.testnav.apps.personservice.consumer.v2.TemaGrunnlag.GEN;
-import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.DOLLY;
-import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.*;
 
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
 
     private static final String TEMA = "Tema";
@@ -40,7 +37,6 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
 
     @Override
     public Mono<JsonNode> call() {
-
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -48,7 +44,7 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
                         .path(pdlMiljoe.equals(PdlMiljoer.Q2) ? "" : "-" + pdlMiljoe.name().toLowerCase())
                         .path(GRAPHQL_URL)
                         .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CONSUMER_ID, DOLLY)
                 .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
                 .header(TEMA, GEN.name())
@@ -57,10 +53,11 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
                                 Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .timeout(Duration.ofSeconds(5))
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }
+
 }

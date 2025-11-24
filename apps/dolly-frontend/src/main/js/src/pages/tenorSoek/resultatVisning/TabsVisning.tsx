@@ -1,8 +1,8 @@
 import { Tabs } from '@navikt/ds-react'
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import styled from 'styled-components'
 import { FileCodeIcon, KeyVerticalIcon } from '@navikt/aksel-icons'
-import SyntaxHighlighter from 'react-syntax-highlighter'
+import Loading from '@/components/ui/loading/Loading'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
@@ -20,17 +20,24 @@ const TabsVisningFormatter = styled.div`
 	}
 `
 
-const StyledCodeView = styled(SyntaxHighlighter)`
-	font-size: 0.9em;
-	margin: 0;
-`
-
 export const TabsVisning = ({ children, kildedata }: any) => {
+	const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
+
 	if (!kildedata) {
 		return <div className="person-visning_content">{children}</div>
 	}
-	const kildedataJson = JSON.parse(kildedata)
-	const kildedataPretty = JSON.stringify(kildedataJson, null, 2)
+
+	const kildedataIsValidJson = () => {
+		try {
+			JSON.parse(kildedata)
+		} catch (e) {
+			return false
+		}
+		return true
+	}
+
+	const kildedataJson = kildedataIsValidJson() ? JSON.parse(kildedata) : null
+	const kildedataPretty = kildedataJson ? JSON.stringify(kildedataJson, null, 2) : kildedata
 
 	return (
 		<TabsVisningFormatter>
@@ -60,9 +67,9 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<StyledCodeView language="json" wrapLongLines>
-						{kildedataPretty}
-					</StyledCodeView>
+					<Suspense fallback={<Loading label={'Laster kildedata...'} />}>
+						<PrettyCode language={'json'} codeString={kildedataPretty} wrapLongLines />
+					</Suspense>
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>

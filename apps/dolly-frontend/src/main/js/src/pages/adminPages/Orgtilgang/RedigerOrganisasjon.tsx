@@ -1,94 +1,95 @@
-import { Button } from '@navikt/ds-react'
+import { Alert, Button } from '@navikt/ds-react'
 import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
 import { PencilIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
-import React from 'react'
+import React, { useState } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormProvider, useForm } from 'react-hook-form'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { Form, FormProvider, useForm } from 'react-hook-form'
 import './RedigerModal.less'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
-import { useSWRConfig } from 'swr'
+import { miljoer } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
 
 type RedigerTypes = {
 	orgNr: string
-	gyldigTil: string
 	miljoe: string
 	mutate: Function
 }
 
-const miljoeOptions = [
-	{ label: 'Q1', value: 'q1' },
-	{ label: 'Q2', value: 'q2' },
-]
-
-export const RedigerOrganisasjon = ({ orgNr, gyldigTil, miljoe, mutate }: RedigerTypes) => {
-	const { mutate: schmutate } = useSWRConfig()
+export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => {
+	const [isLoading, setIsLoading, resetLoading] = useBoolean(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [error, setError] = useState(null)
+
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: {
 			miljoe: miljoe?.includes(',') ? miljoe.split(',') : [miljoe],
 			organisasjonsnummer: orgNr,
-			gyldigTil,
 		},
 	})
 
-	const values = formMethods.watch()
+	const { handleSubmit, control, watch } = formMethods
+	const values = watch()
 
-	const updateOrganisasjon = () => {
-		OrganisasjonTilgangService.updateOrganisasjon(values).then(() => {
-			mutate()
-		})
-		schmutate('/testnav-organisasjon-tilgang-service/api/v1/organisasjoner', (currentData) =>
-			currentData.map((org) => {
-				if (org.organisasjonsnummer === values.organisasjonsnummer) {
-					return {
-						...org,
-						gyldigTil: values.gyldigTil,
-						miljoe: values.miljoe.join(','),
-					}
-				}
-				return org
-			}),
-		)
-		closeModal()
+	const updateOrganisasjon = async () => {
+		setIsLoading(true)
+		await OrganisasjonTilgangService.updateOrganisasjon(values)
+			.then(() => {
+				mutate().then(() => {
+					resetLoading()
+					closeModal()
+				})
+			})
+			.catch((error) => {
+				setError(error)
+				resetLoading()
+			})
 	}
 
 	return (
 		<FormProvider {...formMethods}>
 			<Button
-				onClick={openModal}
+				onClick={() => {
+					resetLoading()
+					setError(null)
+					openModal()
+				}}
 				variant={'tertiary'}
 				icon={<PencilIcon title={'Endre tilgang'} />}
 				size={'small'}
 				style={{ marginLeft: '10px' }}
 			/>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'50%'} overflow={'visible'}>
-				<div className="redigerModal">
-					<div className="redigerModal redigerModal-content">
-						<h1>Endre utløpsdato og miljøer</h1>
-					</div>
-					<div className="redigerModal redigerModal-input">
-						<FormDatepicker name={'gyldigTil'} label="Ny utløpsdato" />
-						<FormSelect
-							name={'miljoe'}
-							label={'Miljø'}
-							options={miljoeOptions}
-							isClearable={false}
-							isMulti={true}
-							size={'grow	'}
+				<Form control={control} autoComplete="off" onSubmit={handleSubmit(updateOrganisasjon)}>
+					<div className="redigerModal">
+						<div className="redigerModal redigerModal-content">
+							<h1>Oppdatere organisasjonstilgang</h1>
+						</div>
+						<div className="redigerModal redigerModal-input">
+							<FormSelect
+								name={'miljoe'}
+								label={'Miljø'}
+								options={miljoer}
+								isClearable={false}
+								isMulti={true}
+								size={'grow'}
+							/>
+						</div>
+						{error && (
+							<Alert variant={'error'} size={'small'}>
+								Feil ved oppdatering: {error.message}
+							</Alert>
+						)}
+						<ModalActionKnapper
+							submitknapp="Endre tilgang"
+							disabled={values.miljoe.length === 0}
+							onAvbryt={closeModal}
+							loading={isLoading}
+							center
 						/>
 					</div>
-					<ModalActionKnapper
-						submitknapp="Endre tilgang"
-						disabled={values.miljoe.length === 0 || !values.gyldigTil}
-						onSubmit={() => updateOrganisasjon()}
-						onAvbryt={closeModal}
-						center
-					/>
-				</div>
+				</Form>
 			</DollyModal>
 		</FormProvider>
 	)

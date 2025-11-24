@@ -1,0 +1,10 @@
+DOLLY_TEXAS_PROXY_SHARED_SECRET: TEST
+NAIS_TOKEN_ENDPOINT: http://localhost:${wiremock.server.port}/api/v1/token
+NAIS_TOKEN_EXCHANGE_ENDPOINT: http://localhost:${wiremock.server.port}/api/v1/token/exchange
+NAIS_TOKEN_INTROSPECTION_ENDPOINT: http://localhost:${wiremock.server.port}/api/v1/introspect
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.reactive.ReactiveOAuth2ResourceServerAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.client.reactive.ReactiveOAuth2ClientAutoConfiguration

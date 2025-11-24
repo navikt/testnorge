@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -46,6 +47,7 @@ public abstract class Arbeidsavtale implements Arbeidsavtaletype {
     @Schema(description = "Antall timer per uke", example = "37.5")
     private Double antallTimerPrUke;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Beregnet antall timer per uke", example = "37.5")
     private Double beregnetAntallTimerPrUke;
 
@@ -55,9 +57,11 @@ public abstract class Arbeidsavtale implements Arbeidsavtaletype {
     @Schema(description = "Dato for siste stillingsendring, format (ISO-8601): yyyy-MM-dd", example = "2015-12-15")
     private LocalDate sistStillingsendring;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Bruksperiode for arbeidsavtalen")
     private Bruksperiode bruksperiode;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Gyldighetsperiode for arbeidsavtalen")
     private Gyldighetsperiode gyldighetsperiode;
 }

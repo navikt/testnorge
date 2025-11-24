@@ -11,34 +11,19 @@ import * as child from 'child_process'
 const commitHash = child.execSync('git rev-parse --short HEAD').toString()
 const gitBranch = child.execSync('git branch --show-current').toString()
 
-const preserveRefPlugin = () => {
-	const preverseRefFunc = `
-function __preserveRef(key, v) {
-  if (import.meta.env.PROD) return v;
-
-  import.meta.hot.data ??= {}
-  import.meta.hot.data.contexts ??= {}
-  const old = import.meta.hot.data.contexts[key];
-  const now = old || v;
-
-  import.meta.hot.on('vite:beforeUpdate', () => {
-    import.meta.hot.data.contexts[key] = now;
-  });
-
-  return now;
+const createProxyConfig = (routes) => {
+	const target = 'http://localhost:8020'
+	const secure = false
+	return Object.fromEntries(
+		Object.entries(routes).map(([path, { changeOrigin }]) => [
+			path,
+			{ target, changeOrigin, secure },
+		]),
+	)
 }
-`
-	return {
-		name: 'preserveRef',
-		transform(code) {
-			if (!code.includes('__preserveRef')) return
 
-			return {
-				code: code + preverseRefFunc,
-				map: null,
-			}
-		},
-	}
+const ReactCompilerConfig = {
+	target: '19',
 }
 
 export default defineConfig(({ mode }) => ({
@@ -46,9 +31,31 @@ export default defineConfig(({ mode }) => ({
 	build: {
 		outDir: 'build',
 		sourcemap: true,
+		minify: 'terser',
 		cssCodeSplit: false,
 		rollupOptions: {
 			external: ['./nais.js'],
+			output: {
+				sourcemapExcludeSources: false,
+				manualChunks(id) {
+					if (id.includes('node_modules') && !id.includes('navikt')) {
+						return id.toString().split('node_modules/')[1].split('/')[0].toString()
+					} else if (id.includes('navikt')) {
+						return 'navikt'
+					}
+				},
+			},
+		},
+		terserOptions: {
+			sourceMap: true,
+			compress: {
+				drop_console: false,
+				drop_debugger: false,
+			},
+			mangle: {
+				keep_classnames: true,
+				keep_fnames: true,
+			},
 		},
 	},
 	css: {
@@ -58,7 +65,7 @@ export default defineConfig(({ mode }) => ({
 			},
 		},
 	},
-	optimizeDeps: { exclude: ['node_modules/.cache'] },
+	optimizeDeps: { exclude: ['node_modules/.cache', 'node_modules/.vite'] },
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
@@ -66,7 +73,7 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	server: mode === 'local-dev' && {
-		proxy: proxyRoutes,
+		proxy: createProxyConfig(proxyRoutes),
 		port: 3000,
 	},
 	test: {
@@ -78,18 +85,20 @@ export default defineConfig(({ mode }) => ({
 		react({
 			babel: {
 				plugins: [
+					['babel-plugin-react-compiler', ReactCompilerConfig],
 					[
 						'babel-plugin-styled-components',
 						{
 							displayName: true,
 							ssr: false,
+							fileName: true,
+							meaninglessFileNames: ['index', 'styles'],
 						},
 					],
 				],
 			},
 		}),
 		viteTsconfigPaths(),
-		preserveRefPlugin(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',

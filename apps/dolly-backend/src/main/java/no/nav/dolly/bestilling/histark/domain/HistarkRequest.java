@@ -6,12 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-import static java.util.Objects.isNull;
-
+@Slf4j
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,13 +21,21 @@ import static java.util.Objects.isNull;
         "<antall sider>;<enhetsnummer>;<enhetsnavn>;<temakoder>;<brukerident>;<startår>;<sluttår>;<skanningstidspunkt>;<skanner>;<skanne-sted>;<filnavn>;<klage>;<sjekksum>")
 public class HistarkRequest {
 
-    private List<HistarkDokument> histarkDokumenter;
+    @Schema(description = "PDF dokument som skal importeres")
+    private ByteArrayResource file;
 
-    public List<HistarkDokument> getHistarkDokumenter() {
-        if (isNull(histarkDokumenter)) {
-            histarkDokumenter = new ArrayList<>();
+    @Schema(description = "Metadata tilhørende filen som sendes")
+    private HistarkMetadata metadata;
+
+    @Override
+    public String toString() {
+        try {
+            var contents = file.getContentAsString(StandardCharsets.UTF_8);
+            return "HistarkDokument{file='%s...', metadata=%s}".formatted(contents.substring(contents.length() - 21, contents.length() - 1), metadata);
+        } catch (IOException e) {
+            log.error("Kunne ikke hente filinnhold", e);
+            return "HistarkDokument{file='kunne ikke hente filinnhold', metadata=%s}".formatted(metadata);
         }
-        return histarkDokumenter;
     }
 
     @Data
@@ -34,76 +43,61 @@ public class HistarkRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class HistarkDokument {
-        @Schema(description = "PDF dokument som skal importeres")
-        private String file;
+    public static class HistarkMetadata {
 
-        @Schema(description = "Metadata tilhørende filen som sendes")
-        private HistarkMetadata metadata;
+        @Schema(description = "Antall sider i PDF dokumentet")
+        private String antallSider;
+        @Schema(description = "Nummeret på enheten som saksmappen tilhører")
+        private String enhetsnummer;
 
+        @Schema(description = "Navnet på enheten som saksmappen tilhører")
+        private String enhetsnavn;
 
-        @Data
-        @Builder
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        public static class HistarkMetadata {
+        @Schema(description = "En komma-separert liste med temakoder")
+        private String temakoder;
 
+        @Schema(description = "Fødselsnummer eller D-nummer til bruker")
+        private String brukerident;
+        @Schema(description = "Startåret for saksmappen")
+        private String startAar;
 
-            @Schema(description = "Antall sider i PDF dokumentet")
-            private String antallSider;
-            @Schema(description = "Nummeret på enheten som saksmappen tilhører")
-            private String enhetsnummer;
+        @Schema(description = "Sluttåret for saksmappen")
+        private String sluttAar;
 
-            @Schema(description = "Navnet på enheten som saksmappen tilhører")
-            private String enhetsnavn;
+        @Schema(description = "Når saksmappen ble skannet")
+        private String skanningstidspunkt;
 
-            @Schema(description = "En komma-separert liste med temakoder")
-            private String temakoder;
+        @Schema(description = "Hvilen skanner som ble brukt")
+        private String skanner;
 
-            @Schema(description = "Fødselsnummer eller D-nummer til bruker")
-            private String brukerident;
-            @Schema(description = "Startåret for saksmappen")
-            private String startAar;
+        @Schema(description = "Hvor saksmappen ble skannet")
+        private String skannested;
 
-            @Schema(description = "Sluttåret for saksmappen")
-            private String sluttAar;
+        @Schema(description = "Filnavnet på PDF fila")
+        private String filnavn;
 
-            @Schema(description = "Når saksmappen ble skannet")
-            private String skanningstidspunkt;
+        @Schema(description = "IKKE I BRUK, kan stå tomt")
+        private String klage;
 
-            @Schema(description = "Hvilen skanner som ble brukt")
-            private String skanner;
+        @Schema(description = "SHA256 sjekksum av PDF fila")
+        private String sjekksum;
 
-            @Schema(description = "Hvor saksmappen ble skannet")
-            private String skannested;
-
-            @Schema(description = "Filnavnet på PDF fila")
-            private String filnavn;
-
-            @Schema(description = "IKKE I BRUK, kan stå tomt")
-            private String klage;
-
-            @Schema(description = "SHA256 sjekksum av PDF fila")
-            private String sjekksum;
-
-            @Override
-            public String toString() {
-                return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
-                        antallSider,
-                        enhetsnummer,
-                        enhetsnavn,
-                        temakoder,
-                        brukerident,
-                        startAar,
-                        sluttAar,
-                        skanningstidspunkt,
-                        skanner,
-                        skannested,
-                        filnavn,
-                        klage,
-                        sjekksum);
-            }
+        @Override
+        public String toString() {
+            return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
+                    antallSider,
+                    enhetsnummer,
+                    enhetsnavn,
+                    temakoder,
+                    brukerident,
+                    startAar,
+                    sluttAar,
+                    skanningstidspunkt,
+                    skanner,
+                    skannested,
+                    filnavn,
+                    klage,
+                    sjekksum);
         }
     }
 }

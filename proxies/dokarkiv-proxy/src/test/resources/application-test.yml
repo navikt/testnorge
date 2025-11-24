@@ -1,5 +1,3 @@
-TOKEN_X_ISSUER: dummy
-
 consumers:
   dokarkiv:
     url: http://dokarkiv-dummy.dummy.no

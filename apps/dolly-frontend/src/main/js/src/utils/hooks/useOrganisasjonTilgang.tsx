@@ -3,9 +3,9 @@ import { fetcher } from '@/api'
 import { useBrukerProfil } from '@/utils/hooks/useBruker'
 
 const getOrganisasjonMiljoeUrl = (orgnummer: string) =>
-	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
+	`/testnav-altinn3-tilgang-service/api/v1/miljoer/organisasjon/${orgnummer}`
 
-const organisasjonTilgangUrl = `/testnav-organisasjon-tilgang-service/api/v1/organisasjoner`
+const organisasjonTilgangUrl = `/testnav-altinn3-tilgang-service/api/v1/organisasjoner`
 
 type OrganisasjonMiljoe = {
 	id: number

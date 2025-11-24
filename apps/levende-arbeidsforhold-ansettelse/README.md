@@ -1,11 +1,5 @@
 # Levende arbeidsforhold-ansettelse
 
-
-## Swagger
-
-Swagger finnes under [/swagger](https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no/swagger-ui/index.html#/jobb-controller/ansettelseJobb) -endepunktet til
-applikasjonen.
-
 ## Forbedringspotensial
 * Nå så blir samme antall mennesker ansatt i hver organisasjon og vi tenker at dette er noe som kan bli forbedret.
 * Vi har ikke lagt til forskjellige arbeidsforhold typer noe som kan gjøre dette mer realistisk.
@@ -89,19 +83,6 @@ https://www.ssb.no/arbeid-og-lonn/sysselsetting/statistikk/antall-arbeidsforhold
 
 
 ## Lokal kjøring
-
-Ha naisdevice kjørende og kjør GenererNavnServiceApplicationStarter med følgende argumenter:
-
-```
--Dspring.cloud.vault.token=[vault-token]
--Dspring.profiles.active=dev
-```
-
-### Utviklerimage
-
-I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
-
-```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
-```
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Lokal PostgreSQL.](../../docs/modules/ROOT/pages/local/local_db.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

@@ -1,18 +1,17 @@
 plugins {
-    id "com.gradle.develocity" version "3.17.4"
+    id "com.gradle.develocity" version "4.2.2"
 }
 
-rootProject.name = 'levende-arbeidsforhold-service'
+rootProject.name = "levende-arbeidsforhold-service"
 
-includeBuild "../../libs/kafka-config"
 includeBuild "../../libs/avro-schema"
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/servlet-insecure-security'
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../.github/workflows'
-includeBuild '../../libs/vault'
+includeBuild "../../libs/kafka-config"
+includeBuild "../../libs/testing"
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/servlet-insecure-security"
 
 develocity {
     buildScan {

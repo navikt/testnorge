@@ -3,8 +3,8 @@ import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import Loading from '@/components/ui/loading/Loading'
 import BestillingResultat from './BestillingResultat/BestillingResultat'
 import { BestillingProgresjon } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
-import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
-import _has from 'lodash/has'
+import { Bestillingsstatus } from '@/utils/hooks/useDollyOrganisasjoner'
+import * as _ from 'lodash-es'
 
 type StatusProps = {
 	gruppeId: string
@@ -54,7 +54,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 		<BestillingProgresjon
 			key={bestilling.sistOppdatert}
 			bestillingID={bestilling.id}
-			erOrganisasjon={_has(bestilling, 'organisasjonNummer')}
+			erOrganisasjon={_.has(bestilling, 'organisasjonNummer')}
 			cancelBestilling={cancelBestilling}
 			onFinishBestilling={onFinishBestilling}
 		/>
@@ -65,7 +65,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 			key={ferdig.id}
 			bestilling={ferdig}
 			lukkBestilling={lukkBestilling}
-			erOrganisasjon={_has(ferdig, 'organisasjonNummer')}
+			erOrganisasjon={_.has(ferdig, 'organisasjonNummer')}
 		/>
 	))
 

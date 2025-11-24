@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testnav-brregstub
+    username: postgres
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+  cloud:
+    vault:
+      enabled: false
+  flyway:
+    enabled: true

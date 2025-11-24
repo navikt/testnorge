@@ -1,5 +1,5 @@
 import { DollyModal } from '@/components/ui/modal/DollyModal'
-import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
+import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoeInfo'
 import React, { Fragment } from 'react'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -9,6 +9,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { Alert } from '@navikt/ds-react'
 
 type GjenopprettModalProps = {
 	gjenopprettHeader: any
@@ -31,11 +32,26 @@ export const GjenopprettModal = ({
 	const schemaValidation = yup.object().shape({
 		environments: yup.array().required('Velg minst ett miljø'),
 	})
+
+	const gyldigeEnvironments = gyldigeDollyMiljoer(tilgjengeligeEnvironments)
+
 	const formMethods = useForm({
 		mode: 'onBlur',
-		defaultValues: { environments: filterMiljoe(tilgjengeligeEnvironments, environments) },
+		defaultValues: { environments: filterMiljoe(gyldigeEnvironments, environments) },
 		resolver: yupResolver(schemaValidation),
 	})
+
+	const getWarningText = () => {
+		if (
+			bestilling?.bestilling?.arbeidsplassenCV &&
+			!bestilling?.bestilling?.arbeidssoekerregisteret
+		) {
+			return 'Gjenoppretting av Nav CV vil ikke fungere om person mangler oppføring i Arbeidssøkerregisteret.'
+		}
+		return null
+	}
+
+	const warningText = getWarningText()
 
 	return (
 		<FormProvider {...formMethods}>
@@ -49,7 +65,11 @@ export const GjenopprettModal = ({
 							bankIdBruker={brukertype && brukertype === 'BANKID'}
 							alleredeValgtMiljoe={[]}
 						/>
-
+						{warningText && (
+							<div style={{ padding: '0 20px' }}>
+								<Alert variant={'warning'}>{warningText}</Alert>
+							</div>
+						)}
 						<div className="dollymodal_buttons">
 							<NavButton variant={'danger'} onClick={closeModal}>
 								Avbryt

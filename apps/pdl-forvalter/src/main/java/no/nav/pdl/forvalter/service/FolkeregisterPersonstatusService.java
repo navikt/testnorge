@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.utils.ArtifactUtils;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -13,8 +14,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
@@ -71,7 +71,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             }
         }
 
-        setGyldigTilOgMed(person.getFolkeregisterPersonstatus());
+        setGyldigTilOgMed(person);
         return person.getFolkeregisterPersonstatus();
     }
 
@@ -144,13 +144,6 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                     personstatus.setGyldigFraOgMed(getBoadresseGyldigFraDato(person));
                 }
 
-            } else if (nonNull(person.getBostedsadresse().getFirst().getUkjentBosted())) {
-
-                if (isNotCurrentStatus(FOEDSELSREGISTRERT, person)) {
-                    personstatus.setStatus(FOEDSELSREGISTRERT);
-                    personstatus.setGyldigFraOgMed(getBoadresseGyldigFraDato(person));
-                }
-
             } else if (isNotCurrentStatus(BOSATT, person)) {
 
                 personstatus.setStatus(BOSATT);
@@ -189,15 +182,53 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                 .orElse(FoedselsdatoUtility.getFoedselsdato(person));
     }
 
-    protected static void setGyldigTilOgMed(List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus) {
+    protected static void setGyldigTilOgMed(PersonDTO person) {
 
-        for (var i = 0; i < folkeregisterPersonstatus.size(); i++) {
-            if (i + 1 < folkeregisterPersonstatus.size() && nonNull(folkeregisterPersonstatus.get(i).getGyldigFraOgMed())) {
-                folkeregisterPersonstatus.get(i + 1)
-                        .setGyldigTilOgMed(folkeregisterPersonstatus.get(i).getGyldigFraOgMed().minusDays(1));
+        var newStatus = new ArrayList<>(person
+                .getFolkeregisterPersonstatus()
+                .stream()
+                .filter(status -> nonNull(status.getGyldigFraOgMed()))
+                .sorted(Comparator
+                        .comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed)
+                        .reversed())
+                .toList());
+        person.setFolkeregisterPersonstatus(newStatus);
+
+        var folkeregisterPersonstatus = person.getFolkeregisterPersonstatus();
+        ArtifactUtils.renumberId(folkeregisterPersonstatus);
+
+        for (var i = folkeregisterPersonstatus.size() - 1; i >= 0; i--) {
+            if (i - 1 >= 0) {
+                fixGyldigTilOgMed(folkeregisterPersonstatus.get(i), folkeregisterPersonstatus.get(i - 1));
+                fixGyldigFraOgMed(folkeregisterPersonstatus.get(i), folkeregisterPersonstatus.get(i - 1));
             }
         }
 
-        folkeregisterPersonstatus.getFirst().setGyldigTilOgMed(null);
+        Optional
+                .ofNullable(folkeregisterPersonstatus.getFirst())
+                .ifPresent(first -> first.setGyldigTilOgMed(null));
+
+    }
+
+    private static void fixGyldigTilOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
+
+        if (statusA.getGyldigFraOgMed().isEqual(statusB.getGyldigFraOgMed())) {
+            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed().plusDays(1));
+
+        } else if (statusA.getGyldigFraOgMed().plusDays(1).isBefore(statusB.getGyldigFraOgMed())) {
+            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed().minusDays(1));
+
+        } else {
+            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed());
+        }
+    }
+
+    private static void fixGyldigFraOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
+
+        if (statusA.getGyldigTilOgMed().isAfter(statusB.getGyldigFraOgMed()) ||
+                statusA.getGyldigTilOgMed().isEqual(statusB.getGyldigFraOgMed())) {
+
+            statusB.setGyldigFraOgMed(statusA.getGyldigTilOgMed().plusDays(1));
+        }
     }
 }

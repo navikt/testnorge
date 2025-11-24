@@ -1,0 +1,18 @@
+plugins {
+    id "dolly-proxies"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-brregstub-reverse-proxy"
+        property "sonar.projectName", "testnav-brregstub-reverse-proxy"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-proxy"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
+}

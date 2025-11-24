@@ -25,10 +25,11 @@ public class AdresseServiceConsumer {
     public AdresseServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavAdresseService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

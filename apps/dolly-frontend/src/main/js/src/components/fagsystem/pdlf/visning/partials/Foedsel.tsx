@@ -5,7 +5,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { formatDate } from '@/utils/DataFormatter'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	Kodeverk,
 	KodeverkValues,
@@ -58,7 +58,7 @@ const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
 			<TitleValue title="Fødested" value={foedsel.foedested} />
 			<TitleValue title="Fødekommune">
 				{foedsel.foedekommune && (
-					<KodeverkConnector navn="Kommuner" value={foedsel.foedekommune}>
+					<KodeverkConnector navn="KommunerMedHistoriske" value={foedsel.foedekommune}>
 						{(_v: Kodeverk, verdi: KodeverkValues) => (
 							<span>{verdi ? verdi.label : foedsel.foedekommune}</span>
 						)}

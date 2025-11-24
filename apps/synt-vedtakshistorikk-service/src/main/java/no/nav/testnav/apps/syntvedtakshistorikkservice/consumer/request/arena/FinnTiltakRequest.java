@@ -1,15 +1,13 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FinnTiltakRequest{

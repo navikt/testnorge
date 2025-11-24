@@ -1,0 +1,11 @@
+services:
+
+  postgresql:
+    image: postgres
+    network_mode: host
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: ""
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./docker-compose.sql:/docker-entrypoint-initdb.d/init.sql

@@ -14,37 +14,35 @@ properties {
 }
 
 dependencies {
-    implementation "no.nav.testnav.libs:database"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
-    implementation "no.nav.testnav.libs:servlet-security"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:testing"
 
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.security:spring-security-oauth2-jose"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
-    implementation "org.springframework.cloud:spring-cloud-vault-config-databases"
-    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
     implementation "org.springframework.retry:spring-retry"
+    implementation "org.springframework.security:spring-security-oauth2-jose"
 
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
     implementation "org.aspectj:aspectjweaver:$versions.jweaver"
-
-    implementation "com.h2database:h2"
-
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
-    implementation "org.postgresql:postgresql"
-    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    runtimeOnly "org.postgresql:postgresql"
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
 
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
-    testImplementation "org.springframework.security:spring-security-test"
-    testImplementation "no.nav.testnav.libs:testing"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:r2dbc'
 }
 
 description = "testnav-ident-pool"

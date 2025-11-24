@@ -1,17 +1,16 @@
 package no.nav.testnav.proxies.pdlproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.pdlproxy.config.Consumers;
-import no.nav.testnav.proxies.pdlproxy.dto.CredentialsHolder;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -32,23 +31,15 @@ import java.util.function.Function;
 public class PdlProxyApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(PdlProxyApplicationStarter.class, args);
-    }
-
-    @Bean
-    public CredentialsHolder credentialsHolder(
-            @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
-            @Value("${person.aktor.admin.api}") String aktoerAdminApiKey,
-            @Value("${elastic.username}") String elasticUsername,
-            @Value("${elastic.password}") String elasticPassword) {
-
-        return new CredentialsHolder(hendelselagerApiKey, aktoerAdminApiKey, elasticUsername, elasticPassword);
+        new SpringApplicationBuilder(PdlProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            CredentialsHolder credentialsHolder,
-                                           TrygdeetatenAzureAdTokenService tokenService,
+                                           AzureTrygdeetatenTokenService tokenService,
                                            Consumers consumers) {
         var addHendelselagerApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
                 .apiKeyAuthenticationHeaderFilter(credentialsHolder.hendelselagerApiKey());
@@ -74,7 +65,7 @@ public class PdlProxyApplicationStarter {
                 ).uri(host);
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, TrygdeetatenAzureAdTokenService tokenService) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, AzureTrygdeetatenTokenService tokenService) {
         var segment = serverProperties.getName();
         var host = serverProperties.getUrl();
         var filter = AddAuthenticationRequestGatewayFilterFactory

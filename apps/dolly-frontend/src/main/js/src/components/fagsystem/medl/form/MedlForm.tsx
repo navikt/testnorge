@@ -61,7 +61,7 @@ export const MedlForm = () => {
 								afterChange={(selected) => {
 									setAktivKilde(selected?.value)
 									setValue('medl', getInitialValue(selected?.value))
-									trigger()
+									trigger('medl')
 								}}
 							/>
 							<MedlSelect

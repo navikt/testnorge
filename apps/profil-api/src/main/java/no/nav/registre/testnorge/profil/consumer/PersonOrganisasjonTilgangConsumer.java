@@ -1,25 +1,20 @@
 package no.nav.registre.testnorge.profil.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.config.Consumers;
 import no.nav.registre.testnorge.profil.consumer.command.GetPersonOrganisasjonTilgangCommand;
-import no.nav.registre.testnorge.profil.consumer.dto.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 
 @Slf4j
 @Component
 public class PersonOrganisasjonTilgangConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
@@ -27,37 +22,22 @@ public class PersonOrganisasjonTilgangConsumer {
     public PersonOrganisasjonTilgangConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavPersonOrganisasjonTilgangService();
+        serverProperties = consumers.getTestnavAltinn3TilgangService();
         this.tokenExchange = tokenExchange;
-        ExchangeStrategies jacksonStrategy = ExchangeStrategies
-                .builder()
-                .codecs(
-                        config -> {
-                            config
-                                    .defaultCodecs()
-                                    .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                            config
-                                    .defaultCodecs()
-                                    .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                        })
-                .build();
-        this.webClient = webClientBuilder
-                .exchangeStrategies(jacksonStrategy)
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
-    public Mono<OrganisasjonDTO> getOrganisasjon(String organisasjonsnummer) {
-        return tokenExchange.exchange(serverProperties)
-                .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken.getTokenValue(), organisasjonsnummer).call())
-                .onErrorResume(
-                        WebClientResponseException.class::isInstance,
-                        throwable -> {
-                            log.warn("Person har ikke tilgang til organisasjon {}.", organisasjonsnummer);
-                            return Mono.empty();
-                        });
+    public Mono<OrganisasjonDTO> getOrganisasjon(String ident, String organisasjonsnummer) {
+
+        return Mono.from(tokenExchange.exchange(serverProperties)
+                        .flatMapMany(accessToken ->
+                                new GetPersonOrganisasjonTilgangCommand(webClient, ident, accessToken.getTokenValue()).call()))
+                .doOnNext(organisasjon -> log.info("Mottatt organisasjon: {}", organisasjon))
+                .filter(organisasjon -> organisasjon.getOrganisasjonsnummer().equals(organisasjonsnummer));
     }
 }

@@ -11,6 +11,7 @@ import { formatDateTime } from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
 import React from 'react'
+import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>
@@ -41,6 +42,30 @@ const getHeader = (data: Inntektsinformasjon) => {
 }
 
 const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => {
+	const virksomheter = sortedData.map((data) => data.virksomhet)
+	const opplysningspliktigeOrg = sortedData.map((data) => data.opplysningspliktig)
+	const {
+		organisasjoner: virksomhetInfo,
+		loading: loadingVirksomheter,
+		error: errorVirksomheter,
+	} = useOrganisasjonForvalter(virksomheter)
+	const {
+		organisasjoner: opplysningspliktigInfo,
+		loading: loadingOpplysninspliktige,
+		error: errorOpplysningspliktige,
+	} = useOrganisasjonForvalter(opplysningspliktigeOrg)
+
+	if (loadingVirksomheter || loadingOpplysninspliktige) {
+		return <Loading label="Laster organisasjonsdata" />
+	} else if (errorVirksomheter || errorOpplysningspliktige) {
+		return (
+			<Alert variant={'error'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				Feil ved henting av organisasjonsdata:{' '}
+				{errorOpplysningspliktige?.message || errorVirksomheter?.message}
+			</Alert>
+		)
+	}
+
 	return (
 		<DollyFieldArray
 			header="Inntektsinformasjon"
@@ -48,26 +73,37 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 			data={sortedData}
 			expandable={numInntekter > 1}
 		>
-			{(inntektsinformasjon: Inntektsinformasjon) => (
-				<React.Fragment>
-					<div className="person-visning_content">
-						<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
-						<TitleValue
-							title="Rapporteringstidspunkt"
-							value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
-						/>
-						<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
-						<TitleValue
-							title="Opplysningspliktig (orgnr/id)"
-							value={inntektsinformasjon.opplysningspliktig}
-						/>
-					</div>
-					<InntektVisning data={inntektsinformasjon.inntektsliste} />
-					<FradragVisning data={inntektsinformasjon.fradragsliste} />
-					<ForskuddstrekkVisning data={inntektsinformasjon.forskuddstrekksliste} />
-					<ArbeidsforholdVisning data={inntektsinformasjon.arbeidsforholdsliste} />
-				</React.Fragment>
-			)}
+			{(inntektsinformasjon: Inntektsinformasjon, index) => {
+				const virksomhetNavn =
+					virksomhetInfo?.[index]?.q1?.organisasjonsnavn ||
+					virksomhetInfo?.[index]?.q2?.organisasjonsnavn
+				const opplysningspliktigNavn =
+					opplysningspliktigInfo?.[index]?.q1?.organisasjonsnavn ||
+					opplysningspliktigInfo?.[index]?.q2?.organisasjonsnavn
+				return (
+					<React.Fragment>
+						<div className="person-visning_content">
+							<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
+							<TitleValue
+								title="Virksomhet"
+								value={`${inntektsinformasjon?.virksomhet} - ${virksomhetNavn}`}
+							/>
+							<TitleValue
+								title="Opplysningspliktig"
+								value={`${inntektsinformasjon.opplysningspliktig} - ${opplysningspliktigNavn}`}
+							/>
+							<TitleValue
+								title="Rapporteringstidspunkt"
+								value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
+							/>
+						</div>
+						<InntektVisning data={inntektsinformasjon.inntektsliste} />
+						<FradragVisning data={inntektsinformasjon.fradragsliste} />
+						<ForskuddstrekkVisning data={inntektsinformasjon.forskuddstrekksliste} />
+						<ArbeidsforholdVisning data={inntektsinformasjon.arbeidsforholdsliste} />
+					</React.Fragment>
+				)
+			}}
 		</DollyFieldArray>
 	)
 }

@@ -7,13 +7,12 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponseDetails;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataStatus;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,9 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class PensjonServiceTest {
+@ExtendWith(MockitoExtension.class)
+class PensjonServiceTest {
 
     @Mock
     private PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
@@ -34,11 +32,11 @@ public class PensjonServiceTest {
     private PensjonService pensjonService;
 
     @Test
-    public void shouldOpprettePersonOgInntektIPopp() {
+    void shouldOpprettePersonOgInntektIPopp() {
         var miljoe = "TEST";
         var person = PersonDTO.builder()
                 .ident("01016412345")
-                .foedselsdato(FoedselsdatoDTO.builder()
+                .foedselsdato(PersonDTO.FoedselsdatoDTO.builder()
                         .foedselsdato(LocalDate.of(1964, 1, 1))
                         .build())
                 .build();
@@ -63,11 +61,11 @@ public class PensjonServiceTest {
     }
 
     @Test
-    public void shouldAcceptPensjonTimestampString() {
+    void shouldAcceptPensjonTimestampString() {
         var miljoe = "TEST";
         var person = PersonDTO.builder()
                 .ident("01016412345")
-                .foedselsdato(FoedselsdatoDTO.builder()
+                .foedselsdato(PersonDTO.FoedselsdatoDTO.builder()
                         .foedselsdato(LocalDate.of(1964, 1, 1))
                         .build())
                 .build();
@@ -91,4 +89,5 @@ public class PensjonServiceTest {
 
         assertThat(result).isTrue();
     }
+
 }

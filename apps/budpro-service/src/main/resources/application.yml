@@ -1,46 +1,17 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
-  cloud:
-    vault:
-      enabled: false
+  config:
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
 
-management:
-  endpoints:
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-  endpoint:
-    health:
-      probes:
-        enabled: true
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-consumers:
-  generer-navn-service:
-    name: generer-navn-service
-    url: http://generer-navn-service
-
-app:
-  security:
-    allow-api: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
+dolly:
+  texas:
+    consumers:
+      - name: generer-navn-service
+        url: http://generer-navn-service
+        audience: api://dev-gcp.dolly.generer-navn-service/.default
+    preload: true

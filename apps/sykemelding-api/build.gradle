@@ -10,32 +10,27 @@ sonarqube {
 }
 
 dependencies {
-    implementation "no.nav.testnav.libs:avro-schema"
     implementation "no.nav.testnav.libs:commands"
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:testing"
 
-    implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
-    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
-    implementation "org.springframework.kafka:spring-kafka"
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
     implementation "jakarta.activation:jakarta.activation-api:$versions.jakartaActivation"
     implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
 
-    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
-    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    testImplementation "no.nav.testnav.libs:testing"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

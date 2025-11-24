@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { Form, useFormContext, useWatch } from 'react-hook-form'
-import _get from 'lodash/get'
+import { isObjectEmptyDeep } from '@/components/ui/form/formUtils'
 
 const tilleggsinformasjonAttributter = {
 	BilOgBaat: 'bilOgBaat',
@@ -20,8 +20,7 @@ const tilleggsinformasjonAttributter = {
 const InntektStub = ({ inntektPath }) => {
 	const formMethods = useFormContext()
 	const [fields, setFields] = useState({})
-	const watched = useWatch()
-	const inntektValues = _get(watched, inntektPath)
+	const inntektValues = useWatch({ name: inntektPath })
 	const {
 		beloep,
 		startOpptjeningsperiode,
@@ -31,6 +30,10 @@ const InntektStub = ({ inntektPath }) => {
 	} = inntektValues
 
 	useEffect(() => {
+		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+	}, [inntektstype])
+
+	useEffect(() => {
 		if (!_.isEmpty(inntektstype)) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
 				(response) => {
@@ -38,25 +41,23 @@ const InntektStub = ({ inntektPath }) => {
 				},
 			)
 		}
-		formMethods.trigger(`${inntektPath}.inntektstype`)
+		formMethods.trigger(inntektPath)
 	}, [inntektValues])
 
 	useEffect(() => {
 		Object.entries(fields).forEach((entry) => {
 			const fieldName = entry[0]
 			const fieldState = formMethods.getFieldState(`${inntektPath}.${fieldName}`)
-			fieldState.invalid &&
+			if (
+				fieldState.invalid &&
 				!fieldState.isDirty &&
-				formMethods.getValues(`${inntektPath}.${fieldName}`) !== null &&
+				formMethods.getValues(`${inntektPath}.${fieldName}`) !== null
+			) {
 				formMethods.setValue(`${inntektPath}.${fieldName}`, null)
+			}
 			removeEmptyFieldsFromForm(entry)
+			removeEmptyTilleggsinformasjon(formMethods.watch(`${inntektPath}.tilleggsinformasjon`))
 		})
-		if (
-			!tilleggsinformasjonstype &&
-			formMethods.getValues(`${inntektPath}.tilleggsinformasjon`) !== undefined
-		) {
-			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
-		}
 	}, [fields])
 
 	useEffect(() => {
@@ -95,7 +96,20 @@ const InntektStub = ({ inntektPath }) => {
 			formMethods.getValues(`${inntektPath}.${name}`) !== undefined
 		) {
 			formMethods.setValue(`${inntektPath}.${name}`, undefined)
+			formMethods.clearErrors(`manual.${inntektPath}.${name}`)
 			formMethods.clearErrors(`${inntektPath}.${name}`)
+		}
+	}
+
+	const removeEmptyTilleggsinformasjon = (tilleggsinformasjon: any) => {
+		if (!tilleggsinformasjon) {
+			return
+		}
+
+		if (isObjectEmptyDeep(tilleggsinformasjon)) {
+			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+			formMethods.clearErrors(`manual.${inntektPath}.tilleggsinformasjon`)
+			formMethods.clearErrors(`${inntektPath}.tilleggsinformasjon`)
 		}
 	}
 
@@ -115,7 +129,7 @@ const InntektStub = ({ inntektPath }) => {
 
 	return (
 		<Form
-			onSubmit={(values) => {
+			onSubmit={(values: any) => {
 				if (inntektstype && values.inntektstype !== inntektstype) {
 					values = { inntektstype: values.inntektstype }
 				}

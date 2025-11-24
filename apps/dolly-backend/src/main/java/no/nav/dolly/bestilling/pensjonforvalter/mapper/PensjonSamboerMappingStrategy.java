@@ -13,9 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Component
@@ -28,19 +28,20 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PensjonSivilstandWrapper sivilstander, List list, MappingContext context) {
 
-                        var ident = (String) context.getProperty("ident");
+                        var ident = (String) context.getProperty(IDENT);
                         sivilstander.getSivilstander().stream()
                                 .sorted(Comparator.comparing(SivilstandDTO::getId).reversed())
                                 .filter(SivilstandDTO::isSamboer)
                                 .findFirst()
                                 .ifPresent(sivilstandSamboer -> {
 
+                                    var datoTom = nonNull(sivilstandSamboer.getSivilstandsdato()) ?
+                                            toLocalDate(sivilstandSamboer.getSivilstandsdato()) :
+                                            LocalDate.now();
                                     var hovedperson = PensjonSamboerRequest.builder()
                                             .pidBruker(ident)
                                             .pidSamboer(sivilstandSamboer.getRelatertVedSivilstand())
-                                            .datoFom(nonNull(sivilstandSamboer.getSivilstandsdato()) ?
-                                                    toLocalDate(sivilstandSamboer.getSivilstandsdato()) :
-                                                    LocalDate.now())
+                                            .datoFom(datoTom)
                                             .datoTom(sivilstander.getSivilstander().stream()
                                                     .sorted(Comparator.comparing(SivilstandDTO::getId).reversed())
                                                     .filter(sivilstand -> sivilstand.isGift() &&
@@ -49,7 +50,7 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
                                                                             sivilstand2.getId() < sivilstand.getId()))
                                                     .map(sivilstand -> toLocalDate(nonNull(sivilstand.getSivilstandsdato()) ?
                                                             sivilstand.getSivilstandsdato() : sivilstand.getBekreftelsesdato()))
-                                                    .filter(Objects::nonNull)
+                                                    .filter(localDate -> nonNull(localDate) && localDate.isAfter(datoTom))
                                                     .map(dato -> dato.minusDays(1))
                                                     .findFirst()
                                                     .orElse(null))
@@ -68,7 +69,6 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
     }
 
     private static LocalDate toLocalDate(LocalDateTime localDateTime) {
-
         return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
     }
 }

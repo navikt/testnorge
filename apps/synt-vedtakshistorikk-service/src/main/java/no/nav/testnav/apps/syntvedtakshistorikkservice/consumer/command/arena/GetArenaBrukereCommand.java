@@ -1,20 +1,21 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
-import lombok.AllArgsConstructor;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Slf4j
 public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>> {
 
     private final MultiValueMap<String, String> queryParams;
@@ -31,8 +32,11 @@ public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>
                 )
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
-                .bodyToMono(NyeBrukereResponse.class);
+                .bodyToMono(NyeBrukereResponse.class)
+                .timeout(Duration.ofSeconds(30))
+                .doOnError(WebClientError.logTo(log));
     }
+
 }

@@ -1,5 +1,5 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -16,6 +16,7 @@ import { useFormContext } from 'react-hook-form'
 import { KrrValidation } from '@/components/fagsystem/krrstub/form/KrrValidation'
 import { useBoolean } from 'react-use'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { krrInitialValues } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/KontaktReservasjon'
 
 type Change = {
 	value: boolean
@@ -25,9 +26,12 @@ export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = () => {
 	const formMethods = useFormContext()
+	if (!formMethods.watch(krrAttributt)) {
+		return null
+	}
+
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch('krrstub.land'))
-	const [mobilnummer, setMobilnummer] = useState(formMethods.watch('values.krrstub.mobil') || '')
 	const [showInfoStripe, setShowInfoStripe] = useBoolean(false)
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 
@@ -50,15 +54,10 @@ export const KrrstubForm = () => {
 			})
 		} else {
 			formMethods.setValue('krrstub', {
-				epost: '',
-				gyldigFra: null,
+				...krrInitialValues,
+				gyldigFra: new Date(),
 				landkode: '+47',
-				mobil: null,
-				sdpAdresse: '',
-				sdpLeverandoer: '',
-				spraak: '',
 				registrert: newRegistrert.value,
-				reservert: null,
 				land: 'NO',
 			})
 			setLand('NO')
@@ -132,17 +131,15 @@ export const KrrstubForm = () => {
 								<DollyTextInput
 									name="krrstub.mobil"
 									label="Mobilnummer"
-									value={mobilnummer}
 									size={'medium'}
 									onChange={(event) => {
-										setMobilnummer(event.target.value || '')
 										formMethods.setValue('krrstub.mobil', event.target.value || '')
 										formMethods.trigger('krrstub')
 									}}
 								/>
 							</div>
 							<FormSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
-							<FormDatepicker name="krrstub.gyldigFra" label="Kontaktinfo gjelder fra" />
+							<DollyDatepicker name="krrstub.gyldigFra" label="Kontaktinfo gjelder fra" />
 						</>
 					)}
 				</div>

@@ -1,0 +1,16 @@
+POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+
+server:
+  port: 8020
+
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  tps-messaging-service:
+    url: https://testnav-tps-messaging-service.intern.dev.nav.no
+  testnorge-profil-api:
+    url: https://testnorge-profil-api.intern.dev.nav.no
+  testnav-bruker-service:
+    url: https://testnav-bruker-service.intern.dev.nav.no

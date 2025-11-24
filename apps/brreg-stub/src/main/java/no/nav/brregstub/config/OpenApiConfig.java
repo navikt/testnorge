@@ -14,13 +14,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
-
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
-    public OpenAPI openApi(ApplicationProperties applicationProperties) {
+    public OpenAPI openApi() {
+
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
@@ -32,9 +31,9 @@ public class OpenApiConfig implements WebMvcConfigurer {
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
                 .info(new Info()
-                        .title(applicationProperties.getName())
-                        .version(applicationProperties.getVersion())
-                        .description(applicationProperties.getDescription())
+                        .title("Brreg-stub API")
+                        .version("Versjon 1")
+                        .description("Brreg-stub har operasjoner for testdata av brønnøysundregisteret.")
                         .termsOfService("https://nav.no")
                         .contact(new Contact()
                                 .url("https://nav-it.slack.com/archives/CA3P9NGA2")
@@ -44,8 +43,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")
-                        )
-                );
+                        ));
     }
 
     @Override

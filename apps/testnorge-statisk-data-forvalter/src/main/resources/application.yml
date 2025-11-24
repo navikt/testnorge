@@ -1,10 +1,10 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
     version: application.version.todo
     name: testnorge-statisk-data-forvalter
     description: Api forvalting av de faste testdataene.
+  config:
+    import: "classpath:dolly-application.yml"
   servlet:
     multipart:
       max-file-size: 10MB
@@ -14,14 +14,8 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
 controller:
   staticdata:
@@ -59,11 +53,11 @@ consumers:
     url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:
     url: http://nais-synthdata-aareg.dolly.svc.nais.local
-  kodeverk-api:
-    name: kodeverk-api
-    namespace: team-rocket
-    url: https://kodeverk-api.nav.no
-    cluster: prod-gcp
+  testnav-kodeverk-service:
+    name: testnav-kodeverk-service
+    namespace: dolly
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-aareg-proxy:
     name: testnav-aareg-proxy
     namespace: dolly
@@ -77,25 +71,3 @@ consumers:
 
 aareg:
   pageSize: 50
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure.include: prometheus,heapdump,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

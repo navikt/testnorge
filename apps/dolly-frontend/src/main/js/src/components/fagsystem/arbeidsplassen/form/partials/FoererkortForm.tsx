@@ -9,8 +9,10 @@ import * as React from 'react'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useFormContext } from 'react-hook-form'
 
-export const FoererkortForm = ({ formMethods }) => {
+export const FoererkortForm = () => {
+	const formMethods = useFormContext()
 	const foererkortTyperListePath = 'arbeidsplassenCV.foererkort'
 
 	return (

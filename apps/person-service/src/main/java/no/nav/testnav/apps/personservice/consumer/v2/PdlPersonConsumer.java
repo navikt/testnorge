@@ -12,17 +12,13 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,23 +37,14 @@ public class PdlPersonConsumer {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         serverProperties = consumers.getPdlProxy();
         this.tokenService = tokenService;
-        webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .clientConnector(
-                        new ReactorClientHttpConnector(
-                                HttpClient.create(
-                                                ConnectionProvider
-                                                        .builder("custom")
-                                                        .maxConnections(10)
-                                                        .pendingAcquireMaxCount(5000)
-                                                        .pendingAcquireTimeout(Duration.ofMinutes(15))
-                                                        .build())
-                                        .responseTimeout(Duration.ofSeconds(5))))
                 .build();
     }
 

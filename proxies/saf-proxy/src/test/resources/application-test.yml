@@ -1,11 +1,7 @@
-TOKEN_X_ISSUER: dummy
 consumers:
   saf:
     url: http://saf-dummy.dummy.no
     cluster: dev-fss
     name: saf-dummy
     namespace: dummy
-spring:
-  cloud:
-    vault:
-      enabled: false
+

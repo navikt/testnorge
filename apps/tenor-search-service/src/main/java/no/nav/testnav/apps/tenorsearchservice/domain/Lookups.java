@@ -13,6 +13,8 @@ public enum Lookups {
     AdresseGradering(TenorRequest.AdresseGradering.class),
     Adressebeskyttelse(TenorRequest.Adressebeskyttelse.class),
     Arbeidsforholdstype(TenorRequest.Arbeidsforholdstype.class),
+    BostedsadresseType(TenorRequest.BostedsadresseType.class),
+    CoAdressenavnType(TenorRequest.CoAdressenavnType.class),
     Forskuddstrekk(TenorRequest.Forskuddstrekk.class),
     Hendelse(no.nav.testnav.apps.tenorsearchservice.domain.Hendelse.class),
     IdentifikatorType(TenorRequest.IdentifikatorType.class),
@@ -31,7 +33,9 @@ public enum Lookups {
     Stadietype(TenorRequest.Stadietype.class),
     TekniskNavn(no.nav.testnav.apps.tenorsearchservice.domain.TekniskNavn.class),
     TilleggsskattType(TenorRequest.TilleggsskattType.class),
-    UtenlandskPersonIdentifikasjon(TenorRequest.UtenlandskPersonIdentifikasjon.class);
+    UtenlandskPersonIdentifikasjon(TenorRequest.UtenlandskPersonIdentifikasjon.class),
+    VergeTjenestevirksomhet(TenorRequest.VergeTjenestevirksomhet.class),
+    VergemaalType(TenorRequest.VergemaalType.class);
 
     private final Class<?> value;
 }

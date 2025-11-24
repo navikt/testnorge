@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import * as Yup from 'yup'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -30,7 +30,10 @@ import { AlertAaregRequired } from '@/components/ui/brukerAlert/AlertAaregRequir
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 
 enum TypeArbeidsgiver {
@@ -81,7 +84,9 @@ export const InntektsmeldingForm = () => {
 			: TypeArbeidsgiver.VIRKSOMHET,
 	)
 
-	const { personFoerLeggTil, leggTilPaaGruppe }: any = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, leggTilPaaGruppe }: any = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
@@ -164,6 +169,7 @@ export const InntektsmeldingForm = () => {
 											/>
 											<FormCheckbox
 												name={`${path}.naerRelasjon`}
+												id={`${path}.naerRelasjon`}
 												label="Nær relasjon"
 												checkboxMargin
 											/>
@@ -172,12 +178,13 @@ export const InntektsmeldingForm = () => {
 
 									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
 										<div className={'flexbox'}>
-											<OrgnrToggle
-												path={`${path}.arbeidsgiver.virksomhetsnummer`}
-												formMethods={formMethods}
-											/>
+											<OrgnrToggle path={path} formMethods={formMethods} />
 											<div style={{ margin: '70px 0 0 30px' }}>
-												<FormCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
+												<FormCheckbox
+													name={`${path}.naerRelasjon`}
+													id={`${path}.naerRelasjon`}
+													label="Nær relasjon"
+												/>
 											</div>
 										</div>
 									)}

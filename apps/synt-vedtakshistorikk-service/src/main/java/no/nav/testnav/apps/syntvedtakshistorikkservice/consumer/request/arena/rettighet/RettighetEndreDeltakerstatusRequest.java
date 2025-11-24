@@ -2,18 +2,18 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.r
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import java.util.Collections;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class RettighetEndreDeltakerstatusRequest extends RettighetRequest {

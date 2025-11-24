@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dev-gcp:dolly:testnorge-profil-api-dev
+
+consumers:
+  testnav-altinn3-tilgang-service:
+    name: testnav-altinn3-tilgang-service
+    url: https://testnav-altinn3-tilgang-service.intern.dev.nav.no

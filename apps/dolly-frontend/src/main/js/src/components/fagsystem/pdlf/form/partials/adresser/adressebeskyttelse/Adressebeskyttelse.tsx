@@ -1,12 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import _ from 'lodash'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import * as _ from 'lodash-es'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface AdressebeskyttelseValues {
@@ -58,7 +61,7 @@ export const AdressebeskyttelseForm = ({
 		const selectedOption = formMethods.watch(`${path}.gradering`)
 		if (selectedOption && !newOptions.map((opt) => opt.value).includes(selectedOption)) {
 			formMethods.setValue(`${path}.gradering`, null)
-			formMethods.trigger()
+			formMethods.trigger(path)
 		}
 		setOptions(newOptions)
 	}, [identtype])
@@ -73,7 +76,7 @@ export const AdressebeskyttelseForm = ({
 			identtype !== 'NPID' && _.set(adressebeskyttelseClone, 'master', 'FREG')
 		}
 		formMethods.setValue(path, adressebeskyttelseClone)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 	return (
 		<React.Fragment key={idx}>
@@ -92,7 +95,7 @@ export const AdressebeskyttelseForm = ({
 }
 
 export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const initialPdlMaster = opts.identMaster !== 'PDLF' && opts?.identtype === 'NPID'
 
 	return (

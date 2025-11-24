@@ -22,6 +22,8 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
+import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertStringList;
+import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertString;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -63,7 +65,12 @@ public class TenorSearchService {
                 .append(convertBooleanWildcard("legitimasjonsdokument", searchData.getHarLegitimasjonsdokument()))
                 .append(convertObject("falskIdentitet", searchData.getHarFalskIdentitet()))
                 .append(convertObject("norskStatsborgerskap", searchData.getHarNorskStatsborgerskap()))
-                .append(convertObject("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()));
+                .append(convertObject("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()))
+                .append(convertObject("nordenStatsborgerskap", searchData.getHarNordenStatsborgerskap()))
+                .append(convertObject("euEoesStatsborgerskap", searchData.getHarEuEoesStatsborgerskap()))
+                .append(convertObject("tredjelandStatsborgerskap", searchData.getHarTredjelandStatsborgerskap()))
+                .append(convertObject("utgaattStatsborgerskap", searchData.getHarUtgaattStatsborgerskap()))
+                .append(convertObject("harStatsborgerskapHistorikk", searchData.getHarStatsborgerskapHistorikk()));
 
         if (nonNull(searchData.getNavn())) {
             builder.append(convertObject("flereFornavn", searchData.getNavn().getHarFlereFornavn()))
@@ -98,6 +105,41 @@ public class TenorSearchService {
         if (nonNull(searchData.getHendelser())) {
             builder.append(convertEnum("hendelserMedSekvens.hendelse", searchData.getHendelser().getHendelse()))
                     .append(convertEnum("sisteHendelse", searchData.getHendelser().getSisteHendelse()));
+        }
+
+        if (nonNull(searchData.getAvansert())) {
+            builder
+                    .append(convertString("bostedsadresse", searchData.getAvansert().getBostedsadresse()))
+                    .append(convertString("etternavn", searchData.getAvansert().getEtternavn()))
+                    .append(convertObject("foedeland", searchData.getAvansert().getFoedeland()))
+                    .append(convertString("fornavn", searchData.getAvansert().getFornavn()))
+                    .append(convertString("mellomnavn", searchData.getAvansert().getMellomnavn()))
+                    .append(convertStringList("statsborgerskap", searchData.getAvansert().getStatsborgerskap()))
+                    .append(convertString("visningnavn", searchData.getAvansert().getVisningnavn()))
+                    .append(convertObject("harBostedsadresseHistorikk", searchData.getAvansert().getHarBostedsadresseHistorikk()))
+                    .append(convertObject("harDoedfoedtBarn", searchData.getAvansert().getHarDoedfoedtBarn()))
+                    .append(convertObject("harForeldreMedSammeKjoenn", searchData.getAvansert().getHarForeldreMedSammeKjoenn()))
+                    .append(convertObject("harInnflytting", searchData.getAvansert().getHarInnflytting()))
+                    .append(convertObject("harNavnHistorikk", searchData.getAvansert().getHarNavnHistorikk()))
+                    .append(convertObject("harOpphold", searchData.getAvansert().getHarOpphold()))
+                    .append(convertObject("harPostadresseIFrittFormat", searchData.getAvansert().getHarPostadresseIFrittFormat()))
+                    .append(convertObject("harPostadressePostboks", searchData.getAvansert().getHarPostadressePostboks()))
+                    .append(convertObject("harPostadresseVegadresse", searchData.getAvansert().getHarPostadresseVegadresse()))
+                    .append(convertObject("harPostboks", searchData.getAvansert().getHarPostboks()))
+                    .append(convertObject("harRelatertPersonUtenFolkeregisteridentifikator", searchData.getAvansert().getHarRelatertPersonUtenFolkeregisteridentifikator()))
+                    .append(convertObject("harRettsligHandleevne", searchData.getAvansert().getHarRettsligHandleevne()))
+                    .append(convertObject("harSivilstandHistorikk", searchData.getAvansert().getHarSivilstandHistorikk()))
+                    .append(convertObject("harUtenlandskAdresseIFrittFormat", searchData.getAvansert().getHarUtenlandskAdresseIFrittFormat()))
+                    .append(convertObject("harUtenlandskPostadressePostboks", searchData.getAvansert().getHarUtenlandskPostadressePostboks()))
+                    .append(convertObject("harUtenlandskPostadresseVegadresse", searchData.getAvansert().getHarUtenlandskPostadresseVegadresse()))
+                    .append(convertObject("harUtflytting", searchData.getAvansert().getHarUtflytting()))
+                    .append(convertString("barnFnr", searchData.getAvansert().getBarnFnr()))
+                    .append(convertString("farFnr", searchData.getAvansert().getFarFnr()))
+                    .append(convertString("morFnr", searchData.getAvansert().getMorFnr()))
+                    .append(convertEnum("bostedsadresseType", searchData.getAvansert().getBostedsadresseType()))
+                    .append(convertEnum("coAdressenavnType", searchData.getAvansert().getCoAdressenavnType()))
+                    .append(convertEnum("vergeTjenestevirksomhet", searchData.getAvansert().getVergeTjenestevirksomhet()))
+                    .append(convertEnum("vergemaalType", searchData.getAvansert().getVergemaalType()));
         }
 
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));

@@ -2,7 +2,6 @@ import { test as base } from '@playwright/test'
 import {
 	aaregMock,
 	afpOffentligMock,
-	ameldingMock,
 	arenaMock,
 	backendBestillingerMock,
 	backendTransaksjonMock,
@@ -11,6 +10,7 @@ import {
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
+	brukerTeamsMock,
 	eksisterendeGruppeMock,
 	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
@@ -21,7 +21,6 @@ import {
 	kodeverkMock,
 	kontoregisterMock,
 	krrstubMock,
-	malerMock,
 	medlMock,
 	miljoeMock,
 	nyGruppeMock,
@@ -34,9 +33,10 @@ import {
 	pensjonTpMock,
 	personFragmentNavigerMock,
 	personFragmentSearchMock,
-	sigrunstubMock,
 	skjermingMock,
 	tagsMock,
+	tenorSearchOversiktMock,
+	tenorSearchTestdataMock,
 	tpsMessagingMock,
 	udistubMock,
 } from './mocks/BasicMocks'
@@ -55,8 +55,9 @@ const arenaMiljoer = new RegExp(/testnav-arena-forvalteren-proxy\/api\/v1\/miljo
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/\/profil\/bilde/)
+const brukerTeams = new RegExp(/api\/v1\/bruker\/teams/)
 const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
-const histark = new RegExp(/testnav-histark-proxy\/api\//)
+const histark = new RegExp(/testnav-dolly-proxy\/histark\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
 const bestillingFragmentSearch = new RegExp(
 	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
@@ -71,30 +72,27 @@ const pdlPersonEnkelt = new RegExp(/person-service\/api\/v2\/personer\/ident/)
 const tpsMessaging = new RegExp(/testnav-tps-messaging-service\/api\/v1\/personer/)
 const pdlForvalter = new RegExp(/testnav-pdl-forvalter\/api\/v1\/personer/)
 const lagNyGruppe = new RegExp(/api\/v1\/gruppe$/)
-const kontoregister = new RegExp(/testnav-kontoregister-person-proxy\/api/)
+const kontoregister = new RegExp(/testnav-dolly-proxy\/kontoregister\/api/)
 const backendTransaksjon = new RegExp(/dolly-backend\/api\/v1\/transaksjonid/)
 const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/testnav-kodeverk-service\/api\/v1\/kodeverk\//)
 const dokarkivMiljoer = new RegExp(/testnav-dokarkiv-proxy\/rest\/miljoe/)
 const aareg = new RegExp(/testnav-aareg-proxy\/q1\/api\/v1\/arbeidstaker/)
-const amelding = new RegExp(/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/)
 const arena = new RegExp(/testnav-arena-forvalteren-proxy\/q1\/arena/)
-const inst = new RegExp(/testnav-inst-proxy\/api\/v1\/ident/)
+const inst = new RegExp(/testnav-dolly-proxy\/inst\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
-const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
-const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
-const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
+const pensjon = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/inntekt/)
+const pensjonMiljoer = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/miljo/)
+const pensjonTp = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/tp(.*?)q1/)
 const pensjonPensjonsavtale = new RegExp(
-	/testnav-pensjon-testdata-facade-proxy\/api\/v2\/pensjonsavtale\/hent/,
+	/testnav-dolly-proxy\/pensjon\/api\/v2\/pensjonsavtale\/hent/,
 )
-const afpOffentlig = new RegExp(/testnav-pensjon-testdata-facade-proxy\/q1\/api\/mock-oppsett/)
-const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
-const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
+const afpOffentlig = new RegExp(/testnav-dolly-proxy\/pensjon\/q1\/api\/mock-oppsett/)
+const krrstub = new RegExp(/testnav-dolly-proxy\/krrstub\/api\/v2/)
+const udistub = new RegExp(/testnav-dolly-proxy\/udistub\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
-const medl = new RegExp(/testnav-medl-proxy/)
-const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
-const alleMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling$/)
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
+const medl = new RegExp(/testnav-dolly-proxy\/medl/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\/brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,
 )
@@ -107,12 +105,19 @@ const organisasjonFraMiljoe = new RegExp(
 	/testnav-organisasjon-forvalter\/api\/v2\/organisasjoner\/framiljoe/,
 )
 const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon\?brukerId/)
+const tenorTestdataAlleFelter = new RegExp(
+	/testnav-tenor-search-service\/api\/v1\/tenor\/testdata\?kilde=FREG&type=AlleFelter/,
+)
+const tenorTestdataOversikt = new RegExp(
+	/testnav-tenor-search-service\/api\/v1\/tenor\/testdata\/oversikt\?antall=10&side=0/,
+)
 
 const mockRoutes: RouteInfo[] = [
 	{ url: api, response: [] },
 	{ url: weatherApi, status: 404, response: {} },
 	{ url: current, response: gjeldendeAzureBrukerMock },
 	{ url: profil, response: gjeldendeProfilMock },
+	{ url: brukerTeams, response: brukerTeamsMock },
 	{ url: miljoer, response: miljoeMock },
 	{ url: pensjonMiljoer, response: miljoeMock },
 	{ url: personFragmentSearch, response: personFragmentSearchMock },
@@ -131,7 +136,6 @@ const mockRoutes: RouteInfo[] = [
 	{ url: kontoregister, response: kontoregisterMock },
 	{ url: backendTransaksjon, response: backendTransaksjonMock },
 	{ url: tags, response: tagsMock },
-	{ url: alleMaler, response: malerMock },
 	{ url: brukerMaler, response: brukerMalerMock },
 	{ url: oppsummeringsdokService, response: oppsummeringsdokumentServiceMock },
 	{ url: brukerOrganisasjonMaler, response: brukerOrganisasjonMalerMock },
@@ -141,7 +145,6 @@ const mockRoutes: RouteInfo[] = [
 	{ url: joarkDokDokument, response: joarkDokumentMock },
 	{ url: krrstub, response: krrstubMock },
 	{ url: aareg, response: aaregMock },
-	{ url: amelding, response: ameldingMock },
 	{ url: arena, response: arenaMock },
 	{ url: tpsMessaging, response: tpsMessagingMock },
 	{ url: skjerming, response: skjermingMock },
@@ -150,7 +153,6 @@ const mockRoutes: RouteInfo[] = [
 	{ url: pensjonTp, response: pensjonTpMock },
 	{ url: pensjonPensjonsavtale, response: pensjonPensjonsavtaleMock },
 	{ url: afpOffentlig, response: afpOffentligMock },
-	{ url: sigrunstub, response: sigrunstubMock },
 	{ url: udistub, response: udistubMock },
 	{ url: kodeverk, response: kodeverkMock },
 	{ url: organisasjonFraMiljoe, response: organisasjonFraMiljoeMock },
@@ -158,6 +160,8 @@ const mockRoutes: RouteInfo[] = [
 	{ url: bilde, response: {}, status: 404 },
 	{ url: dokarkivMiljoer, response: ['q1', 'q2'] },
 	{ url: arenaMiljoer, response: ['q1', 'q2', 'q4'] },
+	{ url: tenorTestdataAlleFelter, response: tenorSearchTestdataMock },
+	{ url: tenorTestdataOversikt, response: tenorSearchOversiktMock },
 	{ url: '**/dolly-logg', response: [] },
 ]
 
@@ -165,10 +169,8 @@ export const test = base.extend({
 	page: async ({ page, context }, use) => {
 		for (const routeInfo of mockRoutes) {
 			await context.addInitScript(() => {
-				// @ts-ignore
-				return (window.isRunningTest = true)
+				return ((window as any).isRunningTest = true)
 			})
-
 			await page.route(routeInfo.url, async (route) => {
 				await route.fulfill({
 					status: routeInfo.status || 200,
@@ -177,7 +179,6 @@ export const test = base.extend({
 				})
 			})
 		}
-
 		await use(page)
 	},
 })

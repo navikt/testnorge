@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: brreg-stub
+  config:
+    import: "classpath:dolly-application.yml"

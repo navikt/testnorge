@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   accessPolicy:
@@ -13,13 +16,15 @@ spec:
       rules:
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:
       external:
         - host: testnav-saf-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system
   tokenx:
     enabled: true
   azure:
@@ -28,21 +33,22 @@ spec:
       enabled: true
       tenant: nav.no
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 30
     periodSeconds: 30
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
-    failureThreshold: 500
+    failureThreshold: 10
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -51,8 +57,8 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
   ingresses:

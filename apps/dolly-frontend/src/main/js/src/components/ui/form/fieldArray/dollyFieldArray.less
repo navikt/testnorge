@@ -29,6 +29,7 @@
   &:nth-child(even) {
     border-left: 2px solid @blokk_border;
     background-color: @blokk_bg;
+
     // Nested blokk background
     .dfa-blokk-nested .dfa-blokk_content {
       background-color: white;
@@ -37,6 +38,7 @@
 
   &:nth-child(odd) {
     border-left: 2px solid @blokk_border;
+
     // Nested blokk background
     .dfa-blokk-nested .dfa-blokk_content {
       background-color: #f7f7f7;
@@ -53,6 +55,7 @@
   border-left: 2px solid @blokk_border;
   background-color: @blokk_bg;
   background-color: white;
+
   .dfa-header-og-content();
 }
 
@@ -117,9 +120,13 @@
     position: relative;
     padding: 10px;
     border-radius: 4px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
 
     // Delete button
-    button {
+    .dolly-delete-button {
       position: absolute;
       top: 5px;
       right: 5px;
@@ -131,4 +138,21 @@
     background-color: #ffffff;
     width: 100%;
   }
+}
+
+.fritt-format-array-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  flex-basis: 100%;
+
+  > .dfa {
+    width: 100%;
+  }
+}
+
+.flexbox--flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  width: inherit;
 }

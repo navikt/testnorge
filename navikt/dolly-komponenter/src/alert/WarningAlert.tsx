@@ -1,5 +1,5 @@
 import React from 'react';
-import { WarningFilled } from '@navikt/ds-icons';
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import Alert from './Alert';
 
 export type WarningAlertProps = {
@@ -7,7 +7,7 @@ export type WarningAlertProps = {
 };
 
 const WarningAlert = ({ label }: WarningAlertProps) => (
-  <Alert color="#FF9100" label={label} Icon={WarningFilled} />
+  <Alert color="#FF9100" label={label} Icon={ExclamationmarkTriangleFillIcon} />
 );
 
 WarningAlert.displayName = 'WarningAlert';

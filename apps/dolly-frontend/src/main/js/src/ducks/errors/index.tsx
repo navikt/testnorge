@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 import { createSelector } from 'reselect'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
 export const addGlobalError = createAction('ERRORS/ADD_GLOBAL_ERROR')

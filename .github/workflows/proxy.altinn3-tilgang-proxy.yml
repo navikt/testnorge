@@ -1,0 +1,24 @@
+name: altinn3-tilgang-proxy
+
+on:
+  push:
+    paths:
+      - .github/workflows/proxy.altinn3-tilgang-proxy.yml
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/security-core/**
+      - libs/servlet-insecure-security/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/altinn3-tilgang-proxy/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "proxies/altinn3-tilgang-proxy"
+      deploy-tag: "#deploy-proxy-altinn3-tilgang"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

@@ -1,27 +1,15 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.junit.jupiter.api.BeforeEach;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -33,100 +21,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yaml")
+@DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
-class PensjonforvalterConsumerTest {
-
-    @MockBean
-    private TokenExchange tokenService;
-
-    @MockBean
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockBean
-    private ElasticsearchOperations elasticsearchOperations;
+class PensjonforvalterConsumerTest extends AbstractConsumerTest {
 
     @Autowired
     private PensjonforvalterConsumer pensjonforvalterConsumer;
-
-    @BeforeEach
-    void setup() {
-
-        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-    }
-
-    private void stubGetMiljo() {
-
-        stubFor(get(urlPathMatching("(.*)/api/v1/miljo"))
-                .willReturn(ok()
-                        .withBody("[\"q1\",\"q2\"]")
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubPostOpprettPerson(boolean withError) {
-
-        if (!withError) {
-            stubFor(post(urlPathMatching("(.*)/api/v1/person"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/person\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        } else {
-            stubFor(post(urlPathMatching("(.*)/api/v1/person"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request: [{\\\"message\\\":\\\"error message\\\"}]\",\"path\":\"/person\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        }
-    }
-
-    private void stubPostLagreInntekt(boolean withError) {
-
-        if (!withError) {
-            stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/inntekt\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        } else {
-            stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
-                    .willReturn(badRequest()
-                            .withBody("Feil i POPP-inntekt")
-                            .withHeader("Content-Type", "application/json")));
-        }
-    }
-
-    private void stubPostLagreTpForhold(boolean withError) {
-
-        if (!withError) {
-            stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/forhold\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        } else {
-            stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request\",\"path\":\"/api/v1/tp/forhold\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        }
-    }
-
-    private void stubPostLagreTpYtelse(boolean withError) {
-
-        if (!withError) {
-            stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/ytelse\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        } else {
-            stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse\",\"path\":\"/api/v1/tp/ytelse\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        }
-    }
 
     @Test
     void testGetMiljoer() {
@@ -200,7 +101,7 @@ class PensjonforvalterConsumerTest {
                                         .build())
                                 .build()))
                         .build())
-                        .verifyComplete();
+                .verifyComplete();
     }
 
     @Test
@@ -208,23 +109,36 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreInntekt(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(PensjonPoppInntektRequest.builder()
-                        .miljoer(List.of("tx"))
-                        .build()))
-                .expectNext(PensjonforvalterResponse.builder()
-                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
-                                .miljo("tx")
-                                .response(PensjonforvalterResponse.Response.builder()
-                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                .status(400)
-                                                .reasonPhrase("Bad Request")
-                                                .build())
-                                        .path("/api/v1/inntekt")
-                                        .message("Feil i POPP-inntekt")
-                                        .build())
-                                .build()))
+        var created = pensjonforvalterConsumer.lagreInntekter(PensjonPoppInntektRequest
+                .builder()
+                .miljoer(List.of("tx"))
+                .build());
+        var response = PensjonforvalterResponse.Response
+                .builder()
+                .httpStatus(PensjonforvalterResponse.HttpStatus
+                        .builder()
+                        .status(400)
+                        .reasonPhrase("Bad Request")
                         .build())
+                .path("/pensjon/api/v1/inntekt")
+                .message("Feil i POPP-inntekt")
+                .build();
+        var status = List.of(
+                PensjonforvalterResponse.ResponseEnvironment
+                        .builder()
+                        .miljo("tx")
+                        .response(response)
+                        .build());
+        var expected = PensjonforvalterResponse
+                .builder()
+                .status(status)
+                .build();
+
+        StepVerifier
+                .create(created)
+                .expectNext(expected)
                 .verifyComplete();
+
     }
 
     @Test
@@ -311,5 +225,73 @@ class PensjonforvalterConsumerTest {
                                 .build()))
                         .build())
                 .verifyComplete();
+    }
+
+    private void stubGetMiljo() {
+
+        stubFor(get(urlPathMatching("(.*)/api/v1/miljo"))
+                .willReturn(ok()
+                        .withBody("[\"q1\",\"q2\"]")
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubPostOpprettPerson(boolean withError) {
+
+        if (!withError) {
+            stubFor(post(urlPathMatching("(.*)/api/v1/person"))
+                    .willReturn(ok()
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/person\"}}]}")
+                            .withHeader("Content-Type", "application/json")));
+        } else {
+            stubFor(post(urlPathMatching("(.*)/api/v1/person"))
+                    .willReturn(ok()
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request: [{\\\"message\\\":\\\"error message\\\"}]\",\"path\":\"/person\"}}]}")
+                            .withHeader("Content-Type", "application/json")));
+        }
+    }
+
+    private void stubPostLagreInntekt(boolean withError) {
+
+        if (!withError) {
+            stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
+                    .willReturn(ok()
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/inntekt\"}}]}")
+                            .withHeader("Content-Type", "application/json")));
+        } else {
+            stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
+                    .willReturn(badRequest()
+                            .withBody("Feil i POPP-inntekt")
+                            .withHeader("Content-Type", "application/json")));
+        }
+    }
+
+    private void stubPostLagreTpForhold(boolean withError) {
+
+        if (!withError) {
+            stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
+                    .willReturn(ok()
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/forhold\"}}]}")
+                            .withHeader("Content-Type", "application/json")));
+        } else {
+            stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
+                    .willReturn(ok()
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request\",\"path\":\"/api/v1/tp/forhold\"}}]}")
+                            .withHeader("Content-Type", "application/json")));
+        }
+    }
+
+    private void stubPostLagreTpYtelse(boolean withError) {
+
+        if (!withError) {
+            stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
+                    .willReturn(ok()
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/ytelse\"}}]}")
+                            .withHeader("Content-Type", "application/json")));
+        } else {
+            stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
+                    .willReturn(ok()
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse\",\"path\":\"/api/v1/tp/ytelse\"}}]}")
+                            .withHeader("Content-Type", "application/json")));
+        }
     }
 }

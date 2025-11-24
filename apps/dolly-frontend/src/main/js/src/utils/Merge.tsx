@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 function _mergeKeepShapeArray(dest, source) {
 	if (source.length != dest.length) {

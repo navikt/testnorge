@@ -9,9 +9,11 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.KodeverknavnGrunnlag;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
+import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +44,8 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 
                         if (kilde.getTjeneste() == BEREGNET_SKATT) {
+                            // BEREGNET_SKATT er blitt deprecated hos mottager
+                            destinasjon.setTjeneste(SigrunstubLignetInntektRequest.Tjeneste.SUMMERT_SKATTEGRUNNLAG);
                             addOppgjoersdato(destinasjon.getGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
                             addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
                         }
@@ -81,6 +85,18 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         }
                     }
                 })
+                .register();
+
+        factory.classMap(RsSummertSkattegrunnlag.class, SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsSummertSkattegrunnlag kilde, SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag destinasjon, MappingContext context) {
+                        log.info("Mottok summertSkattegrunnlag {}", kilde);
+
+                        destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
+                    }
+                })
+                .byDefault()
                 .register();
     }
 }

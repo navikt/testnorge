@@ -4,14 +4,13 @@ import Loading from '@/components/ui/loading/Loading'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { ifPresent } from '@/utils/YupValidations'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import {
@@ -21,6 +20,7 @@ import {
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { telefonnummer } from '../../form/validation/partials/telefonnummer'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -284,7 +284,7 @@ export const VisningRedigerbarSamlet = ({
 					</DollyFieldArray>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form onSubmit={formMethods.handleSubmit(handleSubmit)} enableReinitialize>
+					<Form onSubmit={(data) => handleSubmit(data)} enableReinitialize>
 						<>
 							<DollyFieldArray
 								data={_.get(redigertAttributtListe, path) || initialValuesListe}
@@ -306,7 +306,7 @@ export const VisningRedigerbarSamlet = ({
 									</NavButton>
 									<NavButton
 										variant={'primary'}
-										onClick={() => formMethods.handleSubmit()}
+										onClick={() => handleSubmit(formMethods.watch())}
 										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
 									>
 										Endre

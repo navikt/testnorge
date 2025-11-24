@@ -1,0 +1,14 @@
+dolly:
+  nais:
+    name: testnav-synthdata-meldekort-proxy
+    variables:
+      - AZURE_NAV_APP_CLIENT_ID
+      - AZURE_NAV_APP_CLIENT_SECRET
+
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  synt-meldekort:
+    url: https://synthdata-arena-meldekort.intern.dev.nav.no

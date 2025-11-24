@@ -1,10 +1,4 @@
 spring:
-  cloud:
-    vault:
-      token: dummy
-      enabled: false
-      database:
-        enabled: false
   datasource:
     url: jdbc:tc:postgresql:15:///test_database
     username: user
@@ -12,9 +6,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy

@@ -23,8 +23,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - "https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad"
   replicas:
     min: 1
     max: 2
@@ -36,26 +34,20 @@ spec:
     outbound:
       rules:
         - application: dolly-backend
-        - application: dolly-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
-        - application: testnav-amelding-service
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-bruker-service
-        - application: testnav-generer-synt-amelding-service
         - application: testnav-helsepersonell-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
-        - application: testnav-oppsummeringsdokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-tilgang-service
         - application: testnav-pdl-forvalter
         - application: testnav-person-faste-data-service
-        - application: testnav-person-organisasjon-tilgang-service
-        - application: testnav-person-search-service
+        - application: testnav-dolly-search-service
         - application: testnav-person-service
         - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
@@ -67,24 +59,21 @@ spec:
         - application: testnav-levende-arbeidsforhold-ansettelse
         - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-yrkesskade-proxy
-
+        - application: testnav-nom-proxy
+        - application: testnav-altinn3-tilgang-proxy
+        - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-sykemelding-proxy
+        - application: testnav-api-oversikt-service
+        - application: testnav-ident-pool
+        - application: logging
+          namespace: nais-system
       external:
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-        - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-fullmakt-proxy.dev-fss-pub.nais.io
-        - host: testnav-udistub-proxy.dev-fss-pub.nais.io
-        - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
-        - host: testnav-medl-proxy.dev-fss-pub.nais.io
-        - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
-        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -92,11 +81,15 @@ spec:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
+  valkey:
+    - instance: session
+      access: readwrite
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -105,10 +98,10 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 500m
+      cpu: 200m
       memory: 1024Mi
     limits:
-      memory: 2048Mi
+      memory: 3072Mi
   image: "{{image}}"
   envFrom:
     - secret: idporten-dolly-prod

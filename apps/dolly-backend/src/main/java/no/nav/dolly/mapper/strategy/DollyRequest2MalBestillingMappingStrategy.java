@@ -17,6 +17,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Component
@@ -27,25 +28,22 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
         factory.classMap(RsDollyUtvidetBestilling.class, RsDollyUtvidetBestilling.class)
                 .mapNulls(false)
                 .field("arbeidsplassenCV", "arbeidsplassenCV")
+                .field("arbeidssoekerregisteret", "arbeidssoekerregisteret")
                 .field("arenaforvalter", "arenaforvalter")
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
-                .field("dokarkiv", "dokarkiv")
                 .field("fullmakt", "fullmakt")
                 .field("environments", "environments")
-                .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
                 .field("krrstub", "krrstub")
                 .field("medl", "medl")
+                .field("nomdata", "nomdata")
                 .field("navSyntetiskIdent", "navSyntetiskIdent")
                 .field("pdldata", "pdldata")
                 .field("pensjonforvalter", "pensjonforvalter")
-                .field("sigrunstub", "sigrunstub")
-                .field("sigrunstubPensjonsgivende", "sigrunstubPensjonsgivende")
                 .field("skjerming", "skjerming")
                 .field("sykemelding", "sykemelding")
-                .field("tpsMessaging", "tpsMessaging")
                 .field("udistub", "udistub")
 
                 .customize(new CustomMapper<>() {
@@ -57,8 +55,22 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getInstdata().addAll(request.getInstdata());
                         akkumulert.getSigrunstub().addAll(request.getSigrunstub());
                         akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
+                        akkumulert.getSigrunstubSummertSkattegrunnlag().addAll(request.getSigrunstubSummertSkattegrunnlag());
                         akkumulert.getYrkesskader().addAll(request.getYrkesskader());
-                        if (nonNull(akkumulert.getSkattekort())) {
+                        akkumulert.getDokarkiv().addAll(request.getDokarkiv());
+                        akkumulert.getEtterlatteYtelser().addAll(request.getEtterlatteYtelser());
+                        if (nonNull(request.getHistark())) {
+                            if (isNull(akkumulert.getHistark())) {
+                                akkumulert.setHistark(request.getHistark());
+                            } else {
+                                akkumulert.getHistark().getDokumenter()
+                                        .addAll(request.getHistark().getDokumenter());
+                            }
+                        }
+                        if (nonNull(request.getSkattekort())) {
+                            if(isNull(akkumulert.getSkattekort())) {
+                                akkumulert.setSkattekort(request.getSkattekort());
+                            }
                             akkumulert.getSkattekort().getArbeidsgiverSkatt()
                                     .addAll(request.getSkattekort().getArbeidsgiverSkatt());
                         }
@@ -145,10 +157,11 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
 
         factory.classMap(PensjonData.class, PensjonData.class)
                 .mapNulls(false)
+                .field("afpOffentlig", "afpOffentlig")
                 .field("alderspensjon", "alderspensjon")
+                .field("alderspensjonNyUtaksgrad", "alderspensjonNyUtaksgrad")
                 .field("inntekt", "inntekt")
                 .field("uforetrygd", "uforetrygd")
-                .field("afpOffentlig", "afpOffentlig")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(PensjonData pensjonData, PensjonData akkumulert, MappingContext context) {

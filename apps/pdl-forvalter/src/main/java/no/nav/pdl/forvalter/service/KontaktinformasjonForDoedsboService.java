@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -16,16 +17,15 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -62,6 +62,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final OrganisasjonForvalterConsumer organisasjonForvalterConsumer;
+    private final EnkelAdresseService enkelAdresseService;
 
     private static String blankCheck(String value, String defaultValue) {
         return isNotBlank(value) ? value : defaultValue;
@@ -129,19 +130,16 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private void handle(KontaktinformasjonForDoedsboDTO kontaktinfo, String hovedperson) {
 
+        var kontaktinfoOriginal = mapperFacade.map(kontaktinfo, KontaktinformasjonForDoedsboDTO.class);
+
         if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
             kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
         }
 
         if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
                 nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato())) {
-
-            Stream.of(
-                            leggTilPersonnavn(kontaktinfo.getPersonSomKontakt()),
-                            setAdresse(kontaktinfo))
-                    .reduce(Flux.empty(), Flux::merge)
-                    .collectList()
-                    .block();
+            leggTilPersonnavn(kontaktinfo.getPersonSomKontakt());
+            kontaktinfo.setAdresse(getAdresse(kontaktinfo));
 
         } else if (nonNull(kontaktinfo.getPersonSomKontakt())) {
 
@@ -150,7 +148,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
             if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt());
+                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
                 leggTilPersonadresse(kontaktinfo);
                 kontaktinfo.getPersonSomKontakt().setNavn(null);
             }
@@ -159,26 +157,20 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
 
-            Stream.of(
-                            setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getAdvokatSomKontakt()),
-                            leggTilPersonnavn(kontaktinfo.getAdvokatSomKontakt()))
-                    .reduce(Flux.empty(), Flux::merge)
-                    .collectList()
-                    .block();
+            setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getAdvokatSomKontakt());
+            leggTilPersonnavn(kontaktinfo.getAdvokatSomKontakt());
 
         } else if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
 
-            Stream.of(
-                            setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getOrganisasjonSomKontakt()),
-                            leggTilPersonnavn(kontaktinfo.getOrganisasjonSomKontakt()))
-                    .reduce(Flux.empty(), Flux::merge)
-                    .collectList()
-                    .block();
+            setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getOrganisasjonSomKontakt());
+            leggTilPersonnavn(kontaktinfo.getOrganisasjonSomKontakt());
         }
 
-        if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getAdresselinje1())) {
+        if (nonNull(kontaktinfoOriginal.getAdresse()) &&
+                (isNotBlank(kontaktinfoOriginal.getAdresse().getLandkode()) ||
+                        isNotBlank(kontaktinfoOriginal.getAdresse().getAdresselinje1()))) {
 
-            setAdresse(kontaktinfo);
+            kontaktinfo.setAdresse(getAdresse(kontaktinfoOriginal));
         }
     }
 
@@ -196,25 +188,27 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         }
     }
 
-    private Flux<Void> setAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
-
-        kontaktinfo.setAdresse(getAdresse(kontaktinfo));
-        return Flux.empty();
-    }
-
     private KontaktinformasjonForDoedsboAdresse getAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
         if (nonNull(kontaktinfo.getAdresse()) && isNotBlank(kontaktinfo.getAdresse().getAdresselinje1())) {
             return kontaktinfo.getAdresse();
 
         } else {
-            return mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
-                    .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
-                    .build(), null), KontaktinformasjonForDoedsboAdresse.class);
+            if (nonNull(kontaktinfo.getAdresse()) &&
+                    isNotBlank(kontaktinfo.getAdresse().getLandkode()) &&
+                    !"NOR".equals(kontaktinfo.getAdresse().getLandkode())) {
+                return mapperFacade.map(enkelAdresseService.getUtenlandskAdresse(new UtenlandskAdresseDTO(),
+                                kontaktinfo.getAdresse().getLandkode(), kontaktinfo.getMaster()), KontaktinformasjonForDoedsboAdresse.class);
+
+            } else{
+                return mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
+                        .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
+                        .build(), null), KontaktinformasjonForDoedsboAdresse.class);
+            }
         }
     }
 
-    private Flux<Void> setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
+    private void setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
             organisasjonDto) {
 
         var organisasjon = organisasjonForvalterConsumer.get(organisasjonDto.getOrganisasjonsnummer())
@@ -231,19 +225,16 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     mapperFacade.map(((List<Map>) organisasjon.get("adresser")).getFirst(), KontaktinformasjonForDoedsboAdresse.class) :
                     null);
         }
-        return Flux.empty();
     }
 
-    private Flux<Void> leggTilPersonnavn(KontaktpersonDTO kontaktpersonDTO) {
+    private void leggTilPersonnavn(KontaktpersonDTO kontaktpersonDTO) {
 
         kontaktpersonDTO.setNavn(leggTilPersonnavn(kontaktpersonDTO.getNavn()));
-        return Flux.empty();
     }
 
-    private Flux<Void> leggTilPersonnavn(OrganisasjonDTO organisasjon) {
+    private void leggTilPersonnavn(OrganisasjonDTO organisasjon) {
 
         organisasjon.setKontaktperson(leggTilPersonnavn(organisasjon.getKontaktperson()));
-        return Flux.empty();
     }
 
     private PersonNavnDTO leggTilPersonnavn(PersonNavnDTO personnavn) {
@@ -323,7 +314,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                                 .equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")));
     }
 
-    private void leggTilNyAddressat(KontaktpersonDTO kontakt) {
+    private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
 
         if (isNull(kontakt.getNyKontaktperson())) {
             kontakt.setNyKontaktperson(new PersonRequestDTO());
@@ -336,6 +327,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             kontakt.getNyKontaktperson().setFoedtFoer(LocalDateTime.now().minusYears(18));
             kontakt.getNyKontaktperson().setFoedtEtter(LocalDateTime.now().minusYears(75));
         }
+
+        EgenskaperFraHovedperson.kopierData(hovedperson, kontakt.getNyKontaktperson());
 
         kontakt.setIdentifikasjonsnummer(
                 createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());

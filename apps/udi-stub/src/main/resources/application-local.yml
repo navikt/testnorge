@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "sm://"
   datasource:
     hikari:
       maximum-pool-size: 3

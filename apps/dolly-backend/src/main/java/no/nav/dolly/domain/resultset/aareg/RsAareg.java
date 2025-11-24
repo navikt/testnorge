@@ -3,27 +3,26 @@ package no.nav.dolly.domain.resultset.aareg;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsAareg {
-
-    private RsPeriodeAmelding genererPeriode;
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'Arbeidsforholdstyper'")
     private String arbeidsforholdstype;
@@ -46,14 +45,15 @@ public class RsAareg {
 
     private RsAktoer arbeidsgiver;
 
+    @EqualsAndHashCode.Exclude
+    private Map<String, Identifikasjon> identifikasjon;
+
     @Schema(description = "Angir periode oppdateringen gjelder fra", type = "string", pattern="^\\d{4}-\\d{2}$")
     @Field(type = FieldType.Date, format = DateFormat.year_month, pattern = "uuuu-MM")
     private YearMonth navArbeidsforholdPeriode;
 
     @Schema(description = "Angir om posten er oppdatering")
     private Boolean isOppdatering;
-
-    private List<RsAmeldingRequest> amelding;
 
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
         if (isNull(antallTimerForTimeloennet)) {
@@ -90,10 +90,20 @@ public class RsAareg {
         return utenlandsopphold;
     }
 
-    public List<RsAmeldingRequest> getAmelding() {
-        if (isNull(amelding)) {
-            amelding = new ArrayList<>();
+    public Map<String, Identifikasjon> getIdentifikasjon() {
+        if (isNull(identifikasjon)) {
+            identifikasjon = new HashMap<>();
         }
-        return amelding;
+        return identifikasjon;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Identifikasjon {
+
+        private String arbeidsforholdId;
+        private Long navArbeidsforholdId;
     }
 }

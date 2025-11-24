@@ -1,0 +1,16 @@
+[[lokal_generelt]]
+= Kjøring lokalt
+
+Dette er felles for alle applikasjoner som er ment å kunne kjøres lokalt.
+
+* Bruk Spring profile `local`.
+* Bruk JVM option: `--add-opens java.base/java.lang=ALL-UNNAMED` (kan settes i IntelliJ Run Configuration VM options).
+* Swagger (hvis satt opp) er normalt tilgjengelig på http://localhost:8080/swagger .
+
+[[lokal_generelt_anbefalinger]]
+== Anbefalinger
+
+* Hold avhengigheter oppdatert – kjør dependency upgrade regelmessig.
+* Unngå å hardkode secrets – bruk Secret Manager (se egen seksjon) eller miljøvariabler.
+* Start færrest mulig eksterne tjenester lokalt; bruk stubber der det er mulig.
+

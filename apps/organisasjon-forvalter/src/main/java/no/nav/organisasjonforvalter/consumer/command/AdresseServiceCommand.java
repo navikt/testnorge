@@ -1,17 +1,17 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AdresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
 
     private static final String VEGADRESSE_URL = "/api/v1/adresser/veg";
@@ -22,14 +22,14 @@ public class AdresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
 
     @Override
     public Mono<VegadresseDTO[]> call() {
-
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(builder -> builder.path(VEGADRESSE_URL).query(query).build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(VegadresseDTO[].class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

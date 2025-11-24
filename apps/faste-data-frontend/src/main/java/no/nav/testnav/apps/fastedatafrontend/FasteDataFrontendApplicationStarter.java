@@ -2,6 +2,7 @@ package no.nav.testnav.apps.fastedatafrontend;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.apps.fastedatafrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
@@ -12,6 +13,7 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -36,6 +38,12 @@ public class FasteDataFrontendApplicationStarter {
     private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(FasteDataFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -46,10 +54,6 @@ public class FasteDataFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavPersonService()))
                 .route(createRoute(consumers.getTestnavPersonFasteDataService()))
                 .build();
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(FasteDataFrontendApplicationStarter.class, args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {

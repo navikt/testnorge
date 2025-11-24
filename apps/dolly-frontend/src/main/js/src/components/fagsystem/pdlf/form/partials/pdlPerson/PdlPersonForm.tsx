@@ -1,13 +1,16 @@
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { DollyApi } from '@/service/Api'
 import { useAsync } from 'react-use'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useContext, useEffect, useState } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ToggleGroup } from '@navikt/ds-react'
 import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
@@ -20,8 +23,10 @@ interface PdlPersonValues {
 	fullmektigsNavnPath?: string
 	label: string
 	formMethods: UseFormReturn
-	nyIdentValg?: NyIdent
-	eksisterendeNyPerson?: Option
+	nyIdentValg?: NyIdent | null
+	eksisterendeNyPerson?: Option | null
+	initialNyIdent?: any
+	initialEksisterendePerson?: any
 }
 
 const StyledToggleGroup = styled(ToggleGroup)`
@@ -52,54 +57,86 @@ export const PdlPersonForm = ({
 	formMethods,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
+	initialNyIdent = null,
+	initialEksisterendePerson = null,
 }: PdlPersonValues) => {
-	const { gruppeId } = useParams()
+	const { gruppeId: gruppeIdParam } = useParams()
+	const formGruppeId = formMethods.watch('gruppeId')
+	const gruppeId = formGruppeId || gruppeIdParam
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
 	}, [])
+
+	const getType = () => {
+		if (formMethods.watch(`${path}.eksisterendePerson`)) {
+			return PersonType.EKSISTERENDE_PERSON
+		}
+		const eksisterende = formMethods.watch(eksisterendePersonPath)
+		return eksisterende ? PersonType.EKSISTERENDE_PERSON : PersonType.NY_PERSON
+	}
+
 	//@ts-ignore
-	const opts: any = useContext(BestillingsveilederContext)
-	const [type, setType] = useState(
-		formMethods.watch(eksisterendePersonPath)
-			? PersonType.EKSISTERENDE_PERSON
-			: PersonType.NY_PERSON,
-	)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const [type, setType] = useState(getType())
 
 	const gruppeIdenter = gruppe?.value?.data?.identer?.map((person) => person.ident)
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
 
+	const parentPath = path.substring(0, path.lastIndexOf('.'))
+
 	useEffect(() => {
-		formMethods.setValue(nyPersonPath, type === PersonType.NY_PERSON ? initialPdlPerson : undefined)
+		setType(getType())
+	}, [formMethods.watch(parentPath)?.length])
+
+	const handleTypeChange = (value: string) => {
+		setType(value)
 		formMethods.setValue(
-			eksisterendePersonPath,
-			type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
+			nyPersonPath,
+			value === PersonType.NY_PERSON ? initialNyIdent || initialPdlPerson : undefined,
 		)
-		if (path) {
-			formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
+		if (value === PersonType.EKSISTERENDE_PERSON && initialEksisterendePerson) {
+			formMethods.setValue(path, initialEksisterendePerson)
+		} else {
+			formMethods.setValue(
+				eksisterendePersonPath,
+				value === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
+			)
 		}
-		formMethods.trigger()
-	}, [type])
+		if (value === PersonType.NY_PERSON) {
+			formMethods.setValue(`${path}.fullmektigsNavn`, undefined)
+		}
+		if (path) {
+			formMethods.setValue(`${path}.eksisterendePerson`, value === PersonType.EKSISTERENDE_PERSON)
+		}
+		formMethods.trigger(path)
+	}
 
 	return (
 		<>
 			{!isTestnorgeIdent && (
 				<>
-					<StyledToggleGroup size={'small'} value={type} onChange={setType} label={'Personvalg'}>
-						<ToggleGroup.Item key={PersonType.NY_PERSON} value={PersonType.NY_PERSON}>
+					<StyledToggleGroup
+						size={'small'}
+						value={type}
+						onChange={(type) => handleTypeChange(type)}
+						label={'Personvalg'}
+						key={'toggle-' + path}
+					>
+						<ToggleGroup.Item key={path + PersonType.NY_PERSON} value={PersonType.NY_PERSON}>
 							<Icon
-								key={PersonType.NY_PERSON}
+								key={path + PersonType.NY_PERSON}
 								size={13}
 								kind={type === PersonType.NY_PERSON ? 'person-plus' : 'person-plus-fill'}
 							/>
 							{'Opprett ny person'}
 						</ToggleGroup.Item>
 						<ToggleGroup.Item
-							key={PersonType.EKSISTERENDE_PERSON}
+							key={path + PersonType.EKSISTERENDE_PERSON}
 							value={PersonType.EKSISTERENDE_PERSON}
 						>
 							<Icon
-								key={PersonType.EKSISTERENDE_PERSON}
+								key={path + PersonType.EKSISTERENDE_PERSON}
 								size={13}
 								kind={type === PersonType.EKSISTERENDE_PERSON ? 'person' : 'person-fill'}
 							/>
@@ -114,6 +151,7 @@ export const PdlPersonForm = ({
 							erNyIdent={nyIdentValg !== null}
 							gruppeIdenter={gruppeIdenter}
 							eksisterendeNyPerson={eksisterendeNyPerson}
+							key={'person-' + path}
 						/>
 					)}
 				</>
@@ -133,6 +171,7 @@ export const PdlPersonForm = ({
 								eksisterendeNyPerson={eksisterendeNyPerson}
 								fullmektigsNavnPath={fullmektigsNavnPath}
 								disabled={opts?.antall > 1}
+								key={'eksisterendePerson-' + path}
 							/>
 						)}
 					</div>

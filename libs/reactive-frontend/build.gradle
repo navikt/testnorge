@@ -20,7 +20,7 @@ publishing {
         maven {
             name = "github"
             url = uri('https://maven.pkg.github.com/navikt/testnorge')
-            credentials(PasswordCredentials) {
+            credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
             }
@@ -45,11 +45,10 @@ publishing {
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
 
+    implementation 'org.hibernate.validator:hibernate-validator'
+
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
-
-    implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webflux'
 }

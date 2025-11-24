@@ -1,0 +1,183 @@
+dolly:
+  client:
+    general:
+      timeout: 30
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,text/html,text/xml,text/plain,application/javascript,text/css
+    servlet:
+      encoding:
+        charset: UTF-8
+  error:
+    include-message: always
+  max-http-request-header-size: 128KB
+
+spring:
+  application:
+    name: Dolly V2.0
+    description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
+      Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
+    version: Versjon 1
+  config:
+    import: "dolly-application.yml"
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: reactive
+  flyway:
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  mvc:
+    async:
+      request-timeout: 30
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+  jackson:
+    parser:
+      include-source-in-location: true
+  http:
+    codecs:
+      max-in-memory-size: 10MB
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+  pre-loading-enabled: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql:
+          results:
+            jdbc: ERROR
+
+open:
+  search:
+    total-fields: 2000
+    index: bestilling
+
+consumers:
+  testnav-organisasjon-forvalter:
+    name: testnav-organisasjon-forvalter
+    namespace: dolly
+    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-inntektsmelding-service:
+    name: testnav-inntektsmelding-service
+    namespace: dolly
+    url: http://testnav-inntektsmelding-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-tps-messaging-service:
+    name: testnav-tps-messaging-service
+    namespace: dolly
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-miljoer-service:
+    name: testnav-miljoer-service
+    namespace: dolly
+    url: http://testnav-miljoer-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-person-service:
+    name: testnav-person-service
+    namespace: dolly
+    url: http://testnav-person-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-kodeverk-service:
+    name: testnav-kodeverk-service
+    namespace: dolly
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-dokarkiv-proxy:
+    name: testnav-dokarkiv-proxy
+    namespace: dolly
+    url: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-aareg-proxy:
+    name: testnav-aareg-proxy
+    namespace: dolly
+    url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-dolly-proxy:
+    name: testnav-dolly-proxy
+    namespace: dolly
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-arena-forvalteren-proxy:
+    name: testnav-arena-forvalteren-proxy
+    namespace: dolly
+    url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter
+    namespace: dolly
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-sykemelding-api:
+    name: testnav-sykemelding-api
+    namespace: dolly
+    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-organisasjon-service:
+    name: testnav-organisasjon-service
+    namespace: dolly
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-sykemelding-proxy:
+    name: testnav-sykemelding-proxy
+    namespace: dolly
+    url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-arbeidsplassencv-proxy:
+    name: testnav-arbeidsplassencv-proxy
+    namespace: dolly
+    url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnavSkattekortService:
+    name: testnav-skattekort-service
+    namespace: dolly
+    url: http://testnav-skattekort-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  yrkesskade-proxy:
+    name: testnav-yrkesskade-proxy
+    namespace: dolly
+    url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  arbeidssoekerregisteret-proxy:
+    name: testnav-arbeidssoekerregisteret-proxy
+    namespace: dolly
+    url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  bruker-service:
+    name: testnav-bruker-service
+    namespace: dolly
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  saf-proxy:
+    name: testnav-saf-proxy
+    namespace: dolly
+    url: https://testnav-saf-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  etterlatte:
+    name: etterlatte-testdata
+    namespace: etterlatte
+    url: http://etterlatte-testdata.etterlatte.svc.cluster.local
+    cluster: dev-gcp
+  nom-proxy:
+    name: testnav-nom-proxy
+    namespace: dolly
+    url: http://testnav-nom-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+    

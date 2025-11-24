@@ -3,14 +3,16 @@ name: miljoer-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/commands/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "apps/miljoer-service/**"
-      - ".github/workflows/app.miljoer-service.yml"
+      - .github/workflows/app.miljoer-service.yml
+      - apps/miljoer-service/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

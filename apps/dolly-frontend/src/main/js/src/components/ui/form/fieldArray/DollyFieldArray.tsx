@@ -1,7 +1,7 @@
+import React, { useEffect } from 'react'
 import Button from '@/components/ui/button/Button'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'
-
 import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
@@ -30,12 +30,16 @@ export const FieldArrayAddButton = ({
 	</Button>
 )
 
-const DeleteButton = ({ onClick }) => {
-	if (!onClick) {
-		return null
-	}
-	return <Button kind="trashcan" fontSize={'1.4rem'} onClick={onClick} title="Fjern" />
-}
+const DeleteButton = ({ onClick }) =>
+	!onClick ? null : (
+		<Button
+			className="dolly-delete-button"
+			kind="trashcan"
+			fontSize="1.4rem"
+			onClick={onClick}
+			title="Fjern"
+		/>
+	)
 
 const Numbering = ({ idx, color = numberColor.ARRAY_LEVEL_ONE }) => (
 	<span className="dfa-blokk-number" style={{ backgroundColor: color }}>
@@ -99,8 +103,8 @@ export const DollyFaBlokkOrg = ({
 	showDeleteButton,
 	number,
 }) => {
-	const nivaa = (number.match(/\@/g) || []).length + 1
-	const name = nivaa & 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
+	const nivaa = number ? number.split('.').length : 1
+	const name = nivaa % 2 === 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
 	const getNivaaColor = () => {
 		switch (nivaa) {
 			case 1:
@@ -116,7 +120,6 @@ export const DollyFaBlokkOrg = ({
 		}
 	}
 	const color = getNivaaColor()
-
 	return (
 		<div className={name}>
 			<div className={`${name}_header`}>
@@ -132,9 +135,9 @@ export const DollyFaBlokkOrg = ({
 
 export const DollyFaBlokkNested = ({
 	idx,
-	handleRemove,
 	children,
 	whiteBackground,
+	handleRemove = null,
 	showDeleteButton = true,
 }) => (
 	<div className="dfa-blokk-nested">
@@ -159,21 +162,19 @@ export const DollyFieldArray = ({
 	getHeader = null as unknown as Function,
 	whiteBackground = false,
 }) => {
-	if (ignoreOnSingleElement && data.length === 1) {
-		return children(data[0], 0)
-	}
-
+	if (!data || data.length === 0 || Array.isArray(data) === false) return null
+	if (ignoreOnSingleElement && data.length === 1) return children(data[0], 0)
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 				{data.map((curr, idx) => {
-					if (nested) {
+					if (nested)
 						return (
 							<DollyFaBlokkNested key={idx} idx={idx} whiteBackground={whiteBackground}>
 								{children(curr, idx)}
 							</DollyFaBlokkNested>
 						)
-					} else if (expandable) {
+					if (expandable)
 						return (
 							<ExpandableBlokk
 								key={idx}
@@ -185,19 +186,17 @@ export const DollyFieldArray = ({
 								{children(curr, idx)}
 							</ExpandableBlokk>
 						)
-					} else {
-						return (
-							<DollyFaBlokk
-								key={idx}
-								idx={idx}
-								header={getHeader ? getHeader(curr) : header}
-								hjelpetekst={hjelpetekst}
-								whiteBackground={whiteBackground}
-							>
-								{children(curr, idx)}
-							</DollyFaBlokk>
-						)
-					}
+					return (
+						<DollyFaBlokk
+							key={idx}
+							idx={idx}
+							header={getHeader ? getHeader(curr) : header}
+							hjelpetekst={hjelpetekst}
+							whiteBackground={whiteBackground}
+						>
+							{children(curr, idx)}
+						</DollyFaBlokk>
+					)
 				})}
 			</DollyFieldArrayWrapper>
 		</ErrorBoundary>
@@ -209,85 +208,108 @@ export const FormDollyFieldArray = ({
 	title = null,
 	header,
 	newEntry,
-	hjelpetekst = null,
+	hjelpetekst = null as unknown as string,
 	nested = false,
 	children,
 	disabled = false,
 	canBeEmpty = true,
 	tag = null,
 	isOrganisasjon = false,
-	handleNewEntry = null,
+	handleNewEntry = null as any,
 	handleRemoveEntry = null,
 	maxEntries = null as unknown as number,
+	whiteBackground = false,
 	maxReachedDescription = null,
-	buttonText = null,
+	buttonText = null as unknown as string,
 	errorText = null,
+	lockedEntriesLength = 0 as unknown as number,
+	leafOnlyDelete = false,
 }) => {
 	const formMethods = useFormContext()
-	const { append, remove } = useFieldArray({
-		control: formMethods.control,
-		name: name,
-	})
-
+	const { fields, append, remove } = useFieldArray({ control: formMethods.control, name })
 	const values = formMethods.watch(name) || []
 
+	useEffect(() => {
+		if (!canBeEmpty && fields.length === 0 && !(leafOnlyDelete && isOrganisasjon)) {
+			append(newEntry)
+			formMethods.trigger(name)
+		}
+	}, [canBeEmpty, fields.length, append, formMethods, name, leafOnlyDelete, isOrganisasjon])
+
 	const addNewEntry = () => {
-		handleNewEntry ? handleNewEntry() : append(newEntry)
+		if (handleNewEntry) {
+			try {
+				if (handleNewEntry.length >= 2) handleNewEntry(append, values)
+				else if (handleNewEntry.length === 1) handleNewEntry(append)
+				else handleNewEntry()
+			} catch (_) {
+				append(newEntry)
+			}
+		} else append(newEntry)
 		formMethods.trigger(name)
 	}
 
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-				{values.map((curr, idx) => {
-					const showDeleteButton = canBeEmpty ? true : values.length >= 2
+				{fields.map((field, idx) => {
+					const curr = values[idx]
 					const path = `${name}.${idx}`
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
+					const isLeaf = !curr || !curr.underenheter || curr.underenheter.length === 0
+					let showDeleteButton
+					if (leafOnlyDelete && isOrganisasjon) {
+						if (!isLeaf) showDeleteButton = false
+						else
+							showDeleteButton = !(values.length === 1 && !canBeEmpty && idx < lockedEntriesLength)
+					} else {
+						showDeleteButton = canBeEmpty ? true : values.length >= 2 && idx >= lockedEntriesLength
+					}
 					const handleRemove = () => {
-						handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
+						remove(idx)
+						if (handleRemoveEntry) handleRemoveEntry(idx)
 						formMethods.trigger(name)
 					}
-
-					if (nested) {
+					if (nested)
 						return (
 							<DollyFaBlokkNested
-								key={idx}
+								key={field.id}
 								idx={idx}
 								handleRemove={handleRemove}
 								showDeleteButton={showDeleteButton}
+								whiteBackground={whiteBackground}
 							>
-								{children(path, idx, curr)}
+								{children(path, idx, curr, number, field.id)}
 							</DollyFaBlokkNested>
 						)
-					} else if (isOrganisasjon) {
+					if (isOrganisasjon)
 						return (
 							<DollyFaBlokkOrg
-								key={idx}
+								key={field.id}
 								idx={idx}
 								number={number}
 								header={header}
 								hjelpetekst={hjelpetekst}
-								handleRemove={handleRemove}
+								handleRemove={showDeleteButton ? handleRemove : null}
 								showDeleteButton={showDeleteButton}
 							>
-								{children(path, idx, curr, number)}
+								{children(path, idx, curr, number, field.id)}
 							</DollyFaBlokkOrg>
 						)
-					} else {
-						return (
-							<DollyFaBlokk
-								key={idx}
-								idx={idx}
-								number={number}
-								header={header}
-								hjelpetekst={hjelpetekst}
-								handleRemove={handleRemove}
-								showDeleteButton={showDeleteButton}
-							>
-								{children(path, idx, curr, number)}
-							</DollyFaBlokk>
-						)
-					}
+					return (
+						<DollyFaBlokk
+							key={field.id}
+							idx={idx}
+							number={number}
+							header={header}
+							hjelpetekst={hjelpetekst}
+							handleRemove={showDeleteButton ? handleRemove : null}
+							showDeleteButton={showDeleteButton}
+							whiteBackground={whiteBackground}
+						>
+							{children(path, idx, curr, number, field.id)}
+						</DollyFaBlokk>
+					)
 				})}
 				{errorText && <FaError>{errorText}</FaError>}
 				<FieldArrayAddButton

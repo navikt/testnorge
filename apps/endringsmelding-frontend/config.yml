@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   port: 8080
   azure:
     application:
@@ -18,18 +21,19 @@ spec:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true
@@ -43,12 +47,14 @@ spec:
         - application: testnav-endringsmelding-service
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
+        - application: logging
+          namespace: nais-system
   resources:
+    requests:
+      cpu: 50m
+      memory: 600Mi
     limits:
       memory: 2048Mi
-    requests:
-      cpu: 200m
-      memory: 1024Mi
   image: "{{image}}"
   ingresses:
     - "https://testnav-endringsmelding.intern.dev.nav.no"

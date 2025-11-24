@@ -25,7 +25,7 @@
 		--size: #{(math.random(2) + 0.04) * 0.2}vw;
 		--left-ini: #{math.random(20) - 10}vw;
 		--left-end: #{math.random(20) - 10}vw;
-		left: #{math.random(89)}vw;
+		left: #{math.random(96)}vw;
 		animation: snowfall #{5 + math.random(10)}s linear infinite;
 		animation-delay: -#{math.random(10)}s;
 	}

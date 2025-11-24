@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import {
@@ -8,30 +8,75 @@ import {
 } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
-import { genInitialAlderspensjonVedtak } from '@/components/fagsystem/alderspensjon/form/initialValues'
+import {
+	genInitialAlderspensjonVedtak,
+	getInitialAlderspensjonNyUttaksgrad,
+} from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
-import { initialPensjonInntekt } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
 import { initialAfpOffentlig } from '@/components/fagsystem/afpOffentlig/initialValues'
 import { avtalePath } from '@/components/fagsystem/pensjonsavtale/form/Form'
 import { afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
+import { initialPensjonInntekt } from '@/components/fagsystem/pensjon/form/initialValues'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const harGyldigApBestilling = (opts?.tidligereBestillinger as any[])?.some((bestilling: any) =>
+		bestilling.status?.some(
+			(status: any) =>
+				status.id === 'PEN_AP' && status.statuser?.some((item: any) => item?.melding === 'OK'),
+		),
+	)
+	const harGyldigUforetrygdBestilling = (opts?.tidligereBestillinger as any[])?.some(
+		(bestilling: any) =>
+			bestilling.status?.some(
+				(status: any) =>
+					status.id === 'PEN_UT' && status.statuser?.some((item: any) => item.melding === 'OK'),
+			),
+	)
 
 	const infoTekst =
 		'Pensjon: \nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\n' +
 		'Tjenestepensjon: \nTjenestepensjonsforhold lagt til i TP. \n\n' +
 		'Alderspensjon: \nAlderspensjonssak med vedtak blir lagt til i PEN.'
 
+	const poppTimeout = getTimeoutAttr('POPP', opts)
+	const tpTimeout = getTimeoutAttr('TP', opts)
+	const apTimeout = getTimeoutAttr('PEN_AP', opts)
+	const utTimeout = getTimeoutAttr('PEN_UT', opts)
+
+	const getIgnoreKeys = () => {
+		const ignoreKeys = []
+		if (harGyldigApBestilling) {
+			ignoreKeys.push('alderspensjon')
+		}
+		if (harGyldigUforetrygdBestilling) {
+			ignoreKeys.push('uforetrygd')
+		}
+		if (!harGyldigApBestilling) {
+			ignoreKeys.push('alderspensjonNyUttaksgrad')
+		}
+		return ignoreKeys
+	}
+
 	return (
 		<Panel
 			heading={PensjonPanel.heading}
-			informasjonstekst={infoTekst}
-			checkAttributeArray={sm.batchAdd}
-			uncheckAttributeArray={sm.batchRemove}
+			informasjonstekst={infoTekst as any}
+			checkAttributeArray={
+				(() => {
+					sm.batchAdd(getIgnoreKeys())
+				}) as any
+			}
+			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="pensjon"
 			startOpen={harValgtAttributt(formValues, [
 				pensjonPath,
@@ -43,19 +88,48 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.inntekt} id="inntekt_pensjon" />
+				<Attributt
+					attr={sm.attrs.inntekt}
+					disabled={poppTimeout.disabled}
+					title={poppTimeout.title}
+					id="inntekt_pensjon"
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Pensjonsavtale" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.pensjonsavtale} />
 			</AttributtKategori>
 			<AttributtKategori title="Tjenestepensjon (TP)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.tp} />
+				<Attributt attr={sm.attrs.tp} disabled={tpTimeout.disabled} title={tpTimeout.title} />
 			</AttributtKategori>
 			<AttributtKategori title="Alderspensjon" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.alderspensjon} />
+				<Attributt
+					attr={sm.attrs.alderspensjon}
+					disabled={harGyldigApBestilling || apTimeout.disabled}
+					title={
+						apTimeout.title ||
+						(harGyldigApBestilling ? 'Personen har allerede alderspensjon' : undefined)
+					}
+				/>
+				<Attributt
+					attr={sm.attrs.alderspensjonNyUttaksgrad}
+					disabled={!harGyldigApBestilling || apTimeout.disabled}
+					title={
+						apTimeout.title ||
+						(!harGyldigApBestilling
+							? 'Personen må først ha fått innvilget alderspensjon for å kunne få ny uttaksgrad'
+							: undefined)
+					}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.uforetrygd} />
+				<Attributt
+					attr={sm.attrs.uforetrygd}
+					disabled={harGyldigUforetrygdBestilling || utTimeout.disabled}
+					title={
+						utTimeout.title ||
+						(harGyldigUforetrygdBestilling ? 'Personen har allerede uføretrygd' : undefined)
+					}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="AFP offentlig" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.afpOffentlig} />
@@ -72,6 +146,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 		generertInntekt: 'pensjonforvalter.generertInntekt',
 		tp: 'pensjonforvalter.tp',
 		alderspensjon: 'pensjonforvalter.alderspensjon',
+		alderspensjonNyUttaksgrad: 'pensjonforvalter.alderspensjonNyUtaksgrad',
 		uforetrygd: 'pensjonforvalter.uforetrygd',
 		pensjonsavtale: 'pensjonforvalter.pensjonsavtale',
 		afpOffentlig: 'pensjonforvalter.afpOffentlig',
@@ -99,6 +174,14 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 				set(paths.alderspensjon, genInitialAlderspensjonVedtak)
 			},
 			remove: () => del(paths.alderspensjon),
+		},
+		alderspensjonNyUttaksgrad: {
+			label: 'Har ny uttaksgrad',
+			checked: has(paths.alderspensjonNyUttaksgrad),
+			add: () => {
+				set(paths.alderspensjonNyUttaksgrad, getInitialAlderspensjonNyUttaksgrad)
+			},
+			remove: () => del(paths.alderspensjonNyUttaksgrad),
 		},
 		uforetrygd: {
 			label: 'Har uføretrygd',

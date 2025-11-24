@@ -6,6 +6,7 @@ type OrganisasjonMedArbeidsforholdSelectProps = {
 	label: string
 	afterChange?: (value: any) => void
 	valueNavn?: boolean
+	placeholder?: string
 	onChange?: (value: any) => void
 	isDisabled?: boolean
 	defaultValue?: string

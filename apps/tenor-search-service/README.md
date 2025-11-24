@@ -1,9 +1,6 @@
 # Tenor Search Service
-
 Service som formidler søk til Tenor testdata hos Skatteetaten.
 
-## Swagger
-
-Swagger finnes
-under [/swagger-ui.html](https://testnav-tenor-search-service.intern.dev.nav.no/swagger-ui.html)
--endepunktet til applikasjonen.
+## Lokal kjøring
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -12,14 +12,17 @@ import {
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	MatrikkeladresseVelger,
 	UkjentBosted,
 	UtenlandskAdresse,
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
@@ -69,7 +72,7 @@ export const BostedsadresseForm = ({
 		} else if (_.get(boadresse, 'ukjentBosted') && _.get(boadresse, 'ukjentBosted') !== null) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Ukjent)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [])
 
 	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
@@ -181,7 +184,7 @@ export const BostedsadresseForm = ({
 }
 
 export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 

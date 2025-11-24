@@ -1,6 +1,7 @@
 package no.nav.udistub.converter.itest;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.udistub.database.model.Person;
 import no.nav.udistub.database.repository.PersonRepository;
 import no.nav.udistub.service.dto.UdiPerson;
@@ -9,13 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,50 +23,36 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static no.nav.udistub.converter.DefaultTestData.TEST_DATE;
-import static no.nav.udistub.converter.DefaultTestData.TEST_FLYKTNINGSTATUS;
-import static no.nav.udistub.converter.DefaultTestData.TEST_INNREISEFORBUD;
-import static no.nav.udistub.converter.DefaultTestData.TEST_NAVN;
-import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDSTILLATELSE;
-import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDS_GRUNNLAG_KATEGORI;
-import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_ALIAS_FNR;
-import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_FNR;
-import static no.nav.udistub.converter.DefaultTestData.TEST_ovrigIkkeOppholdsKategori;
-import static no.nav.udistub.converter.DefaultTestData.createPersonTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static no.nav.udistub.converter.DefaultTestData.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@ActiveProfiles("test")
+@DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
 @Testcontainers
 class UdiStubITest {
 
     protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
-    @MockBean
-    @SuppressWarnings("unused")
-    private JwtDecoder jwtDecoder;
+
     @Autowired
     private PersonRepository personRepository;
+
     @Autowired
     private MapperFacade mapperFacade;
+
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
+
+    @MockitoBean
+    @SuppressWarnings("unused")
     private Flyway flyway;
 
     @BeforeEach
     void setUp() throws IOException {
-
 
         flyway.migrate();
         stubFor(

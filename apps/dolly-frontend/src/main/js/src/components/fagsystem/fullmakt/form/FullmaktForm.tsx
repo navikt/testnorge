@@ -6,7 +6,10 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
@@ -16,17 +19,18 @@ import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
 import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { Option } from '@/service/SelectOptionsOppslag'
 import Loading from '@/components/ui/loading/Loading'
-import { ErrorMessage } from '@hookform/error-message'
 import { validation } from '@/components/fagsystem/fullmakt/form/validation'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
-	path?: string
+	path: string
 	opts?: any
 	eksisterendeNyPerson?: any
 }
 
-const alleHandlinger = ['LES', 'SKRIV', 'KOMMUNISER']
+const alleHandlinger = ['LES', 'KOMMUNISER', 'SKRIV']
 
 const mapLegacyFullmaktTilNyFullmakt = (
 	legacyFullmakt: any,
@@ -36,6 +40,7 @@ const mapLegacyFullmaktTilNyFullmakt = (
 	if (!legacyFullmakt || legacyFullmakt.length === 0) {
 		return null
 	}
+
 	const nyeFullmakter = legacyFullmakt
 		.filter((gammelFullmakt) => gammelFullmakt.omraader)
 		.map((gammelFullmakt) => ({
@@ -45,7 +50,6 @@ const mapLegacyFullmaktTilNyFullmakt = (
 			fullmektig: gammelFullmakt.motpartsPersonident,
 			omraade: gammelFullmakt.omraader.map((legacyOmraade, index) => {
 				if (legacyOmraade === '*') {
-					//TODO: Handle "alle" value dersom forespurt av brukere i ny fullmakt
 					return { tema: 'AAP', handling: alleHandlinger }
 				}
 				if (omraadeKodeverk.filter((option) => option.value === legacyOmraade)?.length === 0) {
@@ -137,7 +141,7 @@ export const Fullmakt = ({
 							options={omraadeKodeverk.filter(
 								(option: Option) => !chosenTemaValues.includes(option.value),
 							)}
-							size="grow"
+							size="xxlarge"
 							isClearable={false}
 							normalFontPlaceholder={true}
 						/>
@@ -145,18 +149,8 @@ export const Fullmakt = ({
 							name={`${path}.handling`}
 							label="Handling"
 							options={Options('fullmaktHandling')}
-							size="xlarge"
-							onChange={(val: Option[]) => {
-								formMethods.setValue(
-									`${path}.handling`,
-									val?.some((opt) => opt.value?.includes('*'))
-										? alleHandlinger
-										: val.map((opt) => opt.value),
-								)
-								formMethods.trigger(path)
-							}}
-							isClearable={true}
-							isMulti={true}
+							size="large"
+							isClearable={false}
 						/>
 					</>
 				)}
@@ -170,19 +164,15 @@ export const Fullmakt = ({
 				fullmektigsNavnPath={`${path}.fullmektigsNavn`}
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
-				isExpanded={isTestnorgeIdent || !!formMethods.watch(`${path}.fullmektig`)}
+				isExpanded={
+					isTestnorgeIdent ||
+					!isEmpty(formMethods.watch(`${path}.nyFullmektig`), ['syntetisk']) ||
+					!!formMethods.watch(`${path}.fullmektig`)
+				}
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
-			{formMethods.formState.errors && (
-				<ErrorMessage
-					name={`${path}.omraade`}
-					errors={formMethods.formState.errors}
-					render={({ message }) => (
-						<p style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</p>
-					)}
-				/>
-			)}
+			<DisplayFormError path={`${path}.omraade`} />
 		</div>
 	)
 }
@@ -190,8 +180,9 @@ export const Fullmakt = ({
 export const FullmaktForm = () => {
 	const formMethods = useFormContext()
 	const fullmaktValues = formMethods.watch('fullmakt')
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const val = formMethods.watch(fullmaktAttributter)
+	const { identtype, identMaster } = opts
 
 	if ((!fullmaktValues || fullmaktValues?.length === 0) && val.some((v) => v)) {
 		formMethods.setValue('fullmakt', [initialFullmakt])
@@ -208,7 +199,11 @@ export const FullmaktForm = () => {
 				<FormDollyFieldArray
 					name="fullmakt"
 					header="Fullmakt"
-					newEntry={initialFullmakt}
+					newEntry={{
+						...initialFullmakt,
+						nyFullmektig: initialPdlPerson,
+						master: identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
+					}}
 					canBeEmpty={false}
 				>
 					{(path: string) => <Fullmakt formMethods={formMethods} path={path} opts={opts} />}

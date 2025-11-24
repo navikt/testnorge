@@ -40,21 +40,46 @@ header.app-header {
     }
   }
 
+  .profil-area {
+    border-left: 2px solid #88b1d6;
+    line-height: 2px;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    color: white;
+    text-align: left;
+    min-width: 210px;
+
+    img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin: 0 7px 0 0;
+    }
+
+    p {
+      line-height: normal;
+      font-size: 16px;
+      min-width: 130px;
+    }
+  }
+
+
   .dropdown-toggle {
-    margin: 0 10px;
-    padding: 15px 0;
     border: none;
     background-color: @color-nav-black;
+    min-width: max-content;
 
     &.active {
       background-color: lighten(@color-nav-black, 10%);
+      font-weight: bold;
     }
 
     &:hover {
       cursor: pointer;
       background-color: @headerHoverColor;
     }
-
 
     a {
       color: white;
@@ -71,36 +96,12 @@ header.app-header {
         background-color: @headerHoverColor;
       }
     }
-
-    .profil-area {
-      border-left: 2px solid #88b1d6;
-      line-height: 2px;
-      padding-left: 15px;
-      margin: 0 10px 0 10px;
-      display: flex;
-      align-items: center;
-      color: white;
-      text-align: left;
-      max-height: 35px;
-
-      img {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        border: 2px solid white;
-        margin: 0 7px 0 0;
-      }
-
-      .profil-navn {
-        line-height: normal;
-        min-width: 130px;
-      }
-    }
   }
 
   .menu-links {
     display: flex;
     justify-content: center;
+    align-content: center;
 
     a {
       color: white;
@@ -129,26 +130,4 @@ header.app-header {
       background-color: #ebfcff;
     }
   }
-}
-
-.svg-icon-logout {
-  g {
-    stroke: #212529;
-    stroke-width: 2;
-  }
-
-  margin-right: 10px;
-}
-
-.svg-icon-file-code, .svg-icon-file-new {
-  g {
-    stroke: #212529;
-    stroke-width: 2;
-  }
-
-  margin: 0 10px 0 0;
-}
-
-.dollysheep {
-  margin-left: 10px;
 }

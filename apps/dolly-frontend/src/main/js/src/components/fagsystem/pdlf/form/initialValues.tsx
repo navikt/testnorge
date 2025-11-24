@@ -44,9 +44,10 @@ export const getInitialBostedsadresse = (master = 'FREG') => ({
 })
 
 export const initialDeltBosted = {
-	adressetype: null as unknown as string,
 	startdatoForKontrakt: null as unknown as string,
 	sluttdatoForKontrakt: null as unknown as string,
+	master: 'FREG',
+	kilde: 'Dolly',
 }
 
 export const getInitialAdressebeskyttelse = (master = 'FREG') => ({
@@ -89,6 +90,18 @@ export const initialPostboksadresse = {
 	postboks: null as unknown as string,
 	postbokseier: null as unknown as string,
 	postnummer: null as unknown as string,
+}
+
+export const initialPostadresseIFrittFormat = {
+	adresselinjer: [''] as string[],
+	postnummer: null as unknown as string,
+}
+
+export const initialUtenlandskAdresseIFrittFormat = {
+	adresselinjer: [''] as string[],
+	postkode: null as unknown as string,
+	byEllerStedsnavn: null as unknown as string,
+	landkode: null as unknown as string,
 }
 
 export const initialUkjentBosted = {
@@ -347,6 +360,7 @@ export const getInitialNyIdent = (master = 'FREG') => ({
 	nyttNavn: {
 		hasMellomnavn: false,
 	},
+	eksisterendePerson: false,
 	kilde: 'Dolly',
 	master: master,
 })
@@ -355,7 +369,6 @@ export const initialFullmakt = {
 	omraade: [{ tema: '', handling: [] }] as any,
 	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: null as unknown as string,
-	fullmektig: null as unknown as string,
 }
 
 export const initialOpphold = {
@@ -372,12 +385,6 @@ export const initialTelefonnummer = {
 	prioritet: 2,
 	kilde: 'Dolly',
 	master: 'PDL',
-}
-
-export const initialTpsTelefonnummer = {
-	landkode: '+47',
-	telefonnummer: '',
-	telefontype: 'HJET',
 }
 
 export const initialPersonstatus = {

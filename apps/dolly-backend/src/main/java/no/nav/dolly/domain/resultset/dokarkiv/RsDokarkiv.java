@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Builder
 @NoArgsConstructor
@@ -135,6 +136,9 @@ public class RsDokarkiv {
             @Field(enabled = false)
             private String fysiskDokument;
 
+            @Schema(description = "Referanse til dokumentet")
+            private Long dokumentReferanse;
+
             @Schema(description = """
                     ARKIV brukes for dokumentvarianter i menneskelesbart format (for eksempel PDFA).
                     Gosys og nav.no henter arkivvariant og viser denne til bruker.
@@ -147,7 +151,8 @@ public class RsDokarkiv {
             public String toString() {
                 return "DokumentVariant{" +
                         "filtype='" + filtype + '\'' +
-                        ", fysiskDok='" + fysiskDokument.substring(0, 10) + "..." + '\'' +
+                        ", fysiskDok='" + (isNotBlank(fysiskDokument) ? fysiskDokument.substring(0, 10) + "..." + '\'' : null) +
+                        ", dokumentReferanse=" + dokumentReferanse +
                         ", variantformat='" + variantformat + '\'' +
                         '}';
             }

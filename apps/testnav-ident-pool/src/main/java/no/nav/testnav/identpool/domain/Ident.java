@@ -1,69 +1,57 @@
 package no.nav.testnav.identpool.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Data
-@Entity
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PERSONIDENTIFIKATOR")
 public class Ident {
+
     @Id
-    @Column(name = "ID")
+    @Column("ID")
     @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personidentifikator_seq")
-    @SequenceGenerator(name = "personidentifikator_seq", sequenceName = "PERSONIDENTIFIKATOR_SEQ", allocationSize = 1)
     private Long identity;
 
     @NotNull
-    @Column(name = "IDENTTYPE")
-    @Enumerated(EnumType.STRING)
+    @Column("IDENTTYPE")
     private Identtype identtype;
 
     @NotNull
-    @Column(name = "SYNTETISK")
+    @Column("SYNTETISK")
     private Boolean syntetisk;
 
     @NotNull
-    @Column(name = "PERSONIDENTIFIKATOR")
+    @Column("PERSONIDENTIFIKATOR")
     private String personidentifikator;
 
     @NotNull
-    @Column(name = "REKVIRERINGSSTATUS")
-    @Enumerated(EnumType.STRING)
+    @Column("REKVIRERINGSSTATUS")
     private Rekvireringsstatus rekvireringsstatus;
 
     @NotNull
-    @Column(name = "FINNES_HOS_SKATT")
-    private boolean finnesHosSkatt;
-
-    @NotNull
-    @Column(name = "FOEDSELSDATO")
+    @Column("FOEDSELSDATO")
     private LocalDate foedselsdato;
 
     @NotNull
-    @Column(name = "KJOENN")
-    @Enumerated(EnumType.STRING)
+    @Column("KJOENN")
     private Kjoenn kjoenn;
 
-    @Column(name = "REKVIRERT_AV")
+    @Column("REKVIRERT_AV")
     private String rekvirertAv;
 
     @JsonIgnore
@@ -78,5 +66,31 @@ public class Ident {
 
     public boolean isSyntetisk() {
         return getPersonidentifikator().charAt(2) > '3';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Ident ident = (Ident) o;
+        return Objects.equals(identity, ident.identity) && identtype == ident.identtype && Objects.equals(syntetisk, ident.syntetisk) && Objects.equals(personidentifikator, ident.personidentifikator) && rekvireringsstatus == ident.rekvireringsstatus && Objects.equals(foedselsdato, ident.foedselsdato) && kjoenn == ident.kjoenn && Objects.equals(rekvirertAv, ident.rekvirertAv);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(identity, identtype, syntetisk, personidentifikator, rekvireringsstatus, foedselsdato, kjoenn, rekvirertAv);
+    }
+
+    @Override
+    public String toString() {
+        return "Ident{" +
+                "identity=" + identity +
+                ", identtype=" + identtype +
+                ", syntetisk=" + syntetisk +
+                ", personidentifikator='" + personidentifikator + '\'' +
+                ", rekvireringsstatus=" + rekvireringsstatus +
+                ", foedselsdato=" + foedselsdato +
+                ", kjoenn=" + kjoenn +
+                ", rekvirertAv='" + rekvirertAv + '\'' +
+                '}';
     }
 }

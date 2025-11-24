@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
-import { nyPerson } from '@/components/fagsystem/pdlf/form/validation/partials'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
+import { nyPerson } from './familierelasjoner'
 
 export const kontaktDoedsbo = Yup.object().shape({
 	skifteform: requiredString,

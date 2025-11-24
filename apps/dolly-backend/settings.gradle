@@ -1,21 +1,19 @@
 plugins {
-    id "com.gradle.develocity" version "3.17.4"
+    id "com.gradle.develocity" version "4.2.2"
 }
 
-rootProject.name = 'dolly-backend'
+rootProject.name = "dolly-backend"
 
 includeBuild "../../plugins/java"
 
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/data-transfer-search-objects"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/reactive-security"
+includeBuild "../../libs/servlet-insecure-security"
+includeBuild "../../libs/testing"
 includeBuild '../../.github/workflows'
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/data-transfer-search-objects'
-includeBuild '../../libs/database'
-includeBuild '../../libs/vault'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-insecure-security'
-includeBuild '../../libs/servlet-security'
 
 develocity {
     buildScan {
@@ -23,3 +21,4 @@ develocity {
         termsOfUseAgree = "yes"
     }
 }
+

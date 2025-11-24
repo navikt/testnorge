@@ -1,22 +1,20 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
+@Slf4j
 public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
 
     private static final String ARENA_URL = "/{miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse";
@@ -29,30 +27,24 @@ public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
 
     @Override
     public Mono<ArenaStatusResponse> call() {
-
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(ARENA_URL)
                         .build(miljoe))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
                 .header(FODSELSNR, ident)
                 .retrieve()
                 .onStatus(HttpStatus.NO_CONTENT::equals, ClientResponse::createException)
                 .bodyToMono(ArenaStatusResponse.class)
-                                .map(status -> {
-                                    status.setStatus(HttpStatus.OK);
-                                    status.setMiljoe(miljoe);
-                                    return status;
-                                })
-                .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error ->
-                        Mono.just(ArenaStatusResponse.builder()
-                                        .status(WebClientFilter.getStatus(error))
-                                        .feilmelding(WebClientFilter.getMessage(error))
-                                        .miljoe(miljoe)
-                                        .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .map(status -> {
+                    status.setStatus(HttpStatus.OK);
+                    status.setMiljoe(miljoe);
+                    return status;
+                })
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException exception && exception.getStatusCode().value() == 204),
+                        WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(throwable -> ArenaStatusResponse.of(WebClientError.describe(throwable), miljoe));
     }
 }

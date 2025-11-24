@@ -1,0 +1,10 @@
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  jenkins-batch-status-service:
+    url: https://testnav-jenkins-batch-status-service.intern.dev.nav.no
+    namespace: dolly
+    name: testnav-jenkins-batch-status-service
+    cluster: dev-gcp

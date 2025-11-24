@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.safproxy;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,26 +13,30 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
+@RequiredArgsConstructor
 public class StatusController {
+
     private static final String TEAM = "teamdokumenthandtering";
+
+    private final WebClient webClient;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
-        var statusWebClient = WebClient.builder().build();
 
-        return Stream.of("q1", "q2", "q4", "q5", "t3")
+        return Stream.of("q1", "q2", "q4")
                 .parallel()
                 .map(miljo -> {
                     var miljoStatus = checkConsumerStatus(
                             "https://saf-" + miljo + ".teamdokumenthandtering.svc.nais.local/isAlive",
                             "https://saf-" + miljo + "teamdokumenthandtering.svc.nais.local/isReady",
-                            statusWebClient);
+                            webClient);
                     return Map.of(
                             "saf-" + miljo, miljoStatus
                     );
                 })
                 .flatMap(map -> map.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
     }
 
     public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {

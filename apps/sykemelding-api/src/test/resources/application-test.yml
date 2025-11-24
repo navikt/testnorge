@@ -13,16 +13,6 @@ application:
 SERVICEUSER_USERNAME: dummy
 SERVICEUSER_PASSWORD: dummy
 
-TOKEN_X_CLIENT_ID: test
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy
-spring:
-  cloud:
-    vault:
-      enabled: false
 ibm:
   mq:
     queue-manager: dummy

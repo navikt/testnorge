@@ -1,5 +1,5 @@
 import { Option } from '@/service/SelectOptionsOppslag'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { toTitleCase } from '@/utils/DataFormatter'
 
 type Data = {
@@ -79,23 +79,9 @@ export const SelectOptionsFormat = {
 					}
 				})
 			return options
-		} else if (type === 'understatuser') {
-			const statuser = kodeverk ? Object.entries(kodeverk) : []
-			const options: Option[] = []
-			statuser.forEach((status) => {
-				options.push({ value: parseInt(status[0]), label: `${status[0]}: ${status[1]}` })
-			})
-			return options
-		} else if (type === 'roller') {
-			const roller = kodeverk ? Object.entries(kodeverk) : []
-			const options: Option[] = []
-			roller.forEach((rolle: [string, string]) => {
-				options.push({ value: rolle[0], label: rolle[1] })
-			})
-			return options
 		} else if (type === 'telefonLandkoder') {
 			const landkoder =
-				kodeverk?.sort((land1, land2) => {
+				kodeverk?.sort?.((land1, land2) => {
 					if (land1.label > land2.label) return 1
 					else if (land1.label < land2.label) return -1
 				}) || []

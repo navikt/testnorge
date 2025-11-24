@@ -27,18 +27,19 @@ spec:
   ingresses:
     - "https://testnav-pdl-forvalter-dev.intern.dev.nav.no"
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 60
     initialDelay: 60
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     periodSeconds: 60
     initialDelay: 60
   prometheus:
@@ -49,16 +50,15 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 150m
-      memory: 2000Mi
+      cpu: 20m
+      memory: 1200Mi
     limits:
-      memory: 4000Mi
+      memory: 2000Mi
   accessPolicy:
     inbound:
       rules:
         - application: dolly-backend-dev
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:
@@ -70,6 +70,8 @@ spec:
         - application: testnav-organisasjon-forvalter
         - application: testnav-person-service
         - application: testnav-tps-messaging-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:

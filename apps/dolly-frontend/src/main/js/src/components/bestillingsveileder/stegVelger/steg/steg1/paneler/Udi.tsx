@@ -4,7 +4,7 @@ import { initialOpphold } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { udiAttributt } from '@/components/fagsystem/udistub/form/Form'
 
-export const UdiPanel = ({ stateModifier, testnorgeIdent, formValues }) => {
+export const UdiPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(UdiPanel.initialValues)
 
 	const infoTekst = 'All informasjon blir lagt i UDI-stub. Oppholdsstatus går i tillegg til PDL.'
@@ -26,11 +26,6 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent, formValues }) => {
 				<Attributt attr={sm.attrs.arbeidsadgang} />
 				<Attributt attr={sm.attrs.hjemmel} />
 			</AttributtKategori>
-
-			{/*Alias er midlertidig fjernet*/}
-			{/*<AttributtKategori title="Alias" attr={sm.attrs}>*/}
-			{/*	<Attributt disabled={testnorgeIdent} attr={sm.attrs.aliaser} />*/}
-			{/*</AttributtKategori>*/}
 
 			<AttributtKategori title="Annet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.flyktning} />
@@ -58,7 +53,8 @@ UdiPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		checked: has('udistub.oppholdStatus'),
 		add: () =>
 			setMulti(['udistub.oppholdStatus', {}], ['pdldata.person.opphold', [initialOpphold]]),
-		remove: () => del(['udistub.oppholdStatus', 'pdldata.person.opphold']),
+		remove: () =>
+			del(['udistub.oppholdStatus', 'udistub.harOppholdsTillatelse', 'pdldata.person.opphold']),
 	},
 	arbeidsadgang: {
 		label: 'Arbeidsadgang',
@@ -81,18 +77,6 @@ UdiPanel.initialValues = ({ set, setMulti, del, has }) => ({
 			}),
 		remove: () => del('udistub.arbeidsadgang.hjemmel'),
 	},
-	// aliaser: {
-	// 	label: 'Har aliaser',
-	// 	checked: has('udistub.aliaser'),
-	// 	add: () =>
-	// 		set('udistub.aliaser', [
-	// 			{
-	// 				identtype: null,
-	// 				nyIdent: false,
-	// 			},
-	// 		]),
-	// 	remove: () => del('udistub.aliaser'),
-	// },
 	flyktning: {
 		label: 'Flyktningstatus',
 		checked: has('udistub.flyktning'),

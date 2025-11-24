@@ -3,11 +3,10 @@ package no.nav.testnav.libs.servletcore.health;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class Health {
-
-    public static final String UP = "UP";
-    public static final String PAUSED = "PAUSED";
-    public static final String DISABLED = "DISABLED";
-    public static final String OUT_OF_SERVICE = "OUT_OF_SERVICE";
-    public static final String DOWN = "DOWN";
+class Health {
+    static final String UP = "UP";
+    static final String PAUSED = "PAUSED";
+    static final String DISABLED = "DISABLED";
+    static final String OUT_OF_SERVICE = "OUT_OF_SERVICE";
+    static final String DOWN = "DOWN";
 }

@@ -8,7 +8,7 @@ import {
 	getInitialInntekt,
 	kodeverkKeyToLabel,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const getSkatteordningOptions = (skatteordning) => {
 	return skatteordning?.map((item) => ({ value: item, label: _.capitalize(item) }))
@@ -61,7 +61,9 @@ const createInntektForm = (kodeverk, skatteordning, path, formMethods) => {
 
 export const PensjonsgivendeInntektForm = ({ path, formMethods, kodeverk, skatteordning }) => {
 	const newEntry = getInitialInntekt(kodeverk, skatteordning)
-	const inntektError = _.get(formMethods.formState.errors, path)?.message
+	const inntektError =
+		_.get(formMethods.formState.errors, path)?.message ||
+		_.get(formMethods.formState.errors, `manual${path}`)?.message
 
 	return (
 		<FormDollyFieldArray

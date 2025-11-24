@@ -1,0 +1,200 @@
+{
+  "properties": {
+    "vegadresse": {
+      "properties": {
+        "bokstav": {
+          "type": "text",
+          "analyzer": "standard_lowercase",
+          "fields": {
+            "completion": {
+              "type": "completion",
+              "analyzer": "keyword_lowercase",
+              "contexts": [
+                {
+                  "name": "navn_nummer",
+                  "type": "category",
+                  "path": "custom_fields.context_adressenavn_nummer"
+                }
+              ]
+            },
+            "keyword": {
+              "type": "keyword",
+              "normalizer": "keyword_lowercase"
+            }
+          }
+        },
+        "nummer": {
+          "type": "text",
+          "analyzer": "keyword_lowercase",
+          "fields": {
+            "completion": {
+              "type": "completion",
+              "analyzer": "keyword_lowercase",
+              "contexts": [
+                {
+                  "name": "adressenavn",
+                  "type": "category",
+                  "path": "vegadresse.veg.adressenavn"
+                }
+              ]
+            },
+            "keyword": {
+              "type": "keyword",
+              "normalizer": "keyword_lowercase"
+            }
+          }
+        },
+        "veg": {
+          "properties": {
+            "adressenavn": {
+              "type": "text",
+              "analyzer": "standard_lowercase",
+              "fields": {
+                "completion": {
+                  "type": "completion",
+                  "analyzer": "keyword_lowercase"
+                },
+                "phonetic": {
+                  "type": "text",
+                  "analyzer": "phonetic"
+                },
+                "keyword": {
+                  "type": "keyword",
+                  "normalizer": "keyword_lowercase"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "custom_fields": {
+      "properties": {
+        "fritekst": {
+          "properties": {
+            "vegadresse": {
+              "type": "text",
+              "analyzer": "standard_lowercase",
+              "copy_to": [
+                "custom_fields.fritekst.all"
+              ],
+              "fields": {
+                "completion": {
+                  "type": "completion",
+                  "analyzer": "keyword_lowercase"
+                },
+                "phonetic": {
+                  "type": "text",
+                  "analyzer": "phonetic"
+                },
+                "keyword": {
+                  "type": "keyword",
+                  "normalizer": "keyword_lowercase"
+                }
+              }
+            },
+            "matrikkeladresse": {
+              "type": "text",
+              "analyzer": "standard_lowercase",
+              "copy_to": [
+                "custom_fields.fritekst.all"
+              ],
+              "fields": {
+                "completion": {
+                  "type": "completion",
+                  "analyzer": "keyword_lowercase"
+                },
+                "phonetic": {
+                  "type": "text",
+                  "analyzer": "phonetic"
+                },
+                "keyword": {
+                  "type": "keyword",
+                  "normalizer": "keyword_lowercase"
+                }
+              }
+            },
+            "all": {
+              "type": "text",
+              "analyzer": "standard_lowercase",
+              "fields": {
+                "completion": {
+                  "type": "completion",
+                  "analyzer": "keyword_lowercase"
+                },
+                "phonetic": {
+                  "type": "text",
+                  "analyzer": "phonetic"
+                },
+                "keyword": {
+                  "type": "keyword",
+                  "normalizer": "keyword_lowercase"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "dynamic_templates": [
+    {
+      "id_nummer_strings_mapping": {
+        "match": "stedsnummer|kretsnummer|nummer|gardsnummer|bruksnummer|festenummer|seksjonsnummer",
+        "match_mapping_type": "string",
+        "match_pattern": "regex",
+        "mapping": {
+          "type": "integer",
+          "fields": {
+            "completion": {
+              "type": "completion"
+            },
+            "keyword": {
+              "type": "keyword",
+              "normalizer": "keyword_lowercase"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tekst_strings_mapping": {
+        "match": ".*",
+        "path_match": ".*matrikkeladresse.*|.*vegadresse.*",
+        "match_mapping_type": "string",
+        "match_pattern": "regex",
+        "mapping": {
+          "analyzer": "standard_lowercase",
+          "type": "text",
+          "fields": {
+            "completion": {
+              "type": "completion",
+              "analyzer": "keyword_lowercase"
+            },
+            "keyword": {
+              "type": "keyword",
+              "normalizer": "keyword_lowercase"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tekst_long_mapping": {
+        "match": ".*",
+        "path_match": ".*matrikkeladresse.*|.*vegadresse.*",
+        "match_mapping_type": "long",
+        "match_pattern": "regex",
+        "mapping": {
+          "type": "long",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "normalizer": "keyword_lowercase"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

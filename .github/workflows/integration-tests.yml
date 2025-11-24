@@ -1,16 +1,11 @@
 name: Integration Tests
 on:
   push:
-    branches:
-      - master
     paths:
-      - 'apps/bruker-service/**'
-      - 'apps/person-organisasjon-tilgang-service/**'
-  pull_request:
-    paths:
-      - 'apps/bruker-service/**'
-      - 'apps/person-organisasjon-tilgang-service/**'
-    types: [ ready_for_review, review_requested ]
+      - apps/altinn3-tilgang-service/**
+      - apps/bruker-service/**
+      - mocks/maskinporten-mock/**
+      - mocks/tokendings-mock/**
   workflow_dispatch:
 
 jobs:
@@ -18,14 +13,10 @@ jobs:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/common.integration-test.yml
     with:
-      working-directory: 'apps/bruker-service/'
-      healthcheck: 'http://localhost:8002/internal/isAlive'
+      working-directory: "apps/bruker-service/"
+      healthcheck: "http://localhost:8002/internal/health/liveness"
+    permissions:
+      contents: read
+      id-token: write
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  person-organisasjon-tilgang-service:
-    if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/common.integration-test.yml
-    with:
-      working-directory: 'apps/person-organisasjon-tilgang-service/'
-      healthcheck: 'http://localhost:8001/internal/isAlive'
-    secrets: inherit

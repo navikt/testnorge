@@ -6,21 +6,25 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   liveness:
-    path: /isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true
@@ -34,7 +38,19 @@ spec:
     limits:
       memory: 2048Mi
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 50m
+      memory: 800Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-texas-proxy
+        - application: testnav-brregstub-proxy
+        - application: flex-brreg-proxy
+          cluster: dev-gcp
+          namespace: flex
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   ingresses:
     - "https://brreg-stub.intern.dev.nav.no" # dev-fss

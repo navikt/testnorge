@@ -86,6 +86,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 			formMethods.setValue(`${inntektsinformasjonPath}.inntektsliste`, newInntektArray)
 		formMethods.trigger(`${inntektsinformasjonPath}.inntektsliste`)
 	}
+
 	return (
 		<>
 			<div className="toggle--wrapper">

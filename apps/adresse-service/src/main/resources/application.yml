@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: adresse-service
+  config:
+    import: "classpath:dolly-application.yml"
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+consumers:
+  pdl-services:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy

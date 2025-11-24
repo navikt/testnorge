@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.dokarkiv.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -100,6 +101,8 @@ public class DokarkivRequest {
         private String filtype;
         private String fysiskDokument;
         private String variantformat;
+        @JsonIgnore
+        private Long dokumentReferanse;
 
         @Override
         public String toString() {

@@ -1,5 +1,3 @@
-import { runningE2ETest } from '@/service/services/Request'
-
 export const initialJobboensker = {
 	startOption: null,
 	occupations: [],
@@ -46,21 +44,6 @@ export const initialJobboenskerVerdier = {
 	occupationTypes: ['FAST', 'PROSJEKT', 'FERIEJOBB'],
 	workLoadTypes: ['HELTID'],
 	workScheduleTypes: ['DAGTID', 'UKEDAGER', 'KVELD'],
-}
-
-export const initialCV = {
-	jobboensker: initialJobboensker,
-	utdanning: [],
-	fagbrev: [],
-	arbeidserfaring: [],
-	annenErfaring: [],
-	kompetanser: [],
-	offentligeGodkjenninger: [],
-	andreGodkjenninger: [],
-	spraak: [],
-	foererkort: [],
-	kurs: [],
-	sammendrag: '',
 }
 
 export const initialArbeidserfaring = {
@@ -128,7 +111,7 @@ export const initialAnnenErfaring = {
 export const initialAnnenErfaringVerdier = {
 	description: 'Mange års erfaring med trening av sau til utstillinger.',
 	role: 'Sauetrener',
-	fromDate: '2010-05-01T00:00:00+02:00',
+	fromDate: '2010-05-01T00:00:00',
 	toDate: null,
 	ongoing: true,
 }
@@ -211,64 +194,3 @@ export const initialKursVerdier = {
 
 export const initialSammendragVerdi =
 	'Trivelig person med kjærlighet for sau, som har tonnevis med allsidig kompetanse og fantastiske personlige egenskaper.'
-
-export const initialHistark = {
-	dokumenter: [
-		{
-			tittel: '',
-			antallSider: -1,
-			skanner: '',
-			skannested: '',
-			skanningsTidspunkt: new Date(),
-			temakoder: [],
-			enhetsnavn: '',
-			enhetsnummer: '',
-			startAar: new Date(),
-			sluttAar: new Date(),
-			fysiskDokument: '',
-		},
-	],
-}
-
-export const initialDigitalInnsending = {
-	tittel: '',
-	tema: '',
-	kanal: 'NAV_NO',
-	sak: {
-		sakstype: 'GENERELL_SAK',
-		fagsaksystem: '',
-		fagsakId: '',
-	},
-	ferdigstill: true,
-	avsenderMottaker: {
-		id: '',
-		navn: '',
-		idType: '',
-	},
-	journalfoerendeEnhet: undefined,
-	dokumenter: [
-		{
-			tittel: '',
-			brevkode: '',
-		},
-	],
-}
-
-export const initialDokarkiv = {
-	tittel: runningE2ETest() ? 'test' : '',
-	tema: runningE2ETest() ? 'test ' : '',
-	sak: {
-		sakstype: 'GENERELL_SAK',
-		fagsaksystem: '',
-		fagsakId: '',
-	},
-	kanal: 'SKAN_IM',
-	ferdigstill: true,
-	journalfoerendeEnhet: undefined,
-	dokumenter: [
-		{
-			tittel: runningE2ETest() ? 'test' : '',
-			brevkode: runningE2ETest() ? 'test' : '',
-		},
-	],
-}

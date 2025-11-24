@@ -1,8 +1,9 @@
 import { useToggle } from 'react-use'
 import { useFormContext } from 'react-hook-form'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
-const FormState = ({ values }) => (
-	<pre>
+const FormState = ({ values }: any) => (
+	<pre data-testid={TestComponentSelectors.VALUES_FORM_STATE}>
 		<strong>props</strong> = {JSON.stringify(values, replacer, 2)}
 	</pre>
 )
@@ -14,7 +15,7 @@ const replacer = (key: string, value: any) => {
 	} else return value
 }
 
-export default function DisplayFormState({ visState = false, label = 'Vis form' }) {
+export default ({ visState = false, label = 'Vis form' }) => {
 	const { getValues } = useFormContext()
 	const [showState, toggleShowState] = useToggle(visState)
 

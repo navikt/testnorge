@@ -1,7 +1,0 @@
-
-consumers:
-  profil-api:
-    url: https://testnorge-profil-api.intern.dev.nav.no
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnorge-profil-api

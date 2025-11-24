@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
@@ -9,18 +9,6 @@ const checkUndefined = (value) => {
 	}
 	return Yup.mixed().notRequired()
 }
-
-const aliaser = Yup.array().of(
-	Yup.object({
-		nyIdent: requiredBoolean,
-		identtype: Yup.string()
-			.when('nyIdent', {
-				is: true,
-				then: () => requiredString,
-			})
-			.nullable(),
-	}),
-)
 
 const arbeidsadgang = Yup.object({
 	arbeidsOmfang: Yup.string().nullable(),
@@ -86,7 +74,6 @@ export const validation = {
 	udistub: ifPresent(
 		'$udistub',
 		Yup.object({
-			aliaser: ifPresent('$udistub.aliaser', aliaser),
 			arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
 			flyktning: ifPresent('$udistub.flyktning', requiredBoolean),
 			oppholdStatus: ifPresent('$udistub.oppholdStatus', oppholdStatus),

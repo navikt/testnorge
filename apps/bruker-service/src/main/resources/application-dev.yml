@@ -1,6 +1,12 @@
 spring:
   application:
     name: testnav-bruker-service-dev
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
   r2dbc:
     url: r2dbc:postgresql://${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_DEV_TESTNAV_BRUKER_SERVICE_DEV_DB_HOST}:${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_DEV_TESTNAV_BRUKER_SERVICE_DEV_DB_PORT}/${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_DEV_TESTNAV_BRUKER_SERVICE_DEV_DB_DATABASE}
     username: ${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_DEV_TESTNAV_BRUKER_SERVICE_DEV_DB_USERNAME}
@@ -12,6 +18,6 @@ spring:
     
     
 consumers:
-  testnav-person-organisasjon-tilgang-service:
-    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
-    name: testnav-person-organisasjon-tilgang-service-dev
+  testnav-altinn3-tilgang-service:
+    url: http://testnav-altinn3-tilgang-service.dolly.svc.cluster.local
+    name: testnav-altinn3-tilgang-service

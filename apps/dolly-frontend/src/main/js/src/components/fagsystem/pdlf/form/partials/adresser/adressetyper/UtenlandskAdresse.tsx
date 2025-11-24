@@ -19,12 +19,14 @@ export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdres
 		formMethods.watch(`${path}.postboksNummerNavn`) !== '' &&
 		formMethods.watch(`${path}.postboksNummerNavn`) !== null
 
+	const erKontaktadresse = path.includes('kontaktadresse')
+
 	useEffect(() => {
 		if (master !== 'PDL') {
 			formMethods.setValue(`${path}.bygningEtasjeLeilighet`, null)
 			formMethods.setValue(`${path}.regionDistriktOmraade`, null)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [master])
 
 	return (
@@ -33,13 +35,13 @@ export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdres
 				name={`${path}.adressenavnNummer`}
 				label="Gatenavn og husnummer"
 				// @ts-ignore
-				isDisabled={harPostboksnummer}
+				isDisabled={harPostboksnummer && !erKontaktadresse}
 			/>
 			<FormTextInput
 				name={`${path}.postboksNummerNavn`}
 				label="Postboksnummer og -navn"
 				// @ts-ignore
-				isDisabled={harAdressenavn}
+				isDisabled={harAdressenavn && !erKontaktadresse}
 			/>
 			<FormTextInput name={`${path}.postkode`} label="Postkode" />
 			<FormTextInput name={`${path}.bySted`} label="By eller sted" />

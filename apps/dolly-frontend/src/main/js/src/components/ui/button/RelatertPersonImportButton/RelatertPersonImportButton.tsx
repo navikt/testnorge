@@ -9,7 +9,7 @@ import { DollyApi } from '@/service/Api'
 import './RelatertPersonImportButton.less'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { allCapsToCapitalized } from '@/utils/DataFormatter'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
@@ -96,7 +96,7 @@ export const RelatertPersonImportButton = ({
 								checked={values?.includes(ident.id)}
 								onChange={onClick}
 								size={'grow'}
-								isDisabled={disabledCheckbox}
+								disabled={disabledCheckbox}
 								attributtCheckbox
 							/>
 						</div>

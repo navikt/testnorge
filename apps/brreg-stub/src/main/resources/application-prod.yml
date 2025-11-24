@@ -1,0 +1,33 @@
+spring:
+  config:
+    import: "vault://"
+  flyway:
+    locations: classpath:db/migration/postgresql
+  datasource:
+    url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?useUnicode=yes&characterEncoding=UTF-8
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+      max-lifetime: 30000
+      connection-timeout: 30000
+      initialization-fail-timeout: 10000
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false # Running in dev-fss.
+    vault:
+      host: vault.adeo.no
+      port: 443
+      connection-timeout: 15000
+      read-timeout: 30000
+      kv:
+        enabled: false
+      database:
+        enabled: true
+        role: testnav-brregstub-admin
+        backend: postgresql/preprod-fss
+      fail-fast: true

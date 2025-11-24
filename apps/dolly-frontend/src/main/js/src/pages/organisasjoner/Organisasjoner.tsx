@@ -9,20 +9,20 @@ import StatusListeConnector from '@/components/bestilling/statusListe/StatusList
 import OrganisasjonListe from './OrganisasjonListe'
 import { dollySlack } from '@/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { useOrganisasjonBestilling } from '@/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestilling } from '@/utils/hooks/useDollyOrganisasjoner'
 import { sokSelector } from '@/ducks/bestillingStatus'
 import { useDispatch } from 'react-redux'
 import { resetPaginering } from '@/ducks/finnPerson'
 import { bottom } from '@popperjs/core'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { ToggleGroup } from '@navikt/ds-react'
-import useBoolean from '@/utils/hooks/useBoolean'
-import { OrganisasjonBestillingsveilederModal } from '@/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
-import OrganisasjonHeaderConnector from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useReduxSelector } from '@/utils/hooks/useRedux'
+import { useForm } from 'react-hook-form'
+import OrganisasjonHeader from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeader'
+import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
 
 enum BestillingType {
 	NY = 'NY',
@@ -33,19 +33,21 @@ const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
 export default () => {
-	const {
-		currentBruker: { brukerId, brukertype, brukernavn },
-	} = useCurrentBruker()
+	const { currentBruker } = useCurrentBruker()
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
-	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const searchStr = useReduxSelector((state) => state.search)
+	const formMethods = useForm({ mode: 'onBlur' })
+	const searchInputRef = React.useRef(null)
+	const shortcutKey = useSearchHotkey(searchInputRef)
 
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
-	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
+	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
+	)
 
 	const byttVisning = (value: string) => {
 		dispatch(resetPaginering())
@@ -88,19 +90,21 @@ export default () => {
 					</div>
 				</div>
 
+				<OrganisasjonHeader antallOrganisasjoner={antallOrg} />
+
 				{bestillingerById && (
 					// @ts-ignore
-					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
+					<StatusListeConnector
+						brukerId={currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId}
+						bestillingListe={bestillingerById}
+					/>
 				)}
-
-				<OrganisasjonHeaderConnector antallOrganisasjoner={antallOrg} />
 
 				<div className="toolbar">
 					<NavButton
 						data-testid={TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON}
 						variant={'primary'}
-						// onClick={() => startBestilling(BestillingType.NY)}
-						onClick={visStartBestilling}
+						onClick={() => startBestilling(formMethods.getValues())}
 					>
 						Opprett organisasjon
 					</NavButton>
@@ -124,16 +128,14 @@ export default () => {
 						</ToggleGroup.Item>
 					</ToggleGroup>
 
-					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
-				</div>
-
-				{startBestillingAktiv && (
-					<OrganisasjonBestillingsveilederModal
-						onSubmit={startBestilling}
-						onAvbryt={skjulStartBestilling}
-						brukernavn={brukernavn}
+					<SearchField
+						style={{ width: '280px', marginRight: '-79px' }}
+						shortcutKey={shortcutKey}
+						placeholder={searchfieldPlaceholderSelector()}
+						setText={undefined}
+						ref={searchInputRef}
 					/>
-				)}
+				</div>
 
 				{visning === VISNING_ORGANISASJONER &&
 					(isFetching ? (
@@ -151,8 +153,8 @@ export default () => {
 						<Loading label="Laster bestillinger" panel />
 					) : antallBest > 0 ? (
 						<OrganisasjonBestilling
-							brukerId={brukerId}
-							brukertype={brukertype}
+							brukerId={currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId}
+							brukertype={currentBruker?.brukertype}
 							bestillinger={sokSelector(bestillingerById, searchStr)}
 						/>
 					) : (

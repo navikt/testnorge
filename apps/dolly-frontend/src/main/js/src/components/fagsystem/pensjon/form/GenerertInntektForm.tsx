@@ -9,8 +9,8 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { pensjonGenererPath } from '@/components/fagsystem/pensjon/form/Form'
 import styled from 'styled-components'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { ErrorMessage } from '@hookform/error-message'
 import { usePensjonFacadeGenerer } from '@/utils/hooks/usePensjon'
+import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 
 const getTittel = (data) => {
 	const inntektsaar = data?.map((inntekt) => inntekt.ar)
@@ -36,18 +36,19 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 	)
 
 	const handleGenerer = () => {
-		formMethods.clearErrors(pensjonGenererPath)
+		formMethods.clearErrors(`manual.${pensjonGenererPath}`)
+		formMethods.clearErrors(`${pensjonGenererPath}`)
 		trigger()
 			.then((values) => {
 				if (!values) {
-					formMethods.setError(`${pensjonGenererPath}.generer.tomAar`, {
+					formMethods.setError(`manual.${pensjonGenererPath}.generer.tomAar`, {
 						message: 'Velg et gyldig år',
 					})
 				}
 				formMethods.setValue(`${pensjonGenererPath}.inntekter`, values?.data?.arInntektGList)
 			})
 			.catch(() => {
-				formMethods.setError(`${pensjonGenererPath}.generer.tomAar`, {
+				formMethods.setError(`manual.${pensjonGenererPath}.generer.tomAar`, {
 					message: 'Velg et gyldig år',
 				})
 			})
@@ -117,15 +118,7 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 					</StyledButton>
 				</div>
 
-				{formMethods.formState.errors && (
-					<ErrorMessage
-						name={`${pensjonGenererPath}.inntekter`}
-						errors={formMethods.formState.errors}
-						render={({ message }) => (
-							<p style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</p>
-						)}
-					/>
-				)}
+				<DisplayFormError path={`${pensjonGenererPath}.inntekter`} />
 
 				{formInntekter?.length > 0 && (
 					<StyledPanel>
@@ -151,7 +144,6 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 												formMethods.setValue(`${path}.generatedG`, 0)
 												formMethods.setValue(`${path}.grunnbelop`, 0)
 											}}
-											useControlled={true}
 										/>
 										<FormTextInput
 											isDisabled={true}
@@ -159,7 +151,6 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 											label="År"
 											type="number"
 											size="xxsmall"
-											useControlled={true}
 										/>
 										<FormTextInput
 											isDisabled={true}
@@ -167,7 +158,6 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 											label="Generert G-verdi"
 											type="number"
 											size="xxsmall"
-											useControlled={true}
 										/>
 										<FormTextInput
 											isDisabled={true}
@@ -175,7 +165,6 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 											label="Grunnbeløp"
 											type="number"
 											size="xxsmall"
-											useControlled={true}
 										/>
 									</div>
 								)}

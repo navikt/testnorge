@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "HTTP_PROXY",
+      "type": "java.lang.String",
+      "description": "Satt av NAIS i pod, hvis NAIS-manifestet har <tt>spec.webproxy</tt>."
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { parseDate } from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
 
@@ -8,6 +8,7 @@ import { isDate } from 'date-fns'
  */
 export const messages = {
 	required: 'Feltet er påkrevd',
+	positive: 'Verdien må være større enn 0',
 }
 
 // Dato som kommer fra Maler er av typen String

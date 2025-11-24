@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -19,16 +20,23 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingHistarkStatusMapper {
 
+    private static final String FEIL = "FEIL";
+    private static final String OK = "OK";
+
     public static List<RsStatusRapport> buildHistarkStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getHistarkStatus())) {
-                if (statusMap.containsKey(progress.getHistarkStatus())) {
-                    statusMap.get(progress.getHistarkStatus()).add(progress.getIdent());
+                if (Stream.of(progress.getHistarkStatus().split(","))
+                        .allMatch(status -> status.contains(OK) &&
+                                !status.contains(FEIL))) {
+                    updateMap(statusMap, OK, progress.getIdent());
                 } else {
-                    statusMap.put(progress.getHistarkStatus(), new ArrayList<>(List.of(progress.getIdent())));
+                    Stream.of(progress.getHistarkStatus().split(","))
+                            .forEach(status ->
+                                updateMap(statusMap, status, progress.getIdent()));
                 }
             }
         });
@@ -42,5 +50,14 @@ public final class BestillingHistarkStatusMapper {
                                 .build())
                         .toList())
                 .build());
+    }
+
+    private static void updateMap(Map<String, List<String>> statusMap, String status, String ident) {
+
+        if (statusMap.containsKey(status)) {
+            statusMap.get(status).add(ident);
+        } else {
+            statusMap.put(status, new ArrayList<>(List.of(ident)));
+        }
     }
 }

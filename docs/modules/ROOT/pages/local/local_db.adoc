@@ -1,0 +1,68 @@
+[[local_db]]
+= Hvordan sette opp en lokal PSQL for egen testing
+
+Dette er en kort beskrivelse på hvordan du setter opp PostgreSQL i Docker og fyller den med innhold hentet fra enten GCP eller FSS.
+
+[quote]
+pg_dump does not block other users accessing the database (readers or writers).
+
+[[local_db_eksport_gcp]]
+== Eksportere fra GCP
+
+Her bruker vi `dolly-backend` som eksempel. Vi bruker også https://doc.nais.io/operate/cli/[NAIS CLI] som igjen avhenger av https://cloud.google.com/sdk/gcloud[gcloud CLI]. Eksport gjøres med https://www.postgresql.org/docs/current/app-pgdump.html[pg_dump].
+
+Først: logg inn med gcloud CLI (NAIS CLI avhenger av dette):
+----
+gcloud auth login --update-adc
+----
+
+Sett opp proxy mot databasen definert i applikasjonen `dolly-backend`. La proxy kjøre videre i eget vindu mens du eksporterer:
+----
+nais postgres proxy dolly-backend
+----
+
+Eksporter:
+----
+pg_dump --username=YOUR_NAV_EMAIL_ADDRESS \
+  --clean --create --no-owner --no-privileges --verbose \
+  --file=~/dump.sql testnav-dolly-backend
+----
+Output havner i `~/dump.sql` og brukes ved import.
+
+Flaggene `--clean --create --no-owner --no-privileges` gjør at skriptet kan kjøres lokalt og at tabeller får korrekt lokal eier (`postgres`).
+
+[[local_db_eksport_fss]]
+== Eksportere fra FSS
+
+Eksempel: `dolly-backend-dev`. Databasen er definert i `config.test.yml` i applikasjonen.
+----
+pg_dump --host=dev-pg.intern.nav.no \
+  --username=USERNAME_FROM_VAULT \
+  --clean --create --no-owner --no-privileges --verbose \
+  --exclude-table=idents_from_* --exclude-table=diff_idents --exclude-table=test \
+  --file=~/dump.sql dolly-test
+----
+Brukernavn og passord hentes fra Vault (f.eks. `postgresql/preprod-fss/credentials/dolly-test-admin`).
+
+`--exclude-table` er brukt fordi enkelte tabeller hadde annen eier og ikke kunne eksporteres med Vault‑credentials. I de fleste tilfeller kan disse parameterne utelates.
+
+[[local_db_docker_setup]]
+== Sette opp PostgreSQL i Docker (engangs)
+
+Opprett container (autentisering slått av fra Docker host – kun til lokal utvikling):
+----
+docker run --name postgres -e POSTGRES_HOST_AUTH_METHOD=trust -p 5432:5432 postgres
+----
+Kjør gjerne uten `--detach` første gang for å følge med på logger.
+
+[[local_db_import_psql]]
+== Importere i PostgreSQL
+
+Import gjøres med https://www.postgresql.org/docs/current/app-psql.html[psql]. (Alternativet https://www.postgresql.org/docs/current/app-pgrestore.html[pg_restore] krever eksport med `--format=custom`).
+
+Eksisterende database blir erstattet. Du kan ha flere databaser samtidig for ulike scenario. Eksempel: `testnav-dolly-backend` og `dolly-test`.
+----
+psql --username=postgres --file=~/dump.sql
+----
+
+Når import er ferdig kan du inspisere databasen med ønsket klient (IntelliJ Database, psql, DBeaver, etc.).

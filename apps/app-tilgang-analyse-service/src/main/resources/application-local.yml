@@ -1,4 +1,8 @@
+DOLLY_READER_TOKEN: dummy
+
 spring:
+  config:
+    import: "sm://"
   flyway:
     url: jdbc:h2:mem:testdb
     username: sa

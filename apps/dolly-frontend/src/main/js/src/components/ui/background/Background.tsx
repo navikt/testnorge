@@ -21,7 +21,7 @@ import '@/snow.scss'
 import '@/rain.scss'
 import '@/flowers.scss'
 import { NEDBOER_TYPE, useWeatherFyrstikkAlleen } from '@/utils/hooks/useWeather'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const month = new Date().getMonth()
 const day = new Date().getDate()
@@ -33,7 +33,7 @@ const isSummer = month >= 5 && month <= 7
 const isFall = month >= 8 && month <= 10
 const isWinter = month === 0 || month === 1
 const isChristmas = month === 11
-const isEaster = (month === 2 && day > 21) || (month === 3 && day === 1)
+const isEaster = month === 3 && day > 10 && day < 22
 const isFaarikaal = month === 8 && day > 23 && weekDay === 4
 
 const DefaultBackground = styled.div`
@@ -104,7 +104,9 @@ const animateNedboer = (millimeterNedboer: number, nedBoerType: NEDBOER_TYPE) =>
 
 export const Background = (props: any) => {
 	const { millimeterNedboer = 0, nedBoerType } = useWeatherFyrstikkAlleen()
-	const nedboer = animateNedboer(millimeterNedboer, nedBoerType)
+	const nedboer = isChristmas
+		? animateNedboer(millimeterNedboer, NEDBOER_TYPE.SNOW)
+		: animateNedboer(millimeterNedboer, nedBoerType)
 	return (
 		<>
 			{!isEaster && nedboer}

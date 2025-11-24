@@ -1,31 +1,36 @@
 package no.nav.registre.testnorge.profil.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.profil.consumer.dto.OrganisasjonDTO;
-import no.nav.registre.testnorge.profil.util.WebClientFilter;
-import org.springframework.http.HttpHeaders;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.profil.consumer.dto.AltinnRequestDTO;
+import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Flux;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class GetPersonOrganisasjonTilgangCommand implements Callable<Mono<OrganisasjonDTO>> {
+@Slf4j
+public class GetPersonOrganisasjonTilgangCommand implements Callable<Flux<OrganisasjonDTO>> {
+
     private final WebClient webClient;
+    private final String ident;
     private final String token;
-    private final String organisasjonsnummer;
 
     @Override
-    public Mono<OrganisasjonDTO> call() {
+    public Flux<OrganisasjonDTO> call() {
         return webClient
-                .get()
-                .uri(builder -> builder.path("/api/v1/person/organisasjoner/{organisasjonsnummer}").build(organisasjonsnummer))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .post()
+                .uri(builder -> builder.path("/api/v1/brukertilgang")
+                        .build())
+                .headers(WebClientHeader.bearer(token))
+                .bodyValue(new AltinnRequestDTO(ident))
                 .retrieve()
-                .bodyToMono(OrganisasjonDTO.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .bodyToFlux(OrganisasjonDTO.class)
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

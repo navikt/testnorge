@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import React, { useContext } from 'react'
+import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -10,20 +10,22 @@ import {
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
 import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { YrkesskadeTypes } from '@/components/fagsystem/yrkesskader/YrkesskaderTypes'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
 export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 
 	const handleChangeTidstype = (value: any, path: string) => {
 		formMethods.setValue(`${path}.tidstype`, value?.value || null)
@@ -42,8 +44,8 @@ export const YrkesskaderForm = () => {
 			(person: any) => person?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt,
 		)
 		const vergemaalLeggTil =
-			opts?.personFoerLeggTil?.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt ||
-			opts?.personFoerLeggTil?.pdlforvalter?.person?.vergemaal
+			(opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt ||
+			(opts?.personFoerLeggTil as any)?.pdlforvalter?.person?.vergemaal
 
 		return vergemaalForm || vergemaalImport || vergemaalLeggTil
 	}
@@ -56,8 +58,8 @@ export const YrkesskaderForm = () => {
 			?.flatMap((person: any) => person?.data?.hentPerson?.forelderBarnRelasjon)
 			?.filter((relasjon: any) => relasjon?.minRolleForPerson === 'BARN')
 		const forelderLeggTil = (
-			opts?.personFoerLeggTil?.pdl?.hentPerson?.forelderBarnRelasjon ||
-			opts?.personFoerLeggTil?.pdlforvalter?.person?.forelderBarnRelasjon
+			(opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.forelderBarnRelasjon ||
+			(opts?.personFoerLeggTil as any)?.pdlforvalter?.person?.forelderBarnRelasjon
 		)?.filter((relasjon: any) => relasjon?.minRolleForPerson === 'BARN')
 
 		return forelderForm || forelderImport || forelderLeggTil
@@ -176,10 +178,10 @@ export const YrkesskaderForm = () => {
 										onChange={(value: any) => handleChangeTidstype(value, path)}
 									/>
 									{formMethods.watch(`${path}.tidstype`) === 'tidspunkt' && (
-										<FormDateTimepicker
-											formMethods={formMethods}
+										<FormDatepicker
 											name={`${path}.skadetidspunkt`}
 											label="Skadetidspunkt"
+											format={'DD.MM.YYYY HH:mm'}
 										/>
 									)}
 									{formMethods.watch(`${path}.tidstype`) === 'periode' && (

@@ -75,6 +75,10 @@ export const InstVisning = ({ data, loading, bestillingIdListe, tilgjengeligMilj
 									value={showLabel('institusjonstype', opphold.institusjonstype)}
 								/>
 								<TitleValue title="Startdato" value={formatStringDates(opphold.startdato)} />
+								<TitleValue
+									title="Forventet sluttdato"
+									value={formatStringDates(opphold.forventetSluttdato)}
+								/>
 								<TitleValue title="Sluttdato" value={formatStringDates(opphold.sluttdato)} />
 							</div>
 						)}

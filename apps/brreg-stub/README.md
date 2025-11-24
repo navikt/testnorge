@@ -15,9 +15,7 @@ For dokumentasjon av applikasjonen sine endepunkter:
  - `/api`
  - `WSDL: /ws`
 
-## Deployment
-
-Applikasjonen deployes til dev-fss ved bruk av [Github Actions.](https://github.com/navikt/testnorge/actions) Nytt bygg trigges ved PR eller merge til master. 
-
-Applikasjonen kan også startes opp lokalt ved å bruke LocalApplicationStarter
+## Lokal kjøring
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Lokal PostgreSQL.](../../docs/modules/ROOT/pages/local/local_db.adoc)
 

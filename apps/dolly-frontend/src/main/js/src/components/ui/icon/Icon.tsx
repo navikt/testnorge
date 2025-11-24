@@ -49,6 +49,7 @@ import {
 	PersonGroupFillIcon,
 	PersonGroupIcon,
 	PersonIcon,
+	PersonPencilIcon,
 	PersonPlusFillIcon,
 	PersonPlusIcon,
 	PersonTallShortIcon,
@@ -74,7 +75,9 @@ import CheckCircle from '@/assets/icons/custom/CheckCircle.svg?raw'
 import Dolly from '@/assets/icons/custom/Dolly.svg?raw'
 import DollyPanic from '@/assets/icons/custom/DollyPanic.svg?raw'
 import TenorLogo from '@/assets/icons/custom/TenorLogo.svg?raw'
+import SlackLogo from '@/assets/icons/custom/SlackLogo.svg?raw'
 import Playwright from '@/assets/img/playwright.png'
+import NavLogo from '@/assets/icons/custom/NavLogo'
 
 import './Icon.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -84,10 +87,13 @@ export const icons = {
 	'report-problem-circle': ReportProblemCircle,
 	'feedback-check-circle': CheckCircle,
 	'report-problem-triangle': ProblemTriangle,
+	hourglass: HourglassIcon,
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
 	playwright: Playwright,
+	nav: NavLogo,
 	tenor: TenorLogo,
+	slack: SlackLogo,
 
 	trashcan: TrashIcon,
 	'add-circle': PlusCircleIcon,
@@ -109,6 +115,7 @@ export const icons = {
 	synchronize: ArrowsCirclepathIcon,
 	kryss: XMarkIcon,
 	'chevron-down': ChevronDownIcon,
+	collapse: ChevronDownIcon,
 	'chevron-up': ChevronUpIcon,
 	'chevron-down-double-circle': ChevronDownDoubleCircleIcon,
 	'chevron-up-double-circle': ChevronUpDoubleCircleIcon,
@@ -180,13 +187,14 @@ export const icons = {
 	'file-code': FileCodeIcon,
 	cv: FileTextIcon,
 	ansettelse: PersonPlusIcon,
+	'rediger-person': PersonPencilIcon,
 }
 
 const px = (v: number) => `${v}px`
 
 const Icon = ({
 	kind = null as unknown as string,
-	title = undefined,
+	title = undefined as unknown as string,
 	size = 24,
 	fontSize = '1rem',
 	style = undefined as unknown as React.CSSProperties,
@@ -209,6 +217,7 @@ const Icon = ({
 		'dollyPanic',
 		'playwright',
 		'tenor',
+		'slack',
 	]
 
 	if (halvannenRemIkoner.includes(kind)) {
@@ -222,7 +231,7 @@ const Icon = ({
 
 	return DesignSystemIcon ? (
 		<DesignSystemIcon
-			title={kind}
+			title={title || kind}
 			fontSize={fontSize}
 			className={className}
 			data-testid={props['data-testid']}

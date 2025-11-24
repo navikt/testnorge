@@ -3,20 +3,15 @@ plugins {
 }
 
 dependencies {
-    implementation "no.nav.testnav.libs:commands"
     implementation "no.nav.testnav.libs:data-transfer-objects"
-    implementation "no.nav.testnav.libs:reactive-core"
-    implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:servlet-core"
-    implementation "no.nav.testnav.libs:servlet-insecure-security"
-    implementation "no.nav.testnav.libs:servlet-security"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:testing"
+    implementation "no.nav.testnav.libs:texas"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-web"
 
     testImplementation "org.testcontainers:junit-jupiter"
 }

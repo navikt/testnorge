@@ -342,7 +342,7 @@ public class PdlPerson {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Navn extends DbVersjonDTO {
+    public static class Navn extends MetadataInformasjon {
 
         private String fornavn;
         private String mellomnavn;
@@ -411,10 +411,11 @@ public class PdlPerson {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Sivilstand extends DbVersjonDTO {
+    public static class Sivilstand extends MetadataInformasjon {
 
         private SivilstandType type;
         private LocalDate gyldigFraOgMed;
+        private LocalDate bekreftelsesdato;
         private String relatertVedSivilstand;
 
         public boolean isGift() {
@@ -434,6 +435,11 @@ public class PdlPerson {
         public boolean isUgift() {
             return type == SivilstandType.UGIFT ||
                     type == SivilstandType.UOPPGITT;
+        }
+
+        public boolean isGjenlevende() {
+            return type == SivilstandType.ENKE_ELLER_ENKEMANN ||
+                    type == SivilstandType.GJENLEVENDE_PARTNER;
         }
     }
 
@@ -567,5 +573,23 @@ public class PdlPerson {
 
             return nonNull(utenlandskAdresse);
         }
+    }
+
+    @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MetadataInformasjon extends DbVersjonDTO implements Serializable {
+
+        private Metadata metadata;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Metadata implements Serializable {
+
+        private Boolean historisk;
     }
 }

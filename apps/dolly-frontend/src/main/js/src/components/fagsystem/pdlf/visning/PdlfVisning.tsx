@@ -22,7 +22,7 @@ import { Persondetaljer } from '@/components/fagsystem/pdlf/visning/partials/Per
 import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMBankkonto } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { ForeldreansvarVisning } from '@/components/fagsystem/pdlf/visning/partials/Foreldreansvar'
-import { FullmaktVisning } from '@/components/fagsystem'
+import FullmaktVisning from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
 
 export const getBankkontoData = (data) => {
 	if (data?.kontoregister) {
@@ -74,9 +74,10 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 
 	const ident = data?.person?.ident
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
-	const skjermingData = fagsystemData?.skjermingsregister
 
 	const bankkontoData = getBankkontoData(fagsystemData)
+
+	const erDoed = data?.person?.doedsfall?.find((d) => d.doedsdato)
 
 	return (
 		<ErrorBoundary>
@@ -87,7 +88,6 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					ident={ident}
 					tpsMessaging={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}
-					skjermingData={skjermingData}
 					erRedigerbar={erRedigerbar}
 				/>
 				<Foedsel
@@ -196,7 +196,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					ident={ident}
 					erRedigerbar={erRedigerbar}
 				/>
-				<FullmaktVisning ident={ident} />
+				{!erDoed && ident && <FullmaktVisning ident={ident} />}
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
 				<UtenlandsId
 					data={data?.person?.utenlandskIdentifikasjonsnummer}

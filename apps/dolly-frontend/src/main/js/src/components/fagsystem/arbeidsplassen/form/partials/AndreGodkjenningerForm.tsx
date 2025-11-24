@@ -10,9 +10,10 @@ import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
-import _get from 'lodash/get'
+import { useFormContext } from 'react-hook-form'
 
-export const AndreGodkjenningerForm = ({ formMethods }) => {
+export const AndreGodkjenningerForm = () => {
+	const formMethods = useFormContext()
 	const andreGodkjenningerListePath = 'arbeidsplassenCV.andreGodkjenninger'
 
 	return (
@@ -38,7 +39,7 @@ export const AndreGodkjenningerForm = ({ formMethods }) => {
 								name={`${annenGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								key={`issuer_${_get(formMethods.getValues(), `${annenGodkjenningPath}.issuer`)}`}
+								key={`issuer_${formMethods.getValues(`${annenGodkjenningPath}.issuer`)}`}
 							/>
 							<FormDatepicker name={`${annenGodkjenningPath}.fromDate`} label="Fullført" />
 							<FormDatepicker name={`${annenGodkjenningPath}.toDate`} label="Utløper" />

@@ -7,14 +7,15 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
-import _get from 'lodash/get'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { useFormContext } from 'react-hook-form'
 
-export const UtdanningForm = ({ formMethods }) => {
+export const UtdanningForm = () => {
+	const formMethods = useFormContext()
 	const utdanningListePath = 'arbeidsplassenCV.utdanning'
 
 	return (
@@ -55,7 +56,7 @@ export const UtdanningForm = ({ formMethods }) => {
 								<Fritekstfelt
 									label="Beskrivelse"
 									placeholder="Beskrivelse av utdanning"
-									defaultValue={_get(formMethods.getValues(), `${utdanningPath}.description`)}
+									defaultValue={formMethods.getValues(`${utdanningPath}.description`)}
 									onBlur={(beskrivelse) =>
 										formMethods.setValue(`${utdanningPath}.description`, beskrivelse?.target?.value)
 									}
@@ -67,14 +68,14 @@ export const UtdanningForm = ({ formMethods }) => {
 								<FormDatepicker
 									name={`${utdanningPath}.endDate`}
 									label="Sluttdato"
-									disabled={_get(formMethods.getValues(), `${utdanningPath}.ongoing`)}
+									disabled={formMethods.getValues(`${utdanningPath}.ongoing`)}
 								/>
 								<FormCheckbox
 									id={`${utdanningPath}.ongoing`}
 									name={`${utdanningPath}.ongoing`}
 									label="Pågående utdanning"
 									wrapperSize="inherit"
-									isDisabled={_get(formMethods.getValues(), `${utdanningPath}.endDate`)}
+									disabled={formMethods.getValues(`${utdanningPath}.endDate`)}
 									checkboxMargin
 								/>
 							</div>

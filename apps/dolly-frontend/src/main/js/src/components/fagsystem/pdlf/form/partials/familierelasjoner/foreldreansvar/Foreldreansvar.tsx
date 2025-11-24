@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import {
 	getInitialForeldreansvar,
 	initialPdlBiPerson,
@@ -10,13 +10,16 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { ForeldreBarnRelasjon, TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import styled from 'styled-components'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -46,7 +49,7 @@ export const ForeldreansvarForm = ({
 	path,
 	eksisterendeNyPerson = null,
 }: ForeldreansvarForm) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const antall = opts?.antall || 1
 
 	const ansvarlig = 'ansvarlig'
@@ -54,9 +57,11 @@ export const ForeldreansvarForm = ({
 	const nyAnsvarlig = 'nyAnsvarlig'
 	const typeAnsvarlig = 'typeAnsvarlig'
 
-	const foedselsaar =
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+	const foedselsaar = ((opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.foedselsdato?.[0]
+		?.foedselsaar ||
+		(opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.foedsel?.[0]?.foedselsaar) as
+		| number
+		| undefined
 
 	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 
@@ -131,9 +136,10 @@ export const ForeldreansvarForm = ({
 		}
 	}, [])
 
-	const ansvarlige = Options('typeAnsvarlig').filter(
-		(ansvar) => ansvar.value !== 'EKSISTERENDE' || antall === 1,
-	)
+	const ansvarlige =
+		antall > 1
+			? Options('typeAnsvarlig').filter((value) => value.value !== 'EKSISTERENDE')
+			: Options('typeAnsvarlig')
 
 	return (
 		<div className="flexbox--flex-wrap foreldre-form">
@@ -153,8 +159,7 @@ export const ForeldreansvarForm = ({
 					onChange={(target: Target) => handleChangeTypeAnsvarlig(target, path)}
 					size="medium"
 					info={
-						opts?.antall > 1 &&
-						'"Eksisterende person" er kun tilgjengelig for individ, ikke for gruppe'
+						antall > 1 && '"Eksisterende person" er kun tilgjengelig for individ, ikke for gruppe'
 					}
 				/>
 			)}
@@ -190,10 +195,13 @@ export const ForeldreansvarForm = ({
 }
 
 export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
-	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
+	const personFoerLeggTil = opts.personFoerLeggTil as any
+	const leggTilPaaGruppe = opts.is?.leggTilPaaGruppe
 
-	const relasjoner = formMethods.watch('pdldata.person.forelderBarnRelasjon')
-	const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')
+	const relasjoner = formMethods.watch('pdldata.person.forelderBarnRelasjon') as any[] | undefined
+	const eksisterendeRelasjoner = (personFoerLeggTil as any)?.pdl?.hentPerson
+		?.forelderBarnRelasjon as any[] | undefined
 
 	const harBarn = () => {
 		return (

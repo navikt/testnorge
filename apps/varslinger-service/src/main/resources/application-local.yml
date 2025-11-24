@@ -1,5 +1,6 @@
-
 spring:
+  config:
+    import: "sm://"
   h2:
     console:
       enabled: true
@@ -10,11 +11,7 @@ spring:
     url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
     username: sa
     password:
-    driverClassName: org.h2.Driver
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+  security:
     oauth2:
       resourceserver:
         tokenx:

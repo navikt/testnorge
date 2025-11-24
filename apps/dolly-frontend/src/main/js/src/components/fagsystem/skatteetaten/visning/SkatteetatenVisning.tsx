@@ -1,7 +1,7 @@
 import React from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import Icon from '@/components/ui/icon/Icon'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { BrregErFrVisning } from '@/components/fagsystem/skatteetaten/visning/BrregErFrVisning'
 import { InntektVisning } from '@/components/fagsystem/skatteetaten/visning/InntektVisning'
 import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetaten/visning/TjenestepensjonsavtaleVisning'
@@ -29,7 +29,7 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 	const tjenestepensjonavtaleListe = tenorRelasjoner.tjenestepensjonavtale
 	const harTjenestepensjonavtale = tjenestepensjonavtaleListe?.length > 0
 
-	const harDagligLederRolle = _get(tenorRelasjoner, 'brreg-er-fr')?.length > 0
+	const harDagligLederRolle = _.get(tenorRelasjoner, 'brreg-er-fr')?.length > 0
 
 	const skattemeldingListe = tenorRelasjoner.skattemelding
 	const harSkattemelding = skattemeldingListe?.length > 0

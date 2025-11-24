@@ -13,10 +13,10 @@ dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:data-transfer-search-objects"
     implementation "no.nav.testnav.libs:reactive-core"
-    implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
-    implementation "no.nav.testnav.libs:vault"
+    implementation "no.nav.testnav.libs:testing"
 
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
@@ -31,7 +31,7 @@ dependencies {
     implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
-    
+
     testRuntimeOnly "io.r2dbc:r2dbc-h2"
 }
 

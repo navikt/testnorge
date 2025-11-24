@@ -1,25 +1,21 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
     version: application.version.todo
     name: testnav-synt-vedtakshistorikk-service
     description: App som genererer syntetisk vedtakshistorikk(er), tilknytter dataen til testnorge ident(er) og sender historikken(e) til arena-forvalteren.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-  cloud:
-    vault:
-      enabled: false
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
+management:
+  health:
+    elasticsearch:
+      enabled: false
 
 consumers:
   synt-vedtakshistorikk:
@@ -37,50 +33,23 @@ consumers:
     namespace: dolly
     name: testnav-arena-forvalteren-proxy
     url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-  testnav-pensjon-testdata-facade-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-pensjon-testdata-facade-proxy
-    url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-  testnav-person-search-service:
+  testnav-dolly-search-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-search-service
-    url: http://testnav-person-search-service.dolly.svc.cluster.local
+    name: testnav-dolly-search-service
+    url: http://testnav-dolly-search-service.dolly.svc.cluster.local
   pdl-api-proxy:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-  testnav-inntektstub-proxy:
-    name: testnav-inntektstub-proxy
+  testnav-dolly-proxy:
+    name: testnav-dolly-proxy
     namespace: dolly
-    url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-faste-data-service
     url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure.include: prometheus,heapdump,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

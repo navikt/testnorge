@@ -4,7 +4,10 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type KjoennTypes = {
 	path: string
@@ -27,7 +30,7 @@ export const KjoennForm = ({ path, kanVelgeMaster }: KjoennTypes) => {
 }
 
 export const Kjoenn = () => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
 		<div className="flexbox--flex-wrap">

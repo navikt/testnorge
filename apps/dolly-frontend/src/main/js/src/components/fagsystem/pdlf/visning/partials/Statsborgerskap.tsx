@@ -1,7 +1,7 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { getInitialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PersonData, StatsborgerskapData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'

@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   tokenx:
     enabled: true
@@ -21,7 +24,6 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
@@ -29,32 +31,33 @@ spec:
       rules:
         - application: yrkesskade-datagenerator-service
           namespace: yrkesskade
+        - application: logging
+          namespace: nais-system
   liveness:
-    path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
         - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     requests:
-      cpu: 200m
-      memory: 1025Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
   ingresses:

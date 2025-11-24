@@ -6,7 +6,13 @@ const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
 )
 
-export default function BestillingSammendrag({ bestilling }) {
+export default function BestillingSammendrag({
+	bestilling,
+	closeModal,
+}: {
+	bestilling: any
+	closeModal?: () => void
+}) {
 	const findFirstIdent = (bestilling: any) => {
 		if (bestilling?.organisasjonNummer) {
 			return null
@@ -23,7 +29,7 @@ export default function BestillingSammendrag({ bestilling }) {
 
 	return (
 		<div className="bestilling-detaljer">
-			<MiljoeStatus bestilling={bestilling} />
+			<MiljoeStatus bestilling={bestilling} closeModal={closeModal} />
 			<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
 				<Bestillingskriterier
 					firstIdent={findFirstIdent(bestilling)}
@@ -35,6 +41,7 @@ export default function BestillingSammendrag({ bestilling }) {
 						opprettetFraId: bestilling.opprettetFraId,
 						opprettetFraGruppeId: bestilling.opprettetFraGruppeId,
 						navSyntetiskIdent: bestilling?.bestilling?.pdldata?.opprettNyPerson?.syntetisk,
+						id2032: bestilling?.bestilling?.pdldata?.opprettNyPerson?.id2032,
 						beskrivelse: bestilling?.bestilling?.beskrivelse,
 					}}
 					header="Bestillingskriterier"

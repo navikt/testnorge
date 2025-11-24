@@ -1,0 +1,14 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://invalid-local/jwks
+
+consumers:
+  syfosmregler:
+    url: http://localhost:${wiremock.server.port}
+  tsm-input-dolly:
+    url: http://localhost:${wiremock.server.port}

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { useContext } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -14,8 +13,14 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContextType,
+	useBestillingsveileder,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { isAfter } from 'date-fns'
+import { formatDate } from '@/utils/DataFormatter'
 
 interface SivilstandFormTypes {
 	formMethods: UseFormReturn
@@ -25,7 +30,7 @@ interface SivilstandFormTypes {
 	ident?: string
 }
 
-const gyldigeSivilstander = [
+export const gyldigeSivilstander = [
 	'GIFT',
 	'REGISTRERT_PARTNER',
 	'SEPARERT',
@@ -50,10 +55,10 @@ export const SivilstandForm = ({
 		if (selected.value === 'SAMBOER') {
 			formMethods.setValue(`${path}.bekreftelsesdato`, null)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const identMaster = opts?.identMaster || (parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF')
 
 	const isTestnorgeIdent = identMaster === 'PDL'
@@ -94,8 +99,9 @@ export const SivilstandForm = ({
 			/>
 			<FormCheckbox
 				name={`${path}.borIkkeSammen`}
+				id={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
-				isDisabled={!kanHaRelatertPerson}
+				disabled={!kanHaRelatertPerson}
 				vis={!isTestnorgeIdent}
 				checkboxMargin
 			/>
@@ -123,18 +129,55 @@ export const SivilstandForm = ({
 }
 
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
-	// @ts-ignore
-	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const { identtype, identMaster, personFoerLeggTil } =
+		useBestillingsveileder() as BestillingsveilederContextType
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
+	const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')
+
+	const getAlderspensjonAlert = () => {
+		const harAlderspensjon = personFoerLeggTil?.alderspensjon?.length > 0
+		const harSivilstanddato = sivilstandListe?.some(
+			(sivilstand) => sivilstand.sivilstandsdato || sivilstand.bekreftelsesdato,
+		)
+		if (harAlderspensjon && !harSivilstanddato) {
+			return 'Personen har registrert alderspensjon. For automatisk revurderingsvedtak må dato for endring av sivilstand settes.'
+		}
+		const alderspensjonIverksettelsesdato = personFoerLeggTil?.alderspensjon?.find(
+			(ap) => ap?.data?.transaksjonId?.iverksettelsesdato,
+		)?.data?.transaksjonId?.iverksettelsesdato
+		const harGyldigSivilstanddato = sivilstandListe?.some((sivilstand) =>
+			isAfter(new Date(sivilstand.sivilstandsdato), new Date(alderspensjonIverksettelsesdato)),
+		)
+		if (harAlderspensjon && harSivilstanddato && !harGyldigSivilstanddato) {
+			return `Personen har registrert alderspensjon. For automatisk revurderingsvedtak må dato for endring av sivilstand settes til etter ${formatDate(alderspensjonIverksettelsesdato)}`
+		}
+		return null
+	}
+	const alderspensjonAlert = getAlderspensjonAlert()
+
+	const handleRemoveEntry = (idx: number) => {
+		const filterSivilstandListe = sivilstandListe?.filter((_, index) => index !== idx)
+		formMethods.setValue('pdldata.person.sivilstand', filterSivilstandListe)
+		formMethods.trigger('pdldata.person.sivilstand')
+	}
+
 	return (
-		<FormDollyFieldArray
-			name="pdldata.person.sivilstand"
-			header="Sivilstand"
-			newEntry={getInitialSivilstand(initiellMaster)}
-			canBeEmpty={false}
-		>
-			{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
-		</FormDollyFieldArray>
+		<>
+			{alderspensjonAlert && (
+				<StyledAlert variant={'info'} size={'small'}>
+					{alderspensjonAlert}
+				</StyledAlert>
+			)}
+			<FormDollyFieldArray
+				name="pdldata.person.sivilstand"
+				header="Sivilstand"
+				newEntry={getInitialSivilstand(initiellMaster)}
+				canBeEmpty={false}
+				handleRemoveEntry={handleRemoveEntry}
+			>
+				{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
+			</FormDollyFieldArray>
+		</>
 	)
 }

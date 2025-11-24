@@ -2,20 +2,19 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.registre.sdforvalter.domain.AaregListe;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,14 +22,12 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DollySpringBootTest
+@AutoConfigureMockMvc()
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application-test.yml"
-)
+@Import(JwtDecoderConfig.class)
 class StaticDataControllerV1AaregIntegrationTest {
+
     @Autowired
     private MockMvc mvc;
 
@@ -39,6 +36,18 @@ class StaticDataControllerV1AaregIntegrationTest {
 
     @Autowired
     private AaregRepository repository;
+
+    private AaregModel createAaregModel(String fnr, String orgnr) {
+        AaregModel model = new AaregModel();
+        model.setFnr(fnr);
+        model.setOrgId(orgnr);
+        return model;
+    }
+
+    @AfterEach
+    void cleanUp() {
+        repository.deleteAll();
+    }
 
     @Test
     void shouldGetAareg() throws Exception {
@@ -53,20 +62,6 @@ class StaticDataControllerV1AaregIntegrationTest {
 
         AaregListe response = objectMapper.readValue(json, AaregListe.class);
         assertThat(response.getListe()).containsOnly(new Aareg(model));
-    }
-
-
-    public AaregModel createAaregModel(String fnr, String orgnr) {
-        AaregModel model = new AaregModel();
-        model.setFnr(fnr);
-        model.setOrgId(orgnr);
-        return model;
-    }
-
-
-    @AfterEach
-    public void cleanUp() {
-        repository.deleteAll();
     }
 
 }

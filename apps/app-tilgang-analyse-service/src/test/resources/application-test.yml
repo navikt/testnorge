@@ -5,5 +5,3 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
-
-TOKEN_X_ISSUER: dummy

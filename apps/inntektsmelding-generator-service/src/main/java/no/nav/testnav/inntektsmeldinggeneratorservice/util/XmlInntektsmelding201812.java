@@ -45,6 +45,7 @@ import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsUtsettelseAvForeldrepenger;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
@@ -56,10 +57,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter.toBigDecimal;
 import static no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter.toBigInteger;
 import static no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter.toCamelCase;
 import static no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter.toLocalDate;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 public class XmlInntektsmelding201812 {
@@ -89,7 +92,8 @@ public class XmlInntektsmelding201812 {
                         SykepengerIArbeidsgiverperioden.class,
                         createSykepengerIArbeidsgiverperioden(melding.getSykepengerIArbeidsgiverperioden())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "startdatoForeldrepengerperiode"),
-                        LocalDate.class, toLocalDate(melding.getStartdatoForeldrepengeperiode())),
+                        LocalDate.class, nonNull(melding.getStartdatoForeldrepengeperiode()) ?
+                        LocalDate.parse(melding.getStartdatoForeldrepengeperiode()) : null),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "opphoerAvNaturalyrelseListe"),
                         OpphoerAvNaturalytelseListe.class,
                         createOpphoerAvNaturalytelseListe(melding.getOpphoerAvNaturalytelseListe())),
@@ -141,7 +145,8 @@ public class XmlInntektsmelding201812 {
     private static DelvisFravaer createDelvisFravaer(RsDelvisFravaer delvisFravaer) {
 
         return new DelvisFravaer(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "dato"), LocalDate.class, toLocalDate(delvisFravaer.getDato())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "dato"), LocalDate.class,
+                        nonNull(delvisFravaer.getDato()) ? LocalDate.parse(delvisFravaer.getDato()) : null),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "timer"), BigDecimal.class, toBigDecimal(delvisFravaer.getTimer()))
         );
     }
@@ -186,7 +191,8 @@ public class XmlInntektsmelding201812 {
         return new NaturalytelseDetaljer(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class,
                         toCamelCase(detaljer.getNaturalytelseType())),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, toLocalDate(detaljer.getFom())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, isNotBlank(detaljer.getFom()) ?
+                        LocalDate.parse(detaljer.getFom()) : null),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beloepPrMnd"), BigDecimal.class, toBigDecimal(detaljer.getBeloepPrMnd()))
         );
     }
@@ -219,7 +225,8 @@ public class XmlInntektsmelding201812 {
         return isNull(refusjon) ? null :
                 new Refusjon(
                         new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, toBigDecimal(refusjon.getRefusjonsbeloepPrMnd())),
-                        new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class, toLocalDate(refusjon.getRefusjonsopphoersdato())),
+                        new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class,
+                                isNotBlank(refusjon.getRefusjonsopphoersdato()) ? LocalDate.parse(refusjon.getRefusjonsopphoersdato()) : null),
                         new JAXBElement<>(
                                 new QName(NAMESPACE_URI, "endringIRefusjonListe"),
                                 EndringIRefusjonsListe.class,
@@ -239,7 +246,8 @@ public class XmlInntektsmelding201812 {
 
         return isNull(endring) ? null :
                 new EndringIRefusjon(
-                        new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, toLocalDate(endring.getEndringsdato())),
+                        new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class,
+                                isNotBlank(endring.getEndringsdato()) ? LocalDate.parse(endring.getEndringsdato()) : null),
                         new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class,
                                 toBigDecimal(endring.getRefusjonsbeloepPrMnd())));
     }
@@ -250,7 +258,8 @@ public class XmlInntektsmelding201812 {
         return new Arbeidsforhold(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class,
                         toCamelCase(arbeidsforhold.getArbeidsforholdId())),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, toLocalDate(arbeidsforhold.getFoersteFravaersdag())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, nonNull(arbeidsforhold.getFoersteFravaersdag()) ?
+                        LocalDate.parse(arbeidsforhold.getFoersteFravaersdag()) : null),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beregnetInntekt"), Inntekt.class, createInntekt(arbeidsforhold.getBeregnetInntekt())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "avtaltFerieListe"), AvtaltFerieListe.class, createAvtaltFerieListe(arbeidsforhold.getAvtaltFerieListe())),
                 new JAXBElement<>(
@@ -314,8 +323,10 @@ public class XmlInntektsmelding201812 {
         }
 
         return new Periode(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, toLocalDate(periode.getFom())),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "tom"), LocalDate.class, toLocalDate(periode.getTom())));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, isNotBlank(periode.getFom()) ?
+                        LocalDate.parse(periode.getFom()) : null),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "tom"), LocalDate.class, isNotBlank(periode.getTom()) ?
+                        LocalDate.parse(periode.getTom()) : null));
     }
 
     private static Inntekt createInntekt(RsInntekt inntekt) {

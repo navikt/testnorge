@@ -1,38 +1,50 @@
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import { dokarkivAttributt } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
+import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 import {
 	initialDigitalInnsending,
 	initialDokarkiv,
-	initialHistark,
-} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { histarkAttributt } from '@/components/fagsystem/histark/form/HistarkForm'
+} from '@/components/fagsystem/dokarkiv/form/initialValues'
+import { useContext } from 'react'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
 
 export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(DokarkivPanel.initialValues)
-
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const dokarkiv = getTimeoutAttr('DOKARKIV', opts)
+	const histark = getTimeoutAttr('HISTARK', opts)
 	return (
-		// @ts-ignore
 		<Panel
 			heading={DokarkivPanel.heading}
 			checkAttributeArray={() => sm.batchAdd(['digitalInnsending', 'histark'])}
-			uncheckAttributeArray={sm.batchRemove}
+			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="dokarkiv"
-			startOpen={harValgtAttributt(formValues, [dokarkivAttributt, histarkAttributt])}
+			startOpen={harValgtAttributt(formValues, ['dokarkiv', 'histark'])}
 		>
 			<AttributtKategori title="Oppretting av dokument" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.dokarkiv}
-					disabled={sm.attrs.digitalInnsending.checked || sm.attrs.histark.checked}
+					disabled={
+						dokarkiv.disabled || sm.attrs.digitalInnsending.checked || sm.attrs.histark.checked
+					}
+					title={dokarkiv.title}
 				/>
 				<Attributt
 					attr={sm.attrs.digitalInnsending}
-					disabled={sm.attrs.dokarkiv.checked || sm.attrs.histark.checked}
+					disabled={dokarkiv.disabled || sm.attrs.dokarkiv.checked || sm.attrs.histark.checked}
+					title={dokarkiv.title}
 				/>
 				<Attributt
 					attr={sm.attrs.histark}
-					disabled={sm.attrs.dokarkiv.checked || sm.attrs.digitalInnsending.checked}
+					disabled={
+						histark.disabled || sm.attrs.dokarkiv.checked || sm.attrs.digitalInnsending.checked
+					}
+					title={histark.title}
 				/>
 			</AttributtKategori>
 		</Panel>
@@ -44,9 +56,9 @@ DokarkivPanel.heading = 'Dokumenter'
 DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 	dokarkiv: {
 		label: 'Skanning',
-		checked: has('dokarkiv') && !has('dokarkiv.avsenderMottaker'),
+		checked: has('dokarkiv') && !has('dokarkiv[0].avsenderMottaker'),
 		add() {
-			set('dokarkiv', initialDokarkiv)
+			set('dokarkiv', [initialDokarkiv])
 		},
 		remove() {
 			del('dokarkiv')
@@ -54,9 +66,9 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 	},
 	digitalInnsending: {
 		label: 'Digital innsending',
-		checked: has('dokarkiv.avsenderMottaker'),
+		checked: has('dokarkiv[0].avsenderMottaker'),
 		add() {
-			set('dokarkiv', initialDigitalInnsending)
+			set('dokarkiv', [initialDigitalInnsending])
 		},
 		remove() {
 			del('dokarkiv')
@@ -66,7 +78,7 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 		label: 'Histark',
 		checked: has('histark'),
 		add() {
-			set('histark', initialHistark)
+			set('histark', { dokumenter: [initialHistark] })
 		},
 		remove() {
 			del('histark')

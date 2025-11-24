@@ -4,7 +4,7 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import _, { isEmpty } from 'lodash'
+import * as _ from 'lodash-es'
 import { useContext, useEffect, useState } from 'react'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
@@ -12,7 +12,10 @@ import styled from 'styled-components'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type NavnTypes = {
 	formMethods: any
@@ -25,6 +28,11 @@ const RefreshButton = styled(Button)`
 	margin: 8px 0 0 -10px;
 `
 
+const manuelleNavn = [
+	{ adjektiv: 'Lillegull', adverb: 'Lillesøster', substantiv: 'Navnesen' },
+	{ adjektiv: 'Sussebass', adverb: 'Lillebror', substantiv: 'Etternavnesen' },
+]
+
 const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	if (!navnInfo) {
 		return []
@@ -36,7 +44,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 				label: navn,
 			})),
 		)
-		?.sort((first, second) => (first.label > second.label ? 1 : -1))
+		?.sort?.((first, second) => (first.label > second.label ? 1 : -1))
 
 	return _.uniqBy(navnOptions, 'label')
 }
@@ -56,7 +64,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 
 	const [mellomnavnOptions, setMellomnavnOptions] = useState([])
 	const [etternavnOptions, setetternavnOptions] = useState([])
-	const { data, navnInfo, mutate } = useGenererNavn()
+	const { data, navnInfo, mutate } = useGenererNavn(manuelleNavn)
 
 	if (!formMethods.watch(path)) {
 		return null
@@ -101,7 +109,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 							const fornavn = change?.map((option: Option) => option.value)
 							setSelectedFornavn(fornavn)
 							formMethods.setValue(`${path}.fornavn`, fornavn?.join(' '))
-							formMethods.trigger()
+							formMethods.trigger(path)
 						}}
 						isMulti={true}
 						size="grow"
@@ -119,7 +127,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 							const mellomnavn = change?.map((option: Option) => option.value)
 							setSelectedMellomnavn(mellomnavn)
 							formMethods.setValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
-							formMethods.trigger()
+							formMethods.trigger(path)
 						}}
 						isDisabled={formMethods.watch(`${path}.hasMellomnavn`)}
 						isMulti={true}
@@ -138,7 +146,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 							const etternavn = change?.map((option: Option) => option.value)
 							setSelectedEtternavn(etternavn)
 							formMethods.setValue(`${path}.etternavn`, etternavn.join(' '))
-							formMethods.trigger()
+							formMethods.trigger(path)
 						}}
 						isMulti={true}
 						size="grow"
@@ -150,8 +158,9 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 			<div className="flexbox--flex-wrap">
 				<FormCheckbox
 					name={`${path}.hasMellomnavn`}
+					id={`${path}.hasMellomnavn`}
 					label="Har tilfeldig mellomnavn"
-					isDisabled={!isEmpty(selectedMellomnavn)}
+					disabled={!_.isEmpty(selectedMellomnavn)}
 					checkboxMargin
 				/>
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
@@ -162,7 +171,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 }
 
 export const Navn = ({ formMethods }: NavnTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormDollyFieldArray

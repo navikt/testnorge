@@ -1,44 +1,64 @@
 package no.nav.testnav.identpool.domain;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
-@Entity
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "AJOURHOLD")
 public class Ajourhold {
+
     @Id
-    @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ajourhold_seq")
-    @SequenceGenerator(name = "ajourhold_seq", sequenceName = "AJOURHOLD_SEQ", allocationSize = 1)
+    @Column("ID")
     private Long identity;
 
     @NotNull
-    @Column(name = "STATUS")
-    @Enumerated(EnumType.STRING)
+    @Column("STATUS")
     private BatchStatus status;
 
+    @Column("MELDING")
+    private String melding;
+
     @NotNull
-    @Column(name = "SISTOPPDATERT")
+    @Column("SISTOPPDATERT")
     private LocalDateTime sistOppdatert;
 
-    @Column(name = "FEILMELDING")
+    @Column("FEILMELDING")
     private String feilmelding;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Ajourhold ajourhold = (Ajourhold) o;
+        return Objects.equals(identity, ajourhold.identity) && status == ajourhold.status && Objects.equals(melding, ajourhold.melding) && Objects.equals(sistOppdatert, ajourhold.sistOppdatert) && Objects.equals(feilmelding, ajourhold.feilmelding);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(identity, status, melding, sistOppdatert, feilmelding);
+    }
+
+    @Override
+    public String toString() {
+        return "Ajourhold{" +
+                "identity=" + identity +
+                ", status=" + status +
+                ", melding='" + melding + '\'' +
+                ", sistOppdatert=" + sistOppdatert +
+                ", feilmelding='" + feilmelding + '\'' +
+                '}';
+    }
 }

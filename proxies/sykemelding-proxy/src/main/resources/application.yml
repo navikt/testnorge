@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: testnav-sykemelding-proxy
+    description: Proxy for sykemelding.
+  config:
+    import: "classpath:dolly-application.yml"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 30s
+
+consumers:
+  syfosmregler:
+    name: syfosmregler
+    namespace: teamsykmelding
+    url: http://syfosmregler.teamsykmelding.svc.cluster.local
+    cluster: dev-gcp
+  tsm-input-dolly:
+    name: tsm-input-dolly
+    namespace: tsm
+    url: http://tsm-input-dolly.tsm.svc.cluster.local
+    cluster: dev-gcp

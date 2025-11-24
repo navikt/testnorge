@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import {
-	inputValg,
-	OrganisasjonToogleGruppe,
-} from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
+import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import {
+	useDollyFasteDataOrganisasjoner,
+	useDollyOrganisasjoner,
+} from '@/utils/hooks/useDollyOrganisasjoner'
+import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
+import Loading from '@/components/ui/loading/Loading'
+import { getOrgType } from '@/utils/OrgUtils'
 
 interface OrgnrToggleProps {
 	path: string
@@ -20,39 +24,67 @@ export const OrgnrToggle = ({
 	formMethods,
 	label = 'Arbeidsgiver (orgnr)',
 }: OrgnrToggleProps) => {
+	const virksomhetPath = `${path}.arbeidsgiver.virksomhetsnummer`
+
+	const { currentBruker } = useCurrentBruker()
+
+	const { organisasjoner: fasteOrganisasjoner, loading: fasteOrganisasjonerLoading } =
+		useDollyFasteDataOrganisasjoner()
+
+	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
+		useDollyOrganisasjoner(currentBruker?.brukerId)
+	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
+
+	const orgnr = formMethods.watch(virksomhetPath)
 	const [inputType, setInputType] = useState(
-		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
+		getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner),
 	)
 
+	useEffect(() => {
+		setInputType(getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner))
+	}, [
+		fasteOrganisasjoner,
+		brukerOrganisasjoner,
+		formMethods.watch('inntektsmelding.inntekter')?.length,
+	])
+
 	const handleToggleChange = (value: string) => {
-		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		setInputType(value)
-		formMethods.setValue(path, '')
+		formMethods.setValue(virksomhetPath, '')
+		formMethods.clearErrors(`manual.${virksomhetPath}`)
+		formMethods.clearErrors(virksomhetPath)
 	}
 
 	const handleChangeEgne = (value: { orgnr: string }) => {
-		formMethods.setValue(`${path}`, value.orgnr)
+		formMethods.setValue(virksomhetPath, value.orgnr)
+		formMethods.clearErrors(`manual.${virksomhetPath}`)
+		formMethods.clearErrors(virksomhetPath)
+	}
+
+	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
+		return <Loading label="Laster organisasjoner ..." />
 	}
 
 	return (
 		<div className="toggle--wrapper">
-			<OrganisasjonToogleGruppe
-				path={path}
+			<OrganisasjonToggleGruppe
+				path={virksomhetPath}
 				inputType={inputType}
 				handleToggleChange={handleToggleChange}
 				style={{ margin: '5px 0 5px' }}
 			/>
-			{inputType === inputValg.fraFellesListe && (
+			{inputType === ArbeidsgiverTyper.felles && (
 				<OrganisasjonMedArbeidsforholdSelect
-					path={path}
+					path={virksomhetPath}
 					label={label}
 					//@ts-ignore
 					isClearable={false}
+					placeholder={'Velg organisasjon ...'}
 				/>
 			)}
-			{inputType === inputValg.fraEgenListe && (
+			{inputType === ArbeidsgiverTyper.egen && (
 				<EgneOrganisasjoner
-					path={path}
+					path={virksomhetPath}
 					label={label}
 					formMethods={formMethods}
 					filterValidEnhetstyper={true}
@@ -60,8 +92,8 @@ export const OrgnrToggle = ({
 					handleChange={handleChangeEgne}
 				/>
 			)}
-			{inputType === inputValg.skrivSelv && (
-				<FormTextInput type="number" name={path} label={label} size="xlarge" />
+			{inputType === ArbeidsgiverTyper.fritekst && (
+				<FormTextInput type="number" name={virksomhetPath} label={label} size="xlarge" />
 			)}
 		</div>
 	)

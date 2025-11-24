@@ -3,22 +3,37 @@ name: dolly-frontend
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-frontend/**"
-      - "libs/reactive-proxy/**"
-      - "libs/reactive-security/**"
-      - "libs/reactive-session-security/**"
-      - "libs/security-core/**"
-      - "libs/security-core/**"
-      - "apps/dolly-frontend/**"
-      - ".github/workflows/app.dolly-frontend.yml"
-      - ".github/workflows/common.playwright.yml"
+      - .github/workflows/app.dolly-frontend.yml
+      - .github/workflows/common.playwright.yml
+      - .github/workflows/common.vitest.yml
+      - apps/dolly-frontend/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-frontend/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/reactive-session-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   playwright:
     uses: ./.github/workflows/common.playwright.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
+    with:
+      working-directory: "apps/dolly-frontend"
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+  vitest:
+    uses: ./.github/workflows/common.vitest.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
     with:
       working-directory: "apps/dolly-frontend"
     secrets:
@@ -26,13 +41,13 @@ jobs:
 
   workflow:
     uses: ./.github/workflows/common.workflow.frontend.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
     with:
       working-directory: "apps/dolly-frontend"
       deploy-tag: "#deploy-frontend"
       deploy-tag-test: "#deploy-test-frontend"
       deploy-tag-idporten: "#deploy-idporten-frontend"
-      deploy-tag-unstable: "#deploy-unstable-frontend"
-    permissions:
-      contents: read
-      id-token: write
     secrets: inherit

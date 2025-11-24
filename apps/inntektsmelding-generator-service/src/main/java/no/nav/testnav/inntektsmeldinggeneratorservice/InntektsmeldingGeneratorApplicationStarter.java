@@ -1,14 +1,16 @@
 package no.nav.testnav.inntektsmeldinggeneratorservice;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-@Slf4j
+@EnableWebSecurity
 @SpringBootApplication
 public class InntektsmeldingGeneratorApplicationStarter {
-
     public static void main(String[] args) {
-        SpringApplication.run(InntektsmeldingGeneratorApplicationStarter.class, args);
+        new SpringApplicationBuilder(InntektsmeldingGeneratorApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

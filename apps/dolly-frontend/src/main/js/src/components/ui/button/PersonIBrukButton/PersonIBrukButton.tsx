@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { SyntheticEvent, useState } from 'react'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
 
@@ -14,7 +14,7 @@ const StyledSwitch = styled(DollyCheckbox)`
 
 export const PersonIBrukButton = ({ ident, updateIdentIbruk, ...props }) => {
 	const [brukt, setBrukt] = useState(ident.ibruk)
-	const handleOnChange = (event) => {
+	const handleOnChange = (event: any) => {
 		const erIBruk = event.target.checked
 		setBrukt(erIBruk)
 		updateIdentIbruk(ident.ident, erIBruk)
@@ -25,7 +25,7 @@ export const PersonIBrukButton = ({ ident, updateIdentIbruk, ...props }) => {
 			title={brukt ? 'Marker som ikke i bruk' : 'Marker som i bruk'}
 			checked={brukt}
 			onChange={handleOnChange}
-			onClick={(e) => e.stopPropagation()}
+			onClick={(e: SyntheticEvent) => e.stopPropagation()}
 			isSwitch
 			{...props}
 		/>

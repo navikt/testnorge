@@ -3,7 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt.HentVedtakshistorikkCommand;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -33,11 +33,12 @@ public class SyntVedtakshistorikkConsumer {
     public SyntVedtakshistorikkConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getSyntVedtakshistorikk();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(ExchangeStrategies
                         .builder()
                         .codecs(configurer -> configurer

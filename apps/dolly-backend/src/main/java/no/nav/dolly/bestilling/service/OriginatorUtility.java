@@ -50,6 +50,12 @@ public class OriginatorUtility {
             bestillingRequest.getPdldata().setOpprettNyPerson(new PdlPersondata.PdlPerson());
         }
 
+        if (nonNull(bestillingRequest.getPdldata().getOpprettNyPerson()) &&
+                isNull(bestillingRequest.getPdldata().getOpprettNyPerson().getSyntetisk())) {
+
+            bestillingRequest.getPdldata().getOpprettNyPerson().setSyntetisk(true);
+        }
+
         if (isTestnorgeIdent(ident) || nonNull(testident) && testident.isPdl()) {
 
             var bestilling = mapperFacade.map(bestillingRequest, RsDollyUtvidetBestilling.class);

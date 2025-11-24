@@ -1,8 +1,6 @@
-TOKEN_X_ISSUER: dummy
-
 consumers:
   synt-vedtakshistorikk:
-    url: http://localhost:${wiremock.server.port:0}/synt
+    url: http://localhost:${wiremock.server.port:0}
     cluster: dummy
     namespace: dolly
     name: synthdata-arena-vedtakshistorikk
@@ -10,25 +8,22 @@ consumers:
     cluster: dummy
     namespace: dolly
     name: testnav-arena-forvalteren-proxy
-    url: http://localhost:${wiremock.server.port:0}/arena
-  testnav-pensjon-testdata-facade-proxy:
+    url: http://localhost:${wiremock.server.port:0}
+  testnav-dolly-proxy:
     cluster: dummy
     namespace: dolly
-    name: testnav-pensjon-testdata-facade-proxy
-    url: http://localhost:${wiremock.server.port:0}/pensjon
-  testnav-person-search-service:
+    name: testnav-dolly-proxy
+    url: http://localhost:${wiremock.server.port:0}
+  testnav-dolly-search-service:
     cluster: dummy
     namespace: dolly
-    name: testnav-person-search-service
-    url: http://localhost:${wiremock.server.port:0}/search
+    name: testnav-dolly-search-service
+    url: http://localhost:${wiremock.server.port:0}
   pdl-api-proxy:
     cluster: dummy
     namespace: dolly
     name: testnav-pdl-proxy
-    url: http://localhost:${wiremock.server.port:0}/pdl
-
-
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
+    url: http://localhost:${wiremock.server.port:0}
 
 batch:
   miljoe: test

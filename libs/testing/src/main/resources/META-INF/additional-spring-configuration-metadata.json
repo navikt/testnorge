@@ -1,0 +1,25 @@
+{
+  "properties": [
+    {
+      "name": "dolly.nais.cluster",
+      "type": "java.lang.String",
+      "defaultValue": "dev-gcp",
+      "description": "The cluster where the application is running.. Defaults to dev-gcp if not set."
+    },
+    {
+      "name": "dolly.nais.name",
+      "type": "java.lang.String",
+      "description": "Application name, as defined in the NAIS manifest (which is not necessarily the same as in Spring config)."
+    },
+    {
+      "name": "dolly.nais.secrets",
+      "type": "java.util.List",
+      "description": "List of secrets to also include when looking up environment variables from the NAIS environment. The contents of the secret(s) are included as key-value pairs."
+    },
+    {
+      "name": "dolly.nais.variables",
+      "type": "java.util.List",
+      "description": "List of environment variables to be read from the NAIS environment, and set as system properties when running in local profile. If dolly.nais.secrets is also set, the variables will also be looked for in the referenced secrets."
+    }
+  ]
+}

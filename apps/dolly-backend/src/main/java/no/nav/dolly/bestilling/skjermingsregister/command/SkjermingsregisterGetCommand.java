@@ -1,22 +1,21 @@
 package no.nav.dolly.bestilling.skjermingsregister.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @RequiredArgsConstructor
+@Slf4j
 public class SkjermingsregisterGetCommand implements Callable<Mono<SkjermingDataResponse>> {
 
-    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjerming/dolly";
+    private static final String SKJERMINGSREGISTER_URL = "/skjermingsregister/api/v1/skjerming/dolly";
     private static final String PERSONIDENT_HEADER = "personident";
 
     private final WebClient webClient;
@@ -25,22 +24,19 @@ public class SkjermingsregisterGetCommand implements Callable<Mono<SkjermingData
 
     @Override
     public Mono<SkjermingDataResponse> call() {
-        return webClient.get().uri(uriBuilder -> uriBuilder
-                        .path(SKJERMINGSREGISTER_URL)
-                        .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder.path(SKJERMINGSREGISTER_URL).build())
+                .headers(WebClientHeader.bearer(token))
                 .header(PERSONIDENT_HEADER, ident)
                 .retrieve()
                 .bodyToMono(SkjermingDataResponse.class)
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance,
                         error -> Mono.just(SkjermingDataResponse.builder()
                                 .eksistererIkke(true)
                                 .build()))
-                .onErrorResume(error -> Mono.just(SkjermingDataResponse.builder()
-                        .error(WebClientFilter.getMessage(error))
-                        .build()))
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .onErrorResume(throwable -> SkjermingDataResponse.of(WebClientError.describe(throwable)))
+                .doOnError(WebClientError.logTo(log));
     }
 }

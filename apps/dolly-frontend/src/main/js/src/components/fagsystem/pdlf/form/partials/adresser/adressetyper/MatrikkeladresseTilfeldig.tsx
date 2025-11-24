@@ -1,6 +1,6 @@
 import { MatrikkelAdresseVelger } from '@/components/adresseVelger'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { MatrikkelAdresse } from '@/components/adresseVelger/MatrikkelAdresseVelger'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -25,7 +25,7 @@ export const MatrikkeladresseTilfeldig = ({ formMethods, path }: Matrikkeladress
 			tilleggsnavn: adresse.tilleggsnavn,
 			matrikkeladresseType: formMethods.watch(`${path}.matrikkeladresseType`),
 		})
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const renderAdresse = () => {

@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 import Icon from '@/components/ui/icon/Icon'
 // @ts-ignore
 import logo from '@/assets/img/nav-logo-hvit.png'
@@ -8,10 +8,11 @@ import Loading from '@/components/ui/loading/Loading'
 import { BrukerDropdown } from '@/components/layout/header/BrukerDropdown'
 import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonDropdown'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdown'
+import { PersonDropdown } from '@/components/layout/header/PersonDropdown'
 import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
 import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { TeamVarsel } from '@/components/layout/header/TeamVarsel'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -33,10 +34,7 @@ export default () => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink data-testid={TestComponentSelectors.BUTTON_HEADER_PERSONER} to="/gruppe">
-					Personer
-				</NavLink>
-				<FinnPersonDropdown />
+				<PersonDropdown />
 				<OrganisasjonDropdown />
 				{!bankidBruker && (
 					<NavLink
@@ -49,6 +47,7 @@ export default () => {
 				<DokumentasjonDropdown />
 				{erDollyAdmin() && <AdminDropdown />}
 			</div>
+			<TeamVarsel />
 			<BrukerDropdown />
 		</header>
 	)

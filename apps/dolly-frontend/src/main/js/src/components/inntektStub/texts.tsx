@@ -2,7 +2,7 @@ const texts = {
 	// INNTEKTSTYPE
 	inntektstype: 'Inntektstype',
 	LOENNSINNTEKT: 'Lønnsinntekt',
-	YTELSE_FRA_OFFENTLIGE: 'Ytelse fra offentige',
+	YTELSE_FRA_OFFENTLIGE: 'Ytelse fra offentlige',
 	PENSJON_ELLER_TRYGD: 'Pensjon eller trygd',
 	NAERINGSINNTEKT: 'Næringsinntekt',
 

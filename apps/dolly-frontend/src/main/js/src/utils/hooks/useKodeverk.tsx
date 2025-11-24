@@ -1,8 +1,8 @@
-import useSWR from 'swr'
 import { fetcher } from '@/api'
-import _, { toLower } from 'lodash'
+import * as _ from 'lodash-es'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { SortKodeverkArray } from '@/service/services/dolly/Utils'
+import useSWRImmutable from 'swr/immutable'
 
 type KodeverkListe = {
 	koder: Array<KodeverkType>
@@ -19,11 +19,11 @@ type KodeverkType = {
 
 const getKodeverkUrl = (kodeverkNavn) =>
 	kodeverkNavn.includes('Valuta')
-		? `/testnav-kontoregister-person-proxy/api/system/v1/hent-valutakoder`
+		? `/testnav-dolly-proxy/kontoregister/api/system/v1/hent-valutakoder`
 		: `/testnav-kodeverk-service/api/v1/kodeverk/${kodeverkNavn}`
 
 export const useKodeverk = (kodeverkNavn) => {
-	const { data, isLoading, error } = useSWR<KodeverkListe, Error>(
+	const { data, isLoading, error, mutate } = useSWRImmutable<KodeverkListe, Error>(
 		[
 			getKodeverkUrl(kodeverkNavn),
 			{ accept: 'application/json', 'Content-Type': 'application/json' },
@@ -43,8 +43,13 @@ export const useKodeverk = (kodeverkNavn) => {
 	const kodeverkSortert = SortKodeverkArray({ koder: koder, name: kodeverkNavn })
 
 	return {
-		kodeverk: SelectOptionsFormat.formatOptions(toLower(kodeverkNavn), kodeverkSortert, isLoading),
+		kodeverk: SelectOptionsFormat.formatOptions(
+			_.toLower(kodeverkNavn),
+			kodeverkSortert,
+			isLoading,
+		),
 		loading: isLoading,
 		error: error,
+		mutate,
 	}
 }

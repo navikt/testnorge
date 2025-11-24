@@ -5,14 +5,12 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from './validation'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
-import { Alias } from './partials/Alias'
 import { Annet } from './partials/Annet'
 import { useFormContext } from 'react-hook-form'
 
 const attrPaths = [
 	'udistub.oppholdStatus',
 	'udistub.arbeidsadgang',
-	'udistub.aliaser',
 	'udistub.flyktning',
 	'udistub.soeknadOmBeskyttelseUnderBehandling',
 ]
@@ -33,9 +31,6 @@ export const UdistubForm = () => {
 					<Oppholdsstatus formMethods={formMethods} />
 				</Kategori>
 				<Arbeidsadgang formMethods={formMethods} />
-				<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
-					<Alias />
-				</Kategori>
 				<Annet />
 			</Panel>
 		</Vis>

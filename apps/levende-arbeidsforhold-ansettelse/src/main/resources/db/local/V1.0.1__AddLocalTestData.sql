@@ -1,0 +1,5 @@
+INSERT INTO jobb_parameter(navn, tekst, verdi, verdier) VALUES ('stillingsprosent','Stillingsprosent','80','20,30,40,50,60,70,80,90,100');
+INSERT INTO jobb_parameter(navn, tekst, verdi, verdier) VALUES ('intervall','Intervall for neste kjøring (timer)','1','1,5,12,24,168');
+INSERT INTO jobb_parameter(navn, tekst, verdi, verdier) VALUES ('antallOrganisasjoner','Antall Organisasjoner','1','1,5,10,15,20,25,30,35,40,45,50');
+INSERT INTO jobb_parameter(navn, tekst, verdi, verdier) VALUES ('antallPersoner','Antall Personer','1','1,10,15,20,25,30,35,40,45,50,1001');
+INSERT INTO jobb_parameter(navn, tekst, verdi, verdier) VALUES ('arbeidsforholdType','Arbeidsforhold Type','ordinaertArbeidsforhold','forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold');

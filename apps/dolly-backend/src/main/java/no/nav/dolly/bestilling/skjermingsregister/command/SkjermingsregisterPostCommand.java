@@ -1,22 +1,21 @@
 package no.nav.dolly.bestilling.skjermingsregister.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @RequiredArgsConstructor
+@Slf4j
 public class SkjermingsregisterPostCommand implements Callable<Flux<SkjermingDataResponse>> {
 
-    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjerming/dolly";
+    private static final String SKJERMINGSREGISTER_URL = "/skjermingsregister/api/v1/skjerming/dolly";
 
     private final WebClient webClient;
     private final SkjermingDataRequest skjermingDataRequest;
@@ -24,19 +23,15 @@ public class SkjermingsregisterPostCommand implements Callable<Flux<SkjermingDat
 
     @Override
     public Flux<SkjermingDataResponse> call() {
-
-        return webClient.post().uri(uriBuilder -> uriBuilder
-                        .path(SKJERMINGSREGISTER_URL)
-                        .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+        return webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path(SKJERMINGSREGISTER_URL).build())
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(skjermingDataRequest)
                 .retrieve()
                 .bodyToFlux(SkjermingDataResponse.class)
-                .onErrorResume(error -> Flux.just(SkjermingDataResponse.builder()
-                        .error(WebClientFilter.getMessage(error))
-                        .build()))
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(throwable -> SkjermingDataResponse.of(WebClientError.describe(throwable)))
+                .doOnError(WebClientError.logTo(log));
     }
 }

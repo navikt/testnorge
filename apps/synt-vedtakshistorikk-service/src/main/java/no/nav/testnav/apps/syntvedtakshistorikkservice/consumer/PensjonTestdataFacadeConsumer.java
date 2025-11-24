@@ -25,10 +25,11 @@ public class PensjonTestdataFacadeConsumer {
     public PensjonTestdataFacadeConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
-        serverProperties = consumers.getTestnavPensjonTestdataFacadeProxy();
-        this.webClient = webClientBuilder
+            WebClient webClient
+    ) {
+        serverProperties = consumers.getTestnavDollyProxy();
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

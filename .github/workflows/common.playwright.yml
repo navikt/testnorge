@@ -9,6 +9,7 @@ on:
     secrets:
       READER_TOKEN:
         required: true
+
 jobs:
   playwright-tests:
     timeout-minutes: 15
@@ -16,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shardIndex: [ 1, 2, 3, 4, 5 ]
-        shardTotal: [ 5 ]
+        shardIndex: [ 1, 2, 3, 4 ]
+        shardTotal: [ 4 ]
     env:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
@@ -36,3 +37,71 @@ jobs:
       - name: Run Playwright tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      - name: Upload blob report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: ${{ inputs.working-directory }}/src/main/js/blob-report
+          retention-days: 1
+  
+  merge-reports:
+    if: ${{ !cancelled() }}
+    needs: [ playwright-tests ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ inputs.working-directory }}/src/main/js/all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: ${{ inputs.working-directory }}/src/main/js/playwright-report
+          retention-days: 14
+
+      - name: Upload HTML report to CDN
+        uses: nais/deploy/actions/cdn-upload/v2@master
+        with:
+          team: dolly
+          source: ${{ inputs.working-directory }}/src/main/js/playwright-report
+          destination: /${{ github.repository }}/${{ github.run_number }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Merge to json report
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npx playwright merge-reports --reporter json  ./all-blob-reports > playwright-report/report.json
+
+      - name: Make fancy GHA Summary
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: |
+          total_tests=$(jq '.stats.expected + .stats.unexpected' playwright-report/report.json)
+          passed_tests=$(jq '.stats.expected' playwright-report/report.json)
+          failed_tests=$(jq '.stats.unexpected' playwright-report/report.json)
+          failed_test_info=$(jq -r '.suites[].specs[] | select(.ok == false) | "\(.title) (\(.file), \(.tests[].projectName))"' playwright-report/report.json)
+          echo "## Playwright Test Report Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Total tests: $total_tests ✅" >> $GITHUB_STEP_SUMMARY
+          echo "Passed tests: $passed_tests ✅" >> $GITHUB_STEP_SUMMARY
+          if [ "$failed_tests" -gt 0 ]; then
+            echo "Failed tests: $failed_tests ❌" >> $GITHUB_STEP_SUMMARY
+            echo "### Failed Tests:" >> $GITHUB_STEP_SUMMARY
+            while IFS= read -r test; do
+              echo "- $test ❌" >> $GITHUB_STEP_SUMMARY
+            done <<< "$failed_test_info"
+          else
+            echo "Failed tests: $failed_tests 🔹" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "Se hele rapporten [her](https://cdn.nav.no/dolly/${{ github.repository }}/${{ github.run_number }}/playwright-report/index.html)." >> $GITHUB_STEP_SUMMARY

@@ -3,7 +3,7 @@ import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '@/api'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
-import { ERROR_ACTIVE_USER } from '../../ducks/errors/ErrorMessages'
+import { ERROR_ACTIVE_USER } from '@/ducks/errors/ErrorMessages'
 
 const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
@@ -26,6 +26,12 @@ type BrukerType = {
 	epost: string
 	favoritter: []
 	grupper: []
+	representererTeam?: {
+		id: string
+		brukerId: string
+		navn: string
+		beskrivelse: string
+	}
 }
 
 export const useAlleBrukere = () => {
@@ -39,7 +45,14 @@ export const useAlleBrukere = () => {
 }
 
 export const useCurrentBruker = () => {
-	const { data, isLoading, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
+	const { data, isLoading, error, mutate } = useSWR<BrukerType, Error>(
+		getCurrentBrukerUrl,
+		fetcher,
+		{
+			revalidateOnFocus: true,
+			dedupingInterval: 2000,
+		},
+	)
 
 	if (error && !runningE2ETest()) {
 		console.error(ERROR_ACTIVE_USER)
@@ -50,11 +63,12 @@ export const useCurrentBruker = () => {
 		currentBruker: data,
 		loading: isLoading,
 		error: error,
+		mutate: mutate,
 	}
 }
 
 export const useBrukerProfil = () => {
-	const { data, isLoading, error } = useSWR<BrukerProfil, Error>(getProfilUrl, fetcher)
+	const { data, isLoading, error } = useSWRImmutable<BrukerProfil, Error>(getProfilUrl, fetcher)
 
 	return {
 		brukerProfil: data,
@@ -70,5 +84,16 @@ export const useBrukerProfilBilde = () => {
 		brukerBilde: data,
 		loading: isLoading,
 		error: error,
+	}
+}
+
+export const useBrukerTeams = () => {
+	const { data, isLoading, error, mutate } = useSWR<any, Error>(`${getBrukereUrl}/teams`, fetcher)
+
+	return {
+		brukerTeams: data,
+		loading: isLoading,
+		error: error,
+		mutate: mutate,
 	}
 }

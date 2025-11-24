@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -18,6 +19,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +32,6 @@ import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.def
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
-import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
@@ -100,19 +101,19 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
                         isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
                         isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
-
-                    sivilstand.getNyRelatertPerson().setFoedtFoer(now().minusYears(30));
-                    sivilstand.getNyRelatertPerson().setFoedtEtter(now().minusYears(60));
+                    var foedselsdato = FoedselsdatoUtility.getFoedselsdato(hovedperson);
+                    sivilstand.getNyRelatertPerson().setFoedtFoer(foedselsdato.plusYears(2));
+                    sivilstand.getNyRelatertPerson().setFoedtEtter(foedselsdato.minusYears(2));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
-                    KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream().findFirst()
+                    KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream()
+                            .findFirst()
                             .map(KjoennDTO::getKjoenn)
                             .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
                     sivilstand.getNyRelatertPerson().setKjoenn(KjoennUtility.getPartnerKjoenn(kjoenn));
                 }
-                if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {
-                    sivilstand.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
-                }
+
+                EgenskaperFraHovedperson.kopierData(hovedperson, sivilstand.getNyRelatertPerson());
 
                 PersonDTO relatertPerson = createPersonService.execute(sivilstand.getNyRelatertPerson());
 
@@ -168,6 +169,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 .max(Comparator.comparing(SivilstandDTO::getId))
                 .map(SivilstandDTO::getId)
                 .orElse(0) + 1);
+
         relatertPerson.get().getPerson().getSivilstand().addFirst(relatertSivilstand);
 
         relatertPerson.get().getPerson().setSivilstand(enforceIntegrity(relatertPerson.get().getPerson()));
@@ -192,9 +194,9 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
         });
 
         return person.getSivilstand().stream().noneMatch(sivilstand -> isNull(sivilstand.getSivilstandsdato())) ?
-                person.getSivilstand().stream()
+                new ArrayList<>(person.getSivilstand().stream()
                         .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
-                        .toList() :
+                        .toList()) :
                 person.getSivilstand();
     }
 }

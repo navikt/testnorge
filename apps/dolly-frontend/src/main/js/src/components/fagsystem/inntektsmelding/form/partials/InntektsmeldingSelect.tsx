@@ -17,7 +17,7 @@ export default ({ path, label, kodeverk, size = 'medium' }: InntektsmeldingSelec
 			<LoadableComponent
 				onFetch={() =>
 					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then((response) =>
-						response.map((value: string) => ({ value, label: codeToNorskLabel(value) }))
+						response.map((value: string) => ({ value, label: codeToNorskLabel(value) })),
 					)
 				}
 				render={(data: Array<Option>, feilmelding: Feilmelding) => (

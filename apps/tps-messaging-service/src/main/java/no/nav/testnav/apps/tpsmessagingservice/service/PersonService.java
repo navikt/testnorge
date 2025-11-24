@@ -91,7 +91,10 @@ public class PersonService {
     public List<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
             if (miljoer.isEmpty()) {
-                miljoer = testmiljoerServiceConsumer.getMiljoer();
+                miljoer = testmiljoerServiceConsumer.getMiljoer()
+                        .stream()
+                        .filter(miljoe -> !miljoe.contains("q1") && !miljoe.contains("q2"))
+                        .toList();
             }
 
         try {
@@ -134,7 +137,7 @@ public class PersonService {
                     .toList();
 
         } catch (Exception e) {
-            log.error("Feilet å hente data for {} i miløer {}, melding {}", ident, miljoer, e.getMessage(), e);
+            log.error("Feilet å hente data for {} i miljøer {}, melding {}", ident, miljoer, e.getMessage(), e);
             throw e;
         }
     }

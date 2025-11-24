@@ -2,7 +2,7 @@
 <configuration>
     <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
+            <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     
@@ -22,7 +22,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev">
+    <springProfile name="local">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>

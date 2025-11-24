@@ -47,12 +47,12 @@ jobs:
           java-version: 21
       - name: "Gradle"
         id: gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
       - name: "Build"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
+        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || '' }} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

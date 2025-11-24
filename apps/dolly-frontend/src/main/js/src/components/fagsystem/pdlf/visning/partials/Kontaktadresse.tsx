@@ -11,7 +11,7 @@ import {
 	KodeverkValues,
 	KontaktadresseData,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getInitialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -98,17 +98,13 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 				<>
 					<h4 style={{ marginTop: '0px' }}>Postadresse i fritt format</h4>
 					<div className="person-visning_content" key={idx}>
-						{kontaktadresseData.postadresseIFrittFormat.adresselinjer ? (
+						{kontaktadresseData.postadresseIFrittFormat.adresselinjer && (
 							<TitleValue title="Adresselinjer">
-								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinjer[0]}</div>
-								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinjer[1]}</div>
-								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinjer[2]}</div>
-							</TitleValue>
-						) : (
-							<TitleValue title="Adresselinjer">
-								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinje1}</div>
-								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinje2}</div>
-								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinje3}</div>
+								{kontaktadresseData.postadresseIFrittFormat.adresselinjer
+									?.filter((l: string) => l)
+									.map((l: string, i: number) => (
+										<div key={i}>{l}</div>
+									))}
 							</TitleValue>
 						)}
 						<TitleValue title="Postnummer">
@@ -137,17 +133,13 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 				<>
 					<h4 style={{ marginTop: '0px' }}>Utenlandsk adresse i fritt format</h4>
 					<div className="person-visning_content" key={idx}>
-						{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer ? (
+						{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer && (
 							<TitleValue title="Adresselinjer">
-								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer[0]}</div>
-								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer[1]}</div>
-								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer[2]}</div>
-							</TitleValue>
-						) : (
-							<TitleValue title="Adresselinjer">
-								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinje1}</div>
-								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinje2}</div>
-								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinje3}</div>
+								{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer
+									?.filter((l: string) => l)
+									.map((l: string, i: number) => (
+										<div key={i}>{l}</div>
+									))}
 							</TitleValue>
 						)}
 						<TitleValue

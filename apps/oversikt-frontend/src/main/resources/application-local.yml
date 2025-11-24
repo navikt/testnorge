@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  testnorge-profil-api:
+    url: https://testnorge-profil-api-dev.intern.dev.nav.no/api
+  testnav-app-tilgang-analyse-service:
+    url: https://testnav-app-tilgang-analyse-service.intern.dev.nav.no
+  testnav-altinn3-tilgang-service:
+    url: https://testnav-altinn3-tilgang-service.intern.dev.nav.no
+  testnav-bruker-service:
+    url: https://testnav-bruker-service-dev.intern.dev.nav.no

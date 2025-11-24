@@ -1,0 +1,6 @@
+name: testnav
+title: Testnav
+version: latest
+nav:
+  - modules/ROOT/nav.adoc
+

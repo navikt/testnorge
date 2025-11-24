@@ -11,11 +11,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   flyway:
     enabled: true
-  cloud:
-    vault:
-      token: dummy
-
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 
 consumers:
   generer-navn-service:
@@ -43,10 +38,10 @@ consumers:
     url: http://localhost:${wiremock.server.port:0}/krr-stub/api
   synthdata-aareg:
     url: http://localhost:${wiremock.server.port:0}/synt-aareg
-  kodeverk:
-    url: http://localhost:${wiremock.server.port:0}/kodeverk-api
-    name: kodeverk-api
-    namespace: team-rocket
+  testnav-kodeverk-service:
+    url: http://localhost:${wiremock.server.port:0}/testnav-kodeverk-service
+    name: testnav-kodeverk-service
+    namespace: dolly
     cluster: dummy
   testnav-aareg-proxy:
     url: http://localhost:${wiremock.server.port:0}/aareg
@@ -58,9 +53,6 @@ aareg:
   pageSize: 2
 
 controller.staticdata.cache.hours: 24
-azure.app.client.id: dummy
 
 KAFKA_SCHEMA_REGISTRY: http://localhost:9009
 kafka.groupid: organisasjon-forvalter-v1
-
-TOKEN_X_ISSUER: dummy

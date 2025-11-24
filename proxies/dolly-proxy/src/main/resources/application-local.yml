@@ -1,0 +1,31 @@
+spring:
+  config:
+    import: "sm://"
+
+springdoc:
+  swagger-ui:
+    urls:
+      # None, due to CORS.
+
+dolly:
+  nais:
+    cluster: dev-fss
+    name: testnav-dolly-proxy
+    secrets:
+      - azure-nav-testnav-dolly-proxy
+      - azure-trygdeetaten-testnav-dolly-proxy
+    variables:
+      - AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT
+      - AZURE_NAV_APP_CLIENT_ID
+      - AZURE_NAV_APP_CLIENT_SECRET
+      - AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT
+      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
+      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
+
+app:
+  targets:
+    histark: https://histarkimport.dev.intern.nav.no
+    inntektstub: https://inntektstub.intern.dev.nav.no
+    sigrunstub: http://sigrun-skd-stub.team-inntekt.dev.intern.nav.no
+    skjermingsregister: https://skjermede-personer.intern.dev.nav.no
+    udistub: http://testnav-udi-stub.intern.dev.nav.no

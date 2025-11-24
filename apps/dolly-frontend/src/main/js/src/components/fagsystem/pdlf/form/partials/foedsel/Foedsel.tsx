@@ -2,14 +2,17 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
-import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { getYearRangeOptions } from '@/utils/DataFormatter'
 
 type FoedselTypes = {
 	formMethods: UseFormReturn
@@ -17,14 +20,14 @@ type FoedselTypes = {
 }
 
 export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
 		formMethods.setValue(`${foedselPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
 			formMethods.setValue(`${foedselPath}.foedekommune`, null)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const foedselsaar = formMethods.watch(`${path}.foedselsaar`)
@@ -50,25 +53,19 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 				maxDate={new Date()}
 				minDate={minDateFoedsel}
 			/>
-			<Yearpicker
-				formMethods={formMethods}
+			<FormSelect
 				name={`${path}.foedselsaar`}
 				label="Fødselsår"
-				date={foedselsaar ? new Date(foedselsaar, 0) : null}
-				handleDateChange={(val) => {
-					formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-					formMethods.trigger()
-				}}
-				maxDate={new Date()}
-				minDate={minDateFoedsel}
-				// @ts-ignore
-				disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
+				options={getYearRangeOptions(minDateFoedsel, new Date())}
+				isDisabled={
+					(foedselsdato !== null && foedselsdato !== '' && foedselsaar === null) || harAlder()
+				}
 			/>
 			<FormTextInput name={`${path}.foedested`} label="Fødested" size="large" />
 			<FormSelect
 				name={`${path}.foedekommune`}
 				label="Fødekommune"
-				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 				isDisabled={
 					formMethods.watch(`${path}.foedeland`) !== 'NOR' &&
@@ -91,7 +88,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 }
 
 export const Foedsel = ({ formMethods }: FoedselTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
 		<div className="flexbox--flex-wrap">
