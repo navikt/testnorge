@@ -111,9 +111,11 @@ public class BestillingQueryService {
 
                 if (!hits.isEmpty()) {
                     searchAfter = hits.get(hits.size() - 1).sort();
+                } else {
+                    break;
                 }
 
-            } while (!searchResponse.hits().hits().isEmpty());
+            } while (true);
 
         } catch (IOException e) {
             log.error("Feil ved henting av identer", e);
