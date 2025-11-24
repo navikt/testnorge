@@ -10,6 +10,7 @@ import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.FieldSort;
 import org.opensearch.client.opensearch._types.SortOptions;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
@@ -33,7 +34,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.regex
 @RequiredArgsConstructor
 public class BestillingQueryService {
 
-    private static final int QUERY_SIZE = 10000;
+    private static final int QUERY_SIZE = 1000;
     private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
 
     @Value("${open.search.index}")
@@ -83,27 +84,34 @@ public class BestillingQueryService {
 
         var now = System.currentTimeMillis();
 
-        Set<String> identer = new HashSet<>();
-        int from = 0;
-        SearchResponse<BestillingIdenter> searchResponse;
+        val query = new Query.Builder()
+                .bool(queryBuilder.build())
+                .build();
 
-        val query = queryBuilder.build();
+        Set<String> identer = new HashSet<>();
 
         try {
+            var searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                .index(bestillingIndex)
+                .query(query)
+                .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
+                .size(QUERY_SIZE)
+                .timeout("3s")
+                .build(), BestillingIdenter.class);
+
             do {
+                identer.addAll(getIdenter(searchResponse));
+
                 searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                         .index(bestillingIndex)
-                        .query(q -> q.bool(query))
+                        .query(query)
                         .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
                         .size(QUERY_SIZE)
-                        .from(from)
+                        .searchAfter(searchResponse.hits().hits().getLast().sort())
                         .timeout("3s")
                         .build(), BestillingIdenter.class);
 
-                identer.addAll(getIdenter(searchResponse));
-                from += QUERY_SIZE;
-
-            } while (searchResponse.hits().hits().size() == QUERY_SIZE);
+            } while (!searchResponse.hits().hits().isEmpty());
 
         } catch (IOException e) {
             log.error("Feil ved henting av identer", e);
