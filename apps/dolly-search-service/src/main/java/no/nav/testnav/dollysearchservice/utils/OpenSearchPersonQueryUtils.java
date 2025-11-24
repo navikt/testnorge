@@ -15,7 +15,6 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.FOLKE
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HENT_IDENTER;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HISTORISK;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.METADATA_HISTORISK;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.NAVSPERSONIDENTIFIKATOR;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedExistQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedMatchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRangeQuery;
@@ -46,6 +45,7 @@ public class OpenSearchPersonQueryUtils {
                             "foedselsdato",
                             Optional.ofNullable(request.getPersonRequest().getAlderTom())
                                     .map(now::minusYears)
+                                    .map(d -> d.minusYears(1))
                                     .orElse(null),
                             Optional.ofNullable(request.getPersonRequest().getAlderFom())
                                     .map(now::minusYears)
@@ -401,23 +401,13 @@ public class OpenSearchPersonQueryUtils {
 
         if (nonNull(request.getPersonRequest().getIdenttype())) {
             if (request.getPersonRequest().getIdenttype() == Identtype.NPID) {
-                queryBuilder.must(q1 -> q1.bool(QueryBuilders.bool()
-                        .should(q2 -> q2.bool(QueryBuilders.bool()
-                                .must(q3 -> q3.nested(nestedMatchQuery(NAVSPERSONIDENTIFIKATOR, METADATA_HISTORISK, false)))
-                                .must(q3 -> q3.nested(nestedExistQuery(NAVSPERSONIDENTIFIKATOR, "identifikasjonsnummer")))
-                                .build()
-                        ))
-                        .should(q2 -> q2.bool(QueryBuilders.bool()
-                                .must(q3 -> q3.nested(nestedMatchQuery(HENT_IDENTER, HISTORISK, false)))
-                                .must(q3 -> q3.nested(nestedMatchQuery(HENT_IDENTER, "gruppe", "NPID")))
-                                .build()
-                        ))
-                        .build()
-                ));
+                queryBuilder
+                        .must(q -> q.nested(nestedMatchQuery(HENT_IDENTER, HISTORISK, false)))
+                        .must(q -> q.nested(nestedMatchQuery(HENT_IDENTER, "gruppe", "NPID")));
             } else {
                 queryBuilder
-                        .must(q1 -> q1.nested(nestedMatchQuery(FOLKEREGISTERIDENTIFIKATOR, METADATA_HISTORISK, false)))
-                        .must(q1 -> q1.nested(nestedMatchQuery(FOLKEREGISTERIDENTIFIKATOR, "type",
+                        .must(q -> q.nested(nestedMatchQuery(FOLKEREGISTERIDENTIFIKATOR, METADATA_HISTORISK, false)))
+                        .must(q -> q.nested(nestedMatchQuery(FOLKEREGISTERIDENTIFIKATOR, "type",
                                 request.getPersonRequest().getIdenttype().name())));
             }
         }
