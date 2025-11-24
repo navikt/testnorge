@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class OpensearchParamsConsumer {
+
+    private static final String MAPPING_URL = "_mapping";
 
     private final WebClient webClient;
     private final String username;
@@ -31,9 +35,10 @@ public class OpensearchParamsConsumer {
         this.password = password;
     }
 
-    public Mono<String> oppdaterParametre(JsonNode parametere, String index) {
+    public Mono<String> oppdaterParametre(String index, boolean isMapping, JsonNode parametere) {
 
-        log.info("OpenSearch oppdaterer indeks \"{}\" ...", index);
-        return new OpensearchPutCommand(webClient, username, password, index, parametere).call();
+        log.info("OpenSearch oppdaterer indeks \"{}{}\" ...", index, isMapping ? "/" + MAPPING_URL : "");
+        return new OpensearchPutCommand(webClient, Optional.ofNullable(isMapping ? MAPPING_URL : null),
+                username, password, index, parametere).call();
     }
 }

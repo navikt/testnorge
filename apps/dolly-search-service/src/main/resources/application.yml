@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-dolly-search-service
     description: Tjeneste for å søke etter Dolly-personer.
+  config:
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -26,25 +28,6 @@ consumers:
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
 
-management:
-  health:
-    elasticsearch:
-      enabled: false
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
 server:
   servlet:
     encoding:
