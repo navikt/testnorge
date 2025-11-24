@@ -13,6 +13,8 @@ import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
+
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -84,26 +86,34 @@ public class BestillingQueryService {
         var now = System.currentTimeMillis();
 
         Set<String> identer = new HashSet<>();
-        int from = 0;
+        List<String> searchAfter = null;
         SearchResponse<BestillingIdenter> searchResponse;
 
         val query = queryBuilder.build();
 
         try {
             do {
-                searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                var requestBuilder = new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                         .index(bestillingIndex)
                         .query(q -> q.bool(query))
                         .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
                         .size(QUERY_SIZE)
-                        .from(from)
-                        .timeout("3s")
-                        .build(), BestillingIdenter.class);
+                        .timeout("3s");
 
+                if (searchAfter != null) {
+                    requestBuilder.searchAfter(searchAfter);
+                }
+
+                searchResponse = opensearchClient.search(requestBuilder.build(), BestillingIdenter.class);
+
+                var hits = searchResponse.hits().hits();
                 identer.addAll(getIdenter(searchResponse));
-                from += QUERY_SIZE;
 
-            } while (searchResponse.hits().hits().size() == QUERY_SIZE);
+                if (!hits.isEmpty()) {
+                    searchAfter = hits.get(hits.size() - 1).sort();
+                }
+
+            } while (!searchResponse.hits().hits().isEmpty());
 
         } catch (IOException e) {
             log.error("Feil ved henting av identer", e);
