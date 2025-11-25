@@ -69,15 +69,12 @@ export const DateInput = ({
 	const [formattedValue, setFormattedValue] = useState(fieldValue ? formatDate(fieldValue) : '')
 
 	useEffect(() => {
-		if (controlledValue !== undefined) {
-			return
-		}
 		if (!fieldValue) {
 			setFormattedValue('')
 		} else {
 			setFormattedValue(formatDate(fieldValue))
 		}
-	}, [fieldValue, controlledValue])
+	}, [fieldValue])
 
 	const { onBlur: registerOnBlur } = name && register ? register(name) : {}
 
