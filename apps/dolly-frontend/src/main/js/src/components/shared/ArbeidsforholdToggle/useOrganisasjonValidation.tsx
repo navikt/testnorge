@@ -70,7 +70,7 @@ export const useOrganisasjonValidation = ({
 					hasError: true,
 					hasOrganisation: false,
 				}
-			} else if (isValidLength && prevState.hasError && prevState.orgnr !== watchedOrgnr) {
+			} else if (isValidLength && hasBeenCalled && prevState.hasError && prevState.orgnr !== watchedOrgnr) {
 				formMethods.clearErrors(`manual.${organisasjonPath}`)
 				previousStateRef.current = {
 					orgnr: watchedOrgnr,
