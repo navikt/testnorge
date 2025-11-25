@@ -152,12 +152,10 @@ export const ArbeidsforholdToggle = ({
 		? 'Kan ikke endre arbeidsgiver på eksisterende arbeidsforhold'
 		: ''
 
-	const currentValue = typeArbeidsgiver ?? ArbeidsgiverTyper.felles
-
 	const toggleContent = (
 		<div className="toggle--wrapper" key={idx ?? `${path}-toggle`}>
 			<ArbeidsgiverToggleButtons
-				value={currentValue}
+				value={typeArbeidsgiver}
 				onChange={handleToggleChange}
 				isDisabled={erLaastArbeidsforhold}
 				disablePrivat={disablePrivat}
@@ -167,7 +165,7 @@ export const ArbeidsforholdToggle = ({
 			<div style={{ marginTop: '10px' }} className="flexbox--full-width">
 				<ArbeidsgiverInputFields
 					formMethods={formMethods}
-					currentValue={currentValue}
+					currentValue={typeArbeidsgiver}
 					path={path}
 					organisasjonPath={organisasjonPath}
 					personPath={personPath}

@@ -31,8 +31,7 @@ export const useOrganisasjonValidation = ({
 	})
 
 	useEffect(() => {
-		if (!useValidation) return
-		if (loading) return
+		if (!useValidation || loading) return
 
 		const isValidLength = watchedOrgnr?.length === 9
 		const hasInvalidLength = watchedOrgnr && watchedOrgnr.length > 0 && !isValidLength
@@ -40,52 +39,50 @@ export const useOrganisasjonValidation = ({
 		const currentHasOrganisation = !!organisasjon && isValidLength
 		const prevState = previousStateRef.current
 
-		queueMicrotask(() => {
-			if (
-				currentHasOrganisation &&
-				(!prevState.hasOrganisation || prevState.orgnr !== watchedOrgnr)
-			) {
-				formMethods.clearErrors(`manual.${organisasjonPath}`)
-				handleManualOrgChange(watchedOrgnr, formMethods, organisasjonPath, null, organisasjon)
-				previousStateRef.current = {
-					orgnr: watchedOrgnr,
-					hasError: false,
-					hasOrganisation: true,
-				}
-			} else if (currentHasError && (!prevState.hasError || prevState.orgnr !== watchedOrgnr)) {
-				formMethods.setError(`manual.${organisasjonPath}`, {
-					message: 'Fant ikke organisasjonen',
-				})
-				previousStateRef.current = {
-					orgnr: watchedOrgnr,
-					hasError: true,
-					hasOrganisation: false,
-				}
-			} else if (hasInvalidLength && (!prevState.hasError || prevState.orgnr !== watchedOrgnr)) {
-				formMethods.setError(`manual.${organisasjonPath}`, {
-					message: 'Organisasjonsnummer må være 9 siffer',
-				})
-				previousStateRef.current = {
-					orgnr: watchedOrgnr,
-					hasError: true,
-					hasOrganisation: false,
-				}
-			} else if (isValidLength && hasBeenCalled && prevState.hasError && prevState.orgnr !== watchedOrgnr) {
-				formMethods.clearErrors(`manual.${organisasjonPath}`)
-				previousStateRef.current = {
-					orgnr: watchedOrgnr,
-					hasError: false,
-					hasOrganisation: false,
-				}
-			} else if (!watchedOrgnr && prevState.hasError) {
-				formMethods.clearErrors(`manual.${organisasjonPath}`)
-				previousStateRef.current = {
-					orgnr: watchedOrgnr,
-					hasError: false,
-					hasOrganisation: false,
-				}
+		if (
+			currentHasOrganisation &&
+			(!prevState.hasOrganisation || prevState.orgnr !== watchedOrgnr)
+		) {
+			formMethods.clearErrors(`manual.${organisasjonPath}`)
+			handleManualOrgChange(watchedOrgnr, formMethods, organisasjonPath, null, organisasjon)
+			previousStateRef.current = {
+				orgnr: watchedOrgnr,
+				hasError: false,
+				hasOrganisation: true,
 			}
-		})
+		} else if (currentHasError && (!prevState.hasError || prevState.orgnr !== watchedOrgnr)) {
+			formMethods.setError(`manual.${organisasjonPath}`, {
+				message: 'Fant ikke organisasjonen',
+			})
+			previousStateRef.current = {
+				orgnr: watchedOrgnr,
+				hasError: true,
+				hasOrganisation: false,
+			}
+		} else if (hasInvalidLength && (!prevState.hasError || prevState.orgnr !== watchedOrgnr)) {
+			formMethods.setError(`manual.${organisasjonPath}`, {
+				message: 'Organisasjonsnummer må være 9 siffer',
+			})
+			previousStateRef.current = {
+				orgnr: watchedOrgnr,
+				hasError: true,
+				hasOrganisation: false,
+			}
+		} else if (isValidLength && hasBeenCalled && prevState.hasError && prevState.orgnr !== watchedOrgnr) {
+			formMethods.clearErrors(`manual.${organisasjonPath}`)
+			previousStateRef.current = {
+				orgnr: watchedOrgnr,
+				hasError: false,
+				hasOrganisation: false,
+			}
+		} else if (!watchedOrgnr && prevState.hasError) {
+			formMethods.clearErrors(`manual.${organisasjonPath}`)
+			previousStateRef.current = {
+				orgnr: watchedOrgnr,
+				hasError: false,
+				hasOrganisation: false,
+			}
+		}
 	}, [
 		organisasjon,
 		loading,

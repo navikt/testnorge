@@ -26,58 +26,58 @@ export const useArbeidsgiverType = ({
 	const [localArbeidsgiverType, setLocalArbeidsgiverType] = useState<ArbeidsgiverTyper>(
 		ArbeidsgiverTyper.felles,
 	)
-	const [initialized, setInitialized] = useState(false)
+
+	const getArbeidsgiverType = () => {
+		if (watchedPers) {
+			return ArbeidsgiverTyper.privat
+		} else if (
+			!watchedOrgnr ||
+			fasteOrganisasjoner
+				?.map((organisasjon: any) => organisasjon?.orgnummer)
+				?.some((org: string) => org === watchedOrgnr)
+		) {
+			return ArbeidsgiverTyper.felles
+		} else if (
+			egneOrganisasjoner
+				?.map((organisasjon: any) => organisasjon?.orgnr)
+				?.some((org: string) => org === watchedOrgnr)
+		) {
+			return ArbeidsgiverTyper.egen
+		} else {
+			return ArbeidsgiverTyper.fritekst
+		}
+	}
 
 	useEffect(() => {
 		if (!fasteOrganisasjoner || !egneOrganisasjoner) return
-		if (initialized) return
-
-		const getInitialType = () => {
-			if (watchedPers) {
-				return ArbeidsgiverTyper.privat
-			} else if (
-				!watchedOrgnr ||
-				fasteOrganisasjoner
-					?.map((organisasjon: any) => organisasjon?.orgnummer)
-					?.some((org: string) => org === watchedOrgnr)
-			) {
-				return ArbeidsgiverTyper.felles
-			} else if (
-				egneOrganisasjoner
-					?.map((organisasjon: any) => organisasjon?.orgnr)
-					?.some((org: string) => org === watchedOrgnr)
-			) {
-				return ArbeidsgiverTyper.egen
-			} else {
-				return ArbeidsgiverTyper.fritekst
-			}
-		}
 
 		if (useFormState && !arbeidsgiverTypeFromForm) {
-			const newType = getInitialType()
+			const newType = getArbeidsgiverType()
 			formMethods.setValue(`${path}.arbeidsgiverType`, newType, {
 				shouldDirty: false,
 			})
-			setInitialized(true)
-		} else if (!useFormState) {
-			const newType = getInitialType()
-			setLocalArbeidsgiverType(newType)
-			setInitialized(true)
 		}
 	}, [
 		fasteOrganisasjoner,
 		egneOrganisasjoner,
 		arbeidsgiverTypeFromForm,
 		useFormState,
-		initialized,
-		watchedOrgnr,
-		watchedPers,
 		path,
 		formMethods,
 	])
 
+	useEffect(() => {
+		if (!fasteOrganisasjoner || !egneOrganisasjoner) return
+		if (useFormState) return
+
+		const newType = getArbeidsgiverType()
+		setLocalArbeidsgiverType(newType)
+	}, [watchedOrgnr, watchedPers, fasteOrganisasjoner, egneOrganisasjoner, useFormState])
+
+	const typeArbeidsgiver = useFormState ? arbeidsgiverTypeFromForm : localArbeidsgiverType
+
 	return {
-		typeArbeidsgiver: useFormState ? arbeidsgiverTypeFromForm : localArbeidsgiverType,
+		typeArbeidsgiver: typeArbeidsgiver ?? ArbeidsgiverTyper.felles,
 		setLocalArbeidsgiverType,
 	}
 }

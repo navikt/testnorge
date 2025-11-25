@@ -32,9 +32,14 @@ export const formatDate = (date: any, formatString?: string) => {
 	if (date?.length > 19) {
 		date = date.substring(0, 19)
 	}
+
 	if (date?.isValid?.()) {
-		return date.format(formatString || 'DD.MM.YYYY')
+		if (date.isValid()) {
+			return date.format(formatString || 'DD.MM.YYYY')
+		}
+		return date
 	}
+
 	if (isDate(date)) {
 		const customdayjs = initDayjs()
 		return customdayjs(date).format(formatString || 'DD.MM.YYYY')
