@@ -59,6 +59,7 @@ export const DateInput = ({
 	autoFocus,
 	style,
 	'data-testid': dataTestId,
+	value: controlledValue,
 	...props
 }: DateInputProps) => {
 	const { register, formState, watch, setValue } = useFormContext() || {}
@@ -68,12 +69,15 @@ export const DateInput = ({
 	const [formattedValue, setFormattedValue] = useState(fieldValue ? formatDate(fieldValue) : '')
 
 	useEffect(() => {
+		if (controlledValue !== undefined) {
+			return
+		}
 		if (!fieldValue) {
 			setFormattedValue('')
 		} else {
 			setFormattedValue(formatDate(fieldValue))
 		}
-	}, [fieldValue])
+	}, [fieldValue, controlledValue])
 
 	const { onBlur: registerOnBlur } = name && register ? register(name) : {}
 
@@ -111,7 +115,7 @@ export const DateInput = ({
 			<StyledInput
 				id={name}
 				name={name}
-				value={formattedValue || fieldValue || ''}
+				value={controlledValue !== undefined ? controlledValue : formattedValue || fieldValue || ''}
 				type="text"
 				disabled={isDisabled}
 				autoFocus={autoFocus}
