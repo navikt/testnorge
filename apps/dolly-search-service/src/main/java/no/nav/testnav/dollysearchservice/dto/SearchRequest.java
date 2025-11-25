@@ -26,8 +26,9 @@ public class SearchRequest {
 
     private PersonRequest personRequest;
 
-    private org.opensearch.action.search.SearchRequest query;
+    private org.opensearch.client.opensearch.core.SearchRequest query;
     private SearchRequest request;
+    private String index;
 
     private List<ElasticTyper> registreRequest;
 

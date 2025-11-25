@@ -16,7 +16,8 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:testing"
 
-    implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
+    implementation 'org.opensearch.client:opensearch-java:2.26.0'
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
 
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
     implementation 'org.springframework.boot:spring-boot-starter-cache'
@@ -24,10 +25,9 @@ dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-web"
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 }

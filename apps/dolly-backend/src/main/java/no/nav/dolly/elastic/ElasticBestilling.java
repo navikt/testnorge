@@ -108,7 +108,7 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private List<EtterlatteYtelse> etterlatteYtelser;
     @Field
-    private RsNomData nomData;
+    private RsNomData nomdata;
     @Transient
     @JsonIgnore
     private boolean ignore;

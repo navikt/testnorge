@@ -37,4 +37,4 @@ server:
 
 open:
   search:
-    pdl-index: pdl-sok
+    pdl-index: pdl-person
