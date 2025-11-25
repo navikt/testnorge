@@ -8,7 +8,7 @@ import {
 } from '@/utils/hooks/useMutate'
 
 export default function GjenopprettBestilling(props) {
-	const { bestilling, closeModal, brukertype } = props
+	const { bestilling, closeModal } = props
 	const { environments } = bestilling
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
@@ -47,7 +47,7 @@ export default function GjenopprettBestilling(props) {
 			submitForm={submitForm}
 			closeModal={closeModal}
 			bestilling={bestilling}
-			brukertype={brukertype}
+			// brukertype={brukertype}
 		/>
 	)
 }

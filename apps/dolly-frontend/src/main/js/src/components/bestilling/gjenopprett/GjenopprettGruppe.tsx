@@ -18,10 +18,10 @@ type GjenopprettGruppeProps = {
 
 export const GjenopprettGruppe = ({ onClose, gruppeId }: GjenopprettGruppeProps) => {
 	const dispatch = useDispatch()
-	const { currentBruker } = useCurrentBruker()
+	// const { currentBruker } = useCurrentBruker()
 	const { gruppe } = useGruppeById(gruppeId)
 	const { miljoer, loading } = useBestilteMiljoerForGruppe(gruppe.id)
-	const brukertype = currentBruker?.brukertype
+	// const brukertype = currentBruker?.brukertype
 
 	if (loading) {
 		return <Loading label="Laster miljøer..." />
@@ -57,10 +57,10 @@ export const GjenopprettGruppe = ({ onClose, gruppeId }: GjenopprettGruppeProps)
 	return (
 		<GjenopprettModal
 			gjenopprettHeader={gjenopprettHeader}
+			environments={miljoer}
 			submitForm={submitForm}
 			closeModal={onClose}
-			environments={miljoer}
-			brukertype={brukertype}
+			// brukertype={brukertype}
 		/>
 	)
 }

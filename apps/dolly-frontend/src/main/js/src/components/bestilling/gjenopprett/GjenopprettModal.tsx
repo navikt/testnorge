@@ -1,5 +1,5 @@
 import { DollyModal } from '@/components/ui/modal/DollyModal'
-import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoeInfo'
+
 import React, { Fragment } from 'react'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -10,6 +10,9 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Alert } from '@navikt/ds-react'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
 type GjenopprettModalProps = {
 	gjenopprettHeader: any
@@ -17,7 +20,7 @@ type GjenopprettModalProps = {
 	submitForm: any
 	closeModal: any
 	bestilling?: any
-	brukertype?: string
+	// brukertype?: string
 }
 
 export const GjenopprettModal = ({
@@ -26,20 +29,31 @@ export const GjenopprettModal = ({
 	submitForm,
 	closeModal,
 	bestilling,
-	brukertype,
+	// brukertype,
 }: GjenopprettModalProps) => {
-	const { dollyEnvironments: tilgjengeligeEnvironments } = useDollyEnvironments()
+	const { currentBruker } = useCurrentBruker()
+
+	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
+	const tilgjengeligeMiljoer = organisasjonMiljoe?.miljoe
+	// const tilgjengeligeMiljoer = 'q1' //TODO: Tilgjengelig miljoe for BankID-bruker
+	console.log('tilgjengeligeMiljoer: ', tilgjengeligeMiljoer) //TODO - SLETT MEG
+
+	const { dollyEnvironments } = useDollyEnvironments()
+	const gyldigeEnvironments = gyldigeDollyMiljoer(dollyEnvironments)
+
+	const defaultEnvironments = filterMiljoe(gyldigeEnvironments, environments, tilgjengeligeMiljoer)
+	// console.log('defaultEnvironments: ', defaultEnvironments) //TODO - SLETT MEG
+
 	const schemaValidation = yup.object().shape({
 		environments: yup.array().required('Velg minst ett miljø'),
 	})
 
-	const gyldigeEnvironments = gyldigeDollyMiljoer(tilgjengeligeEnvironments)
-
 	const formMethods = useForm({
 		mode: 'onBlur',
-		defaultValues: { environments: filterMiljoe(gyldigeEnvironments, environments) },
+		defaultValues: { environments: defaultEnvironments },
 		resolver: yupResolver(schemaValidation),
 	})
+	console.log('formMethods.watch(): ', formMethods.watch()) //TODO - SLETT MEG
 
 	const getWarningText = () => {
 		if (
@@ -62,8 +76,10 @@ export const GjenopprettModal = ({
 						<MiljoVelger
 							bestillingsdata={bestilling ? bestilling.bestilling : null}
 							heading="Velg miljø å gjenopprette i"
-							bankIdBruker={brukertype && brukertype === 'BANKID'}
-							alleredeValgtMiljoe={[]}
+							currentBruker={currentBruker}
+							// bankIdBruker={brukertype && brukertype === 'BANKID'}
+							// alleredeValgtMiljoe={[]}
+							// tilgjengeligeMiljoer={gyldigeEnvironments}
 						/>
 						{warningText && (
 							<div style={{ padding: '0 20px' }}>
