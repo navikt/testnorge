@@ -5,7 +5,7 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 ## General Style
 
 - IMPORTANT: Prefer obvious code over clever code.
-- IMPORTANT: DO NOT ADD ANY COMMENTS unless asked, but allow other users to add comments without interfering.
+- IMPORTANT: DO NOT ADD ANY COMMENTS unless asked, and DO NOT REMOVE or MODIFY existing comments in the code.
 - Provide entire files instead of snippets, unless specified.
 - use descriptive variable names unless in a loop or other obvious context.
 
