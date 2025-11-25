@@ -21,7 +21,7 @@ import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 @RequiredArgsConstructor
 public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_TP_FORHOLD_URL = "/api/v1/tp/forhold";
+    private static final String PENSJON_TP_FORHOLD_URL = "/pensjon/api/v1/tp/forhold";
 
     private final WebClient webClient;
 

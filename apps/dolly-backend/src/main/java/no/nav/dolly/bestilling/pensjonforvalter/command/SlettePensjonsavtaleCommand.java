@@ -20,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 public class SlettePensjonsavtaleCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_TP_PERSON_FORHOLD_URL = "/api/v1/pensjonsavtale/delete";
+    private static final String PENSJON_TP_PERSON_FORHOLD_URL = "/pensjon/api/v1/pensjonsavtale/delete";
 
     private final WebClient webClient;
     private final String ident;

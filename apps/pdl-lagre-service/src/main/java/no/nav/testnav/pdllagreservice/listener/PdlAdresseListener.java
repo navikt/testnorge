@@ -42,9 +42,9 @@ public class PdlAdresseListener {
 
     @KafkaListener(
             id = "pdl-lagre-adresse",
-            clientIdPrefix = "pdl-lagre-adresse-v2",
+            clientIdPrefix = "pdl-lagre-adresse-v3",
             topics = "pdl.adresse-v2",
-            groupId = "testnav-pdl-lagre-adresse-v2",
+            groupId = "testnav-pdl-lagre-adresse-v3",
             containerFactory = "pdlAdresseKafkaFactory"
     )
     @Timed(value = KAFKA_CONSUMER_TIMED, extraTags = {KEY, "adresse-v2"}, percentiles = {.99, .75, .50, .25})

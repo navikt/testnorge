@@ -21,7 +21,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 public class HentMiljoerCommand implements Callable<Mono<Set<String>>> {
 
-    private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/api/v1/miljo";
+    private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/pensjon/api/v1/miljo";
 
     private final WebClient webClient;
     private final String token;

@@ -1,5 +1,6 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
+import { useEffect } from 'react'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'
@@ -10,7 +11,6 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { Alert } from '@navikt/ds-react'
 import { useFormContext, useWatch } from 'react-hook-form'
-import { useEffect } from 'react'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
 const StyledH3 = styled.h3`
@@ -41,7 +41,7 @@ const miljoeavhengig = [
 	'underenheter',
 ]
 
-const erMiljouavhengig = (bestilling) => {
+const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {
 	if (!bestilling) return false
 	let miljoeNotRequired = true
 	miljoeavhengig.forEach((system) => {
@@ -52,6 +52,15 @@ const erMiljouavhengig = (bestilling) => {
 	return miljoeNotRequired
 }
 
+interface MiljoVelgerProps {
+	bestillingsdata?: Record<string, unknown>
+	heading: string
+	currentBruker: any
+	tilgjengeligeMiljoer?: string
+	// bankIdBruker?: boolean
+	// alleredeValgtMiljoe: string[]
+}
+
 export const MiljoVelger = ({
 	bestillingsdata,
 	heading,
@@ -59,7 +68,7 @@ export const MiljoVelger = ({
 	// bankIdBruker,
 	// alleredeValgtMiljoe,
 	tilgjengeligeMiljoer,
-}) => {
+}: MiljoVelgerProps) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
 	const formMethods = useFormContext()
 
@@ -98,7 +107,7 @@ export const MiljoVelger = ({
 		}
 	}, [disableAllEnvironments, values, formMethods])
 
-	const isChecked = (id) => values.includes(id)
+	const isChecked = (id: string) => values.includes(id)
 
 	const toggleEnvironment = (id: string) => {
 		const next = isChecked(id) ? values.filter((value: string) => value !== id) : values.concat(id)

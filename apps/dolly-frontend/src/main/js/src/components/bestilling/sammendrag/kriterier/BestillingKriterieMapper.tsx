@@ -23,10 +23,9 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import { useContext } from 'react'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
@@ -2546,7 +2545,9 @@ export function useBestillingData(
 	bestillingsinformasjon?: any,
 	firstIdent?: string,
 ) {
-	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const contextValue = useBestillingsveileder() as BestillingsveilederContextType
+	const hasRealContext = contextValue?.is !== undefined || contextValue?.gruppe !== undefined
+	const bestilling = hasRealContext ? contextValue : undefined
 	const { navEnheter } = useNavEnheter()
 	return buildBestillingData(
 		bestillingData,

@@ -43,7 +43,8 @@ public class OpensearchController {
         if (existIndex.value()) {
 
             log.warn("Deleting Index {}", index);
-            return openSearchClient.indices().delete(i -> i.index(index)).toString();
+            openSearchClient.indices().delete(i -> i.index(index));
+            return "Index " + index + " slettet";
 
         } else {
             log.warn("Index {} does not exist", index);

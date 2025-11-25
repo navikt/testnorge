@@ -21,7 +21,7 @@ import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 @RequiredArgsConstructor
 public class LagreGenerertPoppInntektCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String POPP_INNTEKTSKJEMA_URL = "/api/v1/inntektskjema";
+    private static final String POPP_INNTEKTSKJEMA_URL = "/pensjon/api/v1/inntektskjema";
 
     private final WebClient webClient;
     private final String token;

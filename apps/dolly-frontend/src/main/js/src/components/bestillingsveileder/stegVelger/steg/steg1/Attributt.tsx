@@ -29,23 +29,22 @@ export const Attributt: React.FC<AttributtProps> = ({
 	infoTekst = '',
 	...props
 }) => {
-	if (!vis) return null
-	return (
+	return vis ? (
 		<div title={title} style={{ display: 'flex', alignItems: 'center' }}>
 			<DollyCheckbox
 				wrapperSize={wrapperSize as any}
-				label={attr.label}
+				label={attr?.label || ''}
 				attributtCheckbox
 				size="small"
-				onChange={(e) => (e.target.checked ? attr.add() : attr.remove())}
-				value={attr.label}
+				onChange={(e) => (e.target.checked ? attr?.add?.() : attr?.remove?.())}
+				value={attr?.label || ''}
 				disabled={disabled}
 				id={id}
 				{...props}
 			/>
 			{infoTekst && <Hjelpetekst>{infoTekst}</Hjelpetekst>}
 		</div>
-	)
+	) : null
 }
 
 interface AttributtKategoriProps {
@@ -65,11 +64,10 @@ export const AttributtKategori: React.FC<AttributtKategoriProps> = ({
 	const showAny = attributter.some(
 		(child: any) => child?.props?.vis || !child?.props?.hasOwnProperty('vis'),
 	)
-	if (!showAny) return null
 
-	return (
+	return showAny ? (
 		<CheckboxGroup name={title} legend={title} value={checkedValues}>
 			<div className="attributt-velger_panelsubcontent">{children}</div>
 		</CheckboxGroup>
-	)
+	) : null
 }

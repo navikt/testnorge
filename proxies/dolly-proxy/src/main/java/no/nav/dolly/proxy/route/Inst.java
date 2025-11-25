@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-public class Inst {
+class Inst {
 
     private static final String CLUSTER = "dev-fss";
     private static final String NAME = "opphold-testdata";

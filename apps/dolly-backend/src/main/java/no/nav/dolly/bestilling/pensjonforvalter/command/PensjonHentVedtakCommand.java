@@ -20,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @RequiredArgsConstructor
 public class PensjonHentVedtakCommand implements Callable<Flux<PensjonVedtakResponse>> {
 
-    private static final String VEDTAK_URL = "/api/v2/vedtak";
+    private static final String VEDTAK_URL = "/pensjon/api/v2/vedtak";
 
     private final WebClient webClient;
     private final String ident;

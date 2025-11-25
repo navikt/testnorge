@@ -28,7 +28,6 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: testnav-dolly-proxy
           cluster: dev-fss
         - application: dolly-texas-proxy

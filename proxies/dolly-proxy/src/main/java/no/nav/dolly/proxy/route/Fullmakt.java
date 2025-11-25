@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-public class Fullmakt {
+class Fullmakt {
 
     private static final String CLUSTER = "dev-fss";
     private static final String NAMESPACE = "repr";

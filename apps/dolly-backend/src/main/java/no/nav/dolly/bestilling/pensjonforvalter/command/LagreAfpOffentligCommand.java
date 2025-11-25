@@ -19,7 +19,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 @RequiredArgsConstructor
 public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterResponse>> {
-    private static final String PEN_AFP_OFFENTLIG_URL = "/{miljoe}/api/mock-oppsett/{ident}";
+    private static final String PEN_AFP_OFFENTLIG_URL = "/pensjon/{miljoe}/api/mock-oppsett/{ident}";
 
     private final WebClient webClient;
     private final AfpOffentligRequest afpOffentligRequest;

@@ -50,5 +50,4 @@ jobs:
       deploy-tag: "#deploy-frontend"
       deploy-tag-test: "#deploy-test-frontend"
       deploy-tag-idporten: "#deploy-idporten-frontend"
-      deploy-tag-unstable: "#deploy-unstable-frontend"
     secrets: inherit

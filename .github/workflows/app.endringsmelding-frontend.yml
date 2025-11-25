@@ -21,4 +21,5 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      packages: read
     secrets: inherit

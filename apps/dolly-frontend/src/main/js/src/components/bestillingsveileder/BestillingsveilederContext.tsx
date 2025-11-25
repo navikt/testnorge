@@ -1,20 +1,22 @@
-import React, { Context } from 'react'
-import { Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import { BestillingData } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import React, { Context, useContext } from 'react'
 
 export interface BestillingsveilederContextType {
-	gruppeId?: string
+	gruppeId?: number | null
 	initialValues: any
 	gruppe?: { id?: string; navn?: string }
-	personFoerLeggTil?: string
+	personFoerLeggTil?: any
 	identMaster?: string
-	antall?: number
+	antall?: number | null
 	identtype?: string
+	setIdenttype?: (identtype: string) => void
+	setGruppeId?: (gruppeId: number) => void
+	setMal?: (mal: any | undefined) => void
+	updateContext?: (patch: Partial<BestillingsveilederContextType>) => void
 	id2032?: boolean
-	importPersoner?: Person[]
-	tidligereBestillinger?: BestillingData[]
+	importPersoner?: any[]
+	tidligereBestillinger?: any[]
 	opprettFraIdenter?: string[]
-	mal?: { malNavn?: string }
+	mal?: { malNavn?: string; [key: string]: any }
 	is?: {
 		nyBestilling?: boolean
 		nyBestillingFraMal?: boolean
@@ -31,8 +33,15 @@ export interface BestillingsveilederContextType {
 
 const defaultContextValue: BestillingsveilederContextType = {
 	initialValues: {},
-	timedOutFagsystemer: [],
+	gruppeId: null,
+	setIdenttype: () => {},
+	setGruppeId: () => {},
+	setMal: () => {},
+	updateContext: () => {},
 }
 
 export const BestillingsveilederContext: Context<BestillingsveilederContextType> =
 	React.createContext(defaultContextValue)
+
+export const useBestillingsveileder = (): BestillingsveilederContextType =>
+	useContext(BestillingsveilederContext)
