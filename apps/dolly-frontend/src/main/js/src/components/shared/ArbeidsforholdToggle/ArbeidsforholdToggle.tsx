@@ -79,7 +79,7 @@ export const ArbeidsforholdToggle = ({
 		| ArbeidsgiverTyper
 		| undefined
 
-	const { typeArbeidsgiver, setLocalArbeidsgiverType } = useArbeidsgiverType({
+	const { typeArbeidsgiver, setLocalArbeidsgiverType, markAsManualChange } = useArbeidsgiverType({
 		formMethods,
 		path,
 		watchedOrgnr,
@@ -99,12 +99,10 @@ export const ArbeidsforholdToggle = ({
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		onToggle && onToggle(value)
+		markAsManualChange(value)
 
 		if (useFormState) {
-			formMethods.setValue(`${path}.arbeidsgiverType`, value, {
-				shouldDirty: true,
-				shouldTouch: true,
-			})
+			formMethods.setValue(`${path}.arbeidsgiverType`, value)
 			if (value === ArbeidsgiverTyper.privat && initialArbeidsgiverPers) {
 				formMethods.resetField(`${path}.arbeidsgiver`, {
 					defaultValue: initialArbeidsgiverPers,
@@ -133,10 +131,7 @@ export const ArbeidsforholdToggle = ({
 
 	const handleOrgChange = (event: any) => {
 		const value = event?.value || event?.orgnr
-		formMethods.setValue(organisasjonPath, value, {
-			shouldDirty: true,
-			shouldTouch: true,
-		})
+		formMethods.setValue(organisasjonPath, value)
 		formMethods.clearErrors(path)
 		formMethods.clearErrors(`manual.${path}`)
 		formMethods.clearErrors(`${path}.arbeidsgiver`)
