@@ -10,7 +10,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.elastic.service.OpenSearchService;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -41,37 +41,38 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     private final IdentRepository identRepository;
 
     public GjenopprettGruppeService(
-            BestillingElasticRepository bestillingElasticRepository,
             BestillingProgressRepository bestillingProgressRepository,
             BestillingRepository bestillingRepository,
             BestillingService bestillingService,
+            CacheManager cacheManager,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
+            IdentRepository identRepository,
             IdentService identService,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
             ObjectMapper objectMapper,
+            OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
-            TransactionHelperService transactionHelperService,
-            IdentRepository identRepository,
-            CacheManager cacheManager) {
+            TransactionHelperService transactionHelperService
+    ) {
         super(
-                bestillingElasticRepository,
                 bestillingProgressRepository,
                 bestillingRepository,
                 bestillingService,
+                cacheManager,
                 counterCustomRegistry,
                 errorStatusDecoder,
                 identService,
                 clientRegisters,
                 mapperFacade,
                 objectMapper,
+                openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
-                transactionHelperService,
-                cacheManager
+                transactionHelperService
         );
         this.personServiceClient = personServiceClient;
         this.identRepository = identRepository;

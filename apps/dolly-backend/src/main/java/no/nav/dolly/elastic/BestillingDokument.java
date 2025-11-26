@@ -49,7 +49,7 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ElasticBestilling implements Persistable<Long> {
+public class BestillingDokument implements Persistable<Long> {
 
     @Id
     private Long id;

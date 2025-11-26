@@ -19,7 +19,7 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.elastic.service.OpenSearchService;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
@@ -63,7 +63,6 @@ public class BestillingService {
     private static final String SEARCH_STRING = "info:";
     private static final String DEFAULT_VALUE = "";
 
-    private final BestillingElasticRepository elasticRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingRepository bestillingRepository;
@@ -73,6 +72,7 @@ public class BestillingService {
     private final MalBestillingService malBestillingService;
     private final MiljoerConsumer miljoerConsumer;
     private final ObjectMapper objectMapper;
+    private final OpenSearchService openSearchService;
     private final TestgruppeRepository testgruppeRepository;
 
     public Mono<Bestilling> fetchBestillingById(Long bestillingId) {
@@ -493,7 +493,7 @@ public class BestillingService {
 
         return bestillingRepository.findByGruppeId(gruppeId)
                 .map(Bestilling::getId)
-                .doOnNext(elasticRepository::deleteById)
+                .flatMap(openSearchService::deleteById)
                 .collectList()
                 .doOnNext(ignore ->
                         log.info("Sletter {} bestillinger for gruppeId {}", ignore.size(), gruppeId))
@@ -510,7 +510,7 @@ public class BestillingService {
 
         return bestillingProgressRepository.deleteByBestillingId(bestillingId)
                 .then(bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId))
-                .then(Mono.fromRunnable(() -> elasticRepository.deleteById(bestillingId)))
+                .then(openSearchService.deleteById(bestillingId))
                 .then(bestillingRepository.deleteById(bestillingId));
     }
 
@@ -521,7 +521,7 @@ public class BestillingService {
                 .flatMap(bestillingId -> bestillingProgressRepository.deleteByIdent(ident)
                         .then(bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId))
                         .then(bestillingRepository.deleteBestillingWithNoChildren(bestillingId))
-                        .then(Mono.fromRunnable(() -> elasticRepository.deleteById(bestillingId))))
+                        .then(openSearchService.deleteById(bestillingId)))
                 .collectList()
                 .then();
     }

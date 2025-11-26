@@ -1,9 +1,8 @@
 package no.nav.dolly.config;
 
-import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.data.client.orhlc.AbstractOpenSearchConfiguration;
 import org.opensearch.data.client.orhlc.ClientConfiguration;
-import org.opensearch.data.client.orhlc.RestClients;
 import org.opensearch.testcontainers.OpenSearchContainer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,11 +30,11 @@ public class TestOpenSearchConfig extends AbstractOpenSearchConfiguration {
 
     @Override
     @Bean
-    public RestHighLevelClient opensearchClient() {
+    public OpenSearchClient opensearchClient() {
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(OPENSEARCH_CONTAINER.getHost() + ":" + OPENSEARCH_CONTAINER.getFirstMappedPort())
                 .build();
 
-        return RestClients.create(clientConfiguration).rest();
+        return OpenSearchClient.create(clientConfiguration).rest();
     }
 }

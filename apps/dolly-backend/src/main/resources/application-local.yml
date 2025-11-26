@@ -27,9 +27,9 @@ management:
 
 open:
   search:
-    uri: http://localhost:9200
-    username: dummy
-    password: dummy
+    uri: https://opensearch-dolly-bestillinger-nav-dev.a.aivencloud.com:26482
+    username: dolly-UxM
+    password: AVNS_xbspJnd16CZJN9uNIAd
     index: local
 
 consumers:

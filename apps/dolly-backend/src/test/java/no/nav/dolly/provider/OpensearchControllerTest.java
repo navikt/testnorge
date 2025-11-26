@@ -8,8 +8,7 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.elastic.BestillingDokument;
 import no.nav.dolly.elastic.service.OpenSearchService;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
@@ -45,9 +44,6 @@ class OpensearchControllerTest {
     private static final String IDENT5 = "55555555555";
 
     @Autowired
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @Autowired
     private WebTestClient webTestClient;
 
     @MockitoBean
@@ -56,10 +52,10 @@ class OpensearchControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private List<ElasticBestilling> getTestBestillinger() {
+    private List<BestillingDokument> getTestBestillinger() {
 
         return List.of(
-                ElasticBestilling.builder()
+                BestillingDokument.builder()
                         .id(1L)
                         .pdldata(PdlPersondata.builder()
                                 .opprettNyPerson(PdlPersondata.PdlPerson.builder()
@@ -74,7 +70,7 @@ class OpensearchControllerTest {
                                 .build())
                         .identer(List.of(IDENT1, IDENT2, IDENT3))
                         .build(),
-                ElasticBestilling.builder()
+                BestillingDokument.builder()
                         .id(2L)
                         .pdldata(PdlPersondata.builder()
                                 .opprettNyPerson(PdlPersondata.PdlPerson.builder()
@@ -102,13 +98,13 @@ class OpensearchControllerTest {
     @BeforeEach
     void setup() {
 
-        bestillingElasticRepository.saveAll(getTestBestillinger());
+        bestillingOpenSearchRepository.saveAll(getTestBestillinger());
     }
 
     @AfterEach
     void teardown() {
 
-        bestillingElasticRepository.deleteAll();
+        bestillingOpenSearchRepository.deleteAll();
     }
 
     @Test
@@ -122,7 +118,7 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        var bestilling = bestillingElasticRepository.findById(2L);
+        var bestilling = bestillingOpenSearchRepository.findById(2L);
         assertThat(bestilling.isPresent(), is(true));
 
         webTestClient
@@ -133,7 +129,7 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        bestilling = bestillingElasticRepository.findById(1L);
+        bestilling = bestillingOpenSearchRepository.findById(1L);
         assertThat(bestilling.isPresent(), is(false));
     }
 
@@ -151,7 +147,7 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        var bestillinger = (PageImpl<ElasticBestilling>) bestillingElasticRepository.findAll();
+        var bestillinger = (PageImpl<BestillingDokument>) bestillingOpenSearchRepository.findAll();
         assertThat(bestillinger.getTotalElements(), is(equalTo(0L)));
     }
 }

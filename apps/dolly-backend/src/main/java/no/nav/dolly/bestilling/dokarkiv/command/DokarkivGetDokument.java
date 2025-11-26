@@ -1,11 +1,11 @@
 package no.nav.dolly.bestilling.dokarkiv.command;
 
-import co.elastic.clients.util.ContentType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -41,7 +41,7 @@ public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
                         .build(miljoe, journalpostId, dokumentInfoId, variantFormat))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(ACCEPT_ENCODING, ContentType.APPLICATION_JSON)
+                .header(ACCEPT_ENCODING, MediaType.APPLICATION_JSON_VALUE)
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(String.class)
