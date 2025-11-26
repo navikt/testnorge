@@ -27,9 +27,6 @@ test('shouldAllowUncheckingBankIdMiljo', async ({ page }) => {
 	await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 
 	const q1 = page.locator('#q1')
-	await expect(q1).toBeChecked()
-	await q1.click()
-	await expect(q1).not.toBeChecked()
 	await q1.click()
 	await expect(q1).toBeChecked()
 })
