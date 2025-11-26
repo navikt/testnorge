@@ -22,19 +22,11 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 
 	const { currentBruker } = useCurrentBruker()
 
-	const { organisasjonMiljoe, loading } = useOrganisasjonMiljoe()
+	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
 	const tilgjengeligeMiljoer = organisasjonMiljoe?.miljoe
-	// const tilgjengeligeMiljoer = 'q1' //TODO: Tilgjengelig miljoe for BankID-bruker
 
-	const { dollyEnvironments } = useDollyEnvironments()
+	const { dollyEnvironments, loading } = useDollyEnvironments()
 	const gyldigeEnvironments = gyldigeDollyMiljoer(dollyEnvironments)
-
-	// const tilgjengeligeMiljoerArray = bankIdBruker
-	// 	? tilgjengeligeMiljoer
-	// 		? tilgjengeligeMiljoer.split(',')
-	// 		: ['q1']
-	// 	: null
-	//TODO: Rydd opp i navngivning - miljoer/environments
 
 	const importTestnorge = opts?.is?.importTestnorge
 
@@ -51,9 +43,6 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 
 	const fagsystemMiljoer = () => {
 		const values = formMethods.getValues()
-		// if (loading) {
-		// 	return []
-		// } else
 		if (
 			values.dokarkiv ||
 			values.instdata ||
@@ -74,7 +63,6 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 		fagsystemMiljoer(),
 		tilgjengeligeMiljoer,
 	)
-	console.log('defaultEnvironments: ', defaultEnvironments) //TODO - SLETT MEG
 
 	useEffect(() => {
 		formMethods.setValue('environments', defaultEnvironments)
@@ -85,7 +73,6 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	}, [])
 
 	const visMiljoeVelger = formMethods.watch('environments')
-	// console.log("visMiljoeVelger: ", visMiljoeVelger) //TODO - SLETT MEG
 
 	if (loadingBestilling) {
 		return <Loading label={'Oppretter bestilling ...'} />
@@ -105,10 +92,9 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 					bestillingsdata={formMethods.getValues()}
 					heading="Hvilke miljøer vil du opprette i?"
 					currentBruker={currentBruker}
-					// bankIdBruker={bankIdBruker}
-					// orgTilgang={organisasjonMiljoe}
-					// alleredeValgtMiljoe={alleredeValgtMiljoe()}
-					// tilgjengeligeMiljoer={tilgjengeligeMiljoerArray}
+					gyldigeMiljoer={gyldigeEnvironments}
+					tilgjengeligeMiljoer={tilgjengeligeMiljoer}
+					loading={loading}
 				/>
 			)}
 			{!erOrganisasjon &&

@@ -8,7 +8,7 @@ export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer, tilgjengeligeMiljoer 
 	if (!utvalgteMiljoer) return []
 	const dollyMiljoeArray = dollyMiljoe?.map((miljoe) => miljoe?.id)
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
-	//men ikke Dolly per dags dato
+	//men ikke Dolly per dags dato, og evt. ikke BankID-bruker
 	return utvalgteMiljoer.filter(
 		(miljoe) =>
 			dollyMiljoeArray.includes(miljoe) &&

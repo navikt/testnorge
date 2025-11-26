@@ -1,33 +1,20 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
 import { useEffect } from 'react'
-
 import './MiljoVelger.less'
 import styled from 'styled-components'
 import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { Alert } from '@navikt/ds-react'
 import { useFormContext, useWatch } from 'react-hook-form'
-import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
 const StyledH3 = styled.h3`
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
 `
-
-// const bankIdQ1 = {
-// 	id: 'q1',
-// 	label: 'Q1',
-// }
-//
-// const bankIdQ2 = {
-// 	id: 'q2',
-// 	label: 'Q2',
-// }
 
 const miljoeavhengig = [
 	'aareg',
@@ -56,49 +43,23 @@ interface MiljoVelgerProps {
 	bestillingsdata?: Record<string, unknown>
 	heading: string
 	currentBruker: any
+	gyldigeMiljoer: any[]
 	tilgjengeligeMiljoer?: string
-	// bankIdBruker?: boolean
-	// alleredeValgtMiljoe: string[]
+	loading: boolean
 }
 
 export const MiljoVelger = ({
 	bestillingsdata,
 	heading,
 	currentBruker,
-	// bankIdBruker,
-	// alleredeValgtMiljoe,
+	gyldigeMiljoer,
 	tilgjengeligeMiljoer,
+	loading = false,
 }: MiljoVelgerProps) => {
-	const { dollyEnvironments, loading } = useDollyEnvironments()
 	const formMethods = useFormContext()
-
-	if (loading) {
-		return <Loading label={'Laster miljøer...'} />
-	}
-
-	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
-	// const bankIdBruker = true //TODO: Jeg er BankID-bruker
-
-	// const { organisasjonMiljoe } = useOrganisasjonMiljoe()
-	// const tilgjengeligeMiljoer = organisasjonMiljoe?.miljoe
-	// const tilgjengeligeMiljoer = 'q1' //TODO: Tilgjengelig miljoe for BankID-bruker
-
-	const tilgjengeligeMiljoerArray = bankIdBruker
-		? tilgjengeligeMiljoer
-			? tilgjengeligeMiljoer.split(',')
-			: ['q1']
-		: null
+	const values = useWatch({ name: 'environments', control: formMethods.control }) || []
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
-	// const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
-	const filteredEnvironments = dollyEnvironments?.Q.filter((env: any) =>
-		tilgjengeligeMiljoerArray ? tilgjengeligeMiljoerArray.includes(env.id) : env.id !== 'qx',
-	)
-	//TODO: Se om det er mulig å endre filtered environments til aa heller bruke verdier fra Steg3 / GjenopprettModal?
-
-	// const miljoListe = filteredEnvironments
-	// const miljoListe = tilgjengeligeMiljoerArray ?? filteredEnvironments
-	const values = useWatch({ name: 'environments', control: formMethods.control }) || []
 
 	useEffect(() => {
 		if (disableAllEnvironments && values.length > 0) {
@@ -107,6 +68,21 @@ export const MiljoVelger = ({
 		}
 	}, [disableAllEnvironments, values, formMethods])
 
+	if (loading) {
+		return <Loading label={'Laster miljøer ...'} />
+	}
+
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
+	const tilgjengeligeMiljoerArray = bankIdBruker
+		? tilgjengeligeMiljoer
+			? tilgjengeligeMiljoer.split(',')
+			: ['q1']
+		: null
+
+	const filteredEnvironments = gyldigeMiljoer?.filter(
+		(env: any) => !tilgjengeligeMiljoerArray || tilgjengeligeMiljoerArray.includes(env.id),
+	)
+
 	const isChecked = (id: string) => values.includes(id)
 
 	const toggleEnvironment = (id: string) => {
@@ -114,7 +90,7 @@ export const MiljoVelger = ({
 		formMethods.setValue('environments', next)
 		formMethods.trigger('environments')
 	}
-	console.log('filteredEnvironments: ', filteredEnvironments) //TODO - SLETT MEG
+
 	return (
 		<div className="miljo-velger">
 			<h2>{heading}</h2>
@@ -128,7 +104,6 @@ export const MiljoVelger = ({
 						dollyEnvironments={filteredEnvironments}
 						tilgjengeligeMiljoer={tilgjengeligeMiljoerArray}
 					/>
-					{/*//Endre filteredEnvironments???*/}
 				</>
 			)}
 			<fieldset name={`Liste over miljøer`}>

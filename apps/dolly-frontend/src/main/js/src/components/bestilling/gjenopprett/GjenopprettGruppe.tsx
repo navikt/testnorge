@@ -4,7 +4,6 @@ import { arrayToString } from '@/utils/DataFormatter'
 import { useDispatch } from 'react-redux'
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
 import { DollyApi } from '@/service/Api'
-import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useBestilteMiljoerForGruppe } from '@/utils/hooks/useBestilling'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { setUpdateNow } from '@/ducks/finnPerson'
@@ -18,10 +17,9 @@ type GjenopprettGruppeProps = {
 
 export const GjenopprettGruppe = ({ onClose, gruppeId }: GjenopprettGruppeProps) => {
 	const dispatch = useDispatch()
-	// const { currentBruker } = useCurrentBruker()
+
 	const { gruppe } = useGruppeById(gruppeId)
 	const { miljoer, loading } = useBestilteMiljoerForGruppe(gruppe.id)
-	// const brukertype = currentBruker?.brukertype
 
 	if (loading) {
 		return <Loading label="Laster miljøer..." />
@@ -60,7 +58,6 @@ export const GjenopprettGruppe = ({ onClose, gruppeId }: GjenopprettGruppeProps)
 			environments={miljoer}
 			submitForm={submitForm}
 			closeModal={onClose}
-			// brukertype={brukertype}
 		/>
 	)
 }

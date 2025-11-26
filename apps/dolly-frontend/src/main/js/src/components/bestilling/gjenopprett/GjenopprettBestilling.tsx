@@ -47,7 +47,6 @@ export default function GjenopprettBestilling(props) {
 			submitForm={submitForm}
 			closeModal={closeModal}
 			bestilling={bestilling}
-			// brukertype={brukertype}
 		/>
 	)
 }
