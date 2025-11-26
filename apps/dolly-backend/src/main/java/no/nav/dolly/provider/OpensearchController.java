@@ -2,7 +2,7 @@ package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.elastic.service.OpenSearchService;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

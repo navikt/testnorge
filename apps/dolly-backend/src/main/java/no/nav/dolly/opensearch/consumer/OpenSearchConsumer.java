@@ -1,8 +1,8 @@
-package no.nav.dolly.elastic.consumer;
+package no.nav.dolly.opensearch.consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.elastic.consumer.command.ElasticPutCommand;
+import no.nav.dolly.opensearch.consumer.command.ElasticPutCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

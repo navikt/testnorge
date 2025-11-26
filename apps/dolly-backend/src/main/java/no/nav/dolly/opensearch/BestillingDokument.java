@@ -1,4 +1,4 @@
-package no.nav.dolly.elastic;
+package no.nav.dolly.opensearch;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

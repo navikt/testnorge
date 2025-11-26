@@ -1,11 +1,11 @@
-package no.nav.dolly.elastic.utils;
+package no.nav.dolly.opensearch.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.elastic.BestillingDokument;
-import no.nav.dolly.elastic.service.OpenSearchService;
+import no.nav.dolly.opensearch.BestillingDokument;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import org.apache.commons.lang3.BooleanUtils;

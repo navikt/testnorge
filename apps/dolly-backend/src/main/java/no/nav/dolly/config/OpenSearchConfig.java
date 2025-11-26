@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 @Slf4j
 @Configuration
-@Profile({"prod", "dev", "local"})
+@Profile({"prod", "dev"})
 @RequiredArgsConstructor
 public class OpenSearchConfig {
 

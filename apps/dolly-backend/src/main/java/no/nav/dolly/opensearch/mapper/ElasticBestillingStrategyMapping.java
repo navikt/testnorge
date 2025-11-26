@@ -1,4 +1,4 @@
-package no.nav.dolly.elastic.mapper;
+package no.nav.dolly.opensearch.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,10 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import ma.glasnost.orika.MappingException;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.elastic.BestillingDokument;
+import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +57,8 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                        }
 
                                    } catch (JsonProcessingException |
-                                            IllegalArgumentException e) {
+                                            IllegalArgumentException |
+                                            MappingException e) {
 
                                        bestillingDokument.setIgnore(true);
                                        log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());

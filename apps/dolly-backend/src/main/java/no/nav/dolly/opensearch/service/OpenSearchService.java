@@ -1,4 +1,4 @@
-package no.nav.dolly.elastic.service;
+package no.nav.dolly.opensearch.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import no.nav.dolly.elastic.BestillingDokument;
-import no.nav.dolly.elastic.consumer.OpenSearchConsumer;
+import no.nav.dolly.opensearch.BestillingDokument;
+import no.nav.dolly.opensearch.consumer.OpenSearchConsumer;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch.core.BulkRequest;
 import org.opensearch.client.opensearch.core.BulkResponse;
@@ -54,8 +54,8 @@ public class OpenSearchService {
                             openSearchClient.indices().delete(i -> i.index(index));
                             return Mono.just("Indeks " + index + " slettet");
                         } catch (IOException ex) {
-                            log.warn("Feilet å slette index {}, {}", index, ex.getLocalizedMessage());
-                            return Mono.just("Feilet å slette index " + index);
+                            log.warn("Feilet å slette indeks {}, {}", index, ex.getLocalizedMessage());
+                            return Mono.just("Feilet å slette indeks " + index);
                         }
                     } else {
                         return Mono.just("Indeks " + index + " eksisterer ikke");
@@ -70,7 +70,7 @@ public class OpenSearchService {
             return Mono.just(exists.value());
 
         } catch (IOException e) {
-            log.warn("Feilet ved sjekk av eksistens av index {}: {}", index, e.getLocalizedMessage());
+            log.warn("Feilet ved sjekk av eksistens av indeks {}: {}", index, e.getLocalizedMessage());
             return Mono.just(false);
         }
     }

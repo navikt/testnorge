@@ -12,7 +12,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @Configuration
 @Profile("test")
-@EnableElasticsearchRepositories("no.nav.dolly.elastic")
+@EnableElasticsearchRepositories("no.nav.dolly.opensearch")
 public class TestOpenSearchConfig extends AbstractOpenSearchConfiguration {
 
     private static final DockerImageName OPENSEARCH_IMAGE = DockerImageName.parse("opensearchproject/opensearch:3");

@@ -1,4 +1,4 @@
-package no.nav.dolly.elastic.consumer.command;
+package no.nav.dolly.opensearch.consumer.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
