@@ -4,7 +4,6 @@ import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
@@ -31,10 +30,6 @@ public abstract class AbstractControllerTest {
     private TestgruppeRepository testgruppeRepository;
     @Autowired
     private IdentRepository identRepository;
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
     @SuppressWarnings("unused")

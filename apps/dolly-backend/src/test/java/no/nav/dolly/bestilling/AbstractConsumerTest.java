@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling;
 
 import no.nav.dolly.config.TestDatabaseConfig;
-import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -26,9 +25,6 @@ public abstract class AbstractConsumerTest {
 
     @MockitoBean
     private AccessToken accessToken;
-
-    @MockitoBean
-    private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
     private ElasticsearchOperations elasticsearchOperations;

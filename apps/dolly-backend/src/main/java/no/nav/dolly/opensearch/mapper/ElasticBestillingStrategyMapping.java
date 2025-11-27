@@ -1,4 +1,4 @@
-package no.nav.dolly.elastic.mapper;
+package no.nav.dolly.opensearch.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,10 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import ma.glasnost.orika.MappingException;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -31,39 +32,40 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         // Denne brukes ved initiell indexering av eksisterende bestillinger
-        factory.classMap(Bestilling.class, ElasticBestilling.class)
+        factory.classMap(Bestilling.class, BestillingDokument.class)
                 .customize(new CustomMapper<>() {
                                @Override
-                               public void mapAtoB(Bestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
+                               public void mapAtoB(Bestilling bestilling, BestillingDokument bestillingDokument, MappingContext context) {
 
                                    try {
-                                       elasticBestilling.setIgnore(isBlank(bestilling.getBestKriterier()) ||
+                                       bestillingDokument.setIgnore(isBlank(bestilling.getBestKriterier()) ||
                                                "{}".equals(bestilling.getBestKriterier()) ||
                                                bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
 
-                                       if (!elasticBestilling.isIgnore()) {
+                                       if (!bestillingDokument.isIgnore()) {
 
                                            var dollyBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
-                                           mapperFacade.map(dollyBestilling, elasticBestilling);
+                                           mapperFacade.map(dollyBestilling, bestillingDokument);
 
-                                           elasticBestilling.setMiljoer(isNotBlank(bestilling.getMiljoer()) ?
+                                           bestillingDokument.setMiljoer(isNotBlank(bestilling.getMiljoer()) ?
                                                    List.of(bestilling.getMiljoer().split(",")) : null);
 
-                                           elasticBestilling.setIdenter(bestilling.getProgresser().stream()
+                                           bestillingDokument.setIdenter(bestilling.getProgresser().stream()
                                                    .filter(BestillingProgress::isIdentGyldig)
                                                    .map(BestillingProgress::getIdent)
                                                    .toList());
                                        }
 
                                    } catch (JsonProcessingException |
-                                            IllegalArgumentException e) {
+                                            IllegalArgumentException |
+                                            MappingException e) {
 
-                                       elasticBestilling.setIgnore(true);
+                                       bestillingDokument.setIgnore(true);
                                        log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());
 
                                    } finally {
 
-                                       elasticBestilling.setId(bestilling.getId());
+                                       bestillingDokument.setId(bestilling.getId());
                                    }
                                }
                            }
@@ -71,18 +73,18 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                 .register();
 
         // Denne brukes ved fortløpende nyoppretting av bestillinger
-        factory.classMap(RsDollyBestilling.class, ElasticBestilling.class)
+        factory.classMap(RsDollyBestilling.class, BestillingDokument.class)
                 .customize(new CustomMapper<>() {
                                @Override
-                               public void mapAtoB(RsDollyBestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
+                               public void mapAtoB(RsDollyBestilling bestilling, BestillingDokument bestillingDokument, MappingContext context) {
 
-                                   elasticBestilling.getDokarkiv()
+                                   bestillingDokument.getDokarkiv()
                                            .forEach(arkiv -> arkiv.getDokumenter()
                                                    .forEach(dokument -> dokument.getDokumentvarianter()
                                                            .forEach(dokumentVariant -> dokumentVariant.setFysiskDokument(null))));
 
-                                   if (nonNull(elasticBestilling.getHistark())) {
-                                       elasticBestilling.getHistark().getDokumenter()
+                                   if (nonNull(bestillingDokument.getHistark())) {
+                                       bestillingDokument.getHistark().getDokumenter()
                                                .forEach(dokument -> dokument.setFysiskDokument(null));
                                    }
                                }

@@ -1,36 +1,43 @@
 package no.nav.dolly.provider;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.elastic.service.OpenSearchService;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @RestController
-@RequestMapping("/api/v1/elastic")
+@RequestMapping("/api/v1/opensearch")
 @RequiredArgsConstructor
 public class OpensearchController {
 
     private final OpenSearchService openSearchService;
-    private final BestillingElasticRepository bestillingElasticRepository;
 
     @DeleteMapping("/bestilling/id/{id}")
     @Operation(description = "Sletter søkbar bestilling, basert på id")
-    public Mono<Void> deleteBestilling(@PathVariable long id) {
+    public Mono<String> deleteBestilling(@PathVariable long id) {
 
-        return Mono.fromRunnable(() -> bestillingElasticRepository.deleteById(id));
+        return openSearchService.exists(id)
+                .flatMap(exists -> {
+
+                    if (isTrue(exists)) {
+                        return openSearchService.deleteById(id);
+
+                    } else {
+                        return Mono.just("Bestilling med id: " + id + " finnes ikke");
+                    }
+                });
     }
 
     @DeleteMapping()
     @Operation(description = "Sletter all data inkludert indeks")
-    public Mono<JsonNode> delete() {
+    public Mono<String> delete() {
 
-         return Mono.fromRunnable(bestillingElasticRepository::deleteAll)
-                 .then(openSearchService.deleteIndex());
+         return openSearchService.deleteIndex();
     }
 }

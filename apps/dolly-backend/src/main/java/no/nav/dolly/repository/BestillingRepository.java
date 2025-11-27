@@ -19,7 +19,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
 
     Mono<Bestilling> findById(Long id);
 
-    Flux<Bestilling> findBy();
+    Flux<Bestilling> findByOrderByIdDesc();
 
     Mono<Void> deleteById(Long id);
 

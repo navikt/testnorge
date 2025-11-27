@@ -1,4 +1,4 @@
-package no.nav.dolly.elastic.consumer.command;
+package no.nav.dolly.opensearch.consumer.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class ElasticPutCommand implements Callable<Mono<String>> {
 
-    private static final String ELASTIC_SETTINGS_URL = "/{index}/_settings";
+    private static final String ELASTIC_SETTINGS_URL = "/{index}";
 
     private final WebClient webClient;
     private final String username;
