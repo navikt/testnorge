@@ -19,7 +19,6 @@ const Bestillingskriterier = React.lazy(
 const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const formMethods = useFormContext()
-
 	const { currentBruker } = useCurrentBruker()
 
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
