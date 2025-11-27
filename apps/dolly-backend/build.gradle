@@ -35,15 +35,12 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.retry:spring-retry"
 
-//    implementation "org.springframework.boot:spring-boot-starter-data-elasticsearch"
-//    implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
-
     implementation ("org.opensearch.client:spring-data-opensearch:$versions.opensearch") {
         exclude group: "org.opensearch.client", module: "opensearch-rest-high-level-client"
     }
 
-    implementation 'org.opensearch.client:opensearch-java:2.26.0'
-    implementation 'org.apache.httpcomponents.client5:httpclient5'
+    implementation "org.opensearch.client:opensearch-java:$versions.opensearchClient"
+    implementation "org.apache.httpcomponents.client5:httpclient5"
 
     implementation "org.apache.commons:commons-lang3"
     implementation "org.springframework.boot:spring-boot-starter-cache"

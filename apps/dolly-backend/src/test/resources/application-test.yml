@@ -7,7 +7,7 @@ jira:
 
 open:
   search:
-    uri: http://localhost:32837
+    uri: http://localhost:9200
     username: dummy
     password: dummy
     total-fields: 150

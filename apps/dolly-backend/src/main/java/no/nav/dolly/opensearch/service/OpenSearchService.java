@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class OpenSearchService {
 
-    private static final String INDEKS = "Indeks";
+    private static final String INDEKS = "Indeks ";
     
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
@@ -68,6 +68,11 @@ public class OpenSearchService {
                 });
     }
 
+    /**
+     * For testformål kun
+     *
+     * @return bekreftelse/status
+     */
     public Mono<String> createIndex() {
 
         return indexExists()
@@ -123,12 +128,14 @@ public class OpenSearchService {
 
             val response = openSearchClient.bulk(builder.build());
             if (response.errors()) {
-                log.warn("Feil ved lagring av bestillinger, errors i bulk response {}", response.items().getFirst().error());
+                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}", response.items().getFirst().error());
             }
             return Mono.just(response);
 
         } catch (IOException | OpenSearchException e) {
-            log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getFirst().getId(), e.getLocalizedMessage());
+            log.warn("Feilet å lagre bestilling id {}, {}",
+                    (!bestillingDokument.isEmpty() ?
+                    bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
             return Mono.empty();
         }
     }
