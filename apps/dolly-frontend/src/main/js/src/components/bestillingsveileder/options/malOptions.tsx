@@ -1,6 +1,5 @@
 import { initialValues } from './utils'
 import * as _ from 'lodash-es'
-import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoeInfo'
 import {
 	BostedData,
 	KontaktadresseData,
@@ -22,6 +21,7 @@ import {
 } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
 import { FullmaktHandling } from '@/components/fagsystem/fullmakt/FullmaktType'
+import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
 
 export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)

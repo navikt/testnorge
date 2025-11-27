@@ -1,12 +1,10 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
 import { useEffect } from 'react'
-
 import './MiljoVelger.less'
 import styled from 'styled-components'
 import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { Alert } from '@navikt/ds-react'
@@ -17,16 +15,6 @@ const StyledH3 = styled.h3`
 	justify-content: flex-start;
 	align-items: center;
 `
-
-const bankIdQ1 = {
-	id: 'q1',
-	label: 'Q1',
-}
-
-const bankIdQ2 = {
-	id: 'q2',
-	label: 'Q2',
-}
 
 const miljoeavhengig = [
 	'aareg',
@@ -54,44 +42,24 @@ const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {
 interface MiljoVelgerProps {
 	bestillingsdata?: Record<string, unknown>
 	heading: string
-	bankIdBruker?: boolean
-	alleredeValgtMiljoe: string[]
+	currentBruker: any
+	gyldigeMiljoer: any[]
+	tilgjengeligeMiljoer?: string
+	loading: boolean
 }
 
 export const MiljoVelger = ({
 	bestillingsdata,
 	heading,
-	bankIdBruker,
-	alleredeValgtMiljoe,
+	currentBruker,
+	gyldigeMiljoer,
+	tilgjengeligeMiljoer,
+	loading = false,
 }: MiljoVelgerProps) => {
-	const { dollyEnvironments, loading } = useDollyEnvironments()
 	const formMethods = useFormContext()
-
-	if (loading) {
-		return <Loading label={'Laster miljøer...'} />
-	}
-
-	const filterEnvironments = (miljoer: any, erBankIdBruker: boolean | undefined) => {
-		if (erBankIdBruker) {
-			const bankMiljoer = []
-			for (let i = 0; i < alleredeValgtMiljoe.length; i++) {
-				switch (alleredeValgtMiljoe[i]) {
-					case 'q1':
-						bankMiljoer.push(bankIdQ1)
-						break
-					case 'q2':
-						bankMiljoer.push(bankIdQ2)
-						break
-				}
-			}
-			return bankMiljoer
-		}
-		return miljoer.Q.filter((env: any) => env.id !== 'qx')
-	}
+	const values = useWatch({ name: 'environments', control: formMethods.control }) || []
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
-	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
-	const values = useWatch({ name: 'environments', control: formMethods.control }) || []
 
 	useEffect(() => {
 		if (disableAllEnvironments && values.length > 0) {
@@ -99,6 +67,21 @@ export const MiljoVelger = ({
 			formMethods.trigger('environments')
 		}
 	}, [disableAllEnvironments, values, formMethods])
+
+	if (loading) {
+		return <Loading label={'Laster miljøer ...'} />
+	}
+
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
+	const tilgjengeligeMiljoerArray = bankIdBruker
+		? tilgjengeligeMiljoer
+			? tilgjengeligeMiljoer.split(',')
+			: ['q1']
+		: null
+
+	const filteredEnvironments = gyldigeMiljoer?.filter(
+		(env: any) => !tilgjengeligeMiljoerArray || tilgjengeligeMiljoerArray.includes(env.id),
+	)
 
 	const isChecked = (id: string) => values.includes(id)
 
@@ -116,13 +99,17 @@ export const MiljoVelger = ({
 					{disableAllEnvironments && (
 						<Alert variant={'info'}>Denne bestillingen er uavhengig av miljøer.</Alert>
 					)}
-					<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
+					<MiljoeInfo
+						bestillingsdata={bestillingsdata}
+						dollyEnvironments={filteredEnvironments}
+						tilgjengeligeMiljoer={tilgjengeligeMiljoerArray}
+					/>
 				</>
 			)}
 			<fieldset name={`Liste over miljøer`}>
 				<StyledH3>Miljøer</StyledH3>
 				<div className="miljo-velger_checkboxes">
-					{filteredEnvironments.map((env: any) => (
+					{filteredEnvironments?.map((env: any) => (
 						<DollyCheckbox
 							key={env.id}
 							id={env.id}

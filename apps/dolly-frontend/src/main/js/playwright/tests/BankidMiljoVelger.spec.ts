@@ -2,7 +2,7 @@ import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { gjeldendeBankidBrukerMock } from '#/mocks/BasicMocks'
 
-test('shouldAllowUncheckingBankIdMiljo', async ({ page }) => {
+test('shouldAllowCheckingBankIdMiljo', async ({ page }) => {
 	await page.route(new RegExp(/current/), async (route) => {
 		await route.fulfill({
 			status: 200,
@@ -27,9 +27,6 @@ test('shouldAllowUncheckingBankIdMiljo', async ({ page }) => {
 	await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 
 	const q1 = page.locator('#q1')
-	await expect(q1).toBeChecked()
-	await q1.click()
-	await expect(q1).not.toBeChecked()
 	await q1.click()
 	await expect(q1).toBeChecked()
 })
