@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +21,6 @@ public class FullPersonDTO {
     private PersonDTO person;
     private List<RelasjonDTO> relasjoner;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime sistOppdatert;
 
     public List<RelasjonDTO> getRelasjoner() {
@@ -42,7 +38,6 @@ public class FullPersonDTO {
 
         private Long id;
 
-        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime sistOppdatert;
         private RelasjonType relasjonType;
         private PersonDTO relatertPerson;

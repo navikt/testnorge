@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 
@@ -26,12 +23,10 @@ public class Inntekt {
     @Schema(description = "Startdato på perioden inntekten var opptjent",
             example = "yyyy-MM-dd",
             type = "LocalDateTime")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime startOpptjeningsperiode;
     @Schema(description = "Sluttdato på perioden inntekten var opptjent",
             example = "yyyy-MM-dd",
             type = "LocalDateTime")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime sluttOpptjeningsperiode;
     private Boolean inngaarIGrunnlagForTrekk;
     private Boolean utloeserArbeidsgiveravgift;

@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -241,16 +238,13 @@ public class PensjonData {
 
         @Schema(
                 description = "Dato innmeldt ytelse fom, kan være tidligere eller samme som iverksatt fom dato.")
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoInnmeldtYtelseFom;
 
         @Schema(
                 description = "Dato iverksatt fom")
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoYtelseIverksattFom;
 
         @Schema(description = "Dato iverksatt tom")
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoYtelseIverksattTom;
     }
 
@@ -295,17 +289,15 @@ public class PensjonData {
     @AllArgsConstructor
     public static class Alderspensjon {
 
-        public enum AfpPrivatResultat{
+        public enum AfpPrivatResultat {
             INNVILGET,
             AVSLATT,
             TRUKKET,
             VENTER_PAA_FELLESORDNINGEN
         }
 
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate iverksettelsesdato;
 
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate kravFremsattDato;
 
         private String saksbehandler;
@@ -358,11 +350,8 @@ public class PensjonData {
     @AllArgsConstructor
     public static class Uforetrygd {
 
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate kravFremsattDato;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate onsketVirkningsDato;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate uforetidspunkt;
         private Integer inntektForUforhet;
         private Integer inntektEtterUforhet;
@@ -404,9 +393,8 @@ public class PensjonData {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ForventetInntekt {
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+
         private LocalDate datoFom;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoTom;
         private InntektType inntektType;
         private Integer belop;
@@ -450,7 +438,6 @@ public class PensjonData {
         private String tpId;
 
         private StatusAfp statusAfp;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate virkningsDato;
         @Min(2024)
         @Schema(description = "Årstall (fra dropdown?), laveste verdi er 2024")
@@ -458,7 +445,7 @@ public class PensjonData {
         private List<DatoBeloep> belopsListe;
 
         public List<DatoBeloep> getBelopsListe() {
-            
+
             if (isNull(belopsListe)) {
                 belopsListe = new ArrayList<>();
             }
@@ -471,7 +458,6 @@ public class PensjonData {
     @AllArgsConstructor
     public static class DatoBeloep {
 
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate fomDato;
         @Min(1)
         @Max(2147483647)

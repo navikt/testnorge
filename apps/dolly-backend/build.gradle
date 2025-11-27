@@ -35,10 +35,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.retry:spring-retry"
 
-    implementation ("org.opensearch.client:spring-data-opensearch:$versions.opensearch") {
-        exclude group: "org.opensearch.client", module: "opensearch-rest-high-level-client"
-    }
-
     implementation "org.opensearch.client:opensearch-java:$versions.opensearchClient"
     implementation "org.apache.httpcomponents.client5:httpclient5"
 

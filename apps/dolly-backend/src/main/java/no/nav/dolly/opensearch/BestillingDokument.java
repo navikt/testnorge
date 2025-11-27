@@ -35,15 +35,12 @@ import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Document(indexName = "#{@environment.getProperty('open.search.index')}")
 @Data
 @Builder
 @NoArgsConstructor
@@ -53,62 +50,63 @@ public class BestillingDokument implements Persistable<Long> {
 
     @Id
     private Long id;
-    @Field
+    
     private PdlPersondata pdldata;
-    @Field
+    
     private RsDigitalKontaktdata krrstub;
-    @Field
+    
     private List<RsFullmakt> fullmakt;
-    @Field
+    
     private RsMedl medl;
-    @Field
+    
     private List<RsInstdata> instdata;
-    @Field
+    
     private List<RsAareg> aareg;
-    @Field
+    
     private List<RsLignetInntekt> sigrunstub;
-    @Field
+    
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
-    @Field
+    
     private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
-    @Field
+    
     private InntektMultiplierWrapper inntektstub;
-    @Field
+    
     private Arenadata arenaforvalter;
-    @Field
+    
     private RsUdiPerson udistub;
-    @Field
+    
     private PensjonData pensjonforvalter;
-    @Field
+    
     private RsInntektsmelding inntektsmelding;
-    @Field
+    
     private RsBregdata brregstub;
-    @Field
+    
     private List<RsDokarkiv> dokarkiv;
-    @Field
+    
     private RsHistark histark;
-    @Field
+    
     private RsSykemelding sykemelding;
-    @Field
+    
     private BankkontoData bankkonto;
-    @Field
+    
     private RsSkjerming skjerming;
-    @Field
+    
     private ArbeidsplassenCVDTO arbeidsplassenCV;
-    @Field
+    
     private SkattekortRequestDTO skattekort;
-    @Field
+    
     private List<YrkesskadeRequest> yrkesskader;
-    @Field
+    
     private RsArbeidssoekerregisteret arbeidssoekerregisteret;
-    @Field
+    
     private List<String> identer;
-    @Field
+    
     private List<String> miljoer;
-    @Field
+    
     private List<EtterlatteYtelse> etterlatteYtelser;
-    @Field
+    
     private RsNomData nomdata;
+
     @Transient
     @JsonIgnore
     private boolean ignore;

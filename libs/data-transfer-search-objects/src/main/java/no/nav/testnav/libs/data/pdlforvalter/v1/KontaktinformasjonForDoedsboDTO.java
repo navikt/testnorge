@@ -8,9 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -32,7 +29,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Schema(
             type = "LocalDateTime",
             description = "Dato for utstedelse")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime attestutstedelsesdato;
 
     private KontaktinformasjonForDoedsboAdresse adresse;
@@ -82,7 +78,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
         private String identifikasjonsnummer;
         private PersonRequestDTO nyKontaktperson;
 
-        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime foedselsdato;
         private PersonNavnDTO navn;
 
