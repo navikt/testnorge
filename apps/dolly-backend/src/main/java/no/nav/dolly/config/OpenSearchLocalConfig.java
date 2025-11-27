@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 @Slf4j
 @Configuration
-@Profile({"local"})
+@Profile("local")
 @RequiredArgsConstructor
 public class OpenSearchLocalConfig {
 
@@ -45,7 +45,7 @@ public class OpenSearchLocalConfig {
         val builder = ApacheHttpClient5TransportBuilder.builder(host);
         builder.setHttpClientConfigCallback(httpClientBuilder -> {
             val tlsStrategy = ClientTlsStrategyBuilder.create()
-                    .build();
+                    .buildAsync();
 
             val connectionManager = PoolingAsyncClientConnectionManagerBuilder
                     .create()

@@ -9,6 +9,8 @@ import lombok.val;
 import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.opensearch.consumer.OpenSearchConsumer;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.OpenSearchException;
+import org.opensearch.client.opensearch.cat.indices.IndicesRecord;
 import org.opensearch.client.opensearch.core.BulkRequest;
 import org.opensearch.client.opensearch.core.BulkResponse;
 import org.opensearch.client.opensearch.core.DeleteRequest;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -30,6 +33,8 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class OpenSearchService {
 
+    private static final String INDEKS = "Indeks";
+    
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
     private final ObjectMapper objectMapper;
@@ -49,16 +54,36 @@ public class OpenSearchService {
                 .flatMap(exists -> {
                     if (isTrue(exists)) {
 
-                        log.warn("Deleting Index {}", index);
+                        log.warn("Sletter indeks {}", index);
                         try {
                             openSearchClient.indices().delete(i -> i.index(index));
-                            return Mono.just("Indeks " + index + " slettet");
-                        } catch (IOException ex) {
+                            return Mono.just(INDEKS + index + " slettet");
+                        } catch (IOException | OpenSearchException ex) {
                             log.warn("Feilet å slette indeks {}, {}", index, ex.getLocalizedMessage());
                             return Mono.just("Feilet å slette indeks " + index);
                         }
                     } else {
-                        return Mono.just("Indeks " + index + " eksisterer ikke");
+                        return Mono.just(INDEKS + index + " eksisterer ikke");
+                    }
+                });
+    }
+
+    public Mono<String> createIndex() {
+
+        return indexExists()
+                .flatMap(exists -> {
+                    if (isFalse(exists)) {
+
+                        log.warn("Oppretter indeks {}", index);
+                        try {
+                            openSearchClient.indices().create(i -> i.index(index));
+                            return Mono.just(INDEKS + index + " opprettet");
+                        } catch (IOException | OpenSearchException ex) {
+                            log.warn("Feilet å opprette indeks {}, {}", index, ex.getLocalizedMessage());
+                            return Mono.just("Feilet å opprette indeks " + index);
+                        }
+                    } else {
+                        return Mono.just(INDEKS + index + " eksisterer allerede");
                     }
                 });
     }
@@ -66,10 +91,11 @@ public class OpenSearchService {
     public Mono<Boolean> indexExists() {
 
         try {
-            val exists = openSearchClient.indices().exists(i -> i.index(index));
-            return Mono.just(exists.value());
+            return Mono.just(openSearchClient.cat().indices().valueBody().stream()
+                    .map(IndicesRecord::index)
+                    .anyMatch(index::equals));
 
-        } catch (IOException e) {
+        } catch (IOException | OpenSearchException e) {
             log.warn("Feilet ved sjekk av eksistens av indeks {}: {}", index, e.getLocalizedMessage());
             return Mono.just(false);
         }
@@ -101,7 +127,7 @@ public class OpenSearchService {
             }
             return Mono.just(response);
 
-        } catch (Exception e) {
+        } catch (IOException | OpenSearchException e) {
             log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getFirst().getId(), e.getLocalizedMessage());
             return Mono.empty();
         }
@@ -120,7 +146,7 @@ public class OpenSearchService {
                         .document(dokumentJson)
                         .build()));
 
-            } catch (Exception e) {
+            } catch (IOException | OpenSearchException e) {
 
                 log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getId(), e.getLocalizedMessage());
                 return Mono.empty();
@@ -151,7 +177,7 @@ public class OpenSearchService {
                     .build());
 
             return Mono.just(exists.value());
-        } catch (IOException e) {
+        } catch (IOException | OpenSearchException e) {
 
             log.warn("Feilet ved sjekk av eksistens i OpenSearch for id: {} {}", id, e.getLocalizedMessage());
             return Mono.just(false);
@@ -168,7 +194,7 @@ public class OpenSearchService {
 
             return Mono.just("Deleted bestilling id: " + id);
 
-        } catch (IOException e) {
+        } catch (IOException | OpenSearchException e) {
 
             log.warn("Feilet å slette bestilling id {}, {}", id, e.getLocalizedMessage());
             return Mono.just("Feilet å slette bestilling id: " + id);
