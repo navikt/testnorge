@@ -174,8 +174,8 @@ export const BestillingProgresjon = ({
 			<div>
 				<Line percent={percentFinished} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 			</div>
-			{timedOut && !erOrganisasjon && (
-				<div className="cancel-container">
+			<div className="cancel-container">
+				{timedOut && !erOrganisasjon && (
 					<div>
 						<Icon kind={'report-problem-circle'} />
 						<h5 className="feil-status-text">
@@ -183,15 +183,16 @@ export const BestillingProgresjon = ({
 							mer tid før du eventuelt avbryter.
 						</h5>
 					</div>
-					<NavButton
-						data-testid={TestComponentSelectors.BUTTON_AVBRYT_BESTILLING}
-						variant={'danger'}
-						onClick={handleCancelBtn}
-					>
-						Avbryt bestilling
-					</NavButton>
-				</div>
-			)}
+				)}
+				<NavButton
+					data-testid={TestComponentSelectors.BUTTON_AVBRYT_BESTILLING}
+					variant={timedOut ? 'danger' : 'primary-neutral'}
+					size={'small'}
+					onClick={handleCancelBtn}
+				>
+					Avbryt bestilling
+				</NavButton>
+			</div>
 		</div>
 	)
 }

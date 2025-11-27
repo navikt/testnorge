@@ -10,7 +10,8 @@
 			"vitest/globals",
 			"vite/client",
 			"node",
-			"./support"
+			"./support",
+			"@testing-library/jest-dom"
 		],
 		"noEmit": true,
 		"target": "ESNext",

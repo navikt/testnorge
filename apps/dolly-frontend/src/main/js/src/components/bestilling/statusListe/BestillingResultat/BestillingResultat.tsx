@@ -14,6 +14,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import ConfettiExplosion from 'react-confetti-explosion'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { Alert } from '@navikt/ds-react'
 
 const StyledConfettiExplosion = styled(ConfettiExplosion)`
 	align-items: center;
@@ -84,6 +85,11 @@ export default function BestillingResultat({
 				<BestillingStatus bestilling={bestilling} erOrganisasjon={erOrganisasjon} />
 				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
+				{bestilling.stoppet && (
+					<Alert variant="warning" size="small" style={{ marginBottom: '15px' }}>
+						Bestillingen er stoppet
+					</Alert>
+				)}
 				<Feedback
 					label="Hvordan var din opplevelse med bruk av Dolly?"
 					feedbackFor="Bruk av Dolly etter bestilling"
