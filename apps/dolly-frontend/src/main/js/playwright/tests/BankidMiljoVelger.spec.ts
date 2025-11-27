@@ -2,7 +2,7 @@ import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { gjeldendeBankidBrukerMock } from '#/mocks/BasicMocks'
 
-test('shouldAllowUncheckingBankIdMiljo', async ({ page }) => {
+test('shouldAllowCheckingBankIdMiljo', async ({ page }) => {
 	await page.route(new RegExp(/current/), async (route) => {
 		await route.fulfill({
 			status: 200,
