@@ -21,9 +21,9 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { telefonnummer } from '../../form/validation/partials/telefonnummer'
+import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 type VisningTypes = {
-	getPdlForvalter: Function
 	initialValues: any
 	redigertAttributt?: any
 	path: string
@@ -72,7 +72,6 @@ const Knappegruppe = styled.div`
 `
 
 export const VisningRedigerbarSamlet = ({
-	getPdlForvalter,
 	initialValues,
 	redigertAttributt = null,
 	path,
@@ -80,6 +79,8 @@ export const VisningRedigerbarSamlet = ({
 	alleSlettet,
 	disableSlett,
 }: VisningTypes) => {
+	const { refresh: refreshPdlForvalter } = usePdlForvalterPerson(ident)
+
 	const getRedigertAttributtListe = () => {
 		const liste = [] as Array<any>
 		initialValuesListe.forEach((item: any) => {
@@ -129,7 +130,7 @@ export const VisningRedigerbarSamlet = ({
 
 	const sendOrdre = () => {
 		DollyApi.sendOrdre(ident).then(() => {
-			getPdlForvalter().then(() => {
+			refreshPdlForvalter().then(() => {
 				setVisningModus(Modus.Les)
 			})
 		})
