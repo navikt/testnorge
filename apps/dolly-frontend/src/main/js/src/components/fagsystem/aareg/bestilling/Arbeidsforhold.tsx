@@ -132,7 +132,7 @@ const ArbeidsforholdVisning = ({ arbeidsforhold }: ArbeidsforholdVisningData) =>
 			: null
 
 	return (
-		<React.Fragment>
+		<>
 			<TitleValue title="Organisasjonsnummer" value={arbeidsforhold?.arbeidsgiver?.orgnummer} />
 			<TitleValue
 				title="Type arbeidsforhold"
@@ -202,7 +202,7 @@ const ArbeidsforholdVisning = ({ arbeidsforhold }: ArbeidsforholdVisningData) =>
 			<Utenlandsopphold utenlandsopphold={arbeidsforhold?.utenlandsopphold} />
 			<Permisjon permisjon={arbeidsforhold?.permisjon} />
 			<Permittering permittering={arbeidsforhold?.permittering} />
-		</React.Fragment>
+		</>
 	)
 }
 
