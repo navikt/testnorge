@@ -1,11 +1,10 @@
 {
   "name": "dolly",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "start": "vite --mode local-dev --port 3000 --open",
     "build": "vite build",
     "preview": "vite preview --port 5678",
