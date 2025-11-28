@@ -10,7 +10,6 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -23,7 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SkattekortPostCommand implements Callable<Flux<String>> {
+public class SkattekortPostCommand implements Callable<Mono<String>> {
 
     private static final String SKATTEKORT_URL = "/api/v1/skattekort";
     private static final String CONSUMER = "Dolly";
@@ -33,7 +32,9 @@ public class SkattekortPostCommand implements Callable<Flux<String>> {
     private final String token;
 
     @Override
-    public Flux<String> call() {
+    public Mono<String> call() {
+
+        log.info("Sender skattekort til Sokos med request: {}", request);
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(SKATTEKORT_URL).build())
@@ -43,8 +44,8 @@ public class SkattekortPostCommand implements Callable<Flux<String>> {
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
-                .bodyToFlux(String.class)
-                .map(status -> getArbeidsgiverAndYear(request) + ErrorStatusDecoder.encodeStatus(status))
+                .bodyToMono(String.class)
+                .map(status -> ErrorStatusDecoder.encodeStatus(status) + getArbeidsgiverAndYear(request))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
@@ -55,7 +56,7 @@ public class SkattekortPostCommand implements Callable<Flux<String>> {
 
         return skattekort.getArbeidsgiver().stream()
                 .findFirst()
-                .map(arbeidsgiver -> String.format("%s+%s:",
+                .map(arbeidsgiver -> String.format(" for ident %s år %s.",
                         getArbeidsgiver(arbeidsgiver.getArbeidsgiveridentifikator()),
                         arbeidsgiver.getArbeidstaker().stream()
                                 .findFirst()
