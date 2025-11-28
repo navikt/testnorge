@@ -23,20 +23,26 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory }}/src/main/js/pnpm-lock.yaml
       - name: Install dependencies
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: pnpm exec playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -51,9 +57,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory }}/src/main/js/pnpm-lock.yaml
 
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
@@ -64,7 +76,7 @@ jobs:
 
       - name: Merge into HTML Report
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
+        run: pnpm exec playwright merge-reports --reporter html ./all-blob-reports
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
@@ -83,7 +95,7 @@ jobs:
 
       - name: Merge to json report
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npx playwright merge-reports --reporter json  ./all-blob-reports > playwright-report/report.json
+        run: pnpm exec playwright merge-reports --reporter json  ./all-blob-reports > playwright-report/report.json
 
       - name: Make fancy GHA Summary
         working-directory: ${{ inputs.working-directory }}/src/main/js

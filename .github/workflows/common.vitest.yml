@@ -24,17 +24,23 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js/pnpm-lock.yaml
       - name: Install dependencies
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
-        run: npm run test:vitest-run
+        run: pnpm run test:vitest-run
