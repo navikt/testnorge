@@ -35,12 +35,17 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "latest"
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: npm
-          cache-dependency-path: docs/package-lock.json
+          node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: docs/pnpm-lock.yaml
 
       - name: Cache Antora
         uses: actions/cache@v4
@@ -55,15 +60,15 @@ jobs:
 
       - name: Install dependencies
         working-directory: docs
-        run: npm ci --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Antora version
         working-directory: docs
-        run: npx antora --version
+        run: pnpm exec antora --version
 
       - name: Build Antora site (clean)
         working-directory: docs
-        run: npm run build:clean
+        run: pnpm run build:clean
 
       - name: Debug site output listing
         run: |
