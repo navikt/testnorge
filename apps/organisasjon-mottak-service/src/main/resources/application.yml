@@ -3,7 +3,7 @@ spring:
     name: testnav-organisasjon-mottak-service
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -20,16 +20,16 @@ consumers:
     namespace: dolly
     name: testnav-jenkins-batch-status-service
     cluster: dev-gcp
-  jenkins:
-    url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
-    namespace: dolly
-    name: testnorge-batch-adeo-proxy
-    cluster: dev-fss
   organisasjon-bestilling-service:
     url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
     name: organisasjon-bestilling-service
     cluster: dev-gcp
     namespace: dolly
+  testnav-dolly-proxy:
+    name: testnav-dolly-proxy
+    namespace: dolly
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 kafka.groupid: testnav-organisasjon-mottak-service-v1
 

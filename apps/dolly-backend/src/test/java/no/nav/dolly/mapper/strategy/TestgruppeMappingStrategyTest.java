@@ -4,7 +4,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
-import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.service.BrukerService;
@@ -23,9 +22,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class TestgruppeMappingStrategyTest {
 
     private static final String BRUKERID = "123";
-
-    @MockitoBean
-    private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
     private BrukerService brukerService;

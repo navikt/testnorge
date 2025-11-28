@@ -1,57 +1,53 @@
 package no.nav.testnav.dollysearchservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.testnav.dollysearchservice.dto.BestillingIdenter;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils;
-import org.opensearch.action.search.SearchResponse;
-import org.opensearch.client.RequestOptions;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.common.unit.TimeValue;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.search.SearchHit;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.FieldSort;
+import org.opensearch.client.opensearch._types.SortOptions;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
+import org.opensearch.client.opensearch.core.SearchResponse;
+import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_REGISTRE;
 import static no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils.addIdentQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.regexpQuery;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BestillingQueryService {
 
-    private static final int QUERY_SIZE = 10000;
+    private static final int QUERY_SIZE = 1000;
     private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
 
     @Value("${open.search.index}")
-    private String dollyIndex;
+    private String bestillingIndex;
 
-    private final RestHighLevelClient restHighLevelClient;
-    private final ObjectMapper objectMapper;
+    private final OpenSearchClient opensearchClient;
 
     @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}")
     public Set<String> execRegisterCacheQuery(SearchRequest request) {
 
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
 
-        return  execQuery(queryBuilder);
+        return execQuery(queryBuilder);
     }
 
     public Set<String> execRegisterNoCacheQuery(SearchRequest request) {
@@ -62,13 +58,12 @@ public class BestillingQueryService {
         return execQuery(queryBuilder);
     }
 
-    private static BoolQueryBuilder getFagsystemAndMiljoerQuery(SearchRequest request) {
+    private static BoolQuery.Builder getFagsystemAndMiljoerQuery(SearchRequest request) {
 
-        var queryBuilder = QueryBuilders.boolQuery();
+        var queryBuilder = QueryBuilders.bool();
 
-        request.getRegistreRequest().stream()
-                .map(FagsystemQueryUtils::getFagsystemQuery)
-                .forEach(queryBuilder::must);
+        request.getRegistreRequest()
+                .forEach(fagsystem -> FagsystemQueryUtils.addFagsystemQuery(queryBuilder, fagsystem));
 
         FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
         return queryBuilder;
@@ -76,43 +71,46 @@ public class BestillingQueryService {
 
     public Set<String> execTestnorgeIdenterQuery() {
 
-        var queryBuilder = QueryBuilders.boolQuery();
+        var queryBuilder = QueryBuilders.bool();
 
-        queryBuilder.must(QueryBuilders.regexpQuery("identer", TESTNORGE_FORMAT));
+        queryBuilder.must(q -> q.regexp(regexpQuery("identer", TESTNORGE_FORMAT)));
 
         return execQuery(queryBuilder).stream()
                 .filter(ident -> ident.matches(TESTNORGE_FORMAT))
                 .collect(Collectors.toSet());
     }
 
-    private Set<String> execQuery(QueryBuilder query) {
+    private Set<String> execQuery(BoolQuery.Builder queryBuilder) {
 
         var now = System.currentTimeMillis();
 
-        Set<String> identer;
-        SearchResponse searchResponse;
+        val query = new Query.Builder()
+                .bool(queryBuilder.build())
+                .build();
+
+        Set<String> identer = new HashSet<>();
 
         try {
-            searchResponse = restHighLevelClient.search(new org.opensearch.action.search.SearchRequest(dollyIndex)
-                    .source(new SearchSourceBuilder()
-                            .query(query)
-                            .sort("id")
-                            .size(QUERY_SIZE)
-                            .timeout(new TimeValue(3, TimeUnit.SECONDS))), RequestOptions.DEFAULT);
+            var searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                .index(bestillingIndex)
+                .query(query)
+                .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
+                .size(QUERY_SIZE)
+                .timeout("3s")
+                .build(), BestillingIdenter.class);
 
-            identer = new HashSet<>(getIdenter(searchResponse));
-
-            while (searchResponse.getHits().getHits().length > 0) {
-
-                searchResponse = restHighLevelClient.search(new org.opensearch.action.search.SearchRequest(dollyIndex)
-                        .source(new SearchSourceBuilder()
-                                .query(query)
-                                .sort("id")
-                                .searchAfter(new Object[]{searchResponse.getHits().getAt(searchResponse.getHits().getHits().length - 1).getId()})
-                                .size(QUERY_SIZE)
-                                .timeout(new TimeValue(3, TimeUnit.SECONDS))), RequestOptions.DEFAULT);
+            while (!searchResponse.hits().hits().isEmpty()) {
 
                 identer.addAll(getIdenter(searchResponse));
+
+                searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                        .index(bestillingIndex)
+                        .query(query)
+                        .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
+                        .size(QUERY_SIZE)
+                        .searchAfter(searchResponse.hits().hits().getLast().sort())
+                        .timeout("3s")
+                        .build(), BestillingIdenter.class);
             }
 
         } catch (IOException e) {
@@ -125,18 +123,10 @@ public class BestillingQueryService {
         return identer;
     }
 
-    private Set<String> getIdenter(SearchResponse response) {
+    private Set<String> getIdenter(SearchResponse<BestillingIdenter> response) {
 
-        return Arrays.stream(response.getHits().getHits())
-                .map(SearchHit::getSourceAsString)
-                .map(json -> {
-                    try {
-                        return objectMapper.readValue(json, BestillingIdenter.class);
-                    } catch (JsonProcessingException e) {
-                        log.error("Feil ved parsing av json", e);
-                        return null;
-                    }
-                })
+        return response.hits().hits().stream()
+                .map(Hit::source)
                 .filter(Objects::nonNull)
                 .map(BestillingIdenter::getIdenter)
                 .flatMap(Collection::stream)

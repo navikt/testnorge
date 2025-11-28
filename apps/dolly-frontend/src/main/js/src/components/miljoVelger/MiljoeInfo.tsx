@@ -3,21 +3,25 @@ import {
 	useArenaEnvironments,
 	useDokarkivEnvironments,
 	useInstEnvironments,
+	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
 import { arrayToString } from '@/utils/DataFormatter'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { filterMiljoe } from '@/components/miljoVelger/MiljoVelgerUtils'
 
-export const gyldigeDollyMiljoer = (dollymiljoer: any) => {
-	if (!dollymiljoer) return []
-	if (dollymiljoer.Q) return dollymiljoer.Q.filter((env: any) => env.id !== 'qx')
-	return dollymiljoer
-}
-
-export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
+export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments, tilgjengeligeMiljoer }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
-	const pensjonEnvironments = ['q1']
+	const {
+		pensjonEnvironments,
+		loading: loadingPensjon,
+		error: errorPensjon,
+	} = usePensjonEnvironments()
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
-	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
+	const {
+		dokarkivEnvironments,
+		loading: loadingDokarkiv,
+		error: errorDokarkiv,
+	} = useDokarkivEnvironments()
 	const { instdata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } = bestillingsdata
 	if (!instdata && !arenaforvalter && !pensjonforvalter && !sykemelding && !dokarkiv) {
 		return null
@@ -25,11 +29,15 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 
 	const getMiljoer = (environments: string[] | undefined, loading?: boolean, error?: any) => {
 		if (loading) {
-			return 'Laster tilgjengelige miljøer..'
+			return 'Laster tilgjengelige miljøer ...'
 		} else if (error && (!environments || environments.length === 0)) {
 			return 'Noe gikk galt i henting av miljøer'
 		} else {
-			return arrayToString(filterMiljoe(dollyEnvironments, environments))
+			const filtrerteMiljoer = filterMiljoe(dollyEnvironments, environments, tilgjengeligeMiljoer)
+			if (filtrerteMiljoer.length === 0) {
+				return 'Du har ikke tilgang til påkrevde miljøer. Ta kontakt med team Dolly for hjelp.'
+			}
+			return arrayToString(filtrerteMiljoer)
 		}
 	}
 
@@ -48,11 +56,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					{dokarkiv && (
 						<li>
 							Dokarkiv:&nbsp;
-							<span>
-								{loadingDokarkiv
-									? 'Laster tilgjengelige miljøer..'
-									: arrayToString(dokarkivEnvironments)}
-							</span>
+							<span>{getMiljoer(dokarkivEnvironments, loadingDokarkiv, errorDokarkiv)}</span>
 						</li>
 					)}
 					{instdata && (
@@ -74,7 +78,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 								', '}
 							{pensjonforvalter?.alderspensjon && 'PESYS'}
 							):&nbsp;
-							<span>{getMiljoer(pensjonEnvironments)}</span>
+							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
 						</li>
 					)}
 					{pensjonforvalter?.uforetrygd && (
@@ -101,12 +105,4 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 			)}
 		</>
 	)
-}
-
-export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
-	if (!utvalgteMiljoer) return []
-	const dollyMiljoeArray = dollyMiljoe?.map((miljoe) => miljoe?.id)
-	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
-	//men ikke Dolly per dags dato
-	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
 }

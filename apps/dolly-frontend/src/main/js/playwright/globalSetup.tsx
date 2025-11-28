@@ -35,6 +35,8 @@ import {
 	personFragmentSearchMock,
 	skjermingMock,
 	tagsMock,
+	tenorSearchOversiktMock,
+	tenorSearchTestdataMock,
 	tpsMessagingMock,
 	udistubMock,
 } from './mocks/BasicMocks'
@@ -79,17 +81,17 @@ const aareg = new RegExp(/testnav-aareg-proxy\/q1\/api\/v1\/arbeidstaker/)
 const arena = new RegExp(/testnav-arena-forvalteren-proxy\/q1\/arena/)
 const inst = new RegExp(/testnav-dolly-proxy\/inst\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
-const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
-const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
-const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
+const pensjon = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/inntekt/)
+const pensjonMiljoer = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/miljo/)
+const pensjonTp = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/tp(.*?)q1/)
 const pensjonPensjonsavtale = new RegExp(
-	/testnav-pensjon-testdata-facade-proxy\/api\/v2\/pensjonsavtale\/hent/,
+	/testnav-dolly-proxy\/pensjon\/api\/v2\/pensjonsavtale\/hent/,
 )
-const afpOffentlig = new RegExp(/testnav-pensjon-testdata-facade-proxy\/q1\/api\/mock-oppsett/)
+const afpOffentlig = new RegExp(/testnav-dolly-proxy\/pensjon\/q1\/api\/mock-oppsett/)
 const krrstub = new RegExp(/testnav-dolly-proxy\/krrstub\/api\/v2/)
 const udistub = new RegExp(/testnav-dolly-proxy\/udistub\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
-const medl = new RegExp(/testnav-medl-proxy/)
+const medl = new RegExp(/testnav-dolly-proxy\/medl/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\/brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,
@@ -103,6 +105,12 @@ const organisasjonFraMiljoe = new RegExp(
 	/testnav-organisasjon-forvalter\/api\/v2\/organisasjoner\/framiljoe/,
 )
 const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon\?brukerId/)
+const tenorTestdataAlleFelter = new RegExp(
+	/testnav-tenor-search-service\/api\/v1\/tenor\/testdata\?kilde=FREG&type=AlleFelter/,
+)
+const tenorTestdataOversikt = new RegExp(
+	/testnav-tenor-search-service\/api\/v1\/tenor\/testdata\/oversikt\?antall=10&side=0/,
+)
 
 const mockRoutes: RouteInfo[] = [
 	{ url: api, response: [] },
@@ -152,6 +160,8 @@ const mockRoutes: RouteInfo[] = [
 	{ url: bilde, response: {}, status: 404 },
 	{ url: dokarkivMiljoer, response: ['q1', 'q2'] },
 	{ url: arenaMiljoer, response: ['q1', 'q2', 'q4'] },
+	{ url: tenorTestdataAlleFelter, response: tenorSearchTestdataMock },
+	{ url: tenorTestdataOversikt, response: tenorSearchOversiktMock },
 	{ url: '**/dolly-logg', response: [] },
 ]
 

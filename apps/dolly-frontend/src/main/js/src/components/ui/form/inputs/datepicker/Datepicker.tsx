@@ -82,7 +82,10 @@ export const DollyDatepicker = ({
 				const formDate = date?.isValid?.() ? date?.toDate() : date
 				onChange?.(formDate)
 
-				const dateStr = formDate?.toISOString?.().substring?.(0, 19)
+				let dateStr = date?.isValid?.() ? date.format('YYYY-MM-DDTHH:mm:ss') : date
+				if (dateStr && dateStr.endsWith('T00:00:00')) {
+					dateStr = dateStr.replace('T00:00:00', 'T06:00:00')
+				}
 				formMethods.setValue(name, dateStr || date, { shouldTouch: true })
 				duplicateName && formMethods.setValue(duplicateName, dateStr || date, { shouldTouch: true })
 				validateDate(date)
@@ -98,7 +101,7 @@ export const DollyDatepicker = ({
 
 		if (value && value.length >= 10) {
 			try {
-				const date = convertInputToDate(value, true)
+				const date = convertInputToDate(value, false, dateFormat)
 				if (date?.isValid?.()) {
 					setFormDate(date)
 				}
@@ -116,7 +119,7 @@ export const DollyDatepicker = ({
 		}
 
 		try {
-			const date = convertInputToDate(value, true)
+			const date = convertInputToDate(value, false, dateFormat)
 
 			if (date?.isValid?.()) {
 				setSelected(date.toDate?.())
@@ -154,7 +157,7 @@ export const DollyDatepicker = ({
 						{...datepickerProps}
 						onSelect={(val: Date | undefined) => {
 							setSelected(val)
-							const date = convertInputToDate(val, true)
+							const date = convertInputToDate(val, false)
 							setFormDate(date)
 							setInput(formatDate(date, dateFormat))
 							setShowDatepicker(false)

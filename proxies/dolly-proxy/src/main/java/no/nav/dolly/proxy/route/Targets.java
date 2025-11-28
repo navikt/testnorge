@@ -15,6 +15,8 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter
 class Targets {
 
+    String batch;
+    String brregstub;
     String ereg;
     String fullmakt;
     String histark;
@@ -22,6 +24,11 @@ class Targets {
     String inst;
     String kontoregister;
     String krrstub;
+    String medl;
+    String norg2;
+    String pensjon;
+    String pensjonAfp;
+    String pensjonSamboer;
     String sigrunstub;
     String skjermingsregister;
     String udistub;

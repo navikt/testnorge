@@ -3,12 +3,13 @@ import { BestillingProgresjon } from '@/components/bestilling/statusListe/Bestil
 import React, { act } from 'react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { dollyTest } from '../vitest.setup'
-import { userEvent } from 'vitest/browser'
+import userEvent from '@testing-library/user-event'
 import { uferdigBestillingMock } from '#/mocks/BasicMocks'
 import { worker } from './mocks/browser'
 import { http, HttpResponse } from 'msw'
 
 dollyTest('renders Bestillingprogresjon and cancel removes the element', async () => {
+	const user = userEvent.setup()
 	const bestillinger = [uferdigBestillingMock]
 
 	const { rerender } = render(
@@ -31,9 +32,7 @@ dollyTest('renders Bestillingprogresjon and cancel removes the element', async (
 	)
 
 	const avbrytButton = screen.getByTestId(TestComponentSelectors.BUTTON_AVBRYT_BESTILLING)
-	await act(async () => {
-		await userEvent.click(avbrytButton)
-	})
+	await user.click(avbrytButton)
 
 	act(() => {
 		rerender(

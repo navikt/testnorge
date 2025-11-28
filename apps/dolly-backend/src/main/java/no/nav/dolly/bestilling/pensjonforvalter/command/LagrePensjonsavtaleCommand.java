@@ -19,7 +19,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @RequiredArgsConstructor
 public class LagrePensjonsavtaleCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String PENSJONSAVTALE_URL = "/api/v2/pensjonsavtale/opprett";
+    private static final String PENSJONSAVTALE_URL = "/pensjon/api/v2/pensjonsavtale/opprett";
 
     private final WebClient webClient;
     private final PensjonsavtaleRequest pensjonsavtaleRequest;

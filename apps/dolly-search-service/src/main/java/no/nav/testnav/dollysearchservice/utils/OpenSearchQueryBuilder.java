@@ -2,10 +2,10 @@ package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.index.query.functionscore.FunctionScoreQueryBuilder;
-import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScoreQuery;
+import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
+import org.opensearch.client.opensearch._types.query_dsl.RandomScoreFunction;
 
 import java.security.SecureRandom;
 import java.util.Optional;
@@ -20,6 +20,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addFoedselsdatoQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnummerQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedUkjentQuery;
@@ -52,22 +53,23 @@ public class OpenSearchQueryBuilder {
 
     private static final Random SEED = new SecureRandom();
 
-    public static BoolQueryBuilder buildSearchQuery(SearchRequest request) {
+    public static BoolQuery.Builder buildSearchQuery(SearchRequest request) {
 
-        var queryBuilder = QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder(request));
+        var queryBuilder = QueryBuilders.bool()
+                .must(q -> q.functionScore(getRandomScoreQueryBuilder(request)));
 
         setPersonQuery(queryBuilder, request);
 
         return queryBuilder;
     }
 
-    private static void setPersonQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+    private static void setPersonQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest())
                 .ifPresent(value -> {
 
                     addAlderQuery(queryBuilder, request);
+                    addFoedselsdatoQuery(queryBuilder, request);
                     addHarBarnQuery(queryBuilder, request);
                     addHarForeldreQuery(queryBuilder, request);
                     addSivilstandQuery(queryBuilder, request);
@@ -105,13 +107,15 @@ public class OpenSearchQueryBuilder {
                 });
     }
 
-    private static FunctionScoreQueryBuilder getRandomScoreQueryBuilder(SearchRequest request) {
+    private static FunctionScoreQuery getRandomScoreQueryBuilder(SearchRequest request) {
 
         if (isNull(request.getSeed())){
             request.setSeed(SEED.nextInt());
         }
 
-        return QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder()
-                .seed(request.getSeed()));
+        return QueryBuilders.functionScore()
+                .functions(q1 -> q1.randomScore(
+                        RandomScoreFunction.of(q2 -> q2.seed(request.getSeed().toString()))))
+                .build();
     }
 }

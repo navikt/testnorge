@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -39,7 +39,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
     public OpprettPersonerFraIdenterMedKriterierService(
             AvailCheckService availCheckService,
-            BestillingElasticRepository bestillingElasticRepository,
             BestillingProgressRepository bestillingProgressRepository,
             BestillingRepository bestillingRepository,
             BestillingService bestillingService,
@@ -49,6 +48,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
             ObjectMapper objectMapper,
+            OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
@@ -56,20 +56,20 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             CacheManager cacheManager
     ) {
         super(
-                bestillingElasticRepository,
                 bestillingProgressRepository,
                 bestillingRepository,
                 bestillingService,
+                cacheManager,
                 counterCustomRegistry,
                 errorStatusDecoder,
                 identService,
                 clientRegisters,
                 mapperFacade,
                 objectMapper,
+                openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
-                transactionHelperService,
-                cacheManager
+                transactionHelperService
         );
         this.availCheckService = availCheckService;
         this.personServiceClient = personServiceClient;

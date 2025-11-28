@@ -18,7 +18,6 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-batch-bestilling-service
@@ -54,15 +53,11 @@ spec:
         - application: testnav-arbeidssoekerregisteret-proxy
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-medl-proxy.dev-fss-pub.nais.io
-        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-saf-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:

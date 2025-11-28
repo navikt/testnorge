@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import Loading from '@/components/ui/loading/Loading'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -33,7 +33,7 @@ export const PdlEksisterendePerson = ({
 	fullmektigsNavnPath = null as unknown as string,
 	ident,
 }: PdlEksisterendePersonValues) => {
-	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const formGruppeId = formMethods.watch('gruppeId')
 
 	const antall = opts?.antall || 1

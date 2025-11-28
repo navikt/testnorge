@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { dollyTest } from '../vitest.setup'
-import { userEvent } from 'vitest/browser'
-import React, { act } from 'react'
+import userEvent from '@testing-library/user-event'
+import React from 'react'
 import { vi } from 'vitest'
 import BrukernavnVelger from '@/pages/brukerPage/BrukernavnVelger'
 import { BrukerApi } from '@/service/Api'
@@ -26,6 +26,7 @@ const TestComponent = ({
 }
 
 dollyTest('renders BrukernavnVelger and handles successful user creation', async () => {
+	const user = userEvent.setup()
 	const addToSessionMock = vi.fn()
 	vi.spyOn(BrukerApi, 'opprettBruker').mockResolvedValue({
 		brukernavn: 'testbruker123',
@@ -41,11 +42,9 @@ dollyTest('renders BrukernavnVelger and handles successful user creation', async
 	const epostInput = screen.getByLabelText('Epost')
 	const submitButton = screen.getByRole('button', { name: 'Gå videre til Dolly' })
 
-	await act(async () => {
-		await userEvent.type(brukernavnInput, 'testbruker123')
-		await userEvent.type(epostInput, 'test@test.com')
-		await userEvent.click(submitButton)
-	})
+	await user.type(brukernavnInput, 'testbruker123')
+	await user.type(epostInput, 'test@test.com')
+	await user.click(submitButton)
 
 	await waitFor(() => {
 		expect(BrukerApi.opprettBruker).toHaveBeenCalledWith(
@@ -61,14 +60,13 @@ dollyTest('renders BrukernavnVelger and handles successful user creation', async
 })
 
 dollyTest('shows validation errors for invalid input', async () => {
+	const user = userEvent.setup()
 	const addToSessionMock = vi.fn()
 	render(<TestComponent organisasjon={mockOrganisasjon} addToSession={addToSessionMock} />)
 
 	const submitButton = screen.getByRole('button', { name: 'Gå videre til Dolly' })
 
-	await act(async () => {
-		await userEvent.click(submitButton)
-	})
+	await user.click(submitButton)
 
 	await waitFor(() => {
 		expect(screen.getByText('Brukernavn er påkrevd')).toBeInTheDocument()
@@ -77,6 +75,7 @@ dollyTest('shows validation errors for invalid input', async () => {
 })
 
 dollyTest('shows validation error for invalid email', async () => {
+	const user = userEvent.setup()
 	const addToSessionMock = vi.fn()
 	render(<TestComponent organisasjon={mockOrganisasjon} addToSession={addToSessionMock} />)
 
@@ -84,11 +83,9 @@ dollyTest('shows validation error for invalid email', async () => {
 	const epostInput = screen.getByLabelText('Epost')
 	const submitButton = screen.getByRole('button', { name: 'Gå videre til Dolly' })
 
-	await act(async () => {
-		await userEvent.type(brukernavnInput, 'testbruker123')
-		await userEvent.type(epostInput, 'invalid-email')
-		await userEvent.click(submitButton)
-	})
+	await user.type(brukernavnInput, 'testbruker123')
+	await user.type(epostInput, 'invalid-email')
+	await user.click(submitButton)
 
 	await waitFor(() => {
 		expect(screen.getByText('Epost må være på gyldig format')).toBeInTheDocument()

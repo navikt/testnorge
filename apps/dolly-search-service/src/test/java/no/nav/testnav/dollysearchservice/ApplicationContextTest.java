@@ -1,22 +1,15 @@
 package no.nav.testnav.dollysearchservice;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ActiveProfiles;
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
+import org.opensearch.client.opensearch.OpenSearchClient;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-@Disabled
-@SpringBootTest
-@ActiveProfiles("test")
-class ApplicationContextTest {
+@DollySpringBootTest
+class ApplicationContextTest extends DollyApplicationContextTest {
 
     @MockitoBean
-    public JwtDecoder jwtDecoder;
+    @SuppressWarnings("unused")
+    OpenSearchClient openSearchClient; // Not actually used in any tests, but required by BestillingQueryService.
 
-    @Test
-    @SuppressWarnings("java:S2699")
-    void load_app_context() {
-    }
 }

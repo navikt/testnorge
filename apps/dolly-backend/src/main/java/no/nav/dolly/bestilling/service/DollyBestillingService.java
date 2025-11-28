@@ -24,8 +24,8 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.opensearch.BestillingDokument;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -60,20 +60,20 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @RequiredArgsConstructor
 public class DollyBestillingService {
 
-    protected final BestillingElasticRepository bestillingElasticRepository;
     protected final BestillingProgressRepository bestillingProgressRepository;
     protected final BestillingRepository bestillingRepository;
     protected final BestillingService bestillingService;
+    protected final CacheManager cacheManager;
     protected final CounterCustomRegistry counterCustomRegistry;
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final IdentService identService;
     protected final List<ClientRegister> clientRegisters;
     protected final MapperFacade mapperFacade;
     protected final ObjectMapper objectMapper;
+    protected final OpenSearchService openSearchService;
     protected final PdlDataConsumer pdlDataConsumer;
     protected final TestgruppeRepository testgruppeRepository;
     protected final TransactionHelperService transactionHelperService;
-    protected final CacheManager cacheManager;
 
     public static Set<String> getEnvironments(String miljoer) {
         return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
@@ -239,7 +239,7 @@ public class DollyBestillingService {
                 isBlank(bestilling.getGjenopprettetFraIdent()) &&
                 isNull(bestilling.getOpprettetFraGruppeId())) {
 
-            var request = mapperFacade.map(bestillingRequest, ElasticBestilling.class);
+            var request = mapperFacade.map(bestillingRequest, BestillingDokument.class);
             request.setId(bestilling.getId());
             return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                     .filter(BestillingProgress::isIdentGyldig)
@@ -249,7 +249,7 @@ public class DollyBestillingService {
                         request.setIdenter(identer);
                         return request;
                     })
-                    .doOnNext(bestillingElasticRepository::save)
+                    .flatMap(openSearchService::save)
                     .then();
         } else {
             return Mono.empty();

@@ -13,7 +13,6 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:

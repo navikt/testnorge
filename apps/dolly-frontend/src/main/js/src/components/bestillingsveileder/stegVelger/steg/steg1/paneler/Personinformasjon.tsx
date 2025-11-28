@@ -41,10 +41,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const formGruppeId = formMethods.watch('gruppeId')
 	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
 	const { identer } = useGruppeIdenter(gruppeId)
-	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+	const harTestnorgeIdenter = (identer?.filter((ident) => ident.master === 'PDL')?.length ?? 0) > 0
 
-	const opprettFraEksisterende = opts.is.opprettFraIdenter
-	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
+	const opprettFraEksisterende = opts?.is?.opprettFraIdenter
+	const leggTil = opts?.is?.leggTil || opts?.is?.leggTilPaaGruppe
 
 	const npidPerson = opts?.identtype === 'NPID'
 	const ukjentGruppe = !gruppeId
@@ -53,7 +53,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
 
-	const harFnr = opts.identtype === 'FNR'
+	const harFnr = opts?.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	const getIgnoreKeys = () => {
@@ -78,50 +78,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		return ignoreKeys
 	}
 
-	if (testnorgeIdent) {
-		return (
-			// @ts-ignore
-			<Panel
-				heading={PersoninformasjonPanel.heading}
-				startOpen
-				checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
-				uncheckAttributeArray={sm.batchRemove}
-				iconType={'personinformasjon'}
-			>
-				<AttributtKategori title="Alder" attr={sm.attrs}>
-					<Attributt attr={sm.attrs.foedested} />
-					<Attributt attr={sm.attrs.foedselsdato} />
-					<Attributt attr={sm.attrs.doedsdato} />
-				</AttributtKategori>
-				<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
-					<Attributt attr={sm.attrs.statsborgerskap} />
-				</AttributtKategori>
-				<AttributtKategori title="Diverse" attr={sm.attrs}>
-					<Attributt attr={sm.attrs.kjonn} />
-					<Attributt attr={sm.attrs.navn} />
-					<Attributt attr={sm.attrs.telefonnummer} />
-					<Attributt
-						attr={sm.attrs.norskBankkonto}
-						disabled={sm.attrs.utenlandskBankkonto.checked}
-					/>
-					<Attributt
-						attr={sm.attrs.utenlandskBankkonto}
-						disabled={sm.attrs.norskBankkonto.checked}
-					/>
-					<Attributt attr={sm.attrs.sikkerhetstiltak} />
-					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
-					<Attributt
-						attr={sm.attrs.fullmakt}
-						disabled={ukjentGruppe}
-						title={(ukjentGruppe && tekstUkjentGruppe) || ''}
-					/>
-				</AttributtKategori>
-			</Panel>
-		)
-	}
-
 	return (
-		// @ts-ignore
 		<Panel
 			heading={PersoninformasjonPanel.heading}
 			startOpen
@@ -130,16 +87,20 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			iconType={'personinformasjon'}
 		>
 			<AttributtKategori title="Alder" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
-				<Attributt attr={sm.attrs.foedested} />
-				<Attributt attr={sm.attrs.foedselsdato} />
-				<Attributt attr={sm.attrs.doedsdato} />
+				<Attributt
+					attr={sm.attrs.alder}
+					vis={!testnorgeIdent && !opprettFraEksisterende && !leggTil}
+				/>
+				<Attributt attr={sm.attrs.foedested} vis={true} />
+				<Attributt attr={sm.attrs.foedselsdato} vis={true} />
+				<Attributt attr={sm.attrs.doedsdato} vis={true} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.statsborgerskap} />
+				<Attributt attr={sm.attrs.statsborgerskap} vis={true} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
+					vis={!testnorgeIdent}
 					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(!harFnr &&
@@ -150,6 +111,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
+					vis={!testnorgeIdent}
 					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(!harFnr &&
@@ -161,12 +123,21 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Diverse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.navn} />
-				<Attributt attr={sm.attrs.telefonnummer} />
-				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
-				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
+				<Attributt attr={sm.attrs.navn} vis={true} />
+				<Attributt attr={sm.attrs.telefonnummer} vis={true} />
+				<Attributt
+					attr={sm.attrs.norskBankkonto}
+					vis={true}
+					disabled={sm.attrs.utenlandskBankkonto.checked}
+				/>
+				<Attributt
+					attr={sm.attrs.utenlandskBankkonto}
+					vis={true}
+					disabled={sm.attrs.norskBankkonto.checked}
+				/>
 				<Attributt
 					attr={sm.attrs.vergemaal}
+					vis={!testnorgeIdent}
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
@@ -174,9 +145,14 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						''
 					}
 				/>
-				<Attributt attr={sm.attrs.fullmakt} />
-				<Attributt attr={sm.attrs.sikkerhetstiltak} />
-				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
+				<Attributt
+					attr={sm.attrs.fullmakt}
+					vis={true}
+					disabled={testnorgeIdent && ukjentGruppe}
+					title={(testnorgeIdent && ukjentGruppe && tekstUkjentGruppe) || ''}
+				/>
+				<Attributt attr={sm.attrs.sikkerhetstiltak} vis={true} />
+				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} vis={true} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -314,7 +290,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			add: () =>
 				set(paths.norskBankkonto, {
 					kontonummer: '',
-					tilfeldigKontonummer: opts.antall && opts.antall > 1,
+					tilfeldigKontonummer: opts?.antall && opts?.antall > 1,
 				}),
 			remove: () => del(paths.norskBankkonto),
 		},

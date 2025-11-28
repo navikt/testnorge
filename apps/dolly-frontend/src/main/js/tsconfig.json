@@ -10,7 +10,8 @@
 			"vitest/globals",
 			"vite/client",
 			"node",
-			"./support"
+			"./support",
+			"@testing-library/jest-dom"
 		],
 		"noEmit": true,
 		"target": "ESNext",
@@ -29,5 +30,5 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx"
 	},
-	"include": ["src"]
+	"include": ["src", "__tests__"]
 }

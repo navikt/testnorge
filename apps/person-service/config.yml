@@ -28,7 +28,6 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: etterlatte-testdata
           namespace: etterlatte

@@ -19,6 +19,9 @@ spec:
       rules:
         - application: dolly-frontend
         - application: dolly-idporten
+        - application: histark-core-api
+          namespace: histark
+          cluster: dev-fss
         - application: etterlatte-testdata
           namespace: etterlatte
         - application: testnav-batch-bestilling-service
@@ -52,15 +55,11 @@ spec:
         - application: testnav-sykemelding-proxy
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-medl-proxy.dev-fss-pub.nais.io
-        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-saf-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:

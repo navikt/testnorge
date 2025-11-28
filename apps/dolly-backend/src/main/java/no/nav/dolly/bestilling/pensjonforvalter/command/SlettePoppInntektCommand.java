@@ -21,7 +21,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 public class SlettePoppInntektCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String POPP_DELETE_URL = "/api/v1/popp/person";
+    private static final String POPP_DELETE_URL = "/pensjon/api/v1/popp/person";
 
     private final WebClient webClient;
     private final String ident;

@@ -7,7 +7,7 @@ jira:
 
 open:
   search:
-    uri: dummy
+    uri: http://localhost:9200
     username: dummy
     password: dummy
     total-fields: 150
@@ -40,7 +40,7 @@ consumers:
     url: http://localhost:${wiremock.server.port:0}/aareg
     cluster: dev-fss
   testnav-dolly-proxy:
-    name: sigrunstub-mock
+    name: testnav-dolly-proxy
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}
     cluster: dev-fss
@@ -59,11 +59,6 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
-  testnav-pensjon-testdata-facade-proxy:
-    url: http://localhost:${wiremock.server.port:0}/pensjon-testdata
-    name: testnav-pensjon-testdata-facade-proxy
-    namespace: dolly
-    cluster: dev-fss
 
 management:
   prometheus:

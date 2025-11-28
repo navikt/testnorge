@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-public class Sigrunstub {
+class Sigrunstub {
 
     private final Targets targets;
 

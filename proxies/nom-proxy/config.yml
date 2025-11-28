@@ -37,7 +37,6 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend

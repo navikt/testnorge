@@ -1,36 +1,36 @@
 package no.nav.testnav.dollysearchservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.dollysearchservice.consumer.PdlProxyConsumer;
+import lombok.val;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import org.opensearch.common.unit.TimeValue;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
+import org.opensearch.client.opensearch.core.SearchResponse;
+import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpenSearchQueryService {
 
-    private final PdlProxyConsumer pdlProxyConsumer;
-    private final ObjectMapper objectMapper;
+    private final OpenSearchClient openSearchClient;
 
     @Value("${open.search.pdl-index}")
     private String pdlIndex;
 
-    public Mono<SearchInternalResponse> execQuery(SearchRequest request, QueryBuilder query) {
+    public Mono<SearchInternalResponse> execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
 
         var now = System.currentTimeMillis();
 
@@ -42,42 +42,39 @@ public class OpenSearchQueryService {
             request.setAntall(10);
         }
 
-        var personSoekResponse = Mono.from(pdlProxyConsumer.search(
-                        no.nav.testnav.dollysearchservice.dto.SearchRequest.builder()
-                                .query(
-                                        new org.opensearch.action.search.SearchRequest()
-                                                .indices(pdlIndex)
-                                                .source(new SearchSourceBuilder()
-                                                        .query(query)
-                                                        .from(request.getSide() * request.getAntall())
-                                                        .size(request.getAntall())
-                                                        .timeout(new TimeValue(3, TimeUnit.SECONDS))))
-                                .request(request)
-                                .build()))
-                .map(this::formatResponse);
+        try {
+            val personSoekResponse = Mono.just(openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                            .index(pdlIndex)
+                            .query(new Query.Builder()
+                                    .bool(queryBuilder.build())
+                                    .build())
+                            .from(request.getSide() * request.getAntall())
+                            .size(request.getAntall())
+                            .timeout("3s")
+                            .build(), JsonNode.class))
+                    .map(response -> formatResponse(response, request));
 
-        log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
+            log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
-        return personSoekResponse;
+            return personSoekResponse;
+
+        } catch (IOException e) {
+
+            log.error("Feil ved personsøk i OpenSearch", e);
+            throw new InternalError("Feil ved personsøk i OpenSearch", e);
+        }
     }
 
-    private SearchInternalResponse formatResponse(no.nav.testnav.dollysearchservice.dto.SearchResponse response) {
-
-        if (isNotBlank(response.getError())) {
-            return SearchInternalResponse.builder()
-                    .error(response.getError())
-                    .build();
-        }
+    private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
 
         return SearchInternalResponse.builder()
-                .took(response.getTook().toString())
-                .totalHits(response.getHits().getTotal().getValue())
-                .antall(response.getHits().getHits().size())
-                .side(response.getRequest().getSide())
-                .seed(response.getRequest().getSeed())
-                .personer(response.getHits().getHits().stream()
-                        .map(no.nav.testnav.dollysearchservice.dto.SearchResponse.SearchHit::get_source)
-                        .map(person -> objectMapper.convertValue(person, JsonNode.class))
+                .took(Long.toString(response.took()))
+                .totalHits(nonNull(response.hits().total()) ? response.hits().total().value() : null)
+                .antall(response.hits().hits().size())
+                .side(request.getSide())
+                .seed(request.getSeed())
+                .personer(response.hits().hits().stream()
+                        .map(Hit::source)
                         .toList())
                 .build();
     }
