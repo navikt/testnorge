@@ -3,7 +3,7 @@ package no.nav.testnav.apps.tpsmessagingservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.StatsborgerskapDTO;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.springframework.stereotype.Component;
 

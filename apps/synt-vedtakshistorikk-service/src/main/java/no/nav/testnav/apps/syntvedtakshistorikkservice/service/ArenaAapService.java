@@ -2,7 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.springframework.stereotype.Service;

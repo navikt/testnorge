@@ -6,7 +6,6 @@ on:
       - .github/workflows/app.levende-arbeidsforhold-ansettelse.yml
       - apps/levende-arbeidsforhold-ansettelse/**
       - libs/data-transfer-objects/**
-      - libs/data-transfer-search-objects/**
       - libs/reactive-core/**
       - libs/reactive-security/**
       - libs/security-core/**

@@ -5,7 +5,7 @@ on:
     paths:
       - .github/workflows/app.dolly-search-service.yml
       - apps/dolly-search-service/**
-      - libs/data-transfer-search-objects/**
+      - libs/data-transfer-objects/**
       - libs/reactive-core/**
       - libs/reactive-security/**
       - libs/security-core/**

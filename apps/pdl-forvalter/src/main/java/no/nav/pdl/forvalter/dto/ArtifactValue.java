@@ -2,8 +2,8 @@ package no.nav.pdl.forvalter.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 
 @Data
 @Builder

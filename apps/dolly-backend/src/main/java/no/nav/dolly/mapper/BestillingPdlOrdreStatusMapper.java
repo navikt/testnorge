@@ -8,9 +8,9 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
-import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;

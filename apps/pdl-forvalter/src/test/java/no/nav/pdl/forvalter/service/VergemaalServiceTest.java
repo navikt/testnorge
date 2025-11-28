@@ -1,9 +1,9 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalEmbete;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalSakstype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalEmbete;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalSakstype;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

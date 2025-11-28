@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.service.skd;
 
 import no.nav.testnav.apps.tpsmessagingservice.dto.endringsmeldinger.SkdMeldingTrans1;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ConvertDateToStringUtility;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
