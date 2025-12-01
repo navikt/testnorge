@@ -21,5 +21,6 @@ jobs:
       deploy-tag: "#deploy-oversikt-frontend"
     permissions:
       contents: read
+      packages: read
       id-token: write
     secrets: inherit

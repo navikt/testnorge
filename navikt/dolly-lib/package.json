@@ -4,7 +4,8 @@
   "description": "Bibliotek for diverse dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc -p ."
+    "clean": "rm -rf lib",
+    "build": "pnpm run clean && tsc -p ."
   },
   "types": "lib",
   "author": {

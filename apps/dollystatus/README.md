@@ -7,6 +7,6 @@ Lenke https://dollystatus.intern.dev.nav.no/
 ## Lokal kjøring
 Fra `/src/main/js` kjør
 ```
-> npm install
-> npm start
+> pnpm install
+> pnpm start
 ```
