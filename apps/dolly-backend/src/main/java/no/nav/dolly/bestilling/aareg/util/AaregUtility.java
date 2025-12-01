@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.aareg.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.dolly.domain.resultset.aareg.RsAareg.Identifikasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
@@ -55,14 +56,13 @@ public class AaregUtility {
 
     public static Arbeidsforhold appendArbeidsforholdId(Arbeidsforhold arbeidsforhold, boolean nyttArbeidsforhold,
                                                         List<Arbeidsforhold> eksisterendeListe, Map<String, Identifikasjon> identifikasjon,
-                                                        AtomicInteger arbeidsforholdId, AtomicInteger permisjonPermitteringId) {
+                                                        AtomicInteger arbeidsforholdId) {
 
         if (nyttArbeidsforhold) {
 
             arbeidsforhold.setArbeidsforholdId(Integer.toString(arbeidsforholdId.incrementAndGet()));
             arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
                     arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
-            appendPermisjonPermitteringId(arbeidsforhold, permisjonPermitteringId);
 
         } else {
 
@@ -73,8 +73,9 @@ public class AaregUtility {
             arbeidsforhold.setArbeidsforholdId(eksisterende.getArbeidsforholdId());
             arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(eksisterende.getNavArbeidsforholdPeriode()) ?
                     eksisterende.getNavArbeidsforholdPeriode() : YearMonth.now());
-            arbeidsforhold.setPermisjonPermitteringer(eksisterende.getPermisjonPermitteringer());
         }
+
+        appendPermisjonPermitteringId(arbeidsforhold);
 
         return arbeidsforhold;
     }
@@ -88,12 +89,14 @@ public class AaregUtility {
                                         eksisterende.getType().equals(request.getType()));
     }
 
-    private static void appendPermisjonPermitteringId(Arbeidsforhold arbeidsforhold, AtomicInteger permisjonPermitteringId) {
+    private static void appendPermisjonPermitteringId(Arbeidsforhold arbeidsforhold) {
+
+        val id = new AtomicInteger(0);
 
         arbeidsforhold.getPermisjonPermitteringer().stream()
                 .filter(permisjon -> isBlank(permisjon.getPermisjonPermitteringId()))
                 .forEach(permisjon ->
-                        permisjon.setPermisjonPermitteringId(Integer.toString(permisjonPermitteringId.incrementAndGet())));
+                        permisjon.setPermisjonPermitteringId(Integer.toString(id.incrementAndGet())));
     }
 
     private static boolean isArbeidsgiverPersonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {

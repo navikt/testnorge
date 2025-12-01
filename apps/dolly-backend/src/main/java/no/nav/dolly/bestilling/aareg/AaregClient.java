@@ -29,7 +29,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendArbeidsforholdId;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.getMaxArbeidsforholdId;
-import static no.nav.dolly.bestilling.aareg.util.AaregUtility.getMaxPermisjonPermitteringId;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isNyttArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
@@ -121,19 +120,18 @@ public class AaregClient implements ClientRegister {
                 .collect(Collectors.toMap(RsAareg::hashCode, aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context)));
 
         var antallArbeidsforhold = new AtomicInteger(getMaxArbeidsforholdId(eksisterende));
-        var antallPermisjonPermittering = new AtomicInteger(getMaxPermisjonPermitteringId(eksisterende));
 
         return Flux.fromIterable(request)
                 .flatMap(arbeidsforhold -> {
                     if (eksisterende.stream().anyMatch(eksisterende1 -> isEqualArbeidsforhold(eksisterende1,
                             bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), arbeidsforhold.getIdentifikasjon()))) {
                         appendArbeidsforholdId(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), false, eksisterende,
-                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
+                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold);
                         return aaregConsumer.endreArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
                                 .zipWith(Mono.just(arbeidsforhold));
                     } else if (isOpprettEndre || isNyttArbeidsforhold(eksisterende, bestilteArbeidsforhold.get(arbeidsforhold.hashCode()))) {
                         appendArbeidsforholdId(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), true, eksisterende,
-                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
+                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold);
                         return aaregConsumer.opprettArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
                                 .zipWith(Mono.just(arbeidsforhold));
                     } else {
