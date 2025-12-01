@@ -10,13 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -45,7 +43,6 @@ public class TpsMessagingPostCommand implements Callable<Flux<TpsMeldingResponse
                 .bodyValue(body)
                 .retrieve()
                 .bodyToFlux(TpsMeldingResponseDTO.class)
-                .timeout(Duration.ofSeconds(REQUEST_DURATION))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO
