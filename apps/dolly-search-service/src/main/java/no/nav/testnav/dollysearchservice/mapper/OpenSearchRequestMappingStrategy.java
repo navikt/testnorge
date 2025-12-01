@@ -3,8 +3,8 @@ package no.nav.testnav.dollysearchservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

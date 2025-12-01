@@ -24,4 +24,4 @@ Evt midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
 
 >nais aiven create opensearch ignored dolly -i bestillinger -a admin -s \<ownsecretname\> -e 10
 
->nais aiven get opensearch dolly-17630-93255 dolly
+>nais aiven get opensearch \<ownsecretname\> dolly

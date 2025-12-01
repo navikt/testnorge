@@ -3,8 +3,8 @@ package no.nav.dolly.bestilling.kontoregisterservice.mapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

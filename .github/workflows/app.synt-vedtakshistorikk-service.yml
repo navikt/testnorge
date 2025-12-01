@@ -6,7 +6,6 @@ on:
       - .github/workflows/app.synt-vedtakshistorikk-service.yml
       - apps/synt-vedtakshistorikk-service/**
       - libs/data-transfer-objects/**
-      - libs/data-transfer-search-objects/**
       - libs/reactive-core/**
       - libs/security-core/**
       - libs/servlet-core/**

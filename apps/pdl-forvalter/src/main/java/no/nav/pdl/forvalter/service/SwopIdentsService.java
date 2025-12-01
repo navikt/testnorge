@@ -10,16 +10,16 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.utils.ArtifactUtils;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand;
-import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,8 @@ import java.util.List;
 import static java.time.LocalDateTime.now;
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNotNpidIdent;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
 
 @Service
 @RequiredArgsConstructor

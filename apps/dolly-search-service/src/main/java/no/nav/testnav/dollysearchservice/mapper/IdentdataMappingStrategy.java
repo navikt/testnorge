@@ -7,7 +7,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.dollysearchservice.dto.Person;
-import no.nav.testnav.libs.data.dollysearchservice.v1.IdentdataDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.IdentdataDTO;
 import org.springframework.stereotype.Component;
 
 @Component

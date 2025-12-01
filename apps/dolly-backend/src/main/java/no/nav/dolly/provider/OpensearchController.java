@@ -35,7 +35,7 @@ public class OpensearchController {
     }
 
     @DeleteMapping()
-    @Operation(description = "Sletter all data inkludert indeks")
+    @Operation(description = "Sletter indeks inkludert all data")
     public Mono<String> delete() {
 
          return openSearchService.deleteIndex();

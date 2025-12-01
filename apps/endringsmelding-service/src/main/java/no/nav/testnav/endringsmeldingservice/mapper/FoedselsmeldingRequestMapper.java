@@ -2,12 +2,12 @@ package no.nav.testnav.endringsmeldingservice.mapper;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.endringsmeldingservice.utility.KjoennFraIdentUtility;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.GateadresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PostadresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdressehistorikkDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.FoedselsmeldingRequest;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.GateadresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v2.FoedselsmeldingDTO;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;

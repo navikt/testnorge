@@ -1,10 +1,10 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

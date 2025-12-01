@@ -13,14 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -35,9 +29,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
-@Testcontainers
 @DollySpringBootTest
-class IdentpoolControllerComponentTest {
+class IdentpoolControllerComponentTest extends AbstractTestcontainer {
 
     private static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
     private static final String PROD_SJEKK = "/prod-sjekk";
@@ -58,20 +51,6 @@ class IdentpoolControllerComponentTest {
 
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
-
-    @Container
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.9"));
-
-    @DynamicPropertySource
-    static void dynamicPropertyRegistry(DynamicPropertyRegistry registry) {
-        registry.add("spring.r2dbc.url", IdentpoolControllerComponentTest::getR2dbcUrl);
-        registry.add("spring.r2dbc.username", postgreSQLContainer::getUsername);
-        registry.add("spring.r2dbc.password", postgreSQLContainer::getPassword);
-    }
-
-    private static String getR2dbcUrl() {
-        return postgreSQLContainer.getJdbcUrl().replace("jdbc", "r2dbc");
-    }
 
     @BeforeEach
     void populerDatabaseMedTestidenter() {
@@ -359,8 +338,8 @@ class IdentpoolControllerComponentTest {
     @Test
     void bruk_FinnesIkkeIDatabaseErLedig() {
 
-        var IDENT = "22476902081";
-        identRepository.findByPersonidentifikator(IDENT)
+        var ident = "22476902081";
+        identRepository.findByPersonidentifikator(ident)
                 .as(StepVerifier::create)
                 .expectNextCount(0)
                 .verifyComplete();
@@ -368,17 +347,17 @@ class IdentpoolControllerComponentTest {
         webTestClient.post()
                 .uri(IDENT_V1_BASEURL + BRUK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue("{\"personidentifikator\":\"" + IDENT + "\"," +
+                .bodyValue("{\"personidentifikator\":\"" + ident + "\"," +
                         "\"bruker\":\"test\"}")
                 .exchange()
                 .expectStatus()
                 .isOk();
 
-        identRepository.findByPersonidentifikator(IDENT)
+        identRepository.findByPersonidentifikator(ident)
                 .as(StepVerifier::create)
-                .assertNext(ident -> {
-                    assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
-                    assertThat(ident.getRekvirertAv(), is("test"));
+                .assertNext(ident1 -> {
+                    assertThat(ident1.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+                    assertThat(ident1.getRekvirertAv(), is("test"));
                 })
                 .verifyComplete();
     }

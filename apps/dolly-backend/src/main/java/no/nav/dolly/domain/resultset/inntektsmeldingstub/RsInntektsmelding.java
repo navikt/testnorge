@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,7 +67,6 @@ public class RsInntektsmelding {
         private List<RsNaturalYtelseDetaljer> opphoerAvNaturalytelseListe;
         private List<RsPeriode> pleiepengerPerioder;
         private RsRefusjon refusjon;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate startdatoForeldrepengeperiode;
         private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
         private YtelseType ytelse;
@@ -120,7 +116,6 @@ public class RsInntektsmelding {
 
         private List<RsEndringIRefusjon> endringIRefusjonListe;
         private Double refusjonsbeloepPrMnd;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate refusjonsopphoersdato;
 
         public List<RsEndringIRefusjon> getEndringIRefusjonListe() {
@@ -138,7 +133,6 @@ public class RsInntektsmelding {
     @AllArgsConstructor
     public static class RsEndringIRefusjon {
 
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate endringsdato;
         private Double refusjonsbeloepPrMnd;
     }
@@ -150,7 +144,6 @@ public class RsInntektsmelding {
     public static class RsNaturalYtelseDetaljer {
 
         private Double beloepPrMnd;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate fom;
         private NaturalytelseType naturalytelseType;
     }
@@ -188,7 +181,6 @@ public class RsInntektsmelding {
     @AllArgsConstructor
     public static class RsDelvisFravaer {
 
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate dato;
         private Double timer;
     }
@@ -199,7 +191,6 @@ public class RsInntektsmelding {
     @AllArgsConstructor
     public static class RsAvsendersystem {
 
-        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime innsendingstidspunkt;
         private String systemnavn;
         private String systemversjon;
@@ -244,7 +235,6 @@ public class RsInntektsmelding {
         private String arbeidsforholdId;
         private List<RsPeriode> avtaltFerieListe;
         private RsAltinnInntekt beregnetInntekt;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate foersteFravaersdag;
         private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
         private List<RsUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
@@ -309,9 +299,7 @@ public class RsInntektsmelding {
     @AllArgsConstructor
     public static class RsPeriode {
 
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate fom;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate tom;
     }
 }

@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.apache.commons.lang3.StringUtils;
 

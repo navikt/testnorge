@@ -9,7 +9,7 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingComman
 import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoUtlandRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoUtlandResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
 import org.springframework.stereotype.Service;
 
 import jakarta.xml.bind.JAXBContext;

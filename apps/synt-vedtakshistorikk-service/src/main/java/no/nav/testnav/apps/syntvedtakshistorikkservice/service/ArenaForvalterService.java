@@ -8,7 +8,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.re
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.ArbeidssoekerException;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.VedtakshistorikkException;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils;
-import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;

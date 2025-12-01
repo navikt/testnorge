@@ -2,11 +2,11 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonnavnDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

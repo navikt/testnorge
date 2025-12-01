@@ -6,9 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 
@@ -31,10 +28,8 @@ public class RsArbeidsavtale {
     private String avloenningstype;
 
     @Schema(type = "LocalDateTime")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime endringsdatoStillingsprosent;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime sisteLoennsendringsdato;
 
     private Double stillingsprosent;
@@ -49,6 +44,5 @@ public class RsArbeidsavtale {
     private String ansettelsesform;
 
     @Schema(type = "LocalDateTime")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime endringsdatoLoenn;
 }

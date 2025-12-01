@@ -3,7 +3,7 @@ package no.nav.testnav.dollysearchservice.utils;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 

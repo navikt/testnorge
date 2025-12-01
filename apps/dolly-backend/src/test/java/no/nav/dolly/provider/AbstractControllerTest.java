@@ -10,8 +10,6 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -30,10 +28,6 @@ public abstract class AbstractControllerTest {
     private TestgruppeRepository testgruppeRepository;
     @Autowired
     private IdentRepository identRepository;
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private ElasticsearchOperations elasticsearchOperations;
 
     Mono<Bruker> createBruker() {
 

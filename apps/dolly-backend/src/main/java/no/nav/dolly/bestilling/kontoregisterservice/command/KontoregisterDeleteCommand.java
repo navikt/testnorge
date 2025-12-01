@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.kontoregisterservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
-import no.nav.testnav.libs.data.kontoregister.v1.SlettKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.KontoregisterResponseDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.SlettKontoRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;

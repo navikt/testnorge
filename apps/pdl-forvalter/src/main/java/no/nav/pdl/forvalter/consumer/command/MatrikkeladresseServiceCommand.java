@@ -28,7 +28,7 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
     private static final String ADRESSER_VEG_URL = "/api/v1/adresser/matrikkeladresse";
 
     private final WebClient webClient;
-    private final no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO query;
+    private final no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO query;
     private final String matrikkelId;
     private final String token;
 

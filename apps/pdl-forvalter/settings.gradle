@@ -7,7 +7,6 @@ rootProject.name = "pdl-forvalter"
 includeBuild "../../plugins/java"
 
 includeBuild "../../libs/data-transfer-objects"
-includeBuild "../../libs/data-transfer-search-objects"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/servlet-core"

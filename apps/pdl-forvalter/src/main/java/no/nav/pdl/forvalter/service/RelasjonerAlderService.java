@@ -2,10 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;

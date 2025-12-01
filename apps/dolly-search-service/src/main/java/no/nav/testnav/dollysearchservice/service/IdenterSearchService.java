@@ -6,7 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.IdentSearch;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.IdentdataDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.IdentdataDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
