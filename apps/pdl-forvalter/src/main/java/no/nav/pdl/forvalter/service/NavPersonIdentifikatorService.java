@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavPersonIdentifikatorDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavPersonIdentifikatorDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

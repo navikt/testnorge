@@ -14,7 +14,6 @@ import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
-import no.nav.dolly.util.RequestTimeout;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AvailibilityResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;

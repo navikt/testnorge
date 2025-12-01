@@ -1,8 +1,8 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
-import no.nav.testnav.libs.data.dollysearchservice.v1.PersonRequest;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 
 import java.util.List;

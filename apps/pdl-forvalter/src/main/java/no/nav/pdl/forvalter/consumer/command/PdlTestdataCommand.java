@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.consumer.command;
 
-import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import reactor.core.publisher.Flux;
 

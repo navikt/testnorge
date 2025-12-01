@@ -1,12 +1,12 @@
 package no.nav.testnav.apps.tpsmessagingservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 
 import static java.lang.Integer.parseInt;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.DNR;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 
 @UtilityClass
 public class IdenttypeFraIdentUtility {

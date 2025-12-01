@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO.Tiltakstype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO.Tiltakstype;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

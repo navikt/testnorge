@@ -30,7 +30,7 @@ import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
-import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 
 import java.util.List;

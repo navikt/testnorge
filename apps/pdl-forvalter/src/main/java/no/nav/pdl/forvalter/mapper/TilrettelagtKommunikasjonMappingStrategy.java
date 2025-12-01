@@ -4,7 +4,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
-import no.nav.testnav.libs.data.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import org.springframework.stereotype.Component;
 
 @Component

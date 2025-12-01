@@ -7,9 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,7 +25,6 @@ public class RsArenaAap extends ArenaPeriode{
     public enum VedtakType {O, E, G, S}
 
     private String aktivitetsfase;
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime datoMottatt;
     @Schema(description = "O = ny rettighet, S = sletting")
     private VedtakType vedtaktype;
@@ -36,7 +32,6 @@ public class RsArenaAap extends ArenaPeriode{
     private MedlemFolketrygden medlemFolketrygden;
     private List<AndreOkonomYtelser> andreOkonomYtelserListe;
     private List<Saksopplysning> institusjonsopphold;
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime justertFra;
     private List<Vilkaar> vilkaar;
     private String utfall;

@@ -8,18 +8,18 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavPersonIdentifikatorDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavPersonIdentifikatorDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -30,9 +30,9 @@ import java.util.stream.Stream;
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 
 @Slf4j
 @Service

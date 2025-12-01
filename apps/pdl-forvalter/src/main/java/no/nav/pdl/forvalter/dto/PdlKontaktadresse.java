@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 
 import java.io.Serializable;
 import java.util.ArrayList;

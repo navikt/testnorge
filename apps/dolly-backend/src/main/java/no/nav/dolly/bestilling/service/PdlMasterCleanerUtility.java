@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.service;
 import lombok.experimental.UtilityClass;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @UtilityClass
 public class PdlMasterCleanerUtility {

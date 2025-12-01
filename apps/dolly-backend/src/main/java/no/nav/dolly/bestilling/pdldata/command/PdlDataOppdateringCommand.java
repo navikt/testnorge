@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.pdldata.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;

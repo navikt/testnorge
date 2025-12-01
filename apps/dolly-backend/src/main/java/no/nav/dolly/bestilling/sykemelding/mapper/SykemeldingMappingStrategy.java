@@ -12,7 +12,7 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 

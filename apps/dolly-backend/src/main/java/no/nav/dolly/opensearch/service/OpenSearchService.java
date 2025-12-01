@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class OpenSearchService {
 
-    private static final String INDEKS = "Indeks ";
+    private static final String INDEKS = "Indeks \"";
     
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
@@ -57,13 +57,13 @@ public class OpenSearchService {
                         log.warn("Sletter indeks {}", index);
                         try {
                             openSearchClient.indices().delete(i -> i.index(index));
-                            return Mono.just(INDEKS + index + " slettet");
+                            return Mono.just(INDEKS + index + "\" slettet");
                         } catch (IOException | OpenSearchException ex) {
                             log.warn("Feilet å slette indeks {}, {}", index, ex.getLocalizedMessage());
                             return Mono.just("Feilet å slette indeks " + index);
                         }
                     } else {
-                        return Mono.just(INDEKS + index + " eksisterer ikke");
+                        return Mono.just(INDEKS + index + "\" eksisterer ikke");
                     }
                 });
     }
@@ -82,13 +82,13 @@ public class OpenSearchService {
                         log.warn("Oppretter indeks {}", index);
                         try {
                             openSearchClient.indices().create(i -> i.index(index));
-                            return Mono.just(INDEKS + index + " opprettet");
+                            return Mono.just(INDEKS + index + "\" opprettet");
                         } catch (IOException | OpenSearchException ex) {
                             log.warn("Feilet å opprette indeks {}, {}", index, ex.getLocalizedMessage());
                             return Mono.just("Feilet å opprette indeks " + index);
                         }
                     } else {
-                        return Mono.just(INDEKS + index + " eksisterer allerede");
+                        return Mono.just(INDEKS + index + "\" eksisterer allerede");
                     }
                 });
     }

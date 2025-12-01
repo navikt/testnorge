@@ -1,14 +1,14 @@
 package no.nav.testnav.endringsmeldingservice.mapper;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.GateadresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PostadresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdressehistorikkDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdressehistorikkRequest;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.GateadresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
 
 import java.time.LocalDate;
 

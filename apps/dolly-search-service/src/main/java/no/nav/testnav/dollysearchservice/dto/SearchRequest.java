@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.libs.data.dollysearchservice.v1.PersonRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 
 import java.util.ArrayList;
 import java.util.HashSet;

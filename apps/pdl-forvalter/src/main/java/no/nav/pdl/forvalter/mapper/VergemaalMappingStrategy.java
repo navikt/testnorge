@@ -10,11 +10,11 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalMandattype;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalSakstype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalMandattype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalSakstype;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;

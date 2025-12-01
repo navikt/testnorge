@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
@@ -25,9 +24,6 @@ public abstract class AbstractConsumerTest {
 
     @MockitoBean
     private AccessToken accessToken;
-
-    @MockitoBean
-    private ElasticsearchOperations elasticsearchOperations;
 
     @BeforeEach
     void setUp() {

@@ -5,8 +5,8 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsum
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.FoedselsmeldingBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.SendSkdMeldinger;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ResponseStatus;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.FoedselsmeldingRequest;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.FoedselsmeldingResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

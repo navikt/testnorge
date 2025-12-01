@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.MediaType;

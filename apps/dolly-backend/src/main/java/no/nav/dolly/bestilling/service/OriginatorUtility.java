@@ -12,7 +12,7 @@ import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
