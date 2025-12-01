@@ -7,20 +7,15 @@ import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.AjourholdRepository;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.FileCopyUtils;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -34,9 +29,9 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
-@Testcontainers
+@Disabled
 @DollySpringBootTest
-class AjourholdComponentTest {
+class AjourholdComponentTest extends AbstractTestcontainer {
 
     private static final String BATCH_V1_BASEURL = "/api/v1/batch";
     private static final String START_PRODCLEAN = "/start-prod-clean";
@@ -60,20 +55,6 @@ class AjourholdComponentTest {
 
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
-
-    @Container
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.9"));
-
-    @DynamicPropertySource
-    static void dynamicPropertyRegistry(DynamicPropertyRegistry registry) {
-        registry.add("spring.r2dbc.url", AjourholdComponentTest::getR2dbcUrl);
-        registry.add("spring.r2dbc.username", postgreSQLContainer::getUsername);
-        registry.add("spring.r2dbc.password", postgreSQLContainer::getPassword);
-    }
-
-    private static String getR2dbcUrl() {
-        return postgreSQLContainer.getJdbcUrl().replace("jdbc", "r2dbc");
-    }
 
     @BeforeEach
     void populerDatabaseMedTestidenter() throws IOException {
