@@ -2,11 +2,11 @@ import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { arrayToString, formatDate, oversettBoolean } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { BrregTypes, Enhet, PersonRolle } from '@/components/fagsystem/brregstub/BrregTypes'
+import { useBrregRoller, useBrregUnderstatuser } from '@/utils/hooks/useBrreg'
 
 type BrregProps = {
 	brregstub: BrregTypes
@@ -17,13 +17,14 @@ export const Brregstub = ({ brregstub }: BrregProps) => {
 		return null
 	}
 
-	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
-	const roller = SelectOptionsOppslag.hentRollerFraBrregstub()
+	const { understatuserOptions } = useBrregUnderstatuser()
+	const { rollerOptions } = useBrregRoller()
 
 	const understatusLabel = (understatus: number) =>
-		understatuser?.value?.data?.[understatus] || understatus
+		understatuserOptions?.find((u) => u.value === understatus)?.label || understatus
 
-	const rolleLabel = (rolle: string) => roller?.value?.data?.[rolle] || rolle
+	const rolleLabel = (rolle: string) =>
+		rollerOptions?.find((r) => r.value === rolle)?.label || rolle
 
 	return (
 		<div className="bestilling-visning">
@@ -31,9 +32,7 @@ export const Brregstub = ({ brregstub }: BrregProps) => {
 				<BestillingTitle>Brønnøysundregistrene</BestillingTitle>
 				<TitleValue
 					title="Understatuser"
-					value={arrayToString(
-						brregstub.understatuser?.map((status) => `${status}: ${understatusLabel(status)}`),
-					)}
+					value={arrayToString(brregstub.understatuser?.map((status) => understatusLabel(status)))}
 				/>
 				<DollyFieldArray header="Enhet" data={brregstub?.enheter}>
 					{(enhet: Enhet, idx: number) => {

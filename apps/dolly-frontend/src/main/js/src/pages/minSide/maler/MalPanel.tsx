@@ -4,13 +4,13 @@ import { Alert, Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
 
 type Props = {
 	antallEgneMaler: any
@@ -133,7 +133,9 @@ export const MalPanel = ({
 															{alert}
 														</Alert>
 													)}
-													<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+													<div className="bestilling-data">
+														<Bestillingsdata bestilling={bestillingBasedOnMal} />
+													</div>
 												</>
 											}
 										>

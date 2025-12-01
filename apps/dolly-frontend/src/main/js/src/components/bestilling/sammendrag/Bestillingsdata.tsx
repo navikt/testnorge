@@ -56,10 +56,11 @@ import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/DeltBosted'
 import { NavAnsatt } from '@/components/fagsystem/nom/bestilling/NavAnsatt'
 import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/bestilling/AlderspensjonNyUttaksgrad'
 import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/bestilling/SigrunstubSummertSkattegrunnlag'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const Bestillingsdata = ({ bestilling }: { bestilling: any }) => {
 	return (
-		<>
+		<ErrorBoundary>
 			<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
 			<Foedested foedestedListe={bestilling.pdldata?.person?.foedested} />
 			<Foedselsdato foedselsdatoListe={bestilling.pdldata?.person?.foedselsdato} />
@@ -132,6 +133,6 @@ export const Bestillingsdata = ({ bestilling }: { bestilling: any }) => {
 			<Udistub udistub={bestilling.udistub} />
 			<Dokarkiv dokarkivListe={bestilling.dokarkiv} />
 			<Histark histark={bestilling.histark} />
-		</>
+		</ErrorBoundary>
 	)
 }

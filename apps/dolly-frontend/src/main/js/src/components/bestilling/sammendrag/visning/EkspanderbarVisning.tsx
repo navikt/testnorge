@@ -20,12 +20,12 @@ export const EkspanderbarVisning = ({ vis, header, children }: EkspanderbarVisni
 			<Button
 				onClick={visPersonValg ? setSkjulPersonValg : setVisPersonValg}
 				kind={visPersonValg ? 'chevron-up' : 'chevron-down'}
-				style={visPersonValg ? { margin: '10px 0 10px 0' } : { margin: '10px 0 0 0' }}
+				style={visPersonValg ? { margin: '0 0 10px 0' } : { margin: '0' }}
 			>
 				{header}
 			</Button>
 			{visPersonValg && (
-				<div className={'flexbox--align-start flexbox--wrap'} style={{ margin: '10px 0 10px 0' }}>
+				<div className={'flexbox--align-start flexbox--wrap'} style={{ margin: '10px 0 0 0' }}>
 					{children}
 				</div>
 			)}
