@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.skattekort;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.skattekort.command.SkattekortPostCommand;
 import no.nav.dolly.config.Consumers;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
+@Slf4j
 @Service
 public class SkattekortConsumer extends ConsumerStatus {
 
@@ -33,7 +35,8 @@ public class SkattekortConsumer extends ConsumerStatus {
     public Flux<String> sendSkattekort(SkattekortRequestDTO skattekortRequestDTO) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> new SkattekortPostCommand(webClient, skattekortRequestDTO, token.getTokenValue()).call());
+                .flatMapMany(token -> new SkattekortPostCommand(webClient, skattekortRequestDTO, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Skattekort sendt med response: {}", response));
     }
 
     @Override
