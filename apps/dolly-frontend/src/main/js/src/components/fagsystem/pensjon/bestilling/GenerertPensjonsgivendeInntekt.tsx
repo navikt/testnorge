@@ -1,7 +1,10 @@
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
-import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import {
+	BestillingData,
+	BestillingTitle,
+} from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { oversettBoolean } from '@/utils/DataFormatter'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { GenerertPensjonsgivendeInntektTypes } from '@/components/fagsystem/pensjon/PensjonTypes'

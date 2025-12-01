@@ -1,6 +1,4 @@
 import { Foedsel } from '@/components/fagsystem/pdlf/bestilling/Foedsel'
-import styled from 'styled-components'
-import React, { useEffect, useRef, useState } from 'react'
 import { Alder } from '@/components/fagsystem/pdlf/bestilling/Alder'
 import { Doedsfall } from '@/components/fagsystem/pdlf/bestilling/Doedsfall'
 import { Statsborgerskap } from '@/components/fagsystem/pdlf/bestilling/Statsborgerskap'
@@ -58,162 +56,82 @@ import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/DeltBosted'
 import { NavAnsatt } from '@/components/fagsystem/nom/bestilling/NavAnsatt'
 import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/bestilling/AlderspensjonNyUttaksgrad'
 import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/bestilling/SigrunstubSummertSkattegrunnlag'
-import './Bestillingsdata.less'
-import Button from '@/components/ui/button/Button'
-import useBoolean from '@/utils/hooks/useBoolean'
 
-export const BestillingTitle = styled.h4`
-	margin: 5px 0 15px 0;
-`
-
-export const BestillingData = styled.div`
-	display: flex;
-	flex-wrap: wrap;
-`
-
-const VisMerButton = styled(Button)`
-	width: 100%;
-	align-self: center;
-	margin-bottom: -10px;
-	position: absolute;
-	bottom: 0;
-`
-
-const StyledText = styled.p`
-	margin: 5px 0;
-`
-
-export const EmptyObject = () => <StyledText>Ingen verdier satt</StyledText>
-
-export const Bestillingsdata = ({ bestilling }: any) => {
-	const [visMer, setVisMer, setSkjulMer] = useBoolean(false)
-	const [showVisMerButton, setShowVisMerButton] = useState(false)
-
-	console.log('bestilling: ', bestilling) //TODO - SLETT MEG
-
-	// const windowHeight = window.innerHeight
-	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
-	const bestillingMaxHeight = window.innerHeight * 0.4
-	// console.log('bestillingMaxHeight: ', bestillingMaxHeight) //TODO - SLETT MEG
-
-	useEffect(() => {
-		const element = document.querySelector('.bestilling-data > div')
-		if (element) {
-			const contentHeight = element.scrollHeight
-			setShowVisMerButton(contentHeight > bestillingMaxHeight)
-		}
-	}, [bestillingMaxHeight])
-
-	const contentRef = useRef<HTMLDivElement>(null)
-
-	useEffect(() => {
-		if (contentRef.current) {
-			setShowVisMerButton(contentRef.current.scrollHeight > bestillingMaxHeight)
-		}
-	}, [bestillingMaxHeight])
-
-	const bestillingCurrentHeight =
-		document.getElementsByClassName('bestilling-data')?.[0]?.scrollHeight
-	console.log('bestillingCurrentHeight: ', bestillingCurrentHeight) //TODO - SLETT MEG
-
-	// const showVisMerButton = bestillingCurrentHeight > bestillingMaxHeight
-
+export const Bestillingsdata = ({ bestilling }: { bestilling: any }) => {
 	return (
-		<div className="bestilling-data" style={{ paddingBottom: showVisMerButton ? '30px' : 0 }}>
-			<div
-				ref={contentRef}
-				style={visMer ? undefined : { maxHeight: bestillingMaxHeight, overflowY: 'hidden' }}
-			>
-				<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
-				<Foedested foedestedListe={bestilling.pdldata?.person?.foedested} />
-				<Foedselsdato foedselsdatoListe={bestilling.pdldata?.person?.foedselsdato} />
-				<Foedsel foedselListe={bestilling.pdldata?.person?.foedsel} />
-				<Doedsfall doedsfallListe={bestilling.pdldata?.person?.doedsfall} />
-				<Statsborgerskap statsborgerskapListe={bestilling.pdldata?.person?.statsborgerskap} />
-				<Innvandring innvandringListe={bestilling.pdldata?.person?.innflytting} />
-				<Utvandring utvandringListe={bestilling.pdldata?.person?.utflytting} />
-				<Kjoenn kjoennListe={bestilling.pdldata?.person?.kjoenn} />
-				<Navn navnListe={bestilling.pdldata?.person?.navn} />
-				<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
-				<NorskBankkonto norskBankkonto={bestilling.bankkonto?.norskBankkonto} />
-				<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
-				<Vergemaal vergemaalListe={bestilling.pdldata?.person?.vergemaal} />
-				<Fullmakt fullmaktListe={bestilling.fullmakt || bestilling.pdldata?.person?.fullmakt} />
-				<Sikkerhetstiltak sikkerhetstiltakListe={bestilling.pdldata?.person?.sikkerhetstiltak} />
-				<TilrettelagtKommunikasjon
-					tilrettelagtKommunikasjonListe={bestilling.pdldata?.person?.tilrettelagtKommunikasjon}
-				/>
-				<Bostedsadresse bostedsadresseListe={bestilling.pdldata?.person?.bostedsadresse} />
-				<Oppholdsadresse oppholdsadresseListe={bestilling.pdldata?.person?.oppholdsadresse} />
-				<Kontaktadresse kontaktadresseListe={bestilling.pdldata?.person?.kontaktadresse} />
-				<DeltBosted deltBosted={bestilling.pdldata?.person?.deltBosted?.[0]} />
-				<Adressebeskyttelse
-					adressebeskyttelseListe={bestilling.pdldata?.person?.adressebeskyttelse}
-				/>
-				<Sivilstand sivilstandListe={bestilling.pdldata?.person?.sivilstand} />
-				<ForelderBarnRelasjon
-					forelderBarnListe={bestilling.pdldata?.person?.forelderBarnRelasjon}
-				/>
-				<Foreldreansvar foreldreansvarListe={bestilling.pdldata?.person?.foreldreansvar} />
-				<DoedfoedtBarn doedfoedtBarnListe={bestilling.pdldata?.person?.doedfoedtBarn} />
-				<FalskIdentitet falskIdentitetListe={bestilling.pdldata?.person?.falskIdentitet} />
-				<UtenlandskIdent
-					utenlandskIdentListe={bestilling.pdldata?.person?.utenlandskIdentifikasjonsnummer}
-				/>
-				<NyIdentitet nyIdentitetListe={bestilling.pdldata?.person?.nyident} />
-				<NavAnsatt nomdata={bestilling.nomdata} />
-				<Skjerming skjerming={bestilling.skjerming} />
-				<KontaktinformasjonForDoedsbo
-					kontaktinformasjonForDoedsboListe={
-						bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo
-					}
-				/>
-				<Arbeidsforhold arbeidsforholdListe={bestilling.aareg} />
-				<SigrunstubPensjonsgivende
-					sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
-				/>
-				<SigrunstubSummertSkattegrunnlag
-					summertSkattegrunnlagListe={bestilling.sigrunstubSummertSkattegrunnlag}
-				/>
-				<Inntektstub inntektstub={bestilling.inntektstub} />
-				<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
-				<Skattekort skattekort={bestilling.skattekort} />
-				<Arbeidssoekerregisteret arbeidssoekerregisteret={bestilling.arbeidssoekerregisteret} />
-				<Arbeidsplassen arbeidsplassenCV={bestilling.arbeidsplassenCV} />
-				<PensjonsgivendeInntekt pensjon={bestilling.pensjonforvalter?.inntekt} />
-				<GenerertPensjonsgivendeInntekt
-					pensjon={bestilling.pensjonforvalter?.generertInntekt?.generer}
-				/>
-				<Pensjonsavtale pensjon={bestilling.pensjonforvalter?.pensjonsavtale} />
-				<Tjenestepensjon pensjon={bestilling.pensjonforvalter?.tp} />
-				<Alderspensjon pensjon={bestilling.pensjonforvalter?.alderspensjon} />
-				<AlderspensjonNyUttaksgrad apNy={bestilling.pensjonforvalter?.alderspensjonNyUtaksgrad} />
-				<Uforetrygd pensjon={bestilling.pensjonforvalter?.uforetrygd} />
-				<AfpOffentlig pensjon={bestilling.pensjonforvalter?.afpOffentlig} />
-				<Arena arbeidsytelse={bestilling.arenaforvalter} />
-				<Sykemelding sykemelding={bestilling.sykemelding} />
-				<Yrkesskader yrkesskader={bestilling.yrkesskader} />
-				<Brregstub brregstub={bestilling.brregstub} />
-				<Inst inst={bestilling.instdata} />
-				<Krrstub krrstub={bestilling.krrstub} />
-				<Medl medl={bestilling.medl} />
-				<Udistub udistub={bestilling.udistub} />
-				<Dokarkiv dokarkivListe={bestilling.dokarkiv} />
-				<Histark histark={bestilling.histark} />
-			</div>
-			{showVisMerButton &&
-				(visMer ? (
-					<VisMerButton onClick={setSkjulMer} kind={'chevron-up'}>
-						VIS MINDRE
-					</VisMerButton>
-				) : (
-					<>
-						<div className="gradient-overlay" />
-						<VisMerButton onClick={setVisMer} kind={'chevron-down'}>
-							VIS MER
-						</VisMerButton>
-					</>
-				))}
-		</div>
+		<>
+			<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
+			<Foedested foedestedListe={bestilling.pdldata?.person?.foedested} />
+			<Foedselsdato foedselsdatoListe={bestilling.pdldata?.person?.foedselsdato} />
+			<Foedsel foedselListe={bestilling.pdldata?.person?.foedsel} />
+			<Doedsfall doedsfallListe={bestilling.pdldata?.person?.doedsfall} />
+			<Statsborgerskap statsborgerskapListe={bestilling.pdldata?.person?.statsborgerskap} />
+			<Innvandring innvandringListe={bestilling.pdldata?.person?.innflytting} />
+			<Utvandring utvandringListe={bestilling.pdldata?.person?.utflytting} />
+			<Kjoenn kjoennListe={bestilling.pdldata?.person?.kjoenn} />
+			<Navn navnListe={bestilling.pdldata?.person?.navn} />
+			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
+			<NorskBankkonto norskBankkonto={bestilling.bankkonto?.norskBankkonto} />
+			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
+			<Vergemaal vergemaalListe={bestilling.pdldata?.person?.vergemaal} />
+			<Fullmakt fullmaktListe={bestilling.fullmakt || bestilling.pdldata?.person?.fullmakt} />
+			<Sikkerhetstiltak sikkerhetstiltakListe={bestilling.pdldata?.person?.sikkerhetstiltak} />
+			<TilrettelagtKommunikasjon
+				tilrettelagtKommunikasjonListe={bestilling.pdldata?.person?.tilrettelagtKommunikasjon}
+			/>
+			<Bostedsadresse bostedsadresseListe={bestilling.pdldata?.person?.bostedsadresse} />
+			<Oppholdsadresse oppholdsadresseListe={bestilling.pdldata?.person?.oppholdsadresse} />
+			<Kontaktadresse kontaktadresseListe={bestilling.pdldata?.person?.kontaktadresse} />
+			<DeltBosted deltBosted={bestilling.pdldata?.person?.deltBosted?.[0]} />
+			<Adressebeskyttelse
+				adressebeskyttelseListe={bestilling.pdldata?.person?.adressebeskyttelse}
+			/>
+			<Sivilstand sivilstandListe={bestilling.pdldata?.person?.sivilstand} />
+			<ForelderBarnRelasjon forelderBarnListe={bestilling.pdldata?.person?.forelderBarnRelasjon} />
+			<Foreldreansvar foreldreansvarListe={bestilling.pdldata?.person?.foreldreansvar} />
+			<DoedfoedtBarn doedfoedtBarnListe={bestilling.pdldata?.person?.doedfoedtBarn} />
+			<FalskIdentitet falskIdentitetListe={bestilling.pdldata?.person?.falskIdentitet} />
+			<UtenlandskIdent
+				utenlandskIdentListe={bestilling.pdldata?.person?.utenlandskIdentifikasjonsnummer}
+			/>
+			<NyIdentitet nyIdentitetListe={bestilling.pdldata?.person?.nyident} />
+			<NavAnsatt nomdata={bestilling.nomdata} />
+			<Skjerming skjerming={bestilling.skjerming} />
+			<KontaktinformasjonForDoedsbo
+				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
+			/>
+			<Arbeidsforhold arbeidsforholdListe={bestilling.aareg} />
+			<SigrunstubPensjonsgivende
+				sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
+			/>
+			<SigrunstubSummertSkattegrunnlag
+				summertSkattegrunnlagListe={bestilling.sigrunstubSummertSkattegrunnlag}
+			/>
+			<Inntektstub inntektstub={bestilling.inntektstub} />
+			<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
+			<Skattekort skattekort={bestilling.skattekort} />
+			<Arbeidssoekerregisteret arbeidssoekerregisteret={bestilling.arbeidssoekerregisteret} />
+			<Arbeidsplassen arbeidsplassenCV={bestilling.arbeidsplassenCV} />
+			<PensjonsgivendeInntekt pensjon={bestilling.pensjonforvalter?.inntekt} />
+			<GenerertPensjonsgivendeInntekt
+				pensjon={bestilling.pensjonforvalter?.generertInntekt?.generer}
+			/>
+			<Pensjonsavtale pensjon={bestilling.pensjonforvalter?.pensjonsavtale} />
+			<Tjenestepensjon pensjon={bestilling.pensjonforvalter?.tp} />
+			<Alderspensjon pensjon={bestilling.pensjonforvalter?.alderspensjon} />
+			<AlderspensjonNyUttaksgrad apNy={bestilling.pensjonforvalter?.alderspensjonNyUtaksgrad} />
+			<Uforetrygd pensjon={bestilling.pensjonforvalter?.uforetrygd} />
+			<AfpOffentlig pensjon={bestilling.pensjonforvalter?.afpOffentlig} />
+			<Arena arbeidsytelse={bestilling.arenaforvalter} />
+			<Sykemelding sykemelding={bestilling.sykemelding} />
+			<Yrkesskader yrkesskader={bestilling.yrkesskader} />
+			<Brregstub brregstub={bestilling.brregstub} />
+			<Inst inst={bestilling.instdata} />
+			<Krrstub krrstub={bestilling.krrstub} />
+			<Medl medl={bestilling.medl} />
+			<Udistub udistub={bestilling.udistub} />
+			<Dokarkiv dokarkivListe={bestilling.dokarkiv} />
+			<Histark histark={bestilling.histark} />
+		</>
 	)
 }

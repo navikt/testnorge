@@ -1,7 +1,10 @@
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import {
+	BestillingData,
+	BestillingTitle,
+} from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'

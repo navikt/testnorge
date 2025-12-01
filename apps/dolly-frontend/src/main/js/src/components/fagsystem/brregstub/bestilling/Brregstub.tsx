@@ -1,6 +1,6 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'

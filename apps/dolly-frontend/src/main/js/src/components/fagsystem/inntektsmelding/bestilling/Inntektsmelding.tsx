@@ -1,6 +1,9 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import {
+	BestillingData,
+	BestillingTitle,
+} from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { codeToNorskLabel, formatDate, oversettBoolean } from '@/utils/DataFormatter'

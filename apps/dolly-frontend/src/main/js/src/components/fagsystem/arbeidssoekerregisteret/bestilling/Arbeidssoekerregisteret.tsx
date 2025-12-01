@@ -1,6 +1,9 @@
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import {
+	BestillingData,
+	BestillingTitle,
+} from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'

@@ -3,7 +3,7 @@ import React from 'react'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 
 export const RelatertPerson = ({ personData }: any) => {
 	if (!personData) {

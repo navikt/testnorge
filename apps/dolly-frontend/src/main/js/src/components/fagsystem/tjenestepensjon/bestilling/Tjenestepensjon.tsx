@@ -1,7 +1,7 @@
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'

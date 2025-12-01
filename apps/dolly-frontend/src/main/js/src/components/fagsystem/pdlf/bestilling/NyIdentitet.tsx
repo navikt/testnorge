@@ -1,6 +1,6 @@
 import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle, EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { BestillingTitle, EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'

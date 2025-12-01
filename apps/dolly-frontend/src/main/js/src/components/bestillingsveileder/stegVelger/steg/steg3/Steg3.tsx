@@ -7,7 +7,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
-import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { Bestillingsvisning } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { useFormContext } from 'react-hook-form'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
@@ -94,7 +94,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 				// <div className="oppsummering" style={{ maxHeight: bestillingHeight, overflowY: 'hidden' }}>
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier ...'} />}>
-						<Bestillingsdata bestilling={formMethods.getValues()} />
+						<Bestillingsvisning bestilling={formMethods.getValues()} />
 						{/*//TODO: Fjernes naar bestillingsdata er klar*/}
 						{/*<Bestillingskriterier bestilling={formMethods.getValues()} />*/}
 					</Suspense>

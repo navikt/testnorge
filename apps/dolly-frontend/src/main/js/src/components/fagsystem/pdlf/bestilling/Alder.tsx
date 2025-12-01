@@ -3,7 +3,7 @@ import {
 	BestillingData,
 	BestillingTitle,
 	EmptyObject,
-} from '@/components/bestilling/sammendrag/Bestillingsdata'
+} from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import React from 'react'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
