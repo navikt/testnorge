@@ -31,6 +31,8 @@ import reactor.netty.http.client.HttpClient;
 import java.time.Duration;
 import java.util.List;
 
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
+
 @Slf4j
 @Service
 public class PdlDataConsumer extends ConsumerStatus {
@@ -50,7 +52,7 @@ public class PdlDataConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
-                        .responseTimeout(Duration.ofSeconds(RequestTimeout.REQUEST_DURATION))))
+                        .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
