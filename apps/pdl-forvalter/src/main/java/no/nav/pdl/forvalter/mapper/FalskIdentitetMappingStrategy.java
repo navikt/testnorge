@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet.IdentifiserendeInformasjon;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;

@@ -19,3 +19,9 @@ av Dolly, bestillingskriterier, hvem som har sendt de inn og status på disse.
 * [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
 * [Database i GCP.](../../docs/modules/ROOT/pages/local/gcp_db.adoc)
 * [OpenSearch.](../../docs/modules/ROOT/pages/local/local_opensearch.adoc)
+
+Evt midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
+
+>nais aiven create opensearch ignored dolly -i bestillinger -a admin -s \<ownsecretname\> -e 10
+
+>nais aiven get opensearch \<ownsecretname\> dolly

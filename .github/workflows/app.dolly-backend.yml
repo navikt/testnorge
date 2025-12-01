@@ -6,7 +6,6 @@ on:
       - .github/workflows/app.dolly-backend.yml
       - apps/dolly-backend/**
       - libs/data-transfer-objects/**
-      - libs/data-transfer-search-objects/**
       - libs/security-core/**
       - libs/reactive-core/**
       - libs/reactive-security/**

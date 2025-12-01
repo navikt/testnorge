@@ -4,13 +4,11 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
-import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
@@ -25,12 +23,7 @@ class TestgruppeMappingStrategyTest {
     private static final String BRUKERID = "123";
 
     @MockitoBean
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockitoBean
     private BrukerService brukerService;
-    @MockitoBean
-    private ElasticsearchOperations elasticsearchOperations;
 
     private MapperFacade mapper;
 

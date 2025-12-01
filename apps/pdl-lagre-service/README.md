@@ -14,10 +14,16 @@ PdlPersonDokumentListener.java eller PdlAdresseListener.java og deploye på nytt
 Ved oppstart opprettes manglende indekser, samt at disse konfigures fra json-ressursfiler.
 
 ## Lokal kjøring
+
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
+* [Database i GCP.](../../docs/modules/ROOT/pages/local/gcp_db.adoc)
+* [OpenSearch.](../../docs/modules/ROOT/pages/local/local_opensearch.adoc)
+
 Midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
 
->nais aiven create opensearch ignored dolly -i bestillinger -a admin -s dolly-17630-93255 -e 10
+>nais aiven create opensearch ignored dolly -i bestillinger -a admin -s \<ownsecretname\> -e 10
 
->nais aiven get opensearch dolly-17630-93255 dolly
+>nais aiven get opensearch \<ownsecretname\> dolly
 
 Tilsvarende skal det være mulig å hente kafka tilgang via nais aiven create kafka uten at dette har vært forsøkt.

@@ -6,9 +6,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
 import no.nav.testnav.dollysearchservice.mapper.MappingContextUtils;
 import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
-import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchResponse;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

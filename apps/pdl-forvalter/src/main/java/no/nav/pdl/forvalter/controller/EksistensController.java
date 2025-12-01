@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.service.EksistensService;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AvailibilityResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

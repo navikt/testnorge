@@ -5,7 +5,7 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 ## General Style
 
 - IMPORTANT: Prefer obvious code over clever code.
-- IMPORTANT: DO NOT ADD ANY COMMENTS unless asked.
+- IMPORTANT: DO NOT ADD ANY COMMENTS unless asked, and DO NOT REMOVE or MODIFY existing comments in the code.
 - Provide entire files instead of snippets, unless specified.
 - use descriptive variable names unless in a loop or other obvious context.
 
@@ -48,6 +48,8 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 - Keep components small and focused
 - Follow accessibility best practices
 - Reuse existing UI components; do not introduce new state libs
+- Prefer creating .tsx files for components, not .ts
+- Export components directly where they are written, never in dedicated export/index files.
 
 ## Error Handling React / TS:
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.bestilling.AbstractConsumerTest;
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

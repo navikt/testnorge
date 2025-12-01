@@ -2,9 +2,9 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

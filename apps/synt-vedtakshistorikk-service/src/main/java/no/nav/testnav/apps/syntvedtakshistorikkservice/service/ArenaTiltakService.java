@@ -12,7 +12,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.KodeMedSanns
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils;
 
-import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;

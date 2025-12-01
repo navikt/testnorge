@@ -3,17 +3,17 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseIFrittFormatDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseIFrittFormatDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

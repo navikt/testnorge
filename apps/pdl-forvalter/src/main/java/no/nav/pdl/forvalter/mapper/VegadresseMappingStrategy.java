@@ -4,8 +4,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse.VegadresseForPost;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PostadresseIFrittFormatDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PostadresseIFrittFormatDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

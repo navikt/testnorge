@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -37,37 +37,37 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private final PersonServiceClient personServiceClient;
 
     public OpprettPersonerByKriterierService(
-            BestillingElasticRepository bestillingElasticRepository,
             BestillingProgressRepository bestillingProgressRepository,
             BestillingRepository bestillingRepository,
             BestillingService bestillingService,
+            CacheManager cacheManager,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
             IdentService identService,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
             ObjectMapper objectMapper,
+            OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
-            TransactionHelperService transactionHelperService,
-            CacheManager cacheManager
+            TransactionHelperService transactionHelperService
     ) {
         super(
-                bestillingElasticRepository,
                 bestillingProgressRepository,
                 bestillingRepository,
                 bestillingService,
+                cacheManager,
                 counterCustomRegistry,
                 errorStatusDecoder,
                 identService,
                 clientRegisters,
                 mapperFacade,
                 objectMapper,
+                openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
-                transactionHelperService,
-                cacheManager
+                transactionHelperService
         );
         this.personServiceClient = personServiceClient;
     }

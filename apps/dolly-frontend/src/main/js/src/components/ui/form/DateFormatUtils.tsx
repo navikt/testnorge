@@ -52,9 +52,18 @@ export const convertInputToDate = (
 		return date
 	}
 	const customDayjs = initDayjs()
-	const dayJs = isValid(new Date(date))
-		? customDayjs(date)
-		: customDayjs(date, specificFormat || DateFormatUtils.generateValidDateFormats(), true)
+
+	const isISOFormat =
+		typeof date === 'string' && /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?/.test(date)
+
+	const dayJs = specificFormat
+		? customDayjs(date, specificFormat, true)
+		: isISOFormat
+			? customDayjs(date)
+			: isValid(new Date(date))
+				? customDayjs(date)
+				: customDayjs(date, DateFormatUtils.generateValidDateFormats(), true)
+
 	if (fixOffset) {
 		return dayJs.utc().add(dayJs.utcOffset(), 'minute')
 	}

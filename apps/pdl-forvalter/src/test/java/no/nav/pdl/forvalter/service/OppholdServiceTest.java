@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,8 +10,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static no.nav.testnav.libs.data.pdlforvalter.v1.OppholdDTO.OppholdType.MIDLERTIDIG;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.OppholdDTO.OppholdType.OPPLYSNING_MANGLER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO.OppholdType.MIDLERTIDIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO.OppholdType.OPPLYSNING_MANGLER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;

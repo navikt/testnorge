@@ -2,18 +2,16 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from './validation'
-import { ArbeidsforholdToggle } from './partials/arbeidsforholdToggle'
+import { ArbeidsforholdToggle } from '@/components/shared/ArbeidsforholdToggle/ArbeidsforholdToggle'
 import { useFormContext } from 'react-hook-form'
-import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/initialValues'
+import {
+	initialArbeidsforholdOrg,
+	initialArbeidsgiverOrg,
+	initialArbeidsgiverPers,
+} from '@/components/fagsystem/aareg/form/initialValues'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ArbeidsforholdForm } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
 import React, { useContext } from 'react'
-import {
-	useDollyFasteDataOrganisasjoner,
-	useDollyOrganisasjoner,
-} from '@/utils/hooks/useDollyOrganisasjoner'
-import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
@@ -24,14 +22,6 @@ export const aaregAttributt = 'aareg'
 
 export const AaregForm = () => {
 	const formMethods = useFormContext()
-	const { currentBruker } = useCurrentBruker()
-
-	const { organisasjoner: fasteOrganisasjoner, loading: fasteOrganisasjonerLoading } =
-		useDollyFasteDataOrganisasjoner(true)
-
-	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useDollyOrganisasjoner(currentBruker?.brukerId)
-	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	const { personFoerLeggTil } = useContext(
 		BestillingsveilederContext,
@@ -56,11 +46,13 @@ export const AaregForm = () => {
 					{(path: string, idx: number) => (
 						<>
 							<ArbeidsforholdToggle
+								formMethods={formMethods}
 								path={path}
 								idx={idx}
-								fasteOrganisasjoner={fasteOrganisasjoner}
-								egneOrganisasjoner={egneOrganisasjoner}
-								loadingOrganisasjoner={fasteOrganisasjonerLoading || brukerOrganisasjonerLoading}
+								useFormState={true}
+								useValidation={true}
+								initialArbeidsgiverOrg={initialArbeidsgiverOrg}
+								initialArbeidsgiverPers={initialArbeidsgiverPers}
 							/>
 							<ArbeidsforholdForm
 								path={path}

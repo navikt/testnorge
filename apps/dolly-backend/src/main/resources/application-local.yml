@@ -28,8 +28,8 @@ management:
 open:
   search:
     uri: http://localhost:9200
-    username: dummy
-    password: dummy
+    username: tada
+    password: tada
     index: local
 
 consumers:

@@ -11,7 +11,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.dolly.util.CallIdUtil;
-import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

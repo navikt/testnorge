@@ -4,7 +4,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;

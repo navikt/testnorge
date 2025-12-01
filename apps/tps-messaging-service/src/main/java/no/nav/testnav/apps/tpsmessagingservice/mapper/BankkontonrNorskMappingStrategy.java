@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoNorskRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.tps.ctg.s610.domain.BankkontoNorgeType;
 import org.springframework.stereotype.Component;
 

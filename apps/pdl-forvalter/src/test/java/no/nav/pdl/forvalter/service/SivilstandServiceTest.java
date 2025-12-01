@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,8 +13,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.SKILT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SKILT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
