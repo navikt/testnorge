@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -66,10 +63,7 @@ public class RsSykemelding {
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public static class Aktivitet {
 
-            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate fom;
-
-            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate tom;
         }
     }
@@ -92,7 +86,6 @@ public class RsSykemelding {
         private Pasient pasient;
         private List<Periode> perioder;
         private Organisasjon sender;
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate startDato;
         private Boolean umiddelbarBistand;
         private KontaktMedPasient kontaktMedPasient;
@@ -195,7 +188,6 @@ public class RsSykemelding {
 
             private Adresse adresse;
             private String etternavn;
-            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate foedselsdato;
             private String fornavn;
             private String ident;
@@ -213,9 +205,7 @@ public class RsSykemelding {
         public static class Periode {
 
             private DollyAktivitet aktivitet;
-            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate fom;
-            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate tom;
         }
 

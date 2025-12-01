@@ -4,11 +4,11 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

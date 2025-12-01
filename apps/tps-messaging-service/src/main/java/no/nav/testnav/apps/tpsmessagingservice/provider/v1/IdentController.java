@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.service.IdentService;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

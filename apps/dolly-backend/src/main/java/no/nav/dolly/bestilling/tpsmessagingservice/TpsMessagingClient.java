@@ -13,7 +13,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransactionHelperService;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 
 import java.util.ArrayList;
 import java.util.List;

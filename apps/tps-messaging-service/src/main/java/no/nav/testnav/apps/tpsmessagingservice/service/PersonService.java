@@ -18,9 +18,9 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS610Response;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.RelasjonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
 import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
@@ -37,9 +37,9 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.data.tpsmessagingservice.v1.RelasjonDTO.ROLLE.FAR;
-import static no.nav.testnav.libs.data.tpsmessagingservice.v1.RelasjonDTO.ROLLE.MOR;
-import static no.nav.testnav.libs.data.tpsmessagingservice.v1.RelasjonDTO.ROLLE.PARTNER;
+import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.FAR;
+import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.MOR;
+import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.PARTNER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j

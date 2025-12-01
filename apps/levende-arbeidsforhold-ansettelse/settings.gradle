@@ -5,7 +5,6 @@ plugins {
 rootProject.name = "levende-arbeidsforhold-ansettelse"
 
 includeBuild "../../libs/data-transfer-objects"
-includeBuild "../../libs/data-transfer-search-objects"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/reactive-security"
 includeBuild "../../libs/security-core"

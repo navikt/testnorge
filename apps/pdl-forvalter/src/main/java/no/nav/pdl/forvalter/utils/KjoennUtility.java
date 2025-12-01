@@ -1,16 +1,16 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 
 import java.security.SecureRandom;
 import java.util.Random;
 
 import static java.util.Objects.isNull;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
 
 @UtilityClass
 public class KjoennUtility {

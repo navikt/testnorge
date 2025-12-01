@@ -7,9 +7,9 @@ import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingAnnulleri
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.SendSkdMeldinger;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ResponseStatus;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.DoedsmeldingRequest;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.DoedsmeldingResponse;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

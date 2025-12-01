@@ -3,9 +3,9 @@ package no.nav.pdl.forvalter.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,21 +14,21 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FALSK_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FULLMEKTIG;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.RIKTIG_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.VERGE;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FALSK_IDENTITET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMEKTIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.RIKTIG_IDENTITET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
 
 @UtilityClass
 public class DeleteRelasjonerUtility {

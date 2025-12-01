@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,11 +21,8 @@ public class RsArenaAap115 {
 
     public enum VedtaksType {O, S}
 
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime fraDato;
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime tilDato;
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime datoMottatt;
 
     @Schema(description = "Gyldige verdier: O (ny), S (stans)")
@@ -62,7 +56,7 @@ public class RsArenaAap115 {
         private String klassifisering;
         private String diagnose;
         private String kilde;
-        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
+
         private LocalDateTime kildeDato;
     }
 

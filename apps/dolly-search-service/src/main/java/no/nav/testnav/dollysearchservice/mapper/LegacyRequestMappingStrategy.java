@@ -3,10 +3,10 @@ package no.nav.testnav.dollysearchservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.testnav.libs.data.dollysearchservice.v1.PersonRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonSearch;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

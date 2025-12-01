@@ -7,7 +7,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 

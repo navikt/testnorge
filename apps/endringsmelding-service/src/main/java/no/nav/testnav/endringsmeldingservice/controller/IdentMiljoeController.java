@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.endringsmeldingservice.consumer.TpsMessagingConsumer;
 import no.nav.testnav.endringsmeldingservice.domain.IdenterRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

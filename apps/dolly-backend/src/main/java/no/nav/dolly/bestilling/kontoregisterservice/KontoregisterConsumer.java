@@ -8,10 +8,10 @@ import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterGetComm
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
-import no.nav.testnav.libs.data.kontoregister.v1.HentKontoResponseDTO;
-import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
-import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.HentKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.HentKontoResponseDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.KontoregisterResponseDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
