@@ -15,14 +15,18 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @Slf4j
 @Service
@@ -46,6 +50,8 @@ public class TpsMessagingConsumer extends ConsumerStatus {
         serverProperties = consumers.getTestnavTpsMessagingService();
         this.webClient = webClient
                 .mutate()
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

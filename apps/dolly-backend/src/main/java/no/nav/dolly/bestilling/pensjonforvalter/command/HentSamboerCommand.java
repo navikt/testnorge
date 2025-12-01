@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
@@ -37,7 +38,7 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToMono(PensjonSamboerResponse.class)
-                .doOnError(WebClientError.logTo(log))
+                .doOnError(error -> !(error instanceof WebClientResponseException.NotFound), WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
