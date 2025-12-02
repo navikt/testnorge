@@ -6,6 +6,7 @@ interface IdentvalidatorData {
 	erPersonnummer2032: boolean
 	erSyntetisk: boolean
 	erTestnorgeIdent: boolean
+	erIProd: boolean
 	identtype: string
 	foedselsdato: string
 	kjoenn: string
@@ -63,6 +64,11 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 			label: 'Er Testnorge-ident',
 			value: oversettBoolean(data.erTestnorgeIdent),
 			icon: getIcon(data.erTestnorgeIdent),
+		},
+		{
+			label: 'Er i prod',
+			value: oversettBoolean(data.erIProd),
+			icon: getIcon(data.erIProd),
 		},
 		{ label: 'Identtype', value: data.identtype },
 		{ label: 'Fødselsdato', value: formatDate(data.foedselsdato) },
