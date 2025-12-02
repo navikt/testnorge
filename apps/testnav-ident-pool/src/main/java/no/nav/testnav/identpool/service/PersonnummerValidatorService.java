@@ -6,6 +6,7 @@ import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
+import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
@@ -198,13 +199,14 @@ public class PersonnummerValidatorService {
                                 erTestnorgeIdent,
                                 erSyntetisk,
                                 erGyldig,
-                                erGyldig ? tuple.getT3().getFirst().isInUse() : null,
+                                erGyldig ? tuple.getT3().stream().findFirst().orElse(new TpsStatusDTO()).isInUse() : null,
                                 erGyldig ? !erStriktFoedselsnummer64 : null,
                                 erGyldig ? utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64) : null,
                                 erGyldig ? utledKjoenn(foedselsnummer, tuple.getT1(), erStriktFoedselsnummer64) : null,
                                 erGyldig ? null : valideringResultat,
                                 erGyldig ? getKommentar(foedselsnummer, erStriktFoedselsnummer64,
-                                        tuple.getT1(), tuple.getT2(), tuple.getT3().getFirst().isInUse()) : null));
+                                        tuple.getT1(), tuple.getT2(),
+                                        tuple.getT3().stream().findFirst().orElse(new TpsStatusDTO()).isInUse()) : null));
     }
 
     private static Identtype utledIdenttype(String ident) {

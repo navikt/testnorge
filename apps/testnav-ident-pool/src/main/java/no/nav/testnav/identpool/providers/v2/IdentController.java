@@ -1,6 +1,7 @@
 package no.nav.testnav.identpool.providers.v2;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
@@ -51,7 +52,7 @@ public class IdentController {
 
     @Operation(description = "Validering for nye og gamle test-identer")
     @PostMapping("/valider")
-    public Mono<ValideringResponseDTO> valider(@RequestBody ValideringRequestDTO request) {
+    public Mono<ValideringResponseDTO> valider(@Valid @RequestBody ValideringRequestDTO request) {
 
         return personnummerValidatorService.validerFoedselsnummer(request.ident());
     }
