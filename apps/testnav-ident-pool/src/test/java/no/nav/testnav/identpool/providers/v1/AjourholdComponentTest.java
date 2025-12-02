@@ -7,7 +7,6 @@ import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.AjourholdRepository;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @DollySpringBootTest
 class AjourholdComponentTest extends AbstractTestcontainer {
 

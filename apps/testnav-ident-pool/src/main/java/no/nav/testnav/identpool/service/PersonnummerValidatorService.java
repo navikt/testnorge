@@ -1,10 +1,12 @@
 package no.nav.testnav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
+import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
@@ -17,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
@@ -38,11 +41,12 @@ public class PersonnummerValidatorService {
     private static final List<Integer> FNR_SIFFERE = List.of(0, 1, 4, 5);
     private static final List<Integer> NPID_SIFFERE = List.of(2, 3, 6, 7);
 
-    private final PersonidentifikatorRepository personidentifikatorRepository;
     private final IdentRepository identRepository;
+    private final PersonidentifikatorRepository personidentifikatorRepository;
+    private final TpsMessagingConsumer tpsMessagingConsumer;
 
     /**
-     * Validerer et fødsels-eller-d-nummer(1964 og 2032-type) ved å sjekke kontrollsifrene iht.
+     * Validerer et fødsels-eller-d-nummer(1964- og 2032-type) ved å sjekke kontrollsifrene iht.
      * <a href="https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/nytt-fodselsnummer-fra-2032/">...</a>
      *
      * @param ident 11-siffret FNR, DNR eller NPID som skal valideres.
@@ -175,7 +179,6 @@ public class PersonnummerValidatorService {
 
     public Mono<ValideringResponseDTO> validerFoedselsnummer(String foedselsnummer) {
 
-
         var valideringResultat = validerInput(foedselsnummer);
         var erGyldig = "OK".equals(valideringResultat);
         var erStriktFoedselsnummer64 = erGyldig && validerKontrollsiffer(foedselsnummer, true);
@@ -186,7 +189,9 @@ public class PersonnummerValidatorService {
         return Mono.zip(identRepository.findByPersonidentifikator(foedselsnummer)
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident()))),
                         personidentifikatorRepository.findByPersonidentifikator(foedselsnummer)
-                                .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident2032()))))
+                                .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident2032()))),
+                        tpsMessagingConsumer.getIdenterProdStatus(Set.of(foedselsnummer))
+                                .collectList())
                 .map(tuple ->
                         new ValideringResponseDTO(
                                 foedselsnummer,
@@ -194,12 +199,14 @@ public class PersonnummerValidatorService {
                                 erTestnorgeIdent,
                                 erSyntetisk,
                                 erGyldig,
+                                erGyldig ? tuple.getT3().stream().findFirst().orElse(new TpsStatusDTO()).isInUse() : null,
                                 erGyldig ? !erStriktFoedselsnummer64 : null,
                                 erGyldig ? utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64) : null,
                                 erGyldig ? utledKjoenn(foedselsnummer, tuple.getT1(), erStriktFoedselsnummer64) : null,
                                 erGyldig ? null : valideringResultat,
                                 erGyldig ? getKommentar(foedselsnummer, erStriktFoedselsnummer64,
-                                        tuple.getT1(), tuple.getT2()) : null));
+                                        tuple.getT1(), tuple.getT2(),
+                                        tuple.getT3().stream().findFirst().orElse(new TpsStatusDTO()).isInUse()) : null));
     }
 
     private static Identtype utledIdenttype(String ident) {
@@ -244,21 +251,22 @@ public class PersonnummerValidatorService {
         }
     }
 
-    private static String getKommentar(String foedselsnummer, boolean erStriktFoedselsnummer64,
-                                       Ident ident, Ident2032 ident2032) {
+    private static String getKommentar(String foedselsnummer,
+                                       boolean erStriktFoedselsnummer64, Ident ident,
+                                       Ident2032 ident2032, boolean isProd) {
 
-        if (nonNull(ident2032.getFoedselsdato())) {
+        if (nonNull(ident2032.getFoedselsdato()) && !isProd) {
             return "Fødselsdato er hentet fra " + (isTrue(ident2032.getAllokert()) ? "eksisterende" : "ledig") +
-                    " ident i identpool. Århundre kan ikke utledes fra 2032-fødselsnummer, ei heller kjønn.";
-        } else if (nonNull(ident.getFoedselsdato())) {
+                    " ident i identpool. Århundre kan ikke utledes fra 2032-format fødselsnummer, ei heller kjønn.";
+        } else if (nonNull(ident.getFoedselsdato()) && !isProd) {
             return "Fødselsdato og kjønn er hentet fra " + (ident.getRekvireringsstatus() == I_BRUK ?
                     "eksisterende" : "ledig") + " ident i identpool." +
                     (getKjoennFromIdent(foedselsnummer) != ident.getKjoenn() ?
                     " Kjønn avledet fra fødselsnummer samsvarer ikke med lagret verdi fra identpool." : "");
         } else if (erStriktFoedselsnummer64) {
-            return "Fødselsdato og kjønn er avledet fra fødselsnummer, som er riktig hvis det er et gyldig 1964-fødselsnummer.";
+            return "Fødselsdato og kjønn er avledet fra fødselsnummer, i samsvar med 1964-format oppbygning.";
         } else {
-            return "2032-fødselsnummer mangler informasjon om århundre og kjønn. Fødselsdato er derfor avledet med antakelse om " +
+            return "2032-format fødselsnummer mangler informasjon om århundre og kjønn. Fødselsdato er avledet med antakelse om " +
                     "at personen er født på 1900- eller 2000-tallet basert på dagens dato.";
         }
     }
