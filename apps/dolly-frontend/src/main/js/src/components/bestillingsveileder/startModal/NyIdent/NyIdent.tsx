@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { FormProvider, useFormContext } from 'react-hook-form'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -8,18 +8,26 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import { BVOptions } from '@/components/bestillingsveileder/options/options'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
-export function NyIdent({ gruppeId }: any) {
+export function NyIdent() {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const { dollyEnvironments } = useDollyEnvironments()
 	const identtypePath = 'pdldata.opprettNyPerson.identtype'
 	const id2032Path = 'pdldata.opprettNyPerson.id2032'
 	const formMethods = useFormContext()
-	const [identtype, setIdenttype] = useState(formMethods.watch(identtypePath))
+	const identtype = formMethods.watch(identtypePath)
+
+	useEffect(() => {
+		const ctxIdenttype = opts.initialValues?.pdldata?.opprettNyPerson?.identtype
+		if (ctxIdenttype) {
+			formMethods.setValue(identtypePath, ctxIdenttype)
+		}
+		const ctxId2032 = opts.initialValues?.pdldata?.opprettNyPerson?.id2032
+		if (typeof ctxId2032 === 'boolean') {
+			formMethods.setValue(id2032Path, ctxId2032)
+		}
+	}, [opts.initialValues])
 
 	return (
 		<FormProvider {...formMethods}>
@@ -34,8 +42,11 @@ export function NyIdent({ gruppeId }: any) {
 						size="medium"
 						onBlur={(event) => {
 							const selectedValue = event?.target?.value
-							opts.antall = selectedValue
-							formMethods.setValue('antall', selectedValue)
+							const parsedValue = selectedValue ? parseInt(selectedValue, 10) : undefined
+							if (parsedValue) {
+								opts.updateContext && opts.updateContext({ antall: parsedValue })
+								formMethods.setValue('antall', parsedValue)
+							}
 						}}
 					/>
 					<FormSelect
@@ -43,12 +54,8 @@ export function NyIdent({ gruppeId }: any) {
 						label="Velg identtype"
 						size="medium"
 						onChange={(option: Option) => {
-							opts.identtype = option.value
-							opts.mal = undefined
-							const options = BVOptions(opts, gruppeId, dollyEnvironments)
-							setIdenttype(option.value)
-							formMethods.reset(options.initialValues)
-							formMethods.setValue('gruppeId', gruppeId)
+							formMethods.setValue(identtypePath, option.value)
+							opts.updateContext && opts.updateContext({ identtype: option.value })
 						}}
 						value={identtype}
 						options={Options('identtype')}
@@ -59,7 +66,7 @@ export function NyIdent({ gruppeId }: any) {
 							name={id2032Path}
 							label="Ny ident (2032)"
 							afterChange={(val: boolean) => {
-								opts.id2032 = val
+								opts.updateContext && opts.updateContext({ id2032: val })
 								formMethods.setValue(id2032Path, val)
 							}}
 							checkboxMargin

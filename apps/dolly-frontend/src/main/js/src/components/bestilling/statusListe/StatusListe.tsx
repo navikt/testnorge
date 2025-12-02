@@ -13,6 +13,7 @@ type StatusProps = {
 	isCanceling: boolean
 	cancelBestilling: Function
 }
+
 const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusProps) => {
 	const [nyeBestillinger, setNyeBestillinger] = useState([])
 	const [ferdigBestillinger, setFerdigBestillinger] = useState([])

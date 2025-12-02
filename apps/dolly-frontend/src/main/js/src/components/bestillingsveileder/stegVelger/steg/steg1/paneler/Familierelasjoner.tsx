@@ -27,7 +27,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const formGruppeId = formMethods.watch('gruppeId')
 	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
 	const { identer } = useGruppeIdenter(gruppeId)
-	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+	const harTestnorgeIdenter = (identer?.filter((ident) => ident.master === 'PDL')?.length ?? 0) > 0
 
 	const ukjentGruppe = !gruppeId
 	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'

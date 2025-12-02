@@ -32,11 +32,29 @@ export const formatDate = (date: any, formatString?: string) => {
 	if (date?.length > 19) {
 		date = date.substring(0, 19)
 	}
+
+	if (date?.isValid?.()) {
+		if (date.isValid()) {
+			return date.format(formatString || 'DD.MM.YYYY')
+		}
+		return date
+	}
+
 	if (isDate(date)) {
 		const customdayjs = initDayjs()
 		return customdayjs(date).format(formatString || 'DD.MM.YYYY')
 	}
-	const dayjsDate = convertInputToDate(date)
+
+	const isISOWithTime =
+		typeof date === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(date)
+	const isISODateOnly = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)
+
+	const dayjsDate = isISOWithTime
+		? convertInputToDate(date, false, 'YYYY-MM-DDTHH:mm:ss')
+		: isISODateOnly
+			? convertInputToDate(date, false, 'YYYY-MM-DD')
+			: convertInputToDate(date)
+
 	const valid = dayjsDate?.isValid?.()
 	if (!valid) {
 		return date

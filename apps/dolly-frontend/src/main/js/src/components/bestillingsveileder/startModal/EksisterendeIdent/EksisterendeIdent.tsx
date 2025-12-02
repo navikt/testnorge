@@ -8,13 +8,9 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { BVOptions } from '@/components/bestillingsveileder/options/options'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 export const EksisterendeIdent = ({ gruppeId }: any) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const { dollyEnvironments } = useDollyEnvironments()
-
 	const formMethods = useFormContext()
 
 	const formEksisterendeIdenter = formMethods.watch('opprettFraIdenter')
@@ -30,22 +26,26 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 		)
 	}
 
-	const { pdlfEksistens, loading, error } = usePdlfEksistens(submittedIds)
+	const { pdlfEksistens, loading, error } = usePdlfEksistens(submittedIds as string[] | null)
 
 	useEffect(() => {
+		if (!pdlfEksistens) return
 		const gyldigeIdenter = pdlfEksistens
-			?.filter((status) => status.available)
-			.map((status) => status.ident)
-		opts.opprettFraIdenter = gyldigeIdenter
-		if (!formEksisterendeIdenter || formEksisterendeIdenter?.length === 0) {
-			const options = BVOptions(opts, gruppeId, dollyEnvironments)
-			formMethods.reset(options.initialValues)
-		}
+			.filter((status: { available: boolean }) => status.available)
+			.map((status: { ident: string }) => status.ident)
+		opts.updateContext &&
+			opts.updateContext({
+				antall: gyldigeIdenter.length > 0 ? gyldigeIdenter.length : null,
+				opprettFraIdenter: gyldigeIdenter,
+				is: { ...opts.is, opprettFraIdenter: true },
+			})
 		formMethods.setValue('opprettFraIdenter', gyldigeIdenter)
 		formMethods.setValue('gruppeId', gruppeId)
-	}, [pdlfEksistens])
+	}, [pdlfEksistens, gruppeId])
 
-	const hasInvalidIdentifiers = pdlfEksistens?.some((status) => !status.available)
+	const hasInvalidIdentifiers = pdlfEksistens?.some(
+		(status: { available: boolean }) => !status.available,
+	)
 
 	const onSubmit = () => {
 		setSubmittedIds(parseIdentifiers(input))
@@ -54,14 +54,20 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 	const resetEksisterende = () => {
 		setSubmittedIds(null)
 		setInput('')
-		formMethods.setValue('opprettFraIdenter', null)
+		formMethods.setValue('opprettFraIdenter', [])
+		opts.updateContext &&
+			opts.updateContext({
+				antall: null,
+				opprettFraIdenter: [],
+				is: { ...opts.is, opprettFraIdenter: true },
+			})
 	}
 
 	return (
 		<div className="eksisterende-ident-form">
 			{error && (
 				<Alert variant="error">
-					<Icon kind="advarsel" size="medium" />
+					<Icon kind="report-problem-triangle" />
 					{error.message}
 				</Alert>
 			)}
@@ -91,35 +97,53 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 				>
 					Valider identifikatorer
 				</Button>
-				{submittedIds && (
-					<Button type="button" variant="secondary" onClick={resetEksisterende} disabled={loading}>
-						Tøm
-					</Button>
-				)}
 			</div>
 			{pdlfEksistens?.length > 0 && (
-				<Table size="medium" zebraStripes style={{ marginBottom: '20px', marginRight: '20px' }}>
-					<Table.Header>
-						<Table.Row>
-							<Table.HeaderCell scope="col">Ident</Table.HeaderCell>
-							<Table.HeaderCell scope="col">Status</Table.HeaderCell>
-							<Table.HeaderCell scope="col">OK</Table.HeaderCell>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{pdlfEksistens?.map(({ ident, status, available }, idx) => {
-							return (
-								<Table.Row key={idx}>
-									<Table.HeaderCell scope="row">{ident}</Table.HeaderCell>
-									<Table.HeaderCell>{status}</Table.HeaderCell>
-									<Table.HeaderCell>
-										<Icon kind={available ? 'feedback-check-circle' : 'report-problem-circle'} />
-									</Table.HeaderCell>
-								</Table.Row>
-							)
-						})}
-					</Table.Body>
-				</Table>
+				<div className="flexbox--full-width" style={{ marginRight: '20px' }}>
+					<Table size="medium" zebraStripes style={{ marginBottom: '20px', marginRight: '20px' }}>
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell scope="col">Ident</Table.HeaderCell>
+								<Table.HeaderCell scope="col">Status</Table.HeaderCell>
+								<Table.HeaderCell scope="col">OK</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{pdlfEksistens?.map(
+								(
+									{
+										ident,
+										status,
+										available,
+									}: { ident: string; status: string; available: boolean },
+									idx: number,
+								) => {
+									return (
+										<Table.Row key={idx}>
+											<Table.HeaderCell scope="row">{ident}</Table.HeaderCell>
+											<Table.HeaderCell>{status}</Table.HeaderCell>
+											<Table.HeaderCell>
+												<Icon
+													kind={available ? 'feedback-check-circle' : 'report-problem-circle'}
+												/>
+											</Table.HeaderCell>
+										</Table.Row>
+									)
+								},
+							)}
+						</Table.Body>
+					</Table>
+
+					<Button
+						style={{ marginBottom: '20px' }}
+						type="button"
+						variant="secondary"
+						onClick={resetEksisterende}
+						disabled={loading}
+					>
+						Tøm
+					</Button>
+				</div>
 			)}
 			{hasInvalidIdentifiers && (
 				<Alert variant="warning" style={{ width: '100%', marginRight: '20px' }}>

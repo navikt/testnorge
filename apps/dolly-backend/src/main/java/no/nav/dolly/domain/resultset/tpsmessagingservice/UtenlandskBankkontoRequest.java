@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsmessagingservice;
 
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
 
 import java.util.List;
 

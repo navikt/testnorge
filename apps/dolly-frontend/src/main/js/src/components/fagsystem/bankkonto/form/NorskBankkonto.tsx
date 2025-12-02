@@ -31,6 +31,9 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 					<FormCheckbox
 						name={`${path}.tilfeldigKontonummer`}
 						label="Har tilfeldig kontonummer"
+						afterChange={() => {
+							formMethods.trigger(`${path}.kontonummer`)
+						}}
 						size="medium"
 						disabled={kontonummer}
 					/>

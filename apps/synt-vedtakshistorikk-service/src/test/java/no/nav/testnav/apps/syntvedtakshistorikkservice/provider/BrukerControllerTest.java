@@ -5,7 +5,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaDagpengerSer
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService;
-import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.junit.jupiter.api.BeforeEach;

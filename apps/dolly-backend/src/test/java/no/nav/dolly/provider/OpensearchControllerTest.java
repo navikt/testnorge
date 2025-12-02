@@ -1,6 +1,5 @@
 package no.nav.dolly.provider;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
@@ -8,36 +7,30 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.elastic.ElasticBestilling;
-import no.nav.dolly.elastic.service.OpenSearchService;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.dolly.opensearch.BestillingDokument;
+import no.nav.dolly.opensearch.service.OpenSearchService;
+import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 @ExtendWith(TestDatabaseConfig.class)
 class OpensearchControllerTest {
 
-    private static final String BASE_URL = "/api/v1/elastic";
+    private static final String BASE_URL = "/api/v1/opensearch";
     private static final String IDENT1 = "11111111111";
     private static final String IDENT2 = "22222222222";
     private static final String IDENT3 = "33333333333";
@@ -45,21 +38,15 @@ class OpensearchControllerTest {
     private static final String IDENT5 = "55555555555";
 
     @Autowired
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @Autowired
     private WebTestClient webTestClient;
 
-    @MockitoBean
+    @Autowired
     private OpenSearchService openSearchService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private List<ElasticBestilling> getTestBestillinger() {
+    private List<BestillingDokument> getTestBestillinger() {
 
         return List.of(
-                ElasticBestilling.builder()
+                BestillingDokument.builder()
                         .id(1L)
                         .pdldata(PdlPersondata.builder()
                                 .opprettNyPerson(PdlPersondata.PdlPerson.builder()
@@ -74,7 +61,7 @@ class OpensearchControllerTest {
                                 .build())
                         .identer(List.of(IDENT1, IDENT2, IDENT3))
                         .build(),
-                ElasticBestilling.builder()
+                BestillingDokument.builder()
                         .id(2L)
                         .pdldata(PdlPersondata.builder()
                                 .opprettNyPerson(PdlPersondata.PdlPerson.builder()
@@ -101,14 +88,18 @@ class OpensearchControllerTest {
 
     @BeforeEach
     void setup() {
+        openSearchService.createIndex()
+                .block();
 
-        bestillingElasticRepository.saveAll(getTestBestillinger());
+        openSearchService.saveAll(getTestBestillinger())
+                .block();
     }
 
     @AfterEach
     void teardown() {
 
-        bestillingElasticRepository.deleteAll();
+        openSearchService.deleteIndex()
+                .block();
     }
 
     @Test
@@ -122,8 +113,8 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        var bestilling = bestillingElasticRepository.findById(2L);
-        assertThat(bestilling.isPresent(), is(true));
+        var exists = openSearchService.exists(2L).block();
+        assertThat(exists, is(true));
 
         webTestClient
                 .delete()
@@ -133,15 +124,12 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        bestilling = bestillingElasticRepository.findById(1L);
-        assertThat(bestilling.isPresent(), is(false));
+        exists = openSearchService.exists(1L).block();
+        assertThat(exists, is(false));
     }
 
     @Test
-    void deleteAlleBestillingerInkludertIndeks_OK() throws Exception {
-
-        when(openSearchService.deleteIndex())
-                .thenReturn(Mono.just(objectMapper.readTree("{\"acknowledged\": true}")));
+    void deleteIndeks_OK() {
 
         webTestClient
                 .delete()
@@ -151,7 +139,10 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        var bestillinger = (PageImpl<ElasticBestilling>) bestillingElasticRepository.findAll();
-        assertThat(bestillinger.getTotalElements(), is(equalTo(0L)));
+        var exists = openSearchService.exists(1L).block();
+        assertThat(exists, is(false));
+
+        exists = openSearchService.exists(2L).block();
+        assertThat(exists, is(false));
     }
 }

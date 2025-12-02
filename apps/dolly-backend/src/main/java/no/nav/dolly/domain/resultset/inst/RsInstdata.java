@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 
@@ -27,22 +24,18 @@ public class RsInstdata {
     @Schema(
             type = "LocalDateTime",
             description = "Dato for begynnelsen av oppholdet")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime startdato;
 
     @Schema(type = "LocalDateTime",
             description = "Dato oppholdet er forventet å være avsluttet")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime forventetSluttdato;
 
     @Schema(type = "LocalDateTime",
             description = "Dato oppholdet var avsluttet")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime faktiskSluttdato;
 
     @Schema(type = "LocalDateTime",
             description = "Nytt Api har kun denne for slutt av opphold")
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime sluttdato;
 
     @Schema(description = "Kodeverdi for oppholdskategori. "

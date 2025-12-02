@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
 import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
@@ -36,16 +36,20 @@ export const OrgnrToggle = ({
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	const orgnr = formMethods.watch(`${path}.orgNr`)
-	const [inputType, setInputType] = useState(
-		getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner),
-	)
+	const [inputType, setInputType] = useState(ArbeidsgiverTyper.felles)
+	const isManualToggleChange = useRef(false)
 
 	useEffect(() => {
-		setInputType(getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner))
-	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('brregstub.enheter')?.length])
+		if (!isManualToggleChange.current && orgnr && fasteOrganisasjoner && egneOrganisasjoner) {
+			const detectedType = getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner)
+			setInputType(detectedType)
+			isManualToggleChange.current = false
+		}
+	}, [orgnr, fasteOrganisasjoner, egneOrganisasjoner])
 
 	const handleToggleChange = (value: string) => {
 		formMethods.clearErrors([`${path}.orgNr`, `manual.${path}.orgNr`])
+		isManualToggleChange.current = true
 		setInputType(value)
 		clearEnhetsinfo()
 	}

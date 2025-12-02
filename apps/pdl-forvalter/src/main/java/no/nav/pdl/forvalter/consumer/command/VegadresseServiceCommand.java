@@ -27,7 +27,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
     private static final String ADRESSER_VEG_URL = "/api/v1/adresser/veg";
 
     private final WebClient webClient;
-    private final no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO query;
+    private final no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO query;
     private final String matrikkelId;
     private final String token;
 

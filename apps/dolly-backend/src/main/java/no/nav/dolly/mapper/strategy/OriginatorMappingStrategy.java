@@ -5,8 +5,8 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 

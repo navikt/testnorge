@@ -1,85 +1,83 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
-import no.nav.testnav.libs.data.dollysearchservice.v1.PersonRequest;
-import org.apache.commons.lang3.StringUtils;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
+import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.mustExistQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.mustMatchQuery;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class FagsystemQueryUtils {
 
     private static final String ARBEIDSFORHOLDTYPE = "aareg.arbeidsforholdstype";
 
-    public static QueryBuilder getFagsystemQuery(ElasticTyper type) {
+    public static void addFagsystemQuery(BoolQuery.Builder queryBuilder, ElasticTyper type) {
 
-        return switch (type) {
-            case ARBEIDSFORHOLD -> QueryBuilders.existsQuery("aareg");
+        switch (type) {
+            case ARBEIDSFORHOLD -> mustExistQuery(queryBuilder, "aareg");
             case ARBEIDSFORHOLD_FRILANS ->
-                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "frilanserOppdragstakerHonorarPersonerMm");
+                    mustMatchQuery(queryBuilder, ARBEIDSFORHOLDTYPE, "frilanserOppdragstakerHonorarPersonerMm");
             case ARBEIDSFORHOLD_ORDINAERT ->
-                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "ordinaertArbeidsforhold");
-            case ARBEIDSFORHOLD_MARITIMT ->
-                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "maritimtArbeidsforhold");
+                    mustMatchQuery(queryBuilder, ARBEIDSFORHOLDTYPE, "ordinaertArbeidsforhold");
+            case ARBEIDSFORHOLD_MARITIMT -> mustMatchQuery(queryBuilder, ARBEIDSFORHOLDTYPE, "maritimtArbeidsforhold");
             case ARBEIDSFORHOLD_FORENKLET ->
-                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "forenkletOppgjoersordning");
-            case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
-            case ARBEIDSSOEKERREGISTERET -> QueryBuilders.existsQuery("arbeidssoekerregisteret");
-            case ARENA_AAP -> QueryBuilders.existsQuery("arenaforvalter.aap");
-            case ARENA_AAP115 -> QueryBuilders.existsQuery("arenaforvalter.aap115");
-            case ARENA_DAGP -> QueryBuilders.existsQuery("arenaforvalter.dagpenger");
-            case BANKKONTO -> QueryBuilders.existsQuery("bankkonto");
-            case BANKKONTO_NORGE -> QueryBuilders.existsQuery("bankkonto.norskBankkonto");
-            case BANKKONTO_UTLAND -> QueryBuilders.existsQuery("bankkonto.utenlandskBankkonto");
-            case BRREGSTUB -> QueryBuilders.existsQuery("brregstub");
-            case DOKARKIV -> QueryBuilders.existsQuery("dokarkiv");
-            case ETTERLATTE ->  QueryBuilders.existsQuery("etterlatteYtelser");
-            case FULLMAKT -> QueryBuilders.existsQuery("fullmakt");
-            case HISTARK -> QueryBuilders.existsQuery("histark");
-            case INNTK -> QueryBuilders.existsQuery("inntektstub");
-            case INNTKMELD -> QueryBuilders.existsQuery("inntektsmelding");
-            case INST -> QueryBuilders.existsQuery("instdata");
-            case KRRSTUB -> QueryBuilders.existsQuery("krrstub");
-            case MEDL -> QueryBuilders.existsQuery("medl");
-            case NOM -> QueryBuilders.existsQuery("nomdata");
-            case PEN_AFP_OFFENTLIG -> QueryBuilders.existsQuery("pensjonforvalter.afpOffentlig");
-            case PEN_AP -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjon");
-            case PEN_AP_NY_UTTAKSGRAD -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjonNyUtaksgrad");
-            case PEN_INNTEKT -> QueryBuilders.existsQuery("pensjonforvalter.inntekt");
-            case PEN_PENSJONSAVTALE -> QueryBuilders.existsQuery("pensjonforvalter.pensjonsavtale");
-            case PEN_TP -> QueryBuilders.existsQuery("pensjonforvalter.tp");
-            case PEN_UT -> QueryBuilders.existsQuery("pensjonforvalter.uforetrygd");
-            case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunstubPensjonsgivende");
-            case SIGRUN_SUMMERT -> QueryBuilders.existsQuery("sigrunstubSummertSkattegrunnlag");
-            case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
-            case SKJERMING -> QueryBuilders.existsQuery("skjerming");
-            case SYKEMELDING -> QueryBuilders.existsQuery("sykemelding");
-            case UDISTUB -> QueryBuilders.existsQuery("udistub");
-            case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskader");
-        };
-    }
-
-    public static void addMiljoerQuery(BoolQueryBuilder queryBuilder, List<String> miljoer) {
-
-        if (!miljoer.isEmpty()) {
-            var boolQuery = QueryBuilders.boolQuery();
-            miljoer.forEach(miljoe -> boolQuery.must(QueryBuilders.matchQuery("miljoer", miljoe)));
-            queryBuilder.must(boolQuery);
+                    mustMatchQuery(queryBuilder, ARBEIDSFORHOLDTYPE, "forenkletOppgjoersordning");
+            case ARBEIDSPLASSENCV -> mustExistQuery(queryBuilder, "arbeidsplassenCV");
+            case ARBEIDSSOEKERREGISTERET -> mustExistQuery(queryBuilder, "arbeidssoekerregisteret");
+            case ARENA_AAP -> mustExistQuery(queryBuilder, "arenaforvalter.aap");
+            case ARENA_AAP115 -> mustExistQuery(queryBuilder, "arenaforvalter.aap115");
+            case ARENA_DAGP -> mustExistQuery(queryBuilder, "arenaforvalter.dagpenger");
+            case BANKKONTO -> mustExistQuery(queryBuilder, "bankkonto");
+            case BANKKONTO_NORGE -> mustExistQuery(queryBuilder, "bankkonto.norskBankkonto");
+            case BANKKONTO_UTLAND -> mustExistQuery(queryBuilder, "bankkonto.utenlandskBankkonto");
+            case BRREGSTUB -> mustExistQuery(queryBuilder, "brregstub");
+            case DOKARKIV -> mustExistQuery(queryBuilder, "dokarkiv");
+            case ETTERLATTE -> mustExistQuery(queryBuilder, "etterlatteYtelser");
+            case FULLMAKT -> mustExistQuery(queryBuilder, "fullmakt");
+            case HISTARK -> mustExistQuery(queryBuilder, "histark");
+            case INNTK -> mustExistQuery(queryBuilder, "inntektstub");
+            case INNTKMELD -> mustExistQuery(queryBuilder, "inntektsmelding");
+            case INST -> mustExistQuery(queryBuilder, "instdata");
+            case KRRSTUB -> mustExistQuery(queryBuilder, "krrstub");
+            case MEDL -> mustExistQuery(queryBuilder, "medl");
+            case NOM -> mustExistQuery(queryBuilder, "nomdata");
+            case PEN_AFP_OFFENTLIG -> mustExistQuery(queryBuilder, "pensjonforvalter.afpOffentlig");
+            case PEN_AP -> mustExistQuery(queryBuilder, "pensjonforvalter.alderspensjon");
+            case PEN_AP_NY_UTTAKSGRAD -> mustExistQuery(queryBuilder, "pensjonforvalter.alderspensjonNyUtaksgrad");
+            case PEN_INNTEKT -> mustExistQuery(queryBuilder, "pensjonforvalter.inntekt");
+            case PEN_PENSJONSAVTALE -> mustExistQuery(queryBuilder, "pensjonforvalter.pensjonsavtale");
+            case PEN_TP -> mustExistQuery(queryBuilder, "pensjonforvalter.tp");
+            case PEN_UT -> mustExistQuery(queryBuilder, "pensjonforvalter.uforetrygd");
+            case SIGRUN_PENSJONSGIVENDE -> mustExistQuery(queryBuilder, "sigrunstubPensjonsgivende");
+            case SIGRUN_SUMMERT -> mustExistQuery(queryBuilder, "sigrunstubSummertSkattegrunnlag");
+            case SKATTEKORT -> mustExistQuery(queryBuilder, "skattekort");
+            case SKJERMING -> mustExistQuery(queryBuilder, "skjerming");
+            case SYKEMELDING -> mustExistQuery(queryBuilder, "sykemelding");
+            case UDISTUB -> mustExistQuery(queryBuilder, "udistub");
+            case YRKESSKADE -> mustExistQuery(queryBuilder, "yrkesskader");
         }
     }
 
-    public static void addIdentQuery(BoolQueryBuilder queryBuilder, PersonRequest personRequest) {
+    public static void addMiljoerQuery(BoolQuery.Builder queryBuilder, List<String> miljoer) {
 
-        if (nonNull(personRequest) && StringUtils.isNotBlank(personRequest.getIdent())) {
-            var boolQuery = QueryBuilders.boolQuery();
-            boolQuery.must(QueryBuilders.matchQuery("identer", personRequest.getIdent()));
-            queryBuilder.must(boolQuery);
+        if (!miljoer.isEmpty()) {
+            miljoer.forEach(miljoe -> queryBuilder.must(builder ->
+                    builder.match(matchQuery("miljoer", miljoe))));
+        }
+    }
+
+    public static void addIdentQuery(BoolQuery.Builder queryBuilder, PersonRequest personRequest) {
+
+        if (nonNull(personRequest) && isNotBlank(personRequest.getIdent())) {
+            queryBuilder.must(builder ->
+                    builder.match(matchQuery("identer", personRequest.getIdent())));
         }
     }
 }

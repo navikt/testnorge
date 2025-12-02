@@ -15,7 +15,7 @@ import {
 	ForskuddstrekkForm,
 	initialTrekktabell,
 } from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
-import { ArbeidsgiverToggle } from '@/components/fagsystem/skattekort/form/ArbeidsgiverToggle'
+import { ArbeidsforholdToggle } from '@/components/shared/ArbeidsforholdToggle/ArbeidsforholdToggle'
 import { validation } from '@/components/fagsystem/skattekort/form/validation'
 
 export const initialArbeidsgiverSkatt = (
@@ -105,9 +105,13 @@ export const SkattekortForm = () => {
 										isMulti={true}
 									/>
 								</div>
-								<ArbeidsgiverToggle
+								<ArbeidsforholdToggle
 									formMethods={formMethods}
 									path={`${path}.arbeidsgiveridentifikator`}
+									organisasjonPath={`${path}.arbeidsgiveridentifikator.organisasjonsnummer`}
+									personPath={`${path}.arbeidsgiveridentifikator.personidentifikator`}
+									useKategori={true}
+									useValidation={true}
 								/>
 								<ForskuddstrekkForm
 									formMethods={formMethods}

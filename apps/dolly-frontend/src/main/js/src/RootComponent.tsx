@@ -24,6 +24,23 @@ const ErrorView = () => {
 	const error: any = useRouteError()
 	console.error(error)
 
+	const isMinifiedReactError = error?.message?.includes('Minified React error')
+
+	if (isMinifiedReactError) {
+		console.error('🔴 MINIFIED REACT ERROR DETECTED 🔴')
+		console.error('Error message:', error?.message)
+		console.error('Error name:', error?.name)
+		console.error('Error stack:', error?.stack)
+		console.error('Current URL:', window.location.href)
+		console.error('Current pathname:', window.location.pathname)
+		console.error('Session storage:', {
+			keys: Object.keys(sessionStorage),
+			values: Object.fromEntries(
+				Object.entries(sessionStorage).map(([k, v]) => [k, v.substring(0, 100)]),
+			),
+		})
+	}
+
 	const errors = [
 		'Failed to fetch dynamically imported module',
 		'Unable to preload CSS',
@@ -31,6 +48,7 @@ const ErrorView = () => {
 	]
 
 	if (errors.some((e) => error?.message?.includes(e))) {
+		console.error('Navigating to login due to module/resource loading error')
 		navigateToLogin(error?.message)
 	}
 	return <AppError error={error} stackTrace={error.stackTrace} />

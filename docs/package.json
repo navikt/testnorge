@@ -1,14 +1,14 @@
 {
   "name": "testnav-docs",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Dokumentasjon bygget med Antora og Lunr-søk",
   "scripts": {
     "generate:proxies": "python3 ../scripts/generate_proxy_table.py",
     "generate:nav": "python3 ../scripts/generate_nav.py",
-    "build": "npm run generate:proxies && npm run generate:nav && npx antora antora-playbook.yml",
+    "build": "pnpm run generate:proxies && pnpm run generate:nav && pnpm exec antora antora-playbook.yml",
     "clean": "rm -rf public build/site build/docs .antora-cache ui-bundle.zip",
-    "build:clean": "npm run clean && npm run build"
+    "build:clean": "pnpm run clean && pnpm run build"
   },
   "dependencies": {
     "@antora/cli": "^3.1.14",

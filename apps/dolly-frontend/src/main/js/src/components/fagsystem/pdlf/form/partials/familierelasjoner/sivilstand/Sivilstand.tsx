@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { useContext } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -15,8 +14,8 @@ import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { Option } from '@/service/SelectOptionsOppslag'
 import {
-	BestillingsveilederContext,
 	BestillingsveilederContextType,
+	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
@@ -59,7 +58,7 @@ export const SivilstandForm = ({
 		formMethods.trigger(path)
 	}
 
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const identMaster = opts?.identMaster || (parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF')
 
 	const isTestnorgeIdent = identMaster === 'PDL'
@@ -130,8 +129,8 @@ export const SivilstandForm = ({
 }
 
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
-	// @ts-ignore
-	const { identtype, identMaster, personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { identtype, identMaster, personFoerLeggTil } =
+		useBestillingsveileder() as BestillingsveilederContextType
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')

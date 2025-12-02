@@ -65,7 +65,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: dolly-idporten
     outbound:
       rules:
         - application: testnav-tps-messaging-service

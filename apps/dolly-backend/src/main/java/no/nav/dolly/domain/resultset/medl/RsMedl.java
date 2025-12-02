@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 
@@ -21,10 +18,9 @@ public class RsMedl {
 
 
     @Schema(description = "Startdatoen for perioden til medlemskapsunntaket, på ISO-8601 format.")
-    @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
     private LocalDate fraOgMed;
+
     @Schema(description = "Sluttdatoen for perioden til medlemskapsunntaket, på ISO-8601 format.")
-    @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
     private LocalDate tilOgMed;
 
     @Schema(description = "Grunnlaget for dette medlemskapsunntaket.\n" +

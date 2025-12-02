@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling;
 
 import no.nav.dolly.config.TestDatabaseConfig;
-import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
@@ -26,12 +24,6 @@ public abstract class AbstractConsumerTest {
 
     @MockitoBean
     private AccessToken accessToken;
-
-    @MockitoBean
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockitoBean
-    private ElasticsearchOperations elasticsearchOperations;
 
     @BeforeEach
     void setUp() {

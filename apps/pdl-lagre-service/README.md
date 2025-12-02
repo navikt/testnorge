@@ -11,7 +11,19 @@ Dernest kalles tilsvarende rest-endepunkt for å slette tilhørende indeks for p
 For at Kafka-listeneren skal starte på nytt er det enklest å endre groupId til en annen verdi i hhv.
 PdlPersonDokumentListener.java eller PdlAdresseListener.java og deploye på nytt.
 
-Ved deploy opprettes ny indeks automatisk og innhold bygges opp igjen.
+Ved oppstart opprettes manglende indekser, samt at disse konfigures fra json-ressursfiler.
 
 ## Lokal kjøring
-Har ikke lokal kjøring konfigurert enda.
+
+* [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
+* [Secret Manager.](../../docs/modules/ROOT/pages/local/local_secretmanager.adoc)
+* [Database i GCP.](../../docs/modules/ROOT/pages/local/gcp_db.adoc)
+* [OpenSearch.](../../docs/modules/ROOT/pages/local/local_opensearch.adoc)
+
+Midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
+
+>nais aiven create opensearch ignored dolly -i bestillinger -a admin -s \<ownsecretname\> -e 10
+
+>nais aiven get opensearch \<ownsecretname\> dolly
+
+Tilsvarende skal det være mulig å hente kafka tilgang via nais aiven create kafka uten at dette har vært forsøkt.

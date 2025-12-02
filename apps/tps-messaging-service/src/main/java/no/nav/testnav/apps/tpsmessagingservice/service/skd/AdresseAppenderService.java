@@ -7,10 +7,10 @@ import no.nav.testnav.apps.tpsmessagingservice.utils.HentDatoFraIdentUtility;
 import no.nav.testnav.apps.tpsmessagingservice.utils.HusbokstavEncoder;
 import no.nav.testnav.apps.tpsmessagingservice.utils.LandkodeEncoder;
 import no.nav.testnav.apps.tpsmessagingservice.utils.NullcheckUtil;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.GateadresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.GateadresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
