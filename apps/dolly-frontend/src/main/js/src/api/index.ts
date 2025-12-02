@@ -7,7 +7,7 @@ import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Logger } from '@/logger/Logger'
 
-axios.defaults.timeout = 9000
+axios.defaults.timeout = 10000
 
 const fetchRetry = fetch_retry(originalFetch)
 
@@ -67,7 +67,7 @@ export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) =>
 		),
 	)
 
-export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = null) =>
+export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, _path = null) =>
 	Promise.allSettled(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers)
@@ -109,19 +109,24 @@ export const cvFetcher = (url, headers) => {
 				}
 			}
 			if (reason.status === 404 || reason.response?.status === 404) {
-				if (reason.response?.data?.error) {
-					throw new Error(reason.response?.data?.error)
-				}
-				throw new NotFoundError()
+				return null
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
 }
 
 export const sykemeldingFetcher = (url, body) =>
-	axios.post(url, body).then((res) => {
-		return res.data
-	})
+	axios
+		.post(url, body)
+		.then((res) => {
+			return res.data
+		})
+		.catch((reason) => {
+			if (reason.status === 404 || reason.response?.status === 404) {
+				return null
+			}
+			throw reason
+		})
 
 export const fetcher = (url, headers?) =>
 	axios
@@ -138,10 +143,7 @@ export const fetcher = (url, headers?) =>
 				navigateToLogin()
 			}
 			if (reason.status === 404 || reason.response?.status === 404) {
-				if (reason.response?.data?.error) {
-					throw new Error(reason.response?.data?.error)
-				}
-				throw new NotFoundError()
+				return null
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
