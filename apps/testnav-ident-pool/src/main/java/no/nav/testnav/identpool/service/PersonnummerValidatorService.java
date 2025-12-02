@@ -1,6 +1,7 @@
 package no.nav.testnav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Ident2032;
@@ -17,9 +18,11 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
@@ -28,6 +31,7 @@ import static no.nav.testnav.identpool.domain.Kjoenn.KVINNE;
 import static no.nav.testnav.identpool.domain.Kjoenn.MANN;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -100,7 +104,7 @@ public class PersonnummerValidatorService {
     /**
      * Validerer at gitt ident har gyldig format og dato før den kaller selve valideringen.
      *
-     * @param gittNummer  ident-nummer som skal valideres.
+     * @param gittNummer ident-nummer som skal valideres.
      * @return OK ident-nummeret er gyldig, ellers en feilmelding.
      */
     private static String validerInput(String gittNummer) {
@@ -179,34 +183,48 @@ public class PersonnummerValidatorService {
 
     public Mono<ValideringResponseDTO> validerFoedselsnummer(String foedselsnummer) {
 
-        var valideringResultat = validerInput(foedselsnummer);
-        var erGyldig = "OK".equals(valideringResultat);
-        var erStriktFoedselsnummer64 = erGyldig && validerKontrollsiffer(foedselsnummer, true);
-        Boolean erSyntetisk = erGyldig ? foedselsnummer.charAt(2) >= '4' : null;
-        Boolean erTestnorgeIdent = erGyldig ? foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9' : null;
+        val valideringResultat = validerInput(foedselsnummer);
+        val erGyldig = "OK".equals(valideringResultat);
+        val erStriktFoedselsnummer64 = erGyldig && validerKontrollsiffer(foedselsnummer, true);
+        val erSyntetisk = erGyldig && foedselsnummer.charAt(2) >= '4';
+        val erTestnorgeIdent = erGyldig && (foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9');
         Identtype identtype = erGyldig ? utledIdenttype(foedselsnummer) : null;
+        val startTime = System.currentTimeMillis();
+        val feilmelding = new AtomicReference<>("");
 
         return Mono.zip(identRepository.findByPersonidentifikator(foedselsnummer)
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident()))),
                         personidentifikatorRepository.findByPersonidentifikator(foedselsnummer)
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident2032()))),
-                        tpsMessagingConsumer.getIdenterProdStatus(Set.of(foedselsnummer))
-                                .collectList())
-                .map(tuple ->
-                        new ValideringResponseDTO(
-                                foedselsnummer,
-                                identtype,
-                                erTestnorgeIdent,
-                                erSyntetisk,
-                                erGyldig,
-                                erGyldig ? tuple.getT3().stream().findFirst().orElse(new TpsStatusDTO()).isInUse() : null,
-                                erGyldig ? !erStriktFoedselsnummer64 : null,
-                                erGyldig ? utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64) : null,
-                                erGyldig ? utledKjoenn(foedselsnummer, tuple.getT1(), erStriktFoedselsnummer64) : null,
-                                erGyldig ? null : valideringResultat,
-                                erGyldig ? getKommentar(foedselsnummer, erStriktFoedselsnummer64,
-                                        tuple.getT1(), tuple.getT2(),
-                                        tuple.getT3().stream().findFirst().orElse(new TpsStatusDTO()).isInUse()) : null));
+                        !erSyntetisk ? tpsMessagingConsumer.getIdenterProdStatus(Set.of(foedselsnummer))
+                                .collectList() : Mono.just(new ArrayList<TpsStatusDTO>()))
+                .map(tuple -> {
+
+                    var erIProd = tuple.getT3().stream()
+                            .findFirst()
+                            .orElse(new TpsStatusDTO())
+                            .isInUse();
+
+                    if (!erSyntetisk && !erIProd && System.currentTimeMillis() - startTime > 5000) {
+                        feilmelding.set("Feil ved henting fra prod, forsøk igjen!");
+                    } else if (!erGyldig) {
+                        feilmelding.set(valideringResultat);
+                    }
+
+                    return new ValideringResponseDTO(
+                            foedselsnummer,
+                            identtype,
+                            erTestnorgeIdent,
+                            erSyntetisk,
+                            erGyldig,
+                            erGyldig && !erSyntetisk && isBlank(feilmelding.get()) ? erIProd : null,
+                            erGyldig ? !erStriktFoedselsnummer64 : null,
+                            erGyldig ? utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64) : null,
+                            erGyldig ? utledKjoenn(foedselsnummer, tuple.getT1(), erStriktFoedselsnummer64) : null,
+                            erGyldig && isBlank(feilmelding.get()) ? null : feilmelding.get(),
+                            erGyldig ? getKommentar(foedselsnummer, erStriktFoedselsnummer64,
+                                    tuple.getT1(), tuple.getT2(), erSyntetisk) : null);
+                });
     }
 
     private static Identtype utledIdenttype(String ident) {
@@ -253,18 +271,18 @@ public class PersonnummerValidatorService {
 
     private static String getKommentar(String foedselsnummer,
                                        boolean erStriktFoedselsnummer64, Ident ident,
-                                       Ident2032 ident2032, boolean isProd) {
+                                       Ident2032 ident2032, boolean isSyntetisk) {
 
-        if (nonNull(ident2032.getFoedselsdato()) && !isProd) {
+        if (nonNull(ident2032.getFoedselsdato()) && isSyntetisk) {
             return "Fødselsdato er hentet fra " + (isTrue(ident2032.getAllokert()) ? "eksisterende" : "ledig") +
                     " ident i identpool. Århundre kan ikke utledes fra 2032-format fødselsnummer, ei heller kjønn.";
-        } else if (nonNull(ident.getFoedselsdato()) && !isProd) {
+        } else if (nonNull(ident.getFoedselsdato()) && isSyntetisk) {
             return "Fødselsdato og kjønn er hentet fra " + (ident.getRekvireringsstatus() == I_BRUK ?
                     "eksisterende" : "ledig") + " ident i identpool." +
                     (getKjoennFromIdent(foedselsnummer) != ident.getKjoenn() ?
-                    " Kjønn avledet fra fødselsnummer samsvarer ikke med lagret verdi fra identpool." : "");
+                            " Kjønn avledet fra fødselsnummer samsvarer ikke med lagret verdi fra identpool." : "");
         } else if (erStriktFoedselsnummer64) {
-            return "Fødselsdato og kjønn er avledet fra fødselsnummer, i samsvar med 1964-format oppbygning.";
+            return "Fødselsdato og kjønn er avledet fra fødselsnummer, i samsvar med 1964-format.";
         } else {
             return "2032-format fødselsnummer mangler informasjon om århundre og kjønn. Fødselsdato er avledet med antakelse om " +
                     "at personen er født på 1900- eller 2000-tallet basert på dagens dato.";
