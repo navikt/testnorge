@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
+import no.nav.testnav.identpool.dto.ValideringRequestDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
@@ -41,9 +42,16 @@ public class IdentController {
 
     @Operation(description = "Validering for nye og gamle test-identer")
     @GetMapping("/valider/{ident}")
-    public Mono<ValideringResponseDTO> valider(@PathVariable String ident) {
+    public Mono<ValideringResponseDTO> validerIdent(@PathVariable String ident) {
 
         return personnummerValidatorService.validerFoedselsnummer(ident);
+    }
+
+    @Operation(description = "Validering for nye og gamle test-identer")
+    @PostMapping("/valider")
+    public Mono<ValideringResponseDTO> valider(@RequestBody ValideringRequestDTO request) {
+
+        return personnummerValidatorService.validerFoedselsnummer(request.ident());
     }
 
     @Operation(description = "Frigjoer pid2032 test-ident")
