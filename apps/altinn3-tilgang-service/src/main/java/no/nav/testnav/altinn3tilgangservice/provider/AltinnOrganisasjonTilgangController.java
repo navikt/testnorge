@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.domain.OrganisasjonResponse;
+import no.nav.testnav.altinn3tilgangservice.domain.PaginertOrganisasjonResponse;
 import no.nav.testnav.altinn3tilgangservice.service.AltinnOrganisasjonTilgangService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +30,27 @@ public class AltinnOrganisasjonTilgangController {
     @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
     public Flux<OrganisasjonResponse> getAll() {
 
-        return  altinnTilgangService.getAll()
+        return altinnTilgangService.getAll()
                 .sort(Comparator.comparing(OrganisasjonResponse::getNavn));
+    }
+
+    @GetMapping("/paginert")
+    @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
+    public Mono<PaginertOrganisasjonResponse> getPage(Integer page, Integer size) {
+
+        return altinnTilgangService.getAll()
+                .sort(Comparator.comparing(OrganisasjonResponse::getNavn))
+                .collectList()
+                .map(list -> {
+                    int start = Math.min(page * size, list.size());
+                    int end = Math.min(start + size, list.size());
+                    return new PaginertOrganisasjonResponse(
+                            page,
+                            size,
+                            list.size(),
+                            (int) Math.ceil((double) list.size() / size),
+                            list.subList(start, end));
+                });
     }
 
     @PostMapping("/{organisasjonsnummer}")
