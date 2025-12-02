@@ -34,12 +34,14 @@ public class IdentController {
     @PostMapping("/rekvirer")
     public Mono<IdentpoolResponseDTO> rekvirer(@RequestBody RekvirerIdentRequest request) {
 
-        // validering her
         ValiderRequestUtil.validateDatesInRequest(request);
-
         return identpool32Service.generateIdent(request);
     }
 
+    /**
+     * @deprecated Bruk POST /valider for validering av test-identer
+     */
+    @Deprecated(since = "2025-11-02")
     @Operation(description = "Validering for nye og gamle test-identer")
     @GetMapping("/valider/{ident}")
     public Mono<ValideringResponseDTO> validerIdent(@PathVariable String ident) {
