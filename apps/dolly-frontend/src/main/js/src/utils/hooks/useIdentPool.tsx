@@ -5,8 +5,8 @@ const identPoolUrl = '/testnav-ident-pool/api/v2/ident/valider'
 
 export const useValiderIdent = (ident: string) => {
 	const { data, isLoading, error } = useSWR(
-		ident ? [identPoolUrl, { ident: ident }] : null,
-		([url, headers]) => Request.post(url, headers),
+		ident ? [identPoolUrl, { ident }] : null,
+		([url, body]) => Request.post(url, body),
 	)
 
 	return {

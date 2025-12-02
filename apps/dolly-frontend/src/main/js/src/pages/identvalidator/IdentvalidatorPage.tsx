@@ -8,6 +8,7 @@ import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisn
 import styled from 'styled-components'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
+import Loading from '@/components/ui/loading/Loading'
 
 const initialValues = {
 	ident: '',
@@ -47,7 +48,10 @@ export default () => {
 		setIdent(data?.ident)
 	}
 
-	const { currentBruker } = useCurrentBruker()
+	const { currentBruker, loading: currenBrukerLoading } = useCurrentBruker()
+	if (currenBrukerLoading) {
+		return <Loading label="Sjekker tilgang ..." />
+	}
 	if (currentBruker?.brukertype !== 'AZURE') {
 		return <AdminAccessDenied />
 	}
