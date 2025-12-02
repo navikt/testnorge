@@ -8,7 +8,7 @@ import {
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import * as _ from 'lodash'
+import * as _ from 'lodash-es'
 import { useEffect, useMemo, useRef } from 'react'
 
 type MiljoDataListe = {
