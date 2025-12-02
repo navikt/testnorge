@@ -40,7 +40,7 @@ const getOrganisasjonForvalterUrl = (orgnummer: string) =>
 
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
-		url: `/testnav-aareg-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
+		url: `/testnav-dolly-proxy/aareg/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
 		miljo: miljoe,
 	}))
 }

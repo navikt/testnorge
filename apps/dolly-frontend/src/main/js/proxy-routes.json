@@ -78,7 +78,7 @@
 	"/testnav-dolly-proxy/sigrunstub/api": {
 		"changeOrigin": true
 	},
-	"/testnav-aareg-proxy/": {
+	"/testnav-dolly-proxy/aareg": {
 		"changeOrigin": true
 	},
 	"/testnav-dolly-proxy/medl/rest": {

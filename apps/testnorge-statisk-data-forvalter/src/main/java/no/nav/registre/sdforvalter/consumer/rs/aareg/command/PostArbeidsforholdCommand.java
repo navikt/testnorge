@@ -19,7 +19,7 @@ import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.HEADER_NAV_A
 @Slf4j
 public class PostArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRespons>> {
 
-    private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidsforhold";
+    private static final String AAREGDATA_URL = "/aareg/{miljoe}/api/v1/arbeidsforhold";
     private final WebClient webClient;
     private final String miljoe;
     private final Arbeidsforhold arbeidsforhold;

@@ -19,7 +19,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_ARBEIDSFORHOLD;
 @Slf4j
 public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRespons>> {
 
-    private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidsforhold";
+    private static final String AAREGDATA_URL = "/aareg/{miljoe}/api/v1/arbeidsforhold";
     private final WebClient webClient;
     private final String miljoe;
     private final Arbeidsforhold arbeidsforhold;

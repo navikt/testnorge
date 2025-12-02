@@ -95,11 +95,6 @@ consumers:
     namespace: dolly
     url: http://testnav-kodeverk-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-aareg-proxy:
-    name: testnav-aareg-proxy
-    namespace: dolly
-    url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-dolly-proxy:
     name: testnav-dolly-proxy
     namespace: dolly
