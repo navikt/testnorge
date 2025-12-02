@@ -11,5 +11,5 @@
     "esModuleInterop": true,
     "allowJs": true
   },
-  "exclude": ["node_modules", "build", "lib"]
+  "exclude": ["node_modules", "build"]
 }
