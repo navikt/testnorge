@@ -6,6 +6,9 @@ import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 import styled from 'styled-components'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
+import Loading from '@/components/ui/loading/Loading'
 
 const initialValues = {
 	ident: '',
@@ -43,6 +46,14 @@ export default () => {
 
 	const handleValidate = (data: { ident: string }) => {
 		setIdent(data?.ident)
+	}
+
+	const { currentBruker, loading: currenBrukerLoading } = useCurrentBruker()
+	if (currenBrukerLoading) {
+		return <Loading label="Sjekker tilgang ..." />
+	}
+	if (currentBruker?.brukertype !== 'AZURE') {
+		return <AdminAccessDenied />
 	}
 
 	return (
