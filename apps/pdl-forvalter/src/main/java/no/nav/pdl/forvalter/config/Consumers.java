@@ -21,6 +21,7 @@ public class Consumers {
     private ServerProperties kodeverkService;
     private ServerProperties identPool;
     private ServerProperties orgForvalter;
-    private ServerProperties pdlProxy;
     private ServerProperties personService;
+    private ServerProperties testnavDollyProxy;
+
 }

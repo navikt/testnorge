@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.apps.personservice.config.Consumers;
-import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlBolkPersonCommand;
-import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlPersonGetCommand;
+import no.nav.testnav.apps.personservice.consumer.v2.command.PdlBolkPersonCommand;
+import no.nav.testnav.apps.personservice.consumer.v2.command.PdlPersonGetCommand;
 import no.nav.testnav.apps.personservice.provider.v2.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -39,7 +39,7 @@ public class PdlPersonConsumer {
             ObjectMapper objectMapper,
             WebClient webClient
     ) {
-        serverProperties = consumers.getPdlProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
                 .mutate()
