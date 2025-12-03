@@ -68,7 +68,7 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 		{
 			label: 'Er i prod',
 			value: oversettBoolean(data.erIProd),
-			icon: getIcon(data.erIProd),
+			icon: data.erIProd ? 'warning' : 'none',
 		},
 		{ label: 'Identtype', value: data.identtype },
 		{ label: 'Fødselsdato', value: formatDate(data.foedselsdato) },
@@ -80,10 +80,10 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	return (
 		<Box
 			padding="6"
-			background={data.erGyldig ? 'surface-success-subtle' : 'surface-danger-subtle'}
+			background={data.feilmelding ? 'surface-danger-subtle' : 'surface-success-subtle'}
 			borderRadius="large"
 			borderWidth="2"
-			borderColor={data.erGyldig ? 'border-success' : 'border-danger'}
+			borderColor={data.feilmelding ? 'border-danger' : 'border-success'}
 		>
 			<h2 style={{ paddingLeft: '8px', marginTop: '8px' }}>Validering av ident {data.ident}</h2>
 			<Table>
