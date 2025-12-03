@@ -1,7 +1,8 @@
-import { Pagination, Table, VStack } from '@navikt/ds-react'
+import { Alert, HStack, Pagination, Table, VStack } from '@navikt/ds-react'
 import { oversettBoolean } from '@/utils/DataFormatter'
-import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
+import { getIcon, IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 import { useState } from 'react'
+import { isBoolean } from 'lodash-es'
 
 function comparator<T>(a: T, b: T, orderBy: keyof T): number {
 	if (b[orderBy] == null || b[orderBy] < a[orderBy]) {
@@ -17,7 +18,7 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 	const [page, setPage] = useState(1)
 	const rowsPerPage = 10
 
-	const [sort, setSort] = useState()
+	const [sort, setSort] = useState({ orderBy: 'erIProd', direction: 'ascending' })
 
 	if (!identListe || identListe.length === 0) {
 		return null
@@ -47,6 +48,20 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 	})
 	sortedData = sortedData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
+	const IconItem = (isValid: boolean, iconType: string) => {
+		if (!isBoolean(isValid)) return null
+		return iconType === 'none' ? (
+			<HStack gap="space-16">
+				<div style={{ width: '20px', textAlign: 'center' }}>-</div>
+				{oversettBoolean(isValid)}
+			</HStack>
+		) : (
+			<Alert variant={iconType} inline>
+				{oversettBoolean(isValid)}
+			</Alert>
+		)
+	}
+
 	return (
 		<VStack gap="space-16">
 			<Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey)}>
@@ -72,11 +87,21 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 								defaultOpen={identListe.length === 1}
 							>
 								<Table.HeaderCell scope="row">{identData.ident}</Table.HeaderCell>
-								<Table.DataCell>{oversettBoolean(identData.erGyldig)}</Table.DataCell>
-								<Table.DataCell>{oversettBoolean(identData.erIProd)}</Table.DataCell>
-								<Table.DataCell>{oversettBoolean(identData.erPersonnummer2032)}</Table.DataCell>
-								<Table.DataCell>{oversettBoolean(identData.erSyntetisk)}</Table.DataCell>
-								<Table.DataCell>{oversettBoolean(identData.erTestnorgeIdent)}</Table.DataCell>
+								<Table.DataCell>
+									{IconItem(identData.erGyldig, getIcon(identData.erGyldig, true))}
+								</Table.DataCell>
+								<Table.DataCell>
+									{IconItem(identData.erIProd, identData.erIProd ? 'warning' : 'none')}
+								</Table.DataCell>
+								<Table.DataCell>
+									{IconItem(identData.erPersonnummer2032, getIcon(identData.erPersonnummer2032))}
+								</Table.DataCell>
+								<Table.DataCell>
+									{IconItem(identData.erSyntetisk, getIcon(identData.erSyntetisk))}
+								</Table.DataCell>
+								<Table.DataCell>
+									{IconItem(identData.erTestnorgeIdent, getIcon(identData.erTestnorgeIdent))}
+								</Table.DataCell>
 							</Table.ExpandableRow>
 						)
 					})}

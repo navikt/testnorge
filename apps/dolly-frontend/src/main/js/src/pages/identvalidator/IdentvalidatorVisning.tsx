@@ -32,16 +32,16 @@ const IconComponent = ({ item }) => {
 	)
 }
 
+export const getIcon = (isValid: boolean, showError = false) => {
+	if (showError) {
+		return isValid ? 'success' : 'error'
+	}
+	return isValid ? 'success' : 'none'
+}
+
 export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	if (!data) {
 		return null
-	}
-
-	const getIcon = (isValid: boolean, showError = false) => {
-		if (showError) {
-			return isValid ? 'success' : 'error'
-		}
-		return isValid ? 'success' : 'none'
 	}
 
 	const mappedData = [
