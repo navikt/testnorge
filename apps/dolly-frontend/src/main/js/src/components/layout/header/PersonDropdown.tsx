@@ -74,7 +74,7 @@ export const PersonDropdown = () => {
 				{currentBruker?.brukertype === 'AZURE' && (
 					<PreloadableActionMenuItem route="/identvalidator" style={{ color: '#212529' }}>
 						<Icon kind="arena" fontSize="1.5rem" />
-						<DropdownStyledLink href="/identvalidator">Valider ident</DropdownStyledLink>
+						<DropdownStyledLink href="/identvalidator">Valider identer</DropdownStyledLink>
 					</PreloadableActionMenuItem>
 				)}
 				<PreloadableActionMenuItem route="/nyansettelser" style={{ color: '#212529' }}>
