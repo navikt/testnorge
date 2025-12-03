@@ -1,4 +1,4 @@
-import { useValiderIdent } from '@/utils/hooks/useIdentPool'
+import { useValiderIdenter } from '@/utils/hooks/useIdentPool'
 import { Alert, Box, Textarea, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -14,7 +14,7 @@ const initialValues = {
 
 export default () => {
 	const [ident, setIdent] = useState('')
-	const { validering, loading, error } = useValiderIdent(ident)
+	const { validering, loading, error } = useValiderIdenter(ident)
 
 	const formMethods = useForm({
 		mode: 'onChange',
