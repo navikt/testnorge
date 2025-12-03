@@ -14,7 +14,7 @@ const initialValues = {
 
 export default () => {
 	const [ident, setIdent] = useState('')
-	const { validering, loading, error } = useValiderIdenter(ident)
+	const { validering, loading, error, mutate } = useValiderIdenter(ident)
 
 	const formMethods = useForm({
 		mode: 'onChange',
@@ -28,7 +28,7 @@ export default () => {
 	}, [validering])
 
 	const handleValidate = (data: { ident: string }) => {
-		setIdent(data?.ident)
+		mutate().then(() => setIdent(data?.ident))
 	}
 
 	const { currentBruker, loading: currenBrukerLoading } = useCurrentBruker()
@@ -38,8 +38,6 @@ export default () => {
 	if (currentBruker?.brukertype !== 'AZURE') {
 		return <AdminAccessDenied />
 	}
-
-	console.log('formMethods.watch(): ', formMethods.watch()) //TODO - SLETT MEG
 
 	return (
 		<>

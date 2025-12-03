@@ -69,13 +69,21 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 					<Table.Row>
 						<Table.HeaderCell />
 						<Table.HeaderCell scope="col">Ident</Table.HeaderCell>
-						<Table.HeaderCell scope="col">Er gyldig</Table.HeaderCell>
+						<Table.ColumnHeader sortKey="erGyldig" sortable>
+							Er gyldig
+						</Table.ColumnHeader>
 						<Table.ColumnHeader sortKey="erIProd" sortable>
 							Er i prod
 						</Table.ColumnHeader>
-						<Table.HeaderCell scope="col">Er ny ident (2032)</Table.HeaderCell>
-						<Table.HeaderCell scope="col">Er syntetisk</Table.HeaderCell>
-						<Table.HeaderCell scope="col">Er Testnorge-ident</Table.HeaderCell>
+						<Table.ColumnHeader sortKey="erSyntetisk" sortable>
+							Er syntetisk
+						</Table.ColumnHeader>
+						<Table.ColumnHeader sortKey="erTestnorgeIdent" sortable>
+							Er Testnorge-ident
+						</Table.ColumnHeader>
+						<Table.ColumnHeader sortKey="erPersonnummer2032" sortable>
+							Er ny ident (2032)
+						</Table.ColumnHeader>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -94,13 +102,13 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 									{IconItem(identData.erIProd, identData.erIProd ? 'warning' : 'none')}
 								</Table.DataCell>
 								<Table.DataCell>
-									{IconItem(identData.erPersonnummer2032, getIcon(identData.erPersonnummer2032))}
-								</Table.DataCell>
-								<Table.DataCell>
 									{IconItem(identData.erSyntetisk, getIcon(identData.erSyntetisk))}
 								</Table.DataCell>
 								<Table.DataCell>
 									{IconItem(identData.erTestnorgeIdent, getIcon(identData.erTestnorgeIdent))}
+								</Table.DataCell>
+								<Table.DataCell>
+									{IconItem(identData.erPersonnummer2032, getIcon(identData.erPersonnummer2032))}
 								</Table.DataCell>
 							</Table.ExpandableRow>
 						)

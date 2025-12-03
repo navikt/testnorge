@@ -56,11 +56,6 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 			icon: data.erIProd ? 'warning' : 'none',
 		},
 		{
-			label: 'Er ny ident (2032)',
-			value: oversettBoolean(data.erPersonnummer2032),
-			icon: getIcon(data.erPersonnummer2032),
-		},
-		{
 			label: 'Er syntetisk',
 			value: oversettBoolean(data.erSyntetisk),
 			icon: getIcon(data.erSyntetisk),
@@ -69,6 +64,11 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 			label: 'Er Testnorge-ident',
 			value: oversettBoolean(data.erTestnorgeIdent),
 			icon: getIcon(data.erTestnorgeIdent),
+		},
+		{
+			label: 'Er ny ident (2032)',
+			value: oversettBoolean(data.erPersonnummer2032),
+			icon: getIcon(data.erPersonnummer2032),
 		},
 		{ label: 'Identtype', value: data.identtype },
 		{ label: 'Fødselsdato', value: formatDate(data.foedselsdato) },
