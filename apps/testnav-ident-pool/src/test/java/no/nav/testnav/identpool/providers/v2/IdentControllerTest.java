@@ -2,6 +2,7 @@ package no.nav.testnav.identpool.providers.v2;
 
 import lombok.val;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.testnav.identpool.config.AbstractTestcontainer;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.domain.Identtype;
@@ -10,7 +11,6 @@ import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
-import no.nav.testnav.identpool.config.AbstractTestcontainer;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterEach;
@@ -128,7 +128,8 @@ class IdentControllerTest extends AbstractTestcontainer {
         assertThat(response[0].erIProd(), is(equalTo(true)));
         assertThat(response[0].foedselsdato(), is(equalTo(LocalDate.of(1980, 10, 10))));
         assertThat(response[0].erSyntetisk(), is(equalTo(false)));
-        assertThat(response[0].erPersonnummer2032(), is(equalTo(false)));
+        assertThat(response[0].erPersonnummer2032(), is(nullValue()));
+        assertThat(response[0].erTestnorgeIdent(), is(nullValue()));
         assertThat(response[0].kjoenn(), is(equalTo(Kjoenn.MANN)));
     }
 
@@ -155,6 +156,7 @@ class IdentControllerTest extends AbstractTestcontainer {
         assertThat(response[0].foedselsdato(), is(equalTo(LocalDate.of(1985, 4, 9))));
         assertThat(response[0].erSyntetisk(), is(equalTo(true)));
         assertThat(response[0].erPersonnummer2032(), is(equalTo(false)));
+        assertThat(response[0].erTestnorgeIdent(), is(equalTo(false)));
         assertThat(response[0].kjoenn(), is(equalTo(Kjoenn.MANN)));
     }
 
@@ -181,7 +183,35 @@ class IdentControllerTest extends AbstractTestcontainer {
         assertThat(response[0].foedselsdato(), is(equalTo(LocalDate.of(1958, 10, 14))));
         assertThat(response[0].erSyntetisk(), is(equalTo(true)));
         assertThat(response[0].erPersonnummer2032(), is(equalTo(true)));
+        assertThat(response[0].erTestnorgeIdent(), is(equalTo(false)));
         assertThat(response[0].kjoenn(), is(nullValue()));
+    }
+
+    @Test
+    void validerTestnorgeIdenterGyldig() {
+
+        val ident = "61867501451";
+
+        val response = webTestClient.post()
+                .uri(IDENT_V2_BASEURL + "/validerflere")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"identer\":\"" + ident + "\"}")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(ValideringResponseDTO[].class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(response[0].ident(), is(equalTo(ident)));
+        assertThat(response[0].erGyldig(), is(equalTo(true)));
+        assertThat(response[0].identtype(), is(equalTo(Identtype.DNR)));
+        assertThat(response[0].erIProd(), is(nullValue()));
+        assertThat(response[0].foedselsdato(), is(equalTo(LocalDate.of(1975, 6, 21))));
+        assertThat(response[0].erSyntetisk(), is(equalTo(true)));
+        assertThat(response[0].erPersonnummer2032(), is(equalTo(false)));
+        assertThat(response[0].erTestnorgeIdent(), is(equalTo(true)));
+        assertThat(response[0].kjoenn(), is(equalTo(Kjoenn.KVINNE)));
     }
 
     @Test

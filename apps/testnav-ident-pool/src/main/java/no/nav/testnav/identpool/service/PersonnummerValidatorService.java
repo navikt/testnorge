@@ -214,7 +214,7 @@ public class PersonnummerValidatorService {
                             valideringDTO.erSyntetisk(),
                             valideringDTO.erGyldig(),
                             isFalse(valideringDTO.erSyntetisk()) ? erIProd : null,
-                            isFalse(valideringDTO.erStriktFoedselsnummer64()),
+                            isTrue(valideringDTO.erSyntetisk()) ? isFalse(valideringDTO.erStriktFoedselsnummer64()) : null,
                             isTrue(valideringDTO.erGyldig()) ?
                                     utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), valideringDTO.erStriktFoedselsnummer64()) : null,
                             isTrue(valideringDTO.erGyldig()) ?
@@ -231,7 +231,7 @@ public class PersonnummerValidatorService {
         val erGyldig = "OK".equals(valideringResultat);
         val erSyntetisk = erGyldig ? foedselsnummer.charAt(2) >= '4' : null;
         val erStriktFoedselsnummer64 = erGyldig ? validerKontrollsiffer(foedselsnummer, true) : null;
-        val erTestnorgeIdent = erGyldig ? (foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9') : null;
+        val erTestnorgeIdent = erGyldig && erSyntetisk ? (foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9') : null;
         val identtype = erGyldig ? utledIdenttype(foedselsnummer) : null;
 
         return new ValideringInteralDTO(
