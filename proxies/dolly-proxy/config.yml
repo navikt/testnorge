@@ -81,6 +81,8 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-inntektsmelding-service
+          cluster: dev-gcp
         - application: testnav-jenkins-batch-status-service
           cluster: dev-gcp
         - application: testnav-levende-arbeidsforhold-ansettelse
