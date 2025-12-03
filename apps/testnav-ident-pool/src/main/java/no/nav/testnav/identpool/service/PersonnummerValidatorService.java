@@ -8,6 +8,7 @@ import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
+import no.nav.testnav.identpool.dto.ValideringInteralDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
@@ -30,6 +31,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.testnav.identpool.domain.Kjoenn.KVINNE;
 import static no.nav.testnav.identpool.domain.Kjoenn.MANN;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -183,12 +185,7 @@ public class PersonnummerValidatorService {
 
     public Mono<ValideringResponseDTO> validerFoedselsnummer(String foedselsnummer) {
 
-        val valideringResultat = validerInput(foedselsnummer);
-        val erGyldig = "OK".equals(valideringResultat);
-        val erStriktFoedselsnummer64 = erGyldig && validerKontrollsiffer(foedselsnummer, true);
-        val erSyntetisk = erGyldig && foedselsnummer.charAt(2) >= '4';
-        val erTestnorgeIdent = erGyldig && (foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9');
-        Identtype identtype = erGyldig ? utledIdenttype(foedselsnummer) : null;
+        val valideringDTO = getValideringInteralDTO(foedselsnummer);
         val startTime = System.currentTimeMillis();
         val feilmelding = new AtomicReference<>("");
 
@@ -196,7 +193,7 @@ public class PersonnummerValidatorService {
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident()))),
                         personidentifikatorRepository.findByPersonidentifikator(foedselsnummer)
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident2032()))),
-                        !erSyntetisk ? tpsMessagingConsumer.getIdenterProdStatus(Set.of(foedselsnummer))
+                        isFalse(valideringDTO.erSyntetisk()) ? tpsMessagingConsumer.getIdenterProdStatus(Set.of(foedselsnummer))
                                 .collectList() : Mono.just(new ArrayList<TpsStatusDTO>()))
                 .map(tuple -> {
 
@@ -205,26 +202,46 @@ public class PersonnummerValidatorService {
                             .orElse(new TpsStatusDTO())
                             .isInUse();
 
-                    if (!erSyntetisk && !erIProd && System.currentTimeMillis() - startTime > 5000) {
+                    if (isFalse(valideringDTO.erSyntetisk()) && !erIProd && System.currentTimeMillis() - startTime > 5000) {
                         feilmelding.set("Feil ved henting fra prod, forsøk igjen!");
-                    } else if (!erGyldig) {
-                        feilmelding.set(valideringResultat);
+                    } else if (isFalse(valideringDTO.erGyldig())) {
+                        feilmelding.set(valideringDTO.valideringResultat());
                     }
 
                     return new ValideringResponseDTO(
                             foedselsnummer,
-                            identtype,
-                            erTestnorgeIdent,
-                            erSyntetisk,
-                            erGyldig,
-                            erGyldig && !erSyntetisk && isBlank(feilmelding.get()) ? erIProd : null,
-                            erGyldig ? !erStriktFoedselsnummer64 : null,
-                            erGyldig ? utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), erStriktFoedselsnummer64) : null,
-                            erGyldig ? utledKjoenn(foedselsnummer, tuple.getT1(), erStriktFoedselsnummer64) : null,
-                            erGyldig && isBlank(feilmelding.get()) ? null : feilmelding.get(),
-                            erGyldig ? getKommentar(foedselsnummer, erStriktFoedselsnummer64,
-                                    tuple.getT1(), tuple.getT2(), erSyntetisk) : null);
+                            valideringDTO.identtype(),
+                            valideringDTO.erTestnorgeIdent(),
+                            valideringDTO.erSyntetisk(),
+                            valideringDTO.erGyldig(),
+                            isFalse(valideringDTO.erSyntetisk()) ? erIProd : null,
+                            valideringDTO.erStriktFoedselsnummer64(),
+                            isTrue(valideringDTO.erGyldig()) ?
+                                    utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), valideringDTO.erStriktFoedselsnummer64()) : null,
+                            isTrue(valideringDTO.erGyldig()) ?
+                                    utledKjoenn(foedselsnummer, tuple.getT1(), valideringDTO.erStriktFoedselsnummer64()) : null,
+                            isTrue(valideringDTO.erGyldig()) && isBlank(feilmelding.get()) ? null : feilmelding.get(),
+                            isTrue(valideringDTO.erGyldig()) ? getKommentar(foedselsnummer, valideringDTO.erStriktFoedselsnummer64(),
+                                    tuple.getT1(), tuple.getT2(), valideringDTO.erSyntetisk()) : null);
                 });
+    }
+
+    private static ValideringInteralDTO getValideringInteralDTO(String foedselsnummer) {
+
+        val valideringResultat = validerInput(foedselsnummer);
+        val erGyldig = "OK".equals(valideringResultat);
+        val erSyntetisk = erGyldig ? foedselsnummer.charAt(2) >= '4' : null;
+        val erStriktFoedselsnummer64 = erGyldig ? validerKontrollsiffer(foedselsnummer, true) : null;
+        val erTestnorgeIdent = erGyldig ? (foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9') : null;
+        val identtype = erGyldig ? utledIdenttype(foedselsnummer) : null;
+
+        return new ValideringInteralDTO(
+                valideringResultat,
+                erGyldig,
+                erSyntetisk,
+                erStriktFoedselsnummer64,
+                erTestnorgeIdent,
+                identtype);
     }
 
     private static Identtype utledIdenttype(String ident) {
