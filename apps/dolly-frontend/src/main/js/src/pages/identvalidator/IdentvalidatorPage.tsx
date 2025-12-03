@@ -1,11 +1,9 @@
 import { useValiderIdent } from '@/utils/hooks/useIdentPool'
-import { Alert, Box, VStack } from '@navikt/ds-react'
+import { Alert, Box, Textarea, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
-import styled from 'styled-components'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import Loading from '@/components/ui/loading/Loading'
@@ -13,21 +11,6 @@ import Loading from '@/components/ui/loading/Loading'
 const initialValues = {
 	ident: '',
 }
-
-const StyledForm = styled.div`
-	display: flex;
-
-	&& {
-		.dolly-form-input {
-			height: 48px;
-		}
-	}
-	&&& {
-		.skjemaelement__input {
-			height: 48px;
-		}
-	}
-`
 
 export default () => {
 	const [ident, setIdent] = useState('')
@@ -56,23 +39,31 @@ export default () => {
 		return <AdminAccessDenied />
 	}
 
+	console.log('formMethods.watch(): ', formMethods.watch()) //TODO - SLETT MEG
+
 	return (
 		<>
-			<h1>Valider ident</h1>
-			<p>
-				Her kan du validere både nye og gamle test-identer. Skriv inn en ident i feltet nedenfor for
-				å vise info om denne identen.
-			</p>
+			<h1>Valider identer</h1>
 			<VStack gap="space-16">
 				<Box background={'surface-default'} padding="6">
 					<FormProvider {...formMethods}>
 						<form onSubmit={formMethods.handleSubmit(handleValidate)}>
-							<StyledForm>
-								<DollyTextInput name="ident" size="large" />
-								<NavButton variant={'primary'} type={'submit'} loading={loading}>
-									Valider
-								</NavButton>
-							</StyledForm>
+							<Textarea
+								name="ident"
+								label="Identer"
+								value={formMethods.watch('ident')}
+								onChange={(event) => formMethods.setValue('ident', event.target.value)}
+								description="Skriv inn én eller flere identer, adskilt med mellomrom, komma, semikolon eller linjeskift."
+								resize="vertical"
+							/>
+							<NavButton
+								variant={'primary'}
+								type={'submit'}
+								loading={loading}
+								style={{ marginTop: '15px' }}
+							>
+								Valider
+							</NavButton>
 						</form>
 					</FormProvider>
 				</Box>
