@@ -83,12 +83,18 @@ spec:
           cluster: dev-gcp
         - application: testnav-jenkins-batch-status-service
           cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-service
+          cluster: dev-gcp
         - application: testnav-organisasjon-mottak-service
           cluster: dev-gcp
         - application: testnav-organisasjon-service
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
     outbound:
