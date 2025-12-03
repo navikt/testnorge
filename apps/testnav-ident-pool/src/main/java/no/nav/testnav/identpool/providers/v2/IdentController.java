@@ -1,9 +1,11 @@
 package no.nav.testnav.identpool.providers.v2;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
+import no.nav.testnav.identpool.dto.ValideringRequestDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
@@ -33,17 +35,26 @@ public class IdentController {
     @PostMapping("/rekvirer")
     public Mono<IdentpoolResponseDTO> rekvirer(@RequestBody RekvirerIdentRequest request) {
 
-        // validering her
         ValiderRequestUtil.validateDatesInRequest(request);
-
         return identpool32Service.generateIdent(request);
     }
 
+    /**
+     * @deprecated Bruk POST /valider for validering av test-identer
+     */
+    @Deprecated(since = "2025-11-02")
     @Operation(description = "Validering for nye og gamle test-identer")
     @GetMapping("/valider/{ident}")
-    public Mono<ValideringResponseDTO> valider(@PathVariable String ident) {
+    public Mono<ValideringResponseDTO> validerIdent(@PathVariable String ident) {
 
         return personnummerValidatorService.validerFoedselsnummer(ident);
+    }
+
+    @Operation(description = "Validering for nye og gamle test-identer")
+    @PostMapping("/valider")
+    public Mono<ValideringResponseDTO> valider(@Valid @RequestBody ValideringRequestDTO request) {
+
+        return personnummerValidatorService.validerFoedselsnummer(request.ident());
     }
 
     @Operation(description = "Frigjoer pid2032 test-ident")
