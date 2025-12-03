@@ -10,11 +10,10 @@ import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
-import no.nav.testnav.identpool.providers.v1.AbstractTestcontainer;
+import no.nav.testnav.identpool.config.AbstractTestcontainer;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,6 +26,7 @@ import java.time.LocalDate;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
@@ -44,11 +44,6 @@ class IdentControllerTest extends AbstractTestcontainer {
 
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
-
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @AfterEach
     void tearDown() {
@@ -125,21 +120,68 @@ class IdentControllerTest extends AbstractTestcontainer {
                 .isOk()
                 .expectBody(ValideringResponseDTO[].class)
                 .returnResult()
-                .getResponseBody()
-                [0];
+                .getResponseBody();
 
-        assertThat(response.ident(), is(equalTo(ident)));
-        assertThat(response.erGyldig(), is(equalTo(true)));
-        assertThat(response.identtype(), is(equalTo(Identtype.FNR)));
-        assertThat(response.erIProd(), is(equalTo(true)));
-        assertThat(response.foedselsdato(), is(equalTo(LocalDate.of(1980, 10, 10))));
-        assertThat(response.erSyntetisk(), is(equalTo(false)));
-        assertThat(response.erPersonnummer2032(), is(equalTo(false)));
-        assertThat(response.kjoenn(), is(equalTo(Kjoenn.MANN)));
+        assertThat(response[0].ident(), is(equalTo(ident)));
+        assertThat(response[0].erGyldig(), is(equalTo(true)));
+        assertThat(response[0].identtype(), is(equalTo(Identtype.FNR)));
+        assertThat(response[0].erIProd(), is(equalTo(true)));
+        assertThat(response[0].foedselsdato(), is(equalTo(LocalDate.of(1980, 10, 10))));
+        assertThat(response[0].erSyntetisk(), is(equalTo(false)));
+        assertThat(response[0].erPersonnummer2032(), is(equalTo(false)));
+        assertThat(response[0].kjoenn(), is(equalTo(Kjoenn.MANN)));
     }
 
     @Test
-    void valider() {
+    void validerSyntetiskeIdenterGyldig() {
+
+        val ident = "09448542138";
+
+        val response = webTestClient.post()
+                .uri(IDENT_V2_BASEURL + "/validerflere")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"identer\":\"" + ident + "\"}")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(ValideringResponseDTO[].class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(response[0].ident(), is(equalTo(ident)));
+        assertThat(response[0].erGyldig(), is(equalTo(true)));
+        assertThat(response[0].identtype(), is(equalTo(Identtype.FNR)));
+        assertThat(response[0].erIProd(), is(nullValue()));
+        assertThat(response[0].foedselsdato(), is(equalTo(LocalDate.of(1985, 4, 9))));
+        assertThat(response[0].erSyntetisk(), is(equalTo(true)));
+        assertThat(response[0].erPersonnummer2032(), is(equalTo(false)));
+        assertThat(response[0].kjoenn(), is(equalTo(Kjoenn.MANN)));
+    }
+
+    @Test
+    void validerId2032IdenterGyldig() {
+
+        val ident = "14505899947";
+
+        val response = webTestClient.post()
+                .uri(IDENT_V2_BASEURL + "/validerflere")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"identer\":\"" + ident + "\"}")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(ValideringResponseDTO[].class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(response[0].ident(), is(equalTo(ident)));
+        assertThat(response[0].erGyldig(), is(equalTo(true)));
+        assertThat(response[0].identtype(), is(equalTo(Identtype.FNR)));
+        assertThat(response[0].erIProd(), is(nullValue()));
+        assertThat(response[0].foedselsdato(), is(equalTo(LocalDate.of(1958, 10, 14))));
+        assertThat(response[0].erSyntetisk(), is(equalTo(true)));
+        assertThat(response[0].erPersonnummer2032(), is(equalTo(true)));
+        assertThat(response[0].kjoenn(), is(nullValue()));
     }
 
     @Test

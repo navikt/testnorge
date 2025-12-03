@@ -1,5 +1,6 @@
-package no.nav.testnav.identpool.providers.v1;
+package no.nav.testnav.identpool.config;
 
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -7,6 +8,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+@DirtiesContext
 @Testcontainers
 public abstract class AbstractTestcontainer {
 

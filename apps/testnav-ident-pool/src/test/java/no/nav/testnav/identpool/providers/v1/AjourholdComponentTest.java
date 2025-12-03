@@ -1,6 +1,7 @@
 package no.nav.testnav.identpool.providers.v1;
 
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.testnav.identpool.config.AbstractTestcontainer;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.BatchStatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.FileCopyUtils;
@@ -29,7 +29,6 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
-@DirtiesContext
 @DollySpringBootTest
 class AjourholdComponentTest extends AbstractTestcontainer {
 
