@@ -5,15 +5,16 @@ import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.domain.Identtype;
+import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
+import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.providers.v1.AbstractTestcontainer;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -82,9 +83,8 @@ class IdentControllerTest extends AbstractTestcontainer {
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
-    void validerProduksjonIdenter() {
+    void validerProduksjonIdenterUgyldig() {
 
         val ident = "01010112345";
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(TpsStatusDTO.builder()
@@ -92,18 +92,50 @@ class IdentControllerTest extends AbstractTestcontainer {
                         .inUse(true)
                         .build()));
 
-        val test = webTestClient.post()
+        val response = webTestClient.post()
                 .uri(IDENT_V2_BASEURL + "/validerflere")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("{\"identer\":\"" + ident + "\"}")
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(IdentpoolResponseDTO[].class)
-                .returnResult();
-//                .toString();
-//                .jsonPath("$.ident").isEqualTo("01010112345")
-//                .jsonPath("$.gyldig").isEqualTo(true);
+                .expectBody(ValideringResponseDTO[].class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(response[0].ident(), is(equalTo(ident)));
+        assertThat(response[0].erGyldig(), is(equalTo(false)));
+    }
+
+    @Test
+    void validerProduksjonIdenterGyldig() {
+
+        val ident = "10108000398";
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(TpsStatusDTO.builder()
+                .ident(ident)
+                .inUse(true)
+                .build()));
+
+        val response = webTestClient.post()
+                .uri(IDENT_V2_BASEURL + "/validerflere")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"identer\":\"" + ident + "\"}")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(ValideringResponseDTO[].class)
+                .returnResult()
+                .getResponseBody()
+                [0];
+
+        assertThat(response.ident(), is(equalTo(ident)));
+        assertThat(response.erGyldig(), is(equalTo(true)));
+        assertThat(response.identtype(), is(equalTo(Identtype.FNR)));
+        assertThat(response.erIProd(), is(equalTo(true)));
+        assertThat(response.foedselsdato(), is(equalTo(LocalDate.of(1980, 10, 10))));
+        assertThat(response.erSyntetisk(), is(equalTo(false)));
+        assertThat(response.erPersonnummer2032(), is(equalTo(false)));
+        assertThat(response.kjoenn(), is(equalTo(Kjoenn.MANN)));
     }
 
     @Test

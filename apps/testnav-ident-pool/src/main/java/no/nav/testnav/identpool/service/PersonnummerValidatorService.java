@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
@@ -187,7 +186,6 @@ public class PersonnummerValidatorService {
 
         val valideringDTO = getValideringInteralDTO(foedselsnummer);
         val startTime = System.currentTimeMillis();
-        val feilmelding = new AtomicReference<>("");
 
         return Mono.zip(identRepository.findByPersonidentifikator(foedselsnummer)
                                 .switchIfEmpty(Mono.defer(() -> Mono.just(new Ident()))),
@@ -202,10 +200,11 @@ public class PersonnummerValidatorService {
                             .orElse(new TpsStatusDTO())
                             .isInUse();
 
+                    var feilmelding = "";
                     if (isFalse(valideringDTO.erSyntetisk()) && !erIProd && System.currentTimeMillis() - startTime > 5000) {
-                        feilmelding.set("Feil ved henting fra prod, forsøk igjen!");
+                        feilmelding = "Feil ved henting fra prod, forsøk igjen!";
                     } else if (isFalse(valideringDTO.erGyldig())) {
-                        feilmelding.set(valideringDTO.valideringResultat());
+                        feilmelding = valideringDTO.valideringResultat();
                     }
 
                     return new ValideringResponseDTO(
@@ -215,12 +214,12 @@ public class PersonnummerValidatorService {
                             valideringDTO.erSyntetisk(),
                             valideringDTO.erGyldig(),
                             isFalse(valideringDTO.erSyntetisk()) ? erIProd : null,
-                            valideringDTO.erStriktFoedselsnummer64(),
+                            isFalse(valideringDTO.erStriktFoedselsnummer64()),
                             isTrue(valideringDTO.erGyldig()) ?
                                     utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), valideringDTO.erStriktFoedselsnummer64()) : null,
                             isTrue(valideringDTO.erGyldig()) ?
                                     utledKjoenn(foedselsnummer, tuple.getT1(), valideringDTO.erStriktFoedselsnummer64()) : null,
-                            isTrue(valideringDTO.erGyldig()) && isBlank(feilmelding.get()) ? null : feilmelding.get(),
+                            isTrue(valideringDTO.erGyldig()) && isBlank(feilmelding) ? null : feilmelding,
                             isTrue(valideringDTO.erGyldig()) ? getKommentar(foedselsnummer, valideringDTO.erStriktFoedselsnummer64(),
                                     tuple.getT1(), tuple.getT2(), valideringDTO.erSyntetisk()) : null);
                 });
