@@ -45,7 +45,6 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 		}
 		return 1
 	})
-
 	sortedData = sortedData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
 	return (
