@@ -3,10 +3,10 @@ import { Alert, Box, Textarea, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import Loading from '@/components/ui/loading/Loading'
+import { IdentvalidatorVisningTable } from '@/pages/identvalidator/IdentvalidatorVisningTable'
 
 const initialValues = {
 	ident: '',
@@ -72,7 +72,7 @@ export default () => {
 						Feil ved validering: {error.message}
 					</Alert>
 				)}
-				<IdentvalidatorVisning data={validering} />
+				<IdentvalidatorVisningTable identListe={validering} />
 			</VStack>
 		</>
 	)
