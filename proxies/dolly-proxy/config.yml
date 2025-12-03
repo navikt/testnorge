@@ -85,6 +85,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-jenkins-batch-status-service
           cluster: dev-gcp
+        - application: testnav-joark-dokument-service
+          cluster: dev-gcp
         - application: testnav-levende-arbeidsforhold-ansettelse
           cluster: dev-gcp
         - application: testnav-levende-arbeidsforhold-service
