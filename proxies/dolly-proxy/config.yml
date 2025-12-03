@@ -67,6 +67,8 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+        - application: pdl-testdata
+          namespace: pdl
         - application: pensjon-afp-offentlig-mock-q1
           namespace: pensjon-saksbehandling
           cluster: dev-gcp
@@ -80,6 +82,12 @@ spec:
           namespace: pensjon-person
           cluster: dev-gcp
         - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: testnav-adresse-service
+          cluster: dev-gcp
+        - application: testnav-dolly-search-service
+          cluster: dev-gcp
+        - application: testnav-dolly-search-service-dev
           cluster: dev-gcp
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp
@@ -97,10 +105,21 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: testnorge-statisk-data-forvalter
-          cluster: dev-fss
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
+        - application: testnav-person-service
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api-dev
+          cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+        - application: testnav-tenor-search-service
+          cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
     outbound:
       rules:
         - application: digdir-krr-stub
