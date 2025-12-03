@@ -7,7 +7,7 @@ import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem
 import {
 	nySykemeldingAttributt,
 	sykemeldingAttributt,
-} from '@/components/fagsystem/sykdom/form/Form'
+} from '@/components/fagsystem/sykdom/form/constants'
 
 export const panelError = (attributtPath) => {
 	const {
