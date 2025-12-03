@@ -14,6 +14,20 @@ function comparator<T>(a: T, b: T, orderBy: keyof T): number {
 	return 0
 }
 
+const IconItem = (isValid: boolean, iconType: string) => {
+	if (!isBoolean(isValid)) return null
+	return iconType === 'none' ? (
+		<HStack gap="space-16">
+			<div style={{ width: '20px', textAlign: 'center' }}>-</div>
+			{oversettBoolean(isValid)}
+		</HStack>
+	) : (
+		<Alert variant={iconType} inline>
+			{oversettBoolean(isValid)}
+		</Alert>
+	)
+}
+
 export const IdentvalidatorVisningTable = ({ identListe }) => {
 	const [page, setPage] = useState(1)
 	const rowsPerPage = 10
@@ -48,20 +62,6 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 	})
 	sortedData = sortedData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
-	const IconItem = (isValid: boolean, iconType: string) => {
-		if (!isBoolean(isValid)) return null
-		return iconType === 'none' ? (
-			<HStack gap="space-16">
-				<div style={{ width: '20px', textAlign: 'center' }}>-</div>
-				{oversettBoolean(isValid)}
-			</HStack>
-		) : (
-			<Alert variant={iconType} inline>
-				{oversettBoolean(isValid)}
-			</Alert>
-		)
-	}
-
 	return (
 		<VStack gap="space-16">
 			<Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey)}>
@@ -79,7 +79,7 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 							Er syntetisk
 						</Table.ColumnHeader>
 						<Table.ColumnHeader sortKey="erTestnorgeIdent" sortable>
-							Er Testnorge-ident
+							Er Tenor-ident
 						</Table.ColumnHeader>
 						<Table.ColumnHeader sortKey="erPersonnummer2032" sortable>
 							Er ny ident (2032)
