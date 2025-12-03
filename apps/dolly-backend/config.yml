@@ -54,7 +54,6 @@ spec:
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-sykemelding-proxy
       external:
-        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io

@@ -3,7 +3,7 @@ import useSWRImmutable from 'swr/immutable'
 
 const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
 const getPensjonMiljoerUrl = '/testnav-dolly-proxy/pensjon/api/v1/miljo'
-const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
+const getArenaMiljoerUrl = '/testnav-dolly-proxy/arena/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-dolly-proxy/inst/api/v1/environment'
 const getDokarkivMiljoerUrl = '/testnav-dolly-proxy/dokarkiv/rest/miljoe'
 

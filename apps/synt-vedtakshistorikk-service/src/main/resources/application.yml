@@ -28,11 +28,6 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-arena-dagpenger
-  testnav-arena-forvalteren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-arena-forvalteren-proxy
-    url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
   testnav-dolly-search-service:
     cluster: dev-gcp
     namespace: dolly

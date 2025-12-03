@@ -53,11 +53,6 @@ consumers:
     namespace: dolly
     name: testnav-dolly-proxy
     url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
-  testnav-arena-forvalteren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-arena-forvalteren-proxy
-    url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
   dolly-backend:
     cluster: dev-gcp
     namespace: dolly

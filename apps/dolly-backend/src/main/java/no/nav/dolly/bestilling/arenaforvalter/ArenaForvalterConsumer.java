@@ -51,7 +51,7 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
             ObjectMapper objectMapper,
             WebClient webClient) {
 
-        serverProperties = consumers.getTestnavArenaForvalterenProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         this.webClient = webClient
                 .mutate()
@@ -141,7 +141,7 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-arena-forvalteren-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

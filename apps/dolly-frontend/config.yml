@@ -68,7 +68,6 @@ spec:
         - application: logging
           namespace: nais-system
       external:
-        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/health/liveness

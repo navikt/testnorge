@@ -68,7 +68,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getDollyBackend(), "dolly-backend"))
                 .route(createRoute(consumers.getTestnavJoarkDokumentService()))
                 .route(createRoute(consumers.getTestnavDollyProxy()))
-                .route(createRoute(consumers.getTestnavArenaForvalterenProxy()))
                 .route(createRoute(consumers.getTestnavOrganisasjonService()))
                 .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
                 .route(createRoute(consumers.getTestnavDollySearchService(), "testnav-dolly-search-service"))
