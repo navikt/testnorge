@@ -41,6 +41,7 @@ spec:
   envFrom:
     - secret: azure-nav-testnav-dolly-proxy
     - secret: azure-trygdeetaten-testnav-dolly-proxy
+    - secret: testnav-pdl-proxy
   image: "{{image}}"
   port: 8080
   tokenx:

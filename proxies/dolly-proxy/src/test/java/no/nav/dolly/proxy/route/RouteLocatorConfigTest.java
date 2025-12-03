@@ -2,6 +2,7 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.proxy.auth.PdlAuthConfig;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
@@ -83,6 +84,8 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-api", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-api-q1", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pdl-elastic", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.pdl-identhendelse", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-testdata", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon-afp", () -> wireMockServer.baseUrl());
@@ -522,10 +525,10 @@ class RouteLocatorConfigTest {
     void testPdl(Pdl.SpecialCase env) {
 
         var url = "/some/path";
+        var responseBody = "Success from mocked " + env.getName();
         switch (env) {
 
             case Pdl.SpecialCase.API -> {
-                var responseBody = "Success from mocked " + Pdl.SpecialCase.API.getName();
 
                 wireMockServer.stubFor(get(urlEqualTo(url))
                         .willReturn(aResponse()
@@ -541,11 +544,12 @@ class RouteLocatorConfigTest {
                         .expectHeader().contentType("text/plain")
                         .expectBody(String.class).isEqualTo(responseBody);
 
+                wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
             }
 
             case Pdl.SpecialCase.API_Q1 -> {
-
-                var responseBody = "Success from mocked " + Pdl.SpecialCase.API_Q1.getName();
 
                 wireMockServer.stubFor(get(urlEqualTo(url))
                         .willReturn(aResponse()
@@ -560,11 +564,55 @@ class RouteLocatorConfigTest {
                         .expectStatus().isOk()
                         .expectHeader().contentType("text/plain")
                         .expectBody(String.class).isEqualTo(responseBody);
+
+                wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+            }
+
+            case Pdl.SpecialCase.ELASTIC -> {
+
+                wireMockServer.stubFor(get(urlEqualTo(url))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "text/plain")
+                                .withBody(responseBody)));
+
+                webClient
+                        .get()
+                        .uri("/pdl-elastic" + url)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectHeader().contentType("text/plain")
+                        .expectBody(String.class).isEqualTo(responseBody);
+
+                wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Basic .*")));
+
+            }
+
+            case Pdl.SpecialCase.IDENTHENDELSE -> {
+
+                wireMockServer.stubFor(get(urlEqualTo(url))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "text/plain")
+                                .withBody(responseBody)));
+
+                webClient
+                        .get()
+                        .uri("/pdl-identhendelse" + url)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectHeader().contentType("text/plain")
+                        .expectBody(String.class).isEqualTo(responseBody);
+
+                wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("apikey")));
+
             }
 
             case Pdl.SpecialCase.TESTDATA -> {
-
-                var responseBody = "Success from mocked " + Pdl.SpecialCase.TESTDATA.getName();
 
                 wireMockServer.stubFor(get(urlEqualTo(url))
                         .willReturn(aResponse()
@@ -580,11 +628,12 @@ class RouteLocatorConfigTest {
                         .expectHeader().contentType("text/plain")
                         .expectBody(String.class).isEqualTo(responseBody);
 
+                wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
             }
 
         }
-        wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
 
     }
 

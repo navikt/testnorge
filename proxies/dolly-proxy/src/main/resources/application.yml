@@ -28,6 +28,12 @@ spring:
 app:
   fakedings:
     url: https://fakedings.intern.dev.nav.no
+  pdl:
+    elastic:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+    hendelse:
+      apikey: ${IDENTHENDELSE_API_KEY}
   targets:
     aareg-services: https://aareg-services-%s.dev.intern.nav.no # Note replacement pattern.
     aareg-vedlikehold: https://aareg-dolly-api-%s.intern.dev.nav.no # Note replacement pattern.
@@ -47,6 +53,8 @@ app:
     norg2: http://norg2.org.svc.nais.local
     pdl-api: http://pdl-api.pdl.svc.nais.local
     pdl-api-q1: http://pdl-api-q1.pdl.svc.nais.local
+    pdl-elastic: https://pdl-es-q.adeo.no
+    pdl-identhendelse: http://pdl-identhendelse-lager.pdl.svc.nais.local
     pdl-testdata: http://pdl-testdata.pdl.svc.nais.local
     pensjon: http://pensjon-testdata-facade.pensjontestdata
     pensjon-afp: https://pensjon-afp-offentlig-mock-%s.intern.dev.nav.no # Note replacement pattern.

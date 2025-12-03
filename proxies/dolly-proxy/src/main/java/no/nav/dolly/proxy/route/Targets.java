@@ -33,6 +33,8 @@ class Targets {
     String norg2;
     String pdlApi;
     String pdlApiQ1;
+    String pdlElastic;
+    String pdlIdenthendelse;
     String pdlTestdata;
     String pensjon;
     String pensjonAfp;
