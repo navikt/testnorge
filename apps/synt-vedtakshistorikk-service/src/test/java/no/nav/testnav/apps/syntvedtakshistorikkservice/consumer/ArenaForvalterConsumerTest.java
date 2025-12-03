@@ -224,7 +224,7 @@ class ArenaForvalterConsumerTest {
 
         var response = arenaForvalterConsumer.opprettRettighet(rettigheter);
 
-        assertThat(response.get(fnr).get(0).getNyeRettigheterTillegg()).hasSize(1);
+        assertThat(response.get(fnr).getFirst().getNyeRettigheterTillegg()).hasSize(1);
     }
 
     private void stubArenaForvalterOpprettTilleggRettighet() {
