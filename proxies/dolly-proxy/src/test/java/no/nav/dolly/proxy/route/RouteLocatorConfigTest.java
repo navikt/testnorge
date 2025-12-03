@@ -2,7 +2,6 @@ package no.nav.dolly.proxy.route;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.dolly.proxy.auth.PdlAuthConfig;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;

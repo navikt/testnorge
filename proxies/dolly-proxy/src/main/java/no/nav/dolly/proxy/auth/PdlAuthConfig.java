@@ -5,18 +5,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Getter
 public class PdlAuthConfig {
 
     @Value("${app.pdl.elastic.username}")
-    @Getter
     private String elasticUsername;
 
     @Value("${app.pdl.elastic.password}")
-    @Getter
     private String elasticPassword;
 
     @Value("${app.pdl.hendelse.apikey}")
-    @Getter
     private String hendelseApiKey;
 
 }
