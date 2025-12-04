@@ -4,10 +4,11 @@ import no.nav.testnav.apps.adresseservice.config.Consumers;
 import no.nav.testnav.apps.adresseservice.consumer.command.PdlAdresseSoekCommand;
 import no.nav.testnav.apps.adresseservice.dto.GraphQLRequest;
 import no.nav.testnav.apps.adresseservice.dto.PdlAdresseResponse;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 public class PdlAdresseConsumer {
@@ -29,10 +30,9 @@ public class PdlAdresseConsumer {
                 .build();
     }
 
-    public PdlAdresseResponse sendAdressesoek(GraphQLRequest adresseQuery) {
+    public Mono<PdlAdresseResponse> sendAdressesoek(GraphQLRequest adresseQuery) {
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new PdlAdresseSoekCommand(webClient, adresseQuery, token.getTokenValue()).call())
-                .block();
+                .flatMap(token -> new PdlAdresseSoekCommand(webClient, adresseQuery, token.getTokenValue()).call());
     }
 
 }
