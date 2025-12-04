@@ -5,11 +5,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
-import no.nav.testnav.identpool.dto.ValideringRequestDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
-import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import no.nav.testnav.identpool.service.Identpool32Service;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
@@ -42,17 +41,6 @@ public class IdentController {
         return identpool32Service.generateIdent(request);
     }
 
-    /**
-     * @deprecated Bruk /validerflere for å validere flere identer i en request
-     */
-    @Deprecated(since = "2025-11-03", forRemoval = true)
-    @Operation(description = "Validering for nye og gamle test-identer")
-    @PostMapping("/valider")
-    public Mono<ValideringResponseDTO> valider(@Valid @RequestBody ValideringRequestDTO request) {
-
-        return personnummerValidatorService.validerFoedselsnummer(request.ident());
-    }
-
     @Operation(description = "Validering for nye og gamle test-identer, validerer flere identer separert med mellomrom, komma eller semikolon")
     @PostMapping("/validerflere")
     public Flux<ValideringResponseDTO> validerflere(@Valid @RequestBody ValideringFlereRequestDTO request) {
@@ -60,7 +48,7 @@ public class IdentController {
         val identer = request.identer().split("[\\s,;]");
         return Flux.fromArray(identer)
                 .filter(StringUtils::isNotBlank)
-                .concatMap(personnummerValidatorService::validerFoedselsnummer, 5);
+                .flatMap(personnummerValidatorService::validerFoedselsnummer, 10);
     }
 
     @Operation(description = "Frigjoer pid2032 test-ident")
