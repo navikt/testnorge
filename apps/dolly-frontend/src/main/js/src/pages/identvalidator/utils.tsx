@@ -2,7 +2,7 @@ import { isBoolean } from 'lodash-es'
 import { Alert, HStack } from '@navikt/ds-react'
 import { oversettBoolean } from '@/utils/DataFormatter'
 
-export const IconComponent = (isValid: boolean, iconType: string) => {
+export const IconComponent = ({ isValid, iconType }) => {
 	if (!isBoolean(isValid)) return null
 	return iconType === 'none' ? (
 		<HStack gap="space-16">
@@ -14,4 +14,11 @@ export const IconComponent = (isValid: boolean, iconType: string) => {
 			{oversettBoolean(isValid)}
 		</Alert>
 	)
+}
+
+export const getIcon = (isValid: boolean, showError = false) => {
+	if (showError) {
+		return isValid ? 'success' : 'error'
+	}
+	return isValid ? 'success' : 'none'
 }

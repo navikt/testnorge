@@ -1,7 +1,7 @@
 import { Alert, Box, HStack, Pagination, Table, Tooltip, VStack } from '@navikt/ds-react'
-import { getIcon, IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
+import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 import { useState } from 'react'
-import { IconComponent } from '@/pages/identvalidator/utils'
+import { getIcon, IconComponent } from '@/pages/identvalidator/utils'
 import Icon from '@/components/ui/icon/Icon'
 import { isBoolean } from 'lodash-es'
 
@@ -104,7 +104,10 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 										<IdentVisning identData={identData} />
 									</Table.HeaderCell>
 									<Table.DataCell>
-										{IconComponent(identData.erGyldig, getIcon(identData.erGyldig, true))}
+										<IconComponent
+											isValid={identData.erGyldig}
+											iconType={getIcon(identData.erGyldig, true)}
+										/>
 									</Table.DataCell>
 									<Table.DataCell>
 										{feilIProdSjekk(identData) ? (
@@ -112,20 +115,29 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 												Ukjent
 											</Alert>
 										) : (
-											IconComponent(identData.erIProd, identData.erIProd ? 'warning' : 'none')
+											<IconComponent
+												isValid={identData.erIProd}
+												iconType={identData.erIProd ? 'warning' : 'none'}
+											/>
 										)}
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconComponent(identData.erSyntetisk, getIcon(identData.erSyntetisk))}
+										<IconComponent
+											isValid={identData.erSyntetisk}
+											iconType={getIcon(identData.erSyntetisk)}
+										/>
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconComponent(identData.erTestnorgeIdent, getIcon(identData.erTestnorgeIdent))}
+										<IconComponent
+											isValid={identData.erTestnorgeIdent}
+											iconType={getIcon(identData.erTestnorgeIdent)}
+										/>
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconComponent(
-											identData.erPersonnummer2032,
-											getIcon(identData.erPersonnummer2032),
-										)}
+										<IconComponent
+											isValid={identData.erPersonnummer2032}
+											iconType={getIcon(identData.erPersonnummer2032)}
+										/>
 									</Table.DataCell>
 								</Table.ExpandableRow>
 							)
