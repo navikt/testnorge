@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,79 +51,77 @@ public class PdlAdresseService {
         matrikkelAdresseQuery = getQueryFromFile("pdladresse/matrikkeladressequery.graphql");
     }
 
-    public List<VegadresseDTO> getVegadresse(VegadresseRequest request, Long antall) {
+    public Mono<List<VegadresseDTO>> getVegadresse(VegadresseRequest request, Long antall) {
 
         if (isNull(request)) {
             request = VegadresseRequest.builder()
                     .build();
         }
 
-        var response = pdlAdresseConsumer.sendAdressesoek(GraphQLRequest.builder()
-                .query(vegAdresseQuery)
-                .variables(Map.of(
-                        "paging", GraphQLRequest.Paging.builder()
-                                .pageNumber(0L)
-                                .resultsPerPage(antall)
-                                .build(),
-                        "criteria",
-                        Stream.of(
-                                        buildCriteria("vegadresse.adressenavn", request.getAdressenavn(), FUZZY),
-                                        buildCriteria("vegadresse.husnummer", request.getHusnummer(), EQUALS),
-                                        buildCriteria("vegadresse.husbokstav", request.getHusbokstav(), EQUALS),
-                                        buildCriteria("vegadresse.postnummer", request.getPostnummer(), EQUALS),
-                                        buildCriteria("vegadresse.poststed", request.getPoststed(), EQUALS),
-                                        buildCriteria("vegadresse.kommunenummer", request.getKommunenummer(), EQUALS),
-                                        buildCriteria("vegadresse.kommunenavn", request.getKommunenavn(), EQUALS),
-                                        buildCriteria("vegadresse.bydelsnummer", request.getBydelsnummer(), EQUALS),
-                                        buildCriteria("vegadresse.bydelsnavn", request.getBydelsnavn(), EQUALS),
-                                        buildCriteria("vegadresse.tilleggsnavn", request.getTilleggsnavn(), FUZZY),
-                                        buildCriteria("vegadresse.matrikkelId", request.getMatrikkelId(), EQUALS),
-                                        buildCriteria("vegadresse.fritekst", request.getFritekst(), CONTAINS),
+        return pdlAdresseConsumer.sendAdressesoek(GraphQLRequest.builder()
+                        .query(vegAdresseQuery)
+                        .variables(Map.of(
+                                "paging", GraphQLRequest.Paging.builder()
+                                        .pageNumber(0L)
+                                        .resultsPerPage(antall)
+                                        .build(),
+                                "criteria",
+                                Stream.of(
+                                                buildCriteria("vegadresse.adressenavn", request.getAdressenavn(), FUZZY),
+                                                buildCriteria("vegadresse.husnummer", request.getHusnummer(), EQUALS),
+                                                buildCriteria("vegadresse.husbokstav", request.getHusbokstav(), EQUALS),
+                                                buildCriteria("vegadresse.postnummer", request.getPostnummer(), EQUALS),
+                                                buildCriteria("vegadresse.poststed", request.getPoststed(), EQUALS),
+                                                buildCriteria("vegadresse.kommunenummer", request.getKommunenummer(), EQUALS),
+                                                buildCriteria("vegadresse.kommunenavn", request.getKommunenavn(), EQUALS),
+                                                buildCriteria("vegadresse.bydelsnummer", request.getBydelsnummer(), EQUALS),
+                                                buildCriteria("vegadresse.bydelsnavn", request.getBydelsnavn(), EQUALS),
+                                                buildCriteria("vegadresse.tilleggsnavn", request.getTilleggsnavn(), FUZZY),
+                                                buildCriteria("vegadresse.matrikkelId", request.getMatrikkelId(), EQUALS),
+                                                buildCriteria("vegadresse.fritekst", request.getFritekst(), CONTAINS),
 
-                                        buildCriteria("vegadresse.adressenavn", true, EXISTS),
-                                        buildCriteria("random", random.nextDouble(), RANDOM)
-                                )
-                                .filter(Objects::nonNull)
-                                .toList()
-                ))
-                .build());
-
-        return mapperFacade.mapAsList(response.getData().getSokAdresse().getHits(), VegadresseDTO.class);
+                                                buildCriteria("vegadresse.adressenavn", true, EXISTS),
+                                                buildCriteria("random", random.nextDouble(), RANDOM)
+                                        )
+                                        .filter(Objects::nonNull)
+                                        .toList()
+                        ))
+                        .build())
+                .map(response -> mapperFacade.mapAsList(response.getData().getSokAdresse().getHits(), VegadresseDTO.class));
     }
 
-    public List<MatrikkeladresseDTO> getMatrikkelAdresse(MatrikkeladresseRequest request, Long antall) {
+    public Mono<List<MatrikkeladresseDTO>> getMatrikkelAdresse(MatrikkeladresseRequest request, Long antall) {
 
         if (isNull(request)) {
             request = MatrikkeladresseRequest.builder()
                     .build();
         }
 
-        var response = pdlAdresseConsumer.sendAdressesoek(GraphQLRequest.builder()
-                .query(matrikkelAdresseQuery)
-                .variables(Map.of(
-                        "paging", GraphQLRequest.Paging.builder()
-                                .pageNumber(0L)
-                                .resultsPerPage(antall)
-                                .build(),
-                        "criteria",
-                        Stream.of(
-                                        buildCriteria("matrikkeladresse.matrikkelId", request.getMatrikkelId(), EQUALS),
-                                        buildCriteria("matrikkeladresse.kommunenummer", request.getKommunenummer(), EQUALS),
-                                        buildCriteria("matrikkeladresse.gaardsnummer", request.getGaardsnummer(), EQUALS),
-                                        buildCriteria("matrikkeladresse.bruksnummer", request.getBrukesnummer(), EQUALS),
-                                        buildCriteria("matrikkeladresse.postnummer", request.getPostnummer(), EQUALS),
-                                        buildCriteria("matrikkeladresse.poststed", request.getPoststed(), EQUALS),
-                                        buildCriteria("matrikkeladresse.tilleggsnavn", request.getTilleggsnavn(), FUZZY),
+        return pdlAdresseConsumer.sendAdressesoek(GraphQLRequest.builder()
+                        .query(matrikkelAdresseQuery)
+                        .variables(Map.of(
+                                "paging", GraphQLRequest.Paging.builder()
+                                        .pageNumber(0L)
+                                        .resultsPerPage(antall)
+                                        .build(),
+                                "criteria",
+                                Stream.of(
+                                                buildCriteria("matrikkeladresse.matrikkelId", request.getMatrikkelId(), EQUALS),
+                                                buildCriteria("matrikkeladresse.kommunenummer", request.getKommunenummer(), EQUALS),
+                                                buildCriteria("matrikkeladresse.gaardsnummer", request.getGaardsnummer(), EQUALS),
+                                                buildCriteria("matrikkeladresse.bruksnummer", request.getBrukesnummer(), EQUALS),
+                                                buildCriteria("matrikkeladresse.postnummer", request.getPostnummer(), EQUALS),
+                                                buildCriteria("matrikkeladresse.poststed", request.getPoststed(), EQUALS),
+                                                buildCriteria("matrikkeladresse.tilleggsnavn", request.getTilleggsnavn(), FUZZY),
 
-                                        buildCriteria("matrikkeladresse.gaardsnummer", true, EXISTS),
-                                        buildCriteria("random", random.nextDouble(), RANDOM)
-                                )
-                                .filter(Objects::nonNull)
-                                .toList()
-                ))
-                .build());
-
-        return mapperFacade.mapAsList(response.getData().getSokAdresse().getHits(), MatrikkeladresseDTO.class);
+                                                buildCriteria("matrikkeladresse.gaardsnummer", true, EXISTS),
+                                                buildCriteria("random", random.nextDouble(), RANDOM)
+                                        )
+                                        .filter(Objects::nonNull)
+                                        .toList()
+                        ))
+                        .build())
+                .map(response -> mapperFacade.mapAsList(response.getData().getSokAdresse().getHits(), MatrikkeladresseDTO.class));
     }
 
     private static String getQueryFromFile(String path) {
