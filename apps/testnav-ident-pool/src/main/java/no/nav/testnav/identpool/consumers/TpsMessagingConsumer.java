@@ -46,10 +46,10 @@ public class TpsMessagingConsumer {
     private Flux<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, TpsValidation validation) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size() / PAGESIZE + 1)
+                .flatMapMany(token -> Flux.fromIterable(identer)
+                        .buffer(PAGESIZE)
                         .flatMap(page -> new TpsMessagingGetCommand(webClient, token.getTokenValue(),
-                                identer.subList(page * PAGESIZE, Math.min(identer.size(), (page + 1) * PAGESIZE)),
-                                miljoer, true).call()
+                                page, miljoer, true).call()
                                 .map(status -> TpsStatusDTO.builder()
                                         .ident(status.getIdent())
                                         .inUse(validation.apply(status))
