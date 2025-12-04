@@ -32,16 +32,16 @@ const IconComponent = ({ item }) => {
 	)
 }
 
+export const getIcon = (isValid: boolean, showError = false) => {
+	if (showError) {
+		return isValid ? 'success' : 'error'
+	}
+	return isValid ? 'success' : 'none'
+}
+
 export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	if (!data) {
 		return null
-	}
-
-	const getIcon = (isValid: boolean, showError = false) => {
-		if (showError) {
-			return isValid ? 'success' : 'error'
-		}
-		return isValid ? 'success' : 'none'
 	}
 
 	const mappedData = [
@@ -51,9 +51,9 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 			icon: getIcon(data.erGyldig, true),
 		},
 		{
-			label: 'Er ny ident (2032)',
-			value: oversettBoolean(data.erPersonnummer2032),
-			icon: getIcon(data.erPersonnummer2032),
+			label: 'Er i prod',
+			value: oversettBoolean(data.erIProd),
+			icon: data.erIProd ? 'warning' : 'none',
 		},
 		{
 			label: 'Er syntetisk',
@@ -66,9 +66,9 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 			icon: getIcon(data.erTestnorgeIdent),
 		},
 		{
-			label: 'Er i prod',
-			value: oversettBoolean(data.erIProd),
-			icon: data.erIProd ? 'warning' : 'none',
+			label: 'Er ny ident (2032)',
+			value: oversettBoolean(data.erPersonnummer2032),
+			icon: getIcon(data.erPersonnummer2032),
 		},
 		{ label: 'Identtype', value: data.identtype },
 		{ label: 'Fødselsdato', value: formatDate(data.foedselsdato) },
@@ -85,7 +85,6 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 			borderWidth="2"
 			borderColor={data.feilmelding ? 'border-danger' : 'border-success'}
 		>
-			<h2 style={{ paddingLeft: '8px', marginTop: '8px' }}>Validering av ident {data.ident}</h2>
 			<Table>
 				<Table.Body>
 					{mappedData.map((item) => {
