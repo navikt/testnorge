@@ -48,6 +48,7 @@ public class IdentController {
         val identer = request.identer().split("[\\s,;]");
         return Flux.fromArray(identer)
                 .filter(StringUtils::isNotBlank)
+                .buffer(80)
                 .flatMap(personnummerValidatorService::validerFoedselsnummer, 5);
     }
 
