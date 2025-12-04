@@ -21,7 +21,7 @@ const IdentVisning = ({ identData }) => {
 			{identData.ident}
 			{identData.feilmelding && (
 				<Tooltip content={identData.feilmelding}>
-					<Icon kind="report-problem-triangle" size={20} />
+					<Icon kind="warning-triangle" size={24} />
 				</Tooltip>
 			)}
 		</HStack>
@@ -109,7 +109,7 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 									<Table.DataCell>
 										{feilIProdSjekk(identData) ? (
 											<Alert variant="warning" inline>
-												{null}
+												Ukjent
 											</Alert>
 										) : (
 											IconComponent(identData.erIProd, identData.erIProd ? 'warning' : 'none')
