@@ -118,6 +118,32 @@ class IdentControllerTest extends AbstractTestcontainer {
     }
 
     @Test
+    void validerProduksjonIdenterHentingFeilet() {
+
+        val ident = "10108000398";
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.empty());
+
+        webTestClient.post()
+                .uri(IDENT_V2_BASEURL + "/validerflere")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"identer\":\"" + ident + "\"}")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$.[0].ident").isEqualTo(ident)
+                .jsonPath("$.[0].erGyldig").isEqualTo(true)
+                .jsonPath("$.[0].identtype").isEqualTo(Identtype.FNR)
+                .jsonPath("$.[0].erIProd").isEqualTo(null)
+                .jsonPath("$.[0].foedselsdato").isEqualTo("1980-10-10")
+                .jsonPath("$.[0].erSyntetisk").isEqualTo(false)
+                .jsonPath("$.[0].erPersonnummer2032").isEqualTo(null)
+                .jsonPath("$.[0].erTestnorgeIdent").isEqualTo(null)
+                .jsonPath("$.[0].kjoenn").isEqualTo(Kjoenn.MANN)
+                .jsonPath("$.[0].feilmelding").isEqualTo("Feil ved henting fra prod, forsøk igjen!");
+    }
+
+    @Test
     void validerSyntetiskeIdenterGyldig() {
 
         val ident = "09448542138";

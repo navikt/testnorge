@@ -1,6 +1,7 @@
 package no.nav.testnav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
@@ -37,6 +38,7 @@ import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonnummerValidatorService {
@@ -202,7 +204,7 @@ public class PersonnummerValidatorService {
                     val foedselsnummer = tuple.getT1().getIdent();
                     val valideringDTO = getValideringInteralDTO(tuple.getT1().getIdent());
 
-                    var erIProd = isNotSyntetiskIdent(tuple.getT1().getIdent()) && !tuple.getT1().isDirty() ?
+                    var erIProd = isFalse(valideringDTO.erSyntetisk()) && !tuple.getT1().isDirty() ?
                             tuple.getT1().isInUse() : null;
 
                     String feilmelding = null;
@@ -240,6 +242,7 @@ public class PersonnummerValidatorService {
                                 .collect(Collectors.toMap(TpsStatusDTO::getIdent, status -> status))
                                 .flatMap(dirtyCheck -> {
                                     if (dirtyCheck.isEmpty()) {
+                                        log.warn("Dirty-check: tomt inhold i svar fra TPS");
                                         return Flux.fromIterable(identer)
                                                 .collect(Collectors.toMap(ident -> ident,
                                                         ident -> new TpsStatusDTO(ident, false, true)));
