@@ -49,7 +49,7 @@ public class IdentController {
         return Flux.fromArray(identer)
                 .filter(StringUtils::isNotBlank)
                 .buffer(80)
-                .flatMap(personnummerValidatorService::validerFoedselsnummer, 10);
+                .flatMap(personnummerValidatorService::validerFoedselsnummer, 5);
     }
 
     @Operation(description = "Frigjoer pid2032 test-ident")
