@@ -1,7 +1,8 @@
-import { Alert, Box, HStack, Pagination, Table, VStack } from '@navikt/ds-react'
-import { oversettBoolean } from '@/utils/DataFormatter'
+import { Alert, Box, HStack, Pagination, Table, Tooltip, VStack } from '@navikt/ds-react'
 import { getIcon, IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 import { useState } from 'react'
+import { IconComponent } from '@/pages/identvalidator/utils'
+import Icon from '@/components/ui/icon/Icon'
 import { isBoolean } from 'lodash-es'
 
 function comparator<T>(a: T, b: T, orderBy: keyof T): number {
@@ -14,17 +15,16 @@ function comparator<T>(a: T, b: T, orderBy: keyof T): number {
 	return 0
 }
 
-const IconItem = (isValid: boolean, iconType: string) => {
-	if (!isBoolean(isValid)) return null
-	return iconType === 'none' ? (
-		<HStack gap="space-16">
-			<div style={{ width: '20px', textAlign: 'center' }}>-</div>
-			{oversettBoolean(isValid)}
+const IdentVisning = ({ identData }) => {
+	return (
+		<HStack gap="space-12">
+			{identData.ident}
+			{identData.feilmelding && (
+				<Tooltip content={identData.feilmelding}>
+					<Icon kind="report-problem-triangle" size={20} />
+				</Tooltip>
+			)}
 		</HStack>
-	) : (
-		<Alert variant={iconType} inline>
-			{oversettBoolean(isValid)}
-		</Alert>
 	)
 }
 
@@ -62,6 +62,10 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 	})
 	sortedData = sortedData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
+	const feilIProdSjekk = (identData) => {
+		return isBoolean(identData.erIProd) && !identData.erIProd && identData.erSyntetisk === null
+	}
+
 	return (
 		<Box background={'surface-default'} padding="6">
 			<VStack gap="space-16">
@@ -96,23 +100,32 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 									defaultOpen={identListe.length === 1}
 									expandOnRowClick
 								>
-									<Table.HeaderCell scope="row" width="18%">
-										{identData.ident}
+									<Table.HeaderCell scope="row" width="20%">
+										<IdentVisning identData={identData} />
 									</Table.HeaderCell>
 									<Table.DataCell>
-										{IconItem(identData.erGyldig, getIcon(identData.erGyldig, true))}
+										{IconComponent(identData.erGyldig, getIcon(identData.erGyldig, true))}
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconItem(identData.erIProd, identData.erIProd ? 'warning' : 'none')}
+										{feilIProdSjekk(identData) ? (
+											<Alert variant="warning" inline>
+												{null}
+											</Alert>
+										) : (
+											IconComponent(identData.erIProd, identData.erIProd ? 'warning' : 'none')
+										)}
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconItem(identData.erSyntetisk, getIcon(identData.erSyntetisk))}
+										{IconComponent(identData.erSyntetisk, getIcon(identData.erSyntetisk))}
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconItem(identData.erTestnorgeIdent, getIcon(identData.erTestnorgeIdent))}
+										{IconComponent(identData.erTestnorgeIdent, getIcon(identData.erTestnorgeIdent))}
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconItem(identData.erPersonnummer2032, getIcon(identData.erPersonnummer2032))}
+										{IconComponent(
+											identData.erPersonnummer2032,
+											getIcon(identData.erPersonnummer2032),
+										)}
 									</Table.DataCell>
 								</Table.ExpandableRow>
 							)
