@@ -213,7 +213,7 @@ public class PersonnummerValidatorService {
                             valideringDTO.erTestnorgeIdent(),
                             valideringDTO.erSyntetisk(),
                             valideringDTO.erGyldig(),
-                            isFalse(valideringDTO.erSyntetisk()) ? erIProd : null,
+                            isFalse(valideringDTO.erSyntetisk()) && isBlank(feilmelding) ? erIProd : null,
                             isTrue(valideringDTO.erSyntetisk()) ? isFalse(valideringDTO.erStriktFoedselsnummer64()) : null,
                             isTrue(valideringDTO.erGyldig()) ?
                                     utledFoedselsdato(foedselsnummer, tuple.getT1(), tuple.getT2(), valideringDTO.erStriktFoedselsnummer64()) : null,
