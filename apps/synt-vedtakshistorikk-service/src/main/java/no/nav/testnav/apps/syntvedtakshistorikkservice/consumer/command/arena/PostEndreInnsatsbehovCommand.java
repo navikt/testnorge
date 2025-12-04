@@ -29,7 +29,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
     public Mono<EndreInnsatsbehovResponse> call() {
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/api/v1/endreInnsatsbehov")
+                        builder.path("/arena/api/v1/endreInnsatsbehov")
                                 .build()
                 )
                 .header(CALL_ID, NAV_CALL_ID)

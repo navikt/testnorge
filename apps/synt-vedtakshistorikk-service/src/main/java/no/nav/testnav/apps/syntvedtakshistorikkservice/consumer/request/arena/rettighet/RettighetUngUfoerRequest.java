@@ -21,7 +21,7 @@ public class RettighetUngUfoerRequest extends RettighetRequest {
     private List<NyttVedtakAap> nyeAaungufor;
 
     @Override public String getArenaForvalterUrlPath() {
-        return "/api/v1/aapungufor";
+        return "/arena/api/v1/aapungufor";
     }
 
     @JsonProperty("nyeAaungufor")

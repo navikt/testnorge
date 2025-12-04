@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   jpa:
     properties:
       hibernate:
@@ -22,8 +22,8 @@ consumers:
     name: testnav-inntektsmelding-generator-service
     cluster: dev-gcp
     namespace: dolly
-  testnav-dokarkiv-proxy:
-    url: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-    name: testnav-dokarkiv-proxy
+  testnav-dolly-proxy:
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+    name: testnav-dolly-proxy
     cluster: dev-fss
     namespace: dolly

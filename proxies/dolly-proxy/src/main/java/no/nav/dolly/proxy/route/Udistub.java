@@ -23,7 +23,10 @@ class Udistub {
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService.getNavAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.udistub);
+
+        var authenticationFilter = authenticationFilterService
+                .getNavAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.udistub);
+
         return spec -> spec
                 .path("/udistub/**")
                 .filters(f -> f
@@ -31,6 +34,7 @@ class Udistub {
                         .setResponseHeader(CONTENT_TYPE, "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
                 .uri(targets.udistub);
+
     }
 
 }

@@ -30,7 +30,7 @@ public class PostFinnTiltakCommand implements Callable<Mono<NyttVedtakResponse>>
         log.info("Henter tiltak for ident {} i miljø {}", rettighet.getPersonident(), rettighet.getMiljoe());
         return webClient
                 .post()
-                .uri(builder -> builder.path("/api/v1/finntiltak").build())
+                .uri(builder -> builder.path("/arena/api/v1/finntiltak").build())
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .headers(WebClientHeader.bearer(token))

@@ -1,7 +1,5 @@
 package no.nav.dolly.proxy.route;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import org.springframework.cloud.gateway.route.Route;
@@ -25,12 +23,13 @@ class Pensjon {
         return build(null);
     }
 
-    Function<PredicateSpec, Buildable<Route>> build(SpecialCase specialCase) {
+    Function<PredicateSpec, Buildable<Route>> build(SpecialCase env) {
 
         // Special case for AFP in Q1.
-        if (SpecialCase.AFP_Q1.equals(specialCase)) {
+        if (SpecialCase.AFP_Q1.equals(env)) {
             var uri = targets.getPensjonAfp().formatted("q1");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, specialCase.getNamespace(), specialCase.getName(), uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q1/api/mock-oppsett/**")
                     .filters(f -> f
@@ -41,9 +40,10 @@ class Pensjon {
         }
 
         // Special case for AFP in Q2.
-        if (SpecialCase.AFP_Q2.equals(specialCase)) {
+        if (SpecialCase.AFP_Q2.equals(env)) {
             var uri = targets.getPensjonAfp().formatted("q2");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, specialCase.getNamespace(), specialCase.getName(), uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q2/api/mock-oppsett/**")
                     .filters(f -> f
@@ -54,9 +54,10 @@ class Pensjon {
         }
 
         // Special case for samboerforhold in Q1.
-        if (SpecialCase.SAMBOER_Q1.equals(specialCase)) {
+        if (SpecialCase.SAMBOER_Q1.equals(env)) {
             var uri = targets.getPensjonSamboer().formatted("q1");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, specialCase.getNamespace(), specialCase.getName(), uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q1/api/samboer/**")
                     .filters(f -> f
@@ -67,9 +68,10 @@ class Pensjon {
         }
 
         // Special case for samboerforhold in Q2.
-        if (SpecialCase.SAMBOER_Q2.equals(specialCase)) {
+        if (SpecialCase.SAMBOER_Q2.equals(env)) {
             var uri = targets.getPensjonSamboer().formatted("q2");
-            var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, specialCase.getNamespace(), specialCase.getName(), uri);
+            var authenticationFilter = authenticationFilterService
+                    .getTrygdeetatenAuthenticationFilter(CLUSTER, env.namespace, env.name, uri);
             return spec -> spec
                     .path("/pensjon/q2/api/samboer/**")
                     .filters(f -> f
@@ -96,11 +98,8 @@ class Pensjon {
         SAMBOER_Q1("pensjon-person", "pensjon-samboerforhold-backend-q1"),
         SAMBOER_Q2("pensjon-person", "pensjon-samboerforhold-backend-q2");
 
-        @Getter(AccessLevel.PRIVATE)
         private final String namespace;
-        @Getter(AccessLevel.PRIVATE)
         private final String name;
-
     }
 
 }

@@ -48,7 +48,7 @@ public class PdlTestdataConsumer {
             WebClient webClient
     ) {
         this.tokenExchange = tokenExchange;
-        serverProperties = consumers.getPdlProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())

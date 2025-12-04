@@ -31,7 +31,7 @@ public class DokmotConsumer {
             WebClient webClient
     ) {
         this.tokenExchange = tokenExchange;
-        serverProperties = consumers.getTestnavDokarkivProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
