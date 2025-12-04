@@ -6,7 +6,7 @@ import no.nav.testnav.identpool.domain.Ident2032;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.NoekkelinfoDTO;
-import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
+import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import no.nav.testnav.identpool.util.Identpool32GeneratorUtil;
 import org.springframework.stereotype.Service;
@@ -32,16 +32,16 @@ public class Identpool32Service {
 
     private final PersonidentifikatorRepository personidentifikatorRepository;
 
-    public Mono<IdentpoolResponseDTO> generateIdent(RekvirerIdentRequest request) {
+    public Mono<IdentpoolResponseDTO> generateIdent(IdentpoolRequestDTO request) {
 
         var startTime = System.currentTimeMillis();
 
-        var foedselsdato = generateRandomLocalDate(request.getFoedtEtter(), request.getFoedtFoer());
+        var foedselsdato = generateRandomLocalDate(request.foedtEtter(), request.foedtFoer());
 
-        return generateNoekkelinfo(foedselsdato, request.getIdenttype())
+        return generateNoekkelinfo(foedselsdato, request.identtype())
                 .flatMapMany(noekkelinfo -> noekkelinfo.ledige() ?
                         allokerIdent(noekkelinfo.datoIdentifikator(), foedselsdato) :
-                        genererOgAllokerIdent(noekkelinfo, foedselsdato, request.getIdenttype()))
+                        genererOgAllokerIdent(noekkelinfo, foedselsdato, request.identtype()))
                 .next()
                 .map(personidentifikator -> new IdentpoolResponseDTO(
                         personidentifikator.getPersonidentifikator(),
