@@ -5,9 +5,18 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
 import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
+import { useSkjerming } from '@/utils/hooks/useSkjerming'
 
-export const NavAnsattVisning = ({ nomData, nomLoading, skjermingData }) => {
-	if (nomLoading) return <Loading label="Laster NOM-data" />
+type NavAnsattVisningProps = {
+	nomData: any
+	nomLoading: boolean
+	ident: string
+}
+
+export const NavAnsattVisning = ({ nomData, nomLoading, ident }: NavAnsattVisningProps) => {
+	const { skjerming: skjermingData, loading: skjermingLoading } = useSkjerming(ident)
+
+	if (nomLoading || skjermingLoading) return <Loading label="Laster NOM-data" />
 
 	if (!nomData && !skjermingData) {
 		return null

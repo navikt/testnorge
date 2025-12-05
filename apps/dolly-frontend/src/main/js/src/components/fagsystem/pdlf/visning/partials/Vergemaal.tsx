@@ -8,7 +8,7 @@ import { PersonData, Relasjon, VergemaalValues } from '@/components/fagsystem/pd
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import * as _ from 'lodash-es'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import React from 'react'
@@ -154,7 +154,7 @@ const VergemaalVisning = ({
 	return erPdlVisning ? (
 		<VergemaalLes vergemaalData={vergemaalData} relasjoner={relasjoner} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={
 				<VergemaalLes
 					vergemaalData={vergemaalValues}

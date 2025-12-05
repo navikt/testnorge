@@ -7,6 +7,20 @@ const getPersonerUrl = (identer: string | null) =>
 const getEksistensUrl = (identer: string[] | null) =>
 	`/testnav-pdl-forvalter/api/v1/eksistens?identer=${identer}`
 
+export const usePdlForvalterPerson = (ident: string) => {
+	const { data, isLoading, error, mutate } = useSWR<any, Error>(
+		ident ? getPersonerUrl(ident) : null,
+		fetcher,
+	)
+
+	return {
+		pdlforvalterPerson: data?.[0],
+		loading: isLoading,
+		error: error,
+		refresh: () => mutate(),
+	}
+}
+
 export const usePdlfPersoner = (identer: string) => {
 	const { data, isLoading, error } = useSWR<any, Error>(getPersonerUrl(identer), fetcher)
 

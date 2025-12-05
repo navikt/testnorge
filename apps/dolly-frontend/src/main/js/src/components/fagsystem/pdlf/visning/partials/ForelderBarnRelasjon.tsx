@@ -13,7 +13,7 @@ import {
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import React from 'react'
 import { useParams } from 'react-router'
@@ -174,7 +174,7 @@ export const ForelderBarnRelasjonVisning = ({
 		: null
 
 	return (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={
 				<ForelderBarnRelasjonLes
 					forelderBarnData={forelderBarnValues}

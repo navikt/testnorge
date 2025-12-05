@@ -4,7 +4,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { TelefonData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import * as _ from 'lodash-es'
-import VisningRedigerbarSamletConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarSamletConnector'
+import { VisningRedigerbarSamlet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarSamlet'
 
 type DataListe = {
 	data: Array<TelefonData>
@@ -79,7 +79,7 @@ export const Telefonnummer = ({
 						</DollyFieldArray>
 					</ErrorBoundary>
 				) : (
-					<VisningRedigerbarSamletConnector
+					<VisningRedigerbarSamlet
 						initialValues={initialValues}
 						redigertAttributt={redigertTelefonnummerValues}
 						path="telefonnummer"

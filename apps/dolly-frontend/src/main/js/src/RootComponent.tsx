@@ -89,10 +89,12 @@ export const RootComponent = () => (
 		<Provider store={store}>
 			<SWRConfig
 				value={{
-					timeout: 10000,
-					timeoutErrorMessage: 'Tjenesten tok for lang tid å svare',
 					dedupingInterval: 5000,
 					revalidateOnFocus: false,
+					errorRetryCount: 3,
+					shouldRetryOnError: (error) => {
+						return !(error?.status === 404 || error?.response?.status === 404)
+					},
 				}}
 			>
 				<RouterProvider router={router} />

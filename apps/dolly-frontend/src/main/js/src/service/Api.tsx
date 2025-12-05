@@ -12,7 +12,6 @@ import PdlForvalterService from '@/service/services/pdl/PdlForvalterService'
 import TpsMessagingService from '@/service/services/tpsmessaging/TpsMessagingService'
 import SessionService from '@/service/services/session/SessionService'
 import KontoregisterService from '@/service/services/kontoregister/KontoregisterService'
-import SkjermingService from '@/service/services/skjerming/SkjermingService'
 import KodeverkService from '@/service/services/kodeverk/KodeverkService'
 import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
 
@@ -24,13 +23,11 @@ export const InntektstubApi = InntektstubService
 export const BrregstubApi = BrregstubService
 export const VarslingerApi = VarslingerService
 export const OrgforvalterApi = OrganisasjonForvalterService
-export const OrgserviceApi = OrganisasjonService
 export const PersonOrgTilgangApi = PersonOrganisasjonTilgangService
 export const BrukerApi = BrukerService
 export const PdlforvalterApi = PdlForvalterService
 export const SessionApi = SessionService
 export const BankkontoApi = KontoregisterService
-export const SkjermingApi = SkjermingService
 export const KodeverkApi = KodeverkService
 
 export default {
@@ -48,5 +45,4 @@ export default {
 	PdlforvalterApi: PdlForvalterService,
 	SessionApi: SessionService,
 	BankkontoApi: KontoregisterService,
-	SkjermingApi: SkjermingService,
 }

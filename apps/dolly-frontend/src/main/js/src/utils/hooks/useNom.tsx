@@ -25,7 +25,7 @@ export const useNomData = (ident: string) => {
 	)
 
 	return {
-		nomData: data,
+		nomData: data?.message?.includes('finnes ikke') ? null : data,
 		loading: isLoading,
 		error: error,
 	}

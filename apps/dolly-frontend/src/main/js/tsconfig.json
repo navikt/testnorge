@@ -30,5 +30,5 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx"
 	},
-	"include": ["src", "__tests__"]
+	"include": ["src", "__tests__", "playwright"]
 }

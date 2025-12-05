@@ -10,7 +10,6 @@ import bestillingReducer from '@/ducks/bestilling'
 import kodeverkReducer from '@/ducks/kodeverk'
 import varslingerReducer from '@/ducks/varslinger'
 import finnPersonReducer from '@/ducks/finnPerson'
-import redigertePersonerReducer from '@/ducks/redigertePersoner'
 import commonReducer from '@/ducks/common'
 import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
 import { createBrowserHistory } from 'history'
@@ -51,7 +50,6 @@ const rootReducer = () =>
 		kodeverk: kodeverkReducer,
 		varslinger: varslingerReducer,
 		finnPerson: finnPersonReducer,
-		redigertePersoner: redigertePersonerReducer,
 	})
 
 export const store = configureStore({

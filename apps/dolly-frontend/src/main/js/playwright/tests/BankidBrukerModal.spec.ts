@@ -50,6 +50,8 @@ test.beforeEach(async ({ page }) => {
 	await page.route('**/session/user', async (route) => {
 		if (route.request().method() === 'PUT') {
 			await route.fulfill({ status: 200 })
+		} else {
+			await route.continue()
 		}
 	})
 })
@@ -75,6 +77,8 @@ test('should handle new user login flow through BrukerModal', async ({ page }) =
 					epost: body.epost,
 				}),
 			})
+		} else {
+			await route.continue()
 		}
 	})
 
@@ -121,6 +125,8 @@ test('should handle existing user without email', async ({ page }) => {
 					epost: body.epost,
 				}),
 			})
+		} else {
+			await route.continue()
 		}
 	})
 
@@ -183,6 +189,8 @@ test('should handle new BankID user flow', async ({ page }) => {
 					epost: epost,
 				}),
 			})
+		} else {
+			await route.continue()
 		}
 	})
 
@@ -191,6 +199,8 @@ test('should handle new BankID user flow', async ({ page }) => {
 			const body = route.request().postDataJSON()
 			expect(body.organisasjonsnummer).toBe(orgNummer)
 			await route.fulfill({ status: 200 })
+		} else {
+			await route.continue()
 		}
 	})
 

@@ -1,7 +1,7 @@
 import { Form, FormProvider } from 'react-hook-form'
 import styled from 'styled-components'
 import { Table } from '@navikt/ds-react'
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
 import { FolkeregisteretIdentifikasjonStatus } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretIdentifikasjonStatus'
@@ -13,9 +13,10 @@ import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/Fol
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
-import DisplayFormState from '@/utils/DisplayFormState'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 import { Arbeidsforhold } from '@/pages/tenorSoek/soekFormPartials/Arbeidsforhold'
+
+const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -270,7 +271,11 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 								</Table.Body>
 							</Table>
 						</Form>
-						{(devEnabled || erDollyAdmin()) && <DisplayFormState />}
+						{(devEnabled || erDollyAdmin()) && (
+							<Suspense fallback={null}>
+								<DisplayFormState />
+							</Suspense>
+						)}
 					</>
 				</FormProvider>
 			</Soekefelt>

@@ -11,7 +11,7 @@ import {
 import * as _ from 'lodash-es'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { getSisteDatoInnUtvandring } from '@/components/fagsystem/pdlf/visning/partials/Innvandring'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -85,7 +85,7 @@ const UtvandringVisning = ({
 	return erPdlVisning ? (
 		<UtvandringLes utvandringData={utvandringData} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<UtvandringLes utvandringData={utvandringValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertUtvandringValues}

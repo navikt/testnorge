@@ -8,7 +8,7 @@ import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/
 import * as _ from 'lodash-es'
 import { getInitialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type OppholdsadresseTypes = {
@@ -94,7 +94,7 @@ export const OppholdsadresseVisning = ({
 	return erPdlVisning ? (
 		<Adresse oppholdsadresseData={oppholdsadresseData} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<Adresse oppholdsadresseData={oppholdsadresseValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertOppholdsadresseValues}

@@ -23,7 +23,7 @@ import {
 	getInitialFoedsel,
 	getInitialFoedselsdato,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type FoedselTypes = {
@@ -104,7 +104,7 @@ const FoedselVisning = ({
 	return erPdlVisning ? (
 		<FoedselLes foedsel={foedsel} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<FoedselLes foedsel={foedselValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertFoedselValues}

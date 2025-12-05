@@ -7,7 +7,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
 import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type AdressebeskyttelseTypes = {
@@ -93,7 +93,7 @@ const AdressebeskyttelseVisning = ({
 	return erPdlVisning ? (
 		<AdressebeskyttelseLes adressebeskyttelse={adressebeskyttelse} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={
 				<AdressebeskyttelseLes adressebeskyttelse={adressebeskyttelseValues} idx={idx} />
 			}
