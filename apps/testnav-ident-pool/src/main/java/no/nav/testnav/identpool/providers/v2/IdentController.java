@@ -48,7 +48,8 @@ public class IdentController {
         val identer = request.identer().split("[\\s,;]");
         return Flux.fromArray(identer)
                 .filter(StringUtils::isNotBlank)
-                .flatMap(personnummerValidatorService::validerFoedselsnummer, 5);
+                .buffer(80)
+                .concatMap(personnummerValidatorService::validerFoedselsnummer);
     }
 
     @Operation(description = "Frigjoer pid2032 test-ident")

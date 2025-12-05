@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -73,10 +74,18 @@ public class IdentService {
         return identer.parallelStream()
                 .map(ident -> TpsIdentStatusDTO.builder()
                         .ident(ident)
-                        .miljoer(tpsResponse.entrySet().parallelStream()
+                        .miljoer(tpsResponse.entrySet().stream()
                                 .filter(entry -> exists(ident, entry.getValue()))
                                 .map(Map.Entry::getKey)
                                 .toList())
+                        .status(tpsResponse.values().stream()
+                                .filter(tpsServicerutineM201Response ->
+                                        nonNull(tpsServicerutineM201Response.getTpsSvar()) &&
+                                        nonNull(tpsServicerutineM201Response.getTpsSvar().getSvarStatus()) &&
+                                        isNotBlank(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()) &&
+                                        !"Person ikke funnet".equalsIgnoreCase(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()))
+                                .map(tpsServicerutineM201Response -> tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding())
+                                .findFirst().orElse(null))
                         .build())
                 .toList();
     }

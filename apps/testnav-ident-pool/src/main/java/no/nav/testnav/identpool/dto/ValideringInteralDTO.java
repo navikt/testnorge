@@ -9,6 +9,7 @@ public record ValideringInteralDTO(
         Boolean erSyntetisk,
         Boolean erStriktFoedselsnummer64,
         Boolean erTestnorgeIdent,
+        Boolean erId2032Ident,
         Identtype identtype
 ) {
 }
