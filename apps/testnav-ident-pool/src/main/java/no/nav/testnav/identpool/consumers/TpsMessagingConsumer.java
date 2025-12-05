@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Slf4j
 @Service
 public class TpsMessagingConsumer {
@@ -53,6 +55,7 @@ public class TpsMessagingConsumer {
                                 .map(status -> TpsStatusDTO.builder()
                                         .ident(status.getIdent())
                                         .inUse(validation.apply(status))
+                                        .isDirty(isNotBlank(status.getStatus()))
                                         .build())));
     }
 }

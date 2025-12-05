@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
@@ -192,7 +191,7 @@ public class PersonnummerValidatorService {
         return hentProdStatus(foedselsnummere)
                 .map(Map::values)
                 .flatMapMany(Flux::fromIterable)
-                .concatMap(status -> Mono.zip(
+                .flatMap(status -> Mono.zip(
                         Mono.just(status),
                         identRepository.findByPersonidentifikator(status.getIdent())
                                 .switchIfEmpty(Mono.just(new Ident())),
@@ -240,12 +239,7 @@ public class PersonnummerValidatorService {
                 .flatMap(identerTilProd -> identerTilProd.isEmpty() ?
                         Mono.just(new HashMap<String, TpsStatusDTO>()) :
                         tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(identerTilProd))
-                                .collect(Collectors.toMap(TpsStatusDTO::getIdent, status -> status))
-                                .flatMap(identerFraProd ->
-                                        Flux.fromIterable(identerTilProd)
-                                                .collectMap(ident -> ident, ident ->
-                                                        identerFraProd.getOrDefault(ident,
-                                                                new TpsStatusDTO(ident, false, true)))))
+                                .collectMap(TpsStatusDTO::getIdent, status -> status))
                 .flatMap(tempMap ->
                         Flux.fromIterable(identifikatorer)
                                 .collectMap(ident -> ident, ident ->
