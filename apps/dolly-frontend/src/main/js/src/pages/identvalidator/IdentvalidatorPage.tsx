@@ -7,6 +7,8 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import Loading from '@/components/ui/loading/Loading'
 import { IdentvalidatorVisningTable } from '@/pages/identvalidator/IdentvalidatorVisningTable'
+import Button from '@/components/ui/button/Button'
+import { jsonToCsvDownload } from '@/pages/identvalidator/utils'
 
 const initialValues = {
 	identer: '',
@@ -54,14 +56,20 @@ export default () => {
 								description="Skriv inn én eller flere identer, adskilt med mellomrom, komma, semikolon eller linjeskift."
 								resize="vertical"
 							/>
-							<NavButton
-								variant={'primary'}
-								type={'submit'}
-								loading={loading}
-								style={{ marginTop: '15px' }}
-							>
-								Valider
-							</NavButton>
+							<div className="flexbox--align-center" style={{ marginTop: '15px' }}>
+								<NavButton variant={'primary'} type={'submit'} loading={loading}>
+									Valider
+								</NavButton>
+								{validering?.length > 0 && (
+									<Button
+										style={{ marginLeft: '20px' }}
+										kind="download"
+										onClick={() => jsonToCsvDownload(validering, 'identvalidering.csv')}
+									>
+										LAST NED CSV-FIL
+									</Button>
+								)}
+							</div>
 						</form>
 					</FormProvider>
 				</Box>

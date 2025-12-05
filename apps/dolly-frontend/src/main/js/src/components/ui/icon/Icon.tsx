@@ -19,6 +19,7 @@ import {
 	ChevronDownIcon,
 	ChevronUpDoubleCircleIcon,
 	ChevronUpIcon,
+	DownloadIcon,
 	EarthIcon,
 	EnvelopeClosedIcon,
 	EraserIcon,
@@ -143,6 +144,7 @@ export const icons = {
 	'bestilling-light': FileCheckmarkIcon,
 	'new-file': FilePlusIcon,
 	maler: FileLoadingIcon,
+	download: DownloadIcon,
 
 	personinformasjon: InformationSquareIcon,
 	nasjonalitet: EarthIcon,
