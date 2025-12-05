@@ -121,7 +121,11 @@ class IdentControllerTest extends AbstractTestcontainer {
     void validerProduksjonIdenterHentingFeilet() {
 
         val ident = "10108000398";
-        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.empty());
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(TpsStatusDTO.builder()
+                .ident(ident)
+                .inUse(false)
+                .isDirty(true)
+                .build()));
 
         webTestClient.post()
                 .uri(IDENT_V2_BASEURL + "/validerflere")
