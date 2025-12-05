@@ -28,8 +28,8 @@ export const jsonToCsvDownload = (data, filename = 'data.csv') => {
 
 	const headers = Object.keys(data[0])
 	const csvRows = [
-		headers.join(','),
-		...data.map((row) => headers.map((header) => row[header]).join(',')),
+		headers.join(';'),
+		...data.map((row) => headers.map((header) => row[header]).join(';')),
 	]
 
 	const csvString = csvRows.join('\n')
