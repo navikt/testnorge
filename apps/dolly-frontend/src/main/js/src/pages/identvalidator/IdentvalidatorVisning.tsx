@@ -81,9 +81,6 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 		<Box
 			padding="6"
 			background={data.feilmelding ? 'surface-danger-subtle' : 'surface-success-subtle'}
-			borderRadius="large"
-			borderWidth="2"
-			borderColor={data.feilmelding ? 'border-danger' : 'border-success'}
 		>
 			<Table>
 				<Table.Body>
