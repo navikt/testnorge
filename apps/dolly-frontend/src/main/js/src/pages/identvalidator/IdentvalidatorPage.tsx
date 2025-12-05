@@ -9,12 +9,12 @@ import Loading from '@/components/ui/loading/Loading'
 import { IdentvalidatorVisningTable } from '@/pages/identvalidator/IdentvalidatorVisningTable'
 
 const initialValues = {
-	ident: '',
+	identer: '',
 }
 
 export default () => {
-	const [ident, setIdent] = useState('')
-	const { validering, loading, error } = useValiderIdenter(ident)
+	const [identer, setIdenter] = useState('')
+	const { validering, loading, error } = useValiderIdenter(identer)
 
 	const formMethods = useForm({
 		mode: 'onChange',
@@ -27,8 +27,8 @@ export default () => {
 		}
 	}, [validering])
 
-	const handleValidate = (data: { ident: string }) => {
-		setIdent(data?.ident)
+	const handleValidate = (data: { identer: string }) => {
+		setIdenter(data?.identer)
 	}
 
 	const { currentBruker, loading: currenBrukerLoading } = useCurrentBruker()
@@ -47,10 +47,10 @@ export default () => {
 					<FormProvider {...formMethods}>
 						<form onSubmit={formMethods.handleSubmit(handleValidate)}>
 							<Textarea
-								name="ident"
+								name="identer"
 								label="Identer"
-								value={formMethods.watch('ident')}
-								onChange={(event) => formMethods.setValue('ident', event.target.value)}
+								value={formMethods.watch('identer')}
+								onChange={(event) => formMethods.setValue('identer', event.target.value)}
 								description="Skriv inn én eller flere identer, adskilt med mellomrom, komma, semikolon eller linjeskift."
 								resize="vertical"
 							/>
