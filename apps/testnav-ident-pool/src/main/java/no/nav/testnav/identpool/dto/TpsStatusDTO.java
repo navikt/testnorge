@@ -14,7 +14,7 @@ public class TpsStatusDTO {
     private String ident;
     private boolean inUse;
 
-    private boolean isDirty;
+    private boolean dirty;
 
     public boolean isAvailable() {
 

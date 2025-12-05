@@ -243,7 +243,11 @@ public class PersonnummerValidatorService {
                 .flatMap(tempMap ->
                         Flux.fromIterable(identifikatorer)
                                 .collectMap(ident -> ident, ident ->
-                                        tempMap.getOrDefault(ident, new TpsStatusDTO(ident, false, false))));
+                                        tempMap.getOrDefault(ident, TpsStatusDTO.builder()
+                                                .ident(ident)
+                                                .inUse(false)
+                                                .dirty(false)
+                                                .build())));
     }
 
     private static ValideringInteralDTO getValideringInteralDTO(String foedselsnummer) {
@@ -253,7 +257,7 @@ public class PersonnummerValidatorService {
         val erSyntetisk = erGyldig ? isSyntetiskIdent(foedselsnummer) : null;
         val erStriktFoedselsnummer64 = erGyldig ? validerKontrollsiffer(foedselsnummer, true) : null;
         val erTestnorgeIdent = erGyldig && isTrue(erSyntetisk) ? (foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9') : null;
-        val erId2032 = isSyntetiskIdent(foedselsnummer) ? isFalse(erStriktFoedselsnummer64) : null;
+        val erId2032 = isTrue(erSyntetisk) ? isFalse(erStriktFoedselsnummer64) : null;
         val identtype = erGyldig ? utledIdenttype(foedselsnummer) : null;
 
         return new ValideringInteralDTO(

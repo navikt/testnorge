@@ -124,7 +124,7 @@ class IdentControllerTest extends AbstractTestcontainer {
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(TpsStatusDTO.builder()
                 .ident(ident)
                 .inUse(false)
-                .isDirty(true)
+                .dirty(true)
                 .build()));
 
         webTestClient.post()

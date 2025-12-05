@@ -55,7 +55,7 @@ public class TpsMessagingConsumer {
                                 .map(status -> TpsStatusDTO.builder()
                                         .ident(status.getIdent())
                                         .inUse(validation.apply(status))
-                                        .isDirty(isNotBlank(status.getStatus()))
+                                        .dirty(isNotBlank(status.getStatus()))
                                         .build())));
     }
 }

@@ -71,7 +71,7 @@ public class IdentService {
             tpsResponse.put(PROD, readFromTps(identer, List.of(PROD_LIKE_ENV), true).get(PROD_LIKE_ENV));
         }
 
-        return identer.stream()
+        return identer.parallelStream()
                 .map(ident -> TpsIdentStatusDTO.builder()
                         .ident(ident)
                         .miljoer(tpsResponse.entrySet().stream()
@@ -80,6 +80,8 @@ public class IdentService {
                                 .toList())
                         .status(tpsResponse.values().stream()
                                 .filter(tpsServicerutineM201Response ->
+                                        nonNull(tpsServicerutineM201Response.getTpsSvar()) &&
+                                        nonNull(tpsServicerutineM201Response.getTpsSvar().getSvarStatus()) &&
                                         isNotBlank(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()) &&
                                         !"Person ikke funnet".equalsIgnoreCase(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()))
                                 .map(tpsServicerutineM201Response -> tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding())
