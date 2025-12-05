@@ -195,7 +195,7 @@ public class PersonnummerValidatorService {
                 .concatMap(status -> Mono.zip(
                         Mono.just(status),
                         identRepository.findByPersonidentifikator(status.getIdent())
-                                        .switchIfEmpty(Mono.just(new Ident())),
+                                .switchIfEmpty(Mono.just(new Ident())),
                         personidentifikatorRepository.findByPersonidentifikator(status.getIdent())
                                 .switchIfEmpty(Mono.just(new Ident2032()))
                 ))
@@ -237,26 +237,19 @@ public class PersonnummerValidatorService {
         return Flux.fromIterable(identifikatorer)
                 .filter(PersonnummerValidatorService::isNotSyntetiskIdent)
                 .collectList()
-                .flatMap(identer -> identer.isEmpty() ? Mono.just(new HashMap<String, TpsStatusDTO>()) :
-                        tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(identer))
+                .flatMap(identerTilProd -> identerTilProd.isEmpty() ?
+                        Mono.just(new HashMap<String, TpsStatusDTO>()) :
+                        tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(identerTilProd))
                                 .collect(Collectors.toMap(TpsStatusDTO::getIdent, status -> status))
-                                .flatMap(dirtyCheck -> {
-                                    if (dirtyCheck.isEmpty()) {
-                                        log.warn("Dirty-check: tomt inhold i svar fra TPS");
-                                        return Flux.fromIterable(identer)
-                                                .collect(Collectors.toMap(ident -> ident,
-                                                        ident -> new TpsStatusDTO(ident, false, true)));
-                                    } else {
-                                        return Mono.just(dirtyCheck);
-                                    }
-                                }))
-                .flatMap(tempMap -> {
-
-                    val fullMap = new HashMap<String, TpsStatusDTO>();
-                    identifikatorer.forEach(ident -> fullMap.put(ident,
-                            tempMap.getOrDefault(ident, new TpsStatusDTO(ident, false, false))));
-                    return Mono.just(fullMap);
-                });
+                                .flatMap(identerFraProd ->
+                                        Flux.fromIterable(identerTilProd)
+                                                .collectMap(ident -> ident, ident ->
+                                                        identerFraProd.getOrDefault(ident,
+                                                                new TpsStatusDTO(ident, false, true)))))
+                .flatMap(tempMap ->
+                        Flux.fromIterable(identifikatorer)
+                                .collectMap(ident -> ident, ident ->
+                                        tempMap.getOrDefault(ident, new TpsStatusDTO(ident, false, false))));
     }
 
     private static ValideringInteralDTO getValideringInteralDTO(String foedselsnummer) {
@@ -266,7 +259,7 @@ public class PersonnummerValidatorService {
         val erSyntetisk = erGyldig ? isSyntetiskIdent(foedselsnummer) : null;
         val erStriktFoedselsnummer64 = erGyldig ? validerKontrollsiffer(foedselsnummer, true) : null;
         val erTestnorgeIdent = erGyldig && isTrue(erSyntetisk) ? (foedselsnummer.charAt(2) == '8' || foedselsnummer.charAt(2) == '9') : null;
-        val erId2032 =  isSyntetiskIdent(foedselsnummer) ? isFalse(erStriktFoedselsnummer64) : null;
+        val erId2032 = isSyntetiskIdent(foedselsnummer) ? isFalse(erStriktFoedselsnummer64) : null;
         val identtype = erGyldig ? utledIdenttype(foedselsnummer) : null;
 
         return new ValideringInteralDTO(
