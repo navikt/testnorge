@@ -22,7 +22,7 @@ export const setNavn = (navn, path, setFieldValue) => {
 	}
 }
 
-export const isEmpty = (attributt, excludeList = []) => {
+export const isEmpty = (attributt: any, excludeList = [] as Array<string>) => {
 	const flattenData = (objekt) => {
 		let result = {}
 		for (const i in objekt) {
@@ -47,6 +47,8 @@ export const isEmpty = (attributt, excludeList = []) => {
 
 	return (
 		attributt?.empty ||
-		Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
+		Object.values(flattenData(attributt)).every(
+			(x) => x === null || x === '' || x === false || x === undefined || x?.length === 0,
+		)
 	)
 }
