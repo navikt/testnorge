@@ -5,6 +5,21 @@ import { getIcon, IconComponent } from '@/pages/identvalidator/utils'
 import Icon from '@/components/ui/icon/Icon'
 import { isBoolean } from 'lodash-es'
 
+interface IdentvalidatorVisningTableProps {
+	identListe: Array<IdentDataProps>
+}
+
+export type IdentDataProps = {
+	ident: string
+	feilmelding?: string
+	erGyldig: boolean | null
+	erIProd: boolean | null
+	erSyntetisk: boolean | null
+	erTestnorgeIdent: boolean | null
+	erPersonnummer2032: boolean | null
+	[key: string]: any
+}
+
 function comparator<T>(a: T, b: T, orderBy: keyof T): number {
 	if (b[orderBy] == null || b[orderBy] < a[orderBy]) {
 		return -1
@@ -15,7 +30,7 @@ function comparator<T>(a: T, b: T, orderBy: keyof T): number {
 	return 0
 }
 
-const IdentVisning = ({ identData }) => {
+const IdentVisning = ({ identData }: { identData: IdentDataProps }) => {
 	return (
 		<HStack gap="space-12">
 			{identData.ident}
@@ -28,7 +43,7 @@ const IdentVisning = ({ identData }) => {
 	)
 }
 
-export const IdentvalidatorVisningTable = ({ identListe }) => {
+export const IdentvalidatorVisningTable = ({ identListe }: IdentvalidatorVisningTableProps) => {
 	const [page, setPage] = useState(1)
 	const rowsPerPage = 10
 
@@ -38,7 +53,7 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 		return null
 	}
 
-	const handleSort = (sortKey) => {
+	const handleSort = (sortKey: string) => {
 		setSort(
 			sort && sortKey === sort.orderBy && sort.direction === 'descending'
 				? undefined
@@ -62,7 +77,7 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 	})
 	sortedData = sortedData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
-	const feilIProdSjekk = (identData) => {
+	const feilIProdSjekk = (identData: IdentDataProps) => {
 		return isBoolean(identData.erIProd) && !identData.erIProd && identData.erSyntetisk === null
 	}
 
