@@ -123,6 +123,16 @@ export const sykemeldingFetcher = (url, body) =>
 		return res.data
 	})
 
+export const identpoolFetcher = (url, body) =>
+	axios
+		.post(url, body)
+		.then((res) => {
+			return res.data
+		})
+		.catch((error) => {
+			throw new Error(error.message)
+		})
+
 export const fetcher = (url, headers?) =>
 	axios
 		.get(url, { headers: headers })

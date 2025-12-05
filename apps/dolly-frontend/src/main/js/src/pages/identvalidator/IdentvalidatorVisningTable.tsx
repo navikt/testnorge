@@ -1,9 +1,24 @@
 import { Alert, Box, HStack, Pagination, Table, Tooltip, VStack } from '@navikt/ds-react'
-import { getIcon, IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
+import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 import { useState } from 'react'
-import { IconComponent } from '@/pages/identvalidator/utils'
+import { getIcon, IconComponent } from '@/pages/identvalidator/utils'
 import Icon from '@/components/ui/icon/Icon'
 import { isBoolean } from 'lodash-es'
+
+interface IdentvalidatorVisningTableProps {
+	identListe: Array<IdentDataProps>
+}
+
+export type IdentDataProps = {
+	ident: string
+	feilmelding?: string
+	erGyldig: boolean | null
+	erIProd: boolean | null
+	erSyntetisk: boolean | null
+	erTestnorgeIdent: boolean | null
+	erPersonnummer2032: boolean | null
+	[key: string]: any
+}
 
 function comparator<T>(a: T, b: T, orderBy: keyof T): number {
 	if (b[orderBy] == null || b[orderBy] < a[orderBy]) {
@@ -15,20 +30,20 @@ function comparator<T>(a: T, b: T, orderBy: keyof T): number {
 	return 0
 }
 
-const IdentVisning = ({ identData }) => {
+const IdentVisning = ({ identData }: { identData: IdentDataProps }) => {
 	return (
 		<HStack gap="space-12">
 			{identData.ident}
 			{identData.feilmelding && (
 				<Tooltip content={identData.feilmelding}>
-					<Icon kind="report-problem-triangle" size={20} />
+					<Icon kind="warning-triangle" size={24} />
 				</Tooltip>
 			)}
 		</HStack>
 	)
 }
 
-export const IdentvalidatorVisningTable = ({ identListe }) => {
+export const IdentvalidatorVisningTable = ({ identListe }: IdentvalidatorVisningTableProps) => {
 	const [page, setPage] = useState(1)
 	const rowsPerPage = 10
 
@@ -38,7 +53,7 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 		return null
 	}
 
-	const handleSort = (sortKey) => {
+	const handleSort = (sortKey: string) => {
 		setSort(
 			sort && sortKey === sort.orderBy && sort.direction === 'descending'
 				? undefined
@@ -62,7 +77,7 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 	})
 	sortedData = sortedData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
-	const feilIProdSjekk = (identData) => {
+	const feilIProdSjekk = (identData: IdentDataProps) => {
 		return isBoolean(identData.erIProd) && !identData.erIProd && identData.erSyntetisk === null
 	}
 
@@ -104,28 +119,40 @@ export const IdentvalidatorVisningTable = ({ identListe }) => {
 										<IdentVisning identData={identData} />
 									</Table.HeaderCell>
 									<Table.DataCell>
-										{IconComponent(identData.erGyldig, getIcon(identData.erGyldig, true))}
+										<IconComponent
+											isValid={identData.erGyldig}
+											iconType={getIcon(identData.erGyldig, true)}
+										/>
 									</Table.DataCell>
 									<Table.DataCell>
 										{feilIProdSjekk(identData) ? (
 											<Alert variant="warning" inline>
-												{null}
+												Ukjent
 											</Alert>
 										) : (
-											IconComponent(identData.erIProd, identData.erIProd ? 'warning' : 'none')
+											<IconComponent
+												isValid={identData.erIProd}
+												iconType={identData.erIProd ? 'warning' : 'none'}
+											/>
 										)}
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconComponent(identData.erSyntetisk, getIcon(identData.erSyntetisk))}
+										<IconComponent
+											isValid={identData.erSyntetisk}
+											iconType={getIcon(identData.erSyntetisk)}
+										/>
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconComponent(identData.erTestnorgeIdent, getIcon(identData.erTestnorgeIdent))}
+										<IconComponent
+											isValid={identData.erTestnorgeIdent}
+											iconType={getIcon(identData.erTestnorgeIdent)}
+										/>
 									</Table.DataCell>
 									<Table.DataCell>
-										{IconComponent(
-											identData.erPersonnummer2032,
-											getIcon(identData.erPersonnummer2032),
-										)}
+										<IconComponent
+											isValid={identData.erPersonnummer2032}
+											iconType={getIcon(identData.erPersonnummer2032)}
+										/>
 									</Table.DataCell>
 								</Table.ExpandableRow>
 							)

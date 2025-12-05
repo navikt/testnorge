@@ -19,6 +19,7 @@ import {
 	ChevronDownIcon,
 	ChevronUpDoubleCircleIcon,
 	ChevronUpIcon,
+	DownloadIcon,
 	EarthIcon,
 	EnvelopeClosedIcon,
 	EraserIcon,
@@ -70,6 +71,7 @@ import {
 } from '@navikt/aksel-icons'
 
 import ProblemTriangle from '@/assets/icons/custom/ProblemTriangle.svg?raw'
+import WarningTriangle from '@/assets/icons/custom/WarningTriangle.svg?raw'
 import ReportProblemCircle from '@/assets/icons/custom/ProblemCircle.svg?raw'
 import CheckCircle from '@/assets/icons/custom/CheckCircle.svg?raw'
 import Dolly from '@/assets/icons/custom/Dolly.svg?raw'
@@ -87,6 +89,7 @@ export const icons = {
 	'report-problem-circle': ReportProblemCircle,
 	'feedback-check-circle': CheckCircle,
 	'report-problem-triangle': ProblemTriangle,
+	'warning-triangle': WarningTriangle,
 	hourglass: HourglassIcon,
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
@@ -141,6 +144,7 @@ export const icons = {
 	'bestilling-light': FileCheckmarkIcon,
 	'new-file': FilePlusIcon,
 	maler: FileLoadingIcon,
+	download: DownloadIcon,
 
 	personinformasjon: InformationSquareIcon,
 	nasjonalitet: EarthIcon,
@@ -213,6 +217,7 @@ const Icon = ({
 		'report-problem-circle',
 		'feedback-check-circle',
 		'report-problem-triangle',
+		'warning-triangle',
 		'dolly',
 		'dollyPanic',
 		'playwright',
