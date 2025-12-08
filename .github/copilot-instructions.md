@@ -57,6 +57,12 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 - Handle API errors gracefully
 - Provide meaningful error messages to users
 
+## Terminal Usage
+
+- Chain multiple commands together using `&&` or `;` instead of running separate terminal commands
+- Use background processes (`isBackground=true`) for long-running tasks, then check output later
+- Minimize the number of terminal sessions created - prefer reusing existing sessions
+
 ## What NOT to do
 
 - Do not invent APIs not present.
