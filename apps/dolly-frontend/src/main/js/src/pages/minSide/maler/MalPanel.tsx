@@ -11,6 +11,7 @@ import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/option
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
 import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type Props = {
 	antallEgneMaler: any
@@ -113,6 +114,11 @@ export const MalPanel = ({
 							<Table.Body>
 								{maler.map(({ malNavn, id, malBestilling }) => {
 									const alert = harUtdaterteVerdier(malBestilling)
+									const erTomBestilling = isEmpty(malBestilling, [
+										'id2032',
+										'identtype',
+										'syntetisk',
+									])
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
 											bestilling: malBestilling,
@@ -131,6 +137,11 @@ export const MalPanel = ({
 															style={{ marginBottom: '20px' }}
 														>
 															{alert}
+														</Alert>
+													)}
+													{erTomBestilling && (
+														<Alert variant={'info'} size={'small'} style={{ marginBottom: '20px' }}>
+															Denne malen inneholder ingen bestillingsdata.
 														</Alert>
 													)}
 													<div className="bestilling-data">
