@@ -21,6 +21,7 @@ export const multiFetcherAll = (urlListe, headers = null) =>
 			}),
 		),
 	)
+
 export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 	Promise.all(
 		miljoUrlListe.map((obj) =>

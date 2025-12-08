@@ -5,7 +5,7 @@ import { IdentDataProps } from '@/pages/identvalidator/IdentvalidatorVisningTabl
 
 type IconComponentProps = {
 	isValid: boolean | null
-	iconType: 'success' | 'error' | 'none'
+	iconType: 'success' | 'warning' | 'error' | 'none'
 }
 
 export const IconComponent = ({ isValid, iconType }: IconComponentProps) => {
@@ -41,10 +41,12 @@ export const jsonToCsvDownload = (data: Array<IdentDataProps>, filename = 'data.
 	const csvString = csvRows.join('\n')
 	const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' })
 	const link = document.createElement('a')
-	link.href = URL.createObjectURL(blob)
+	const url = URL.createObjectURL(blob)
+	link.href = url
 	link.download = filename
 	link.target = '_blank'
 	document.body.appendChild(link)
 	link.click()
 	document.body.removeChild(link)
+	URL.revokeObjectURL(url)
 }
