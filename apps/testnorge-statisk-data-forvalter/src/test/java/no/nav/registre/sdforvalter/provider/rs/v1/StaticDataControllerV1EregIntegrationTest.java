@@ -3,6 +3,7 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.database.model.EregModel;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
@@ -13,12 +14,12 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.Gruppe;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
-import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,9 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DollySpringBootTest
+@ExtendWith(DollyWireMockExtension.class)
 @AutoConfigureMockMvc()
-@AutoConfigureWireMock(port = 0)
-//@Import(JwtDecoderConfig.class)
 class StaticDataControllerV1EregIntegrationTest {
 
     private static final String EREG_API = "/api/v1/faste-data/ereg";
@@ -54,13 +54,6 @@ class StaticDataControllerV1EregIntegrationTest {
 
     @Autowired
     private GruppeRepository gruppeRepository;
-
-    @AfterEach
-    void cleanUp() {
-        eregRepository.deleteAll();
-        gruppeRepository.deleteAll();
-        opprinnelseRepository.deleteAll();
-    }
 
     private EregListe create(Ereg... eregs) {
         return new EregListe(Arrays.asList(eregs));
@@ -97,6 +90,13 @@ class StaticDataControllerV1EregIntegrationTest {
 
     private Ereg createEreg(String orgnr, String enhetstype) {
         return new Ereg(createEregModel(orgnr, enhetstype), new ArrayList<>());
+    }
+
+    @AfterEach
+    void cleanUp() {
+        eregRepository.deleteAll();
+        gruppeRepository.deleteAll();
+        opprinnelseRepository.deleteAll();
     }
 
     @Test

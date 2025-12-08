@@ -6,6 +6,7 @@ import io.netty.channel.epoll.EpollChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.metrics.UriStrippingClientRequestObservationConvention;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.lang.Nullable;
@@ -22,6 +23,7 @@ import java.time.Duration;
 class WebClientAutoConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     WebClient webClient(@Nullable ObservationRegistry observationRegistry) {
 
         var builder = WebClient.builder();

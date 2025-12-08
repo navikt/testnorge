@@ -30,6 +30,8 @@ dependencies {
     implementation "org.postgresql:postgresql"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
+    testImplementation "org.springframework.boot:spring-boot-starter-webmvc-test"
+
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }
 
