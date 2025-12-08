@@ -1,9 +1,9 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

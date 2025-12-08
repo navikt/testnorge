@@ -11,11 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.http.HttpTimeoutException;
-import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
-
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -39,7 +36,6 @@ public class PdlDataOrdreCommand implements Callable<Mono<PdlResponse>> {
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofSeconds(REQUEST_DURATION))
                 .map(reultat -> PdlResponse.builder()
                         .jsonNode(reultat)
                         .status(HttpStatus.OK)

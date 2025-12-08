@@ -6,11 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.*;
 import no.nav.pdl.forvalter.dto.*;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -27,8 +27,8 @@ import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING_HENDELSEID;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING_HENDELSEID;
 
 @Slf4j
 @Service

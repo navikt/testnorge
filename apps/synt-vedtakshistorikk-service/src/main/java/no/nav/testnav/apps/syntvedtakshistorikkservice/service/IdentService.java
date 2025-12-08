@@ -11,8 +11,8 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.Pdl
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
-import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
-import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonSearch;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.endringsmeldinger.SkdMeldingTrans1;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ConvertDateToStringUtility;
 import no.nav.testnav.apps.tpsmessagingservice.utils.IdenttypeFraIdentUtility;
-import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.DoedsmeldingRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

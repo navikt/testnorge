@@ -12,6 +12,7 @@ public record ValideringResponseDTO(
         Boolean erTestnorgeIdent,
         Boolean erSyntetisk,
         Boolean erGyldig,
+        Boolean erIProd,
         Boolean erPersonnummer2032,
         LocalDate foedselsdato,
         Kjoenn kjoenn,

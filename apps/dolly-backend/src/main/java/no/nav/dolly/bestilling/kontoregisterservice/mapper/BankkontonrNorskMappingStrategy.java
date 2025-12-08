@@ -5,8 +5,8 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 

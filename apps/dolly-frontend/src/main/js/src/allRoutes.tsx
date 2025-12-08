@@ -139,7 +139,7 @@ const allRoutes = [
 	},
 	{
 		path: '/identvalidator',
-		handle: { crumb: () => 'Valider ident' },
+		handle: { crumb: () => 'Valider identer' },
 		element: IdentValidatorPage,
 	},
 ]

@@ -1,7 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;

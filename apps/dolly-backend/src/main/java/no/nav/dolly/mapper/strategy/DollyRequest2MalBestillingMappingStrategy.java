@@ -12,8 +12,8 @@ import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
 

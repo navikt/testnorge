@@ -5,7 +5,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import org.springframework.stereotype.Component;
 
 @Slf4j

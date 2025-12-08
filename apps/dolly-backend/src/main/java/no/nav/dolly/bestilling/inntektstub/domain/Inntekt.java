@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 
@@ -26,9 +23,7 @@ public class Inntekt {
     private InntektType inntektstype;
     private Double beloep;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDate startOpptjeningsperiode;
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDate sluttOpptjeningsperiode;
     private Boolean inngaarIGrunnlagForTrekk;
     private Boolean utloeserArbeidsgiveravgift;

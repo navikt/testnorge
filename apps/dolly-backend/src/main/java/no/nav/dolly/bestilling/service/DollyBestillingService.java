@@ -35,7 +35,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.dolly.util.ClearCacheUtil;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;

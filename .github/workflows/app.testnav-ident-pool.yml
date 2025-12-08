@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/app.testnav-ident-pool.yml
       - apps/testnav-ident-pool/**
+      - libs/data-transfer-objects/**
       - libs/reactive-core/**
       - libs/security-core/**
       - libs/servlet-insecure-security/**

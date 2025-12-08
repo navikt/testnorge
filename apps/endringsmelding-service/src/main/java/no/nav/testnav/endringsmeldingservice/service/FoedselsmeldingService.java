@@ -8,7 +8,7 @@ import no.nav.testnav.endringsmeldingservice.consumer.IdentPoolConsumer;
 import no.nav.testnav.endringsmeldingservice.consumer.TpsMessagingConsumer;
 import no.nav.testnav.endringsmeldingservice.mapper.FoedselsmeldingRequestMapper;
 import no.nav.testnav.endringsmeldingservice.mapper.IdentpoolRequestMapper;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdressehistorikkDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v2.FoedselsmeldingDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v2.FoedselsmeldingResponseDTO;
 import org.springframework.http.HttpStatus;
