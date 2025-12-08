@@ -21,6 +21,7 @@ export const multiFetcherAll = (urlListe, headers = null) =>
 			}),
 		),
 	)
+
 export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 	Promise.all(
 		miljoUrlListe.map((obj) =>
@@ -122,6 +123,16 @@ export const sykemeldingFetcher = (url, body) =>
 	axios.post(url, body).then((res) => {
 		return res.data
 	})
+
+export const identpoolFetcher = (url, body) =>
+	axios
+		.post(url, body)
+		.then((res) => {
+			return res.data
+		})
+		.catch((error) => {
+			throw new Error(error.message)
+		})
 
 export const fetcher = (url, headers?) =>
 	axios
