@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.testing;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -16,6 +17,7 @@ public class DollyWireMockExtension implements BeforeAllCallback, AfterAllCallba
     public void beforeAll(ExtensionContext context) {
         WireMockServer server = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
         server.start();
+        WireMock.configureFor("localhost", server.port());
         context.getStore(NAMESPACE).put(SERVER_KEY, server);
         System.setProperty("wiremock.server.port", String.valueOf(server.port()));
     }

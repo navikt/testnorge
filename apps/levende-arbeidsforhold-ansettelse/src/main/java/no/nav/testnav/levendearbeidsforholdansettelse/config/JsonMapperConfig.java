@@ -17,6 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public class JsonMapperConfig {
     private static final String YEAR_MONTH = "yyyy-MM";
 
     @Bean
+    @Primary
     public ObjectMapper objectMapper() {
 
         var simpleModule = new SimpleModule()

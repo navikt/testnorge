@@ -15,8 +15,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import no.nav.testnav.libs.dto.jackson.v1.CaseInsensitiveEnumModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -34,6 +36,7 @@ public class JsonMapperConfig {
     private static final String YEAR_MONTH = "yyyy-MM";
 
     @Bean
+    @Primary
     public ObjectMapper objectMapper() {
 
         var simpleModule = new SimpleModule()
@@ -56,9 +59,11 @@ public class JsonMapperConfig {
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build()
                 .registerModule(new JavaTimeModule())
+                .registerModule(new CaseInsensitiveEnumModule())
                 .registerModule(simpleModule);
 
     }
+
 
     private static class DollyYearMonthDeserializer extends JsonDeserializer<YearMonth> {
 
