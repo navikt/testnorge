@@ -13,7 +13,7 @@ export const YtelseForm = ({ path, header, initialYtelser }: any) => {
 						<FormSelect
 							name={`${path}.type`}
 							label="Ytelse"
-							size="medium"
+							size="large"
 							isClearable={false}
 							options={Options('tjenestepensjonYtelseType')}
 						/>
