@@ -7,7 +7,7 @@ import * as _ from 'lodash-es'
 import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { useParams } from 'react-router'
@@ -161,7 +161,7 @@ export const ForeldreansvarEnkeltvisning = ({
 		: null
 
 	return (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={
 				<ForeldreansvarLes
 					foreldreansvarData={foreldreansvarValues}

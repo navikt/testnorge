@@ -10,7 +10,7 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { initialInnvandring } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '@/components/bestillingsveileder/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -107,7 +107,7 @@ const InnvandringVisning = ({
 	return erPdlVisning ? (
 		<InnvandringLes innvandringData={innvandringData} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<InnvandringLes innvandringData={innvandringValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertInnvandringValues}

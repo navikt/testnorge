@@ -5,7 +5,7 @@ import { formatDate, showLabel } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { initialPersonstatus } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import Panel from '@/components/ui/panel/Panel'
 
 const PersonstatusLes = ({ data, idx }) => {
@@ -43,7 +43,7 @@ const PersonstatusVisning = ({ personstatusData, idx, data, tmpPersoner, ident }
 		: null
 
 	return (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<PersonstatusLes data={personstatusValues} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertPersonstatusValues}

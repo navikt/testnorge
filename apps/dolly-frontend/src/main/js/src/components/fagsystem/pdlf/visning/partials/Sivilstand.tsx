@@ -5,7 +5,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import {
 	getInitialSivilstand,
 	initialPdlPerson,
@@ -139,7 +139,7 @@ const SivilstandVisning = ({
 		: null
 
 	return (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={
 				<SivilstandLes
 					sivilstandData={sivilstandValues}
