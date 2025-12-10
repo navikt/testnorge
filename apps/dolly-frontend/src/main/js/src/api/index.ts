@@ -126,7 +126,7 @@ export const sykemeldingFetcher = (url, body) =>
 
 export const identpoolFetcher = (url, body) =>
 	axios
-		.post(url, body)
+		.post(url, body, { timeout: 0 })
 		.then((res) => {
 			return res.data
 		})
