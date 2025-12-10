@@ -13,9 +13,9 @@ import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
 
-const Bestillingskriterier = React.lazy(
-	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
-)
+// const Bestillingskriterier = React.lazy(
+// 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
+// )
 
 const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	const opts = useContext(BestillingsveilederContext)

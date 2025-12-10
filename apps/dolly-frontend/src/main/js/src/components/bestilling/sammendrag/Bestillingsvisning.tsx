@@ -32,7 +32,7 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 	const [visMer, setVisMer, setSkjulMer] = useBoolean(false)
 	const [showVisMerButton, setShowVisMerButton] = useState(false)
 
-	console.log('bestilling: ', bestilling) //TODO - SLETT MEG
+	// console.log('bestilling: ', bestilling) //TODO - SLETT MEG
 
 	// const windowHeight = window.innerHeight
 	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
@@ -57,7 +57,7 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 
 	const bestillingCurrentHeight =
 		document.getElementsByClassName('bestilling-data')?.[0]?.scrollHeight
-	console.log('bestillingCurrentHeight: ', bestillingCurrentHeight) //TODO - SLETT MEG
+	// console.log('bestillingCurrentHeight: ', bestillingCurrentHeight) //TODO - SLETT MEG
 
 	// const showVisMerButton = bestillingCurrentHeight > bestillingMaxHeight
 

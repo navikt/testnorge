@@ -30,10 +30,14 @@ export const Brregstub = ({ brregstub }: BrregProps) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Brønnøysundregistrene</BestillingTitle>
-				<TitleValue
-					title="Understatuser"
-					value={arrayToString(brregstub.understatuser?.map((status) => understatusLabel(status)))}
-				/>
+				<div className="bestilling-blokk">
+					<TitleValue
+						title="Understatuser"
+						value={arrayToString(
+							brregstub.understatuser?.map((status) => understatusLabel(status)),
+						)}
+					/>
+				</div>
 				<DollyFieldArray header="Enhet" data={brregstub?.enheter}>
 					{(enhet: Enhet, idx: number) => {
 						return (

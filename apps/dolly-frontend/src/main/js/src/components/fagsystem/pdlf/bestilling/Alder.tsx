@@ -24,7 +24,7 @@ export const Alder = ({ opprettNyPerson }: AlderTypes) => {
 			<ErrorBoundary>
 				<BestillingTitle>Alder</BestillingTitle>
 				<>
-					{isEmpty(opprettNyPerson, ['identtype', 'syntetisk']) ? (
+					{isEmpty(opprettNyPerson, ['identtype', 'syntetisk', 'id2032']) ? (
 						<EmptyObject />
 					) : (
 						<div className="bestilling-blokk">
