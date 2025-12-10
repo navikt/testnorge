@@ -118,6 +118,9 @@ public class PensjonData {
         OVERGANGSTILLEGG,
         PAASLAGSPENSJON,
         SAERALDER,
+        SAERALDERSPAASLAG,
+        TIDLIGPENSJON,
+        TIDLIGPEN_OVERGANG,
         UFORE,
         UKJENT
     }
