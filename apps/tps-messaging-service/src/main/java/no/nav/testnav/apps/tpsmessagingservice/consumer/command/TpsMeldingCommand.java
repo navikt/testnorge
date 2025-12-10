@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class TpsMeldingCommand implements Callable<String> {
 
     public static final String NO_RESPONSE = "zzzZZZzzz";
-    private static final long TIMEOUT_VAL = 5000;
+    private static final long TIMEOUT_VAL = 10000;
     private static final String FEIL_KOENAVN = "Feil i kønavn eller miljø";
 
     private final ConnectionFactory connectionFactory;
