@@ -2,6 +2,7 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.registre.sdforvalter.TestSecurityConfig;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
@@ -12,26 +13,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Arrays;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DollySpringBootTest
 @ExtendWith(DollyWireMockExtension.class)
-@AutoConfigureMockMvc()
+@Import(TestSecurityConfig.class)
 class StaticDataControllerV1KrrIntegrationTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebTestClient webTestClient;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -73,27 +70,31 @@ class StaticDataControllerV1KrrIntegrationTest {
     }
 
     @Test
-    void shouldGetKrr() throws Exception {
+    void shouldGetKrr() {
         KrrModel model = createKrrModel("0101011236");
         repository.save(model);
-        String json = mvc.perform(get("/api/v1/faste-data/krr")
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        KrrListe response = objectMapper.readValue(json, KrrListe.class);
-        assertThat(response.getListe()).containsOnly(new Krr(model));
+        
+        webTestClient
+                .get()
+                .uri("/api/v1/faste-data/krr")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(KrrListe.class)
+                .value(response -> assertThat(response.getListe()).containsOnly(new Krr(model)));
     }
 
     @Test
     void shouldCreateKrr() throws Exception {
         Krr krr = createKrr("0101011236");
-        mvc.perform(post("/api/v1/faste-data/krr")
-                        .content(objectMapper.writeValueAsString(createKrrListe(krr)))
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk());
+        
+        webTestClient
+                .post()
+                .uri("/api/v1/faste-data/krr")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(objectMapper.writeValueAsString(createKrrListe(krr)))
+                .exchange()
+                .expectStatus().isOk();
 
         assertThat(repository.findAll()).containsOnly(new KrrModel(krr, null, null));
     }
@@ -103,11 +104,16 @@ class StaticDataControllerV1KrrIntegrationTest {
         Krr krr = createKrr("0101011236");
         Krr krrGruppeDolly = createKrr("0101011236", "DOLLY");
 
-        mvc.perform(post("/api/v1/faste-data/krr")
-                        .param("gruppe", "DOLLY")
-                        .content(objectMapper.writeValueAsString(createKrrListe(krr, krrGruppeDolly)))
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk());
+        webTestClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/api/v1/faste-data/krr")
+                        .queryParam("gruppe", "DOLLY")
+                        .build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(objectMapper.writeValueAsString(createKrrListe(krr, krrGruppeDolly)))
+                .exchange()
+                .expectStatus().isOk();
 
         assertThat(repository.findAll()).containsOnly(new KrrModel(krrGruppeDolly, null, null));
     }

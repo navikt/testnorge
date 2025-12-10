@@ -1,31 +1,27 @@
-package no.nav.registre.sdforvalter.config;
+package no.nav.registre.sdforvalter;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.libs.security.config.DollyHttpSecurity;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Slf4j
-@Configuration
-@Order(1)
-@Profile("!test")
-class SecurityConfig {
+@TestConfiguration
+@Profile("test")
+public class TestSecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    @Primary
+    public SecurityFilterChain testFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests())
-                .oauth2ResourceServer(c -> c.jwt(Customizer.withDefaults()))
+                .authorizeHttpRequests(c -> c.anyRequest().permitAll())
+                .oauth2ResourceServer(AbstractHttpConfigurer::disable)
                 .build();
     }
-
 }
+
