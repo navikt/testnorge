@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Persistable;
@@ -12,10 +13,8 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 
-
-@Table("DOCUMENT_ENTITY")
+@Table("document_entity")
 @Data
 @Builder
 @AllArgsConstructor
@@ -23,26 +22,26 @@ import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 public class DocumentEntity implements Persistable<String> {
 
     @Id
-    @Column("SHA")
+    @Column("sha")
     private String sha;
 
-    @Column("CONTENT")
+    @Column("content")
     private String content;
 
-    @Column("REPO")
+    @Column("repo")
     private String repo;
 
-    @Column("OWNER")
+    @Column("owner")
     private String owner;
 
-    @Column("TYPE")
+    @Column("type")
     private DocumentType type;
 
-    @Column("PATH")
+    @Column("path")
     private String path;
 
     @CreatedDate
-    @Column("CREATED_AT")
+    @Column("created_at")
     private LocalDateTime createdAt;
 
     @Override
