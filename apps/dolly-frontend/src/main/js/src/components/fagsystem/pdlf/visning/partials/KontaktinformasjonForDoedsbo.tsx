@@ -8,7 +8,7 @@ import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/Rel
 import * as _ from 'lodash-es'
 import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { formatDate } from '@/utils/DataFormatter'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import React from 'react'
@@ -185,7 +185,7 @@ export const KontaktinformasjonForDoedsboVisning = ({
 	return erPdlVisning ? (
 		<KontaktinformasjonForDoedsboLes data={kontaktinfoData} relasjoner={relasjoner} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={
 				<KontaktinformasjonForDoedsboLes
 					data={kontaktinfoValues}

@@ -2052,7 +2052,7 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 					ordning.ytelser.forEach((ytelse) => {
 						pensjonforvalterTp.itemRows.push([
 							{ numberHeader: `${ordningNavn}` },
-							obj('Ytelse', ytelse.type),
+							obj('Ytelse', showLabel('tjenestepensjonYtelseType', ytelse.type)),
 							obj('datoInnmeldtYtelseFom', formatDate(ytelse.datoInnmeldtYtelseFom)),
 							obj('datoYtelseIverksattFom', formatDate(ytelse.datoYtelseIverksattFom)),
 							obj('datoYtelseIverksattTom', formatDate(ytelse.datoYtelseIverksattTom)),

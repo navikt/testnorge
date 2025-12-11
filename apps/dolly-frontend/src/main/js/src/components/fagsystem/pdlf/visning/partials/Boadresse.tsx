@@ -8,7 +8,7 @@ import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/M
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
 import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
 import { getInitialBostedsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { BostedData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -95,7 +95,7 @@ export const BoadresseVisning = ({
 	return erPdlVisning ? (
 		<Adresse boadresseData={boadresseData} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<Adresse boadresseData={boadresseValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertBoadresseValues}

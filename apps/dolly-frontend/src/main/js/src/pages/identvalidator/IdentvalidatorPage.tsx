@@ -1,34 +1,28 @@
 import { useValiderIdenter } from '@/utils/hooks/useIdentPool'
 import { Alert, Box, Textarea, VStack } from '@navikt/ds-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import Loading from '@/components/ui/loading/Loading'
 import { IdentvalidatorVisningTable } from '@/pages/identvalidator/IdentvalidatorVisningTable'
-
-const initialValues = {
-	ident: '',
-}
+import Button from '@/components/ui/button/Button'
+import { jsonToCsvDownload } from '@/pages/identvalidator/utils'
 
 export default () => {
-	const [ident, setIdent] = useState('')
-	const { validering, loading, error } = useValiderIdenter(ident)
-
-	const formMethods = useForm({
-		mode: 'onChange',
-		defaultValues: initialValues,
-	})
+	const { validering, loading, error, trigger, reset } = useValiderIdenter()
+	const formMethods = useForm({ mode: 'onChange', defaultValues: { identer: '' } })
 
 	useEffect(() => {
 		if (validering && !loading && !error) {
-			formMethods.reset(initialValues)
+			formMethods.reset({ identer: '' })
 		}
-	}, [validering])
+	}, [validering, loading, error])
 
-	const handleValidate = (data: { ident: string }) => {
-		setIdent(data?.ident)
+	const handleValidate = async (data: { identer: string }) => {
+		reset()
+		await trigger(data.identer)
 	}
 
 	const { currentBruker, loading: currenBrukerLoading } = useCurrentBruker()
@@ -47,21 +41,27 @@ export default () => {
 					<FormProvider {...formMethods}>
 						<form onSubmit={formMethods.handleSubmit(handleValidate)}>
 							<Textarea
-								name="ident"
+								name="identer"
 								label="Identer"
-								value={formMethods.watch('ident')}
-								onChange={(event) => formMethods.setValue('ident', event.target.value)}
+								value={formMethods.watch('identer')}
+								onChange={(event) => formMethods.setValue('identer', event.target.value)}
 								description="Skriv inn én eller flere identer, adskilt med mellomrom, komma, semikolon eller linjeskift."
 								resize="vertical"
 							/>
-							<NavButton
-								variant={'primary'}
-								type={'submit'}
-								loading={loading}
-								style={{ marginTop: '15px' }}
-							>
-								Valider
-							</NavButton>
+							<div className="flexbox--align-center" style={{ marginTop: '15px' }}>
+								<NavButton variant={'primary'} type={'submit'} loading={loading}>
+									Valider
+								</NavButton>
+								{validering?.length > 0 && (
+									<Button
+										style={{ marginLeft: '20px' }}
+										kind="download"
+										onClick={() => jsonToCsvDownload(validering, 'identvalidering.csv')}
+									>
+										LAST NED CSV-FIL
+									</Button>
+								)}
+							</div>
 						</form>
 					</FormProvider>
 				</Box>

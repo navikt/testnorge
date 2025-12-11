@@ -508,6 +508,9 @@ const selectOptions = {
 		{ value: 'OVERGANGSTILLEGG', label: 'Overgangstillegg' },
 		{ value: 'PAASLAGSPENSJON', label: 'Påslagspensjon' },
 		{ value: 'SAERALDER', label: 'Særalder' },
+		{ value: 'SAERALDERSPAASLAG', label: 'Særalderpåslag' },
+		{ value: 'TIDLIGPENSJON', label: 'Tidligpensjon' },
+		{ value: 'TIDLIGPEN_OVERGANG', label: 'Tidligpensjon på overgangsregler' },
 	],
 
 	tpOrdninger: [],
