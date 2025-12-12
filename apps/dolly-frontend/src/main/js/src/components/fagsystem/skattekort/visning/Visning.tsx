@@ -26,6 +26,33 @@ export const showKodeverkLabel = (kodeverkstype: string, value: string) => {
 	return kodeverk?.find((kode: any) => kode?.value === value)?.label || value
 }
 
+const XmlVisning = ({ xmlString }: { xmlString: string }) => {
+	const [viserXml, vis, skjul] = useBoolean(false)
+	const xmlFormatted = formatXml(xmlString, '  ')
+
+	return (
+		<>
+			<Button
+				onClick={viserXml ? skjul : vis}
+				kind={viserXml ? 'chevron-up' : 'chevron-down'}
+				style={{ position: 'initial', paddingTop: '0' }}
+			>
+				{(viserXml ? 'SKJUL ' : 'VIS ') + 'SKATTEKORT-XML'}
+			</Button>
+			{viserXml &&
+				(xmlString ? (
+					<Suspense fallback={<Loading label={'Laster xml...'} />}>
+						<PrettyCode language={'xml'} codeString={xmlFormatted} wrapLongLines />
+					</Suspense>
+				) : (
+					<Alert variant="error" size="small" inline>
+						Kunne ikke vise skattekort-xml
+					</Alert>
+				))}
+		</>
+	)
+}
+
 export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 	if (loading) {
 		return <Loading label="Laster skattekort-data" />
@@ -51,8 +78,6 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 				<ErrorBoundary>
 					<DollyFieldArray header="" data={liste} expandable={liste.length > 5} nested>
 						{(skattekort: any, idx: number) => {
-							const [viserXml, vis, skjul] = useBoolean(false)
-
 							const arbeidsgiver = skattekort?.arbeidsgiver?.[0]
 							const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
 							const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
@@ -62,8 +87,6 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 									return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
 								},
 							)
-
-							const xmlFormatted = formatXml(skattekort?.skattekortXml, '  ')
 
 							return (
 								<React.Fragment key={idx}>
@@ -98,23 +121,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 										/>
 										<ForskuddstrekkVisning trekkliste={trekkListe} />
 									</div>
-									<Button
-										onClick={viserXml ? skjul : vis}
-										kind={viserXml ? 'chevron-up' : 'chevron-down'}
-										style={{ position: 'initial', paddingTop: '0' }}
-									>
-										{(viserXml ? 'SKJUL ' : 'VIS ') + 'SKATTEKORT-XML'}
-									</Button>
-									{viserXml &&
-										(skattekort?.skattekortXml ? (
-											<Suspense fallback={<Loading label={'Laster xml...'} />}>
-												<PrettyCode language={'xml'} codeString={xmlFormatted} wrapLongLines />
-											</Suspense>
-										) : (
-											<Alert variant="error" size="small" inline>
-												Kunne ikke vise skattekort-xml
-											</Alert>
-										))}
+									<XmlVisning xmlString={skattekort?.skattekortXml} />
 								</React.Fragment>
 							)
 						}}
