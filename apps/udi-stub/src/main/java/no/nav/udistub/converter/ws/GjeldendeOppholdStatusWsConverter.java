@@ -29,35 +29,31 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdSt
     @Override
     public GjeldendeOppholdsstatus convert(UdiOppholdStatus oppholdStatus) {
 
-        if (nonNull(oppholdStatus)) {
+        var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
 
-            var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
+        resultatOppholdsstatus.setUavklart(isTrue(oppholdStatus.getUavklart()) ? new Uavklart() : null);
 
-            resultatOppholdsstatus.setUavklart(isTrue(oppholdStatus.getUavklart()) ? new Uavklart() : null);
+        var eoSellerEFTAOpphold = new EOSellerEFTAOpphold();
+        eoSellerEFTAOpphold.setEOSellerEFTABeslutningOmOppholdsrett(getEOSellerEFTABeslutningOmOpphold(oppholdStatus));
+        eoSellerEFTAOpphold.setEOSellerEFTAVedtakOmVarigOppholdsrett(getEOSellerEFTAVedtakOmVarigOppholdrett(oppholdStatus));
+        eoSellerEFTAOpphold.setEOSellerEFTAOppholdstillatelse(getEoSellerEFTAOppholdstillatelse(oppholdStatus));
 
-            var eoSellerEFTAOpphold = new EOSellerEFTAOpphold();
-            eoSellerEFTAOpphold.setEOSellerEFTABeslutningOmOppholdsrett(getEOSellerEFTABeslutningOmOpphold(oppholdStatus));
-            eoSellerEFTAOpphold.setEOSellerEFTAVedtakOmVarigOppholdsrett(getEOSellerEFTAVedtakOmVarigOppholdrett(oppholdStatus));
-            eoSellerEFTAOpphold.setEOSellerEFTAOppholdstillatelse(getEoSellerEFTAOppholdstillatelse(oppholdStatus));
-
-            if (nonNull(eoSellerEFTAOpphold.getEOSellerEFTAOppholdstillatelse()) ||
-                    nonNull(eoSellerEFTAOpphold.getEOSellerEFTABeslutningOmOppholdsrett()) ||
-                    nonNull(eoSellerEFTAOpphold.getEOSellerEFTAVedtakOmVarigOppholdsrett())) {
-                resultatOppholdsstatus.setEOSellerEFTAOpphold(eoSellerEFTAOpphold);
-            }
-
-            if (nonNull(oppholdStatus.getOppholdSammeVilkaar())) {
-                resultatOppholdsstatus.setOppholdstillatelseEllerOppholdsPaSammeVilkar(getOppholdstillatelseEllerOppholdsPaSammeVilkar(oppholdStatus.getOppholdSammeVilkaar()));
-            }
-
-            if (nonNull(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum())) {
-                resultatOppholdsstatus.setIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum(
-                        ikkeWsConverter.convert(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()));
-            }
-
-            return resultatOppholdsstatus;
+        if (nonNull(eoSellerEFTAOpphold.getEOSellerEFTAOppholdstillatelse()) ||
+                nonNull(eoSellerEFTAOpphold.getEOSellerEFTABeslutningOmOppholdsrett()) ||
+                nonNull(eoSellerEFTAOpphold.getEOSellerEFTAVedtakOmVarigOppholdsrett())) {
+            resultatOppholdsstatus.setEOSellerEFTAOpphold(eoSellerEFTAOpphold);
         }
-        return null;
+
+        if (nonNull(oppholdStatus.getOppholdSammeVilkaar())) {
+            resultatOppholdsstatus.setOppholdstillatelseEllerOppholdsPaSammeVilkar(getOppholdstillatelseEllerOppholdsPaSammeVilkar(oppholdStatus.getOppholdSammeVilkaar()));
+        }
+
+        if (nonNull(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum())) {
+            resultatOppholdsstatus.setIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum(
+                    ikkeWsConverter.convert(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()));
+        }
+
+        return resultatOppholdsstatus;
     }
 
     private EOSellerEFTABeslutningOmOppholdsrett getEOSellerEFTABeslutningOmOpphold(UdiOppholdStatus oppholdsStatus) {
