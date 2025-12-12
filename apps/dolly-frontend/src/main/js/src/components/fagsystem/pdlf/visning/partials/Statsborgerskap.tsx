@@ -4,7 +4,7 @@ import React from 'react'
 import * as _ from 'lodash-es'
 import { getInitialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PersonData, StatsborgerskapData } from '@/components/fagsystem/pdlf/PdlTypes'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { formatDate } from '@/utils/DataFormatter'
@@ -93,7 +93,7 @@ const StatsborgerskapVisning = ({
 	return erPdlVisning ? (
 		<StatsborgerskapLes statsborgerskapData={statsborgerskapData} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<StatsborgerskapLes statsborgerskapData={statsborgerskapValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertStatsborgerskapValues}

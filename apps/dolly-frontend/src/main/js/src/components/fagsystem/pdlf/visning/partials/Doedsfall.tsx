@@ -7,7 +7,7 @@ import { formatDate } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getInitialDoedsfall } from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type DoedsfallTypes = {
@@ -68,7 +68,7 @@ const DoedsfallVisning = ({
 	return erPdlVisning ? (
 		<DoedsfallLes doedsfall={doedsfall} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<DoedsfallLes doedsfall={doedsfallValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertDoedsfallValues}

@@ -1,5 +1,6 @@
-import { Alert, Box, HStack, Table } from '@navikt/ds-react'
-import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
+import { Box, Table } from '@navikt/ds-react'
+import { formatDate } from '@/utils/DataFormatter'
+import { getIcon, IconComponent } from '@/pages/identvalidator/utils'
 
 interface IdentvalidatorData {
 	erGyldig: boolean
@@ -19,26 +20,6 @@ interface IdentvalidatorVisningProps {
 	data: IdentvalidatorData
 }
 
-const IconComponent = ({ item }) => {
-	return item.icon === 'none' ? (
-		<HStack gap="space-16">
-			<div style={{ width: '20px', textAlign: 'center' }}>-</div>
-			{item.value}
-		</HStack>
-	) : (
-		<Alert variant={item.icon} inline>
-			{item.value}
-		</Alert>
-	)
-}
-
-export const getIcon = (isValid: boolean, showError = false) => {
-	if (showError) {
-		return isValid ? 'success' : 'error'
-	}
-	return isValid ? 'success' : 'none'
-}
-
 export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	if (!data) {
 		return null
@@ -47,27 +28,27 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	const mappedData = [
 		{
 			label: 'Er gyldig',
-			value: oversettBoolean(data.erGyldig),
+			value: data.erGyldig,
 			icon: getIcon(data.erGyldig, true),
 		},
 		{
 			label: 'Er i prod',
-			value: oversettBoolean(data.erIProd),
+			value: data.erIProd,
 			icon: data.erIProd ? 'warning' : 'none',
 		},
 		{
 			label: 'Er syntetisk',
-			value: oversettBoolean(data.erSyntetisk),
+			value: data.erSyntetisk,
 			icon: getIcon(data.erSyntetisk),
 		},
 		{
 			label: 'Er Testnorge-ident',
-			value: oversettBoolean(data.erTestnorgeIdent),
+			value: data.erTestnorgeIdent,
 			icon: getIcon(data.erTestnorgeIdent),
 		},
 		{
 			label: 'Er ny ident (2032)',
-			value: oversettBoolean(data.erPersonnummer2032),
+			value: data.erPersonnummer2032,
 			icon: getIcon(data.erPersonnummer2032),
 		},
 		{ label: 'Identtype', value: data.identtype },
@@ -81,9 +62,6 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 		<Box
 			padding="6"
 			background={data.feilmelding ? 'surface-danger-subtle' : 'surface-success-subtle'}
-			borderRadius="large"
-			borderWidth="2"
-			borderColor={data.feilmelding ? 'border-danger' : 'border-success'}
 		>
 			<Table>
 				<Table.Body>
@@ -97,7 +75,11 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 									<strong>{item.label}</strong>
 								</Table.DataCell>
 								<Table.DataCell>
-									{item.icon ? <IconComponent item={item} /> : item.value}
+									{item.icon ? (
+										<IconComponent isValid={item.value} iconType={item.icon} />
+									) : (
+										item.value
+									)}
 								</Table.DataCell>
 							</Table.Row>
 						)

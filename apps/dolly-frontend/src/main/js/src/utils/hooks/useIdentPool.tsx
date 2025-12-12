@@ -1,19 +1,23 @@
-import useSWR from 'swr'
-import Request from '@/service/services/Request'
+import { identpoolFetcher } from '@/api'
+import useSWRMutation from 'swr/mutation'
 
 const identPoolUrl = '/testnav-ident-pool/api/v2/ident/validerflere'
 
-export const useValiderIdenter = (identer: string) => {
-	const { data, isLoading, error, mutate } = useSWR(
-		identer ? [identPoolUrl, { identer }] : null,
-		([url, body]) => Request.post(url, body),
-		{ dedupingInterval: 400 },
+export const useValiderIdenter = () => {
+	const { data, isMutating, error, trigger, reset } = useSWRMutation(
+		identPoolUrl,
+		(url, { arg }: { arg: string }) => identpoolFetcher(url, { identer: arg }),
+		{
+			populateCache: false,
+			revalidate: false,
+		},
 	)
 
 	return {
-		validering: data?.data,
-		loading: isLoading,
+		validering: data,
+		loading: isMutating,
 		error,
-		mutate,
+		trigger,
+		reset,
 	}
 }

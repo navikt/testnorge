@@ -14,7 +14,7 @@ import {
 import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getInitialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { formatDate } from '@/utils/DataFormatter'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -207,7 +207,7 @@ export const KontaktadresseVisning = ({
 	return erPdlVisning ? (
 		<Adresse kontaktadresseData={kontaktadresseData} idx={idx} />
 	) : (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<Adresse kontaktadresseData={kontaktadresseValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertKontaktadresseValues}

@@ -49,9 +49,12 @@ class TexasJwtDecoder implements ReactiveJwtDecoder {
 
                         var headers = new HashMap<String, Object>();
                         switch (parsedJwt) {
-                            case SignedJWT signedJWT when signedJWT.getHeader() != null -> headers.putAll(signedJWT.getHeader().toJSONObject());
-                            case PlainJWT plainJWT when plainJWT.getHeader() != null -> headers.putAll(plainJWT.getHeader().toJSONObject());
-                            default -> log.warn("JWT is not an instance of SignedJWT or PlainJWT; headers might be incomplete: {}", parsedJwt.getClass().getName());
+                            case SignedJWT signedJWT when signedJWT.getHeader() != null ->
+                                    headers.putAll(signedJWT.getHeader().toJSONObject());
+                            case PlainJWT plainJWT when plainJWT.getHeader() != null ->
+                                    headers.putAll(plainJWT.getHeader().toJSONObject());
+                            default ->
+                                    log.warn("JWT is not an instance of SignedJWT or PlainJWT; headers might be incomplete: {}", parsedJwt.getClass().getName());
                         }
 
                         var issuedAt = claimsSet.getIssueTime() != null ? claimsSet.getIssueTime().toInstant() : null;

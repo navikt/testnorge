@@ -5,11 +5,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 import no.nav.testnav.identpool.dto.IdentpoolResponseDTO;
 import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
-import no.nav.testnav.identpool.dto.ValideringRequestDTO;
 import no.nav.testnav.identpool.dto.ValideringResponseDTO;
-import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import no.nav.testnav.identpool.service.Identpool32Service;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
@@ -36,27 +35,21 @@ public class IdentController {
 
     @Operation(description = "Rekvirer nye test-identer for pid2032")
     @PostMapping("/rekvirer")
-    public Mono<IdentpoolResponseDTO> rekvirer(@RequestBody RekvirerIdentRequest request) {
+    public Mono<IdentpoolResponseDTO> rekvirer(@RequestBody IdentpoolRequestDTO request) {
 
         ValiderRequestUtil.validateDatesInRequest(request);
         return identpool32Service.generateIdent(request);
     }
 
-    @Operation(description = "Validering for nye og gamle test-identer")
-    @PostMapping("/valider")
-    public Mono<ValideringResponseDTO> valider(@Valid @RequestBody ValideringRequestDTO request) {
-
-        return personnummerValidatorService.validerFoedselsnummer(request.ident());
-    }
-
-    @Operation(description = "Validering for nye og gamle test-identer", summary = "Valider flere identer")
+    @Operation(description = "Validering for nye og gamle test-identer, validerer flere identer separert med mellomrom, komma eller semikolon")
     @PostMapping("/validerflere")
     public Flux<ValideringResponseDTO> validerflere(@Valid @RequestBody ValideringFlereRequestDTO request) {
 
         val identer = request.identer().split("[\\s,;]");
         return Flux.fromArray(identer)
                 .filter(StringUtils::isNotBlank)
-                .concatMap(personnummerValidatorService::validerFoedselsnummer, 5);
+                .buffer(80)
+                .concatMap(personnummerValidatorService::validerFoedselsnummer);
     }
 
     @Operation(description = "Frigjoer pid2032 test-ident")
