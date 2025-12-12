@@ -20,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
 
-    private static final String DOKARKIV_PROXY_ENVIRONMENTS = "/rest/miljoe";
+    private static final String DOKARKIV_PROXY_ENVIRONMENTS = "/dokarkiv/rest/miljoe";
 
     private final WebClient webClient;
     private final String token;

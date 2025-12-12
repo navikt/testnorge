@@ -20,7 +20,7 @@ import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.HEADER_NAV_P
 @Slf4j
 public class GetArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRespons>> {
 
-    private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
+    private static final String AAREGDATA_URL = "/aareg/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
     private static final String ARBEIDSFORHOLD_TYPE = "arbeidsforholdtype";
     public static final String ARBEIDSFORHOLD_AVAIL =
             "forenkletOppgjoersordning, " +

@@ -1,6 +1,0 @@
-consumers:
-  dokarkiv:
-    url: http://dokarkiv-dummy.dummy.no
-    cluster: dev-fss
-    name: dokarkiv-dummy
-    namespace: dummy

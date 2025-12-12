@@ -26,7 +26,7 @@ public class SafConsumer {
             ObjectMapper objectMapper,
             WebClient webClient) {
 
-        serverProperties = consumers.getSafProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
                 .mutate()
