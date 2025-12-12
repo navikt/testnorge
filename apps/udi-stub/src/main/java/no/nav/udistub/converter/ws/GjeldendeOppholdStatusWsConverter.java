@@ -28,6 +28,9 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdSt
 
     @Override
     public GjeldendeOppholdsstatus convert(UdiOppholdStatus oppholdStatus) {
+        if (isNull(oppholdStatus)) {
+            return null;
+        }
 
         var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
 
