@@ -1,28 +1,35 @@
 package no.nav.dolly.proxy.texas;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import no.nav.dolly.libs.test.DollyApplicationContextTest;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.libs.texas.Texas;
 import no.nav.dolly.libs.texas.TexasToken;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@AutoConfigureWireMock(port = 0)
 class RouteLocatorTest extends DollyApplicationContextTest {
 
     private static final String GET_TOKEN_BODY = """
@@ -44,22 +51,39 @@ class RouteLocatorTest extends DollyApplicationContextTest {
                 "token": "TOKENVALUE"
             }
             """;
-
+    private static WireMockServer wiremock;
     @Autowired
     private WebTestClient client;
 
     @Autowired
     private RouteLocator routeLocator;
 
-    @Autowired
-    private WireMockServer wiremock;
-
     @MockitoBean
     @SuppressWarnings("unused")
     private Texas texas;
 
+    @BeforeAll
+    static void startWireMock() {
+        wiremock = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
+        wiremock.start();
+        System.setProperty("wiremock.server.port", String.valueOf(wiremock.port()));
+    }
+
+    @AfterAll
+    static void stopWireMock() {
+        if (wiremock != null) {
+            wiremock.stop();
+        }
+    }
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("consumers.texas.url", () -> "http://localhost:" + wiremock.port());
+    }
+
     @BeforeEach
     void beforeEach() {
+        wiremock.resetAll();
         when(texas.get(anyString()))
                 .thenReturn(Mono.just(new TexasToken("", "", "")));
         wiremock.stubFor(post(urlEqualTo("/api/v1/token"))

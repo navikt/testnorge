@@ -11,9 +11,10 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.LastHttpContent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
@@ -24,15 +25,23 @@ import static java.nio.charset.Charset.defaultCharset;
 import static java.util.stream.Collectors.joining;
 
 @Slf4j
-@Component
-public class WebClientLogger implements WebClientCustomizer {
+@Configuration
+@ConditionalOnClass(WebClient.class)
+public class WebClientLogger {
 
-    @Override
-    public void customize(WebClient.Builder webClientBuilder) {
-
+    @Bean
+    public WebClient.Builder webClientBuilder() {
         var httpClient = HttpClient.create()
                 .doOnRequest((httpClientRequest, connection) -> connection.addHandlerFirst(new LoggingHandler()));
-        webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient));
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient));
+    }
+
+    private static String tokenFilter(List<Map.Entry<String, String>> headers) {
+        return headers.stream()
+                .map(header -> header.getKey() + ": " +
+                        (header.getValue().startsWith("Bearer ") ? "Bearer ******" : header.getValue()))
+                .collect(joining(", "));
     }
 
     private static class LoggingHandler extends ChannelDuplexHandler {
@@ -67,12 +76,5 @@ public class WebClientLogger implements WebClientCustomizer {
             }
             super.channelRead(ctx, msg);
         }
-    }
-
-    private static String tokenFilter(List<Map.Entry<String, String>> headers) {
-        return headers.stream()
-                .map(header -> header.getKey() + ": " +
-                        (header.getValue().startsWith("Bearer ") ? "Bearer ******" : header.getValue()))
-                .collect(joining(", "));
     }
 }

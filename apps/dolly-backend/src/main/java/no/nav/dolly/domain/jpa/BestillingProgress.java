@@ -24,7 +24,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("BESTILLING_PROGRESS")
+@Table("bestilling_progress")
 @Builder
 public class BestillingProgress implements Serializable {
 
@@ -34,100 +34,100 @@ public class BestillingProgress implements Serializable {
     private Long id;
 
     @Version
-    @Column("VERSJON")
+    @Column("versjon")
     private Long versjon;
 
-    @Column("BESTILLING_ID")
+    @Column("bestilling_id")
     private Long bestillingId;
 
     @Transient
     private Bestilling bestilling;
 
-    @Column("IDENT")
+    @Column("ident")
     private String ident;
 
-    @Column("SIGRUNSTUB_STATUS")
+    @Column("sigrunstub_status")
     private String sigrunstubStatus;
 
-    @Column("KRRSTUB_STATUS")
+    @Column("krrstub_status")
     private String krrstubStatus;
 
-    @Column("FULLMAKT_STATUS")
+    @Column("fullmakt_status")
     private String fullmaktStatus;
 
-    @Column("MEDL_STATUS")
+    @Column("medl_status")
     private String medlStatus;
 
-    @Column("UDISTUB_STATUS")
+    @Column("udistub_status")
     private String udistubStatus;
 
-    @Column("AAREG_STATUS")
+    @Column("aareg_status")
     private String aaregStatus;
 
-    @Column("ARENAFORVALTER_STATUS")
+    @Column("arenaforvalter_status")
     private String arenaforvalterStatus;
 
-    @Column("INSTDATA_STATUS")
+    @Column("instdata_status")
     private String instdataStatus;
 
-    @Column("INNTEKTSSTUB_STATUS")
+    @Column("inntektsstub_status")
     private String inntektstubStatus;
 
-    @Column("PENSJONFORVALTER_STATUS")
+    @Column("pensjonforvalter_status")
     private String pensjonforvalterStatus;
 
-    @Column("INNTEKTSMELDING_STATUS")
+    @Column("inntektsmelding_status")
     private String inntektsmeldingStatus;
 
-    @Column("BREGSTUB_STATUS")
+    @Column("bregstub_status")
     private String brregstubStatus;
 
-    @Column("DOKARKIV_STATUS")
+    @Column("dokarkiv_status")
     private String dokarkivStatus;
 
-    @Column("HISTARK_STATUS")
+    @Column("histark_status")
     private String histarkStatus;
 
-    @Column("SYKEMELDING_STATUS")
+    @Column("sykemelding_status")
     private String sykemeldingStatus;
 
-    @Column("SKJERMINGSREGISTER_STATUS")
+    @Column("skjermingsregister_status")
     private String skjermingsregisterStatus;
 
-    @Column("TPS_MESSAGING_STATUS")
+    @Column("tps_messaging_status")
     private String tpsMessagingStatus;
 
-    @Column("PDL_IMPORT_STATUS")
+    @Column("pdl_import_status")
     private String pdlImportStatus;
 
-    @Column("PDL_FORVALTER_STATUS")
+    @Column("pdl_forvalter_status")
     private String pdlForvalterStatus;
 
-    @Column("PDL_ORDRE_STATUS")
+    @Column("pdl_ordre_status")
     private String pdlOrdreStatus;
 
-    @Column("KONTOREGISTER_STATUS")
+    @Column("kontoregister_status")
     private String kontoregisterStatus;
 
-    @Column("PDL_PERSON_STATUS")
+    @Column("pdl_person_status")
     private String pdlPersonStatus;
 
-    @Column("ARBEIDSPLASSENCV_STATUS")
+    @Column("arbeidsplassencv_status")
     private String arbeidsplassenCVStatus;
 
-    @Column("SKATTEKORT_STATUS")
+    @Column("skattekort_status")
     private String skattekortStatus;
 
-    @Column("YRKESSKADE_STATUS")
+    @Column("yrkesskade_status")
     private String yrkesskadeStatus;
 
-    @Column("ARBEIDSSOEKERREGISTERET_STATUS")
+    @Column("arbeidssoekerregisteret_status")
     private String arbeidssoekerregisteretStatus;
 
-    @Column("ETTERLATTE_STATUS")
+    @Column("etterlatte_status")
     private  String etterlatteStatus;
 
-    @Column("NOM_STATUS")
+    @Column("nom_status")
     private String nomStatus;
 
     @Column("master")

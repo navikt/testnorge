@@ -26,5 +26,5 @@ dependencies {
 
     implementation "com.google.guava:guava:$versions.guava"
 
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
 }

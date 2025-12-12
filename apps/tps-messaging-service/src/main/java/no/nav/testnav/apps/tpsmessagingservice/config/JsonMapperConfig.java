@@ -13,6 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class JsonMapperConfig {
 
     @Bean
+    @Primary
     public ObjectMapper objectMapper() {
 
         ObjectMapper objectMapper = new ObjectMapper();

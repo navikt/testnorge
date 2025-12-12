@@ -11,33 +11,33 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDateTime;
 
 @Data
-@Table("USER_ENTITY")
+@Table("user_entity")
 public class UserEntity implements Persistable<String> {
 
     @Transient
     private boolean isNew;
 
     @Id
-    @Column("ID")
+    @Column("id")
     private String id;
 
-    @Column("USERNAME")
+    @Column("username")
     private String brukernavn;
 
-    @Column("EMAIL")
+    @Column("email")
     private String epost;
 
-    @Column("ORGANISASJONSNUMMER")
+    @Column("organisasjonsnummer")
     private String organisasjonsnummer;
 
     @CreatedDate
-    @Column("CREATED_AT")
+    @Column("created_at")
     private LocalDateTime opprettet;
 
-    @Column("LAST_LOGGED_IN")
+    @Column("last_logged_in")
     private LocalDateTime sistInnlogget;
 
-    @Column("UPDATED_AT")
+    @Column("updated_at")
     private LocalDateTime oppdatert;
 
     @Override

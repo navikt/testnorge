@@ -1,19 +1,18 @@
 package no.nav.testnav.libs.servletcore.health;
 
-import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
-import org.springframework.boot.actuate.health.HealthContributorRegistry;
-import org.springframework.boot.actuate.health.SimpleStatusAggregator;
-import org.springframework.boot.actuate.health.StatusAggregator;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.health.actuate.endpoint.SimpleStatusAggregator;
+import org.springframework.boot.health.actuate.endpoint.StatusAggregator;
+import org.springframework.boot.health.registry.HealthContributorRegistry;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
-@Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(HealthContributorAutoConfiguration.class)
+@AutoConfiguration
+@ConditionalOnClass(HealthContributorRegistry.class)
 @Profile("!test")
 public class HealthAutoConfiguration {
 
