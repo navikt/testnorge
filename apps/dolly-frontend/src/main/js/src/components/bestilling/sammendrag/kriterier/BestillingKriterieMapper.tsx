@@ -27,7 +27,6 @@ import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 import {
@@ -2289,22 +2288,13 @@ const mapSkattekort = (bestillingData, data) => {
 			const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
 			const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
 
-			const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
-				(tilleggsopplysning) => {
-					return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
-				},
-			)
-
 			skattekort.itemRows.push([
 				{ numberHeader: `Skattekort ${idx + 1}` },
-				obj(
-					'Resultat på forespørsel',
-					showKodeverkLabel('RESULTATSTATUS', arbeidstaker?.resultatPaaForespoersel),
-				),
+				obj('Resultat på forespørsel', arbeidstaker?.resultatPaaForespoersel),
 				obj('Inntektsår', arbeidstaker?.inntektsaar),
 				obj('Utstedt dato', formatDate(arbeidstaker?.skattekort?.utstedtDato)),
 				obj('Skattekortidentifikator', arbeidstaker?.skattekort?.skattekortidentifikator),
-				obj('Tilleggsopplysning', arrayToString(tilleggsopplysningFormatted)),
+				obj('Tilleggsopplysning', arrayToString(arbeidstaker?.tilleggsopplysning)),
 				obj('Arbeidsgiver (org.nr.)', arbeidsgiver?.arbeidsgiveridentifikator?.organisasjonsnummer),
 				obj('Arbeidsgiver (ident)', arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator),
 			])
@@ -2315,9 +2305,9 @@ const mapSkattekort = (bestillingData, data) => {
 
 				skattekort.itemRows.push([
 					{ numberHeader: `Forskuddstrekk ${idx + 1}: ${toTitleCase(forskuddstrekkType)}` },
-					obj('Trekkode', showKodeverkLabel('TREKKODE', forskuddstrekk?.trekkode)),
+					obj('Trekkode', forskuddstrekk?.trekkode),
 					obj('Frikortbeløp', forskuddstrekk?.frikortbeloep),
-					obj('Tabelltype', showKodeverkLabel('TABELLTYPE', forskuddstrekk?.tabelltype)),
+					obj('Tabelltype', forskuddstrekk?.tabelltype),
 					obj('Tabellnummer', forskuddstrekk?.tabellnummer),
 					obj('Prosentsats', forskuddstrekk?.prosentsats),
 					obj('Antall måneder for trekk', forskuddstrekk?.antallMaanederForTrekk),

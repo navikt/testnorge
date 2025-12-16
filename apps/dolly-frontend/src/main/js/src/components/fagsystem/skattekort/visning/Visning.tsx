@@ -4,7 +4,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Alert } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { arrayToString, formatDate, formatXml } from '@/utils/DataFormatter'
+import { formatDate, formatXml } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
@@ -18,12 +18,20 @@ type SkattekortVisning = {
 
 const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
 
-export const showKodeverkLabel = (kodeverkstype: string, value: string) => {
+export const KodeverkTitleValue = ({ kodeverkstype, value, label }) => {
 	const { kodeverk, loading, error } = useSkattekortKodeverk(kodeverkstype)
-	if (loading || error) {
-		return value
+	if (loading || error || !kodeverk) {
+		return <TitleValue title={label} value={value} />
 	}
-	return kodeverk?.find((kode: any) => kode?.value === value)?.label || value
+	if (Array.isArray(value)) {
+		const labels = value.map(
+			(val) => kodeverk?.find((kode: any) => kode?.value === val)?.label || val,
+		)
+		const arrayString = labels?.join(', ')
+		return <TitleValue title={label} value={arrayString} />
+	}
+	const visningValue = kodeverk?.find((kode: any) => kode?.value === value)?.label || value
+	return <TitleValue title={label} value={visningValue} />
 }
 
 const XmlVisning = ({ xmlString }: { xmlString: string }) => {
@@ -82,21 +90,13 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 							const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
 							const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
 
-							const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
-								(tilleggsopplysning: string) => {
-									return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
-								},
-							)
-
 							return (
 								<React.Fragment key={idx}>
 									<div className="person-visning_content">
-										<TitleValue
-											title="Resultat på forespørsel"
-											value={showKodeverkLabel(
-												'RESULTATSTATUS',
-												arbeidstaker?.resultatPaaForespoersel,
-											)}
+										<KodeverkTitleValue
+											kodeverkstype="RESULTATSTATUS"
+											value={arbeidstaker?.resultatPaaForespoersel}
+											label="Resultat på forespørsel"
 										/>
 										<TitleValue title="Inntektsår" value={arbeidstaker?.inntektsaar} />
 										<TitleValue
@@ -107,9 +107,10 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 											title="Skattekortidentifikator"
 											value={arbeidstaker?.skattekort?.skattekortidentifikator}
 										/>
-										<TitleValue
-											title="Tilleggsopplysning"
-											value={arrayToString(tilleggsopplysningFormatted)}
+										<KodeverkTitleValue
+											kodeverkstype="TILLEGGSOPPLYSNING"
+											value={arbeidstaker?.tilleggsopplysning}
+											label="Tilleggsopplysning"
 										/>
 										<TitleValue
 											title="Arbeidsgiver (org.nr.)"
