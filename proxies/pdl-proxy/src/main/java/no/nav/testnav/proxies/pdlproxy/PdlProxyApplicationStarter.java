@@ -52,7 +52,6 @@ public class PdlProxyApplicationStarter {
                 .route(createRoute(consumers.getPdlApiQ1(), tokenService))
                 .route(createRoute(consumers.getPdlTestdata(), tokenService))
                 .route(createRoute("pdl-identhendelse", "http://pdl-identhendelse-lager.pdl.svc.nais.local", addHendelselagerApiKeyAuthenticationHeader))
-                .route(createRoute("pdl-elastic", "https://pdl-es-q.adeo.no", addElasticSearchBasicAuthenticationHeader))
                 .build();
     }
 
