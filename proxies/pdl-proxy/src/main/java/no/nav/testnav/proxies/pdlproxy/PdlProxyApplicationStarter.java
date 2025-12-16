@@ -43,8 +43,6 @@ public class PdlProxyApplicationStarter {
                                            Consumers consumers) {
         var addHendelselagerApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
                 .apiKeyAuthenticationHeaderFilter(credentialsHolder.hendelselagerApiKey());
-        var addElasticSearchBasicAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
-                .basicAuthAuthenticationHeaderFilter(credentialsHolder.elasticUsername(), credentialsHolder.elasticPassword());
 
         return builder
                 .routes()
