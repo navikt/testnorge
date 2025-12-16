@@ -46,7 +46,7 @@ const instUrl = (ident, miljoer) =>
 
 const arenaUrl = (miljoer) =>
 	miljoer?.map((miljoe) => ({
-		url: `/testnav-arena-forvalteren-proxy/${miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse`,
+		url: `/testnav-dolly-proxy/arena/${miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse`,
 		miljo: miljoe,
 	}))
 

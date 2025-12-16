@@ -32,14 +32,14 @@ det skjedde en uendelig loop.
 TenorService.java
 * Henter Organisasjoner og OrganisasjonsOrvesik fra app: tenor-search-service
 PdlService
-* Henter personer fra pdl gjennom pdl-proxy og bruker graphQL for å hente personer med de hensynene vi trenger.
+* Henter personer fra pdl gjennom dolly-proxy og bruker graphQL for å hente personer med de hensynene vi trenger.
 * Henter også tags i bolk for å sjekke om personene ikke er i bruk (at de bare har "TESTNORGE" taggen)
 KodeverkService
 * Henter kodeverk som en List<String> som er en liste av kodene fra app: kodeverk-service
 JobbService
 * Klassen som henter og oppdaterer jobb_parameter db.
 ArbeidsforholdService
-* Henter og oppretter arbeidsforhold fra aareg igjennom aareg-proxy
+* Henter og oppretter arbeidsforhold fra aareg igjennom dolly-proxy
 AnsettelsesService
 * Klassen som inneholder logikken for å ansette mennesker i organisasjoner.
   * Tar hensyn til lokasjon ved at første siffer i postnummeret til personen og organisasjonen skal være likt
@@ -70,9 +70,8 @@ https://www.ssb.no/arbeid-og-lonn/sysselsetting/statistikk/antall-arbeidsforhold
 |---|---------|-----------|---------|---------|---------|
 | Antall  | 436 106 | 1 022 448 | 976 833 | 563 804 | 72 363  |
 
-### Apper testnav-levende-arbeidsforhold-ansettelse prater med 
-* pdl-proxy
-* aareg-proxy
+### Apper testnav-levende-arbeidsforhold-ansettelse prater med
+* dolly-proxy
 * tenor-search-service
 * kodeverk-service
 

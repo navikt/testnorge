@@ -26,7 +26,7 @@ public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>
     public Mono<NyeBrukereResponse> call() {
         return webClient.get()
                 .uri(builder ->
-                        builder.path("/api/v1/bruker")
+                        builder.path("/arena/api/v1/bruker")
                                 .queryParams(queryParams)
                                 .build()
                 )

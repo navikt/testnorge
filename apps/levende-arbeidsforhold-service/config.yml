@@ -20,7 +20,7 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
       rules:
         - application: logging
           namespace: nais-system
