@@ -5,7 +5,7 @@ on:
     paths:
       - .github/workflows/app.brreg-stub.yml
       - apps/brreg-stub/**
-      - libs/servlet-core/**
+      - libs/reactive-core/**
       - libs/testing/**
       - libs/vault/**
       - plugins/**

@@ -25,11 +25,12 @@ dependencies {
         exclude group: "com.google.code.findbugs"
     }
 
-    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.boot:spring-boot-starter-web-services"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 
@@ -67,4 +68,6 @@ dependencies {
     testImplementation "org.wiremock:wiremock-standalone:3.13.0"
     testImplementation "org.springframework.boot:spring-boot-resttestclient"
     testImplementation "org.springframework.boot:spring-boot-webmvc-test"
+
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
 }
