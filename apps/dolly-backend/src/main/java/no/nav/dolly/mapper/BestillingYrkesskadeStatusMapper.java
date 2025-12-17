@@ -29,8 +29,12 @@ public final class BestillingYrkesskadeStatusMapper {
             if (isNotBlank(progress.getYrkesskadeStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getYrkesskadeStatus().split(",");
                 for (var entry : entries) {
-                    var yrkesskade = entry.split(":")[0];
-                    var status = entry.split(":")[1];
+                    var parts = entry.split(":");
+                    if (parts.length < 2) {
+                        continue;
+                    }
+                    var yrkesskade = parts[0];
+                    var status = parts[1];
                     if (errorEnvIdents.containsKey(status)) {
                         if (errorEnvIdents.get(status).containsKey(yrkesskade)) {
                             errorEnvIdents.get(status).get(yrkesskade).add(progress.getIdent());
