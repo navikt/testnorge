@@ -6,6 +6,7 @@ on:
       - .github/workflows/app.brreg-stub.yml
       - apps/brreg-stub/**
       - libs/reactive-core/**
+      - libs/data-transfer-objects/**
       - libs/testing/**
       - libs/vault/**
       - plugins/**
