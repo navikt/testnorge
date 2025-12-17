@@ -35,7 +35,6 @@ const NavigateButton = styled(Button)`
 			height: 45px;
 			margin: 0 auto 5px auto;
 		}
-	background-color: white;
 `
 
 export default () => {

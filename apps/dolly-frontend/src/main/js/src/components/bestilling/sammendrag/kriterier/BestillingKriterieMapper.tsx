@@ -2290,11 +2290,14 @@ const mapSkattekort = (bestillingData, data) => {
 
 			skattekort.itemRows.push([
 				{ numberHeader: `Skattekort ${idx + 1}` },
-				obj('Resultat på forespørsel', arbeidstaker?.resultatPaaForespoersel),
+				obj('Resultat på forespørsel', codeToNorskLabel(arbeidstaker?.resultatPaaForespoersel)),
 				obj('Inntektsår', arbeidstaker?.inntektsaar),
 				obj('Utstedt dato', formatDate(arbeidstaker?.skattekort?.utstedtDato)),
 				obj('Skattekortidentifikator', arbeidstaker?.skattekort?.skattekortidentifikator),
-				obj('Tilleggsopplysning', arrayToString(arbeidstaker?.tilleggsopplysning)),
+				obj(
+					'Tilleggsopplysning',
+					arrayToString(arbeidstaker?.tilleggsopplysning?.map((t) => codeToNorskLabel(t))),
+				),
 				obj('Arbeidsgiver (org.nr.)', arbeidsgiver?.arbeidsgiveridentifikator?.organisasjonsnummer),
 				obj('Arbeidsgiver (ident)', arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator),
 			])
@@ -2305,9 +2308,9 @@ const mapSkattekort = (bestillingData, data) => {
 
 				skattekort.itemRows.push([
 					{ numberHeader: `Forskuddstrekk ${idx + 1}: ${toTitleCase(forskuddstrekkType)}` },
-					obj('Trekkode', forskuddstrekk?.trekkode),
+					obj('Trekkode', codeToNorskLabel(forskuddstrekk?.trekkode)),
 					obj('Frikortbeløp', forskuddstrekk?.frikortbeloep),
-					obj('Tabelltype', forskuddstrekk?.tabelltype),
+					obj('Tabelltype', codeToNorskLabel(forskuddstrekk?.tabelltype)),
 					obj('Tabellnummer', forskuddstrekk?.tabellnummer),
 					obj('Prosentsats', forskuddstrekk?.prosentsats),
 					obj('Antall måneder for trekk', forskuddstrekk?.antallMaanederForTrekk),

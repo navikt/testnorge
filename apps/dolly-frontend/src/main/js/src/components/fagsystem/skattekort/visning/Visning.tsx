@@ -16,9 +16,15 @@ type SkattekortVisning = {
 	loading?: boolean
 }
 
+type KodeverkTypes = {
+	kodeverkstype: string
+	value: string | string[]
+	label: string
+}
+
 const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
 
-export const KodeverkTitleValue = ({ kodeverkstype, value, label }) => {
+export const KodeverkTitleValue = ({ kodeverkstype, value, label }: KodeverkTypes) => {
 	const { kodeverk, loading, error } = useSkattekortKodeverk(kodeverkstype)
 	if (loading || error || !kodeverk) {
 		return <TitleValue title={label} value={value} />
@@ -36,6 +42,11 @@ export const KodeverkTitleValue = ({ kodeverkstype, value, label }) => {
 
 const XmlVisning = ({ xmlString }: { xmlString: string }) => {
 	const [viserXml, vis, skjul] = useBoolean(false)
+
+	if (!xmlString) {
+		return null
+	}
+
 	const xmlFormatted = formatXml(xmlString, '  ')
 
 	return (
