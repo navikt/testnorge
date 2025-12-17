@@ -5,7 +5,6 @@ import lombok.val;
 import no.nav.testnav.pdllagreservice.kafka.KafkaBeanUtilities;
 import no.nav.testnav.pdllagreservice.kafka.KafkaContainerUtils;
 import no.nav.testnav.pdllagreservice.kafka.RestartingErrorHandler;
-import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -26,19 +25,17 @@ class KafkaConfig {
 
     @Bean("pdlDokumentKafkaFactory")
     public ConcurrentKafkaListenerContainerFactory<?, ?> pdlDokumentKafkaListenerContainerFactory(
-            ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
             ConsumerFactory<Object, Object> kafkaConsumerFactory) {
 
         val consumerFactory = KafkaBeanUtilities.stringStringConsumerFactory(kafkaConsumerFactory.getConfigurationProperties());
-        return KafkaContainerUtils.containerFactory(configurer, consumerFactory, 1000);
+        return KafkaContainerUtils.containerFactory(consumerFactory, 1000);
     }
 
     @Bean("pdlAdresseKafkaFactory")
     public ConcurrentKafkaListenerContainerFactory<?, ?> adresseKafkaListenerContainerFactory(
-            ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
             ConsumerFactory<Object, Object> kafkaConsumerFactory) {
 
         val consumerFactory = KafkaBeanUtilities.longStringConsumerFactory(kafkaConsumerFactory.getConfigurationProperties());
-        return KafkaContainerUtils.containerFactory(configurer, consumerFactory, 1000);
+        return KafkaContainerUtils.containerFactory(consumerFactory, 1000);
     }
 }
