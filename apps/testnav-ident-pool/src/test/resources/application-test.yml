@@ -11,20 +11,16 @@ spring:
     url: r2dbc:tc:postgresql:///test?TC_IMAGE_TAG=16
     username: test
     password: test
-  datasource:
-    url: jdbc:tc:postgresql:///test?TC_IMAGE_TAG=16
-    username: test
-    password: test
-  flyway:
-    enabled: true
-    locations: classpath:/db/migration
   sql:
     init:
-      mode: never
-
+      mode: always
 
 logging:
   level:
     org:
       springframework:
         security=TRACE:
+
+server:
+  error:
+    include-message: always

@@ -23,30 +23,30 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table("test_ident")
+@Table("TEST_IDENT")
 public class Testident implements Serializable {
 
     @Id
-    @Column("id")
+    @Column("ID")
     private Long id;
 
     @Version
-    @Column("versjon")
+    @Column("VERSJON")
     private Long versjon;
 
-    @Column("ident")
+    @Column("IDENT")
     private String ident;
 
-    @Column("ibruk")
+    @Column("IBRUK")
     private Boolean iBruk;
 
-    @Column("beskrivelse")
+    @Column("BESKRIVELSE")
     private String beskrivelse;
 
-    @Column("tilhoerer_gruppe")
+    @Column("TILHOERER_GRUPPE")
     private Long gruppeId;
 
-    @Column("master")
+    @Column("MASTER")
     private Master master;
 
     @Builder.Default
@@ -62,6 +62,8 @@ public class Testident implements Serializable {
     public boolean isPdlf() {
         return getMaster() == Master.PDLF;
     }
+
+    public enum Master {PDL, PDLF}
 
     @Override
     public boolean equals(Object o) {
@@ -107,6 +109,4 @@ public class Testident implements Serializable {
                 ", master=" + master +
                 '}';
     }
-
-    public enum Master {PDL, PDLF}
 }

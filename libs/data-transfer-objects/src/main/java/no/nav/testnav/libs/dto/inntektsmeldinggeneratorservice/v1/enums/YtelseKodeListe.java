@@ -1,6 +1,9 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+
+@JsonDeserialize(using = JsonYtelseKodeListeDeserializer.class)
 public enum YtelseKodeListe implements AltinnEnum {
     SYKEPENGER("Sykepenger"),
     FORELDREPENGER("Foreldrepenger"),

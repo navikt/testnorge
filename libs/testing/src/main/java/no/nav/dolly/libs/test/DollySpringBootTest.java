@@ -1,20 +1,13 @@
 package no.nav.dolly.libs.test;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * <p>Convenience annotation for Dolly tests normally annotated with {@code @SpringBootTest}.</p>
@@ -25,11 +18,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "PT30S")
-@AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
-@Import(DollyTestSecurityConfiguration.class)
 public @interface DollySpringBootTest {
 
     /**

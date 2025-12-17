@@ -21,28 +21,28 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("bestilling_mal")
+@Table("BESTILLING_MAL")
 public class BestillingMal implements Serializable {
 
     @Id
     private Long id;
 
-    @Column("best_kriterier")
+    @Column("BEST_KRITERIER")
     private String bestKriterier;
 
-    @Column("miljoer")
+    @Column("MILJOER")
     private String miljoer;
 
-    @Column("mal_navn")
+    @Column("MAL_NAVN")
     private String malNavn;
 
-    @Column("bruker_id")
+    @Column("BRUKER_ID")
     private Long brukerId;
 
     @Transient
     private RsBrukerUtenFavoritter bruker;
 
-    @Column("sist_oppdatert")
+    @Column("SIST_OPPDATERT")
     private LocalDateTime sistOppdatert;
 
     @Override

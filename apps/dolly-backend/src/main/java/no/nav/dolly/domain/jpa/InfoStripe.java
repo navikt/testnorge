@@ -26,16 +26,16 @@ public class InfoStripe implements Serializable {
     @Id
     private Long id;
 
-    @Column("type")
+    @Column("TYPE")
     private InfoStripeType type;
 
-    @Column("message")
+    @Column("MESSAGE")
     private String message;
 
-    @Column("start")
+    @Column("START")
     private LocalDateTime start;
 
-    @Column("expires")
+    @Column("EXPIRES")
     private LocalDateTime expires;
 
     @Override

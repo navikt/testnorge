@@ -5,8 +5,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.boot.health.contributor.HealthIndicator;
-import org.springframework.boot.health.registry.HealthContributorRegistry;
+import org.springframework.boot.actuate.health.HealthContributorRegistry;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.lang.NonNull;
 
 import java.util.function.ToDoubleFunction;
@@ -20,8 +20,8 @@ class HealthToMeterBinder implements MeterBinder {
     public void bindTo(@NonNull MeterRegistry meterRegistry) {
         registry
                 .stream()
-                .filter(e -> e.contributor() instanceof HealthIndicator)
-                .forEach(e -> bind(e.name(), (HealthIndicator) e.contributor(), meterRegistry));
+                .filter(e -> e.getContributor() instanceof HealthIndicator)
+                .forEach(e -> bind(e.getName(), (HealthIndicator) e.getContributor(), meterRegistry));
     }
 
     private static void bind(String key, HealthIndicator healthIndicator, MeterRegistry registry) {

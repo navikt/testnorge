@@ -18,25 +18,25 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ajourhold")
+@Table(name = "AJOURHOLD")
 public class Ajourhold {
 
     @Id
-    @Column("id")
+    @Column("ID")
     private Long identity;
 
     @NotNull
-    @Column("status")
+    @Column("STATUS")
     private BatchStatus status;
 
-    @Column("melding")
+    @Column("MELDING")
     private String melding;
 
     @NotNull
-    @Column("sistoppdatert")
+    @Column("SISTOPPDATERT")
     private LocalDateTime sistOppdatert;
 
-    @Column("feilmelding")
+    @Column("FEILMELDING")
     private String feilmelding;
 
     @Override

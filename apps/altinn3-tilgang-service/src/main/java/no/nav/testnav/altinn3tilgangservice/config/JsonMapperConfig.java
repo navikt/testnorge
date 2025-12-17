@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -14,10 +15,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import no.nav.testnav.libs.dto.jackson.v1.CaseInsensitiveEnumModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,8 +33,8 @@ public class JsonMapperConfig {
     private static final String YEAR_MONTH = "yyyy-MM";
 
     @Bean
-    @Primary
     public ObjectMapper objectMapper() {
+
         var simpleModule = new SimpleModule()
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
@@ -51,11 +50,12 @@ public class JsonMapperConfig {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-                .addModule(new JavaTimeModule())
-                .addModule(new CaseInsensitiveEnumModule())
-                .addModule(simpleModule)
-                .build();
+                .build()
+                .registerModule(new JavaTimeModule())
+                .registerModule(simpleModule);
+
     }
 
     private static class DollyYearMonthDeserializer extends JsonDeserializer<YearMonth> {

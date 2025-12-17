@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 @Disabled("Awaiting rewrite of BudProService to fully reactive")
+@AutoConfigureMockMvc(addFilters = false)
 @Slf4j
 class BudproControllerTest {
 

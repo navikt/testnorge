@@ -2,32 +2,28 @@ package no.nav.registre.varslingerservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.varslingerservice.repository.BrukerRepository;
 import no.nav.registre.varslingerservice.repository.MottattVarslingRepository;
 import no.nav.registre.varslingerservice.repository.VarslingRepository;
 import no.nav.registre.varslingerservice.repository.model.BrukerModel;
 import no.nav.registre.varslingerservice.repository.model.MottattVarslingModel;
 import no.nav.registre.varslingerservice.repository.model.VarslingModel;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DollySpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -98,7 +94,7 @@ class VarslingerPersonControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(result -> System.err.println(result.getResponse().getContentAsString()))
-                .andExpect(content().json(objectMapper.writeValueAsString(new String[]{ v1.getVarslingId(), v3.getVarslingId() })));
+                .andExpect(content().json(objectMapper.writeValueAsString(new String[]{v1.getVarslingId(), v3.getVarslingId()})));
     }
 
     @Test
