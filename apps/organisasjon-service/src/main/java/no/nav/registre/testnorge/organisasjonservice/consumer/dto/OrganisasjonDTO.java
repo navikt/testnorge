@@ -21,14 +21,14 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class OrganisasjonDTO {
-    @JsonProperty(required = true)
+    @JsonProperty
     String organisasjonsnummer;
-    @JsonProperty(required = true)
+    @JsonProperty
     @JsonAlias({"virksomhetDetaljer", "juridiskEnhetDetaljer", "organisasjonsleddDetaljer"})
     DetaljerDTO detaljer;
-    @JsonProperty(required = true)
+    @JsonProperty
     NavnDTO navn;
-    @JsonProperty(required = true)
+    @JsonProperty
     String type;
     @JsonProperty
     @JsonAlias({"inngaarIJuridiskEnheter"})

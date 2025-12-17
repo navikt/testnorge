@@ -339,12 +339,20 @@ public class PdlOrdreService {
 
     private NavnDTO toUpperCase(NavnDTO artifact) {
 
-        var navn = mapperFacade.map(artifact, NavnDTO.class);
-        navn.setFornavn(StringUtils.toRootUpperCase(artifact.getFornavn()));
-        navn.setMellomnavn(StringUtils.toRootUpperCase(artifact.getMellomnavn()));
-        navn.setEtternavn(StringUtils.toRootUpperCase(artifact.getEtternavn()));
-
-        return navn;
+        return NavnDTO.builder()
+                .id(artifact.getId())
+                .kilde(artifact.getKilde())
+                .master(artifact.getMaster())
+                .isNew(artifact.getIsNew())
+                .opprettet(artifact.getOpprettet())
+                .folkeregistermetadata(artifact.getFolkeregistermetadata())
+                .hendelseId(artifact.getHendelseId())
+                .fornavn(StringUtils.toRootUpperCase(artifact.getFornavn()))
+                .mellomnavn(StringUtils.toRootUpperCase(artifact.getMellomnavn()))
+                .etternavn(StringUtils.toRootUpperCase(artifact.getEtternavn()))
+                .hasMellomnavn(artifact.getHasMellomnavn())
+                .gyldigFraOgMed(artifact.getGyldigFraOgMed())
+                .build();
     }
 
     private List<? extends DbVersjonDTO> utenHistorikk(List<? extends DbVersjonDTO> artifacter) {
