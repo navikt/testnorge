@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.etterlatte.dto.VedtakRequestDTO;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -25,14 +24,10 @@ public class EtterlatteConsumer extends ConsumerStatus {
     public EtterlatteConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient webClient,
-            WebClientLogger webClientLogger) {
+            WebClient.Builder webClientBuilder) {
 
         this.tokenService = tokenService;
         this.serverProperties = consumers.getEtterlatte();
-        var webClientBuilder = webClient
-                .mutate();
-        webClientLogger.customize(webClientBuilder);
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -36,26 +36,33 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWebTestClient(timeout = "30000")
 class RouteLocatorConfigTest {
 
-    @MockitoBean
-    private TokenExchange tokenExchange;
-
-    @MockitoSpyBean
-    private AzureNavTokenService navTokenService;
-
-    @MockitoSpyBean
-    private AzureTrygdeetatenTokenService trygdeetatenTokenService;
-
-    @MockitoBean
-    private TokenXService tokenXService;
-
-    @Autowired
-    private WebTestClient webClient;
-
     @RegisterExtension
     static WireMockExtension wireMockServer = WireMockExtension
             .newInstance()
             .options(wireMockConfig().dynamicPort())
             .build();
+    @MockitoBean
+    private TokenExchange tokenExchange;
+    @MockitoSpyBean
+    private AzureNavTokenService navTokenService;
+    @MockitoSpyBean
+    private AzureTrygdeetatenTokenService trygdeetatenTokenService;
+    @MockitoBean
+    private TokenXService tokenXService;
+    @Autowired
+    private WebTestClient webClient;
+
+    @BeforeEach
+    public void setup() {
+        when(tokenExchange.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+        when(navTokenService.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-nav-token")));
+        when(trygdeetatenTokenService.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
+        when(tokenXService.exchange(any(), any()))
+                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+    }
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
@@ -78,18 +85,6 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
-    }
-
-    @BeforeEach
-    public void setup() {
-        when(tokenExchange.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
-        when(navTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-nav-token")));
-        when(trygdeetatenTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
-        when(tokenXService.exchange(any(), any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
     }
 
     @Test
@@ -141,7 +136,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2", "q4"})
+    @ValueSource(strings = { "q1", "q2", "q4" })
     void testEreg(String miljo) {
 
         var requestedPath = "/api/%s/some/nested/path".formatted(miljo);
@@ -395,7 +390,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2"})
+    @ValueSource(strings = { "q1", "q2" })
     void testPensjonAfp(String env) {
 
         var downstreamPath = "/api/mock-oppsett/test";
@@ -421,7 +416,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2"})
+    @ValueSource(strings = { "q1", "q2" })
     void testPensjonSamboer(String env) {
 
         var downstreamPath = "/api/samboer/test";
