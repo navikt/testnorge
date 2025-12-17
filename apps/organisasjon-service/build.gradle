@@ -24,6 +24,7 @@ dependencies {
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.springframework.boot:spring-boot-starter-webmvc-test"
     testImplementation "org.assertj:assertj-core:$versions.assertj"
 }
