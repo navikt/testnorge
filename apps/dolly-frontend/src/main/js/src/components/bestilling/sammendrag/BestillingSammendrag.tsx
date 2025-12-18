@@ -1,7 +1,6 @@
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
 import React, { Suspense } from 'react'
 import Loading from '@/components/ui/loading/Loading'
-import { Bestillingsvisning } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { BestillingKriterier } from '@/components/bestilling/sammendrag/BestillingKriterier'
 
 const Bestillingskriterier = React.lazy(
@@ -30,7 +29,8 @@ export default function BestillingSammendrag({
 	// }
 	// console.log('bestilling: ', bestilling) //TODO - SLETT MEG
 	return (
-		<div className="bestilling-detaljer">
+		// <div className="bestilling-detaljer">
+		<>
 			<MiljoeStatus bestilling={bestilling} closeModal={closeModal} />
 			<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
 				<BestillingKriterier bestilling={bestilling} />
@@ -51,6 +51,8 @@ export default function BestillingSammendrag({
 				{/*	header="Bestillingskriterier"*/}
 				{/*/>*/}
 			</Suspense>
-		</div>
+		</>
+		// </div>
+		// )
 	)
 }

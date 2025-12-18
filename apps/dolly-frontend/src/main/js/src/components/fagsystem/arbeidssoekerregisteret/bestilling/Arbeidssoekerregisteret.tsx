@@ -6,8 +6,8 @@ import {
 } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
-import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 import { ArbeidssoekerregisteretTypes } from '@/components/fagsystem/arbeidssoekerregisteret/arbeidssoekerregisteretTypes'
+import { TyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 
 type ArbeidssoekerregisteretProps = {
 	arbeidssoekerregisteret: ArbeidssoekerregisteretTypes
@@ -28,22 +28,22 @@ export const Arbeidssoekerregisteret = ({
 				<BestillingTitle>Arbeidssøkerregisteret</BestillingTitle>
 				<div className="bestilling-blokk">
 					<BestillingData>
-						<TitleValue
-							title="Utført av"
-							value={showTyperLabel('BRUKERTYPE', arbeidssoekerregisteret.utfoertAv)}
+						<TyperLabel
+							type={'BRUKERTYPE'}
+							value={arbeidssoekerregisteret.utfoertAv}
+							label={'Utført av'}
 						/>
 						<TitleValue title="Kilde" value={arbeidssoekerregisteret.kilde} />
 						<TitleValue title="Årsak" value={arbeidssoekerregisteret.aarsak} />
-						<TitleValue
-							title="Utdanningsnivå"
-							value={showTyperLabel('NUSKODE', arbeidssoekerregisteret.nuskode)}
+						<TyperLabel
+							type={'NUSKODE'}
+							value={arbeidssoekerregisteret.nuskode}
+							label={'Utdanningsnivå'}
 						/>
-						<TitleValue
-							title="Beskrivelse av jobbsituasjonen"
-							value={showTyperLabel(
-								'JOBBSITUASJONSBESKRIVELSE',
-								arbeidssoekerregisteret.jobbsituasjonsbeskrivelse,
-							)}
+						<TyperLabel
+							type={'JOBBSITUASJONSBESKRIVELSE'}
+							value={arbeidssoekerregisteret.jobbsituasjonsbeskrivelse}
+							label={'Beskrivelse av jobbsituasjonen'}
 						/>
 						<TitleValue
 							title="Utdanning bestått"

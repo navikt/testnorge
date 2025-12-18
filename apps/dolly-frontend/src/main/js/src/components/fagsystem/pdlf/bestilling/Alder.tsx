@@ -13,9 +13,16 @@ import _ from 'lodash'
 
 type AlderTypes = {
 	opprettNyPerson: OpprettNyPerson
+	erGruppevisning?: boolean
 }
-export const Alder = ({ opprettNyPerson }: AlderTypes) => {
-	if (!opprettNyPerson || !_.has(opprettNyPerson, 'alder')) {
+export const Alder = ({ opprettNyPerson, erGruppevisning = false }: AlderTypes) => {
+	const alderIsEmpty = isEmpty(opprettNyPerson, ['identtype', 'syntetisk', 'id2032'])
+	const alderIsUndefined =
+		!_.has(opprettNyPerson, 'alder') &&
+		!_.has(opprettNyPerson, 'foedtEtter') &&
+		!_.has(opprettNyPerson, 'foedtFoer')
+
+	if (!opprettNyPerson || alderIsUndefined || (erGruppevisning && alderIsEmpty)) {
 		return null
 	}
 
@@ -24,7 +31,7 @@ export const Alder = ({ opprettNyPerson }: AlderTypes) => {
 			<ErrorBoundary>
 				<BestillingTitle>Alder</BestillingTitle>
 				<>
-					{isEmpty(opprettNyPerson, ['identtype', 'syntetisk', 'id2032']) ? (
+					{alderIsEmpty ? (
 						<EmptyObject />
 					) : (
 						<div className="bestilling-blokk">

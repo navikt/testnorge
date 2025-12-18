@@ -58,10 +58,18 @@ import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/
 import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/bestilling/SigrunstubSummertSkattegrunnlag'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
-export const Bestillingsdata = ({ bestilling }: { bestilling: any }) => {
+type BestillingsdataTypes = {
+	bestilling: any
+	erGruppevisning?: boolean
+}
+
+export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: BestillingsdataTypes) => {
 	return (
 		<ErrorBoundary>
-			<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
+			<Alder
+				opprettNyPerson={bestilling.pdldata?.opprettNyPerson}
+				erGruppevisning={erGruppevisning}
+			/>
 			<Foedested foedestedListe={bestilling.pdldata?.person?.foedested} />
 			<Foedselsdato foedselsdatoListe={bestilling.pdldata?.person?.foedselsdato} />
 			<Foedsel foedselListe={bestilling.pdldata?.person?.foedsel} />
