@@ -18,7 +18,7 @@ public class FakedingsConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(FAKE_TOKENDINGS_URL)
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy())
                 .build();
     }
 

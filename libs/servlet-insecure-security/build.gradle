@@ -13,8 +13,8 @@ dependencies {
 
     implementation 'no.nav.testnav.libs:security-core'
 
-    implementation 'com.fasterxml.jackson.core:jackson-core'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation platform("tools.jackson:jackson-bom:3.0.3")
+    implementation "tools.jackson.core:jackson-databind"
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

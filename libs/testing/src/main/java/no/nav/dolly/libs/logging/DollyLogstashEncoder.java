@@ -2,13 +2,12 @@ package no.nav.dolly.libs.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.LogstashEncoder;
 import org.springframework.util.StringUtils;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
@@ -38,47 +37,50 @@ public class DollyLogstashEncoder extends LogstashEncoder {
     private static final Pattern BEARER = Pattern.compile("Bearer [a-zA-Z0-9\\-_.]+");
 
     private final DateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private int maxStackTraceLength = 1000;
     private boolean addCauses = true;
     private String stackTraceIncludePrefix = "no.nav";
     private boolean addSuppressed = true;
-
     private String customFields;
     private boolean includeContext = true;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public byte[] encode(ILoggingEvent event) {
 
         var o = new ByteArrayOutputStream();
-        try (var g = new JsonFactory().createGenerator(o)) {
-            g.setCodec(objectMapper);
+        try (var g = objectMapper.createGenerator(o)) {
             g.writeStartObject();
 
-            // Custom fields for logging to Team Logs.
             if (StringUtils.hasText(customFields)) {
                 var fields = objectMapper.readValue(customFields, new TypeReference<Map<String, Object>>() {
                 });
                 for (var entry : fields.entrySet()) {
-                    g.writeObjectField(entry.getKey(), entry.getValue());
+                    g.writeName(entry.getKey());
+                    g.writePOJO(entry.getValue());
                 }
             }
             if (includeContext && Optional.ofNullable(event.getMDCPropertyMap()).isPresent()) {
-                g.writeObjectField("context", event.getMDCPropertyMap());
+                g.writeName("context");
+                g.writePOJO(event.getMDCPropertyMap());
             }
 
-            g.writeStringField("@timestamp", timestamp.format(new Date(event.getTimeStamp())));
-            g.writeStringField("message", maskMessage(event.getFormattedMessage()));
-            g.writeStringField("logger_name", event.getLoggerName());
-            g.writeStringField("thread_name", event.getThreadName());
-            g.writeStringField("level", event.getLevel().toString());
-            g.writeStringField("stack_trace", getStackTrace(event));
+            g.writeName("@timestamp");
+            g.writeString(timestamp.format(new Date(event.getTimeStamp())));
+            g.writeName("message");
+            g.writeString(maskMessage(event.getFormattedMessage()));
+            g.writeName("logger_name");
+            g.writeString(event.getLoggerName());
+            g.writeName("thread_name");
+            g.writeString(event.getThreadName());
+            g.writeName("level");
+            g.writeString(event.getLevel().toString());
+            g.writeName("stack_trace");
+            g.writeString(getStackTrace(event));
             g.writeEndObject();
             g.flush();
             o.write('\n');
         } catch (Exception e) {
-            // Last resort; we don't have a functioning logger framework.
             System.err.println("Failed to encode log event:");
             e.printStackTrace(System.err);
         }

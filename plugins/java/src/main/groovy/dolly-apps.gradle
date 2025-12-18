@@ -18,6 +18,8 @@ configurations {
 }
 
 dependencies {
+    implementation platform("tools.jackson:jackson-bom:3.0.3")
+
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 

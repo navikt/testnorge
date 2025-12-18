@@ -1,18 +1,32 @@
 package no.nav.testnav.libs.testing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.responseDefinition;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 public class JsonWiremockHelper {
 
@@ -37,12 +51,12 @@ public class JsonWiremockHelper {
         return this;
     }
 
-    public JsonWiremockHelper withResponseBody(Object responseBody) throws JsonProcessingException {
+    public JsonWiremockHelper withResponseBody(Object responseBody) throws JacksonException {
         this.responseBody = mapper.writeValueAsString(responseBody);
         return this;
     }
 
-    public JsonWiremockHelper withRequestBody(Object requestBody, String... fieldsToIgnore) throws JsonProcessingException {
+    public JsonWiremockHelper withRequestBody(Object requestBody, String... fieldsToIgnore) throws JacksonException {
         this.requestBody = mapper.writeValueAsString(requestBody);
         requestFieldsToIgnore.addAll(Arrays.asList(fieldsToIgnore));
         return this;

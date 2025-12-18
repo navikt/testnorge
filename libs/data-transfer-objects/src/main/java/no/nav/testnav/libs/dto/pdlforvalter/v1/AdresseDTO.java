@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdAnnetStedEnumDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -31,6 +30,10 @@ public abstract class AdresseDTO extends DbVersjonDTO {
 
     private CoNavnDTO opprettCoAdresseNavn;
 
+    public abstract boolean isAdresseNorge();
+
+    public abstract boolean isAdresseUtland();
+
     @JsonDeserialize(using = OppholdAnnetStedEnumDeserializer.class)
     public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
 
@@ -45,8 +48,4 @@ public abstract class AdresseDTO extends DbVersjonDTO {
         private String mellomnavn;
         private Boolean hasMellomnavn;
     }
-
-    public abstract boolean isAdresseNorge();
-
-    public abstract boolean isAdresseUtland();
 }

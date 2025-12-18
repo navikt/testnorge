@@ -1,10 +1,10 @@
 package no.nav.testnav.libs.dto.jackson.v1;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.module.SimpleDeserializers;
+import tools.jackson.core.Version;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.module.SimpleDeserializers;
 
-public class CaseInsensitiveEnumModule extends Module {
+public class CaseInsensitiveEnumModule extends JacksonModule {
 
     @Override
     public String getModuleName() {
@@ -23,4 +23,3 @@ public class CaseInsensitiveEnumModule extends Module {
         context.addDeserializers(deserializers);
     }
 }
-

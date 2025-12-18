@@ -1,7 +1,5 @@
 package no.nav.dolly.libs.texas;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +8,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -62,9 +61,9 @@ class TexasJwtDecoder implements ReactiveJwtDecoder {
 
                         return Mono.just(new Jwt(token, issuedAt, expiresAt, headers, claims));
 
-                    } catch (JsonProcessingException e) {
+                    } catch (tools.jackson.core.JacksonException e) {
                         log.error("Failed to parse token introspection response: {}", introspection, e);
-                        return Mono.error(new JwtException("Failed to parse token introspection response: " + e.getMessage(), e));
+                        return Mono.error(new JwtException("Failed to parse token introspection response: " + e.getOriginalMessage(), e));
                     } catch (ParseException e) {
                         log.error("Failed to parse JWT string: {}", token, e);
                         return Mono.error(new JwtException("Failed to parse JWT string: " + e.getMessage(), e));

@@ -1,13 +1,10 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdScalarSerializer;
 
-import java.io.IOException;
-
-
-public class JsonAltinnEnumSerializer extends StdSerializer<AltinnEnum> {
+public class JsonAltinnEnumSerializer extends StdScalarSerializer<AltinnEnum> {
 
     public JsonAltinnEnumSerializer() {
         super(AltinnEnum.class);
@@ -21,8 +18,8 @@ public class JsonAltinnEnumSerializer extends StdSerializer<AltinnEnum> {
     public void serialize(
             AltinnEnum altinnEnum,
             JsonGenerator generator,
-            SerializerProvider provider
-    ) throws IOException {
+            SerializationContext context
+    ) {
         generator.writeString(altinnEnum.getValue());
     }
 }

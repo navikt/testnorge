@@ -1,17 +1,15 @@
 package no.nav.testnav.libs.dto.jackson.v1;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.BeanProperty;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.deser.std.StdScalarDeserializer;
 
-import java.io.IOException;
 import java.util.Arrays;
 
-public class CaseInsensitiveEnumDeserializer extends StdDeserializer<Enum<?>> implements ContextualDeserializer {
+public class CaseInsensitiveEnumDeserializer extends StdScalarDeserializer<Enum<?>> {
 
     private Class<? extends Enum> enumClass;
 
@@ -25,7 +23,7 @@ public class CaseInsensitiveEnumDeserializer extends StdDeserializer<Enum<?>> im
     }
 
     @Override
-    public JsonDeserializer<?> createContextual(DeserializationContext context, BeanProperty property) throws JsonMappingException {
+    public ValueDeserializer<?> createContextual(DeserializationContext context, BeanProperty property) throws DatabindException {
         Class<?> rawClass = context.getContextualType().getRawClass();
         if (rawClass.isEnum()) {
             return new CaseInsensitiveEnumDeserializer((Class<? extends Enum>) rawClass);
@@ -34,7 +32,7 @@ public class CaseInsensitiveEnumDeserializer extends StdDeserializer<Enum<?>> im
     }
 
     @Override
-    public Enum<?> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+    public Enum<?> deserialize(JsonParser parser, DeserializationContext context) {
         String value = parser.getText();
         if (value == null || value.isEmpty()) {
             return null;
@@ -71,5 +69,3 @@ public class CaseInsensitiveEnumDeserializer extends StdDeserializer<Enum<?>> im
                 );
     }
 }
-
-
