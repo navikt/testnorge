@@ -7,7 +7,7 @@ import { FullmaktOmraade, FullmaktValues } from '@/components/fagsystem/pdlf/Pdl
 import { formatDate } from '@/utils/DataFormatter'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
 import { handlingLabel } from '@/components/fagsystem/fullmakt/visning/Fullmakt'
 
@@ -61,7 +61,7 @@ export const Fullmakt = ({ fullmaktListe }: FullmaktTypes) => {
 											: null
 									}
 								/>
-								<EkspanderbarVisning vis={_get(fullmakt, 'nyFullmektig')} header={'FULLMEKTIG'}>
+								<EkspanderbarVisning vis={_.get(fullmakt, 'nyFullmektig')} header={'FULLMEKTIG'}>
 									<RelatertPerson personData={fullmakt.nyFullmektig} tittel="Fullmektig" />
 								</EkspanderbarVisning>
 							</React.Fragment>

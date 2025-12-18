@@ -7,7 +7,7 @@ import { formatDate, formatDateTime } from '@/utils/DataFormatter'
 import { AdresseKodeverk, ArbeidKodeverk, InntektstubKodeverk } from '@/config/kodeverk'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import texts from '@/components/inntektStub/texts'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 type InntektstubTypes = {
 	inntektstub: {
@@ -42,7 +42,7 @@ function genererTitleValueFelter(data: any) {
 				/>
 			)
 		}
-		if (_get(value, key) && key === 'tilleggsinformasjon' && !data.tilleggsinformasjon) {
+		if (_.get(value, key) && key === 'tilleggsinformasjon' && !data.tilleggsinformasjon) {
 			return Object?.entries(value)?.map(([key, value]) => {
 				return <TitleValue title="Tilleggsinformasjonstype" value={texts(key)} />
 			})

@@ -11,7 +11,7 @@ import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type KontaktinformasjonForDoedsboTypes = {
@@ -124,7 +124,7 @@ export const KontaktinformasjonForDoedsbo = ({
 								</div>
 								{personSomKontakt?.nyKontaktperson && (
 									<EkspanderbarVisning
-										vis={_get(personSomKontakt, 'nyKontaktperson')}
+										vis={_.get(personSomKontakt, 'nyKontaktperson')}
 										header="NY KONTAKTPERSON"
 									>
 										<RelatertPerson personData={personSomKontakt.nyKontaktperson} />

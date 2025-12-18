@@ -7,7 +7,7 @@ import {
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { allCapsToCapitalized, formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 const getTredjelandsborgerStatus = (oppholdKriterier: any, udiStubKriterier: any) => {

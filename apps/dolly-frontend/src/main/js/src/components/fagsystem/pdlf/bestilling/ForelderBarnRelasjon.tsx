@@ -9,7 +9,7 @@ import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/
 import { DeltBostedVisning } from '@/components/fagsystem/pdlf/bestilling/DeltBosted'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 type ForelderBarnTypes = {
 	forelderBarnListe: Array<ForeldreBarnRelasjon>
@@ -65,17 +65,17 @@ export const ForelderBarnRelasjon = ({ forelderBarnListe }: ForelderBarnTypes) =
 									value={forelderBarn.relatertPerson}
 								/>
 								<TitleValue title="Master" value={forelderBarn.master} />
-								<EkspanderbarVisning vis={_get(forelderBarn, 'deltBosted')} header="DELT BOSTED">
+								<EkspanderbarVisning vis={_.get(forelderBarn, 'deltBosted')} header="DELT BOSTED">
 									<DeltBostedVisning deltBosted={forelderBarn.deltBosted} />
 								</EkspanderbarVisning>
 								<EkspanderbarVisning
-									vis={_get(forelderBarn, 'nyRelatertPerson')}
+									vis={_.get(forelderBarn, 'nyRelatertPerson')}
 									header={forelderBarn.relatertPersonsRolle}
 								>
 									<RelatertPerson personData={forelderBarn.nyRelatertPerson} />
 								</EkspanderbarVisning>
 								<EkspanderbarVisning
-									vis={_get(forelderBarn, 'relatertPersonUtenFolkeregisteridentifikator')}
+									vis={_.get(forelderBarn, 'relatertPersonUtenFolkeregisteridentifikator')}
 									header={forelderBarn.relatertPersonsRolle}
 								>
 									<RelatertPerson

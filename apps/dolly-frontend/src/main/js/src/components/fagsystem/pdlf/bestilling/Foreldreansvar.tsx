@@ -7,7 +7,7 @@ import { ForeldreansvarData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 type ForeldreansvarTypes = {
 	foreldreansvarListe: Array<ForeldreansvarData>
@@ -50,13 +50,13 @@ export const Foreldreansvar = ({ foreldreansvarListe }: ForeldreansvarTypes) => 
 								<TitleValue title="Ansvarssubjekt" value={foreldreansvar.ansvarssubjekt} />
 								<TitleValue title="Master" value={foreldreansvar.master} />
 								<EkspanderbarVisning
-									vis={_get(foreldreansvar, 'nyAnsvarlig')}
+									vis={_.get(foreldreansvar, 'nyAnsvarlig')}
 									header={'NY ANSVARLIG'}
 								>
 									<RelatertPerson personData={foreldreansvar.nyAnsvarlig} tittel="Ny ansvarlig" />
 								</EkspanderbarVisning>
 								<EkspanderbarVisning
-									vis={_get(foreldreansvar, 'ansvarligUtenIdentifikator')}
+									vis={_.get(foreldreansvar, 'ansvarligUtenIdentifikator')}
 									header={'ANSVARLIG UTEN IDENTIFIKATOR'}
 								>
 									<RelatertPerson
