@@ -10,10 +10,8 @@ import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,23 +22,17 @@ import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
 
 @Disabled
 @DollySpringBootTest
-@Import(TestDatabaseConfig.class)
+@ExtendWith(TestDatabaseConfig.class)
 public abstract class AbstractIntegrasjonTest {
 
     @Autowired
     private BrukerRepository brukerRepository;
+
     @Autowired
     private TeamRepository teamRepository;
+
     @Autowired
     private TeamBrukerRepository teamBrukerRepository;
-
-    @DynamicPropertySource
-    static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.r2dbc.url", () -> "r2dbc:postgresql://localhost:" + TestDatabaseConfig.POSTGRES.getMappedPort(5432) + "/test");
-        registry.add("spring.r2dbc.username", TestDatabaseConfig.POSTGRES::getUsername);
-        registry.add("spring.r2dbc.password", TestDatabaseConfig.POSTGRES::getPassword);
-        registry.add("spring.flyway.enabled", () -> "false");
-    }
 
     @BeforeEach
     void cleanup() {

@@ -7,7 +7,6 @@ on:
       - libs/security-core/**
       - libs/reactive-core/**
       - libs/reactive-security/**
-      - libs/data-transfer-objects/**
       - libs/testing/**
       - apps/api-oversikt-service/**
       - .github/workflows/app.api-oversikt-service.yml

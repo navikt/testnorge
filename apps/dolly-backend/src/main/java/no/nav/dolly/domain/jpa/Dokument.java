@@ -20,26 +20,26 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("dokument")
+@Table("DOKUMENT")
 public class Dokument implements Serializable {
 
     @Id
     private Long id;
 
     @Version
-    @Column("versjon")
+    @Column("VERSJON")
     private Long versjon;
 
-    @Column("bestilling_id")
+    @Column("BESTILLING_ID")
     private Long bestillingId;
 
-    @Column("dokument_type")
+    @Column("DOKUMENT_TYPE")
     private DokumentType dokumentType;
 
-    @Column("sist_oppdatert")
+    @Column("SIST_OPPDATERT")
     private LocalDateTime sistOppdatert;
 
-    @Column("contents")
+    @Column("CONTENTS")
     private String contents;
 
     @Override

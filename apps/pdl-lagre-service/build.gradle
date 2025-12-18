@@ -11,7 +11,7 @@ sonarqube {
 
 dependencies {
     implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
-    implementation "org.springframework.boot:spring-boot-starter-kafka"
+    implementation "org.springframework.kafka:spring-kafka"
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"

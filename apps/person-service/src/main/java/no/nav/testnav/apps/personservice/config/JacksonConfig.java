@@ -1,4 +1,4 @@
-package no.nav.testnav.endringsmeldingservice.config;
+package no.nav.testnav.apps.personservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

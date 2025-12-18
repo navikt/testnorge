@@ -21,28 +21,28 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "team")
+@Table(name = "TEAM")
 public class Team implements Serializable {
 
     @Id
     private Long id;
 
-    @Column("bruker_id")
+    @Column("BRUKER_ID")
     private Long brukerId;
 
-    @Column("navn")
+    @Column("NAVN")
     private String navn;
 
-    @Column("opprettet")
+    @Column("OPPRETTET")
     private LocalDateTime opprettetTidspunkt;
 
-    @Column("opprettet_av")
+    @Column("OPPRETTET_AV")
     private Long opprettetAvId;
 
     @Transient
     private Bruker opprettetAv;
 
-    @Column("beskrivelse")
+    @Column("BESKRIVELSE")
     private String beskrivelse;
 
     @Transient

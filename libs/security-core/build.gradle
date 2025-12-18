@@ -15,7 +15,6 @@ tasks.named('compileJava') {
 
 dependencies {
     implementation "com.auth0:java-jwt:$versions.jwt"
-    implementation 'com.fasterxml.jackson.core:jackson-annotations'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-validation'

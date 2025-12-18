@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -36,34 +36,6 @@ public class HentRolleoversiktControllerTest {
 
     @MockitoBean
     private RolleoversiktRepository repository;
-
-    private RolleoversiktTo lagGyldigRolleoversiktTo() {
-        var to = new RolleoversiktTo();
-        to.setFnr("ny");
-        to.setHovedstatus(1);
-        var navntTo = new RsNavn();
-        navntTo.setNavn1("Navn");
-        to.setNavn(navntTo);
-        var adresseTo = new RsAdresse();
-        adresseTo.setAdresse1("Adresse 1");
-        adresseTo.setLandKode("NO");
-        to.setAdresse(adresseTo);
-        var enhet = new RolleTo();
-        enhet.setRegistreringsdato(LocalDate.now());
-        enhet.setOrgNr(99887765);
-        enhet.setRollebeskrivelse("beskrivelse");
-        to.getEnheter().add(enhet);
-        return to;
-    }
-
-    private HttpEntity<RolleoversiktTo> createHttpEntity(
-            String ident,
-            RolleoversiktTo body
-    ) {
-        var headers = new HttpHeaders();
-        headers.add("Nav-Personident", ident);
-        return new HttpEntity<>(body, headers);
-    }
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 404 hvis ikke eksisterer")
@@ -146,5 +118,33 @@ public class HentRolleoversiktControllerTest {
                 restTemplate.exchange(API_V_1_ROLLEUTSKRIFT, HttpMethod.POST, createHttpEntity("ny", to), RolleoversiktTo.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
+    }
+
+    private RolleoversiktTo lagGyldigRolleoversiktTo() {
+        var to = new RolleoversiktTo();
+        to.setFnr("ny");
+        to.setHovedstatus(1);
+        var navntTo = new RsNavn();
+        navntTo.setNavn1("Navn");
+        to.setNavn(navntTo);
+        var adresseTo = new RsAdresse();
+        adresseTo.setAdresse1("Adresse 1");
+        adresseTo.setLandKode("NO");
+        to.setAdresse(adresseTo);
+        var enhet = new RolleTo();
+        enhet.setRegistreringsdato(LocalDate.now());
+        enhet.setOrgNr(99887765);
+        enhet.setRollebeskrivelse("beskrivelse");
+        to.getEnheter().add(enhet);
+        return to;
+    }
+
+    private HttpEntity<RolleoversiktTo> createHttpEntity(
+            String ident,
+            RolleoversiktTo body
+    ) {
+        var headers = new HttpHeaders();
+        headers.add("Nav-Personident", ident);
+        return new HttpEntity<>(body, headers);
     }
 }

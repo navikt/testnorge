@@ -12,6 +12,9 @@ spring:
           accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
         tokenx:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
+  jackson:
+    serialization:
+      write_dates_as_timestamps:
 
 consumers:
   testnav-altinn3-tilgang-service:

@@ -19,28 +19,28 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("transaksjon_mapping")
+@Table("TRANSAKSJON_MAPPING")
 public class TransaksjonMapping implements Serializable {
 
     @Id
     private Long id;
 
-    @Column("bestilling_id")
+    @Column("BESTILLING_ID")
     private Long bestillingId;
 
-    @Column("ident")
+    @Column("IDENT")
     private String ident;
 
-    @Column("system")
+    @Column("SYSTEM")
     private String system;
 
-    @Column("miljoe")
+    @Column("MILJOE")
     private String miljoe;
 
-    @Column("transaksjon_id")
+    @Column("TRANSAKSJON_ID")
     private String transaksjonId;
 
-    @Column("dato_endret")
+    @Column("DATO_ENDRET")
     private LocalDateTime datoEndret;
 
     @Override

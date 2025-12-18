@@ -10,13 +10,12 @@ import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import no.nav.brregstub.generated.Grunndata;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -29,7 +28,7 @@ import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DollySpringBootTest
-@ExtendWith(DollyWireMockExtension.class)
+@AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
 @Import(JacksonConfig.class)
 @Testcontainers
@@ -45,6 +44,24 @@ class BrregServiceTest {
     @Autowired
     private ObjectMapper objectMapper;
     private BrregService brregService;
+
+    @BeforeEach
+    void onSetup() {
+        rolleoversiktRepositoryMock.deleteAll();
+        hentRolleRepositoryMock.deleteAll();
+        brregService = new BrregService(rolleoversiktRepositoryMock, hentRolleRepositoryMock, objectMapper);
+
+        hentRolleRepositoryMock.save(HentRolle.builder()
+                .json(classpathToString("testdata/hentRoller.json"))
+                .orgnr(ORGNR)
+                .build());
+
+        rolleoversiktRepositoryMock.save(Rolleoversikt.builder()
+                .json(classpathToString("testdata/rolleutskrift.json"))
+                .ident(FNR)
+                .build());
+
+    }
 
     private void assertPerson(Grunndata.Melding.Eierkommune.Samendring.Rolle.Person person) {
         assertThat(person.getFodselsnr()).isEqualTo("010176100000");
@@ -69,24 +86,6 @@ class BrregServiceTest {
         } catch (IOException e) {
             throw new RuntimeException("Could not convert url to String" + url);
         }
-    }
-
-    @BeforeEach
-    void onSetup() {
-        rolleoversiktRepositoryMock.deleteAll();
-        hentRolleRepositoryMock.deleteAll();
-        brregService = new BrregService(rolleoversiktRepositoryMock, hentRolleRepositoryMock, objectMapper);
-
-        hentRolleRepositoryMock.save(HentRolle.builder()
-                .json(classpathToString("testdata/hentRoller.json"))
-                .orgnr(ORGNR)
-                .build());
-
-        rolleoversiktRepositoryMock.save(Rolleoversikt.builder()
-                .json(classpathToString("testdata/rolleutskrift.json"))
-                .ident(FNR)
-                .build());
-
     }
 
     @Test

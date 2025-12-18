@@ -22,68 +22,68 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("bestilling")
+@Table("BESTILLING")
 public class Bestilling implements Serializable {
 
     @Id
     private Long id;
 
     @Version
-    @Column("versjon")
+    @Column("VERSJON")
     private Long versjon;
 
-    @Column("gruppe_id")
+    @Column("GRUPPE_ID")
     private Long gruppeId;
 
-    @Column("ferdig")
+    @Column("FERDIG")
     private boolean ferdig;
 
-    @Column("miljoer")
+    @Column("MILJOER")
     private String miljoer;
 
-    @Column("antall_identer")
+    @Column("ANTALL_IDENTER")
     private Integer antallIdenter;
 
-    @Column("sist_oppdatert")
+    @Column("SIST_OPPDATERT")
     private LocalDateTime sistOppdatert;
 
-    @Column("stoppet")
+    @Column("STOPPET")
     private boolean stoppet;
 
-    @Column("feil")
+    @Column("FEIL")
     private String feil;
 
-    @Column("opprettet_fra_id")
+    @Column("OPPRETTET_FRA_ID")
     private Long opprettetFraId;
 
-    @Column("best_kriterier")
+    @Column("BEST_KRITERIER")
     private String bestKriterier;
 
-    @Column("opprett_fra_identer")
+    @Column("OPPRETT_FRA_IDENTER")
     private String opprettFraIdenter;
 
-    @Column("ident")
+    @Column("IDENT")
     private String ident;
 
-    @Column("opprett_fra_gruppe")
+    @Column("OPPRETT_FRA_GRUPPE")
     private Long opprettetFraGruppeId;
 
-    @Column("gjenopprettet_fra_ident")
+    @Column("GJENOPPRETTET_FRA_IDENT")
     private String gjenopprettetFraIdent;
 
     @Transient
     private Bruker bruker;
 
-    @Column("bruker_id")
+    @Column("BRUKER_ID")
     private Long brukerId;
 
-    @Column("pdl_import")
+    @Column("PDL_IMPORT")
     private String pdlImport;
 
-    @Column("kilde_miljoe")
+    @Column("KILDE_MILJOE")
     private String kildeMiljoe;
 
-    @Column("nav_syntetisk_ident")
+    @Column("NAV_SYNTETISK_IDENT")
     private Boolean navSyntetiskIdent;
 
     @Transient

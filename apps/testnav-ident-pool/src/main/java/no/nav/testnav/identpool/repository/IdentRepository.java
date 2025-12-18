@@ -42,7 +42,7 @@ public interface IdentRepository extends ReactiveSortingRepository<Ident, Long> 
     Mono<Long> countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
 
     @Query(value = """
-            select * from personidentifikator i
+            select * from Personidentifikator i
                         where i.rekvireringsstatus = :rekvireringsstatus
                         and i.foedselsdato between :foedtEtter and :foedtFoer
                         and i.syntetisk = false
@@ -52,7 +52,7 @@ public interface IdentRepository extends ReactiveSortingRepository<Ident, Long> 
                                      @Param("foedtFoer") LocalDate foedtFoer);
 
     @Query(value = """
-            select count(*) from personidentifikator i
+            select count(*) from Personidentifikator i
                         where i.rekvireringsstatus = :rekvireringsstatus
                         and i.foedselsdato between :foedtEtter and :foedtFoer
                         and i.syntetisk = false

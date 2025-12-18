@@ -36,6 +36,9 @@ spring:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
+server:
+  error:
+    include-message: always
 
 consumers:
   tps-messaging-service:

@@ -5,7 +5,6 @@ import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,7 +16,6 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 
-@Disabled("Integration test requires database cleanup between tests")
 class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
     @Autowired
