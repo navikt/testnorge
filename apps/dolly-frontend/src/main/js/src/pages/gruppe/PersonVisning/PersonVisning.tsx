@@ -403,9 +403,9 @@ export default (props: PersonVisningProps) => {
 				condition: !!(
 					(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
 					(harMedlBestilling(bestillingerFagsystemer) &&
-						medl?.response &&
-						Array.isArray(medl.response) &&
-						medl.response.length === 0)
+						medl &&
+						Array.isArray(medl) &&
+						medl.length === 0)
 				),
 				reason: 'MEDL mangler data eller feilet',
 			},
@@ -710,7 +710,7 @@ export default (props: PersonVisningProps) => {
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<MedlVisning data={medl?.response as any} timedOutFagsystemer={timedOutFagsystemer} />
+				<MedlVisning data={medl} timedOutFagsystemer={timedOutFagsystemer} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling?.udistub)}
 					loading={loadingUdistub}
