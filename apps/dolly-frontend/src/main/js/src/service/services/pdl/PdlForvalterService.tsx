@@ -7,7 +7,8 @@ export default {
 		if (!identListe) {
 			return
 		}
-		const endpoint = `${getPdlUrl()}/personer?identer=${identListe}`
+		const identer = Array.isArray(identListe) ? identListe.join(',') : identListe
+		const endpoint = `${getPdlUrl()}/personer?identer=${identer}`
 		return Request.get(endpoint)
 	},
 	soekPersoner(fragment: string) {

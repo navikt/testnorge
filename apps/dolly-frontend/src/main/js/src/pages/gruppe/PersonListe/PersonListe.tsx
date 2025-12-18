@@ -46,7 +46,6 @@ export default function PersonListe({
 	fetchPdlPersoner,
 	tmpPersoner,
 	sorting,
-	bestillingerById,
 }: any) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
@@ -77,7 +76,7 @@ export default function PersonListe({
 			return
 		}
 		fetchPdlPersoner(identListe)
-	}, [identListe, visPerson, bestillingerById])
+	}, [identListe])
 
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
@@ -216,7 +215,7 @@ export default function PersonListe({
 		return column
 	})
 
-	if (isFetching || (personListe?.length === 0 && !_.isEmpty(identer))) {
+	if (isFetching && personListe?.length === 0) {
 		return <Loading label="Laster personer..." panel />
 	}
 

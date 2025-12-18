@@ -7,7 +7,6 @@ import {
 	InntektstubApi,
 	KrrApi,
 	PdlforvalterApi,
-	SkjermingApi,
 	TpsMessagingApi,
 } from '@/service/Api'
 import { onSuccess } from '@/ducks/utils/requestActions'
@@ -55,12 +54,6 @@ export const actions = createActions(
 				identer,
 			}),
 		],
-		getSkjermingsregister: [
-			SkjermingApi.getSkjerming,
-			(ident) => ({
-				ident,
-			}),
-		],
 		getKontoregister: [
 			BankkontoApi.hentKonto,
 			(ident) => ({
@@ -75,7 +68,7 @@ export const actions = createActions(
 		],
 	},
 	{
-		prefix: 'fagsystem', // String used to prefix each type
+		prefix: 'fagsystem',
 	},
 )
 
@@ -102,9 +95,6 @@ export default handleActions(
 		},
 		[onSuccess(actions.getInntektstub)](state, action) {
 			state.inntektstub[action.meta.ident] = action.payload.data
-		},
-		[onSuccess(actions.getSkjermingsregister)](state, action) {
-			state.skjermingsregister[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data
@@ -170,8 +160,8 @@ export const fetchPdlPersoner = (identer) => (dispatch) => {
 		return person.ident
 	})
 	if (pdlIdenter && pdlIdenter.length >= 1) {
-		dispatch(actions.getPdlForvalter(pdlIdenter))
 		dispatch(actions.getPDLPersoner(pdlIdenter))
+		dispatch(actions.getPdlForvalter(pdlIdenter))
 	}
 }
 
@@ -179,7 +169,7 @@ export const fetchPdlPersoner = (identer) => (dispatch) => {
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
  * De systemene som har OK fetches
  */
-export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) => {
+export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch, getState) => {
 	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
@@ -197,6 +187,8 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 		success.PDL_FORVALTER = 'PDL_FORVALTER'
 	}
 
+	const state = getState()
+
 	Object.keys(success).forEach((system) => {
 		switch (system) {
 			case 'KRRSTUB':
@@ -207,10 +199,13 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getTpsMessaging(personId))
 			case 'BRREGSTUB':
 				return dispatch(actions.getBrreg(personId))
-			case 'SKJERMINGSREGISTER':
-				return dispatch(actions.getSkjermingsregister(personId))
 			case 'KONTOREGISTER':
 				return dispatch(actions.getKontoregister(personId))
+			case 'PDL_FORVALTER':
+				if (!state.fagsystem?.pdlforvalter?.[personId]) {
+					return dispatch(actions.getPdlForvalter([personId]))
+				}
+				break
 		}
 	})
 }
@@ -446,7 +441,6 @@ export const selectDataForIdent = (state, ident) => {
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		udistub: state.fagsystem.udistub[ident],
 		brregstub: state.fagsystem.brregstub[ident],
-		skjermingsregister: state.fagsystem.skjermingsregister[ident],
 		kontoregister: state.fagsystem.kontoregister[ident],
 	}
 }

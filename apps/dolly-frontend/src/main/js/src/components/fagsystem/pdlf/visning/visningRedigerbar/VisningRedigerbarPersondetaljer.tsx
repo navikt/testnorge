@@ -4,7 +4,8 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
 import * as _ from 'lodash-es'
-import { DollyApi, PdlforvalterApi, SkjermingApi } from '@/service/Api'
+import { DollyApi, PdlforvalterApi } from '@/service/Api'
+import { deleteSkjerming } from '@/utils/hooks/useSkjerming'
 import Icon from '@/components/ui/icon/Icon'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
@@ -28,10 +29,9 @@ import {
 	REGEX_BACKEND_GRUPPER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
+import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 type VisningTypes = {
-	getPdlForvalter: Function
-	getSkjermingsregister: Function
 	dataVisning: any
 	initialValues: any
 	redigertAttributt?: any
@@ -110,8 +110,6 @@ const initialSlettAttr = {
 }
 
 export const VisningRedigerbarPersondetaljer = ({
-	getPdlForvalter,
-	getSkjermingsregister,
 	dataVisning,
 	initialValues,
 	redigertAttributt = null,
@@ -120,6 +118,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	identtype,
 }: VisningTypes) => {
 	const mutate = useMatchMutate()
+	const { refresh: refreshPdlForvalter } = usePdlForvalterPerson(ident)
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
@@ -179,7 +178,7 @@ export const VisningRedigerbarPersondetaljer = ({
 					if (!harFeil) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
+							refreshPdlForvalter().then(() => {
 								setVisningModus(Modus.Les)
 							})
 						})
@@ -213,7 +212,7 @@ export const VisningRedigerbarPersondetaljer = ({
 							const etternavn = dataVisning?.props?.person?.navn?.[0]?.etternavn
 							skjerming.oppdatert = true
 							setVisningModus(Modus.LoadingSkjerming)
-							await SkjermingApi.deleteSkjerming(ident, fornavn, etternavn)
+							await deleteSkjerming(ident, fornavn, etternavn)
 								.catch((error) => {
 									skjermingError(error)
 									skjerming.feil = true
@@ -244,7 +243,7 @@ export const VisningRedigerbarPersondetaljer = ({
 					if (pdlf.oppdatert && !pdlf.feil) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
+							refreshPdlForvalter().then(() => {
 								if (!skjerming.oppdatert || !skjerming.feil) {
 									setVisningModus(Modus.Les)
 								}
@@ -254,20 +253,6 @@ export const VisningRedigerbarPersondetaljer = ({
 				})
 				.catch((error) => {
 					pdlError(error)
-				})
-				.then(() => {
-					if (skjerming.oppdatert && !skjerming.feil) {
-						setVisningModus(Modus.LoadingSkjerming)
-						getSkjermingsregister()
-							.then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
-							})
-							.catch((error) => {
-								skjermingError(error)
-							})
-					}
 				})
 		}
 		mountedRef.current = false

@@ -11,6 +11,9 @@ import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { DollyApi } from '@/service/Api'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
+import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from './constants'
+
+export { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey }
 
 const initialState = {
 	personListe: [],
@@ -32,11 +35,7 @@ const NavigateButton = styled(Button)`
 			height: 45px;
 			margin: 0 auto 5px auto;
 		}
-	}
 `
-
-export const tenorSoekLocalStorageKey = 'tenorSoek'
-export const tenorSoekStateLocalStorageKey = 'tenorSoekState'
 
 export default () => {
 	'use no memo' // Skip compilation for this component

@@ -1,5 +1,7 @@
 package no.nav.udistub.provider.rs;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,11 +33,12 @@ import java.util.Map;
 public class PersonController {
 
     private final PersonService personService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonControllerResponse opprettPerson(@RequestBody UdiPerson udiPerson) {
-
+    public PersonControllerResponse opprettPerson(@RequestBody UdiPerson udiPerson) throws JsonProcessingException {
+        log.info("Mottatt request opprettPerson: {}", objectMapper.writeValueAsString(udiPerson));
         return PersonControllerResponse.builder()
                 .person(personService.opprettPerson(udiPerson))
                 .build();
@@ -43,9 +46,9 @@ public class PersonController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonControllerResponse oppdaterPerson(@RequestBody UdiPerson udiPerson) {
-
-                return PersonControllerResponse.builder()
+    public PersonControllerResponse oppdaterPerson(@RequestBody UdiPerson udiPerson) throws JsonProcessingException {
+        log.info("Mottatt request oppdaterPerson: {}", objectMapper.writeValueAsString(udiPerson));
+        return PersonControllerResponse.builder()
                 .person(personService.oppdaterPerson(udiPerson))
                 .build();
     }
@@ -53,7 +56,7 @@ public class PersonController {
     @GetMapping("/{ident}")
     @ResponseStatus(HttpStatus.OK)
     public PersonControllerResponse finnPerson(@PathVariable String ident) {
-
+        log.info("Mottatt request finnPerson med ident: {}", ident);
         return PersonControllerResponse.builder()
                 .person(personService.finnPerson(ident))
                 .build();
@@ -62,7 +65,7 @@ public class PersonController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public void deletePerson(@RequestHeader(name = "Nav-Personident") String ident) {
-
+        log.info("Mottatt request deletePerson med ident: {}", ident);
         personService.deletePerson(ident);
     }
 

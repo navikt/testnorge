@@ -1,5 +1,4 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import styled from 'styled-components'
 import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { Medlemskapsperiode } from '@/components/fagsystem/medl/MedlTypes'
@@ -7,10 +6,6 @@ import { Medlemskapsperiode } from '@/components/fagsystem/medl/MedlTypes'
 type Props = {
 	medlemskapsperiode: Medlemskapsperiode
 }
-
-const H4 = styled.h4`
-	width: 100%;
-`
 
 export default ({ medlemskapsperiode }: Props) => (
 	<div className="person-visning_content">

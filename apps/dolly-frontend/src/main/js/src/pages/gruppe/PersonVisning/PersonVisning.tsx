@@ -116,6 +116,7 @@ import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/s
 import { useNomData } from '@/utils/hooks/useNom'
 import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
+import { useSkjerming } from '@/utils/hooks/useSkjerming'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -327,6 +328,8 @@ export default (props: PersonVisningProps) => {
 
 	const { nomData, loading: loadingNom } = useNomData(ident.ident)
 
+	const { skjerming: skjermingData } = useSkjerming(ident.ident)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -400,9 +403,9 @@ export default (props: PersonVisningProps) => {
 				condition: !!(
 					(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
 					(harMedlBestilling(bestillingerFagsystemer) &&
-						medl?.response &&
-						Array.isArray(medl.response) &&
-						medl.response.length === 0)
+						medl &&
+						Array.isArray(medl) &&
+						medl.length === 0)
 				),
 				reason: 'MEDL mangler data eller feilet',
 			},
@@ -523,8 +526,8 @@ export default (props: PersonVisningProps) => {
 								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
 									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
 								}
-								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
-									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
+								if (skjermingData) {
+									personData.skjermingsregister = skjermingData
 								}
 								if (nomData) {
 									personData.nomdata = nomData
@@ -597,11 +600,7 @@ export default (props: PersonVisningProps) => {
 				{ident.master === 'PDL' && (
 					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
-				<NavAnsattVisning
-					nomData={nomData}
-					nomLoading={loadingNom}
-					skjermingData={data.skjermingsregister}
-				/>
+				<NavAnsattVisning nomData={nomData} nomLoading={loadingNom} ident={ident.ident} />
 				{visArbeidsforhold && (
 					<AaregVisning
 						liste={arbeidsforhold}
@@ -711,7 +710,7 @@ export default (props: PersonVisningProps) => {
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<MedlVisning data={medl?.response as any} timedOutFagsystemer={timedOutFagsystemer} />
+				<MedlVisning data={medl} timedOutFagsystemer={timedOutFagsystemer} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling?.udistub)}
 					loading={loadingUdistub}

@@ -19,23 +19,32 @@ import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergema
 import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
-	getIdenttype,
+	getIdenttype
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import {
-	Modus,
-	RedigerLoading,
-} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { Modus, RedigerLoading } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import {
+	KontaktinformasjonForDoedsboForm
+} from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
-import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
-import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
-import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
-import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
+import {
+	ForelderBarnRelasjonForm
+} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
+import {
+	ForeldreansvarForm
+} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
+import {
+	DeltBostedForm
+} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
+import {
+	DoedfoedtBarnForm
+} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { Form, FormProvider, useForm } from 'react-hook-form'
-import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
+import {
+	visningRedigerbarValidation
+} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
 import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
@@ -43,9 +52,9 @@ import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foed
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 type VisningTypes = {
-	getPdlForvalter: Function
 	dataVisning: any
 	initialValues: any
 	eksisterendeNyPerson?: Option
@@ -115,7 +124,6 @@ const Knappegruppe = styled.div`
 `
 
 export const VisningRedigerbar = ({
-	getPdlForvalter,
 	dataVisning,
 	initialValues,
 	eksisterendeNyPerson = null,
@@ -130,6 +138,7 @@ export const VisningRedigerbar = ({
 	relatertPersonInfo = null,
 	master = null,
 }: VisningTypes) => {
+	const { refresh: refreshPdlForvalter } = usePdlForvalterPerson(ident)
 	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
 
@@ -166,7 +175,7 @@ export const VisningRedigerbar = ({
 				if (putResponse) {
 					setVisningModus(Modus.LoadingPdl)
 					DollyApi.sendOrdre(ident).then(() => {
-						getPdlForvalter().then(() => {
+						refreshPdlForvalter().then(() => {
 							setVisningModus(Modus.Les)
 						})
 					})
@@ -187,7 +196,7 @@ export const VisningRedigerbar = ({
 				if (deleteResponse) {
 					setVisningModus(Modus.LoadingPdl)
 					DollyApi.sendOrdre(ident).then(() => {
-						getPdlForvalter().then(() => {
+						refreshPdlForvalter().then(() => {
 							setVisningModus(Modus.Les)
 						})
 					})

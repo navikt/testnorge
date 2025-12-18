@@ -3,8 +3,8 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import React from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
-import { arrayToString, formatDate, toTitleCase } from '@/utils/DataFormatter'
+import { KodeverkTitleValue } from '@/components/fagsystem/skattekort/visning/Visning'
+import { formatDate, toTitleCase } from '@/utils/DataFormatter'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import {
 	ArbeidsgiverSkatt,
@@ -26,16 +26,12 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 						const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
 						const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
 
-						const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
-							(tilleggsopplysning) => {
-								return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
-							},
-						)
 						return (
 							<React.Fragment key={idx}>
-								<TitleValue
-									title="Resultat på forespørsel"
-									value={showKodeverkLabel('RESULTATSTATUS', arbeidstaker?.resultatPaaForespoersel)}
+								<KodeverkTitleValue
+									kodeverkstype="RESULTATSTATUS"
+									value={arbeidstaker?.resultatPaaForespoersel}
+									label="Resultat på forespørsel"
 								/>
 								<TitleValue title="Inntektsår" value={arbeidstaker?.inntektsaar} />
 								<TitleValue
@@ -46,9 +42,10 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 									title="Skattekortidentifikator"
 									value={arbeidstaker?.skattekort?.skattekortidentifikator}
 								/>
-								<TitleValue
-									title="Tilleggsopplysning"
-									value={arrayToString(tilleggsopplysningFormatted)}
+								<KodeverkTitleValue
+									kodeverkstype="TILLEGGSOPPLYSNING"
+									value={arbeidstaker?.tilleggsopplysning}
+									label="Tilleggsopplysning"
 								/>
 								<TitleValue
 									title="Arbeidsgiver (org.nr.)"
@@ -69,14 +66,16 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 												<h4 style={{ width: '100%', margin: '0 0 15px 0' }}>
 													{toTitleCase(forskuddstrekkType)}
 												</h4>
-												<TitleValue
-													title="Trekkode"
-													value={showKodeverkLabel('TREKKODE', forskuddstrekk?.trekkode)}
+												<KodeverkTitleValue
+													kodeverkstype="TREKKODE"
+													value={forskuddstrekk?.trekkode}
+													label="Trekkode"
 												/>
 												<TitleValue title="Frikortbeløp" value={forskuddstrekk?.frikortbeloep} />
-												<TitleValue
-													title="Tabelltype"
-													value={showKodeverkLabel('TABELLTYPE', forskuddstrekk?.tabelltype)}
+												<KodeverkTitleValue
+													kodeverkstype="TABELLTYPE"
+													value={forskuddstrekk?.tabelltype}
+													label="Tabelltype"
 												/>
 												<TitleValue title="Tabellnummer" value={forskuddstrekk?.tabellnummer} />
 												<TitleValue title="Prosentsats" value={forskuddstrekk?.prosentsats} />

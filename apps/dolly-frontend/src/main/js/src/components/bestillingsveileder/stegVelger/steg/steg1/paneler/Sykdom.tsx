@@ -4,7 +4,7 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import {
 	nySykemeldingAttributt,
 	sykemeldingAttributt,
-} from '@/components/fagsystem/sykdom/form/Form'
+} from '@/components/fagsystem/sykdom/form/constants'
 import { initialYrkesskade } from '@/components/fagsystem/yrkesskader/initialValues'
 import { yrkesskaderAttributt } from '@/components/fagsystem/yrkesskader/form/Form'
 import {

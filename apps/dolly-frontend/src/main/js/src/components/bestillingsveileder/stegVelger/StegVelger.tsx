@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useState } from 'react'
+import React, { lazy, Suspense, useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -34,7 +34,7 @@ import { erDollyAdmin } from '@/utils/DollyAdmin'
 import { useMalFormSync } from './hooks/useMalFormSync'
 import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
 import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
-import StepErrorBoundary from './StepErrorBoundary.tsx'
+import StepErrorBoundary from './StepErrorBoundary'
 
 interface StepDef {
 	component: React.ComponentType<any>
@@ -47,7 +47,7 @@ const STEPS: StepDef[] = [
 	{ component: Steg3, label: 'Oppsummering' },
 ]
 
-const DisplayFormState = lazyWithPreload(() => import('@/utils/DisplayFormState'))
+const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 
 const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
