@@ -4,13 +4,14 @@ import { Alert, Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type Props = {
 	antallEgneMaler: any
@@ -113,6 +114,11 @@ export const MalPanel = ({
 							<Table.Body>
 								{maler.map(({ malNavn, id, malBestilling }) => {
 									const alert = harUtdaterteVerdier(malBestilling)
+									const erTomBestilling = isEmpty(malBestilling, [
+										'id2032',
+										'identtype',
+										'syntetisk',
+									])
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
 											bestilling: malBestilling,
@@ -133,7 +139,14 @@ export const MalPanel = ({
 															{alert}
 														</Alert>
 													)}
-													<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+													{erTomBestilling && (
+														<Alert variant={'info'} size={'small'} style={{ marginBottom: '20px' }}>
+															Denne malen inneholder ingen bestillingsdata.
+														</Alert>
+													)}
+													<div className="bestilling-data">
+														<Bestillingsdata bestilling={bestillingBasedOnMal} />
+													</div>
 												</>
 											}
 										>

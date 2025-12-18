@@ -7,14 +7,15 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
+import { Bestillingsvisning } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { useFormContext } from 'react-hook-form'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
 
-const Bestillingskriterier = React.lazy(
-	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
-)
+// const Bestillingskriterier = React.lazy(
+// 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
+// )
 
 const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -77,12 +78,25 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 		return <Loading label={'Oppretter bestilling ...'} />
 	}
 
+	// const divElement = document.getElementsByClassName('oppsummering')
+	// console.log('divElement: ', divElement) //TODO - SLETT MEG
+	// const elementHeight = divElement?.[0]?.clientHeight
+	// console.log('elementHeight: ', elementHeight) //TODO - SLETT MEG
+
+	// const windowHeight = window.innerHeight
+	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
+	// const bestillingHeight = windowHeight * 0.5
+	// console.log('bestillingHeight: ', bestillingHeight) //TODO - SLETT MEG
+
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (
+				// <div className="oppsummering" style={{ maxHeight: bestillingHeight, overflowY: 'hidden' }}>
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier ...'} />}>
-						<Bestillingskriterier bestilling={formMethods.getValues()} />
+						<Bestillingsvisning bestilling={formMethods.getValues()} />
+						{/*//TODO: Fjernes naar bestillingsdata er klar*/}
+						{/*<Bestillingskriterier bestilling={formMethods.getValues()} />*/}
 					</Suspense>
 				</div>
 			)}

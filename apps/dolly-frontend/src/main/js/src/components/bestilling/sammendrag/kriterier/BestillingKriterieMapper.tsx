@@ -28,7 +28,6 @@ import {
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
-import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
@@ -1478,16 +1477,13 @@ const mapArbeidssoekerregisteret = (bestillingData, data) => {
 		const arbeidssoekerregisteret = {
 			header: 'Arbeidssøkerregisteret',
 			items: [
-				obj('Utført av', showTyperLabel('BRUKERTYPE', arbeidssoekerregisteretKriterier.utfoertAv)),
+				obj('Utført av', arbeidssoekerregisteretKriterier.utfoertAv),
 				obj('Kilde', arbeidssoekerregisteretKriterier.kilde),
 				obj('Årsak', arbeidssoekerregisteretKriterier.aarsak),
-				obj('Utdanningsnivå', showTyperLabel('NUSKODE', arbeidssoekerregisteretKriterier.nuskode)),
+				obj('Utdanningsnivå', arbeidssoekerregisteretKriterier.nuskode),
 				obj(
 					'Beskrivelse av jobbsituasjonen',
-					showTyperLabel(
-						'JOBBSITUASJONSBESKRIVELSE',
-						arbeidssoekerregisteretKriterier.jobbsituasjonsbeskrivelse,
-					),
+					arbeidssoekerregisteretKriterier.jobbsituasjonsbeskrivelse,
 				),
 				obj(
 					'Utdanning bestått',

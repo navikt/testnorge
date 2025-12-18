@@ -154,6 +154,7 @@ const Bestillingskriterier = ({
 		)
 	}
 	const data = mapBestillingData(bestilling, bestillingsinformasjon, firstIdent)
+	console.log('data: ', data) //TODO - SLETT MEG
 	if (!data || data.length < 1) {
 		if (erMalVisning) {
 			return (

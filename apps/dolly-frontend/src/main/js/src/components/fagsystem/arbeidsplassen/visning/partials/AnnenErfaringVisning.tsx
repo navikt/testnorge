@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
+import { AnnenErfaring } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const AnnenErfaringVisning = ({ data }) => {
+type AnnenErfaringVisningProps = {
+	data?: Array<AnnenErfaring>
+}
+
+export const AnnenErfaringVisning = ({ data }: AnnenErfaringVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const AnnenErfaringVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Andre erfaringer" nested>
-					{(annenErfaring) => (
+					{(annenErfaring: AnnenErfaring) => (
 						<>
 							<TitleValue title="Rolle" value={annenErfaring.role} />
 							<TitleValue title="Beskrivelse" value={annenErfaring.description} size="medium" />

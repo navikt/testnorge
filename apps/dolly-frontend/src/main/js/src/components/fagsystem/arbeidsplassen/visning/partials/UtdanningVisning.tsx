@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import { Utdanning } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const UtdanningVisning = ({ data }) => {
+type UtdanningVisningProps = {
+	data?: Array<Utdanning>
+}
+
+export const UtdanningVisning = ({ data }: UtdanningVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const UtdanningVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Utdanning" nested>
-					{(utdanning) => (
+					{(utdanning: Utdanning) => (
 						<>
 							<TitleValue title="Utdanningsnivå" value={showLabel('nusKoder', utdanning.nuskode)} />
 							<TitleValue title="Grad og utdanningsretning" value={utdanning.field} />
