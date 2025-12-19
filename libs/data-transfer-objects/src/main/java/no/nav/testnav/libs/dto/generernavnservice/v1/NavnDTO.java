@@ -2,15 +2,15 @@ package no.nav.testnav.libs.dto.generernavnservice.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class NavnDTO {
-    String adjektiv;
-    String adverb;
-    String substantiv;
+    private String adjektiv;
+    private String adverb;
+    private String substantiv;
 }
