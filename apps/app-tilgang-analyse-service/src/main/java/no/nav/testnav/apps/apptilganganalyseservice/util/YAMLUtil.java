@@ -1,20 +1,22 @@
 package no.nav.testnav.apps.apptilganganalyseservice.util;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
-import java.io.IOException;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 public class YAMLUtil {
 
     private static YAMLUtil instance;
-    private final ObjectMapper objectMapper;
+    private final YAMLMapper objectMapper;
 
     private YAMLUtil() {
-        objectMapper = new ObjectMapper(new YAMLFactory());
-        objectMapper.findAndRegisterModules();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper = YAMLMapper.builder()
+                .findAndAddModules()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
+    }
+
+    public <T> T read(String value, Class<T> clazz) {
+        return objectMapper.readValue(value, clazz);
     }
 
     public static YAMLUtil Instance() {
@@ -22,9 +24,5 @@ public class YAMLUtil {
             instance = new YAMLUtil();
         }
         return instance;
-    }
-
-    public <T> T read(String value, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(value, clazz);
     }
 }

@@ -1,6 +1,6 @@
 package no.nav.dolly.budpro.generate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.budpro.navn.GeneratedNameService;
 import no.nav.dolly.libs.test.DollySpringBootTest;

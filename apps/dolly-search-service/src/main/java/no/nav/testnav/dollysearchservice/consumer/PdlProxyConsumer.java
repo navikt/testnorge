@@ -1,6 +1,5 @@
 package no.nav.testnav.dollysearchservice.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.config.Consumers;
 import no.nav.testnav.dollysearchservice.consumer.command.TagsGetCommand;
@@ -28,14 +27,13 @@ public class PdlProxyConsumer {
     public PdlProxyConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper,
             WebClient webClient
     ) {
         serverProperties = consumers.getTestnavPdlProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy())
                 .build();
         this.tokenExchange = tokenExchange;
     }

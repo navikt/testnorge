@@ -1,6 +1,5 @@
 package no.nav.brregstub.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.config.JacksonConfig;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;

@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.TestSecurityConfig;
@@ -24,6 +23,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;

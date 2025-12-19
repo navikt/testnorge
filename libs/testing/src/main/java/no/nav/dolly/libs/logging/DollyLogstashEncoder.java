@@ -8,6 +8,7 @@ import net.logstash.logback.encoder.LogstashEncoder;
 import org.springframework.util.StringUtils;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
@@ -37,7 +38,7 @@ public class DollyLogstashEncoder extends LogstashEncoder {
     private static final Pattern BEARER = Pattern.compile("Bearer [a-zA-Z0-9\\-_.]+");
 
     private final DateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
     private int maxStackTraceLength = 1000;
     private boolean addCauses = true;
     private String stackTraceIncludePrefix = "no.nav";

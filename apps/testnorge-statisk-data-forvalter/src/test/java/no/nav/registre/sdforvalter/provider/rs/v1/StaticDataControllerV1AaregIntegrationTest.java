@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.TestSecurityConfig;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,7 +1,5 @@
 package no.nav.testnav.dollysearchservice.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.hc.client5.http.auth.AuthScope;
@@ -9,7 +7,6 @@ import org.apache.hc.client5.http.auth.CredentialsProvider;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.core5.http.HttpHost;
-
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
@@ -20,12 +17,10 @@ import org.springframework.context.annotation.Profile;
 
 import java.net.URISyntaxException;
 
-
 @Slf4j
 @Configuration
 @Profile("!test")
-@RequiredArgsConstructor
-public class OpenSearchConfig  {
+public class OpenSearchConfig {
 
     @Value("${open.search.username}")
     private String username;
@@ -35,8 +30,6 @@ public class OpenSearchConfig  {
 
     @Value("${open.search.uri}")
     private String uri;
-
-    private final ObjectMapper objectMapper;
 
     @Bean
     public CredentialsProvider credentialsProvider() throws URISyntaxException {
@@ -50,9 +43,13 @@ public class OpenSearchConfig  {
     @Bean
     public OpenSearchClient opensearchClient(CredentialsProvider credentialsProvider) throws URISyntaxException {
 
+        val jackson2ObjectMapper = com.fasterxml.jackson.databind.json.JsonMapper.builder()
+                .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .build();
+
         val transportBuilder = ApacheHttpClient5TransportBuilder
                 .builder(HttpHost.create(uri))
-                .setMapper(new JacksonJsonpMapper(objectMapper))
+                .setMapper(new JacksonJsonpMapper(jackson2ObjectMapper))
                 .setHttpClientConfigCallback(httpClientBuilder ->
                         httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
                 ).build();

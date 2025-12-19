@@ -13,7 +13,6 @@ dependencies {
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation "com.auth0:java-jwt:$versions.jwt"
-    implementation platform("tools.jackson:jackson-bom:3.0.3")
     implementation "tools.jackson.core:jackson-databind"
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'

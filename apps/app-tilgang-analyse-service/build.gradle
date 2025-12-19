@@ -25,7 +25,7 @@ dependencies {
     implementation "org.postgresql:r2dbc-postgresql"
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml"
+    implementation "tools.jackson.dataformat:jackson-dataformat-yaml"
 
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"

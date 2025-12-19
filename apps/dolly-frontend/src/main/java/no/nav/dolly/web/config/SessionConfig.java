@@ -1,10 +1,7 @@
 package no.nav.dolly.web.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.valkey.DefaultJedisClientConfig;
 import io.valkey.Jedis;
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -26,6 +23,7 @@ import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
@@ -111,9 +109,9 @@ class SessionConfig {
 
     @Bean
     RedisSerializer<Object> springSessionRedisSerializer() {
-        var objectMapper = new ObjectMapper();
-        objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return new GenericJackson2JsonRedisSerializer(objectMapper);
+        var jackson2ObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        jackson2ObjectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
+        return new GenericJackson2JsonRedisSerializer(jackson2ObjectMapper);
     }
 
 }

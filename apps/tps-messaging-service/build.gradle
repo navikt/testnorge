@@ -26,8 +26,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
 
     implementation "com.fasterxml.jackson.core:jackson-annotations"
-    implementation "com.fasterxml.jackson.core:jackson-databind"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+    implementation "tools.jackson.core:jackson-databind"
+    implementation "tools.jackson.dataformat:jackson-dataformat-xml"
     implementation "com.ibm.icu:icu4j:74.2"
     implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation "com.sun.xml.bind:jaxb-core:$versions.jaxb"

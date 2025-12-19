@@ -1,6 +1,5 @@
 package no.nav.skattekortservice.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.SneakyThrows;
@@ -19,6 +18,7 @@ import org.json.XML;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;

@@ -1,7 +1,5 @@
 package no.nav.testnav.pdllagreservice.listener;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import static java.util.Objects.isNull;
@@ -68,7 +67,7 @@ public class PdlPersonDokumentListener {
                 });
                 return new OpensearchDocumentData(personIndex, post.key(), dokument);
             }
-        } catch (RuntimeException | IOException exception) {
+        } catch (RuntimeException exception) {
 
             // Merk: ikke ta med exception i UnrecoverableException (den kan inneholde person opplysninger),
             // bruk MDC verdiene for å eventuelt finne meldinger som feiler (gjør unntak for preprod for feilsøking)

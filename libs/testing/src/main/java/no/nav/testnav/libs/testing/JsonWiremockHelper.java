@@ -6,7 +6,6 @@ import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
@@ -51,12 +50,12 @@ public class JsonWiremockHelper {
         return this;
     }
 
-    public JsonWiremockHelper withResponseBody(Object responseBody) throws JacksonException {
+    public JsonWiremockHelper withResponseBody(Object responseBody) {
         this.responseBody = mapper.writeValueAsString(responseBody);
         return this;
     }
 
-    public JsonWiremockHelper withRequestBody(Object requestBody, String... fieldsToIgnore) throws JacksonException {
+    public JsonWiremockHelper withRequestBody(Object requestBody, String... fieldsToIgnore) {
         this.requestBody = mapper.writeValueAsString(requestBody);
         requestFieldsToIgnore.addAll(Arrays.asList(fieldsToIgnore));
         return this;

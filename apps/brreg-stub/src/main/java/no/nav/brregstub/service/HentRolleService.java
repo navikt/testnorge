@@ -1,6 +1,5 @@
 package no.nav.brregstub.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.brregstub.api.common.RsOrganisasjon;
@@ -8,6 +7,7 @@ import no.nav.brregstub.database.domene.HentRolle;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.mapper.HentRolleMapper;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 

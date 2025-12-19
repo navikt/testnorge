@@ -1,21 +1,16 @@
 package no.nav.testnav.apps.tpsmessagingservice.config;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.module.SimpleModule;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -27,32 +22,41 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class JsonMapperConfig {
 
     @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-        objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
-        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer());
-        simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
-        simpleModule.addDeserializer(LocalDate.class, new DollyLocalDateDeserializer());
-        simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
-        simpleModule.addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer());
-        simpleModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
-
-        objectMapper.registerModule(simpleModule);
-        return objectMapper;
+    public SimpleModule dollyDateTimeModule() {
+        return new SimpleModule("dollyDateTimeModule")
+                .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
+                .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
+                .addDeserializer(LocalDate.class, new DollyLocalDateDeserializer())
+                .addSerializer(LocalDate.class, new LocalDateSerializer())
+                .addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer())
+                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
     }
 
-    private static class DollyZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
+    private static class LocalDateSerializer extends ValueSerializer<LocalDate> {
+        @Override
+        public void serialize(LocalDate value, JsonGenerator gen, SerializationContext serializers) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE));
+        }
+    }
 
-        @Override public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+    private static class LocalDateTimeSerializer extends ValueSerializer<LocalDateTime> {
+        @Override
+        public void serialize(LocalDateTime value, JsonGenerator gen, SerializationContext serializers) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE_TIME));
+        }
+    }
+
+    private static class ZonedDateTimeSerializer extends ValueSerializer<ZonedDateTime> {
+        @Override
+        public void serialize(ZonedDateTime value, JsonGenerator gen, SerializationContext serializers) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE_TIME));
+        }
+    }
+
+    private static class DollyZonedDateTimeDeserializer extends ValueDeserializer<ZonedDateTime> {
+        @Override
+        public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }
@@ -60,10 +64,10 @@ public class JsonMapperConfig {
         }
     }
 
-    private static class DollyLocalDateDeserializer extends JsonDeserializer<LocalDate> {
-
-        @Override public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+    private static class DollyLocalDateDeserializer extends ValueDeserializer<LocalDate> {
+        @Override
+        public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }
@@ -72,10 +76,10 @@ public class JsonMapperConfig {
         }
     }
 
-    private static class DollyLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
-
-        @Override public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+    private static class DollyLocalDateTimeDeserializer extends ValueDeserializer<LocalDateTime> {
+        @Override
+        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }

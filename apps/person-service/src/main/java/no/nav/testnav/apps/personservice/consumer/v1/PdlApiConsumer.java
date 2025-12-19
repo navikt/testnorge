@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.personservice.consumer.v1;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.config.Consumers;
 import no.nav.testnav.apps.personservice.consumer.v1.command.GetPdlAktoerCommand;
@@ -11,17 +10,18 @@ import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -43,25 +43,12 @@ public class PdlApiConsumer {
     public PdlApiConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper,
             WebClient webClient
     ) {
         serverProperties = consumers.getPdlProxy();
         this.tokenExchange = tokenExchange;
-        ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
-                .codecs(
-                        config -> {
-                            config
-                                    .defaultCodecs()
-                                    .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                            config
-                                    .defaultCodecs()
-                                    .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                        })
-                .build();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.personservice.provider.v2;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.personservice.consumer.v2.PdlPersonConsumer;

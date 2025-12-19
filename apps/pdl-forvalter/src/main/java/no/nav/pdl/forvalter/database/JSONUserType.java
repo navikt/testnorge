@@ -1,27 +1,25 @@
 package no.nav.pdl.forvalter.database;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.std.SimpleFilterProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +27,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,19 +46,15 @@ public class JSONUserType implements UserType<PersonDTO> {
     public JSONUserType() {
         var simpleModule = new SimpleModule();
         simpleModule.addDeserializer(LocalDateTime.class, new TestnavLocalDateTimeDeserializer());
-        simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
+        simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
         simpleModule.addDeserializer(LocalDate.class, new TestnavLocalDateDeserializer());
-        simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
+        simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer());
 
         objectMapper = JsonMapper.builder()
-                .addModule(new JavaTimeModule())
                 .addModule(simpleModule)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 .configure(MapperFeature.USE_GETTERS_AS_SETTERS, false)
-                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
-                .visibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
                 .filterProvider(new SimpleFilterProvider().setFailOnUnknownId(false))
                 .build();
     }
@@ -114,10 +107,8 @@ public class JSONUserType implements UserType<PersonDTO> {
             return;
         }
         try {
-            var writer = new StringWriter();
-            objectMapper.writeValue(writer, value);
-            writer.flush();
-            ps.setObject(idx, writer.toString(), Types.OTHER);
+            var jsonString = objectMapper.writeValueAsString(value);
+            ps.setObject(idx, jsonString, Types.OTHER);
         } catch (final Exception ex) {
             log.error("Kunne ikke mappe PdlPerson til String {}", ex.getMessage(), ex);
             throw new InternalServerException("Kunne ikke mappe PdlPerson til String: " + ex.getMessage());
@@ -164,11 +155,25 @@ public class JSONUserType implements UserType<PersonDTO> {
         return this.deepCopy(original);
     }
 
-    private static class TestnavLocalDateDeserializer extends JsonDeserializer<LocalDate> {
+    private static class LocalDateSerializer extends ValueSerializer<LocalDate> {
+        @Override
+        public void serialize(LocalDate value, JsonGenerator gen, SerializationContext context) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE));
+        }
+    }
+
+    private static class LocalDateTimeSerializer extends ValueSerializer<LocalDateTime> {
+        @Override
+        public void serialize(LocalDateTime value, JsonGenerator gen, SerializationContext context) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE_TIME));
+        }
+    }
+
+    private static class TestnavLocalDateDeserializer extends ValueDeserializer<LocalDate> {
 
         @Override
-        public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }
@@ -177,11 +182,11 @@ public class JSONUserType implements UserType<PersonDTO> {
         }
     }
 
-    private static class TestnavLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+    private static class TestnavLocalDateTimeDeserializer extends ValueDeserializer<LocalDateTime> {
 
         @Override
-        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }

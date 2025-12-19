@@ -35,5 +35,5 @@ dependencies {
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
 
-    implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
+    implementation "tools.jackson.core:jackson-core"
 }

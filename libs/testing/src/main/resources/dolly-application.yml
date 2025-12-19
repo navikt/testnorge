@@ -33,6 +33,9 @@ server:
 spring:
   main:
     banner-mode: off
+  http:
+    codecs:
+      preferred-json-mapper: jackson
 
 springdoc:
   api-docs:

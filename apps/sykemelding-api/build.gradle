@@ -27,7 +27,7 @@ dependencies {
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
     implementation "jakarta.activation:jakarta.activation-api:$versions.jakartaActivation"
     implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+    implementation "tools.jackson.dataformat:jackson-dataformat-xml"
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 

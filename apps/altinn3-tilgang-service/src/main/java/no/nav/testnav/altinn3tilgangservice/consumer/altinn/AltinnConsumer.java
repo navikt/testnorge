@@ -1,8 +1,5 @@
 package no.nav.testnav.altinn3tilgangservice.consumer.altinn;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -21,12 +18,13 @@ import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDele
 import no.nav.testnav.altinn3tilgangservice.consumer.brreg.BrregConsumer;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,14 +57,6 @@ public class AltinnConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(altinnConfig.getUrl())
-                .codecs(clientDefaultCodecsConfigurer -> {
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
-                })
                 .build();
         this.brregConsumer = brregConsumer;
         this.mapperFacade = mapperFacade;

@@ -1,28 +1,17 @@
 package no.nav.registre.testnav.inntektsmeldingservice.config;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import no.nav.testnav.libs.dto.jackson.v1.CaseInsensitiveEnumModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.module.SimpleModule;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,51 +22,61 @@ import java.time.format.DateTimeFormatter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Configuration
-public class JsonMapperConfig implements WebMvcConfigurer {
+public class JsonMapperConfig {
 
     private static final String YEAR_MONTH = "yyyy-MM";
 
-    @Override
-    public void configureMessageConverters(java.util.List<HttpMessageConverter<?>> converters) {
-        converters.removeIf(c -> c instanceof MappingJackson2HttpMessageConverter);
-        converters.add(0, new MappingJackson2HttpMessageConverter(objectMapper()));
+    @Bean
+    public CaseInsensitiveEnumModule caseInsensitiveEnumModule() {
+        return new CaseInsensitiveEnumModule();
     }
 
     @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-
-        var simpleModule = new SimpleModule()
+    public SimpleModule dollyDateTimeModule() {
+        return new SimpleModule("dollyDateTimeModule")
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
-                .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
+                .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
                 .addDeserializer(LocalDate.class, new DollyLocalDateDeserializer())
-                .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_DATE))
+                .addSerializer(LocalDate.class, new LocalDateSerializer())
                 .addDeserializer(YearMonth.class, new DollyYearMonthDeserializer())
-                .addSerializer(YearMonth.class, new YearMonthSerializer(DateTimeFormatter.ofPattern(YEAR_MONTH)))
+                .addSerializer(YearMonth.class, new YearMonthSerializer())
                 .addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer())
-                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
+                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer())
                 .addDeserializer(Instant.class, new DollyInstantDeserializer());
-        return JsonMapper
-                .builder()
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
-                .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-                .build()
-                .registerModule(new JavaTimeModule())
-                .registerModule(new CaseInsensitiveEnumModule())
-                .registerModule(simpleModule);
-
     }
 
-
-
-    private static class DollyYearMonthDeserializer extends JsonDeserializer<YearMonth> {
-
+    private static class LocalDateSerializer extends ValueSerializer<LocalDate> {
         @Override
-        public YearMonth deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        public void serialize(LocalDate value, JsonGenerator gen, SerializationContext context) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE));
+        }
+    }
+
+    private static class LocalDateTimeSerializer extends ValueSerializer<LocalDateTime> {
+        @Override
+        public void serialize(LocalDateTime value, JsonGenerator gen, SerializationContext context) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE_TIME));
+        }
+    }
+
+    private static class YearMonthSerializer extends ValueSerializer<YearMonth> {
+        @Override
+        public void serialize(YearMonth value, JsonGenerator gen, SerializationContext context) {
+            gen.writeString(value.format(DateTimeFormatter.ofPattern(YEAR_MONTH)));
+        }
+    }
+
+    private static class ZonedDateTimeSerializer extends ValueSerializer<ZonedDateTime> {
+        @Override
+        public void serialize(ZonedDateTime value, JsonGenerator gen, SerializationContext context) {
+            gen.writeString(value.format(DateTimeFormatter.ISO_DATE_TIME));
+        }
+    }
+
+    private static class DollyYearMonthDeserializer extends ValueDeserializer<YearMonth> {
+        @Override
+        public YearMonth deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }
@@ -85,11 +84,10 @@ public class JsonMapperConfig implements WebMvcConfigurer {
         }
     }
 
-    private static class DollyZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
-
+    private static class DollyZonedDateTimeDeserializer extends ValueDeserializer<ZonedDateTime> {
         @Override
-        public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }
@@ -97,11 +95,10 @@ public class JsonMapperConfig implements WebMvcConfigurer {
         }
     }
 
-    private static class DollyLocalDateDeserializer extends JsonDeserializer<LocalDate> {
-
+    private static class DollyLocalDateDeserializer extends ValueDeserializer<LocalDate> {
         @Override
-        public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }
@@ -110,11 +107,10 @@ public class JsonMapperConfig implements WebMvcConfigurer {
         }
     }
 
-    private static class DollyLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
-
+    private static class DollyLocalDateTimeDeserializer extends ValueDeserializer<LocalDateTime> {
         @Override
-        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }
@@ -123,11 +119,10 @@ public class JsonMapperConfig implements WebMvcConfigurer {
         }
     }
 
-    private static class DollyInstantDeserializer extends JsonDeserializer<Instant> {
-
+    private static class DollyInstantDeserializer extends ValueDeserializer<Instant> {
         @Override
-        public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+            JsonNode node = jsonParser.readValueAsTree();
             if (isBlank(node.asText())) {
                 return null;
             }

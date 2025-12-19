@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.organisasjonservice.provider;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.DetaljerDTO;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.NavnDTO;

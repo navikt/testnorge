@@ -1,14 +1,13 @@
 package no.nav.testnav.personfastedataservice.repository.converter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
-
 import jakarta.persistence.AttributeConverter;
-
+import lombok.SneakyThrows;
 import no.nav.testnav.personfastedataservice.domain.Person;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class PersonJsonConverter implements AttributeConverter<Person, String> {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
     @SneakyThrows
     @Override

@@ -18,8 +18,6 @@ configurations {
 }
 
 dependencies {
-    implementation platform("tools.jackson:jackson-bom:3.0.3")
-    
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
@@ -55,6 +53,7 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:$versions.springCloud"
         mavenBom "org.springframework.session:spring-session-bom:$versions.springSession"
         mavenBom "org.testcontainers:testcontainers-bom:$versions.testcontainers"
+        mavenBom "tools.jackson:jackson-bom:3.0.3"
     }
 }
 

@@ -1,6 +1,5 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.TestSecurityConfig;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
@@ -16,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import tools.jackson.databind.ObjectMapper;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 
