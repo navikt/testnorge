@@ -2,7 +2,7 @@ spring:
   application:
     name: testnav-aareg-proxy
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -14,8 +14,10 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
-      httpclient:
-        response-timeout: 600s
+      server:
+        webflux:
+          httpclient:
+            response-timeout: 600s
 
 consumers:
     aareg-services:

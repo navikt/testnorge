@@ -3,7 +3,7 @@ spring:
     name: testnav-brregstub-reverse-proxy
     description: Proxy for brregstub som legger på sikkerhet.
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,8 +15,10 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
-      httpclient:
-        response-timeout: 30s
+      server:
+        webflux:
+          httpclient:
+            response-timeout: 30s
 
 consumers:
   brregstub:

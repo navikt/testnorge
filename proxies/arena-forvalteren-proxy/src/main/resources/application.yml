@@ -3,7 +3,7 @@ spring:
     name: testnav-arena-forvalteren-proxy
     description: Proxy for arena-forvalteren som legger på sikkerhet.
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,8 +15,10 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
-      httpclient:
-        response-timeout: 120s
+      server:
+        webflux:
+          httpclient:
+            response-timeout: 120s
 
 consumers:
   arena-services:
