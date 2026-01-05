@@ -5,10 +5,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 import { dollySoekLocalStorageKey } from '@/pages/dollySoek/SoekForm'
-import {
-	tenorSoekLocalStorageKey,
-	tenorSoekStateLocalStorageKey,
-} from '@/pages/tenorSoek/TenorSoekPage'
+import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from '@/pages/tenorSoek/constants'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 export const PersonDropdown = () => {

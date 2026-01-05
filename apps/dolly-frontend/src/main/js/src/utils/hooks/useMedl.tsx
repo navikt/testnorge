@@ -3,9 +3,7 @@ import { fetcher } from '@/api'
 
 const getMedlUrl = (ident: string) => `/testnav-dolly-proxy/medl/rest/v1/person/${ident}`
 
-type MedlResponse = {
-	response: any
-}
+type MedlResponse = any[]
 
 export const useMedlPerson = (ident: string, harMedlBestilling: boolean) => {
 	const { data, isLoading, error, mutate } = useSWR<MedlResponse, Error>(

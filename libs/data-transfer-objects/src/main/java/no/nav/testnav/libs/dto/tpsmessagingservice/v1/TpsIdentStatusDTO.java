@@ -18,6 +18,7 @@ public class TpsIdentStatusDTO {
 
     private String ident;
     private List<String> miljoer;
+    private String status;
 
     public List<String> getMiljoer() {
         if (isNull(miljoer)) {

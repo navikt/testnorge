@@ -7,7 +7,10 @@ import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Logger } from '@/logger/Logger'
 
-axios.defaults.timeout = 9000
+axios.defaults.timeout = 10000
+axios.defaults.validateStatus = (status) => {
+	return (status >= 200 && status < 300) || status === 404
+}
 
 const fetchRetry = fetch_retry(originalFetch)
 
@@ -21,6 +24,7 @@ export const multiFetcherAll = (urlListe, headers = null) =>
 			}),
 		),
 	)
+
 export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 	Promise.all(
 		miljoUrlListe.map((obj) =>
@@ -67,7 +71,7 @@ export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) =>
 		),
 	)
 
-export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = null) =>
+export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, _path = null) =>
 	Promise.allSettled(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers)
@@ -99,49 +103,69 @@ export const cvFetcher = (url, headers) => {
 	return axios
 		.get(url, { headers: headers })
 		.then((res) => {
+			if (res.status === 404) {
+				return null
+			}
 			return res.data
 		})
 		.catch((reason) => {
-			if (reason?.response?.status === 403) {
+			if (reason.response?.status === 403) {
 				throw {
 					message: `Mangler tilgang for å hente CV fra ${url}`,
-					status: reason?.response?.status,
+					status: reason.response.status,
 				}
 			}
-			if (reason.status === 404 || reason.response?.status === 404) {
-				if (reason.response?.data?.error) {
-					throw new Error(reason.response?.data?.error)
-				}
-				throw new NotFoundError()
+			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
+				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
 }
 
 export const sykemeldingFetcher = (url, body) =>
-	axios.post(url, body).then((res) => {
-		return res.data
-	})
+	axios
+		.post(url, body)
+		.then((res) => {
+			if (res.status === 404) {
+				return null
+			}
+			return res.data
+		})
+		.catch((reason) => {
+			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
+				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
+			}
+			throw new Error(`Henting av data fra ${url} feilet.`)
+		})
+
+export const identpoolFetcher = (url, body) =>
+	axios
+		.post(url, body, { timeout: 0 })
+		.then((res) => {
+			return res.data
+		})
+		.catch((error) => {
+			throw new Error(error.message)
+		})
 
 export const fetcher = (url, headers?) =>
 	axios
 		.get(url, { headers: headers })
 		.then((res) => {
+			if (res.status === 404) {
+				return null
+			}
 			return res.data
 		})
 		.catch((reason) => {
-			if (
-				(reason?.response?.status === 401 || reason?.response?.status === 403) &&
-				logoutOnForbidden.some((value) => url.includes(value))
-			) {
-				console.error('Auth feilet, navigerer til login')
-				navigateToLogin()
-			}
-			if (reason.status === 404 || reason.response?.status === 404) {
-				if (reason.response?.data?.error) {
-					throw new Error(reason.response?.data?.error)
+			if (reason.response?.status === 401 || reason.response?.status === 403) {
+				if (logoutOnForbidden.some((value) => url.includes(value))) {
+					console.error('Auth feilet, navigerer til login')
+					navigateToLogin()
 				}
-				throw new NotFoundError()
+			}
+			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
+				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
@@ -199,7 +223,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		},
 		retries: 5,
 		retryDelay: (attempt: number, _error: any, _response: any) => {
-			return Math.pow(2, attempt) * 1000 // 1000, 2000, 4000
+			return Math.pow(2, attempt) * 1000
 		},
 		method: config.method,
 		redirect: config.redirect,

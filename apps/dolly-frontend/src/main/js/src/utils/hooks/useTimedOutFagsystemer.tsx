@@ -117,10 +117,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		list.push('UDI')
 	if (
 		(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
-		(harMedlBestilling(bestillingerFagsystemer) &&
-			medl?.response &&
-			Array.isArray(medl.response) &&
-			medl.response.length === 0)
+		(harMedlBestilling(bestillingerFagsystemer) && medl && Array.isArray(medl) && medl.length === 0)
 	)
 		list.push('MEDL')
 	return list

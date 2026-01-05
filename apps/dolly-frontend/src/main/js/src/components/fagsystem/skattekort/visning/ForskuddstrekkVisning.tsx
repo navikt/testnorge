@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
+import { KodeverkTitleValue } from '@/components/fagsystem/skattekort/visning/Visning'
 import { toTitleCase } from '@/utils/DataFormatter'
 
 export const ForskuddstrekkVisning = ({ trekkliste }: any) => {
@@ -17,14 +17,16 @@ export const ForskuddstrekkVisning = ({ trekkliste }: any) => {
 				return (
 					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Trekktype" value={toTitleCase(forskuddstrekkType)} />
-						<TitleValue
-							title="Trekkode"
-							value={showKodeverkLabel('TREKKODE', forskuddstrekk?.trekkode)}
+						<KodeverkTitleValue
+							kodeverkstype="TREKKODE"
+							value={forskuddstrekk?.trekkode}
+							label="Trekkode"
 						/>
 						<TitleValue title="Frikortbeløp" value={forskuddstrekk?.frikortbeloep} />
-						<TitleValue
-							title="Tabelltype"
-							value={showKodeverkLabel('TABELLTYPE', forskuddstrekk?.tabelltype)}
+						<KodeverkTitleValue
+							kodeverkstype="TABELLTYPE"
+							value={forskuddstrekk?.tabelltype}
+							label="Tabelltype"
 						/>
 						<TitleValue title="Tabellnummer" value={forskuddstrekk?.tabellnummer} />
 						<TitleValue title="Prosentsats" value={forskuddstrekk?.prosentsats} />

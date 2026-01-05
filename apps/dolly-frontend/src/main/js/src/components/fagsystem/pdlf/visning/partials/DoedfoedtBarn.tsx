@@ -7,7 +7,7 @@ import { DoedfoedtBarnData, PersonData } from '@/components/fagsystem/pdlf/PdlTy
 import * as _ from 'lodash-es'
 import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import React from 'react'
 
 type DataListe = {
@@ -68,7 +68,7 @@ export const DoedfoedtBarnVisning = ({
 	}
 
 	return (
-		<VisningRedigerbarConnector
+		<VisningRedigerbar
 			dataVisning={<DoedfoedtBarnLes data={doedfoedtBarnValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertDoedfoedtBarnValues}
