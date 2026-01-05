@@ -77,7 +77,7 @@ spec:
           cluster: dev-fss
         - application: testnav-kodeverk-service
           cluster: dev-gcp
-        - application: testnav-aareg-proxy
+        - application: testnav-dolly-proxy
           cluster: dev-fss
         - application: logging
           namespace: nais-system

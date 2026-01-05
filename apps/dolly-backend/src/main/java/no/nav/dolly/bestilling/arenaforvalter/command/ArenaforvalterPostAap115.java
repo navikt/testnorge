@@ -21,7 +21,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 public class ArenaforvalterPostAap115 implements Callable<Flux<Aap115Response>> {
 
-    private static final String ARENAFORVALTER_AAP115 = "/api/v1/aap115";
+    private static final String ARENAFORVALTER_AAP115 = "/arena/api/v1/aap115";
 
     private final WebClient webClient;
     private final Aap115Request aap115Request;

@@ -20,7 +20,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 @Slf4j
 public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRespons>> {
 
-    private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
+    private static final String AAREGDATA_URL = "/aareg/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
     private static final String ARBEIDSFORHOLD_TYPE = "arbeidsforholdtype";
     private static final String ARBEIDSFORHOLD_AVAIL = "forenkletOppgjoersordning, " +
             "frilanserOppdragstakerHonorarPersonerMm, " +

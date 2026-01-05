@@ -24,7 +24,7 @@ public class AaregConsumer {
             Consumers consumers,
             TokenExchange tokenExchange,
             WebClient webClient) {
-        this.serverProperties = consumers.getTestnavAaregProxy();
+        this.serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         this.webClient = webClient
                 .mutate()

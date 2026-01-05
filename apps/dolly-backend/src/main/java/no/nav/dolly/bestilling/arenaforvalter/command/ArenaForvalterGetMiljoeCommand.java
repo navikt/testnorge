@@ -19,7 +19,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
 
-    private static final String ARENAFORVALTER_ENVIRONMENTS = "/api/v1/miljoe";
+    private static final String ARENAFORVALTER_ENVIRONMENTS = "/arena/api/v1/miljoe";
 
     private final WebClient webClient;
     private final String token;

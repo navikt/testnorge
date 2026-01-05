@@ -23,12 +23,12 @@ public class PdlDataConsumer {
             Consumers serverProperties,
             WebClient webClient
     ) {
+        this.serverProperties = serverProperties.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .baseUrl(serverProperties.getPdlTestdata().getUrl())
+                .baseUrl(this.serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
-        this.serverProperties = serverProperties.getPdlTestdata();
     }
 
     public Mono<DollyTagsDTO> hasPdlDollyTag(List<String> identer) {

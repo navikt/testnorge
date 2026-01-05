@@ -41,6 +41,7 @@ spec:
   envFrom:
     - secret: azure-nav-testnav-dolly-proxy
     - secret: azure-trygdeetaten-testnav-dolly-proxy
+    - secret: testnav-pdl-proxy
   image: "{{image}}"
   port: 8080
   tokenx:
@@ -67,6 +68,8 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+        - application: pdl-testdata
+          namespace: pdl
         - application: pensjon-afp-offentlig-mock-q1
           namespace: pensjon-saksbehandling
           cluster: dev-gcp
@@ -81,7 +84,21 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-adresse-service
+          cluster: dev-gcp
+        - application: testnav-dolly-search-service
+          cluster: dev-gcp
+        - application: testnav-dolly-search-service-dev
+          cluster: dev-gcp
+        - application: testnav-inntektsmelding-service
+          cluster: dev-gcp
         - application: testnav-jenkins-batch-status-service
+          cluster: dev-gcp
+        - application: testnav-joark-dokument-service
+          cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-service
           cluster: dev-gcp
         - application: testnav-organisasjon-mottak-service
           cluster: dev-gcp
@@ -89,8 +106,21 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
+        - application: testnav-person-service
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api-dev
+          cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+        - application: testnav-tenor-search-service
+          cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
     outbound:
       rules:
         - application: digdir-krr-stub
@@ -102,6 +132,10 @@ spec:
           namespace: arbeidsforhold
         - application: ereg-services-q4
           namespace: arbeidsforhold
+        - application: testnav-inntektsmelding-service
+          cluster: dev-gcp
+        - application: testnav-joark-dokument-service
+          cluster: dev-gcp
         - application: medlemskap-medl-testdata
           namespace: team-rocket
           cluster: dev-gcp

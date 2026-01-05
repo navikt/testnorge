@@ -28,7 +28,7 @@ public class OpprettJournalpostCommand implements Callable<Mono<DokmotResponse>>
     public Mono<DokmotResponse> call() {
         return webClient
                 .post()
-                .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(miljo))
+                .uri(builder -> builder.path("/dokarkiv/api/{miljo}/v1/journalpost").build(miljo))
                 .header("Nav-Call-Id", navCallId)
                 .headers(WebClientHeader.bearer(token))
                 .acceptCharset(StandardCharsets.UTF_8)

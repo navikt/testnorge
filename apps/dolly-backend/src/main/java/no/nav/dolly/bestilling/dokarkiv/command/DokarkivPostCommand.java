@@ -27,7 +27,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
         return webClient
                 .post()
                 .uri(builder ->
-                        builder.path("/api/{miljo}/v1/journalpost")
+                        builder.path("/dokarkiv/api/{miljo}/v1/journalpost")
                                 .queryParam("forsoekFerdigstill", isTrue(dokarkivRequest.getFerdigstill()))
                                 .build(environment))
                 .headers(WebClientHeader.bearer(token))
