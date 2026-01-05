@@ -41,9 +41,3 @@ springdoc:
       use-pkce-with-authorization-code-grant: true
       scopes:
         - api://${AZURE_APP_CLIENT_ID}/.default
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,gateway,prometheus
