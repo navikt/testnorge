@@ -10,8 +10,10 @@ spring:
     import: "dolly-application.yml"
   cloud:
     gateway:
-      httpclient:
-        response-timeout: 600s
+      server:
+        webflux:
+          httpclient:
+            response-timeout: 600s
   security: # For OpenAPI login.
     oauth2:
       resourceserver:
