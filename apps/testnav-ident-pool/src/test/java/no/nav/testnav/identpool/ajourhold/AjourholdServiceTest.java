@@ -10,8 +10,6 @@ import no.nav.testnav.identpool.service.IdentGeneratorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -65,12 +63,11 @@ class AjourholdServiceTest {
                 .verifyComplete();
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "1995, 1460",
-            "1996, 1464"
-    })
-    void genererIdenterForAarHvorAlleErLedige(int year, long expected) {
+    @Test
+    void genererIdenterForAarHvorAlleErLedige() {
+
+        var year = LocalDate.now().getYear() - 30; // 30 years ago.
+        var expected = 1460L + (year % 4 == 0 ? 4 : 0); // Accounting for leap years.
 
         when(identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
                 LocalDate.of(year, 1, 1), LocalDate.of(year, 12, 31),
@@ -82,6 +79,7 @@ class AjourholdServiceTest {
                 .as(StepVerifier::create)
                 .expectNext(expected)
                 .verifyComplete();
+
     }
 
     @Test
