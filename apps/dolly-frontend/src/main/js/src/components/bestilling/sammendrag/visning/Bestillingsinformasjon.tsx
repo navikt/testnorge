@@ -1,4 +1,4 @@
-import { formatDateTimeWithSeconds, oversettBoolean } from '@/utils/DataFormatter'
+import { arrayToString, formatDateTimeWithSeconds, oversettBoolean } from '@/utils/DataFormatter'
 import { getTypePerson } from '@/components/bestilling/sammendrag/kriterier/BestillingKriterieMapper'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
@@ -32,6 +32,10 @@ export const Bestillingsinformasjon = ({ bestillingsinfo }) => {
 						<TitleValue
 							title="Ny ident (2032)"
 							value={oversettBoolean(bestillingsinfo?.bestilling?.pdldata?.opprettNyPerson?.id2032)}
+						/>
+						<TitleValue
+							title="Miljøer"
+							value={arrayToString(bestillingsinfo?.environments, ', ')?.toUpperCase()}
 						/>
 						<TitleValue
 							title="Sist oppdatert"
