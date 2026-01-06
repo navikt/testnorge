@@ -32,6 +32,10 @@ const showKodeverkLabel = (kodeverkData: any, value: string) => {
 }
 
 export const YrkesskaderVisning = ({ data, loading }: YrkesskaderVisningProps) => {
+	const { kodeverkData: kodeverkDataRolletype } = useYrkesskadeKodeverk('ROLLETYPE')
+	const { kodeverkData: kodeverkDataInnmelderrolletype } =
+		useYrkesskadeKodeverk('INNMELDERROLLETYPE')
+
 	if (loading) {
 		return <Loading label="Laster yrkesskade-data" />
 	}
@@ -41,10 +45,6 @@ export const YrkesskaderVisning = ({ data, loading }: YrkesskaderVisningProps) =
 	}
 
 	const manglerFagsystemData = sjekkManglerYrkesskadeData(data)
-
-	const { kodeverkData: kodeverkDataRolletype } = useYrkesskadeKodeverk('ROLLETYPE')
-	const { kodeverkData: kodeverkDataInnmelderrolletype } =
-		useYrkesskadeKodeverk('INNMELDERROLLETYPE')
 
 	return (
 		<div>
