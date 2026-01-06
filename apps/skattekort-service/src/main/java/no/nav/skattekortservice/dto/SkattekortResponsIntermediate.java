@@ -1,7 +1,5 @@
 package no.nav.skattekortservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.skattekortservice.v1.IdentifikatorForEnhetEllerPerson;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +26,62 @@ import static java.util.Objects.isNull;
 public class SkattekortResponsIntermediate {
 
     private SkattekortTilArbeidsgiver skattekortTilArbeidsgiver;
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Resultatstatus {
+
+        ikkeSkattekort("IKKE_SKATTEKORT"),
+        vurderArbeidstillatelse("VURDER_ARBEIDSTILLATELSE"),
+        ikkeTrekkplikt("IKKE_TREKKPLIKT"),
+        skattekortopplysningerOK("SKATTEKORTOPPLYSNINGER_OK"),
+        ugyldigOrganisasjonsnummer("UGYLDIG_ORGANISASJONSNUMMER"),
+        ugyldigFoedselsEllerDnummer("UGYLDIG_FOEDSELS_ELLER_DNUMMER"),
+        utgaattDnummerSkattekortForFoedselsnummerErLevert("UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Tilleggsopplysning {
+
+        oppholdPaaSvalbard("OPPHOLD_PAA_SVALBARD"),
+        kildeskattpensjonist("KILDESKATTPENSJONIST"),
+        oppholdITiltakssone("OPPHOLD_I_TILTAKSSONE"),
+        kildeskattPaaLoenn("KILDESKATT_PAA_LOENN");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Tabelltype {
+
+        trekktabellForPensjon("TREKKTABELL_FOR_PENSJON"),
+        trekktabellForLoenn("TREKKTABELL_FOR_LOENN");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Trekkode {
+
+        loennFraHovedarbeidsgiver("LOENN_FRA_HOVEDARBEIDSGIVER"),
+        loennFraBiarbeidsgiver("LOENN_FRA_BIARBEIDSGIVER"),
+        loennFraNAV("LOENN_FRA_NAV"),
+        pensjon("PENSJON"),
+        pensjonFraNAV("PENSJON_FRA_NAV"),
+        loennTilUtenrikstjenestemann("LOENN_TIL_UTENRIKSTJENESTEMANN"),
+        loennKunTrygdeavgiftTilUtenlandskBorger("LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER"),
+        loennKunTrygdeavgiftTilUtenlandskBorgerSomGrensegjenger("LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER_SOM_GRENSEGJENGER"),
+        ufoeretrygdFraNAV("UFOERETRYGD_FRA_NAV"),
+        ufoereytelserFraAndre("UFOEREYTELSER_FRA_ANDRE"),
+        introduksjonsstoenad("INTRODUKSJONSSTOENAD");
+
+        private final String value;
+    }
 
     @Data
     @Builder
@@ -152,61 +208,5 @@ public class SkattekortResponsIntermediate {
 
         private Integer prosentsats;
         private Integer antallMaanederForTrekk;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum Resultatstatus {
-
-        ikkeSkattekort("IKKE_SKATTEKORT"),
-        vurderArbeidstillatelse("VURDER_ARBEIDSTILLATELSE"),
-        ikkeTrekkplikt("IKKE_TREKKPLIKT"),
-        skattekortopplysningerOK("SKATTEKORTOPPLYSNINGER_OK"),
-        ugyldigOrganisasjonsnummer("UGYLDIG_ORGANISASJONSNUMMER"),
-        ugyldigFoedselsEllerDnummer("UGYLDIG_FOEDSELS_ELLER_DNUMMER"),
-        utgaattDnummerSkattekortForFoedselsnummerErLevert("UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT");
-
-        private final String value;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum Tilleggsopplysning {
-
-        oppholdPaaSvalbard("OPPHOLD_PAA_SVALBARD"),
-        kildeskattpensjonist("KILDESKATTPENSJONIST"),
-        oppholdITiltakssone("OPPHOLD_I_TILTAKSSONE"),
-        kildeskattPaaLoenn("KILDESKATT_PAA_LOENN");
-
-        private final String value;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum Tabelltype {
-
-        trekktabellForPensjon("TREKKTABELL_FOR_PENSJON"),
-        trekktabellForLoenn("TREKKTABELL_FOR_LOENN");
-
-        private final String value;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum Trekkode {
-
-        loennFraHovedarbeidsgiver("LOENN_FRA_HOVEDARBEIDSGIVER"),
-        loennFraBiarbeidsgiver("LOENN_FRA_BIARBEIDSGIVER"),
-        loennFraNAV("LOENN_FRA_NAV"),
-        pensjon("PENSJON"),
-        pensjonFraNAV("PENSJON_FRA_NAV"),
-        loennTilUtenrikstjenestemann("LOENN_TIL_UTENRIKSTJENESTEMANN"),
-        loennKunTrygdeavgiftTilUtenlandskBorger("LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER"),
-        loennKunTrygdeavgiftTilUtenlandskBorgerSomGrensegjenger("LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER_SOM_GRENSEGJENGER"),
-        ufoeretrygdFraNAV("UFOERETRYGD_FRA_NAV"),
-        ufoereytelserFraAndre("UFOEREYTELSER_FRA_ANDRE"),
-        introduksjonsstoenad("INTRODUKSJONSSTOENAD");
-
-        private final String value;
     }
 }

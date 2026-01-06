@@ -6,10 +6,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nimbusds.jose.jwk.RSAKey;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -21,39 +22,57 @@ import static no.nav.testnav.mocks.tokendings.TokendingsMockApplicationStarter.U
 @RequiredArgsConstructor
 public class JwtService {
 
-    private static final String JWK;
+    private static final String JWK_JSON = loadJson("static/jwk.json");
+    private static final RSAKey RSA_KEY = parseRsaKey(JWK_JSON);
+    private static final RSAPublicKey PUBLIC_KEY = toPublicKey(RSA_KEY);
+    private static final RSAPrivateKey PRIVATE_KEY = toPrivateKey(RSA_KEY);
 
-    static {
-        JWK = loadJson("static/jwk.json");
-    }
-
-    @SneakyThrows
     public DecodedJWT verify(String jwt) {
-        var key = RSAKey.parse(JWK);
         return JWT
-                .require(Algorithm.RSA256(key.toRSAPublicKey(), (RSAPrivateKey) key.toPrivateKey()))
+                .require(Algorithm.RSA256(PUBLIC_KEY, null))
                 .build()
                 .verify(jwt);
     }
 
-
-    @SneakyThrows
     public String jwtWith(Map<String, String> claims, String audience) {
-        var date = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+
         var builder = JWT
                 .create()
                 .withIssuer("http://tokendings:8080")
-                .withIssuedAt(date.getTime())
-                .withNotBefore(date.getTime())
+                .withIssuedAt(now)
+                .withNotBefore(now)
                 .withAudience(audience)
                 .withJWTId(UUID.randomUUID().toString())
-                .withExpiresAt(new Date(date.getTimeInMillis() + (2 * 60 * 60 * 1000)));
+                .withExpiresAt(new Date(calendar.getTimeInMillis() + (2L * 60 * 60 * 1000)));
+
         claims.forEach(builder::withClaim);
-        var privateKey = (RSAPrivateKey) RSAKey
-                .parse(JWK)
-                .toPrivateKey();
-        return builder
-                .sign(Algorithm.RSA256(null, privateKey));
+
+        return builder.sign(Algorithm.RSA256(null, PRIVATE_KEY));
     }
 
+    private static RSAKey parseRsaKey(String jwkJson) {
+        try {
+            return RSAKey.parse(jwkJson);
+        } catch (ParseException e) {
+            throw new IllegalStateException("Unable to parse JWK", e);
+        }
+    }
+
+    private static RSAPublicKey toPublicKey(RSAKey rsaKey) {
+        try {
+            return rsaKey.toRSAPublicKey();
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to create RSA public key", e);
+        }
+    }
+
+    private static RSAPrivateKey toPrivateKey(RSAKey rsaKey) {
+        try {
+            return rsaKey.toRSAPrivateKey();
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to create RSA private key", e);
+        }
+    }
 }

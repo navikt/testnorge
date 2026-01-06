@@ -5,6 +5,7 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -26,13 +27,8 @@ public class ArenaForvalterenProxyApplicationStarter {
 
     private static final String[] ARENA_MILJOER = {"q1", "q2", "q4"};
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(ArenaForvalterenProxyApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("arenaForvalterenRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             Consumers consumers
@@ -47,6 +43,12 @@ public class ArenaForvalterenProxyApplicationStarter {
                 .stream(ARENA_MILJOER)
                 .forEach(env -> routes.route(createRoute(env, forEnvironment(consumers.getArenaServices(), env).getUrl())));
         return routes.build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(ArenaForvalterenProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host) {

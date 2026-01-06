@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTo
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -28,15 +29,10 @@ import java.util.function.Function;
 @SpringBootApplication
 public class SafProxyApplicationStarter {
 
-    private static final String[] miljoer = new String[]{"q1", "q2", "q4"};
+    private static final String[] miljoer = new String[]{ "q1", "q2", "q4" };
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(SafProxyApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("safProxyRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             AzureTrygdeetatenTokenService tokenService,
@@ -55,6 +51,12 @@ public class SafProxyApplicationStarter {
                                                             .map(AccessToken::getTokenValue))));
                         });
         return routes.build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(SafProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, String url, GatewayFilter filter) {

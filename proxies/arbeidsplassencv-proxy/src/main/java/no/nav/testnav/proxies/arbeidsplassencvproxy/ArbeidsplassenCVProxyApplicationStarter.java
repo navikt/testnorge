@@ -8,6 +8,7 @@ import no.nav.testnav.proxies.arbeidsplassencvproxy.config.Consumers;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.consumer.FakedingsConsumer;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -33,7 +34,21 @@ public class ArbeidsplassenCVProxyApplicationStarter {
                 .run(args);
     }
 
-    @Bean
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String url, GatewayFilter filter) {
+        return spec -> spec
+                .path("/**")
+                .and()
+                .not(not -> not.path("/internal/**"))
+                .filters(
+                        filterSpec -> filterSpec
+                                .rewritePath("/(?<segment>.*)", "/pam-cv-api/${segment}")
+                                .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
+                                .filter(filter))
+                .uri(url);
+    }
+
+    @Bean("arbeidsplassencvRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            Consumers consumers,
                                            FakedingsConsumer fakedingsConsumer,
@@ -47,19 +62,6 @@ public class ArbeidsplassenCVProxyApplicationStarter {
                 .routes()
                 .route(createRoute(consumers.getArbeidsplassenCv().getUrl(), gatewayFilter))
                 .build();
-    }
-
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String url, GatewayFilter filter) {
-        return spec -> spec
-                .path("/**")
-                .and()
-                .not(not -> not.path("/internal/**"))
-                .filters(
-                        filterSpec -> filterSpec
-                                .rewritePath("/(?<segment>.*)", "/pam-cv-api/${segment}")
-                                .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
-                                .filter(filter))
-                .uri(url);
     }
 
 }

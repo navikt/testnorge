@@ -10,6 +10,7 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.pdlproxy.config.Consumers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -30,13 +31,8 @@ import java.util.function.Function;
 @SpringBootApplication
 public class PdlProxyApplicationStarter {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(PdlProxyApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("pdlProxyRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            CredentialsHolder credentialsHolder,
                                            AzureTrygdeetatenTokenService tokenService,
@@ -51,6 +47,12 @@ public class PdlProxyApplicationStarter {
                 .route(createRoute(consumers.getPdlTestdata(), tokenService))
                 .route(createRoute("pdl-identhendelse", "http://pdl-identhendelse-lager.pdl.svc.nais.local", addHendelselagerApiKeyAuthenticationHeader))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(PdlProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {

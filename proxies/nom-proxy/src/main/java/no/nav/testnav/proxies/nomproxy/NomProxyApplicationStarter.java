@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTo
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.nomproxy.config.Consumers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -21,13 +22,8 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 public class NomProxyApplicationStarter {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(NomProxyApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("nomProxyRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            AzureTrygdeetatenTokenService tokenService,
                                            Consumers consumers) {
@@ -46,5 +42,11 @@ public class NomProxyApplicationStarter {
                         .uri(consumers.getNomApi().getUrl())
                 )
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(NomProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

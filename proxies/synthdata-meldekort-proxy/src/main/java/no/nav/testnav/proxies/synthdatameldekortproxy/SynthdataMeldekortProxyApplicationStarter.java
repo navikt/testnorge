@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenServic
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.synthdatameldekortproxy.config.Consumers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -29,7 +30,8 @@ public class SynthdataMeldekortProxyApplicationStarter {
                 .run(args);
     }
 
-    @Bean
+    @Bean("synthdataMeldekortRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             AzureNavTokenService tokenService,

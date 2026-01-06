@@ -10,6 +10,7 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.dokarkivproxy.config.Consumers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -33,13 +34,8 @@ public class DokarkivProxyApplicationStarter {
 
     private static final String[] miljoer = new String[]{"q1", "q2", "q4"};
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(DokarkivProxyApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("dokarkivRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             AzureTrygdeetatenTokenService tokenService,
@@ -55,6 +51,12 @@ public class DokarkivProxyApplicationStarter {
                                                         .exchange(forEnvironment(consumers.getDokarkiv(), miljoe))
                                                         .map(AccessToken::getTokenValue)))));
         return routes.build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(DokarkivProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, String url, GatewayFilter filter) {

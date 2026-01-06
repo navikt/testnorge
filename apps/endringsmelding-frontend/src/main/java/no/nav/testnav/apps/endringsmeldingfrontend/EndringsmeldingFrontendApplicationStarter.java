@@ -11,6 +11,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -37,19 +38,20 @@ public class EndringsmeldingFrontendApplicationStarter {
     private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(EndringsmeldingFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("endringsmeldingFrontendRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
                 .route(createRoute(consumers.getEndringsmeldingService(), "endringsmelding-service"))
                 .route(createRoute(consumers.getTestnorgeProfilApi()))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(EndringsmeldingFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {

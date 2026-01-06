@@ -1,6 +1,7 @@
 package no.nav.testnav.altinn3tilgangservice.config;
 
 import no.nav.testnav.libs.dto.jackson.v1.CaseInsensitiveEnumModule;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tools.jackson.core.JsonGenerator;
@@ -26,6 +27,7 @@ public class JsonMapperConfig {
     private static final String YEAR_MONTH = "yyyy-MM";
 
     @Bean
+    @ConditionalOnMissingBean(name = "caseInsensitiveEnumModule")
     public CaseInsensitiveEnumModule caseInsensitiveEnumModule() {
         return new CaseInsensitiveEnumModule();
     }
