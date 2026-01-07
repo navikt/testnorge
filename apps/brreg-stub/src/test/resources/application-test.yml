@@ -1,4 +1,12 @@
 spring:
+  main:
+    web-application-type: servlet
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.webflux.autoconfigure.WebFluxAutoConfiguration
+      - org.springframework.boot.webflux.autoconfigure.HttpHandlerAutoConfiguration
+      - org.springframework.boot.webflux.autoconfigure.ReactiveWebServerFactoryAutoConfiguration
+      - org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext
   datasource:
     url: jdbc:tc:postgresql:15:///test_database
     username: user

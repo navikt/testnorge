@@ -1,43 +1,37 @@
 package no.nav.brregstub.endpoint.rs.v2;
 
-import no.nav.brregstub.api.common.Egenskap;
-import no.nav.brregstub.api.common.RolleKode;
-import no.nav.brregstub.api.common.RsAdresse;
-import no.nav.brregstub.api.common.RsNavn;
-import no.nav.brregstub.api.v2.RsRolle;
-import no.nav.brregstub.api.v2.RsRolleStatus;
-import no.nav.brregstub.api.v2.RsRolleoversikt;
 import no.nav.brregstub.database.domene.Rolleoversikt;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
-import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyServletSpringBootTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DollySpringBootTest
+@DollyServletSpringBootTest
+@AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RolleoversiktControllerTest {
 
     public static final String API_V_2_ROLLEUTSKRIFT = "/api/v2/rolleoversikt";
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @MockitoBean
     private RolleoversiktRepository rolleoversiktRepository;
@@ -45,123 +39,96 @@ public class RolleoversiktControllerTest {
     @MockitoBean
     private HentRolleRepository rolleRepository;
 
-    private RsRolleoversikt lagGyldigRsRolleoversikt(
-            String fnr,
-            int orgnummer
-    ) {
-        var rsRolleoversikt = new RsRolleoversikt();
-        rsRolleoversikt.setFnr(fnr);
-        rsRolleoversikt.setHovedstatus(1);
-        var rsNavn = new RsNavn();
-        rsNavn.setNavn1("Navn");
-        rsRolleoversikt.setNavn(rsNavn);
-        var rsAdresse = new RsAdresse();
-        rsAdresse.setAdresse1("Adresse 1");
-        rsAdresse.setLandKode("NO");
-        rsRolleoversikt.setAdresse(rsAdresse);
-        var personRolle = new RsRolleStatus();
-        personRolle.setEgenskap(Egenskap.DELTAGER);
-        personRolle.setFratraadt(false);
-        var enhet = new RsRolle();
-        enhet.setRegistreringsdato(LocalDate.now());
-        enhet.setOrgNr(orgnummer);
-        enhet.setRolle(RolleKode.DELT);
-        enhet.setPersonRolle(Collections.singletonList(personRolle));
-        rsRolleoversikt.getEnheter().add(enhet);
-        return rsRolleoversikt;
-    }
-
-    private HttpEntity createHttpEntity(
-            String ident,
-            RsRolleoversikt body
-    ) {
-        var headers = new HttpHeaders();
-        headers.add("Nav-Personident", ident);
-        return new HttpEntity(body, headers);
-    }
-
     @Test
     @DisplayName("GET rolleoversikt returnerer 404 hvis ikke eksisterer")
-    void skalKasteNotFoundHvisRolleIkkeEksister() {
-        var response = restTemplate.exchange(API_V_2_ROLLEUTSKRIFT,
-                HttpMethod.GET,
-                createHttpEntity("eksister ikke", null),
-                String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    void skalKasteNotFoundHvisRolleIkkeEksister() throws Exception {
+        Mockito.when(rolleoversiktRepository.findByIdent("eksister ikke")).thenReturn(Optional.empty());
+
+        mockMvc.perform(get(API_V_2_ROLLEUTSKRIFT)
+                        .header("Nav-Personident", "eksister ikke")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 400 hvis input mangler")
-    void skalKasteBadRequestHvisInputMangler() {
-        var response = restTemplate.getForEntity(API_V_2_ROLLEUTSKRIFT, Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    void skalKasteBadRequestHvisInputMangler() throws Exception {
+        mockMvc.perform(get(API_V_2_ROLLEUTSKRIFT)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("GET rolleoversikt returnerer 200 hvis ikke eksisterer")
-    void skalHenteRolleutskriftFraDatabase() {
+    @DisplayName("GET rolleoversikt returnerer 200 hvis eksisterer")
+    void skalHenteRolleutskriftFraDatabase() throws Exception {
         var fnr = "03030303030";
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent(fnr);
         nyRolle.setJson("{\"fnr\":\"" + fnr + "\"}");
         Mockito.when(rolleoversiktRepository.findByIdent(nyRolle.getIdent())).thenReturn(Optional.of(nyRolle));
 
-        var response = restTemplate.exchange(API_V_2_ROLLEUTSKRIFT,
-                HttpMethod.GET,
-                createHttpEntity(fnr, null),
-                RsRolleoversikt.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getFnr()).isEqualTo(fnr);
+        mockMvc.perform(get(API_V_2_ROLLEUTSKRIFT)
+                        .header("Nav-Personident", fnr)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fnr").value(fnr));
     }
 
     @Test
     @DisplayName("DELETE rolleoversikt skal slette rolleoversikt")
-    void skalSletteRolleutskrift() {
+    void skalSletteRolleutskrift() throws Exception {
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent("slettes");
         nyRolle.setJson("{\"fnr\":\"slettes\"}");
         Mockito.when(rolleoversiktRepository.findByIdent(nyRolle.getIdent())).thenReturn(Optional.of(nyRolle));
+        Mockito.doNothing().when(rolleoversiktRepository).delete(any(Rolleoversikt.class));
 
-        var responseDelete =
-                restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.DELETE, createHttpEntity("slettes", null), String.class);
-        assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.OK);
+        mockMvc.perform(delete(API_V_2_ROLLEUTSKRIFT)
+                        .header("Nav-Personident", "slettes"))
+                .andExpect(status().isOk());
 
         Mockito.when(rolleoversiktRepository.findByIdent(nyRolle.getIdent())).thenReturn(Optional.empty());
 
-        var responseGet =
-                restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.GET, createHttpEntity("slettes", null), String.class);
-        assertThat(responseGet.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        mockMvc.perform(get(API_V_2_ROLLEUTSKRIFT)
+                        .header("Nav-Personident", "slettes")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("DELETE rolleoversikt returnerer 400 hvis input mangler")
-    void deleteSkalKasteBadRequestHvisInputMangler() {
-        var responseDelete =
-                restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.DELETE, null, Map.class);
-        assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    void deleteSkalKasteBadRequestHvisInputMangler() throws Exception {
+        mockMvc.perform(delete(API_V_2_ROLLEUTSKRIFT))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("POST rolleoversikt skal opprette ny rolleoversikt")
-    void skalLagreRequestIDatabase() {
+    void skalLagreRequestIDatabase() throws Exception {
         var fnr = "01010101010";
-        var orgnummer = 99112345;
-        var rsRolleoversikt = lagGyldigRsRolleoversikt(fnr, orgnummer);
+        var requestBody = "{\"fnr\":\"" + fnr + "\",\"hovedstatus\":1,\"navn\":{\"navn1\":\"Navn\"},\"adresse\":{\"adresse1\":\"Adresse 1\",\"landKode\":\"NO\"},\"enheter\":[{\"orgNr\":99112345,\"rolle\":\"DELT\",\"registreringsdato\":\"2020-01-01\",\"personRolle\":[{\"egenskap\":\"DELTAGER\",\"fratraadt\":false}]}]}";
 
-        var response =
-                restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.POST, createHttpEntity(fnr, rsRolleoversikt), RsRolleoversikt.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getFnr()).isEqualTo(fnr);
+        Mockito.when(rolleoversiktRepository.save(any(Rolleoversikt.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(post(API_V_2_ROLLEUTSKRIFT)
+                        .header("Nav-Personident", fnr)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.fnr").value(fnr));
     }
 
     @Test
     @DisplayName("POST rolleoversikt skal returnere bad request ved mangle input")
-    void skalReturnereBadRequestVedPost() {
+    void skalReturnereBadRequestVedPost() throws Exception {
         var fnr = "01010101010";
-        var rsRolleoversikt = new RsRolleoversikt();
 
-        var response =
-                restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.POST, createHttpEntity(fnr, rsRolleoversikt), RsRolleoversikt.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        mockMvc.perform(post(API_V_2_ROLLEUTSKRIFT)
+                        .header("Nav-Personident", fnr)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

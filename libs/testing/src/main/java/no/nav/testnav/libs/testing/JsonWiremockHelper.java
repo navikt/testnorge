@@ -3,9 +3,7 @@ package no.nav.testnav.libs.testing;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
@@ -29,6 +27,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 public class JsonWiremockHelper {
 
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String APPLICATION_JSON = "application/json";
+
     private final ObjectMapper mapper;
     private final Set<String> requestFieldsToIgnore = new HashSet<>();
     private final Map<String, String> queryParamMap = new HashMap<>();
@@ -51,21 +52,21 @@ public class JsonWiremockHelper {
     }
 
     public JsonWiremockHelper withResponseBody(Object responseBody) {
-        this.responseBody = mapper.writeValueAsString(responseBody);
+        this.responseBody = writeValueAsString(responseBody);
         return this;
     }
 
     public JsonWiremockHelper withRequestBody(Object requestBody, String... fieldsToIgnore) {
-        this.requestBody = mapper.writeValueAsString(requestBody);
+        this.requestBody = writeValueAsString(requestBody);
         requestFieldsToIgnore.addAll(Arrays.asList(fieldsToIgnore));
         return this;
     }
 
-    public void stubPost(HttpStatus status) {
+    public void stubPost(int statusCode) {
         stubFor(
                 updateMappingBuilder(
                         post(urlPathPattern)
-                                .willReturn(responseDefinition().withStatus(status.value()))
+                                .willReturn(responseDefinition().withStatus(statusCode))
                 )
         );
     }
@@ -77,7 +78,7 @@ public class JsonWiremockHelper {
 
         if (responseBody != null) {
             mappingBuilder.willReturn(aResponse()
-                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                     .withBody(responseBody)
             );
         }
@@ -110,6 +111,14 @@ public class JsonWiremockHelper {
         return new JsonWiremockHelper(mapper);
     }
 
+    private String writeValueAsString(Object value) {
+        try {
+            return mapper.writeValueAsString(value);
+        } catch (JacksonException e) {
+            throw new IllegalArgumentException("Failed to serialize object to JSON", e);
+        }
+    }
+
     private MappingBuilder updateMappingBuilder(MappingBuilder mappingBuilder) {
         queryParamMap.forEach((name, value) -> mappingBuilder.withQueryParam(name, equalTo(value)));
 
@@ -119,7 +128,7 @@ public class JsonWiremockHelper {
 
         if (responseBody != null) {
             mappingBuilder.willReturn(aResponse()
-                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                     .withBody(responseBody)
             );
         }

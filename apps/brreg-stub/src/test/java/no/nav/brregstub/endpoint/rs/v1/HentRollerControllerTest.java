@@ -1,102 +1,100 @@
 package no.nav.brregstub.endpoint.rs.v1;
 
-import no.nav.brregstub.api.common.RsOrganisasjon;
 import no.nav.brregstub.database.domene.HentRolle;
 import no.nav.brregstub.database.repository.HentRolleRepository;
-import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyServletSpringBootTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
-import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DollySpringBootTest
+@DollyServletSpringBootTest
+@AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HentRollerControllerTest {
 
     public static final String API_V_1_ROLLER = "/api/v1/hentrolle";
+
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @MockitoBean
     private HentRolleRepository repository;
 
     @Test
     @DisplayName("GET rolle returnerer 404 hvis ikke eksisterer")
-    void skalKasteNotFoundHvisRolleIkkeEksister() {
-        var response = restTemplate.getForEntity(API_V_1_ROLLER + "0",
-                String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    void skalKasteNotFoundHvisRolleIkkeEksister() throws Exception {
+        mockMvc.perform(get(API_V_1_ROLLER + "/0").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("GET rolle returnerer 200 hvis ikke eksisterer")
-    void skalHenteRolleutskriftFraDatabase() {
+    @DisplayName("GET rolle returnerer 200 hvis eksisterer")
+    void skalHenteRolleutskriftFraDatabase() throws Exception {
         var nyRolle = new HentRolle();
         nyRolle.setOrgnr(1);
         nyRolle.setJson("{\"orgnr\": 1}");
         Mockito.when(repository.findByOrgnr(1)).thenReturn(Optional.of(nyRolle));
 
-        var response = restTemplate.getForEntity(API_V_1_ROLLER + "/" + nyRolle.getOrgnr(),
-                RsOrganisasjon.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getOrgnr()).isEqualTo(nyRolle.getOrgnr());
+        mockMvc.perform(get(API_V_1_ROLLER + "/1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orgnr").value(1));
     }
-
 
     @Test
     @DisplayName("DELETE rolle skal slettes fra database")
-    void skalSletteRolleutskrift() {
+    void skalSletteRolleutskrift() throws Exception {
         var rolleSomSkalSlettes = new HentRolle();
         rolleSomSkalSlettes.setOrgnr(3);
         rolleSomSkalSlettes.setJson("{}");
         Mockito.when(repository.findByOrgnr(3)).thenReturn(Optional.of(rolleSomSkalSlettes));
 
-        var responseDelete =
-                restTemplate.exchange(API_V_1_ROLLER + "/" + rolleSomSkalSlettes.getOrgnr(), HttpMethod.DELETE, null, String.class);
-        assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.OK);
+        mockMvc.perform(delete(API_V_1_ROLLER + "/3"))
+                .andExpect(status().isOk());
 
         Mockito.when(repository.findByOrgnr(3)).thenReturn(Optional.empty());
-        var responseGet =
-                restTemplate.getForEntity(API_V_1_ROLLER + rolleSomSkalSlettes.getOrgnr(), String.class);
-        assertThat(responseGet.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
 
+        mockMvc.perform(get(API_V_1_ROLLER + "/3").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     @DisplayName("POST rolle skal opprette ny databaseinnslag")
-    void skalLagreRequestIDatabase() {
-        var to = new RsOrganisasjon();
-        to.setOrgnr(4);
-        to.setRegistreringsdato(LocalDate.now());
+    void skalLagreRequestIDatabase() throws Exception {
+        var requestBody = "{\"orgnr\":4,\"registreringsdato\":\"2020-01-01\"}";
 
+        Mockito.when(repository.save(any(HentRolle.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        var response =
-                restTemplate.exchange(API_V_1_ROLLER, HttpMethod.POST, new HttpEntity<>(to), Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().get("path")).isEqualTo("/api/v1/hentrolle/4");
-
+        mockMvc.perform(post(API_V_1_ROLLER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.path").value("/api/v1/hentrolle/4"));
     }
 
     @Test
     @DisplayName("POST rolle returnere bad request ved manglende feilt")
-    void skalReturnereBadRequestVedValideringsFeil() {
-        var to = new RsOrganisasjon();
-
-        var response =
-                restTemplate.exchange(API_V_1_ROLLER, HttpMethod.POST, new HttpEntity<>(to), Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-
+    void skalReturnereBadRequestVedValideringsFeil() throws Exception {
+        mockMvc.perform(post(API_V_1_ROLLER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

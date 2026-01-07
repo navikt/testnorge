@@ -2,7 +2,7 @@ package no.nav.brregstub.endpoint.ws;
 
 import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
 import no.nav.common.cxf.CXFClient;
-import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyServletSpringBootTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
-@DollySpringBootTest
+@DollyServletSpringBootTest
 @TestInstance(PER_CLASS)
 class BrregEndpointTest {
 

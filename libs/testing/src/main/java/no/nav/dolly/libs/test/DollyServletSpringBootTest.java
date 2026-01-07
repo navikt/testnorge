@@ -36,4 +36,3 @@ public @interface DollyServletSpringBootTest {
     @SuppressWarnings("java:S1452")
     Class<? extends ApplicationContextInitializer<?>>[] initializers() default { NaisEnvironmentApplicationContextInitializer.class };
 }
-

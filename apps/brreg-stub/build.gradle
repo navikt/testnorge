@@ -26,7 +26,14 @@ dependencies {
     }
 
     implementation "no.nav.testnav.libs:servlet-core"
-    implementation "no.nav.testnav.libs:testing"
+    implementation("no.nav.testnav.libs:testing") {
+        exclude group: "org.springframework.boot", module: "spring-boot-webtestclient"
+        exclude group: "org.springframework", module: "spring-webflux"
+        exclude group: "org.springframework", module: "spring-web-reactive"
+        exclude group: "io.projectreactor", module: "reactor-core"
+        exclude group: "io.projectreactor.netty", module: "reactor-netty"
+        exclude group: "io.projectreactor.netty", module: "reactor-netty-http"
+    }
     implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -65,6 +72,9 @@ dependencies {
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:postgresql"
     testImplementation "org.wiremock:wiremock-standalone:3.13.0"
-    testImplementation "org.springframework.boot:spring-boot-resttestclient"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.boot:spring-boot-test-autoconfigure"
     testImplementation "org.springframework.boot:spring-boot-webmvc-test"
+    testImplementation "org.springframework.boot:spring-boot-resttestclient"
+
 }

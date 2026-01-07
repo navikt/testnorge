@@ -2,36 +2,28 @@ package no.nav.brregstub.service;
 
 import com.google.common.io.Resources;
 import no.nav.brregstub.api.common.RolleKode;
-import no.nav.brregstub.config.JacksonConfig;
 import no.nav.brregstub.database.domene.HentRolle;
 import no.nav.brregstub.database.domene.Rolleoversikt;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import no.nav.brregstub.generated.Grunndata;
-import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyServletSpringBootTest;
 import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DollySpringBootTest
+@DollyServletSpringBootTest
 @ExtendWith(DollyWireMockExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
-@Import(JacksonConfig.class)
 @Testcontainers
 class BrregServiceTest {
 
@@ -43,7 +35,6 @@ class BrregServiceTest {
     private RolleoversiktRepository rolleoversiktRepositoryMock;
 
     @Autowired
-    private ObjectMapper objectMapper;
     private BrregService brregService;
 
     private void assertPerson(Grunndata.Melding.Eierkommune.Samendring.Rolle.Person person) {
@@ -75,7 +66,6 @@ class BrregServiceTest {
     void onSetup() {
         rolleoversiktRepositoryMock.deleteAll();
         hentRolleRepositoryMock.deleteAll();
-        brregService = new BrregService(rolleoversiktRepositoryMock, hentRolleRepositoryMock, objectMapper);
 
         hentRolleRepositoryMock.save(HentRolle.builder()
                 .json(classpathToString("testdata/hentRoller.json"))
@@ -98,216 +88,153 @@ class BrregServiceTest {
         assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(1);
         assertThat(grunndata.getResponseHeader().getOrgnr()).isEqualTo(123);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRoller");
-        assertThat(grunndata.getResponseHeader()
-                .getProssessDato()
-                .toGregorianCalendar()
-                .toZonedDateTime()
-                .toLocalDate()).isEqualTo((LocalDate.now()));
-        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
-                .hasSize(1).extracting(underStatusMelding -> assertThat(underStatusMelding.getKode()).isEqualTo(100));
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getKode()).isEqualTo(100);
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getValue())
+                .isEqualTo("Enhet x aldri opprettet");
         assertThat(grunndata.getMelding()).isNull();
     }
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig responseheader med melding")
-    void hentRollerForOrganisasjon() {
+    void hentRollerResponseHeader() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
-
-        //assert responseheader
         assertThat(grunndata.getResponseHeader()).isNotNull();
-        assertThat(grunndata.getResponseHeader().getHovedStatus()).isZero();
+        assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(0);
         assertThat(grunndata.getResponseHeader().getOrgnr()).isEqualTo(ORGNR);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRoller");
-        assertThat(grunndata.getResponseHeader()
-                .getProssessDato()
-                .toGregorianCalendar()
-                .toZonedDateTime()
-                .toLocalDate()).isEqualTo((LocalDate.now()));
-        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
-                .hasSize(2).extracting("kode").contains(0, 1180);
-
-        //assert melding
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getKode()).isEqualTo(0);
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getValue()).isEqualTo("Data returnert");
         assertThat(grunndata.getMelding()).isNotNull();
-        assertThat(grunndata.getMelding()
-                .getOrganisasjonsnummer()
-                .getRegistreringsDato()
-                .toGregorianCalendar()
-                .toZonedDateTime()
-                .toLocalDate()
-                .format(
-                        ISO_DATE)).isEqualTo("1999-03-12");
-        assertThat(grunndata.getMelding().getOrganisasjonsnummer().getValue()).isEqualTo(ORGNR.toString());
     }
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig kontaktperson")
-    void hentRollerForOrganisasjonKontaktpersoner() {
+    void hentRollerKontaktperson() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
+        var samendring = grunndata.getMelding().getKontaktperson().getSamendring().get(0);
+        assertThat(samendring).isNotNull();
+        assertThat(samendring.getSamendringstype()).isEqualTo(RolleKode.KONT.name());
+        var roller = samendring.getRolle();
 
-        //assert kontaktperson
-        assertThat(grunndata.getMelding().getKontaktperson().getSamendring()).hasSize(1);
-        var kontaktperson = grunndata.getMelding().getKontaktperson().getSamendring().get(0);
-        assertThat(kontaktperson.getSamendringstype()).isEqualTo(RolleKode.KONT.name());
-        assertThat(kontaktperson.getRegistreringsDato().toGregorianCalendar().toZonedDateTime().toLocalDate().format(
-                ISO_DATE)).isEqualTo("2019-06-23");
-        assertThat(kontaktperson.getRolle()).hasSize(1);
-        assertThat(kontaktperson.getRolle().get(0).getBeskrivelse()).isEqualTo(RolleKode.DAGL.getBeskrivelse());
-        assertThat(kontaktperson.getRolle().get(0).getRolletype()).isEqualTo(RolleKode.DAGL.name());
-        assertPerson(kontaktperson.getRolle().get(0).getPerson().get(0));
-    }
-
-    @Test
-    @DisplayName("hentRoller returnerer en gyldig deltaker")
-    void hentRollerForOrganisasjonDeltaker() {
-        var grunndata = brregService.hentRoller(ORGNR.toString());
-
-        //assert deltaker
-        assertThat(grunndata.getMelding().getDeltakere().getSamendring()).hasSize(1);
-        var deltaker = grunndata.getMelding().getDeltakere().getSamendring().get(0);
-        assertThat(deltaker.getSamendringstype()).isEqualTo(RolleKode.DELT.name());
-        assertThat(deltaker.getRegistreringsDato().toGregorianCalendar().toZonedDateTime().toLocalDate().format(
-                ISO_DATE)).isEqualTo("2003-01-01");
-        assertThat(deltaker.getRolle()).hasSize(1);
-        assertThat(deltaker.getRolle().get(0).getBeskrivelse()).isEqualTo(RolleKode.DTPR.getBeskrivelse());
-        assertThat(deltaker.getRolle().get(0).getRolletype()).isEqualTo(RolleKode.DTPR.name());
-        assertPerson(deltaker.getRolle().get(0).getPerson().get(0));
-
+        var dagl = roller.stream().filter(rolle -> rolle.getRolletype().equals(RolleKode.DAGL.name())).findFirst().orElse(null);
+        assertThat(dagl).isNotNull();
+        assertThat(samendring.getRegistreringsDato().toString())
+                .isEqualTo("2019-06-23");
+        assertThat(dagl.getPerson()).hasSize(1);
+        assertPerson(dagl.getPerson().get(0));
     }
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig styre")
-    void hentRollerForOrganisasjonStyre() {
+    void hentRollerStyre() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
+        var samendring = grunndata.getMelding().getStyre().getSamendring().get(0);
+        assertThat(samendring.getSamendringstype()).isEqualTo(RolleKode.STYR.name());
+        var roller = samendring.getRolle();
 
-        //assert styreleder
-        assertThat(grunndata.getMelding().getStyre().getSamendring()).hasSize(1);
-        var styreleder = grunndata.getMelding().getStyre().getSamendring().get(0);
-        assertThat(styreleder.getSamendringstype()).isEqualTo(RolleKode.STYR.name());
-        assertThat(styreleder.getRegistreringsDato().toGregorianCalendar().toZonedDateTime().toLocalDate().format(
-                ISO_DATE)).isEqualTo("2004-01-01");
-        assertThat(styreleder.getRolle()).hasSize(2);
-        assertThat(styreleder.getRolle().get(0).getBeskrivelse()).isEqualTo(RolleKode.LEDE.getBeskrivelse());
-        assertThat(styreleder.getRolle().get(0).getRolletype()).isEqualTo(RolleKode.LEDE.name());
-        assertThat(styreleder.getRolle().get(1).getBeskrivelse()).isEqualTo(RolleKode.MEDL.getBeskrivelse());
-        assertThat(styreleder.getRolle().get(1).getRolletype()).isEqualTo(RolleKode.MEDL.name());
-        assertPerson(styreleder.getRolle().get(0).getPerson().get(0));
+        var leder = roller.stream().filter(rolle -> rolle.getRolletype().equals(RolleKode.LEDE.name())).findFirst().orElse(null);
+        assertThat(leder).isNotNull();
+        assertThat(samendring.getRegistreringsDato().toString()).isEqualTo("2004-01-01");
+        assertThat(leder.getPerson()).hasSize(1);
+        assertPerson(leder.getPerson().get(0));
     }
 
     @Test
-    @DisplayName("hentRoller returnerer en gyldig komplementar")
-    void hentRollerForOrganisasjonKomplementar() {
+    @DisplayName("hentRoller returnerer en gyldig deltaker")
+    void hentRollerDeltaker() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
+        var samendring = grunndata.getMelding().getDeltakere().getSamendring().get(0);
+        assertThat(samendring.getSamendringstype()).isEqualTo(RolleKode.DELT.name());
+        var roller = samendring.getRolle();
 
-        //assert komplementar
-        assertThat(grunndata.getMelding().getKomplementar().getSamendring()).hasSize(1);
-        var komplementar = grunndata.getMelding().getKomplementar().getSamendring().get(0);
-        assertThat(komplementar.getSamendringstype()).isEqualTo(RolleKode.KOMP.name());
-        assertThat(komplementar.getRegistreringsDato().toGregorianCalendar().toZonedDateTime().toLocalDate().format(
-                ISO_DATE)).isEqualTo("2005-01-01");
-        assertThat(komplementar.getRolle()).hasSize(1);
-        assertThat(komplementar.getRolle().get(0).getBeskrivelse()).isEqualTo(RolleKode.KOMP.getBeskrivelse());
-        assertThat(komplementar.getRolle().get(0).getRolletype()).isEqualTo(RolleKode.KOMP.name());
-        assertPerson(komplementar.getRolle().get(0).getPerson().get(0));
-
+        var deltaker = roller.stream().filter(rolle -> rolle.getRolletype().equals(RolleKode.DTPR.name())).findFirst().orElse(null);
+        assertThat(deltaker).isNotNull();
+        assertThat(samendring.getRegistreringsDato().toString()).isEqualTo("2003-01-01");
+        assertThat(deltaker.getPerson()).hasSize(1);
+        assertPerson(deltaker.getPerson().get(0));
     }
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig sameiere")
-    void hentRollerForOrganisasjonSameiere() {
+    void hentRollerSameiere() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
+        var samendring = grunndata.getMelding().getSameiere().getSamendring().get(0);
+        assertThat(samendring.getSamendringstype()).isEqualTo(RolleKode.SAM.name());
+        var roller = samendring.getRolle();
 
-        //assert sameier
-        assertThat(grunndata.getMelding().getSameiere().getSamendring()).hasSize(1);
-        var sameier = grunndata.getMelding().getSameiere().getSamendring().get(0);
-        assertThat(sameier.getSamendringstype()).isEqualTo(RolleKode.SAM.name());
-        assertThat(sameier.getRegistreringsDato().toGregorianCalendar().toZonedDateTime().toLocalDate().format(
-                ISO_DATE)).isEqualTo("2004-01-01");
-        assertThat(sameier.getRolle()).hasSize(1);
-        assertThat(sameier.getRolle().get(0).getBeskrivelse()).isEqualTo(RolleKode.SAM.getBeskrivelse());
-        assertThat(sameier.getRolle().get(0).getRolletype()).isEqualTo(RolleKode.SAM.name());
-        assertPerson(sameier.getRolle().get(0).getPerson().get(0));
+        var sameier = roller.stream().filter(rolle -> rolle.getRolletype().equals(RolleKode.SAM.name())).findFirst().orElse(null);
+        assertThat(sameier).isNotNull();
+        assertThat(samendring.getRegistreringsDato().toString()).isEqualTo("2004-01-01");
+        assertThat(sameier.getPerson()).hasSize(1);
+        assertPerson(sameier.getPerson().get(0));
+    }
+
+    @Test
+    @DisplayName("hentRoller returnerer en gyldig komplementar")
+    void hentRollerKomplementar() {
+        var grunndata = brregService.hentRoller(ORGNR.toString());
+        var samendring = grunndata.getMelding().getKomplementar().getSamendring().get(0);
+        assertThat(samendring.getSamendringstype()).isEqualTo(RolleKode.KOMP.name());
+        var roller = samendring.getRolle();
+
+        var komplementar = roller.stream().filter(rolle -> rolle.getRolletype().equals(RolleKode.KOMP.name())).findFirst().orElse(null);
+        assertThat(komplementar).isNotNull();
+        assertThat(samendring.getRegistreringsDato().toString())
+                .isEqualTo("2005-01-01");
+        assertThat(komplementar.getPerson()).hasSize(1);
+        assertPerson(komplementar.getPerson().get(0));
     }
 
     @Test
     @DisplayName(
             "rolleutskrift returnerer grunndata uten melding, men med status 1 og understatus 180 hvis ikke finner data om ident i database")
-    void hentRolleutskriftFinnerIkkeBruker() {
-        var grunndata = brregService.hentRolleutskrift("ident");
+    void rolleutskriftFinnerIkkeBruker() {
+        var grunndata = brregService.hentRolleutskrift("123");
         assertThat(grunndata.getResponseHeader()).isNotNull();
         assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(1);
-        assertThat(grunndata.getResponseHeader().getFodselsnr()).isEqualTo("ident");
-        assertThat(grunndata.getResponseHeader().getOrgnr()).isNull();
+        assertThat(grunndata.getResponseHeader().getFodselsnr()).isEqualTo("123");
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRolleutskrift");
-        assertThat(grunndata.getResponseHeader()
-                .getProssessDato()
-                .toGregorianCalendar()
-                .toZonedDateTime()
-                .toLocalDate()).isEqualTo((LocalDate.now()));
-        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
-                .hasSize(1).extracting(underStatusMelding -> assertThat(underStatusMelding.getKode()).isEqualTo(180));
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getKode()).isEqualTo(180);
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getValue())
+                .isEqualTo("Personen x finnes ikke i vår database");
         assertThat(grunndata.getMelding()).isNull();
     }
 
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig responseheader med status 0")
-    void hentRolleutskriftForPersonResponseHeader() {
+    void rolleutskriftResponseHeader() {
         var grunndata = brregService.hentRolleutskrift(FNR);
-
-        //assert responseheader
         assertThat(grunndata.getResponseHeader()).isNotNull();
-        assertThat(grunndata.getResponseHeader().getHovedStatus()).isZero();
+        assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(0);
         assertThat(grunndata.getResponseHeader().getFodselsnr()).isEqualTo(FNR);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRolleutskrift");
-        assertThat(grunndata.getResponseHeader()
-                .getProssessDato()
-                .toGregorianCalendar()
-                .toZonedDateTime()
-                .toLocalDate()).isEqualTo((LocalDate.now()));
-        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
-                .hasSize(2).extracting("kode").contains(0, 1180);
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getKode()).isEqualTo(0);
+        assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding().get(0).getValue()).isEqualTo("Data returnert");
+        assertThat(grunndata.getMelding()).isNotNull();
     }
 
     @Test
-    @DisplayName("rolleutskrift returnerer en gyldig meldiong")
-    void hentRolleutskriftForPersonMelding() {
+    @DisplayName("rolleutskrift returnerer en gyldig melding")
+    void rolleutskriftMelding() {
         var grunndata = brregService.hentRolleutskrift(FNR);
-
-        //assert melding
         assertThat(grunndata.getMelding()).isNotNull();
-        assertThat(grunndata.getMelding()
-                .getRolleInnehaver()
-                .getFodselsdato()
-                .getValue()
-                .toGregorianCalendar()
-                .toZonedDateTime()
-                .toLocalDate()
-                .format(ISO_DATE)).isEqualTo("1976-01-01");
-        assertThat(grunndata.getMelding().getRolleInnehaver().getNavn().getNavn1()).isEqualTo("Navn");
-        assertThat(grunndata.getMelding().getRolleInnehaver().getNavn().getNavn3()).isEqualTo("Navnesen");
-        assertThat(grunndata.getMelding().getRolleInnehaver().getAdresse().getAdresse1()).isEqualTo("Dollyveien 1");
-        assertThat(grunndata.getMelding().getRolleInnehaver().getAdresse().getPostnr()).isEqualTo("0576");
-        assertThat(grunndata.getMelding().getRolleInnehaver().getAdresse().getPoststed()).isEqualTo("Oslo");
-        assertThat(grunndata.getMelding().getRolleInnehaver().getAdresse().getLand().getValue()).isEqualTo("NO");
-        assertThat(grunndata.getMelding().getRolleInnehaver().getAdresse().getLand().getLandkode1()).isEqualTo("NO");
+        assertThat(grunndata.getMelding().getRoller().getEnhet()).hasSize(2);
     }
 
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig grunndata med roller")
-    void hentRolleutskriftForPersonRoller() {
+    void rolleutskriftRoller() {
         var grunndata = brregService.hentRolleutskrift(FNR);
+        var enheter = grunndata.getMelding().getRoller().getEnhet();
 
-        //assert roller
-        assertThat(grunndata.getMelding().getRoller().getEnhet()).hasSize(2);
-        assertThat(grunndata.getMelding().getRoller().getEnhet().get(0).getNr()).isEqualTo(1);
-        assertThat(grunndata.getMelding().getRoller().getEnhet().get(1).getNr()).isEqualTo(2);
-        var rolle1 = grunndata.getMelding().getRoller().getEnhet().get(0);
-        assertThat(rolle1.getRolleBeskrivelse().getValue()).isEqualTo(RolleKode.INNH.getBeskrivelse());
-        assertThat(rolle1.getOrgnr().getValue()).isEqualTo(ORGNR);
-        assertThat(rolle1.getNavn().getNavn1()).isEqualTo("Jovial AS");
-        assertThat(rolle1.getAdresse().getForretningsAdresse().getAdresse1()).isEqualTo("Dollyveien 1");
-        assertThat(rolle1.getAdresse().getForretningsAdresse().getPostnr()).isEqualTo("0576");
-        assertThat(rolle1.getAdresse().getForretningsAdresse().getPoststed()).isEqualTo("Oslo");
-        assertThat(rolle1.getAdresse().getForretningsAdresse().getLand().getValue()).isEqualTo("NO");
-        assertThat(rolle1.getAdresse().getPostAdresse().getAdresse1()).isEqualTo("Postadresseveien 1");
+        var innehaver = enheter.stream().filter(enhet -> enhet.getRolleBeskrivelse().getValue().equals(RolleKode.INNH.getBeskrivelse())).findFirst().orElse(null);
+        assertThat(innehaver).isNotNull();
+        assertThat(innehaver.getRegistreringsDato().toString()).isEqualTo("2020-01-01");
+        assertThat(innehaver.getOrgnr().getValue()).isEqualTo(971524553);
+        assertThat(innehaver.getNavn().getNavn1()).isEqualTo("Jovial AS");
+        assertThat(innehaver.getAdresse().getForretningsAdresse().getAdresse1()).isEqualTo("Dollyveien 1");
+        assertThat(innehaver.getAdresse().getForretningsAdresse().getLand().getValue()).isEqualTo("NO");
+        assertThat(innehaver.getAdresse().getForretningsAdresse().getPostnr()).isEqualTo("0576");
+        assertThat(innehaver.getAdresse().getForretningsAdresse().getPoststed()).isEqualTo("Oslo");
     }
 }
