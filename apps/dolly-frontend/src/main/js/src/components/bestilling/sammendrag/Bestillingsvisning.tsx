@@ -4,6 +4,8 @@ import './Bestillingsdata.less'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import * as _ from 'lodash-es'
+import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/BestillingsdataOrganisasjon'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -32,8 +34,6 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 	const [visMer, setVisMer, setSkjulMer] = useBoolean(false)
 	const [showVisMerButton, setShowVisMerButton] = useState(false)
 
-	// console.log('bestilling: ', bestilling) //TODO - SLETT MEG
-
 	// const windowHeight = window.innerHeight
 	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
 	const bestillingMaxHeight = window.innerHeight * 0.4
@@ -61,13 +61,19 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 
 	// const showVisMerButton = bestillingCurrentHeight > bestillingMaxHeight
 
+	const erOrganisasjon = _.has(bestilling, 'organisasjon')
+
 	return (
 		<div className="bestilling-data" style={{ paddingBottom: showVisMerButton ? '30px' : 0 }}>
 			<div
 				ref={contentRef}
 				style={visMer ? undefined : { maxHeight: bestillingMaxHeight, overflowY: 'hidden' }}
 			>
-				<Bestillingsdata bestilling={bestilling} />
+				{erOrganisasjon ? (
+					<BestillingsdataOrganisasjon bestilling={bestilling.organisasjon} />
+				) : (
+					<Bestillingsdata bestilling={bestilling} />
+				)}
 			</div>
 			{showVisMerButton &&
 				(visMer ? (

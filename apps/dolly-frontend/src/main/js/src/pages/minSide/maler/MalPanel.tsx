@@ -12,6 +12,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
 import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/BestillingsdataOrganisasjon'
 
 type Props = {
 	antallEgneMaler: any
@@ -55,6 +56,8 @@ export const MalPanel = ({
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
+	console.log('maler: ', maler) //TODO - SLETT MEG
+
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
 			<Table.DataCell scope="row" width={'75%'}>
@@ -112,16 +115,18 @@ export const MalPanel = ({
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{maler.map(({ malNavn, id, malBestilling }) => {
-									const alert = harUtdaterteVerdier(malBestilling)
-									const erTomBestilling = isEmpty(malBestilling, [
+								{maler.map(({ malNavn, id, malBestilling, bestilling }) => {
+									const bestillingData = malBestilling || bestilling
+									const erOrganisasjon = _.has(bestillingData, 'organisasjon')
+									const alert = harUtdaterteVerdier(bestillingData)
+									const erTomBestilling = isEmpty(bestillingData, [
 										'id2032',
 										'identtype',
 										'syntetisk',
 									])
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
-											bestilling: malBestilling,
+											bestilling: bestillingData,
 										},
 										dollyEnvironments,
 									)
@@ -145,7 +150,13 @@ export const MalPanel = ({
 														</Alert>
 													)}
 													<div className="bestilling-data">
-														<Bestillingsdata bestilling={bestillingBasedOnMal} />
+														{erOrganisasjon ? (
+															<BestillingsdataOrganisasjon
+																bestilling={bestillingData.organisasjon}
+															/>
+														) : (
+															<Bestillingsdata bestilling={bestillingBasedOnMal} />
+														)}
 													</div>
 												</>
 											}

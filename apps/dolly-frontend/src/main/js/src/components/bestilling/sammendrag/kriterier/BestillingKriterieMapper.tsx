@@ -62,6 +62,7 @@ const expandable = (
 })
 
 export const getTypePerson = (identNr: string) => {
+	if (!identNr) return null
 	if (parseInt(identNr?.charAt(2)) < 4) {
 		return 'Standard'
 	}
