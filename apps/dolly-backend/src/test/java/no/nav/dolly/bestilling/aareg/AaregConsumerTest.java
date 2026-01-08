@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.aareg;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
@@ -14,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -44,8 +43,34 @@ class AaregConsumerTest extends AbstractConsumerTest {
 
     private Arbeidsforhold arbeidsforhold;
 
-    private static String asJsonString(final Object object) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(object);
+    private void stubOpprettArbeidsforhold(Arbeidsforhold response) {
+
+        stubFor(post(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
+                .willReturn(created()
+                        .withBody(asJsonString(response))
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubOppdaterArbeidsforhold(Arbeidsforhold response) {
+
+        stubFor(put(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
+                .willReturn(created()
+                        .withBody(asJsonString(response))
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubHentArbeidsforhold(Arbeidsforhold response) {
+
+        stubFor(get(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
+                .withQueryParam("ident", matching(IDENT))
+                .withQueryParam("miljoe", matching(MILJOE))
+                .willReturn(ok()
+                        .withBody(asJsonString(response))
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private static String asJsonString(final Object object) {
+        return JsonMapper.builder().build().writeValueAsString(object);
     }
 
     @BeforeEach
@@ -118,31 +143,5 @@ class AaregConsumerTest extends AbstractConsumerTest {
                 .extracting(ArbeidsforholdRespons::getEksisterendeArbeidsforhold)
                 .isEqualTo(emptyList()))
                 .verifyComplete();
-    }
-
-    private void stubOpprettArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
-
-        stubFor(post(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
-                .willReturn(created()
-                        .withBody(asJsonString(response))
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubOppdaterArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
-
-        stubFor(put(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
-                .willReturn(created()
-                        .withBody(asJsonString(response))
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubHentArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
-
-        stubFor(get(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
-                .withQueryParam("ident", matching(IDENT))
-                .withQueryParam("miljoe", matching(MILJOE))
-                .willReturn(ok()
-                        .withBody(asJsonString(response))
-                        .withHeader("Content-Type", "application/json")));
     }
 }

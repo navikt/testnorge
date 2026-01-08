@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling;
 
 import no.nav.dolly.config.TestDatabaseConfig;
+import no.nav.dolly.config.TestOpenSearchConfig;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 @ExtendWith(DollyWireMockExtension.class)
-@Import(TestDatabaseConfig.class)
+@Import({TestDatabaseConfig.class, TestOpenSearchConfig.class})
 public abstract class AbstractConsumerTest {
 
     @MockitoBean

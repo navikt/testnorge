@@ -1,9 +1,5 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -13,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -40,13 +39,6 @@ public class TransaksjonMappingService {
                 .sort(Comparator.comparing(TransaksjonMapping::getMiljoe)
                         .thenComparing(TransaksjonMapping::getDatoEndret))
                 .map(this::toDTO);
-    }
-
-    private boolean isPenAp(String system, TransaksjonMapping transaksjon) {
-
-        return system.equals(PEN_AP.name()) &&
-                (transaksjon.getSystem().equals(PEN_AP_REVURDERING.name()) ||
-                        transaksjon.getSystem().equals(PEN_AP_NY_UTTAKSGRAD.name()));
     }
 
     public Flux<TransaksjonMapping> getTransaksjonMapping(String ident, String miljoe) {
@@ -83,7 +75,6 @@ public class TransaksjonMappingService {
         return transaksjonMappingRepository.save(entry);
     }
 
-
     @Transactional
     public Mono<Void> delete(String ident, String miljoe, String system) {
 
@@ -96,15 +87,22 @@ public class TransaksjonMappingService {
         return transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystemAndBestillingId(ident, miljoe, system, bestillingId);
     }
 
+    private boolean isPenAp(String system, TransaksjonMapping transaksjon) {
+
+        return system.equals(PEN_AP.name()) &&
+                (transaksjon.getSystem().equals(PEN_AP_REVURDERING.name()) ||
+                        transaksjon.getSystem().equals(PEN_AP_NY_UTTAKSGRAD.name()));
+    }
+
     private RsTransaksjonMapping toDTO(TransaksjonMapping transaksjonMapping) {
 
         JsonNode innhold;
         try {
             innhold = objectMapper.readTree(transaksjonMapping.getTransaksjonId());
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere {} til JsonNode", transaksjonMapping.getTransaksjonId());
-            innhold = new TextNode("{\"error\":\"" + e.getMessage() + "\"}");
+            innhold = objectMapper.valueToTree("{\"error\":\"" + e.getMessage() + "\"}");
         }
 
         return RsTransaksjonMapping.builder()

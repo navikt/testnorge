@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.udistub;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.udistub.command.UdistubDeleteCommand;
 import no.nav.dolly.bestilling.udistub.command.UdistubGetCommand;
@@ -38,7 +38,7 @@ public class UdiStubConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy())
                 .build();
     }
 

@@ -1,6 +1,5 @@
 package no.nav.dolly.consumer.dokumentarkiv;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetDokument;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.Consumers;
@@ -23,7 +22,6 @@ public class SafConsumer {
     public SafConsumer(
             Consumers consumers,
             TokenExchange tokenService,
-            ObjectMapper objectMapper,
             WebClient webClient) {
 
         serverProperties = consumers.getSafProxy();
@@ -31,7 +29,7 @@ public class SafConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy())
                 .build();
     }
 

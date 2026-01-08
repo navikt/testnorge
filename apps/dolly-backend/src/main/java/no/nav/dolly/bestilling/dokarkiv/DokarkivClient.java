@@ -1,8 +1,8 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -224,7 +224,7 @@ public class DokarkivClient implements ClientRegister {
 
         try {
             return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
         }
         return null;
@@ -238,7 +238,7 @@ public class DokarkivClient implements ClientRegister {
                         {
                             try {
                                 transaksjoner.add(objectMapper.treeToValue(node, TransaksjonIdDTO.class));
-                            } catch (JsonProcessingException e) {
+                            } catch (JacksonException e) {
                                 log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
                             }
                         }

@@ -1,6 +1,7 @@
 package no.nav.dolly.provider;
 
 import no.nav.dolly.config.TestDatabaseConfig;
+import no.nav.dolly.config.TestOpenSearchConfig;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
@@ -21,7 +22,7 @@ import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @DollySpringBootTest
-@Import(TestDatabaseConfig.class)
+@Import({TestDatabaseConfig.class, TestOpenSearchConfig.class})
 public abstract class AbstractControllerTest {
 
     @Autowired

@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +31,7 @@ import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
 

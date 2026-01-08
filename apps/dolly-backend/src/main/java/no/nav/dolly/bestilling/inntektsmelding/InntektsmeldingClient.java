@@ -1,8 +1,8 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -190,7 +190,7 @@ public class InntektsmeldingClient implements ClientRegister {
 
         try {
             return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere dokument fra inntektsmelding", e);
         }
         return null;
@@ -211,7 +211,7 @@ public class InntektsmeldingClient implements ClientRegister {
             } else {
                 return new TransaksjonmappingIdDTO();
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for inntektsmelding", e);
             return new TransaksjonmappingIdDTO();
         }

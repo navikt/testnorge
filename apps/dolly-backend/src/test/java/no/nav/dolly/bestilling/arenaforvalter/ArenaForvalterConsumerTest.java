@@ -35,6 +35,44 @@ class ArenaForvalterConsumerTest extends AbstractConsumerTest {
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
+    private void stubGetMiljoe() {
+
+        stubFor(get(urlPathMatching("(.*)/api/v1/miljoe"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + ENV + "\"]")));
+    }
+
+    private void stubDeleteArenaForvalterBruker() {
+
+        stubFor(delete(urlPathMatching("(.*)/arenaforvalter/api/v1/bruker"))
+                .withQueryParam("miljoe", equalTo(ENV))
+                .withQueryParam("personident", equalTo(IDENT))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")));
+
+        stubFor(get(urlPathMatching("(.*)/api/v1/miljoe"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + ENV + "\"]")));
+    }
+
+    private void stubPostArenaForvalterBruker() {
+
+        stubFor(post(urlPathMatching("(.*)/arenaforvalter/api/v1/bruker"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"arbeidsokerList\":[{\"status\":\"OK\"}]}")));
+    }
+
+    private void stubGetArenaForvalterBruker() {
+
+        stubFor(get(urlPathMatching("(.*)/arenaforvalter/" + ENV + "/arena/syntetiser/brukeroppfolging/personstatusytelse"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{}")));
+    }
+
     @Test
     void deleteIdent() {
 
@@ -77,43 +115,5 @@ class ArenaForvalterConsumerTest extends AbstractConsumerTest {
                 .expectNextMatches(arenaBruker ->
                         arenaBruker.getStatus().is2xxSuccessful())
                 .verifyComplete();
-    }
-
-    private void stubGetMiljoe() {
-
-        stubFor(get(urlPathMatching("(.*)/api/v1/miljoe"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + ENV + "\"]")));
-    }
-
-    private void stubDeleteArenaForvalterBruker() {
-
-        stubFor(delete(urlPathMatching("(.*)/arenaforvalter/api/v1/bruker"))
-                .withQueryParam("miljoe", equalTo(ENV))
-                .withQueryParam("personident", equalTo(IDENT))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
-
-        stubFor(get(urlPathMatching("(.*)/api/v1/miljoe"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + ENV + "\"]")));
-    }
-
-    private void stubPostArenaForvalterBruker() {
-
-        stubFor(post(urlPathMatching("(.*)/arenaforvalter/api/v1/bruker"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"arbeidsokerList\":[{\"status\":\"OK\"}]}")));
-    }
-
-    private void stubGetArenaForvalterBruker() {
-
-        stubFor(get(urlPathMatching("(.*)/arenaforvalter/" + ENV + "/arena/syntetiser/brukeroppfolging/personstatusytelse"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"status\":\"OK\"}")));
     }
 }

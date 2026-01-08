@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.sykemelding;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
@@ -35,7 +35,7 @@ public class SykemeldingConsumer extends ConsumerStatus {
         serverProperties = consumers.getTestnavSykemeldingApi();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy())
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

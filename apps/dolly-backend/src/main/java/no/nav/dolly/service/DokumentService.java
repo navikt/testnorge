@@ -1,7 +1,7 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -69,7 +69,7 @@ public class DokumentService {
 
         try {
             return objectMapper.readValue(json, RsDollyUtvidetBestilling.class);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }

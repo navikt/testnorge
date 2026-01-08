@@ -1,8 +1,5 @@
 package no.nav.dolly.bestilling.personservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
@@ -22,12 +19,14 @@ import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -100,7 +99,7 @@ public class PersonServiceClient {
                 .flatMap(json -> {
                     try {
                         return Mono.just(objectMapper.readTree(json));
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                         return Mono.error(new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e));
                     }
                 })
@@ -130,12 +129,10 @@ public class PersonServiceClient {
 
     private Stream<JsonNode> toStream(JsonNode node) {
 
-        return StreamSupport.stream(getIterable(node.elements()).spliterator(), false);
-    }
-
-    private Iterable<JsonNode> getIterable(Iterator<JsonNode> iterator) {
-
-        return () -> iterator;
+        if (node.isArray()) {
+            return StreamSupport.stream(node.spliterator(), false);
+        }
+        return Stream.empty();
     }
 
     private Flux<Map.Entry<String, Set<String>>> getIdentWithRelasjoner(DollyPerson dollyPerson, BestillingProgress progress) {

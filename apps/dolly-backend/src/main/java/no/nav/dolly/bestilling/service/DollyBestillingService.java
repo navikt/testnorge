@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -116,7 +116,7 @@ public class DollyBestillingService {
 
             return bestKriterier;
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å lese JSON {}", e.getMessage(), e);
 
             var bestKriterier = new RsDollyBestillingRequest();

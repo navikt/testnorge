@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.organisasjonforvalter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.command.GetOrganisasjonCommand;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
@@ -44,7 +43,6 @@ public class OrganisasjonConsumer {
     public OrganisasjonConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
             WebClient webClient) {
 
         this.tokenService = tokenService;
@@ -52,7 +50,7 @@ public class OrganisasjonConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy())
                 .build();
     }
 

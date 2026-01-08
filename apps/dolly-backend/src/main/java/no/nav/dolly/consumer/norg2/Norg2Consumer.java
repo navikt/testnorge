@@ -1,6 +1,6 @@
 package no.nav.dolly.consumer.norg2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.config.Consumers;
@@ -33,7 +33,7 @@ public class Norg2Consumer extends ConsumerStatus {
         serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy())
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

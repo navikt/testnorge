@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.brregstub;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.brregstub.command.BrregDeleteCommand;
@@ -37,7 +37,7 @@ public class BrregstubConsumer extends ConsumerStatus {
         serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy())
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

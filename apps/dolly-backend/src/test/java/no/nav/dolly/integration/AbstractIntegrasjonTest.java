@@ -1,6 +1,7 @@
 package no.nav.dolly.integration;
 
 import no.nav.dolly.config.TestDatabaseConfig;
+import no.nav.dolly.config.TestOpenSearchConfig;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
@@ -24,7 +25,7 @@ import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
 
 @Disabled
 @DollySpringBootTest
-@Import(TestDatabaseConfig.class)
+@Import({TestDatabaseConfig.class, TestOpenSearchConfig.class})
 public abstract class AbstractIntegrasjonTest {
 
     @Autowired

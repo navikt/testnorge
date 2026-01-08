@@ -1,8 +1,6 @@
 package no.nav.dolly.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -221,6 +220,14 @@ public class OrganisasjonBestillingService {
                 .sort(Comparator.comparing(OrganisasjonDetaljer::getId).reversed());
     }
 
+    public Mono<Void> slettBestillingById(Long bestillingId) {
+
+        return organisasjonBestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
+                .flatMap(ignore -> organisasjonProgressRepository.deleteByBestillingId(bestillingId))
+                .then(organisasjonBestillingRepository.deleteBestillingWithNoChildren(bestillingId));
+    }
+
     private Mono<OrganisasjonBestilling> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
 
         var feil = orgStatus.stream()
@@ -274,21 +281,13 @@ public class OrganisasjonBestillingService {
                 });
     }
 
-    public Mono<Void> slettBestillingById(Long bestillingId) {
-
-        return organisasjonBestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
-                .flatMap(ignore -> organisasjonProgressRepository.deleteByBestillingId(bestillingId))
-                .then(organisasjonBestillingRepository.deleteBestillingWithNoChildren(bestillingId));
-    }
-
     private String toJson(Object object) {
 
         try {
             if (nonNull(object)) {
                 return objectMapper.writer().writeValueAsString(object);
             }
-        } catch (JsonProcessingException | RuntimeException e) {
+        } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);
         }
         return null;

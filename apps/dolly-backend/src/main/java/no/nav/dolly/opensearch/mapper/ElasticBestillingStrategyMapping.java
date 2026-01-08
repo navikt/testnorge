@@ -1,7 +1,7 @@
 package no.nav.dolly.opensearch.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -56,7 +56,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                                    .toList());
                                        }
 
-                                   } catch (JsonProcessingException |
+                                   } catch (JacksonException |
                                             IllegalArgumentException |
                                             MappingException e) {
 

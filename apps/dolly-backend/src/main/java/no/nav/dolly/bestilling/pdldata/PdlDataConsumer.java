@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.pdldata;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
@@ -53,7 +53,7 @@ public class PdlDataConsumer extends ConsumerStatus {
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
                         .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy())
                 .build();
     }
 

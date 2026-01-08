@@ -1,7 +1,7 @@
 package no.nav.dolly.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.UtilityClass;
@@ -71,7 +71,7 @@ public final class BestillingPdlOrdreStatusMapper {
                             markRelation(error.getIdent(), progress.getIdent()))
             );
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             addElement(meldingIdents, JSON_PARSE_ERROR, progress.getIdent());
             log.error("Json parsing feilet: {}", e.getMessage(), e);
         }

@@ -1,8 +1,6 @@
 package no.nav.dolly.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
@@ -19,9 +17,9 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
@@ -36,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -648,10 +647,16 @@ public class BestillingService {
             if (nonNull(object)) {
                 return objectMapper.writer().writeValueAsString(object);
             }
-        } catch (JsonProcessingException | RuntimeException e) {
+        } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);
         }
         return null;
+    }
+
+    private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
+
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
+                .collectList();
     }
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
@@ -662,11 +667,5 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
-    }
-
-    private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
-
-        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
-                .collectList();
     }
 }
