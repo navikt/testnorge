@@ -36,11 +36,9 @@ public class BestillingQueryService {
 
     private static final int QUERY_SIZE = 1000;
     private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
-
+    private final OpenSearchClient opensearchClient;
     @Value("${open.search.index}")
     private String bestillingIndex;
-
-    private final OpenSearchClient opensearchClient;
 
     @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}")
     public Set<String> execRegisterCacheQuery(SearchRequest request) {
@@ -56,17 +54,6 @@ public class BestillingQueryService {
         addIdentQuery(queryBuilder, request.getPersonRequest());
 
         return execQuery(queryBuilder);
-    }
-
-    private static BoolQuery.Builder getFagsystemAndMiljoerQuery(SearchRequest request) {
-
-        var queryBuilder = QueryBuilders.bool();
-
-        request.getRegistreRequest()
-                .forEach(fagsystem -> FagsystemQueryUtils.addFagsystemQuery(queryBuilder, fagsystem));
-
-        FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
-        return queryBuilder;
     }
 
     public Set<String> execTestnorgeIdenterQuery() {
@@ -131,5 +118,18 @@ public class BestillingQueryService {
                 .map(BestillingIdenter::getIdenter)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    private static BoolQuery.Builder getFagsystemAndMiljoerQuery(SearchRequest request) {
+
+        var queryBuilder = QueryBuilders.bool();
+
+        var registreRequest = request.getRegistreRequest();
+        if (registreRequest != null && !registreRequest.isEmpty()) {
+            registreRequest.forEach(fagsystem -> FagsystemQueryUtils.addFagsystemQuery(queryBuilder, fagsystem));
+        }
+
+        FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
+        return queryBuilder;
     }
 }
