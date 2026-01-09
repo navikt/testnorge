@@ -86,16 +86,21 @@ public class BestillingQueryService {
                 .timeout("3s")
                 .build(), BestillingIdenter.class);
 
-            while (!searchResponse.hits().hits().isEmpty()) {
+            while (hasHits(searchResponse)) {
 
                 identer.addAll(getIdenter(searchResponse));
+                
+                var lastHit = searchResponse.hits().hits().getLast();
+                if (lastHit == null || lastHit.sort() == null) {
+                    break;
+                }
 
                 searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                         .index(bestillingIndex)
                         .query(query)
                         .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
                         .size(QUERY_SIZE)
-                        .searchAfter(searchResponse.hits().hits().getLast().sort())
+                        .searchAfter(lastHit.sort())
                         .timeout("3s")
                         .build(), BestillingIdenter.class);
             }
@@ -112,12 +117,24 @@ public class BestillingQueryService {
 
     private Set<String> getIdenter(SearchResponse<BestillingIdenter> response) {
 
-        return response.hits().hits().stream()
+        var hits = response.hits();
+        if (hits == null || hits.hits() == null) {
+            return Set.of();
+        }
+
+        return hits.hits().stream()
                 .map(Hit::source)
                 .filter(Objects::nonNull)
                 .map(BestillingIdenter::getIdenter)
+                .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    private static boolean hasHits(SearchResponse<BestillingIdenter> response) {
+        return response.hits() != null 
+                && response.hits().hits() != null 
+                && !response.hits().hits().isEmpty();
     }
 
     private static BoolQuery.Builder getFagsystemAndMiljoerQuery(SearchRequest request) {

@@ -69,6 +69,17 @@ public class OpenSearchQueryService {
     private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
 
         var hits = response.hits();
+        if (hits == null) {
+            return SearchInternalResponse.builder()
+                    .took(Long.toString(response.took()))
+                    .totalHits(0L)
+                    .antall(0)
+                    .side(request.getSide())
+                    .seed(request.getSeed())
+                    .personer(List.of())
+                    .build();
+        }
+        
         var hitsList = hits.hits();
 
         return SearchInternalResponse.builder()

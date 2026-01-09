@@ -37,11 +37,16 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     ExceptionInformation handleNullPointerException(ServerWebExchange serverWebExchange, NullPointerException exception) {
         String stackTrace = Arrays.stream(exception.getStackTrace())
-                .limit(10)
-                .map(StackTraceElement::toString)
-                .collect(Collectors.joining("\n"));
+                .filter(element -> element.getClassName().startsWith("no.nav.testnav"))
+                .limit(15)
+                .map(element -> String.format("%s.%s(%s:%d)", 
+                        element.getClassName(), 
+                        element.getMethodName(), 
+                        element.getFileName(), 
+                        element.getLineNumber()))
+                .collect(Collectors.joining("\n  at "));
         
-        log.error("NullPointerException i dolly-search-service: message={}, stacktrace=\n{}", 
+        log.error("NullPointerException i dolly-search-service: message={}, location=\n  at {}", 
                 exception.getMessage(), stackTrace, exception);
         
         return ExceptionInformation.builder()
