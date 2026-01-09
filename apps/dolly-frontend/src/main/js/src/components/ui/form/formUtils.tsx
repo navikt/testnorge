@@ -24,14 +24,6 @@ export const panelError = (attributtPath) => {
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
 
-export const isObjectEmptyDeep = (obj: any): boolean =>
-	_.every(obj, (val) => {
-		if (typeof val === 'object') {
-			return isObjectEmptyDeep(val)
-		}
-		return val === '' || _.isNil(val)
-	})
-
 export const fixTimezone = (date: Date) => {
 	if (!isDate(date) || date.getUTCHours() === 0) {
 		return date
