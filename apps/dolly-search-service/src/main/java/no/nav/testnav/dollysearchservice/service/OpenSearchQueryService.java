@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -67,15 +68,29 @@ public class OpenSearchQueryService {
 
     private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
 
+        var hits = response.hits();
+        if (hits == null) {
+            return SearchInternalResponse.builder()
+                    .took(Long.toString(response.took()))
+                    .totalHits(0L)
+                    .antall(0)
+                    .side(request.getSide())
+                    .seed(request.getSeed())
+                    .personer(List.of())
+                    .build();
+        }
+        
+        var hitsList = hits.hits();
+
         return SearchInternalResponse.builder()
                 .took(Long.toString(response.took()))
-                .totalHits(nonNull(response.hits().total()) ? response.hits().total().value() : null)
-                .antall(response.hits().hits().size())
+                .totalHits(nonNull(hits.total()) ? hits.total().value() : 0L)
+                .antall(nonNull(hitsList) ? hitsList.size() : 0)
                 .side(request.getSide())
                 .seed(request.getSeed())
-                .personer(response.hits().hits().stream()
+                .personer(nonNull(hitsList) ? hitsList.stream()
                         .map(Hit::source)
-                        .toList())
+                        .toList() : List.of())
                 .build();
     }
 }
