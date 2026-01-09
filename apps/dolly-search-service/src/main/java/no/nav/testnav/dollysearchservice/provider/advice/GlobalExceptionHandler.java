@@ -52,26 +52,5 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
-
-    @ResponseBody
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    ExceptionInformation handleGenericException(ServerWebExchange serverWebExchange, Exception exception) {
-        String stackTrace = Arrays.stream(exception.getStackTrace())
-                .limit(10)
-                .map(StackTraceElement::toString)
-                .collect(Collectors.joining("\n"));
-        
-        log.error("Uventet feil i dolly-search-service: type={}, message={}, stacktrace=\n{}", 
-                exception.getClass().getSimpleName(), exception.getMessage(), stackTrace, exception);
-        
-        return ExceptionInformation.builder()
-                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("Intern feil: " + exception.getMessage())
-                .path(serverWebExchange.getRequest().getPath().value())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
 }
 
