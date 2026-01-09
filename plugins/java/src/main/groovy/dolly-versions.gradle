@@ -8,7 +8,7 @@ class DollyVersionCatalog {
     String springSession = "4.0.1"
     String springCloud = "2025.1.0"
 
-    String gcpSecretManager = "5.13.7"
+    String gcpSecretManager = "7.4.2" //TODO: Må vente på spring boot 4 compatibility for lokalkjøring
 
     String apacheAvro = "1.12.1"
     String apacheKafka = "4.0.0"

@@ -11,6 +11,7 @@ import tools.jackson.databind.ObjectMapper;
 @ConditionalOnClass(ObjectMapper.class)
 public class JacksonAutoConfiguration {
 
+
     @Bean
     @ConditionalOnMissingBean(name = "caseInsensitiveEnumModule")
     public CaseInsensitiveEnumModule caseInsensitiveEnumModule() {

@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
@@ -12,6 +11,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.Base64;
@@ -21,16 +22,14 @@ import java.util.Map;
 @Slf4j
 public class TokenExchange implements ExchangeToken {
 
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().build();
+
     private final ClientRegistrationIdResolver clientRegistrationIdResolver;
     private final Map<ResourceServerType, ExchangeToken> exchanges;
     private final Map<String, AccessToken> tokenCache;
-    private final ObjectMapper objectMapper;
 
-    public TokenExchange(ClientRegistrationIdResolver clientRegistrationIdResolver,
-                         ObjectMapper objectMapper) {
-
+    public TokenExchange(ClientRegistrationIdResolver clientRegistrationIdResolver) {
         this.clientRegistrationIdResolver = clientRegistrationIdResolver;
-        this.objectMapper = objectMapper;
         this.exchanges = new HashMap<>();
         this.tokenCache = new HashMap<>();
     }
@@ -78,7 +77,7 @@ public class TokenExchange implements ExchangeToken {
         var chunks = accessToken.getTokenValue().split("\\.");
         var body = Base64.getDecoder().decode(chunks[1]);
 
-        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt())
+        return Instant.ofEpochSecond(OBJECT_MAPPER.readTree(body).get("exp").asInt())
                 .minusSeconds(300)
                 .isBefore(Instant.now());
     }

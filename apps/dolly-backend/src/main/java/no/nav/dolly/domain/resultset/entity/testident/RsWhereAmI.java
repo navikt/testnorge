@@ -12,5 +12,5 @@ public class RsWhereAmI {
     private String identHovedperson;
     private String identNavigerTil;
     private Long bestillingNavigerTil;
-    private int sidetall;
+    private Integer sidetall;
 }

@@ -17,13 +17,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
-import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
@@ -64,10 +62,9 @@ class SessionConfig {
     TokenExchange tokenExchange(
             TokenXExchange tokenXExchange,
             AzureAdTokenExchange azureAdTokenExchange,
-            ClientRegistrationIdResolver clientRegistrationIdResolver,
-            ObjectMapper objectMapper) {
+            ClientRegistrationIdResolver clientRegistrationIdResolver) {
 
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
 
         tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
         tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
@@ -109,9 +106,7 @@ class SessionConfig {
 
     @Bean
     RedisSerializer<Object> springSessionRedisSerializer() {
-        var jackson2ObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        jackson2ObjectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return new GenericJackson2JsonRedisSerializer(jackson2ObjectMapper);
+        return new JdkSerializationRedisSerializer();
     }
 
 }

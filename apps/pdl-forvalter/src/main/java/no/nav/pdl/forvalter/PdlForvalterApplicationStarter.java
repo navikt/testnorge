@@ -18,3 +18,4 @@ public class PdlForvalterApplicationStarter {
 // TODO: ORGANISASJON-SERVICE/FORVALTER - ved arbeidsforhold bestilling kommer feilen "org ikke funnet" i frontend etter valg av org
 // TODO: DOLLY-BACKEND/JOARK-SERVICE? - FUNGERER IKKE Å SENDE INN DOKUMENTER TIL JOARK LENGER, ingen feilmelding i logg
 // TODO: INNTEKTSMELDING-GENERATOR/SERVICE - INGEN ERROR I LOGG, MEN INGEN DATA SER UT TIL Å BLI SENDT VED BESTILLING
+// TODO: GcpSecretManager - Må vente på kompabilitet med spring boot 4

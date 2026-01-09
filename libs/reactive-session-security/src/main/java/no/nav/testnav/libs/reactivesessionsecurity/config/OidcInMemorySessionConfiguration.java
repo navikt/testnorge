@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
@@ -48,10 +47,9 @@ public class OidcInMemorySessionConfiguration {
     public TokenExchange tokenExchange(
             TokenXExchange tokenXExchange,
             AzureAdTokenExchange azureAdTokenExchange,
-            ClientRegistrationIdResolver clientRegistrationIdResolver,
-            ObjectMapper objectMapper) {
+            ClientRegistrationIdResolver clientRegistrationIdResolver) {
 
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
         tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
         tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
 

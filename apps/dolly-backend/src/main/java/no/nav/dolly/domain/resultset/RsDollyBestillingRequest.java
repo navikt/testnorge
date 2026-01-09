@@ -1,6 +1,8 @@
 package no.nav.dolly.domain.resultset;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +16,8 @@ import lombok.NoArgsConstructor;
 public class RsDollyBestillingRequest extends RsDollyUtvidetBestilling {
 
     @Schema(description = "Antall testpersoner som bestilles")
-    private int antall;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private Integer antall;
 
     @JsonIgnore
     private String feil;

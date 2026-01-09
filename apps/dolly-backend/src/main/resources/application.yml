@@ -40,6 +40,9 @@ spring:
   jackson:
     parser:
       include-source-in-location: true
+    deserialization:
+      fail-on-null-for-primitives: false
+      fail-on-unknown-properties: false
   http:
     codecs:
       max-in-memory-size: 10MB

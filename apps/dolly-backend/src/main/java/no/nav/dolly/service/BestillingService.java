@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
@@ -54,7 +53,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @RequiredArgsConstructor
 public class BestillingService {
 
@@ -645,7 +643,7 @@ public class BestillingService {
     private String toJson(Object object) {
         try {
             if (nonNull(object)) {
-                return objectMapper.writer().writeValueAsString(object);
+                return objectMapper.writeValueAsString(object);
             }
         } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);

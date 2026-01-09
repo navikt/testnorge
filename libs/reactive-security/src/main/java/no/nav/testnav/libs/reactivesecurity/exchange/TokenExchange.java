@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.reactivesecurity.exchange;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerType;
@@ -10,6 +9,8 @@ import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.Base64;
@@ -22,19 +23,18 @@ import java.util.Map;
 @Service
 public class TokenExchange implements ExchangeToken {
 
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().build();
+
     private final GetAuthenticatedResourceServerType getAuthenticatedTypeAction;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final Map<ResourceServerType, ExchangeToken> exchanges;
     private final Map<String, AccessToken> tokenCache;
-    private final ObjectMapper objectMapper;
 
     public TokenExchange(GetAuthenticatedResourceServerType getAuthenticatedTypeAction,
                          GetAuthenticatedUserId getAuthenticatedUserId,
-                         List<TokenService> tokenServices,
-                         ObjectMapper objectMapper) {
+                         List<TokenService> tokenServices) {
         this.getAuthenticatedTypeAction = getAuthenticatedTypeAction;
         this.getAuthenticatedUserId = getAuthenticatedUserId;
-        this.objectMapper = objectMapper;
         this.exchanges = new EnumMap<>(ResourceServerType.class);
         this.tokenCache = new HashMap<>();
         tokenServices.forEach(tokenService -> exchanges.put(tokenService.getType(), tokenService));
@@ -74,7 +74,7 @@ public class TokenExchange implements ExchangeToken {
         var chunks = accessToken.getTokenValue().split("\\.");
         var body = Base64.getDecoder().decode(chunks[1]);
 
-        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt())
+        return Instant.ofEpochSecond(OBJECT_MAPPER.readTree(body).get("exp").asInt())
                 .minusSeconds(300)
                 .isBefore(Instant.now());
     }
