@@ -14,6 +14,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Service
@@ -26,6 +27,7 @@ public class PdlTestdataConsumer {
     public PdlTestdataConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
+            ObjectMapper objectMapper,
             WebClient webClient
     ) {
         serverProperties = consumers.getPdlProxy();
@@ -33,6 +35,7 @@ public class PdlTestdataConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
+                .exchangeStrategies(no.nav.testnav.apps.personservice.consumer.v2.JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
 

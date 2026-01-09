@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class PdlApiConsumer {
     public PdlApiConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
+            ObjectMapper objectMapper,
             WebClient webClient
     ) {
         serverProperties = consumers.getPdlProxy();
@@ -50,6 +52,7 @@ public class PdlApiConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
+                .exchangeStrategies(no.nav.testnav.apps.personservice.consumer.v2.JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
 
