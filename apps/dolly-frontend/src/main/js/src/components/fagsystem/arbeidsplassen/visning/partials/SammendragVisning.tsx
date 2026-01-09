@@ -2,7 +2,11 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 
-export const SammendragVisning = ({ data }) => {
+type SammendragVisningProps = {
+	data?: string
+}
+
+export const SammendragVisning = ({ data }: SammendragVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}

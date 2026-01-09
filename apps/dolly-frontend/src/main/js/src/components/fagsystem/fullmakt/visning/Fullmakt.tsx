@@ -16,18 +16,18 @@ type FullmaktProps = {
 	fullmakt: FullmaktType
 }
 
+export const handlingLabel = (handlinger: string[]) => {
+	if (_.isEqual(handlinger, FullmaktHandling.lesOgSkriv)) {
+		return 'Lese- og skriverettigheter'
+	} else if (_.isEqual(handlinger, FullmaktHandling.les)) {
+		return 'Leserettigheter'
+	}
+	return handlinger?.map((handling) => toTitleCase(handling)).join(', ')
+}
+
 export const Fullmakt = ({ fullmakt, idx }: FullmaktProps) => {
 	const { omraadeKodeverk = [] } = useFullmaktOmraader()
 	const [visOmraader, setVisOmraader] = useState(false)
-
-	const handlingLabel = (handlinger: string[]) => {
-		if (_.isEqual(handlinger, FullmaktHandling.lesOgSkriv)) {
-			return 'Lese- og skriverettigheter'
-		} else if (_.isEqual(handlinger, FullmaktHandling.les)) {
-			return 'Leserettigheter'
-		}
-		return handlinger?.map((handling) => toTitleCase(handling)).join(', ')
-	}
 
 	return (
 		<Fragment key={idx}>

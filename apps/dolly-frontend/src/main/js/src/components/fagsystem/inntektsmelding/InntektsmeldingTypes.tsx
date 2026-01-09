@@ -176,3 +176,9 @@ export type BestillingData = {
 export type Bestilling = {
 	inntektsmelding?: Array<Inntektsmelding>
 }
+
+export type BestillingVisning = {
+	inntektsmelding: {
+		inntekter: Array<Inntekt>
+	}
+}

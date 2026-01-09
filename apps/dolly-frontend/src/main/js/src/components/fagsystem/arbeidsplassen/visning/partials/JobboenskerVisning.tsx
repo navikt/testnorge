@@ -2,8 +2,13 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, showLabel } from '@/utils/DataFormatter'
+import { Jobboensker } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const JobboenskerVisning = ({ data }) => {
+type JobboenskerVisningProps = {
+	data?: Jobboensker
+}
+
+export const JobboenskerVisning = ({ data }: JobboenskerVisningProps) => {
 	if (
 		!data ||
 		((!data.occupations || data.occupations.length < 1) &&
@@ -33,19 +38,19 @@ export const JobboenskerVisning = ({ data }) => {
 						<TitleValue
 							title="Arbeidsmengde"
 							value={arrayToString(
-								data.workLoadTypes?.map((type) => showLabel('arbeidsmengde', type))
+								data.workLoadTypes?.map((type) => showLabel('arbeidsmengde', type)),
 							)}
 						/>
 						<TitleValue
 							title="Arbeidstider"
 							value={arrayToString(
-								data.workScheduleTypes?.map((type) => showLabel('arbeidstid', type))
+								data.workScheduleTypes?.map((type) => showLabel('arbeidstid', type)),
 							)}
 						/>
 						<TitleValue
 							title="Ansettelsestyper"
 							value={arrayToString(
-								data.occupationTypes?.map((type) => showLabel('ansettelsestype', type))
+								data.occupationTypes?.map((type) => showLabel('ansettelsestype', type)),
 							)}
 						/>
 						<TitleValue title="Oppstart" value={showLabel('oppstart', data.startOption)} />

@@ -28,7 +28,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 	if (loading || orgLoading) {
 		return <Loading label="Loading" />
 	}
-
+	console.log('egneOrgMaler: ', egneOrgMaler) //TODO - SLETT MEG
 	const antallEgneMaler = egneMaler?.length
 	const antallEgneOrgMaler = egneOrgMaler?.length
 
