@@ -3,7 +3,6 @@ import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import * as _ from 'lodash-es'
 import { Form, useFormContext, useWatch } from 'react-hook-form'
-import { isObjectEmptyDeep } from '@/components/ui/form/formUtils'
 
 const tilleggsinformasjonAttributter = {
 	BilOgBaat: 'bilOgBaat',
@@ -27,6 +26,7 @@ const InntektStub = ({ inntektPath }) => {
 		sluttOpptjeningsperiode,
 		inntektstype,
 		tilleggsinformasjonstype,
+		tilleggsinformasjon,
 	} = inntektValues
 
 	useEffect(() => {
@@ -56,18 +56,29 @@ const InntektStub = ({ inntektPath }) => {
 				formMethods.setValue(`${inntektPath}.${fieldName}`, null)
 			}
 			removeEmptyFieldsFromForm(entry)
-			removeEmptyTilleggsinformasjon(formMethods.watch(`${inntektPath}.tilleggsinformasjon`))
 		})
 	}, [fields])
 
 	useEffect(() => {
 		if (!tilleggsinformasjonstype) {
-			return
-		}
-		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, {
-			[`${tilleggsinformasjonAttributter[tilleggsinformasjonstype]}`]: {},
-		})
+			clearTilleggsinformasjon()
+		} else
+			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, {
+				[`${tilleggsinformasjonAttributter[tilleggsinformasjonstype]}`]: {},
+			})
 	}, [tilleggsinformasjonstype])
+
+	useEffect(() => {
+		if (!tilleggsinformasjonstype) {
+			clearTilleggsinformasjon()
+		}
+	}, [tilleggsinformasjon])
+
+	const clearTilleggsinformasjon = () => {
+		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+		formMethods.clearErrors(`manual.${inntektPath}.tilleggsinformasjon`)
+		formMethods.clearErrors(`${inntektPath}.tilleggsinformasjon`)
+	}
 
 	const setForm = (values) => {
 		const nullstiltInntekt = {
@@ -98,18 +109,6 @@ const InntektStub = ({ inntektPath }) => {
 			formMethods.setValue(`${inntektPath}.${name}`, undefined)
 			formMethods.clearErrors(`manual.${inntektPath}.${name}`)
 			formMethods.clearErrors(`${inntektPath}.${name}`)
-		}
-	}
-
-	const removeEmptyTilleggsinformasjon = (tilleggsinformasjon: any) => {
-		if (!tilleggsinformasjon) {
-			return
-		}
-
-		if (isObjectEmptyDeep(tilleggsinformasjon)) {
-			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
-			formMethods.clearErrors(`manual.${inntektPath}.tilleggsinformasjon`)
-			formMethods.clearErrors(`${inntektPath}.tilleggsinformasjon`)
 		}
 	}
 
