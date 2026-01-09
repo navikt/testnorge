@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
+import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
@@ -27,7 +28,9 @@ class WebClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    WebClient webClient(ObservationRegistry observationRegistry, JsonMapper jsonMapper) {
+    WebClient webClient(ObservationRegistry observationRegistry, ObjectMapper objectMapper) {
+
+        var jsonMapper = (objectMapper instanceof JsonMapper jm) ? jm : JsonMapper.builder().build();
 
         var exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> {
