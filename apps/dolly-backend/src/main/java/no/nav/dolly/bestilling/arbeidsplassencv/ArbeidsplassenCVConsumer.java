@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.arbeidsplassencv;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCVCommand;
@@ -19,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -45,7 +45,7 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 

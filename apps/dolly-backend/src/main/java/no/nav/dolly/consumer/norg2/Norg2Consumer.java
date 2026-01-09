@@ -1,6 +1,5 @@
 package no.nav.dolly.consumer.norg2;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.config.Consumers;
@@ -12,6 +11,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -33,7 +33,7 @@ public class Norg2Consumer extends ConsumerStatus {
         serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(getJacksonStrategy())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.skjermingsregister;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterGetCommand;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -44,7 +44,7 @@ public class SkjermingsRegisterConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 

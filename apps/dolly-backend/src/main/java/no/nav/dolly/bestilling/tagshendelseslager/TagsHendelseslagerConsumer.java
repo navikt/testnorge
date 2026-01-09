@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.tagshendelseslager;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.command.HendelseslagerPublishCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsHenteCommand;
@@ -19,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class TagsHendelseslagerConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy())
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
 

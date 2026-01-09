@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdldata;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
@@ -26,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.util.List;
@@ -53,7 +53,7 @@ public class PdlDataConsumer extends ConsumerStatus {
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
                         .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy())
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
 

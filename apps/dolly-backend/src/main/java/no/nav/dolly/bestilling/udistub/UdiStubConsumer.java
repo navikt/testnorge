@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.udistub;
 
-import tools.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.udistub.command.UdistubDeleteCommand;
 import no.nav.dolly.bestilling.udistub.command.UdistubGetCommand;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class UdiStubConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy())
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
 

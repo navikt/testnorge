@@ -9,6 +9,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -22,6 +23,7 @@ public class SafConsumer {
     public SafConsumer(
             Consumers consumers,
             TokenExchange tokenService,
+            ObjectMapper objectMapper,
             WebClient webClient) {
 
         serverProperties = consumers.getSafProxy();
@@ -29,7 +31,7 @@ public class SafConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
