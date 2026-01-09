@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.aareg;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdGetCommand;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -36,7 +36,7 @@ public class AaregConsumer extends ConsumerStatus {
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
-                .exchangeStrategies(getJacksonStrategy())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

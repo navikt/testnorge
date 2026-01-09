@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +44,7 @@ public class OrganisasjonConsumer {
     public OrganisasjonConsumer(
             TokenExchange tokenService,
             Consumers consumers,
+            ObjectMapper objectMapper,
             WebClient webClient) {
 
         this.tokenService = tokenService;
@@ -50,7 +52,7 @@ public class OrganisasjonConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
