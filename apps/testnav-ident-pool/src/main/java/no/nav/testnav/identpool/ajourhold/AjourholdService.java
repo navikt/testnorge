@@ -74,14 +74,8 @@ public class AjourholdService {
     /**
      * Sjekker om det finnes identer som mangler i ident-pool for et gitt år og type.
      */
-    protected Mono<Long> checkAndGenerateForYear(
-            int year,
-            Identtype type,
-            boolean syntetiskIdent) {
-
-        var antallPerDag = adjustForYear(year, IdentDistribusjonUtil.antallPersonerPerDagPerAar(year));
-
-        return countNumberOfMissingIdents(year, type, antallPerDag, syntetiskIdent)
+    protected Mono<Long> checkAndGenerateForYear(int year, Identtype type, boolean syntetiskIdent) {
+        return countNumberOfMissingIdents(year, type, adjustForYear(year), syntetiskIdent)
                 .flatMap(missingIdents ->
                         Mono.just(identGeneratorService.genererIdenterMap(LocalDate.of(year, 1, 1),
                                         LocalDate.of(year + 1, 1, 1), type, syntetiskIdent))
@@ -146,8 +140,9 @@ public class AjourholdService {
         );
     }
 
-    private int adjustForYear(int year, int antallPerDag) {
+    private static int adjustForYear(int year) {
 
+        var antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG) {
             antallPerDag = MIN_ANTALL_IDENTER_PER_DAG;
         }
