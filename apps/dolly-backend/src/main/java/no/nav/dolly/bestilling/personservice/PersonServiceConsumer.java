@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.List;
@@ -39,16 +39,16 @@ public class PersonServiceConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            ObjectMapper objectMapper) {
+            JsonMapper jsonMapper) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
-        log.info("PersonServiceConsumer: Initialiserer med ObjectMapper type: {}", 
-                objectMapper != null ? objectMapper.getClass().getName() : "null");
+        log.info("PersonServiceConsumer: Initialiserer med JsonMapper type: {}", 
+                jsonMapper != null ? jsonMapper.getClass().getName() : "null");
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
     }
 

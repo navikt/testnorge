@@ -19,6 +19,19 @@ public final class JacksonExchangeStrategyUtil {
                 .build();
     }
 
+    public static ExchangeStrategies getJacksonStrategy(JsonMapper jsonMapper) {
+        log.info("JacksonExchangeStrategyUtil: Bruker JsonMapper: {}", 
+                jsonMapper != null ? jsonMapper.getClass().getName() : "null");
+        var mapper = jsonMapper != null ? jsonMapper : JsonMapper.builder().build();
+        return ExchangeStrategies.builder()
+                .codecs(config -> {
+                    config.defaultCodecs().maxInMemorySize(32 * 1024 * 1024);
+                    config.defaultCodecs().jacksonJsonDecoder(new JacksonJsonDecoder(mapper));
+                    config.defaultCodecs().jacksonJsonEncoder(new JacksonJsonEncoder(mapper));
+                })
+                .build();
+    }
+
     public static ExchangeStrategies getJacksonStrategy(ObjectMapper objectMapper) {
         JsonMapper jsonMapper;
         if (objectMapper instanceof JsonMapper jm) {

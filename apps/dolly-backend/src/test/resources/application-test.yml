@@ -59,6 +59,11 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
+  testnav-person-service:
+    name: testnav-person-service
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/person-service
+    cluster: dev-gcp
 
 management:
   prometheus:
