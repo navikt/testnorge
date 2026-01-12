@@ -17,6 +17,8 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -26,11 +28,28 @@ import java.time.Duration;
 @Slf4j
 class WebClientAutoConfiguration {
 
+    private static JsonMapper createDefaultJsonMapper() {
+        return JsonMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .build();
+    }
+
     @Bean
     @ConditionalOnMissingBean
     WebClient webClient(ObservationRegistry observationRegistry, ObjectMapper objectMapper) {
 
-        var jsonMapper = (objectMapper instanceof JsonMapper jm) ? jm : JsonMapper.builder().build();
+        JsonMapper jsonMapper;
+        if (objectMapper instanceof JsonMapper jm) {
+            jsonMapper = jm;
+            log.info("WebClientAutoConfiguration: Using existing JsonMapper: {}", objectMapper.getClass().getName());
+        } else {
+            jsonMapper = createDefaultJsonMapper();
+            log.info("WebClientAutoConfiguration: ObjectMapper is not JsonMapper ({}), creating new JsonMapper with default configuration", 
+                    objectMapper != null ? objectMapper.getClass().getName() : "null");
+        }
 
         var exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> {
