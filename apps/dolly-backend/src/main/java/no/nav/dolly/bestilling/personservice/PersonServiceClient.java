@@ -111,19 +111,19 @@ public class PersonServiceClient {
                         return Mono.error(new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e));
                     }
                 })
-                .flatMap(tree -> Mono.just(Map.of(tree.path("hovedperson").path("ident").asText(),
+                .flatMap(tree -> Mono.just(Map.of(getTextValue(tree.path("hovedperson").path("ident")),
                                 toStream(tree.path("hovedperson").path("ordrer"))
                                         .map(entry -> toStream(entry.path(HENDELSER))
-                                                .map(hendelse -> hendelse.path("hendelseId").asText())
+                                                .map(hendelse -> getTextValue(hendelse.path("hendelseId")))
                                                 .collect(Collectors.toSet()))
                                         .flatMap(Collection::stream)
                                         .filter(StringUtil::isNotBlank)
                                         .collect(Collectors.toSet())))
                         .flatMap(hovedperson -> Mono.just(toStream(tree.path("relasjoner"))
-                                        .collect(Collectors.toMap(relasjon -> relasjon.path("ident").asText(),
+                                        .collect(Collectors.toMap(relasjon -> getTextValue(relasjon.path("ident")),
                                                 relasjon -> toStream(relasjon.path("ordrer"))
                                                         .map(entry -> toStream(entry.path(HENDELSER))
-                                                                .map(hendelse -> hendelse.path("hendelseId").asText())
+                                                                .map(hendelse -> getTextValue(hendelse.path("hendelseId")))
                                                                 .collect(Collectors.toSet()))
                                                         .flatMap(Collection::stream)
                                                         .filter(StringUtils::isNotBlank)
@@ -230,5 +230,12 @@ public class PersonServiceClient {
                     .flatMap(delayed -> personServiceConsumer.isPerson(ident.getKey(), ident.getValue())
                             .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(), resultat, ident)));
         }
+    }
+
+    private static String getTextValue(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return "";
+        }
+        return node.isTextual() ? node.textValue() : node.toString();
     }
 }

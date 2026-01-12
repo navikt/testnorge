@@ -61,6 +61,13 @@ public class JsonMapperConfig {
                 .addDeserializer(Instant.class, new DollyInstantDeserializer());
     }
 
+    private static String getNodeText(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return null;
+        }
+        return node.isTextual() ? node.textValue() : node.toString();
+    }
+
     private static class LocalDateSerializer extends ValueSerializer<LocalDate> {
         @Override
         public void serialize(LocalDate value, JsonGenerator gen, SerializationContext serializers) {
@@ -93,10 +100,11 @@ public class JsonMapperConfig {
         @Override
         public YearMonth deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            String text = getNodeText(node);
+            if (isBlank(text)) {
                 return null;
             }
-            return YearMonth.parse(node.asText(), DateTimeFormatter.ofPattern(YEAR_MONTH));
+            return YearMonth.parse(text, DateTimeFormatter.ofPattern(YEAR_MONTH));
         }
     }
 
@@ -104,10 +112,11 @@ public class JsonMapperConfig {
         @Override
         public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            String text = getNodeText(node);
+            if (isBlank(text)) {
                 return null;
             }
-            return ZonedDateTime.parse(node.asText(), DateTimeFormatter.ISO_DATE_TIME);
+            return ZonedDateTime.parse(text, DateTimeFormatter.ISO_DATE_TIME);
         }
     }
 
@@ -115,10 +124,11 @@ public class JsonMapperConfig {
         @Override
         public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            String text = getNodeText(node);
+            if (isBlank(text)) {
                 return null;
             }
-            var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
+            var dateTime = text.length() > 10 ? text.substring(0, 10) : text;
             return LocalDate.parse(dateTime);
         }
     }
@@ -127,10 +137,11 @@ public class JsonMapperConfig {
         @Override
         public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            String text = getNodeText(node);
+            if (isBlank(text)) {
                 return null;
             }
-            var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            var dateTime = text.length() > 19 ? text.substring(0, 19) : text;
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }
@@ -139,11 +150,11 @@ public class JsonMapperConfig {
         @Override
         public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            String text = getNodeText(node);
+            if (isBlank(text)) {
                 return null;
             }
-            var timestamp = node.asText();
-            return Instant.parse(timestamp.contains("Z") ? timestamp : timestamp + "Z");
+            return Instant.parse(text.contains("Z") ? text : text + "Z");
         }
     }
 }

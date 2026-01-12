@@ -12,9 +12,20 @@ public class PersonStatusEnumDeserializer extends ValueDeserializer<Personstatus
     @Override
     public Personstatus deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         JsonNode node = jsonParser.readValueAsTree();
-        var words = StringUtils.splitByCharacterTypeCamelCase(node.asString());
+        String text = getNodeText(node);
+        if (StringUtils.isBlank(text)) {
+            return null;
+        }
+        var words = StringUtils.splitByCharacterTypeCamelCase(text);
         var name = String.join("_", words).toUpperCase();
 
         return Personstatus.valueOf(name);
+    }
+
+    private static String getNodeText(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return null;
+        }
+        return node.isString() ? node.asString() : node.toString();
     }
 }
