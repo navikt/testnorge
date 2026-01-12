@@ -3,6 +3,7 @@ package no.nav.testnav.apps.personservice.provider.v1;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlAktoer.AktoerIdent;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.apps.personservice.service.PersonService;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import static java.lang.String.format;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/personer")
 @RequiredArgsConstructor
@@ -66,7 +68,11 @@ public class PersonController {
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident,
             @RequestParam(value = "opplysningId", required = false) Set<String> opplysningId) {
 
-        return personService.isPerson(ident, opplysningId);
+        log.info("PersonController.isPerson: Mottok request for ident {} med opplysningId {}", ident, opplysningId);
+        return personService.isPerson(ident, opplysningId)
+                .doOnSuccess(result -> log.info("PersonController.isPerson: Returnerer {} for ident {}", result, ident))
+                .doOnError(e -> log.error("PersonController.isPerson: Feil for ident {}: {} - {}", 
+                        ident, e.getClass().getSimpleName(), e.getMessage(), e));
     }
 
     @GetMapping("/{ident}/aktoerId")

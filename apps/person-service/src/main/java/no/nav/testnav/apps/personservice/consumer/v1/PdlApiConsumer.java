@@ -92,11 +92,36 @@ public class PdlApiConsumer {
 
     public Mono<Boolean> isPerson(String ident, Set<String> opplysningId) {
 
+        log.info("isPerson: Starter sjekk av ident {} med opplysningId {}", ident, opplysningId);
         return tokenExchange
                 .exchange(serverProperties)
-                .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call(),
-                                new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call())
-                        .map(tuple -> isPresent(ident, tuple, opplysningId)));
+                .doOnSuccess(token -> log.debug("isPerson: Token exchange vellykket for ident {}", ident))
+                .doOnError(e -> log.error("isPerson: Token exchange feilet for ident {}: {}", ident, e.getMessage(), e))
+                .flatMap(token -> {
+                    log.debug("isPerson: Starter PDL-kall for ident {} mot Q1 og Q2", ident);
+                    return Mono.zip(
+                            new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call()
+                                    .doOnSuccess(r -> log.debug("isPerson: Q1 respons mottatt for ident {}, errors={}, data={}", 
+                                            ident, r.getErrors(), nonNull(r.getData())))
+                                    .doOnError(e -> log.error("isPerson: Q1 kall feilet for ident {}: {}", ident, e.getMessage(), e)),
+                            new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call()
+                                    .doOnSuccess(r -> log.debug("isPerson: Q2 respons mottatt for ident {}, errors={}, data={}", 
+                                            ident, r.getErrors(), nonNull(r.getData())))
+                                    .doOnError(e -> log.error("isPerson: Q2 kall feilet for ident {}: {}", ident, e.getMessage(), e))
+                    );
+                })
+                .map(tuple -> {
+                    try {
+                        boolean result = isPresent(ident, tuple, opplysningId);
+                        log.info("isPerson: Resultat for ident {}: {}", ident, result);
+                        return result;
+                    } catch (Exception e) {
+                        log.error("isPerson: Feil ved prosessering av respons for ident {}: {}", ident, e.getMessage(), e);
+                        throw e;
+                    }
+                })
+                .doOnError(e -> log.error("isPerson: Uventet feil for ident {}: {} - {}", ident, e.getClass().getSimpleName(), e.getMessage(), e))
+                .onErrorReturn(false);
     }
 
     private static boolean isNotPresent(PdlAktoer pdlAktoer) {
