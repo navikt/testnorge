@@ -59,6 +59,10 @@ public class DbRelasjon {
     @Version
     private Integer versjon;
 
+    public boolean hasGammelIdentitet() {
+        return relasjonType == RelasjonType.GAMMEL_IDENTITET;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
