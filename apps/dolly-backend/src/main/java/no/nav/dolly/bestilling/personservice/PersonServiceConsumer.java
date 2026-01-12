@@ -43,6 +43,8 @@ public class PersonServiceConsumer extends ConsumerStatus {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
+        log.info("PersonServiceConsumer: Initialiserer med ObjectMapper type: {}", 
+                objectMapper != null ? objectMapper.getClass().getName() : "null");
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())

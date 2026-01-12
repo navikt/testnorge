@@ -27,6 +27,8 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
     @Override
     public Mono<PersonServiceResponse> call() {
 
+        log.info("PersonServiceExistCommand: Starter kall for ident {} med opplysningId {}", ident, opplysningId);
+        
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(PERSON_URL)
                         .queryParamIfPresent("opplysningId", Optional.ofNullable(opplysningId.isEmpty() ? null : opplysningId))
@@ -34,7 +36,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .toEntity(Boolean.class)
-                .doOnSuccess(response -> log.debug("PersonServiceExistCommand: Mottok respons for ident {}: status={}, body={}", 
+                .doOnSuccess(response -> log.info("PersonServiceExistCommand: Mottok respons for ident {}: status={}, body={}", 
                         ident, response.getStatusCode(), response.getBody()))
                 .map(resultat -> PersonServiceResponse.builder()
                         .ident(ident)
@@ -42,23 +44,19 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                         .exists(resultat.getBody())
                         .build())
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> {
-                    if (throwable instanceof WebClientResponseException wcre) {
-                        log.error("PersonServiceExistCommand: Feil for ident {}: status={}, body={}, error={}", 
-                                ident, wcre.getStatusCode(), wcre.getResponseBodyAsString(), wcre.getMessage(), wcre);
-                    } else {
-                        log.error("PersonServiceExistCommand: Feil for ident {}: {} - {}", 
-                                ident, throwable.getClass().getSimpleName(), throwable.getMessage(), throwable);
-                    }
-                })
+                .doOnError(throwable -> log.error("PersonServiceExistCommand: Feil for ident {}: exceptionType={}, message={}", 
+                        ident, throwable.getClass().getName(), throwable.getMessage(), throwable))
                 .onErrorResume(throwable -> {
                     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-                    String feilmelding = throwable.getMessage();
+                    String feilmelding = "%s: %s".formatted(throwable.getClass().getSimpleName(), throwable.getMessage());
                     
                     if (throwable instanceof WebClientResponseException wcre) {
                         status = HttpStatus.valueOf(wcre.getStatusCode().value());
                         feilmelding = wcre.getResponseBodyAsString();
                     }
+                    
+                    log.error("PersonServiceExistCommand: Returnerer feilrespons for ident {}: status={}, feilmelding={}", 
+                            ident, status, feilmelding);
                     
                     return Mono.just(PersonServiceResponse.builder()
                             .exists(false)

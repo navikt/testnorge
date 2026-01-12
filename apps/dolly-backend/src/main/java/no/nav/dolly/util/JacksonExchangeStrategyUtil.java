@@ -23,10 +23,10 @@ public final class JacksonExchangeStrategyUtil {
         JsonMapper jsonMapper;
         if (objectMapper instanceof JsonMapper jm) {
             jsonMapper = jm;
-            log.debug("JacksonExchangeStrategyUtil: Bruker eksisterende JsonMapper: {}", objectMapper.getClass().getName());
+            log.info("JacksonExchangeStrategyUtil: Bruker eksisterende JsonMapper: {}", objectMapper.getClass().getName());
         } else {
             jsonMapper = JsonMapper.builder().build();
-            log.warn("JacksonExchangeStrategyUtil: ObjectMapper er ikke JsonMapper ({}), oppretter ny JsonMapper uten konfigurasjon", 
+            log.info("JacksonExchangeStrategyUtil: ObjectMapper er ikke JsonMapper ({}), oppretter ny JsonMapper uten konfigurasjon", 
                     objectMapper != null ? objectMapper.getClass().getName() : "null");
         }
         return ExchangeStrategies.builder()
