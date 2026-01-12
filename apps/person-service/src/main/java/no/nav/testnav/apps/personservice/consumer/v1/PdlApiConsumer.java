@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -81,7 +82,11 @@ public class PdlApiConsumer {
                             if (isNotPresent(tuple.getT1()) || isNotPresent(tuple.getT2())) {
                                 return Optional.empty();
                             }
-                            return Optional.of(tuple.getT1().getData().getHentIdenter().getIdenter().getFirst());
+                            var data = tuple.getT1().getData();
+                            if (isNull(data) || isNull(data.getHentIdenter()) || data.getHentIdenter().getIdenter().isEmpty()) {
+                                return Optional.empty();
+                            }
+                            return Optional.of(data.getHentIdenter().getIdenter().getFirst());
                         }));
     }
 
@@ -96,7 +101,7 @@ public class PdlApiConsumer {
 
     private static boolean isNotPresent(PdlAktoer pdlAktoer) {
 
-        return pdlAktoer.getErrors().stream().anyMatch(value -> value.getMessage().equals("Fant ikke person"));
+        return pdlAktoer.getErrors().stream().anyMatch(value -> "Fant ikke person".equals(value.getMessage()));
     }
 
     private static boolean isGruppe(PdlAktoer.AktoerIdent ident, String gruppe) {
@@ -115,7 +120,8 @@ public class PdlApiConsumer {
 
     private static boolean isPresent(String ident, PdlAktoer pdlAktoer, String miljoe, Set<String> opplysningId) {
 
-        var opplysningIdsFraPdl = getOpplysningIds(pdlAktoer.getData().getHentPerson());
+        var data = pdlAktoer.getData();
+        var opplysningIdsFraPdl = getOpplysningIds(nonNull(data) ? data.getHentPerson() : null);
 
         log.info("Sjekker ident {} i miljø {}, med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident, miljoe,
                 String.join(",", opplysningIdsFraPdl),
@@ -131,11 +137,11 @@ public class PdlApiConsumer {
 
         } else {
 
-            List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer.getData().getHentIdenter()) ?
-                    pdlAktoer.getData().getHentIdenter().getIdenter() : emptyList();
+            List<PdlAktoer.AktoerIdent> identer = nonNull(data) && nonNull(data.getHentIdenter()) ?
+                    data.getHentIdenter().getIdenter() : emptyList();
 
             return
-                    pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person")) &&
+                    pdlAktoer.getErrors().stream().noneMatch(value -> "Fant ikke person".equals(value.getMessage())) &&
                             identer.stream()
                                     .filter(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "AKTORID")))
                                     .anyMatch(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "FOLKEREGISTERIDENT")) ||
