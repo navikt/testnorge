@@ -33,7 +33,7 @@ app:
       username: ${ELASTIC_USERNAME}
       password: ${ELASTIC_PASSWORD}
     hendelse:
-      apikey: ${IDENTHENDELSE_API_KEY}
+      apikey: ${HENDELSE_LAGER_API_KEY}
   targets:
     aareg-services: https://aareg-services-%s.dev.intern.nav.no # Note replacement pattern.
     aareg-vedlikehold: https://aareg-dolly-api-%s.intern.dev.nav.no # Note replacement pattern.
