@@ -80,6 +80,14 @@ public class PersonServiceClient {
     }
 
     private Flux<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
+        log.error("PersonServiceClient.getError: Feil for ident {}, exceptionType={}, message={}", 
+                person.getIdent(), throwable.getClass().getName(), throwable.getMessage());
+        if (throwable.getCause() != null) {
+            log.error("PersonServiceClient.getError: Caused by: exceptionType={}, message={}", 
+                    throwable.getCause().getClass().getName(), throwable.getCause().getMessage());
+        }
+        log.error("PersonServiceClient.getError: Full stacktrace:", throwable);
+        
         var description = WebClientError.describe(throwable);
         return Flux.just(PersonServiceResponse
                 .builder()

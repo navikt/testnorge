@@ -74,13 +74,18 @@ public class PersonServiceConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer, AtomicInteger retry) {
 
+        log.info("PersonServiceConsumer.getPdlPersoner: Henter {} identer, retry={}", identer.size(), retry.get());
+        
         return tokenService.exchange(serverProperties)
+                .doOnError(error -> log.error("PersonServiceConsumer.getPdlPersoner: Token exchange feilet: {} - {}", 
+                        error.getClass().getName(), error.getMessage(), error))
                 .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
                         .flatMap(index -> new PdlPersonerGetCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()
                         ).call()))
-
+                .doOnError(error -> log.error("PersonServiceConsumer.getPdlPersoner: Feil ved henting: {} - {}", 
+                        error.getClass().getName(), error.getMessage(), error))
                 .flatMap(resultat -> {
 
                     if (retry.get() < MAX_RETRIES &&

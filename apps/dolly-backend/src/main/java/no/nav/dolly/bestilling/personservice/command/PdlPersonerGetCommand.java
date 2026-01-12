@@ -25,6 +25,7 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
 
     @Override
     public Flux<PdlPersonBolk> call() {
+        log.info("PdlPersonerGetCommand: Starter kall for identer: {}", identer);
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -34,8 +35,18 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(PdlPersonBolk.class)
-                .doOnError(WebClientError.logTo(log))
-
+                .doOnNext(result -> log.debug("PdlPersonerGetCommand: Mottok resultat for {} personer", 
+                        result.getData() != null && result.getData().getHentPersonBolk() != null 
+                                ? result.getData().getHentPersonBolk().size() : 0))
+                .doOnError(error -> {
+                    log.error("PdlPersonerGetCommand: Feil ved kall, exceptionType={}, message={}", 
+                            error.getClass().getName(), error.getMessage());
+                    if (error.getCause() != null) {
+                        log.error("PdlPersonerGetCommand: Caused by: exceptionType={}, message={}", 
+                                error.getCause().getClass().getName(), error.getCause().getMessage());
+                    }
+                    log.error("PdlPersonerGetCommand: Full stacktrace:", error);
+                })
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
