@@ -2,14 +2,14 @@ package no.nav.testnav.joarkdokumentservice.controller.v2.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class DokumentInfoDTO {
-    Integer dokumentInfoId;
-    String tittel;
+    private Integer dokumentInfoId;
+    private String tittel;
 }

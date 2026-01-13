@@ -1,15 +1,15 @@
 package no.nav.testnav.joarkdokumentservice.consumer.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
-@Value
+@Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class SakDTO {
 
-    String sakstype;
-    String fagsakId;
-    String fagsaksystem;
+    private String sakstype;
+    private String fagsakId;
+    private String fagsaksystem;
 }

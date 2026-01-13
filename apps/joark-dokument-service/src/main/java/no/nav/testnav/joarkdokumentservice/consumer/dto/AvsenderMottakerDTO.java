@@ -1,14 +1,14 @@
 package no.nav.testnav.joarkdokumentservice.consumer.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
-@Value
+@Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class AvsenderMottakerDTO {
-    String type;
-    String id;
-    String navn;
+    private String type;
+    private String id;
+    private String navn;
 }

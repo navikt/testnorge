@@ -1,16 +1,16 @@
 package no.nav.testnav.joarkdokumentservice.consumer.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.util.List;
 
-@Value
+@Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class Response {
 
-    DataDTO data;
-    List<Error> errors;
+    private DataDTO data;
+    private List<Error> errors;
 }
