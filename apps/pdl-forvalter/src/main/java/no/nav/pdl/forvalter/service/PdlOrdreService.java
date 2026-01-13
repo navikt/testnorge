@@ -272,8 +272,8 @@ public class PdlOrdreService {
     private List<Ordre> catchAll(DbPerson hovedperson) {
 
         // CatchAll skulle ikke være nødvendig, men er lagt til for å håndtere tilfeller der historiske blir sendt inn
-        // som ufullstending liste pga feil i alias tabell (gjelder enkelte personer som har komplisert identhistorikk
-        // og som er opprettett for noe tid tilbake)
+        // som ufullstendig liste pga feil i alias tabell (gjelder enkelte personer som har komplisert identhistorikk
+        // og som er opprettet for noe tid tilbake)
 
         if (TestnorgeIdentUtility.isTestnorgeIdent(hovedperson.getIdent()) ||
                 hovedperson.getRelasjoner().stream().noneMatch(DbRelasjon::hasGammelIdentitet)) {
