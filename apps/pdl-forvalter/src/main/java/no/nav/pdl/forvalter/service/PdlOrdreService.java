@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
@@ -21,6 +22,7 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
+import no.nav.pdl.forvalter.utils.TestnorgeIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -145,7 +147,7 @@ public class PdlOrdreService {
                 .distinct()
                 .toList();
 
-        var resultat = sendAlleInformasjonselementer(new ArrayList<>(requesterTilOppretting))
+        var resultat = sendAlleInformasjonselementer(new ArrayList<>(requesterTilOppretting), dbPerson)
                 .collectList()
                 .block();
 
@@ -219,7 +221,7 @@ public class PdlOrdreService {
         }
     }
 
-    private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger) {
+    private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger, DbPerson hovedperson) {
 
         opprettinger.sort(Comparator.comparing(person -> !person.getPerson().getAlias().isEmpty()));
 
@@ -232,10 +234,12 @@ public class PdlOrdreService {
                                                 hendelseIdService.getPdlHendelser(oppretting.getPerson().getIdent())))
                                 .flatMap(Collection::stream)
                                 .toList())
-                        .oppretting(opprettinger.stream()
-                                .filter(OpprettRequest::isNotTestnorgeIdent)
-                                .map(this::personOpprett)
-                                .flatMap(Collection::stream)
+                        .oppretting(Stream.concat(
+                                        opprettinger.stream()
+                                                .filter(OpprettRequest::isNotTestnorgeIdent)
+                                                .map(this::personOpprett)
+                                                .flatMap(Collection::stream),
+                                        catchAll(hovedperson).stream())
                                 .toList())
                         .merge(opprettinger.stream()
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
@@ -259,6 +263,33 @@ public class PdlOrdreService {
                                 .filter(IdenttypeUtility::isNotNpidIdent)
                                 .toList())
                         .opphoert(OPPHOERT == oppretting.getPerson().getPerson()
+                                .getFolkeregisterPersonstatus().stream()
+                                .map(FolkeregisterPersonstatusDTO::getStatus)
+                                .findFirst().orElse(null))
+                        .build()));
+    }
+
+    private List<Ordre> catchAll(DbPerson hovedperson) {
+
+        // CatchAll skulle ikke være nødvendig, men er lagt til for å håndtere tilfeller der historiske blir sendt inn
+        // som ufullstendig liste pga feil i alias tabell (gjelder enkelte personer som har komplisert identhistorikk
+        // og som er opprettet for noe tid tilbake)
+
+        if (TestnorgeIdentUtility.isTestnorgeIdent(hovedperson.getIdent()) ||
+                hovedperson.getRelasjoner().stream().noneMatch(DbRelasjon::hasGammelIdentitet)) {
+
+            return emptyList();
+        }
+
+        return deployService.createOrdre(PDL_OPPRETT_PERSON, hovedperson.getIdent(),
+                List.of(OpprettIdent.builder()
+                        .historiskeIdenter(hovedperson.getRelasjoner().stream()
+                                .filter(DbRelasjon::hasGammelIdentitet)
+                                .map(DbRelasjon::getRelatertPerson)
+                                .map(DbPerson::getIdent)
+                                .filter(IdenttypeUtility::isNotNpidIdent)
+                                .toList())
+                        .opphoert(OPPHOERT == hovedperson.getPerson()
                                 .getFolkeregisterPersonstatus().stream()
                                 .map(FolkeregisterPersonstatusDTO::getStatus)
                                 .findFirst().orElse(null))
