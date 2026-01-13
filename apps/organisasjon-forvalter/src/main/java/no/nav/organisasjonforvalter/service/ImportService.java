@@ -35,12 +35,24 @@ public class ImportService {
                         .collect(Collectors.toSet()) :
                 miljoerServiceConsumer.getOrgMiljoer();
 
+        log.info("Sjekker organisasjon {} i miljøer: {}", orgnummer, miljoerAaSjekke);
+
           return organisasjonServiceConsumer.getStatus(Set.of(orgnummer), miljoerAaSjekke)
+                  .doOnNext(orgMap -> log.info("Mottok organisasjon fra organisasjon-service: {}", orgMap))
                   .map(Map::entrySet)
                   .flatMap(Flux::fromIterable)
-                  .filter(org -> isNotBlank(org.getValue().getOrgnummer()))
+                  .filter(org -> {
+                      boolean hasOrgnummer = isNotBlank(org.getValue().getOrgnummer());
+                      log.info("Organisasjon {} fra miljø {} har orgnummer: {}", 
+                              org.getValue().getOrgnummer(), org.getKey(), hasOrgnummer);
+                      return hasOrgnummer;
+                  })
                   .collect(Collectors.toMap(Map.Entry::getKey,
-                          org -> mapperFacade.map(org.getValue(), RsOrganisasjon.class)))
+                          org -> {
+                              RsOrganisasjon rsOrg = mapperFacade.map(org.getValue(), RsOrganisasjon.class);
+                              log.info("Mappet til RsOrganisasjon: {}", rsOrg);
+                              return rsOrg;
+                          }))
                   .block();
     }
 }
