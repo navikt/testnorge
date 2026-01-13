@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,13 +36,16 @@ public class PensjonPdlPersonService {
     private final PdlDataConsumer pdlDataConsumer;
     private final PersonServiceConsumer personServiceConsumer;
 
-    public Mono<Tuple2<List<PdlPersonBolk.PersonBolk>, String>> getUtvidetPersondata(String ident) {
+    public Mono<Tuple3<List<PdlPersonBolk.PersonBolk>,
+            List<FullPersonDTO>, String>> getUtvidetPersondata(String ident) {
 
         return getIdenterRelasjoner(ident)
                 .collectList()
                 .map(this::getPersonData)
                 .flatMap(persondata -> Mono.zip(
                         getPdlPerson(persondata),
+                        pdlDataConsumer.getPersoner(List.of(ident))
+                                        .collectList(),
                         getNavEnhetNr(persondata, ident)))
                 .doOnNext(utvidetPersondata -> {
                     if (utvidetPersondata.getT1().isEmpty()) {

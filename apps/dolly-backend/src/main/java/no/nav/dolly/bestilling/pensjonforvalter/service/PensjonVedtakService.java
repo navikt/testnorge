@@ -19,10 +19,11 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
 import java.time.Period;
 import java.util.List;
@@ -52,7 +53,7 @@ public class PensjonVedtakService {
     private static final String ALDERSPENSJON_VEDTAK = "AlderspensjonVedtak";
 
     public Flux<String> lagrePensjonVedtak(RsDollyBestilling bestilling, String ident,
-                                           Tuple2<List<PdlPersonBolk.PersonBolk>, String> utvidetPersondata,
+                                           Tuple3<List<PdlPersonBolk.PersonBolk>, List<FullPersonDTO>, String> utvidetPersondata,
                                            Set<String> miljoer, boolean isUpdateEndre) {
 
         return Flux.just(bestilling)
@@ -71,12 +72,12 @@ public class PensjonVedtakService {
                                 pensjon,
                                 ident,
                                 miljoer,
-                                utvidetPersondata.getT2(), bestilling, isUpdateEndre)
+                                utvidetPersondata.getT3(), bestilling, isUpdateEndre)
                                 .map(response -> PEN_NY_UTTAKSGRAD_AP + pensjonforvalterHelper.decodeStatus(response, ident)),
 
                         lagreUforetrygd(
                                 pensjon,
-                                utvidetPersondata.getT2(),
+                                utvidetPersondata.getT3(),
                                 ident,
                                 miljoer,
                                 bestilling.getId())
@@ -85,7 +86,8 @@ public class PensjonVedtakService {
     }
 
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData,
-                                                              Tuple2<List<PdlPersonBolk.PersonBolk>, String> utvidetPersondata,
+                                                              Tuple3<List<PdlPersonBolk.PersonBolk>,
+                                                                      List<FullPersonDTO>,String> utvidetPersondata,
                                                               String ident, Set<String> miljoer,
                                                               Long bestillingId) {
 
@@ -107,10 +109,11 @@ public class PensjonVedtakService {
 
                                         if (alderspensjon.isSoknad()) {
                                             context.setProperty("relasjoner", utvidetPersondata.getT1());
+                                            context.setProperty("hovedperson", utvidetPersondata.getT2());
                                             pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonSoknadRequest.class, context);
 
                                         } else {
-                                            context.setProperty(NAV_ENHET, utvidetPersondata.getT2());
+                                            context.setProperty(NAV_ENHET, utvidetPersondata.getT3());
                                             pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonVedtakRequest.class, context);
                                         }
 
@@ -203,9 +206,9 @@ public class PensjonVedtakService {
         return !(response.getFom().equals(request.getFom()) &&
                 response.getUttaksgrad().equals(request.getNyUttaksgrad())) &&
                 response.getHistorikk().stream()
-                .noneMatch(historikk ->
-                        historikk.getFom().equals(request.getFom()) &&
-                                historikk.getUttaksgrad().equals(request.getNyUttaksgrad()));
+                        .noneMatch(historikk ->
+                                historikk.getFom().equals(request.getFom()) &&
+                                        historikk.getUttaksgrad().equals(request.getNyUttaksgrad()));
     }
 
     private static boolean isValid(AlderspensjonNyUtaksgradRequest request, AlderspensjonVedtakDTO response) {
@@ -224,7 +227,7 @@ public class PensjonVedtakService {
         if (isNull(response.getFom())) {
             message = "Uttaksgrad kan ikke endres da vedtak for alderspensjon mangler.";
 
-        }else if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
+        } else if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
             message = "Automatisk vedtak av ny uttaksgrad ikke mulig for dato tidligere enn dato på forrige vedtak.";
 
         } else if (isUpdateEndre && !request.getNyUttaksgrad().equals(0) && !request.getNyUttaksgrad().equals(100) &&

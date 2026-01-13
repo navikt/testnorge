@@ -10,6 +10,9 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -32,6 +35,11 @@ import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
 public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrategy {
 
     private static final Random RANDOM = new SecureRandom();
+    private final PensjonSamboerMappingStrategy pensjonSamboerMappingStrategy;
+
+    public PensjonAlderspensjonSoknadMappingStrategy(PensjonSamboerMappingStrategy pensjonSamboerMappingStrategy) {
+        this.pensjonSamboerMappingStrategy = pensjonSamboerMappingStrategy;
+    }
 
     private static RelasjonType getRelasjonType(PdlPerson.SivilstandType sivilstandType) {
 
@@ -75,8 +83,17 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                         request.setFnr(hovedperson);
                         request.setMiljoer((Set<String>) context.getProperty("miljoer"));
 
-                        var personer = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
-                        request.setStatsborgerskap(personer.stream()
+                        var relasjoner = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
+                        var hovedpersonDetaljer = (List<FullPersonDTO>) context.getProperty("hovedperson");
+                        var samboer = hovedpersonDetaljer.stream()
+                                .map(FullPersonDTO::getPerson)
+                                .map(PersonDTO::getSivilstand)
+                                .flatMap(Collection::stream)
+                                .filter(SivilstandDTO::isSamboer)
+                                .findFirst()
+                                .orElse(null);
+
+                        request.setStatsborgerskap(relasjoner.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .map(PdlPersonBolk.PersonBolk::getPerson)
                                 .map(PdlPerson.Person::getStatsborgerskap)
@@ -86,7 +103,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                                 .orElse("NOR"));
 
                         var partner = new AtomicReference<String>();
-                        personer.stream()
+                        relasjoner.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
                                         .min(new SivilstandSort())
@@ -95,7 +112,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                                                     request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
                                                     partner.set(sivilstand.getRelatertVedSivilstand());
                                                 },
-                                                () -> personer.stream()
+                                                () -> relasjoner.stream()
                                                         .filter(person -> hovedperson.equals(person.getIdent()))
                                                         .map(PdlPersonBolk.PersonBolk::getPerson)
                                                         .map(PdlPerson.Person::getSivilstand)
@@ -106,11 +123,11 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                                                             request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
                                                         })));
 
-                        if (personer.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
+                        if (relasjoner.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
                                 !alderspensjon.getRelasjoner().isEmpty()) {
 
                             request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonSoknadRequest.SkjemaRelasjon.class));
-                            personer.stream()
+                            relasjoner.stream()
                                     .filter(personBolk -> personBolk.getIdent().equals(partner.get()))
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().getFirst().setFnr(partnerPerson.getIdent());
@@ -134,7 +151,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                                                 partnerPerson.getPerson().getForelderBarnRelasjon().stream()
                                                         .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
                                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                        .anyMatch(barnAvPartner -> personer.stream()
+                                                        .anyMatch(barnAvPartner -> relasjoner.stream()
                                                                 .filter(person -> hovedperson.equals(person.getIdent()))
                                                                 .map(PdlPersonBolk.PersonBolk::getPerson)
                                                                 .anyMatch(person -> person.getForelderBarnRelasjon().stream()
