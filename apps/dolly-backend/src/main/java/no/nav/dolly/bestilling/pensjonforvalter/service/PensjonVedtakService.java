@@ -87,7 +87,7 @@ public class PensjonVedtakService {
 
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData,
                                                               Tuple3<List<PdlPersonBolk.PersonBolk>,
-                                                                      List<FullPersonDTO>,String> utvidetPersondata,
+                                                                      List<FullPersonDTO>, String> utvidetPersondata,
                                                               String ident, Set<String> miljoer,
                                                               Long bestillingId) {
 
