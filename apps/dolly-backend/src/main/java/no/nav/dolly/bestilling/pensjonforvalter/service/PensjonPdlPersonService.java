@@ -41,12 +41,12 @@ public class PensjonPdlPersonService {
 
         return getIdenterRelasjoner(ident)
                 .collectList()
-                .map(this::getPersonData)
-                .flatMap(persondata -> Mono.zip(
-                        getPdlPerson(persondata),
-                        pdlDataConsumer.getPersoner(List.of(ident))
-                                        .collectList(),
-                        getNavEnhetNr(persondata, ident)))
+                .flatMap(identer -> getPersonData(identer).collectList()
+                        .zipWith(Mono.just(identer)))
+                .flatMap(persondata -> Mono.zip(Mono.just(getPdlPerson(persondata.getT1())),
+                        pdlDataConsumer.getPersoner(persondata.getT2())
+                                .collectList(),
+                        getNavEnhetNr(persondata.getT1(), ident)))
                 .doOnNext(utvidetPersondata -> {
                     if (utvidetPersondata.getT1().isEmpty()) {
                         log.warn("Persondata for {} gir tom response fra PDL", ident);
@@ -92,18 +92,18 @@ public class PensjonPdlPersonService {
                 .map(PdlPersonBolk::getData);
     }
 
-    private static Mono<List<PdlPersonBolk.PersonBolk>> getPdlPerson(Flux<PdlPersonBolk.Data> persondata) {
+    private static List<PdlPersonBolk.PersonBolk> getPdlPerson(List<PdlPersonBolk.Data> persondata) {
 
-        return persondata
+        return persondata.stream()
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
+                .flatMap(List::stream)
                 .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .collectList();
+                .toList();
     }
 
-    private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata, String ident) {
+    private Mono<String> getNavEnhetNr(List<PdlPersonBolk.Data> persondata, String ident) {
 
-        return persondata
+        return Flux.fromIterable(persondata)
                 .doOnNext(data -> {
                     if (isNull(data.getHentGeografiskTilknytningBolk()) ||
                             data.getHentGeografiskTilknytningBolk().stream()

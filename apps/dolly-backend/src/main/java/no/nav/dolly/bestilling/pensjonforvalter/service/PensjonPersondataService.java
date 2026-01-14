@@ -80,6 +80,7 @@ public class PensjonPersondataService {
 
         return Flux.concat(annulerAlleSamboere(ident, tilgjengeligeMiljoer),
                 Flux.fromIterable(persondata)
+                        .filter(person -> person.getPerson().getIdent().equals(ident))
                         .map(hovedperson -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty(IDENT, ident);

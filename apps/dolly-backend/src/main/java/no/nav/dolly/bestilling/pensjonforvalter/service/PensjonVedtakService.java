@@ -108,8 +108,8 @@ public class PensjonVedtakService {
                                         context.setProperty(MILJOER, Set.of(miljoe));
 
                                         if (alderspensjon.isSoknad()) {
-                                            context.setProperty("relasjoner", utvidetPersondata.getT1());
-                                            context.setProperty("hovedperson", utvidetPersondata.getT2());
+                                            context.setProperty("pdlRelasjoner", utvidetPersondata.getT1());
+                                            context.setProperty("dollyRelasjoner", utvidetPersondata.getT2());
                                             pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonSoknadRequest.class, context);
 
                                         } else {
