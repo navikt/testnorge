@@ -4,21 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.Value;
 
-@Value
+@Data
 @Builder
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WellKnown {
 
-    @JsonProperty
-    String token_endpoint;
+    @JsonProperty("token_endpoint")
+    private String tokenEndpoint;
 
-    @JsonProperty
-    String end_session_endpoint;
+    @JsonProperty("end_session_endpoint")
+    private String endSessionEndpoint;
 }
