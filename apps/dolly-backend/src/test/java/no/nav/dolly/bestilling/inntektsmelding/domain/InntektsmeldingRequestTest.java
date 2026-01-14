@@ -19,7 +19,7 @@ class InntektsmeldingRequestTest {
             detail.setNaturalytelseType(type);
             var json = objectMapper.writeValueAsString(detail);
             assertThat(json)
-                    .contains("\"naturalytelseType\":\"" + type.getJsonValue() + "\"");
+                    .contains("\"naturalytelseType\":\"" + type + "\"");
         }
 
     }
