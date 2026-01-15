@@ -174,10 +174,16 @@ const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
 }
 
 export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
-	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer?.length === 9)
-	const urls = filteredOrgnummere.map((orgnummer) =>
-		getOrganisasjonForvalterUrl(orgnummer as string),
+	const filteredOrgnummere = useMemo(
+		() => orgnummere.filter((orgnummer) => orgnummer?.length === 9),
+		[orgnummere.join(',')],
 	)
+	const urls = useMemo(
+		() => filteredOrgnummere.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer as string)),
+		[filteredOrgnummere],
+	)
+
+	const stableKey = useMemo(() => (urls.length > 0 ? urls.join('|') : null), [urls])
 
 	const hasBeenCalledRef = useRef<boolean>(false)
 	useEffect(() => {
@@ -186,9 +192,8 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 		}
 	}, [urls.length])
 
-	const { data, isLoading, error } = useSWR<OrganisasjonForvalterData[], Error>(
-		urls.length > 0 ? urls : null,
-		fetchAllOrganisasjoner,
+	const { data, isLoading, error } = useSWR<OrganisasjonForvalterData[], Error>(stableKey, () =>
+		fetchAllOrganisasjoner(urls),
 	)
 
 	const dataFiltered = useMemo(
