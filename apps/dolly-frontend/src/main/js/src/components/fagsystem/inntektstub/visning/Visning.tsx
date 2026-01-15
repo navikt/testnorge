@@ -42,8 +42,11 @@ const getHeader = (data: Inntektsinformasjon) => {
 }
 
 const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => {
-	const virksomheter = sortedData.map((data) => data.virksomhet)
-	const opplysningspliktigeOrg = sortedData.map((data) => data.opplysningspliktig)
+	const virksomheter = useMemo(() => sortedData.map((data) => data.virksomhet), [sortedData])
+	const opplysningspliktigeOrg = useMemo(
+		() => sortedData.map((data) => data.opplysningspliktig),
+		[sortedData],
+	)
 	const {
 		organisasjoner: virksomhetInfo,
 		loading: loadingVirksomheter,
