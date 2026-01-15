@@ -4,6 +4,7 @@ import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Option } from '@/service/SelectOptionsOppslag'
@@ -13,6 +14,20 @@ interface VergemaalFormTypes {
 	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option
+}
+
+const initialTjenesteomraade = {
+	tjenesteoppgave: '',
+	tjenestevirksomhet: '',
+}
+
+const TjenesteomraadeForm = ({ path }: { path: string }) => {
+	return (
+		<>
+			<FormTextInput name={`${path}.tjenesteoppgave`} label="Tjenesteoppgave" />
+			<FormTextInput name={`${path}.tjenestevirksomhet`} label="Tjenestevirksomhet" />
+		</>
+	)
 }
 
 export const VergemaalForm = ({
@@ -44,6 +59,15 @@ export const VergemaalForm = ({
 			/>
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+			<FormDollyFieldArray
+				name={`${path}.tjenesteomraade`}
+				header="Tjenesteområde"
+				newEntry={initialTjenesteomraade}
+				canBeEmpty={true}
+				nested
+			>
+				{(tjenesteomraadePath: string) => <TjenesteomraadeForm path={tjenesteomraadePath} />}
+			</FormDollyFieldArray>
 			<PdlPersonExpander
 				path={path}
 				nyPersonPath={`${path}.nyVergeIdent`}
