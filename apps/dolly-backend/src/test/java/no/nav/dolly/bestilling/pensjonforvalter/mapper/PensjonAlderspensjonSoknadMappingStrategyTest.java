@@ -30,7 +30,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ExtendWith(MockitoExtension.class)
 class PensjonAlderspensjonSoknadMappingStrategyTest {
 
-
     private MapperFacade mapperFacade;
 
     @BeforeEach
@@ -216,6 +215,7 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
                                         PdlPerson.Sivilstand.builder()
                                                 .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
                                                 .type(PdlPerson.SivilstandType.GIFT)
+                                                .relatertVedSivilstand("456")
                                                 .build()))
                                 .build())
                         .build(),
@@ -243,8 +243,10 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
         assertThat(target.getSivilstand(), is(equalTo(AlderspensjonSoknadRequest.SivilstandType.ENKE)));
         assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(2010, 1, 2))));
 
+        assertThat(target.getRelasjonListe().getFirst().getFnr(), is(equalTo("456")));
         assertThat(target.getRelasjonListe().getFirst().getRelasjonType(), is(equalTo(AlderspensjonSoknadRequest.RelasjonType.EKTEF)));
-        assertThat(target.getRelasjonListe().getFirst().getRelasjonFraDato(), is(equalTo(LocalDate.of(2010, 1, 2))));
+        assertThat(target.getRelasjonListe().getFirst().getRelasjonFraDato(), is(equalTo(LocalDate.of(1988, 1, 2))));
+        assertThat(target.getRelasjonListe().getFirst().getDodsdato(), is(equalTo(LocalDate.of(2010, 1, 2))));
         assertThat(target.getRelasjonListe().getFirst().getHarVaertGift(), is(true));
         assertThat(target.getRelasjonListe().getFirst().getVarigAdskilt(), is(true));
     }
@@ -254,6 +256,9 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
 
         var pensjon = PensjonData.Alderspensjon.builder()
                 .iverksettelsesdato(LocalDate.of(2023, 1, 11))
+                .relasjoner(List.of(PensjonData.SkjemaRelasjon.builder()
+                        .sumAvForvArbKapPenInntekt(1234)
+                        .build()))
                 .uttaksgrad(100)
                 .build();
         var context = new MappingContext.Factory().getContext();
@@ -269,6 +274,7 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
                                                 .build(),
                                         PdlPerson.Sivilstand.builder()
                                                 .type(PdlPerson.SivilstandType.SKILT)
+                                                .gyldigFraOgMed(LocalDate.of(2016, 1, 1))
                                                 .build()))
                                 .build())
                         .build(),
@@ -276,7 +282,7 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
                         .ident("456")
                         .person(PdlPerson.Person.builder()
                                 .sivilstand(List.of(PdlPerson.Sivilstand.builder()
-                                        .gyldigFraOgMed(LocalDate.of(2016, 1, 1))
+                                        .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
                                         .type(PdlPerson.SivilstandType.GIFT)
                                         .relatertVedSivilstand("123")
                                         .build()))
@@ -291,6 +297,12 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
 
         assertThat(target.getFnr(), is(equalTo("123")));
         assertThat(target.getMiljoer(), hasItem("q2"));
+        assertThat(target.getSivilstand(), is(equalTo(AlderspensjonSoknadRequest.SivilstandType.SKIL)));
+        assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(2016, 1, 1))));
+        assertThat(target.getRelasjonListe().getFirst().getRelasjonType(), is(equalTo(AlderspensjonSoknadRequest.RelasjonType.EKTEF)));
+        assertThat(target.getRelasjonListe().getFirst().getRelasjonFraDato(), is(equalTo(LocalDate.of(1988, 1, 2))));
+        assertThat(target.getRelasjonListe().getFirst().getFnr(), is(equalTo("456")));
+        assertThat(target.getRelasjonListe().getFirst().getSamlivsbruddDato(), is(equalTo(LocalDate.of(2016, 1, 1))));
     }
 
     @Test

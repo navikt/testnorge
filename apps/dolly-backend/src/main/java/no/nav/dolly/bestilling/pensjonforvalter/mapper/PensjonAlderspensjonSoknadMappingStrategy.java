@@ -13,12 +13,14 @@ import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
@@ -27,6 +29,7 @@ import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
+import static org.apache.poi.util.StringUtil.isNotBlank;
 
 @Component
 public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrategy {
@@ -110,7 +113,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
 
                             var partner = samboer.isPresent() ?
                                     samboer.get().getRelatertVedSivilstand() :
-                                    sivilstand.get().getRelatertVedSivilstand();
+                                    getPartner(hovedperson, sivilstand);
 
                             request.getRelasjonListe().getFirst().setFnr(partner);
 
@@ -119,7 +122,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                                 request.getRelasjonListe().getFirst().setRelasjonFraDato(samboer.get().getSivilstandsdato().toLocalDate());
                             } else {
                                 request.getRelasjonListe().getFirst().setRelasjonType(getRelasjonType(sivilstand.get().getType()));
-                                request.getRelasjonListe().getFirst().setRelasjonFraDato(sivilstand.get().getGyldigFraOgMed());
+                                request.getRelasjonListe().getFirst().setRelasjonFraDato(getRelasjonsDatoFom(hovedperson, sivilstand));
                             }
 
                             var partnerPerson = pdlRelasjoner.stream()
@@ -169,6 +172,32 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static String getPartner(Optional<PdlPerson.Person> hovedperson, Optional<PdlPerson.Sivilstand> sivilstand) {
+
+        if (sivilstand.isPresent() && isNotBlank(sivilstand.get().getRelatertVedSivilstand())) {
+
+            return sivilstand.get().getRelatertVedSivilstand();
+        }
+
+        return hovedperson.flatMap(personBolk -> personBolk.getSivilstand().stream()
+                .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                .filter(StringUtil::isNotBlank)
+                .findFirst()).orElse(null);
+    }
+
+    private static LocalDate getRelasjonsDatoFom(Optional<PdlPerson.Person> hovedperson, Optional<PdlPerson.Sivilstand> sivilstand) {
+
+        if (sivilstand.isPresent() && isNotBlank(sivilstand.get().getRelatertVedSivilstand())) {
+
+            return sivilstand.get().getGyldigFraOgMed();
+        }
+
+        return hovedperson.flatMap(personBolk -> personBolk.getSivilstand().stream()
+                .filter(sivilstand1 -> isNotBlank(sivilstand1.getRelatertVedSivilstand()))
+                .map(PdlPerson.Sivilstand::getGyldigFraOgMed)
+                .findFirst()).orElse(null);
     }
 
     private static SivilstandType mapSivilstand(PdlPerson.SivilstandType sivilstandType) {
