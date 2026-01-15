@@ -6,6 +6,7 @@ import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import React from 'react'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { useArbeidsforholdstyperInntektstub } from '@/utils/hooks/useInntektstub'
 
 const initialValues = {
 	arbeidsforholdstype: '',
@@ -21,7 +22,7 @@ const initialValues = {
 }
 
 export const ArbeidsforholdForm = ({ formMethods, inntektsinformasjonPath }) => {
-	const arbeidsforholdstyper = SelectOptionsOppslag.hentArbeidsforholdstyperInntektstub()
+	const { arbeidsforholdstyper, loading } = useArbeidsforholdstyperInntektstub()
 	const arbeidsforholdstyperFormatted = SelectOptionsFormat.formatOptions(
 		'arbeidsforholdstyper',
 		arbeidsforholdstyper,
@@ -39,7 +40,7 @@ export const ArbeidsforholdForm = ({ formMethods, inntektsinformasjonPath }) => 
 						name={`${path}.arbeidsforholdstype`}
 						label="Arbeidsforholdstype"
 						options={arbeidsforholdstyperFormatted}
-						isLoading={arbeidsforholdstyper.loading}
+						isLoading={loading}
 						onChange={(forhold) =>
 							formMethods.setValue(`${path}.arbeidsforholdstype`, forhold.value)
 						}
