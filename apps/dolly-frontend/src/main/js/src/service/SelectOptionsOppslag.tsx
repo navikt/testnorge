@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { DollyApi, KrrApi } from '@/service/Api'
+import { KrrApi } from '@/service/Api'
 import Api from '@/api'
 
 const uri = `/dolly-backend/api/v1`
@@ -25,11 +25,4 @@ export const SelectOptionsOppslag = {
 
 	hentInntektsmeldingOptions: (enumtype: string) =>
 		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, { method: 'GET' }),
-
-	hentArbeidsforholdstyperInntektstub: () => {
-		return useAsync(
-			async () => DollyApi.getKodeverkByNavn('Arbeidsforholdstyper'),
-			[DollyApi.getKodeverkByNavn],
-		)
-	},
 }
