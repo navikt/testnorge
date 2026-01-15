@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset.inntektsmeldingstub;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public enum NaturalytelseType {
     INNBETALING_TIL_UTENLANDSK_PENSJONSORDNING("innbetalingTilUtenlandskPensjonsordning"),
     ELEKTRONISK_KOMMUNIKASJON("elektroniskKommunikasjon");
 
-    @JsonValue
+
     private final String jsonValue;
 
 }
