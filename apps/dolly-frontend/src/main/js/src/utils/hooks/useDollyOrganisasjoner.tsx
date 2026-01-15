@@ -10,7 +10,7 @@ import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljo
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
-import { useEffect, useMemo, useRef } from 'react'
+import { useRef } from 'react'
 
 type MiljoDataListe = {
 	miljo: string
@@ -175,61 +175,49 @@ const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
 }
 
 export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
-	const stableOrgnummere = useMemo(() => {
-		const filtered = orgnummere.filter((orgnummer) => orgnummer?.length === 9) as string[]
-		const unique = [...new Set(filtered)]
-		return unique.sort()
-	}, [JSON.stringify(orgnummere)])
+	const previousKeyRef = useRef<string | null>(null)
+	const stableKeyRef = useRef<string | null>(null)
 
-	const stableKey = useMemo(
-		() => (stableOrgnummere.length > 0 ? `org-forvalter:${stableOrgnummere.join(',')}` : null),
-		[stableOrgnummere],
-	)
+	const filtered = orgnummere.filter((orgnummer) => orgnummer?.length === 9) as string[]
+	const unique = [...new Set(filtered)]
+	const sorted = unique.sort()
+	const currentKey = sorted.length > 0 ? `org-forvalter:${sorted.join(',')}` : null
 
-	const hasBeenCalledRef = useRef<boolean>(false)
-	useEffect(() => {
-		if (stableOrgnummere.length > 0) {
-			hasBeenCalledRef.current = true
-		}
-	}, [stableOrgnummere.length])
+	if (currentKey !== previousKeyRef.current) {
+		previousKeyRef.current = currentKey
+		stableKeyRef.current = currentKey
+	}
 
-	const fetcherFn = useMemo(
-		() => (key: string) => {
+	const { data, isLoading, error } = useSWRImmutable<OrganisasjonForvalterData[], Error>(
+		stableKeyRef.current,
+		(key: string) => {
 			const orgnummerList = key.replace('org-forvalter:', '').split(',')
 			const urlList = orgnummerList.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
 			return fetchAllOrganisasjoner(urlList)
 		},
-		[],
 	)
 
-	const { data, isLoading, error } = useSWRImmutable<OrganisasjonForvalterData[], Error>(
-		stableKey,
-		fetcherFn,
-	)
-
-	const organisasjonerMap = useMemo(() => {
-		if (!data) return new Map<string, OrganisasjonForvalterData>()
-		const map = new Map<string, OrganisasjonForvalterData>()
-		stableOrgnummere.forEach((orgnr, index) => {
-			if (data[index] && !_.isEmpty(data[index])) {
-				map.set(orgnr, data[index])
+	const organisasjonerMap = new Map<string, OrganisasjonForvalterData>()
+	if (data) {
+		data.forEach((org) => {
+			if (org && !_.isEmpty(org)) {
+				const orgnummer = org.q1?.organisasjonsnummer || org.q2?.organisasjonsnummer
+				if (orgnummer) {
+					organisasjonerMap.set(orgnummer, org)
+				}
 			}
 		})
-		return map
-	}, [data, stableOrgnummere])
+	}
 
-	const dataFiltered = useMemo(() => {
-		return orgnummere
-			.filter((orgnummer) => orgnummer?.length === 9)
-			.map((orgnummer) => organisasjonerMap.get(orgnummer!))
-			.filter((org) => org !== undefined) as OrganisasjonForvalterData[]
-	}, [orgnummere, organisasjonerMap])
+	const dataFiltered = orgnummere
+		.filter((orgnummer) => orgnummer?.length === 9)
+		.map((orgnummer) => organisasjonerMap.get(orgnummer!))
+		.filter((org) => org !== undefined) as OrganisasjonForvalterData[]
 
 	return {
 		organisasjoner: dataFiltered,
 		loading: isLoading,
 		error: error,
-		hasBeenCalled: hasBeenCalledRef.current,
 	}
 }
 
