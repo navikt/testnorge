@@ -1,4 +1,5 @@
 import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { fetcher, multiFetcherAareg } from '@/api'
 import {
 	Organisasjon,
@@ -174,13 +175,14 @@ const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
 }
 
 export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
-	const stableOrgnummere = useMemo(
-		() => orgnummere.filter((orgnummer) => orgnummer?.length === 9),
-		[JSON.stringify(orgnummere)],
-	)
+	const stableOrgnummere = useMemo(() => {
+		const filtered = orgnummere.filter((orgnummer) => orgnummer?.length === 9) as string[]
+		const unique = [...new Set(filtered)]
+		return unique.sort()
+	}, [JSON.stringify(orgnummere)])
 
 	const stableKey = useMemo(
-		() => (stableOrgnummere.length > 0 ? stableOrgnummere.join(',') : null),
+		() => (stableOrgnummere.length > 0 ? `org-forvalter:${stableOrgnummere.join(',')}` : null),
 		[stableOrgnummere],
 	)
 
@@ -191,25 +193,37 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 		}
 	}, [stableOrgnummere.length])
 
-	const { data, isLoading, error } = useSWR<OrganisasjonForvalterData[], Error>(
-		stableKey,
-		(key: string) => {
-			const orgnummerList = key.split(',')
+	const fetcherFn = useMemo(
+		() => (key: string) => {
+			const orgnummerList = key.replace('org-forvalter:', '').split(',')
 			const urlList = orgnummerList.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
 			return fetchAllOrganisasjoner(urlList)
 		},
-		{
-			revalidateOnFocus: false,
-			revalidateOnReconnect: false,
-			revalidateIfStale: false,
-			dedupingInterval: 60000,
-		},
+		[],
 	)
 
-	const dataFiltered = useMemo(
-		() => (data ? data.filter((org) => org !== null && !_.isEmpty(org)) : []),
-		[data],
+	const { data, isLoading, error } = useSWRImmutable<OrganisasjonForvalterData[], Error>(
+		stableKey,
+		fetcherFn,
 	)
+
+	const organisasjonerMap = useMemo(() => {
+		if (!data) return new Map<string, OrganisasjonForvalterData>()
+		const map = new Map<string, OrganisasjonForvalterData>()
+		stableOrgnummere.forEach((orgnr, index) => {
+			if (data[index] && !_.isEmpty(data[index])) {
+				map.set(orgnr, data[index])
+			}
+		})
+		return map
+	}, [data, stableOrgnummere])
+
+	const dataFiltered = useMemo(() => {
+		return orgnummere
+			.filter((orgnummer) => orgnummer?.length === 9)
+			.map((orgnummer) => organisasjonerMap.get(orgnummer!))
+			.filter((org) => org !== undefined) as OrganisasjonForvalterData[]
+	}, [orgnummere, organisasjonerMap])
 
 	return {
 		organisasjoner: dataFiltered,
