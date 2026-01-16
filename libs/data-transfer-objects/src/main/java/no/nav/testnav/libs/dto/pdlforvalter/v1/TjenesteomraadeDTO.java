@@ -9,13 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.deserializer.StringOrListDeserializer;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TjenesteomraadeDTO {
+public class TjenesteomraadeDTO implements Serializable {
 
     @JsonDeserialize(using = StringOrListDeserializer.class)
     @JsonSetter(nulls = Nulls.AS_EMPTY)
