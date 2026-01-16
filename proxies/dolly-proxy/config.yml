@@ -141,6 +141,10 @@ spec:
           cluster: dev-gcp
         - application: opphold-testdata
           namespace: team-rocket
+        - application: pdl-api
+          namespace: pdl
+        - application: pdl-api-q1
+          namespace: pdl
         - application: pensjon-afp-offentlig-mock-q1
           namespace: pensjon-saksbehandling
           cluster: dev-gcp
