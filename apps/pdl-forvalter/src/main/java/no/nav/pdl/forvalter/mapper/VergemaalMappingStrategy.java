@@ -105,7 +105,7 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(dto -> Tjenesteomraade.builder()
-                        .tjenesteoppgave(dto.getTjenesteoppgave())
+                        .tjenesteoppgave(String.join(",", Optional.ofNullable(dto.getTjenesteoppgave()).orElse(Collections.emptyList())))
                         .tjenestevirksomhet(dto.getTjenestevirksomhet())
                         .build())
                 .toList();

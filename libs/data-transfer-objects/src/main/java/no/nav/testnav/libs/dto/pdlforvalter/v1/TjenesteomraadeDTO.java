@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TjenesteomraadeDTO {
 
-    private String tjenesteoppgave;
+    private List<String> tjenesteoppgave;
     private String tjenestevirksomhet;
 }
 
