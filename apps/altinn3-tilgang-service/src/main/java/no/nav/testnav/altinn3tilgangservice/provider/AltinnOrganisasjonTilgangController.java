@@ -38,8 +38,7 @@ public class AltinnOrganisasjonTilgangController {
     @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
     public Mono<PaginertOrganisasjonResponse> getPage(Integer page, Integer size) {
 
-        return altinnTilgangService.getAll()
-                .sort(Comparator.comparing(OrganisasjonResponse::getNavn))
+        return getAll()
                 .collectList()
                 .map(list -> {
                     int start = Math.min(page * size, list.size());
