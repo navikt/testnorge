@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -51,18 +50,17 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 })
                 .flatMap(oppdatertOrdre -> Mono.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                .flatMap(response -> isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel()) ?
-                                        arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid) :
-                                        Mono.just("Fortsetter uten hjemmel og repetert vilkaar"))
-                                .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
-                                        .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
-                                                        request, uuid, logRetries(progress))
-                                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                                                        String.format("%s UUID: %s",
-                                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
-                                                                        status.getFeilmelding()),
-                                                                status.getUuid())))
-                                        .flatMap(resultat -> oppdaterStatus(progress, resultat)))));
+                                .flatMap(response ->
+                                        arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid)
+                                                .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
+                                                        .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
+                                                                request, uuid, logRetries(progress)))))
+
+                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                        errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
+                                                status.getFeilmelding()))
+
+                                .flatMap(resultat -> oppdaterStatus(progress, resultat))));
     }
 
     private Consumer<Retry.RetrySignal> logRetries(BestillingProgress progress) {
