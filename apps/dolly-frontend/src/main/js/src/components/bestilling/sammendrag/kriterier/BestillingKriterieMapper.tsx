@@ -1277,10 +1277,6 @@ const mapInntektStub = (bestillingData, data) => {
 						inntektsinfo.forskuddstrekksliste && inntektsinfo.forskuddstrekksliste?.length,
 					),
 					obj(
-						'Antall registrerte arbeidsforhold',
-						inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste?.length,
-					),
-					obj(
 						'Antall registrerte inntektsendringer (historikk)',
 						inntektsinfo.historikk && inntektsinfo.historikk?.length,
 					),
