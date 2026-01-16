@@ -93,9 +93,6 @@ class OpensearchControllerTest {
 
         openSearchService.saveAll(getTestBestillinger())
                 .block();
-
-        openSearchService.refresh()
-                .block();
     }
 
     @AfterEach
@@ -116,8 +113,6 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        openSearchService.refresh().block();
-
         var exists = openSearchService.exists(2L).block();
         assertThat(exists, is(true));
 
@@ -129,9 +124,7 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-        openSearchService.refresh().block();
-
-        exists = openSearchService.exists(2L).block();
+        exists = openSearchService.exists(1L).block();
         assertThat(exists, is(false));
     }
 

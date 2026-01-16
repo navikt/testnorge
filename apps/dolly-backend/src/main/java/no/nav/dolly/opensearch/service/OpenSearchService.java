@@ -109,8 +109,7 @@ public class OpenSearchService {
     public Mono<BulkResponse> saveAll(List<BestillingDokument> bestillingDokument) {
 
         val builder = new BulkRequest.Builder()
-                .index(index)
-                .refresh(org.opensearch.client.opensearch._types.Refresh.WaitFor);
+                .index(index);
         try {
 
             for (var dokument : bestillingDokument) {
@@ -164,6 +163,18 @@ public class OpenSearchService {
         }
     }
 
+    private JsonNode buildDokumentJson(BestillingDokument dokument) {
+
+        try {
+            val jsonString = objectMapper.writeValueAsString(dokument);
+            return objectMapper.readTree(jsonString);
+
+        } catch (JsonProcessingException e) {
+            log.warn("Feilet å serialisere bestillingDokument id {}, {}", dokument.getId(), e.getLocalizedMessage());
+            return null;
+        }
+    }
+
     public Mono<Boolean> exists(Long id) {
 
         try {
@@ -186,7 +197,6 @@ public class OpenSearchService {
             openSearchClient.delete(new DeleteRequest.Builder()
                     .index(index)
                     .id(String.valueOf(id))
-                    .refresh(org.opensearch.client.opensearch._types.Refresh.WaitFor)
                     .build());
 
             return Mono.just("Deleted bestilling id: " + id);
@@ -195,28 +205,6 @@ public class OpenSearchService {
 
             log.warn("Feilet å slette bestilling id {}, {}", id, e.getLocalizedMessage());
             return Mono.just("Feilet å slette bestilling id: " + id);
-        }
-    }
-
-    public Mono<Void> refresh() {
-        try {
-            openSearchClient.indices().refresh(r -> r.index(index));
-            return Mono.empty();
-        } catch (IOException | OpenSearchException e) {
-            log.warn("Feilet å refreshe indeks {}, {}", index, e.getLocalizedMessage());
-            return Mono.empty();
-        }
-    }
-
-    private JsonNode buildDokumentJson(BestillingDokument dokument) {
-
-        try {
-            val jsonString = objectMapper.writeValueAsString(dokument);
-            return objectMapper.readTree(jsonString);
-
-        } catch (JsonProcessingException e) {
-            log.warn("Feilet å serialisere bestillingDokument id {}, {}", dokument.getId(), e.getLocalizedMessage());
-            return null;
         }
     }
 }
