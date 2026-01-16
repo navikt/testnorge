@@ -29,8 +29,12 @@ public final class BestillingSkattekortStatusMapper {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
-                    var orgYear = entry.split(":")[0];
-                    var status = entry.split(":")[1];
+                    var parts = entry.split(":");
+                    if (parts.length < 2) {
+                        continue;
+                    }
+                    var orgYear = parts[0];
+                    var status = parts[1];
                     if (errorEnvIdents.containsKey(status)) {
                         if (errorEnvIdents.get(status).containsKey(orgYear)) {
                             errorEnvIdents.get(status).get(orgYear).add(progress.getIdent());

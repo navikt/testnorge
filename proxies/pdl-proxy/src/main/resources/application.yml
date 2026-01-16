@@ -3,7 +3,7 @@ spring:
     name: testnav-pdl-proxy
     description: Proxy for pdl som legger på AzureAd sikkerhet med trygdeetaten.no tenant
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,8 +15,10 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
-      httpclient:
-        response-timeout: 1200s
+      server:
+        webflux:
+          httpclient:
+            response-timeout: 1200s
 
 app:
   elastic:

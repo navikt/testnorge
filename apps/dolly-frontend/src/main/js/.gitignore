@@ -44,3 +44,5 @@ stats.json
 /playwright-report/
 /playwright/.cache/
 node_modules/
+
+/apps/dolly-frontend/.run/

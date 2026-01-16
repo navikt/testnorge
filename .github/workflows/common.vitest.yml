@@ -19,22 +19,40 @@ on:
 
 jobs:
   vitest:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "latest"
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js/pnpm-lock.yaml
       - name: Install dependencies
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
-        run: npm ci
-      - name: Install Playwright Browsers
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Get Playwright version
+        id: playwright-version
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
-        run: npx playwright install --with-deps
+        run: echo "version=$(pnpm list @playwright/test --json | jq -r '.[0].devDependencies["@playwright/test"].version // .[0].dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
+        run: pnpm exec playwright install --with-deps chromium
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
-        run: npm run test:vitest-run
+        run: pnpm run test:vitest-run

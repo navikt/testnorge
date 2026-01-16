@@ -81,4 +81,18 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
     ExceptionInformation notFoundRequest(ServerWebExchange serverWebExchange, RuntimeException exception) {
         return informationForException(exception, serverWebExchange, HttpStatus.NOT_FOUND);
     }
+
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    ExceptionInformation internalServerError(ServerWebExchange serverWebExchange, Exception exception) {
+        log.error("Uventet feil ved request til {}", serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL), exception);
+        return ExceptionInformation.builder()
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(exception.getMessage())
+                .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 }

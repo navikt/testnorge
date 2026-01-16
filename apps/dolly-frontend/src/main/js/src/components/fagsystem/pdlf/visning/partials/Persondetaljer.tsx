@@ -9,10 +9,10 @@ import {
 	getInitialNavn,
 	initialPersonstatus,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarPersondetaljerConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
+import { VisningRedigerbarPersondetaljer } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljer'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { Personstatus } from '@/components/fagsystem/pdlf/visning/partials/Personstatus'
 
@@ -168,7 +168,7 @@ export const Persondetaljer = ({
 						/>
 					) : (
 						<>
-							<VisningRedigerbarPersondetaljerConnector
+							<VisningRedigerbarPersondetaljer
 								dataVisning={
 									<PersondetaljerLes
 										person={personValues}
@@ -212,7 +212,7 @@ export const Persondetaljer = ({
 										}
 
 										return (
-											<VisningRedigerbarConnector
+											<VisningRedigerbar
 												dataVisning={
 													<NavnVisning
 														navn={redigertNavn ? redigertNavn : navn}

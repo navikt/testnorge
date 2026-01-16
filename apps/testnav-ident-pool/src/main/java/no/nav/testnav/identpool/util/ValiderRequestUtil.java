@@ -3,7 +3,7 @@ package no.nav.testnav.identpool.util;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.identpool.exception.UgyldigDatoException;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
-import no.nav.testnav.identpool.providers.v1.support.RekvirerIdentRequest;
+import no.nav.testnav.identpool.dto.IdentpoolRequestDTO;
 
 import java.time.LocalDate;
 
@@ -17,9 +17,9 @@ public class ValiderRequestUtil {
         validerDatoer(hentIdenterRequest.getFoedtEtter(), hentIdenterRequest.getFoedtFoer());
     }
 
-    public static void validateDatesInRequest(RekvirerIdentRequest request) {
+    public static void validateDatesInRequest(IdentpoolRequestDTO request) {
 
-        validerDatoer(request.getFoedtEtter(), request.getFoedtFoer());
+        validerDatoer(request.foedtEtter(), request.foedtFoer());
     }
 
     private static void validerDatoer(LocalDate foedtEtter, LocalDate foedtFoer) {

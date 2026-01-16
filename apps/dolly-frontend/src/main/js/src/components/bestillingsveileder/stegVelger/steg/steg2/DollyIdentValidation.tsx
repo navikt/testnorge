@@ -23,9 +23,9 @@ import { dokarkivValidation } from '@/components/fagsystem/dokarkiv/form/Dokarki
 import { histarkValidation } from '@/components/fagsystem/histark/form/HistarkValidation'
 import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
 import { ifPresent } from '@/utils/YupValidations'
-import SykdomForm from '@/components/fagsystem/sykdom/form/Form'
-import PdlfForm from '@/components/fagsystem/pdlf/form/Form'
 import { SigrunstubSummertSkattegrunnlagForm } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
+import { validation as sykdomValidation } from '@/components/fagsystem/sykdom/form/validation'
+import { validation as pdlfValidation } from '@/components/fagsystem/pdlf/form/validation/validation'
 
 export const DollyIdentValidation = Yup.object({
 	antall: ifPresent(
@@ -37,7 +37,7 @@ export const DollyIdentValidation = Yup.object({
 			.max(50, 'Kan kun bestille max 50 identer om gangen.')
 			.required('Oppgi antall personer'),
 	),
-	...PdlfForm.validation,
+	...pdlfValidation,
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
 	...ArbeidssoekerregisteretForm.validation,
@@ -46,7 +46,7 @@ export const DollyIdentValidation = Yup.object({
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
 	...SkattekortForm.validation,
-	...SykdomForm.validation,
+	...sykdomValidation,
 	...YrkesskaderForm.validation,
 	...BrregstubForm.validation,
 	...InstForm.validation,

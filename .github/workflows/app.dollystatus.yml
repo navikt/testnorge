@@ -1,4 +1,4 @@
-name: dollystatus
+name: dollystatus-frontend
 
 on:
   push:

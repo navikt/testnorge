@@ -1,6 +1,9 @@
 package no.nav.udistub.provider.ws;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.udistub.service.PersonService;
 import no.nav.udistub.service.dto.UdiPerson;
 import no.udi.common.v2.PingRequestType;
@@ -22,12 +25,58 @@ import v1.mt_1067_nav.no.udi.PingFault;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonStatusService implements MT1067NAVV1Interface {
 
     private final PersonService personService;
     private final ConversionService conversionService;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public PingResponseType ping(PingRequestType parameters) throws PingFault {
+        log.info("Mottatt ping request");
+        return new PingResponseType();
+    }
+
+    @Override
+    public PingResponseType deepPing(PingRequestType parameters) throws DeepPingFault {
+        log.info("Mottatt deepPing request");
+        return new PingResponseType();
+    }
+
+    @Override
+    public HentPersonstatusResponseType hentPersonstatus(HentPersonstatusRequestType parameters)
+            throws HentPersonstatusFault {
+        try {
+            log.info("Mottatt hentPersonstatus request: {}", objectMapper.writeValueAsString(parameters));
+        } catch (JsonProcessingException e) {
+            log.warn("Kunne ikke serialisere hentPersonstatus request til JSON", e);
+        }
+        UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
+        var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
+
+        var response = new HentPersonstatusResponseType();
+        response.setResultat(filtrerResultat(parameters, resultat));
+        return response;
+    }
+
+    @Override
+    public HentUtvidetPersonstatusResponseType hentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType parameters)
+            throws HentUtvidetPersonstatusFault {
+        try {
+            log.info("Mottatt hentUtvidetPersonstatus request: {}", objectMapper.writeValueAsString(parameters));
+        } catch (JsonProcessingException e) {
+            log.warn("Kunne ikke serialisere hentUtvidetPersonstatus request til JSON", e);
+        }
+        UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
+        var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);
+
+        var response = new HentUtvidetPersonstatusResponseType();
+        response.setResultat(filtererResultat(parameters, resultat));
+        return response;
+    }
 
     private static HentPersonstatusResultat filtrerResultat(HentPersonstatusRequestType request, HentPersonstatusResultat resultat) {
 
@@ -69,41 +118,5 @@ public class PersonStatusService implements MT1067NAVV1Interface {
             }
         }
         return resultat;
-    }
-
-    @Override
-    public PingResponseType ping(PingRequestType parameters) throws PingFault {
-
-        return new PingResponseType();
-    }
-
-    @Override
-    public PingResponseType deepPing(PingRequestType parameters) throws DeepPingFault {
-
-        return new PingResponseType();
-    }
-
-    @Override
-    public HentPersonstatusResponseType hentPersonstatus(HentPersonstatusRequestType parameters)
-            throws HentPersonstatusFault {
-
-        UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
-        var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
-
-        var response = new HentPersonstatusResponseType();
-        response.setResultat(filtrerResultat(parameters, resultat));
-        return response;
-    }
-
-    @Override
-    public HentUtvidetPersonstatusResponseType hentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType parameters)
-            throws HentUtvidetPersonstatusFault {
-
-        UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
-        var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);
-
-        var response = new HentUtvidetPersonstatusResponseType();
-        response.setResultat(filtererResultat(parameters, resultat));
-        return response;
     }
 }

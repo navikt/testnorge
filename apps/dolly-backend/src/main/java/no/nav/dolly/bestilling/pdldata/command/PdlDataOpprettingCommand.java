@@ -13,11 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.http.HttpTimeoutException;
-import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
-
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -38,7 +35,6 @@ public class PdlDataOpprettingCommand implements Callable<Mono<PdlResponse>> {
                 .body(BodyInserters.fromValue(body))
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofSeconds(REQUEST_DURATION))
                 .map(resultat -> PdlResponse.builder()
                         .ident(resultat)
                         .status(HttpStatus.OK)

@@ -7,9 +7,9 @@ import { useFormContext } from 'react-hook-form'
 import { DetaljertSykemelding } from '@/components/fagsystem/sykdom/form/partials/DetaljertSykemelding'
 import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useDollyOrganisasjoner'
 import { NySykemelding } from '@/components/fagsystem/sykdom/form/partials/NySykemelding'
+import { nySykemeldingAttributt, sykemeldingAttributt } from './constants'
 
-export const sykemeldingAttributt = 'sykemelding.detaljertSykemelding'
-export const nySykemeldingAttributt = 'sykemelding.nySykemelding'
+export { sykemeldingAttributt, nySykemeldingAttributt, validation as sykdomValidation }
 
 const SykdomForm = () => {
 	const formMethods = useFormContext()

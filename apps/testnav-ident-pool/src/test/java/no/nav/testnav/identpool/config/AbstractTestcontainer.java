@@ -1,4 +1,4 @@
-package no.nav.testnav.identpool.providers.v1;
+package no.nav.testnav.identpool.config;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
