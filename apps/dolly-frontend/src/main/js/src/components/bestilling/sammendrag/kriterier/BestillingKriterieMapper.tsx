@@ -1453,16 +1453,6 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 			])
 		}
 
-		if (_.has(CVKriterier, 'harHjemmel')) {
-			arbeidsplassenCV.itemRows.push([
-				{ numberHeader: 'Hjemmel' },
-				{
-					label: 'Godta hjemmel',
-					value: oversettBoolean(CVKriterier.harHjemmel),
-				},
-			])
-		}
-
 		data.push(arbeidsplassenCV)
 	}
 }
