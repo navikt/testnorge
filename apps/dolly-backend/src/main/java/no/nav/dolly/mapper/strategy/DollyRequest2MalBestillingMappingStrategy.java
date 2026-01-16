@@ -107,7 +107,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
 
         factory.classMap(ArbeidsplassenCVDTO.class, ArbeidsplassenCVDTO.class)
                 .mapNulls(false)
-                .field("harHjemmel", "harHjemmel")
                 .field("harBil", "harBil")
                 .field("sammendrag", "sammendrag")
                 .field("jobboensker", "jobboensker")
