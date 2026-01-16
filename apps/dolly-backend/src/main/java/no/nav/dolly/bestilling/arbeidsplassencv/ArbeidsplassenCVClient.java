@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -51,18 +52,25 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 })
                 .flatMap(oppdatertOrdre -> Mono.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                .flatMap(response -> isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel()) ?
-                                        arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid) :
-                                        Mono.just("Fortsetter uten hjemmel og repetert vilkaar"))
-                                .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
-                                        .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
-                                                        request, uuid, logRetries(progress))
-                                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                                                        String.format("%s UUID: %s",
-                                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
-                                                                        status.getFeilmelding()),
-                                                                status.getUuid())))
-                                        .flatMap(resultat -> oppdaterStatus(progress, resultat)))));
+                                .flatMap(response ->
+                                        isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel()) ?
+
+                                                arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid)
+                                                        .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
+                                                                .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
+                                                                        request, uuid, logRetries(progress)))) :
+
+                                                Mono.just(ArbeidsplassenCVStatusDTO.builder()
+                                                        .status(HttpStatus.FORBIDDEN)
+                                                        .feilmelding("Samtykke/hjemmel mangler. Må være satt for oppretting av CV")
+                                                        .build()))
+
+                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                        String.format("%s UUID: %s",
+                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
+                                                        status.getFeilmelding()),
+                                                status.getUuid()))
+                                .flatMap(resultat -> oppdaterStatus(progress, resultat))));
     }
 
     private Consumer<Retry.RetrySignal> logRetries(BestillingProgress progress) {
@@ -80,7 +88,9 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::setArbeidsplassenCVStatus, status);
+        return transactionHelperService.persister(progress, BestillingProgress::setArbeidsplassenCVStatus,
+                status.contains("UUID: null") ?
+                status.replace(" UUID: null", "") : status);
     }
 
     @Override
