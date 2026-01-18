@@ -122,6 +122,8 @@ spec:
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
     outbound:
+      external:
+        - host: pdl-api.dev-fss-pub.nais.io
       rules:
         - application: digdir-krr-stub
           namespace: team-rocket
