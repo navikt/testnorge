@@ -51,8 +51,8 @@ app:
     krrstub: https://digdir-krr-stub.intern.dev.nav.no
     medl: https://medlemskap-medl-testdata.intern.dev.nav.no
     norg2: http://norg2.org.svc.nais.local
-    pdl-api: http://pdl-api.pdl.svc.nais.local
-    pdl-api-q1: http://pdl-api-q1.pdl.svc.nais.local
+    pdl-api: https://pdl-api.intern.dev.nav.no
+    pdl-api-q1: https://pdl-api-q1.intern.dev.nav.no
     pdl-identhendelse: http://pdl-identhendelse-lager.pdl.svc.nais.local
     pdl-testdata: http://pdl-testdata.pdl.svc.nais.local
     pensjon: http://pensjon-testdata-facade.pensjontestdata
