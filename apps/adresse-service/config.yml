@@ -65,5 +65,7 @@ spec:
           cluster: dev-fss
     outbound:
       rules:
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: logging
           namespace: nais-system
