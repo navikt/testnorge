@@ -43,7 +43,6 @@ spec:
     - secret: azure-trygdeetaten-testnav-dolly-proxy
     - secret: testnav-pdl-proxy
   image: "{{image}}"
-  port: 8080
   tokenx:
     enabled: true
   azure:
