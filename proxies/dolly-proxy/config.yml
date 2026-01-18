@@ -32,6 +32,12 @@ kind: "Application"
 metadata:
   name: testnav-dolly-proxy
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
   labels:
     team: dolly
 spec:
@@ -201,3 +207,4 @@ spec:
   ingresses:
     - "https://testnav-dolly-proxy.intern.dev.nav.no"
     - "https://testnav-dolly-proxy.dev-fss-pub.nais.io"
+  webproxy: true
