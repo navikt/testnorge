@@ -29,14 +29,11 @@ class Pdl {
         var url = switch (env) {
             case API -> targets.pdlApi;
             case API_Q1 -> targets.pdlApiQ1;
-            case ELASTIC -> targets.pdlElastic;
             case IDENTHENDELSE -> targets.pdlIdenthendelse;
             case TESTDATA -> targets.pdlTestdata;
         };
         var bearerAuthenticationFilter = authenticationFilterService
                 .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, env.name, url);
-        var basicAuthenticationFilter = authenticationFilterService
-                .getBasicAuthenticationFilter(pdlAuthConfig.getElasticUsername(), pdlAuthConfig.getElasticPassword());
         var apiKeyAuthenticationFilter = authenticationFilterService
                 .getApiKeyAuthenticationFilter(pdlAuthConfig.getHendelseApiKey());
 
@@ -54,13 +51,6 @@ class Pdl {
                     .filters(f -> f
                             .stripPrefix(1)
                             .filter(bearerAuthenticationFilter))
-                    .uri(url);
-
-            case ELASTIC -> spec -> spec
-                    .path("/pdl-elastic/**")
-                    .filters(f -> f
-                            .stripPrefix(1)
-                            .filter(basicAuthenticationFilter))
                     .uri(url);
 
             case IDENTHENDELSE -> spec -> spec
@@ -86,7 +76,6 @@ class Pdl {
     enum SpecialCase {
         API("pdl-api"),
         API_Q1("pdl-api-q1"),
-        ELASTIC("pdl-elastic"),
         IDENTHENDELSE("pdl-identhendelse"),
         TESTDATA("pdl-testdata");
 

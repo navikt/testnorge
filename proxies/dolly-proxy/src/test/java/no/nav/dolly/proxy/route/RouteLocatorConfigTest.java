@@ -83,7 +83,6 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-api", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-api-q1", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pdl-elastic", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-identhendelse", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-testdata", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
@@ -566,27 +565,6 @@ class RouteLocatorConfigTest {
 
                 wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
                         .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
-
-            }
-
-            case Pdl.SpecialCase.ELASTIC -> {
-
-                wireMockServer.stubFor(get(urlEqualTo(url))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader("Content-Type", "text/plain")
-                                .withBody(responseBody)));
-
-                webClient
-                        .get()
-                        .uri("/pdl-elastic" + url)
-                        .exchange()
-                        .expectStatus().isOk()
-                        .expectHeader().contentType("text/plain")
-                        .expectBody(String.class).isEqualTo(responseBody);
-
-                wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Basic .*")));
 
             }
 

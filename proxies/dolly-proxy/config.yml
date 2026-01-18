@@ -145,6 +145,10 @@ spec:
           namespace: pdl
         - application: pdl-api-q1
           namespace: pdl
+        - application: pdl-identhendelse-lager
+          namespace: pdl
+        - application: pdl-testdata
+          namespace: pdl
         - application: pensjon-afp-offentlig-mock-q1
           namespace: pensjon-saksbehandling
           cluster: dev-gcp

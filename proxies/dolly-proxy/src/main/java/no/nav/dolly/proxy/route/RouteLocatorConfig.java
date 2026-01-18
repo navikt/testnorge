@@ -63,7 +63,6 @@ class RouteLocatorConfig {
                 .route("norg2", norg2.build())
                 .route("pdl-api", pdl.build(Pdl.SpecialCase.API))
                 .route("pdl-api-q1", pdl.build(Pdl.SpecialCase.API_Q1))
-                .route("pdl-elastic", pdl.build(Pdl.SpecialCase.ELASTIC))
                 .route("pdl-identhendelse", pdl.build(Pdl.SpecialCase.IDENTHENDELSE))
                 .route("pdl-testdata", pdl.build(Pdl.SpecialCase.TESTDATA))
                 .route("pensjon", pensjon.build())
