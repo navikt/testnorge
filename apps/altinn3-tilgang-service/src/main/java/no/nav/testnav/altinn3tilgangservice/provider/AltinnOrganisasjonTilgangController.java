@@ -3,6 +3,7 @@ package no.nav.testnav.altinn3tilgangservice.provider;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.OrganisasjonResponse;
 import no.nav.testnav.altinn3tilgangservice.domain.PaginertOrganisasjonResponse;
 import no.nav.testnav.altinn3tilgangservice.service.AltinnOrganisasjonTilgangService;
@@ -25,6 +26,7 @@ import java.util.Comparator;
 public class AltinnOrganisasjonTilgangController {
 
     private final AltinnOrganisasjonTilgangService altinnTilgangService;
+    private final MaskinportenConsumer maskinportenConsumer;
 
     @GetMapping
     @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
@@ -66,5 +68,12 @@ public class AltinnOrganisasjonTilgangController {
     public Flux<OrganisasjonResponse> delete(@PathVariable String organisasjonsnummer) {
 
         return altinnTilgangService.delete(organisasjonsnummer);
+    }
+
+    @GetMapping
+    @Operation(description = "Hent token for Altinn API")
+    public Mono<String> getToken() {
+
+        return maskinportenConsumer.getAccessToken();
     }
 }
