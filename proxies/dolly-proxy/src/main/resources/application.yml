@@ -7,8 +7,7 @@ spring:
         webflux:
           httpclient:
             response-timeout: 1200s
-      httpclient:
-        response-timeout: 1200s
+
   config:
     import: "dolly-application.yml"
   main:
