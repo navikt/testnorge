@@ -1,0 +1,26 @@
+name: pdl-proxy
+
+on:
+  push:
+    paths:
+      - .github/workflows/proxy.pdl-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/pdl-proxy/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      cluster: "dev-fss"
+      working-directory: "proxies/pdl-proxy"
+      deploy-tag: "#deploy-pdl-proxy"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
