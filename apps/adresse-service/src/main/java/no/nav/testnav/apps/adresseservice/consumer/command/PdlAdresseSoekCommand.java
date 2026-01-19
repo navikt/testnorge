@@ -36,6 +36,7 @@ public class PdlAdresseSoekCommand implements Callable<Mono<PdlAdresseResponse>>
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .headers(WebClientHeader.bearer(token))
                 .header(TEMA, TemaGrunnlag.GEN.name())
+                .header(HttpHeaders.CONNECTION, "close")
                 .retrieve()
                 .bodyToMono(PdlAdresseResponse.class)
                 .retryWhen(WebClientError.is5xxException())
