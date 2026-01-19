@@ -3,7 +3,6 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -29,13 +28,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -169,16 +169,22 @@ public class AltinnConsumer {
                 exchangeToken,
                 altinnConfig).call()
                 .flatMap(response -> {
-                    log.info("Altinn-tilgang hentet: {}", Json.pretty(response));
+
                     total.addAll(response.getData());
 
-                    var continueToken = nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext()) ?
-                            response.getLinks().getNext()
-                                    .substring(response.getLinks().getNext().lastIndexOf('=') + 1) :
-                            null;
+                    if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext())) {
 
-                    return getAccessListMembers(total, exchangeToken, continueToken,
-                            isNull(response.getLinks()) || isBlank(response.getLinks().getNext()));
+                        var nextUrl = URLDecoder.decode(response.getLinks().getNext(), UTF_8);
+                        var continueToken = Arrays.stream(nextUrl.split("&"))
+                                .filter(param -> param.contains("token="))
+                                .map(param -> param.split("=")[1])
+                                .findFirst().orElse(null);
+
+                        return getAccessListMembers(total, exchangeToken, continueToken, false);
+
+                    } else {
+                        return getAccessListMembers(total, exchangeToken, null, true);
+                    }
                 });
     }
 
