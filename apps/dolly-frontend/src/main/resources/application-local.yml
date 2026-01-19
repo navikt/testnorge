@@ -3,6 +3,11 @@ POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 server:
   port: 8020
 
+management:
+  health:
+    redis:
+      enabled: false
+
 spring:
   config:
     import: "sm://"

@@ -5,7 +5,6 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { InntektVisning } from './partials/InntektVisning'
 import { FradragVisning } from './partials/FradragVisning'
 import { ForskuddstrekkVisning } from './partials/ForskuddstrekkVisning'
-import { ArbeidsforholdVisning } from './partials/ArbeidsforholdVisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDateTime } from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
@@ -31,7 +30,6 @@ type Inntektsinformasjon = {
 	inntektsliste: Array<unknown>
 	fradragsliste?: Array<unknown>
 	forskuddstrekksliste?: Array<unknown>
-	arbeidsforholdsliste?: Array<unknown>
 	versjon?: number
 }
 
@@ -42,8 +40,11 @@ const getHeader = (data: Inntektsinformasjon) => {
 }
 
 const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => {
-	const virksomheter = sortedData.map((data) => data.virksomhet)
-	const opplysningspliktigeOrg = sortedData.map((data) => data.opplysningspliktig)
+	const virksomheter = useMemo(() => sortedData.map((data) => data.virksomhet), [sortedData])
+	const opplysningspliktigeOrg = useMemo(
+		() => sortedData.map((data) => data.opplysningspliktig),
+		[sortedData],
+	)
 	const {
 		organisasjoner: virksomhetInfo,
 		loading: loadingVirksomheter,
@@ -100,7 +101,6 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 						<InntektVisning data={inntektsinformasjon.inntektsliste} />
 						<FradragVisning data={inntektsinformasjon.fradragsliste} />
 						<ForskuddstrekkVisning data={inntektsinformasjon.forskuddstrekksliste} />
-						<ArbeidsforholdVisning data={inntektsinformasjon.arbeidsforholdsliste} />
 					</React.Fragment>
 				)
 			}}
