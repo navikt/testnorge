@@ -29,7 +29,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,6 @@ import java.util.Optional;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -154,23 +152,17 @@ public class AltinnConsumer {
 
         return maskinportenConsumer.getAccessToken()
                 .flatMap(this::exchangeToken)
-                .flatMap(exchangeToken -> getAccessListMembers(new ArrayList<>(), exchangeToken, null, false));
+                .flatMap(this::getAccessListMembers);
     }
 
-    private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers(List<AltinnAccessListResponseDTO.AccessListMembershipDTO> total, String exchangeToken, String continuationToken, Boolean isDone) {
-
-        if (isTrue(isDone)) {
-            return Mono.just(total);
-        }
+    private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers(String exchangeToken) {
 
         return new GetAccessListMembersCommand(
                 webClient,
-                Optional.ofNullable(continuationToken),
+                Optional.empty(),
                 exchangeToken,
                 altinnConfig).call()
-                .flatMap(response -> {
-
-                    total.addAll(response.getData());
+                .expand(response -> {
 
                     if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext())) {
 
@@ -180,12 +172,15 @@ public class AltinnConsumer {
                                 .map(param -> param.split("=")[1])
                                 .findFirst().orElse(null);
 
-                        return getAccessListMembers(total, exchangeToken, continueToken, false);
+                        return new GetAccessListMembersCommand(webClient, Optional.ofNullable(continueToken), exchangeToken, altinnConfig).call();
 
                     } else {
-                        return getAccessListMembers(total, exchangeToken, null, true);
+                        return Mono.empty();
                     }
-                });
+                })
+                .map(AltinnAccessListResponseDTO::getData)
+                .flatMap(Flux::fromIterable)
+                .collectList();
     }
 
     private Flux<Organisasjon> convertToOrganisasjon(List<AltinnAccessListResponseDTO.AccessListMembershipDTO> altInnResponse) {
