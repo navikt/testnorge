@@ -9,11 +9,11 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: generer-navn-service
-  testnav-dolly-proxy:
-    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+  pdl-proxy:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
     namespace: dolly
-    name: testnav-dolly-proxy
+    name: testnav-pdl-proxy
   ident-pool:
     url: http://testnav-ident-pool.dolly.svc.cluster.local
     cluster: dev-gcp

@@ -33,6 +33,11 @@ consumers:
     namespace: dolly
     name: testnav-dolly-search-service
     url: http://testnav-dolly-search-service.dolly.svc.cluster.local
+  pdl-api-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   testnav-dolly-proxy:
     name: testnav-dolly-proxy
     namespace: dolly

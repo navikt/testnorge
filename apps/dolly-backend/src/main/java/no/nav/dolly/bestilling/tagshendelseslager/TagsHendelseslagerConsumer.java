@@ -38,7 +38,7 @@ public class TagsHendelseslagerConsumer {
             WebClient webClient
     ) {
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavDollyProxy();
+        serverProperties = consumers.getTestnavPdlProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())

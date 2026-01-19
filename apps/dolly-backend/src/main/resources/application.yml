@@ -100,6 +100,11 @@ consumers:
     namespace: dolly
     url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter
     namespace: dolly

@@ -29,11 +29,11 @@ server:
 consumers:
   tenor-search-service:
     url: https://testdata.api.skatteetaten.no
-  testnav-dolly-proxy:
-    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+  pdl-testdata:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
     namespace: dolly
-    name: testnav-dolly-proxy
+    name: testnav-pdl-proxy
   dolly-backend:
     url: http://dolly-backend.dolly.svc.cluster.local
     cluster: dev-gcp

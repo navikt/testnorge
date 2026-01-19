@@ -31,7 +31,7 @@ public class PdlProxyConsumer {
             ObjectMapper objectMapper,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavDollyProxy();
+        serverProperties = consumers.getTestnavPdlProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())

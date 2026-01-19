@@ -42,7 +42,7 @@ public class PdlProxyConsumer {
             TokenExchange tokenExchange,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavDollyProxy();
+        serverProperties = consumers.getPdlApiProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())

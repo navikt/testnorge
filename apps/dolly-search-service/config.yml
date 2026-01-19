@@ -33,7 +33,7 @@ spec:
         - application: testnav-synt-vedtakshistorikk-service
     outbound:
       external:
-        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
       rules:
         - application: logging
           namespace: nais-system

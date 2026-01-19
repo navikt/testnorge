@@ -41,7 +41,7 @@ public class PdlConsumer {
             ObjectMapper objectMapper,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavDollyProxy();
+        serverProperties = consumers.getPdlProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
                 .mutate()

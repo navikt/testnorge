@@ -62,6 +62,7 @@ spec:
           namespace: nais-system
       external:
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   azure:
     application:
       allowAllUsers: true
