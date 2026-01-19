@@ -70,7 +70,7 @@ public class AltinnOrganisasjonTilgangController {
         return altinnTilgangService.delete(organisasjonsnummer);
     }
 
-    @GetMapping
+    @GetMapping("/token")
     @Operation(description = "Hent token for Altinn API")
     public Mono<String> getToken() {
 
