@@ -9,7 +9,7 @@ import {
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString } from '@/utils/DataFormatter'
-import { useBestillingById } from '@/utils/hooks/useBestilling'
+import { useBestilteMiljoerAlleFagsystemer } from '@/utils/hooks/useBestilling'
 
 type GjenopprettProps = {
 	ident: {
@@ -24,27 +24,15 @@ type Values = {
 }
 
 export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
+	const bestillinger = ident?.bestillingId?.map((id) => id?.toString())
+	const { bestilteMiljoer } = useBestilteMiljoerAlleFagsystemer(bestillinger)
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
+
 	const mutate = useMatchMutate()
 
 	if (!ident) {
 		return null
 	}
-
-	const getBestilteMiljoer = () => {
-		const miljoer: Array<string> = []
-		ident.bestillingId.forEach((id) => {
-			const { bestilling } = useBestillingById(id.toString())
-			bestilling?.environments?.forEach((miljo) => {
-				if (!miljoer.includes(miljo)) {
-					miljoer.push(miljo)
-				}
-			})
-		})
-		return miljoer
-	}
-
-	const bestilteMiljoer = getBestilteMiljoer()
 
 	const handleSubmit = async (values: Values) => {
 		let miljoerString = ''
@@ -58,6 +46,7 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 
 		await DollyService.gjenopprettPerson(ident.ident, miljoerString).then(() => {
 			mutate(REGEX_BACKEND_BESTILLINGER)
+			closeGjenoprettModal()
 		})
 	}
 
