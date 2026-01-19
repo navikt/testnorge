@@ -21,7 +21,7 @@ public class GetAccessListMembersCommand implements Callable<Mono<AltinnAccessLi
     private static final String ALTINN_URL = "/resourceregistry/api/v1/access-lists/{owner}/{identifier}/members";
 
     private final WebClient webClient;
-    private final Optional<Integer> pageNumber;
+    private final Optional<String> continuationToken;
     private final String token;
     private final AltinnConfig altinnConfig;
 
@@ -31,7 +31,7 @@ public class GetAccessListMembersCommand implements Callable<Mono<AltinnAccessLi
         return webClient
                 .get()
                 .uri(builder -> builder.path(ALTINN_URL)
-                        .queryParamIfPresent("page", pageNumber)
+                        .queryParamIfPresent("token", continuationToken)
                         .build(altinnConfig.getOwner(), altinnConfig.getIdentifier()))
                 .headers(WebClientHeader.bearer(token))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

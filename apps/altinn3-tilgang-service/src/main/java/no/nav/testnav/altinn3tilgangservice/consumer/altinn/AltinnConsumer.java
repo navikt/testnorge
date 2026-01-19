@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -151,12 +152,15 @@ public class AltinnConsumer {
 
     private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers() {
 
-        return maskinportenConsumer.getAccessToken()
-                .flatMap(this::exchangeToken)
+        var token = "eyJraWQiOiJiZFhMRVduRGpMSGpwRThPZnl5TUp4UlJLbVo3MUxCOHUxeUREbVBpdVQwIiwiYWxnIjoiUlMyNTYifQ.eyJzY29wZSI6ImFsdGlubjphY2Nlc3NtYW5hZ2VtZW50L2F1dGhvcml6ZWRwYXJ0aWVzLnJlc291cmNlb3duZXIgYWx0aW5uOnJlc291cmNlcmVnaXN0cnkvYWNjZXNzbGlzdC53cml0ZSBhbHRpbm46cmVzb3VyY2VyZWdpc3RyeS9hY2Nlc3NsaXN0LnJlYWQiLCJpc3MiOiJodHRwczovL3Rlc3QubWFza2lucG9ydGVuLm5vLyIsImNsaWVudF9hbXIiOiJwcml2YXRlX2tleV9qd3QiLCJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiZXhwIjoxNzY4ODE5NTkwLCJpYXQiOjE3Njg4MTU5OTAsImNsaWVudF9pZCI6ImVmMjk2MGRlLTdmYTYtNDM5Ni04MGE1LTJlY2EwMGU0YWYyOCIsImp0aSI6IkZtSy1PVEdkVnhVSHZwWExJMnFybVprdHk2OV9tYTJhdVBwbk9OTWxyQW8iLCJjb25zdW1lciI6eyJhdXRob3JpdHkiOiJpc282NTIzLWFjdG9yaWQtdXBpcyIsIklEIjoiMDE5Mjo4ODk2NDA3ODIifX0.rtjFAtp6LJP3gYtXwGCHtJ0toakew76020tFubJad-fjQ2-BvP6vjVg1mjLyoeUjM8eT7E_YXXryFnvmnhO_eF-0EcCPnSJvf_AXOMWQYRa0dh7XPfUBVayHo1cysctZYjWJy0kW_OA_FqKjjCZsmILP9EOqwlMFif0JDDce6ZTKaNv89l6Yd1kBzSB2hass-9BdWiggxKXhDFVVwZF7x1F0Sx2eDyqo0MuwGoWvYrGYfq4M50HTwq--Scak_RXI493yYd-AMu7XPVQH5plAOK3_da9xwGrL9oFJyzXxbPF4gtdW1S_0lpHf-n38wHsq2iwqxAruSZGoppk-4h2g6RB-vtKnca5-rbx0KPQ4xG5ESoYVLJ9405AFdUDiw3ffCaMkXXbPS7hioVMjHYQ5t355vZOZf2-phwTB_EEf4PIJRUuDOzuzBO8hjFlpjWNqepO4PJcTahCYEJ8epJqe7LHTBzV2jql3IJ7kQ9hCvf-FfonV34GWTZ9QVakY_UrS";
+
+        return exchangeToken(token)
+//        return maskinportenConsumer.getAccessToken()
+//                .flatMap(this::exchangeToken)
                 .flatMap(exchangeToken -> getAccessListMembers(new ArrayList<>(), exchangeToken, null, false));
     }
 
-    private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers(List<AltinnAccessListResponseDTO.AccessListMembershipDTO> total, String exchangeToken, Integer pageNumber, Boolean isDone) {
+    private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers(List<AltinnAccessListResponseDTO.AccessListMembershipDTO> total, String exchangeToken, String continuationToken, Boolean isDone) {
 
         if (isTrue(isDone)) {
             return Mono.just(total);
@@ -164,20 +168,20 @@ public class AltinnConsumer {
 
         return new GetAccessListMembersCommand(
                 webClient,
-                Optional.ofNullable(pageNumber),
+                Optional.ofNullable(continuationToken),
                 exchangeToken,
                 altinnConfig).call()
                 .flatMap(response -> {
                     log.info("Altinn-tilgang hentet: {}", Json.pretty(response));
                     total.addAll(response.getData());
-                    if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext())) {
-                        Integer nextPageNumber = Integer.parseInt(
-                                response.getLinks().getNext()
-                                        .substring(response.getLinks().getNext().lastIndexOf('=') + 1));
-                        return getAccessListMembers(total, exchangeToken, nextPageNumber, false);
-                    } else {
-                        return getAccessListMembers(total, null, null, true);
-                    }
+
+                    var continueToken = nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext()) ?
+                            response.getLinks().getNext()
+                                    .substring(response.getLinks().getNext().lastIndexOf('=') + 1) :
+                            null;
+
+                    return getAccessListMembers(total, exchangeToken, continueToken,
+                            isNull(response.getLinks()) || isBlank(response.getLinks().getNext()));
                 });
     }
 

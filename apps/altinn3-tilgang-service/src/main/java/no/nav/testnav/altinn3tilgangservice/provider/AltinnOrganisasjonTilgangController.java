@@ -3,9 +3,7 @@ package no.nav.testnav.altinn3tilgangservice.provider;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.OrganisasjonResponse;
-import no.nav.testnav.altinn3tilgangservice.domain.PaginertOrganisasjonResponse;
 import no.nav.testnav.altinn3tilgangservice.service.AltinnOrganisasjonTilgangService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +24,6 @@ import java.util.Comparator;
 public class AltinnOrganisasjonTilgangController {
 
     private final AltinnOrganisasjonTilgangService altinnTilgangService;
-    private final MaskinportenConsumer maskinportenConsumer;
 
     @GetMapping
     @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
@@ -34,24 +31,6 @@ public class AltinnOrganisasjonTilgangController {
 
         return altinnTilgangService.getAll()
                 .sort(Comparator.comparing(OrganisasjonResponse::getNavn));
-    }
-
-    @GetMapping("/paginert")
-    @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
-    public Mono<PaginertOrganisasjonResponse> getPage(Integer page, Integer size) {
-
-        return getAll()
-                .collectList()
-                .map(list -> {
-                    int start = Math.min(page * size, list.size());
-                    int end = Math.min(start + size, list.size());
-                    return new PaginertOrganisasjonResponse(
-                            page,
-                            size,
-                            list.size(),
-                            (int) Math.ceil((double) list.size() / size),
-                            list.subList(start, end));
-                });
     }
 
     @PostMapping("/{organisasjonsnummer}")
@@ -68,12 +47,5 @@ public class AltinnOrganisasjonTilgangController {
     public Flux<OrganisasjonResponse> delete(@PathVariable String organisasjonsnummer) {
 
         return altinnTilgangService.delete(organisasjonsnummer);
-    }
-
-    @GetMapping("/token")
-    @Operation(description = "Hent token for Altinn API")
-    public Mono<String> getToken() {
-
-        return maskinportenConsumer.getAccessToken();
     }
 }
