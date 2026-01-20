@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, toTitleCase } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { PersonData, Relasjon, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '@/config/kodeverk'
@@ -104,15 +104,15 @@ const VergemaalLes = ({
 				<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaalData.gyldigTilOgMed)} />
 				{tjenesteomraadeListe?.map((tjenesteomraade, toIdx) => (
 					<React.Fragment key={toIdx}>
+						<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
 						<TitleValue
 							title="Tjenesteoppgaver"
 							value={
 								Array.isArray(tjenesteomraade.tjenesteoppgave)
-									? tjenesteomraade.tjenesteoppgave.join(', ')
-									: tjenesteomraade.tjenesteoppgave
+									? tjenesteomraade.tjenesteoppgave.map((val) => toTitleCase(val)).join(', ')
+									: toTitleCase(tjenesteomraade.tjenesteoppgave)
 							}
 						/>
-						<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
 					</React.Fragment>
 				))}
 				{!relasjon && !relasjonRedigert && (

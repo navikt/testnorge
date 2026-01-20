@@ -50,6 +50,7 @@ export const VergemaalForm = ({
 				header="Tjenesteområde"
 				newEntry={initialTjenesteomraade}
 				canBeEmpty={true}
+				style={{ marginBottom: '20px' }}
 				nested
 			>
 				{(tjenesteomraadePath: string) => <TjenesteomraadeForm path={tjenesteomraadePath} />}

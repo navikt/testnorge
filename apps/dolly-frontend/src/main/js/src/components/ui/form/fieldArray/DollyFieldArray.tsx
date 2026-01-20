@@ -58,8 +58,9 @@ export const DollyFieldArrayWrapper = ({
 	hjelpetekst = null,
 	nested = false,
 	children,
+	...props
 }) => (
-	<div className="dfa">
+	<div className="dfa" {...props}>
 		{nested && header && (
 			<div className="dfa-blokk-nested_title">
 				<h3>{header}</h3>
@@ -224,6 +225,7 @@ export const FormDollyFieldArray = ({
 	errorText = null,
 	lockedEntriesLength = 0 as unknown as number,
 	leafOnlyDelete = false,
+	...props
 }) => {
 	const formMethods = useFormContext()
 	const { fields, append, remove } = useFieldArray({ control: formMethods.control, name })
@@ -251,7 +253,7 @@ export const FormDollyFieldArray = ({
 
 	return (
 		<ErrorBoundary>
-			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
+			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested} {...props}>
 				{fields.map((field, idx) => {
 					const curr = values[idx]
 					const path = `${name}.${idx}`
