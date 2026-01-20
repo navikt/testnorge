@@ -43,7 +43,6 @@ export const Arbeidsplassen = ({ arbeidsplassenCV }: ArbeidsplassenCVTypes) => {
 	const foererkortListe = arbeidsplassenCV?.foererkort
 	const kursListe = arbeidsplassenCV?.kurs
 	const sammendrag = arbeidsplassenCV?.sammendrag
-	const harHjemmel = arbeidsplassenCV?.harHjemmel
 
 	return (
 		<div className="bestilling-visning">
@@ -272,8 +271,6 @@ export const Arbeidsplassen = ({ arbeidsplassenCV }: ArbeidsplassenCVTypes) => {
 							<TitleValue title="Oppsummering" value={sammendrag} size="xlarge" />
 						</>
 					)}
-					<h3>Hjemmel</h3>
-					<TitleValue title="Godta hjemmel" value={oversettBoolean(harHjemmel)} />
 				</div>
 			</ErrorBoundary>
 		</div>

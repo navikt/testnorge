@@ -11,7 +11,6 @@ export type ArbeidsplassenTypes = {
 	foererkort?: Array<Foererkort>
 	kurs?: Array<Kurs>
 	sammendrag?: string
-	harHjemmel: boolean
 }
 
 type Occupation = {
