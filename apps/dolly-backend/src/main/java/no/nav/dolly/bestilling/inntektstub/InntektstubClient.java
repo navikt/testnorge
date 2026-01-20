@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
 @Slf4j
@@ -49,7 +51,8 @@ public class InntektstubClient implements ClientRegister {
         var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
                 InntektsinformasjonWrapper.class, context);
 
-        return inntektstubConsumer.getInntekter(dollyPerson.getIdent())
+        return oppdaterStatus(progress, getInfoVenter(SystemTyper.INNTK.getBeskrivelse()))
+                .then(inntektstubConsumer.getInntekter(dollyPerson.getIdent())
                 .collectList()
                 .flatMap(eksisterende ->
                         Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
@@ -71,7 +74,7 @@ public class InntektstubClient implements ClientRegister {
                                             .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
                                             .collect(Collectors.joining(","));
                         }))
-                .flatMap(status -> oppdaterStatus(progress, status));
+                .flatMap(status -> oppdaterStatus(progress, status)));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

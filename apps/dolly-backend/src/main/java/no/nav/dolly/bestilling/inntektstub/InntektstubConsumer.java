@@ -69,6 +69,10 @@ public class InntektstubConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "inntk_postInntekter"})
     public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
+        if (inntektsinformasjon.isEmpty()) {
+            return Flux.empty();
+        }
+
         log.info("Sender inntektstub: {}", inntektsinformasjon);
 
         return tokenService.exchange(serverProperties)

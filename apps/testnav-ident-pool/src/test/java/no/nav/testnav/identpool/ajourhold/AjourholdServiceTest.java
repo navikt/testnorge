@@ -66,7 +66,9 @@ class AjourholdServiceTest {
     @Test
     void genererIdenterForAarHvorAlleErLedige() {
 
-        var year = LocalDate.now().getYear() - 30; // 30 years ago
+        var year = LocalDate.now().getYear() - 30; // 30 years ago.
+        var expected = 1460L + (year % 4 == 0 ? 4 : 0); // Accounting for leap years.
+
         when(identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
                 LocalDate.of(year, 1, 1), LocalDate.of(year, 12, 31),
                 Identtype.FNR, Rekvireringsstatus.LEDIG, true)).thenReturn(Flux.empty());
@@ -75,8 +77,9 @@ class AjourholdServiceTest {
 
         ajourholdService.checkAndGenerateForYear(year, Identtype.FNR, true)
                 .as(StepVerifier::create)
-                .expectNext(1460L)
+                .expectNext(expected)
                 .verifyComplete();
+
     }
 
     @Test

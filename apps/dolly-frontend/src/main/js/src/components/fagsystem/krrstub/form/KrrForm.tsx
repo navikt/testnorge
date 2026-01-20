@@ -131,6 +131,7 @@ export const KrrstubForm = () => {
 								<DollyTextInput
 									name="krrstub.mobil"
 									label="Mobilnummer"
+									type={"number"}
 									size={'medium'}
 									onChange={(event) => {
 										formMethods.setValue('krrstub.mobil', event.target.value || '')

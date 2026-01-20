@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakDTO;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
@@ -19,10 +18,12 @@ import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple3;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,22 +47,22 @@ public class PensjonPersondataService {
     private static final String SIVILSTAND = "sivilstand";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
-    private final PdlDataConsumer pdlDataConsumer;
     private final PensjonforvalterHelper pensjonforvalterHelper;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
 
-    public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata,
-                                        RsDollyBestilling bestilling, String navEnhet, Set<String> miljoer,
+    public Flux<String> lagrePersondata(String ident, Tuple3<List<PdlPersonBolk.PersonBolk>,
+                                                List<FullPersonDTO>, String> utvidetPersondata,
+                                        RsDollyBestilling bestilling, Set<String> miljoer,
                                         boolean isUpdateEndre) {
 
         return Flux.merge(
                 Flux.concat(
-                        opprettPersoner(ident, miljoer, persondata)
+                        opprettPersoner(ident, miljoer, utvidetPersondata.getT1())
                                 .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
-                        revurderingVedNySivilstand(ident, miljoer, persondata, bestilling, navEnhet, isUpdateEndre)
+                        revurderingVedNySivilstand(ident, miljoer, utvidetPersondata.getT1(), bestilling, utvidetPersondata.getT3(), isUpdateEndre)
                                 .map(response -> PEN_REVURDERING_AP + pensjonforvalterHelper.decodeStatus(response, ident))),
-                lagreSamboer(ident, miljoer)
+                lagreSamboer(ident, miljoer, utvidetPersondata.getT2())
                         .map(response -> SAMBOER_REGISTER + pensjonforvalterHelper.decodeStatus(response, ident))
         );
     }
@@ -75,10 +76,11 @@ public class PensjonPersondataService {
                         .filter(response -> hovedperson.equals(request.getFnr())));
     }
 
-    private Flux<PensjonforvalterResponse> lagreSamboer(String ident, Set<String> tilgjengeligeMiljoer) {
+    private Flux<PensjonforvalterResponse> lagreSamboer(String ident, Set<String> tilgjengeligeMiljoer, List<FullPersonDTO> persondata) {
 
         return Flux.concat(annulerAlleSamboere(ident, tilgjengeligeMiljoer),
-                pdlDataConsumer.getPersoner(List.of(ident))
+                Flux.fromIterable(persondata)
+                        .filter(person -> person.getPerson().getIdent().equals(ident))
                         .map(hovedperson -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty(IDENT, ident);

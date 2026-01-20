@@ -50,14 +50,12 @@ export const ArbeidsavtaleForm = ({
 				onChange={onChangeLenket('arbeidsavtale.endringsdatoStillingsprosent')}
 				{...props}
 			/>
-			{values?.isOppdatering && (
-				<FormDatepicker
-					name={`${path}.sisteLoennsendringsdato`}
-					label="Endringsdato lønn"
-					onChange={onChangeLenket('arbeidsavtale.sisteLoennsendringsdato')}
-					{...props}
-				/>
-			)}
+			<FormDatepicker
+				name={`${path}.sisteLoennsendringsdato`}
+				label="Endringsdato lønn"
+				onChange={onChangeLenket('arbeidsavtale.sisteLoennsendringsdato')}
+				{...props}
+			/>
 			<FormSelect
 				name={`${path}.arbeidstidsordning`}
 				label="Arbeidstidsordning"

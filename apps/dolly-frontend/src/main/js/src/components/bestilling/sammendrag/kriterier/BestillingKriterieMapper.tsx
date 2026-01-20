@@ -1277,10 +1277,6 @@ const mapInntektStub = (bestillingData, data) => {
 						inntektsinfo.forskuddstrekksliste && inntektsinfo.forskuddstrekksliste?.length,
 					),
 					obj(
-						'Antall registrerte arbeidsforhold',
-						inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste?.length,
-					),
-					obj(
 						'Antall registrerte inntektsendringer (historikk)',
 						inntektsinfo.historikk && inntektsinfo.historikk?.length,
 					),
@@ -1453,16 +1449,6 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 					label: 'Oppsummering',
 					value: CVKriterier.sammendrag,
 					width: 'xlarge',
-				},
-			])
-		}
-
-		if (_.has(CVKriterier, 'harHjemmel')) {
-			arbeidsplassenCV.itemRows.push([
-				{ numberHeader: 'Hjemmel' },
-				{
-					label: 'Godta hjemmel',
-					value: oversettBoolean(CVKriterier.harHjemmel),
 				},
 			])
 		}

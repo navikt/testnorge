@@ -21,7 +21,7 @@ public enum SystemTyper {
     ETTERLATTE("Etterlatte (Gjenny)"),
     FULLMAKT("Fullmakt (Representasjon)"),
     HISTARK("Saksmappearkiv (HISTARK)"),
-    INNTK("Inntektskomponenten (INNTK)"),
+    INNTK("Inntektstub (INNTK)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     INST2("Institusjonsopphold (INST2)"),
     KONTOREGISTER("Bankkontoregister"),
