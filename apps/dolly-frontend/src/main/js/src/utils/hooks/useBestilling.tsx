@@ -155,7 +155,7 @@ export const useBestilteMiljoer = (
 	bestillingIdListe: Array<string> | undefined,
 	fagsystem: string,
 ) => {
-	if (!bestillingIdListe || bestillingIdListe.length < 1) {
+	if (!bestillingIdListe || bestillingIdListe?.length < 1) {
 		return {
 			bestilteMiljoer: undefined as string[] | undefined,
 			loading: false,
@@ -179,6 +179,31 @@ export const useBestilteMiljoer = (
 
 	return {
 		bestilteMiljoer: miljoer,
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useBestilteMiljoerAlleFagsystemer = (bestillingIdListe: Array<string> | undefined) => {
+	if (!bestillingIdListe || bestillingIdListe?.length < 1) {
+		return {
+			bestilteMiljoer: undefined as string[] | undefined,
+			loading: false,
+			error: 'Bestilling-id mangler!',
+		}
+	}
+
+	const { data, isLoading, error } = useSWR<Array<Bestilling>, Error>(
+		getMultipleBestillingByIdUrl(bestillingIdListe),
+		multiFetcherAll,
+	)
+
+	const bestilteMiljoer = [
+		...new Set(data?.flatMap((bestilling) => bestilling?.environments ?? [])),
+	]
+
+	return {
+		bestilteMiljoer: bestilteMiljoer,
 		loading: isLoading,
 		error: error,
 	}
