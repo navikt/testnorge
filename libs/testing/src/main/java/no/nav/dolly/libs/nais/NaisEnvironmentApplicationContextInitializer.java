@@ -84,9 +84,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
                         "ALTINN_API_KEY",
 
-                        "AZURE_APP_CLIENT_ID",
-                        "AZURE_APP_CLIENT_SECRET",
-
                         "JWT_SECRET",
                         "MASKINPORTEN_CLIENT_ID",
                         "MASKINPORTEN_CLIENT_JWK",

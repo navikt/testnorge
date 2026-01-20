@@ -24,7 +24,6 @@ export const initialValues: Inntektsinformasjon = {
 	],
 	fradragsliste: [],
 	forskuddstrekksliste: [],
-	arbeidsforholdsliste: [],
 }
 
 export const inntektstubAttributt = 'inntektstub'

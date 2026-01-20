@@ -10,8 +10,10 @@ spring:
     import: "dolly-application.yml"
   cloud:
     gateway:
-      httpclient:
-        response-timeout: 600s
+      server:
+        webflux:
+          httpclient:
+            response-timeout: 600s
   security: # For OpenAPI login.
     oauth2:
       resourceserver:
@@ -41,9 +43,3 @@ springdoc:
       use-pkce-with-authorization-code-grant: true
       scopes:
         - api://${AZURE_APP_CLIENT_ID}/.default
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,gateway,prometheus

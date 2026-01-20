@@ -54,8 +54,7 @@ dependencies {
 
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-junit-jupiter"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
-    testImplementation "org.springframework.boot:spring-boot-starter-webmvc-test"
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:postgresql"
 }

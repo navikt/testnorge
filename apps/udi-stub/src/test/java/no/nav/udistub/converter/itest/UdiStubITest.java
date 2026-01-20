@@ -2,16 +2,15 @@ package no.nav.udistub.converter.itest;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import no.nav.udistub.database.model.Person;
 import no.nav.udistub.database.repository.PersonRepository;
 import no.nav.udistub.service.dto.UdiPerson;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -24,27 +23,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static no.nav.udistub.converter.DefaultTestData.TEST_DATE;
-import static no.nav.udistub.converter.DefaultTestData.TEST_FLYKTNINGSTATUS;
-import static no.nav.udistub.converter.DefaultTestData.TEST_INNREISEFORBUD;
-import static no.nav.udistub.converter.DefaultTestData.TEST_NAVN;
-import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDSTILLATELSE;
-import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDS_GRUNNLAG_KATEGORI;
-import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_ALIAS_FNR;
-import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_FNR;
-import static no.nav.udistub.converter.DefaultTestData.TEST_ovrigIkkeOppholdsKategori;
-import static no.nav.udistub.converter.DefaultTestData.createPersonTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static no.nav.udistub.converter.DefaultTestData.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @DollySpringBootTest
-@ExtendWith(DollyWireMockExtension.class)
+@AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
 @Testcontainers
 class UdiStubITest {
@@ -64,14 +51,6 @@ class UdiStubITest {
     @SuppressWarnings("unused")
     private Flyway flyway;
 
-    private static String readFile(String filename)
-            throws IOException {
-        return Files.readString(
-                new ClassPathResource(filename).getFile().toPath(),
-                StandardCharsets.UTF_8
-        );
-    }
-
     @BeforeEach
     void setUp() throws IOException {
 
@@ -86,6 +65,14 @@ class UdiStubITest {
                         )
         );
 
+    }
+
+    private static String readFile(String filename)
+            throws IOException {
+        return Files.readString(
+                new ClassPathResource(filename).getFile().toPath(),
+                StandardCharsets.UTF_8
+        );
     }
 
     @BeforeEach
@@ -103,7 +90,7 @@ class UdiStubITest {
     void shouldOpprettPersonAndStoreInDb() throws Exception {
         mockMvc
                 .perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/v1/person")
+                        post("/api/v1/person")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(readFile("opprettPersonRequest-happy.json"))
                                 .header("Nav-Personident", TEST_PERSON_FNR)

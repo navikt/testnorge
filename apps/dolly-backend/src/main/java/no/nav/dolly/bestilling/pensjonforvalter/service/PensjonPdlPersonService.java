@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,14 +36,17 @@ public class PensjonPdlPersonService {
     private final PdlDataConsumer pdlDataConsumer;
     private final PersonServiceConsumer personServiceConsumer;
 
-    public Mono<Tuple2<List<PdlPersonBolk.PersonBolk>, String>> getUtvidetPersondata(String ident) {
+    public Mono<Tuple3<List<PdlPersonBolk.PersonBolk>,
+            List<FullPersonDTO>, String>> getUtvidetPersondata(String ident) {
 
         return getIdenterRelasjoner(ident)
                 .collectList()
-                .map(this::getPersonData)
-                .flatMap(persondata -> Mono.zip(
-                        getPdlPerson(persondata),
-                        getNavEnhetNr(persondata, ident)))
+                .flatMap(identer -> getPersonData(identer).collectList()
+                        .zipWith(Mono.just(identer)))
+                .flatMap(persondata -> Mono.zip(Mono.just(getPdlPerson(persondata.getT1())),
+                        pdlDataConsumer.getPersoner(persondata.getT2())
+                                .collectList(),
+                        getNavEnhetNr(persondata.getT1(), ident)))
                 .doOnNext(utvidetPersondata -> {
                     if (utvidetPersondata.getT1().isEmpty()) {
                         log.warn("Persondata for {} gir tom response fra PDL", ident);
@@ -88,18 +92,18 @@ public class PensjonPdlPersonService {
                 .map(PdlPersonBolk::getData);
     }
 
-    private static Mono<List<PdlPersonBolk.PersonBolk>> getPdlPerson(Flux<PdlPersonBolk.Data> persondata) {
+    private static List<PdlPersonBolk.PersonBolk> getPdlPerson(List<PdlPersonBolk.Data> persondata) {
 
-        return persondata
+        return persondata.stream()
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
+                .flatMap(List::stream)
                 .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .collectList();
+                .toList();
     }
 
-    private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata, String ident) {
+    private Mono<String> getNavEnhetNr(List<PdlPersonBolk.Data> persondata, String ident) {
 
-        return persondata
+        return Flux.fromIterable(persondata)
                 .doOnNext(data -> {
                     if (isNull(data.getHentGeografiskTilknytningBolk()) ||
                             data.getHentGeografiskTilknytningBolk().stream()

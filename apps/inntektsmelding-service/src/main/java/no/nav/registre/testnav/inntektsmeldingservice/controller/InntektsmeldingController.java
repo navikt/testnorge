@@ -33,7 +33,7 @@ public class InntektsmeldingController {
         this.inntektsmeldingService = inntektsmeldingService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request) {

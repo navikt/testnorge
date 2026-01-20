@@ -14,7 +14,6 @@ export type Inntektsinformasjon = {
 	inntektsliste: Array<Inntekt>
 	fradragsliste: Array<Fradrag>
 	forskuddstrekksliste: Array<Forskudd>
-	arbeidsforholdsliste: Array<Arbeidsforhold>
 }
 
 export type Inntekt = {
@@ -27,4 +26,3 @@ export type Inntekt = {
 
 export type Fradrag = {}
 export type Forskudd = {}
-export type Arbeidsforhold = {}

@@ -160,7 +160,6 @@ ArbeidInntektPanel.initialValues = ({ set, opts, del, has }: any) => {
 							],
 							fradragsliste: [],
 							forskuddstrekksliste: [],
-							arbeidsforholdsliste: [],
 						},
 					],
 				}),

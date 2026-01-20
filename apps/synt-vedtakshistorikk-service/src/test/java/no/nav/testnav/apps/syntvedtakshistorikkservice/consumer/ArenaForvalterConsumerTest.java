@@ -1,26 +1,17 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetAap115Request;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetAapRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetFritakMeldekortRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetTilleggRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetTiltaksdeltakelseRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetTiltakspengerRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetTvungenForvaltningRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetUngUfoerRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.*;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
@@ -29,34 +20,53 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@ExtendWith(DollyWireMockExtension.class)
+@AutoConfigureWireMock(port = 0)
 class ArenaForvalterConsumerTest {
 
-    private final String miljoe = "q2";
-    private final String fnr = "270699494213";
     @MockitoBean
     @SuppressWarnings("unused")
     private TokenExchange tokenExchange;
+
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
+
+    private final String miljoe = "q2";
+    private final String fnr = "270699494213";
+
+    @BeforeEach
+    void setup() {
+        when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+    }
+
+    @Test
+    void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
+        stubOpprettErrorResponse();
+        assertThrows(Exception.class, () ->
+            arenaForvalterConsumer.sendBrukereTilArenaForvalter(null));
+    }
 
     private void stubOpprettErrorResponse() {
         stubFor(post(urlPathMatching("(.*)/arena/api/v1/bruker"))
                 .willReturn(aResponse().withStatus(500))
         );
+    }
+
+    @Test
+    void hentBrukereTest() {
+        stubHentBrukere();
+
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("", "", "");
+
+        assertThat(response.get(2).getPersonident()).isEqualTo("09838817873");
+        assertThat(response).hasSize(3);
+
     }
 
     private void stubHentBrukere() {
@@ -80,6 +90,17 @@ class ArenaForvalterConsumerTest {
         );
     }
 
+    @Test
+    void getBrukereFilterTest() {
+        stubHentBrukereFilter();
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "Dolly", miljoe);
+
+        assertThat(response.get(0).getStatus()).isEqualTo("OK");
+        assertThat(response).hasSize(2);
+        assertThat(response.get(1).getAap()).isTrue();
+    }
+
+
     private void stubHentBrukereFilter() {
         stubFor(get(urlEqualTo("/api/v1/bruker?filter-eier=Dolly&filter-miljoe=q2&filter-personident=10101010101"))
                 .willReturn(ok()
@@ -101,6 +122,13 @@ class ArenaForvalterConsumerTest {
         );
     }
 
+    @Test
+    void getEmptyResponse() {
+        stubEmptyResponse();
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "", miljoe);
+        assertThat(response).isEmpty();
+    }
+
     private void stubEmptyResponse() {
         stubFor(get(urlEqualTo("/api/v1/bruker?filter-miljoe=q2&filter-personident=10101010101"))
                 .willReturn(aResponse().withStatus(400)
@@ -113,6 +141,38 @@ class ArenaForvalterConsumerTest {
                                 "}")
                 )
         );
+    }
+
+    @Disabled
+    @Test
+    void shouldOppretteRettighetAap() {
+        var aapRequest = new RettighetAapRequest();
+        aapRequest.setPersonident(fnr);
+        var aap115Request = new RettighetAap115Request();
+        aap115Request.setPersonident(fnr);
+        var ungUfoerRequest = new RettighetUngUfoerRequest();
+        ungUfoerRequest.setPersonident(fnr);
+        var tvungenForvaltningRequest = new RettighetTvungenForvaltningRequest();
+        tvungenForvaltningRequest.setPersonident(fnr);
+        var fritakMeldekortRequest = new RettighetFritakMeldekortRequest();
+        fritakMeldekortRequest.setPersonident(fnr);
+
+        var rettigheter = new ArrayList<>(Arrays.asList(
+                aapRequest,
+                aap115Request,
+                ungUfoerRequest,
+                tvungenForvaltningRequest,
+                fritakMeldekortRequest
+        ));
+        stubArenaForvalterOpprettAapRettighet();
+
+        var response = arenaForvalterConsumer.opprettRettighet(rettigheter);
+
+        assertThat(response.get(fnr).get(0).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(1).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(2).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(3).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(4).getFeiledeRettigheter()).hasSize(1);
     }
 
     private void stubArenaForvalterOpprettAapRettighet() {
@@ -152,103 +212,6 @@ class ArenaForvalterConsumerTest {
         );
     }
 
-    private void stubArenaForvalterOpprettTilleggRettighet() {
-        stubFor(post(urlEqualTo("/api/v1/tilleggsstonad"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("files/arena/tillegg/tillegg_forvalter_response.json"))
-                )
-        );
-    }
-
-    private void stubArenaForvalterOpprettTiltakRettighet() {
-        stubFor(post(urlEqualTo("/api/v1/tiltaksdeltakelse"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("files/arena/tiltak/tiltaksdeltakelse_forvalter_response.json"))
-                )
-        );
-
-        stubFor(post(urlEqualTo("/api/v1/tiltakspenger"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("files/arena/tiltak/tiltakspenger_forvalter_response.json"))
-                )
-        );
-    }
-
-    @BeforeEach
-    void setup() {
-        when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-    }
-
-    @Test
-    void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
-        stubOpprettErrorResponse();
-        assertThrows(Exception.class, () ->
-            arenaForvalterConsumer.sendBrukereTilArenaForvalter(null));
-    }
-
-    @Test
-    void hentBrukereTest() {
-        stubHentBrukere();
-
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("", "", "");
-
-        assertThat(response.get(2).getPersonident()).isEqualTo("09838817873");
-        assertThat(response).hasSize(3);
-
-    }
-
-    @Test
-    void getBrukereFilterTest() {
-        stubHentBrukereFilter();
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "Dolly", miljoe);
-
-        assertThat(response.get(0).getStatus()).isEqualTo("OK");
-        assertThat(response).hasSize(2);
-        assertThat(response.get(1).getAap()).isTrue();
-    }
-
-    @Test
-    void getEmptyResponse() {
-        stubEmptyResponse();
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "", miljoe);
-        assertThat(response).isEmpty();
-    }
-
-    @Disabled
-    @Test
-    void shouldOppretteRettighetAap() {
-        var aapRequest = new RettighetAapRequest();
-        aapRequest.setPersonident(fnr);
-        var aap115Request = new RettighetAap115Request();
-        aap115Request.setPersonident(fnr);
-        var ungUfoerRequest = new RettighetUngUfoerRequest();
-        ungUfoerRequest.setPersonident(fnr);
-        var tvungenForvaltningRequest = new RettighetTvungenForvaltningRequest();
-        tvungenForvaltningRequest.setPersonident(fnr);
-        var fritakMeldekortRequest = new RettighetFritakMeldekortRequest();
-        fritakMeldekortRequest.setPersonident(fnr);
-
-        var rettigheter = new ArrayList<>(Arrays.asList(
-                aapRequest,
-                aap115Request,
-                ungUfoerRequest,
-                tvungenForvaltningRequest,
-                fritakMeldekortRequest
-        ));
-        stubArenaForvalterOpprettAapRettighet();
-
-        var response = arenaForvalterConsumer.opprettRettighet(rettigheter);
-
-        assertThat(response.get(fnr).get(0).getNyeRettigheterAap()).hasSize(1);
-        assertThat(response.get(fnr).get(1).getNyeRettigheterAap()).hasSize(1);
-        assertThat(response.get(fnr).get(2).getNyeRettigheterAap()).hasSize(1);
-        assertThat(response.get(fnr).get(3).getNyeRettigheterAap()).hasSize(1);
-        assertThat(response.get(fnr).get(4).getFeiledeRettigheter()).hasSize(1);
-    }
-
     @Test
     void shouldOppretteRettighetTillegg() {
         var tilleggRequest = new RettighetTilleggRequest();
@@ -262,6 +225,15 @@ class ArenaForvalterConsumerTest {
         var response = arenaForvalterConsumer.opprettRettighet(rettigheter);
 
         assertThat(response.get(fnr).get(0).getNyeRettigheterTillegg()).hasSize(1);
+    }
+
+    private void stubArenaForvalterOpprettTilleggRettighet() {
+        stubFor(post(urlEqualTo("/api/v1/tilleggsstonad"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("files/arena/tillegg/tillegg_forvalter_response.json"))
+                )
+        );
     }
 
     @Test
@@ -282,6 +254,22 @@ class ArenaForvalterConsumerTest {
 
         assertThat(response.get(fnr).get(0).getFeiledeRettigheter()).isEmpty();
         assertThat(response.get(fnr).get(1).getNyeRettigheterTiltak()).hasSize(1);
+    }
+
+    private void stubArenaForvalterOpprettTiltakRettighet() {
+        stubFor(post(urlEqualTo("/api/v1/tiltaksdeltakelse"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("files/arena/tiltak/tiltaksdeltakelse_forvalter_response.json"))
+                )
+        );
+
+        stubFor(post(urlEqualTo("/api/v1/tiltakspenger"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("files/arena/tiltak/tiltakspenger_forvalter_response.json"))
+                )
+        );
     }
 
 }

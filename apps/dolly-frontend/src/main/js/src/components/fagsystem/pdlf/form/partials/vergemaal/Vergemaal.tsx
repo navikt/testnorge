@@ -8,6 +8,7 @@ import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdl
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { initialTjenesteomraade, TjenesteomraadeForm } from './TjenesteomraadeForm'
 
 interface VergemaalFormTypes {
 	formMethods: UseFormReturn
@@ -44,6 +45,16 @@ export const VergemaalForm = ({
 			/>
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+			<FormDollyFieldArray
+				name={`${path}.tjenesteomraade`}
+				header="Tjenesteområde"
+				newEntry={initialTjenesteomraade}
+				canBeEmpty={true}
+				style={{ marginBottom: '20px' }}
+				nested
+			>
+				{(tjenesteomraadePath: string) => <TjenesteomraadeForm path={tjenesteomraadePath} />}
+			</FormDollyFieldArray>
 			<PdlPersonExpander
 				path={path}
 				nyPersonPath={`${path}.nyVergeIdent`}

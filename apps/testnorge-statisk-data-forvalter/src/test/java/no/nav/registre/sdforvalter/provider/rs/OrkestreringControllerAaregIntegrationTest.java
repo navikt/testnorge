@@ -2,25 +2,23 @@ package no.nav.registre.sdforvalter.provider.rs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.registre.sdforvalter.TestSecurityConfig;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
@@ -30,10 +28,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DollySpringBootTest
-@ExtendWith(DollyWireMockExtension.class)
-@Import(TestSecurityConfig.class)
+@AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 0)
 class OrkestreringControllerAaregIntegrationTest {
 
     private static final String FNR = "01010101010";
@@ -44,7 +45,7 @@ class OrkestreringControllerAaregIntegrationTest {
     };
 
     @Autowired
-    private WebTestClient webTestClient;
+    private MockMvc mvc;
 
     @MockitoBean
     @SuppressWarnings("unused")
@@ -56,13 +57,6 @@ class OrkestreringControllerAaregIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private AaregModel createAaregModel() {
-        AaregModel model = new AaregModel();
-        model.setFnr(FNR);
-        model.setOrgId(ORGNR);
-        return model;
-    }
-
     @AfterEach
     void cleanUp() {
         reset();
@@ -72,6 +66,13 @@ class OrkestreringControllerAaregIntegrationTest {
     @BeforeAll
     static void setup() {
         syntString = getResourceFileContent("files/enkel_arbeidsforholdmelding.json");
+    }
+
+    private AaregModel createAaregModel() {
+        AaregModel model = new AaregModel();
+        model.setFnr(FNR);
+        model.setOrgId(ORGNR);
+        return model;
     }
 
     @Test
@@ -90,12 +91,9 @@ class OrkestreringControllerAaregIntegrationTest {
                 .withResponseBody(arbeidsforholdResponse)
                 .stubGet();
 
-        webTestClient
-                .post()
-                .uri("/api/v1/orkestrering/aareg/" + MILJOE)
-                .contentType(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk();
+        mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
+                .andExpect(status().isOk());
 
         JsonWiremockHelper
                 .builder(objectMapper)

@@ -11,7 +11,7 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 
 ## Java
 
-- Java: Spring Boot 4.x, Java 21, unless otherwise specified.
+- Java: Spring Boot 3.x, Java 21, unless otherwise specified.
 - Java tests: JUnit 5, AssertJ, Mockito; name test methods: `should<Behavior>()`.
 - Null handling: prefer `Optional` only at API boundaries.
 - Keep functions small; extract private helpers.
@@ -31,7 +31,7 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 
 ## JS / React / TS:
 
-- Javascript: React 19, TypeScript 5, React Router, React Hook Form, useSWR, Styled components, functional components,
+- Javascript: React 18, TypeScript 5, React Router, React Hook Form, useSWR, Styled components, functional components,
   hooks unless otherwise specified.
 - Javascript tests: MSW, React Testing Library, Vitest, Playwright for e2e.
 - TypeScript interfaces should be explicit for props
@@ -56,12 +56,6 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 - Use error boundaries for component errors
 - Handle API errors gracefully
 - Provide meaningful error messages to users
-
-## Terminal Usage
-
-- Chain multiple commands together using `&&` or `;` instead of running separate terminal commands
-- Use background processes (`isBackground=true`) for long-running tasks, then check output later
-- Minimize the number of terminal sessions created - prefer reusing existing sessions
 
 ## What NOT to do
 

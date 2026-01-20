@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -31,10 +32,14 @@ public class AaregConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient,
+            WebClientLogger webClientLogger) {
 
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenService = tokenService;
+        var webClientBuilder = webClient
+                .mutate();
+        webClientLogger.customize(webClientBuilder);
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())

@@ -403,9 +403,9 @@ export default (props: PersonVisningProps) => {
 				condition: !!(
 					(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
 					(harMedlBestilling(bestillingerFagsystemer) &&
-						medl?.response &&
-						Array.isArray(medl.response) &&
-						medl.response.length === 0)
+						medl &&
+						Array.isArray(medl) &&
+						medl.length === 0)
 				),
 				reason: 'MEDL mangler data eller feilet',
 			},
@@ -472,14 +472,6 @@ export default (props: PersonVisningProps) => {
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
 
-	const getArbeidsplassencvHjemmel = () => {
-		if (!harArbeidsplassenBestilling(bestillingerFagsystemer)) return null
-		const arbeidsplassenBestillinger = bestillingListe.filter((bestilling) =>
-			_.has(bestilling.data, 'arbeidsplassenCV'),
-		)
-		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
-	}
-
 	const isLoadingFagsystemer =
 		loadingNom ||
 		loadingAareg ||
@@ -537,9 +529,6 @@ export default (props: PersonVisningProps) => {
 								}
 								if (arbeidssoekerregisteretData) {
 									personData.arbeidssoekerregisteret = arbeidssoekerregisteretData
-								}
-								if (arbeidsplassencvData) {
-									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
 								if (arenaData) {
 									personData.arenaforvalteren = arenaData
@@ -641,7 +630,6 @@ export default (props: PersonVisningProps) => {
 					data={arbeidsplassencvData}
 					loading={loadingArbeidsplassencvData}
 					error={arbeidsplassencvError}
-					hjemmel={getArbeidsplassencvHjemmel()}
 				/>
 				<PensjonVisning
 					data={poppData}
@@ -710,7 +698,7 @@ export default (props: PersonVisningProps) => {
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<MedlVisning data={medl?.response as any} timedOutFagsystemer={timedOutFagsystemer} />
+				<MedlVisning data={medl} timedOutFagsystemer={timedOutFagsystemer} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling?.udistub)}
 					loading={loadingUdistub}

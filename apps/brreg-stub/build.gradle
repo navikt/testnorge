@@ -66,9 +66,7 @@ dependencies {
 
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:postgresql"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
-    testImplementation "org.springframework.boot:spring-boot-resttestclient"
-    testImplementation "org.springframework.boot:spring-boot-webmvc-test"
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
 }

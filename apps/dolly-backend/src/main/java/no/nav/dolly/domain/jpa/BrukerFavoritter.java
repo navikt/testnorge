@@ -17,13 +17,13 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("bruker_favoritter")
+@Table("BRUKER_FAVORITTER")
 public class BrukerFavoritter implements Serializable {
 
-    @Column("bruker_id")
+    @Column("BRUKER_ID")
     private Long brukerId;
 
-    @Column("gruppe_id")
+    @Column("GRUPPE_ID")
     private Long gruppeId;
 
     @Override

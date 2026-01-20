@@ -3,7 +3,7 @@ import {
 	DollyFieldArrayWrapper,
 	FieldArrayAddButton,
 } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
+import { Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -19,7 +19,6 @@ type Inntektslister = {
 	inntektsliste: Array<Inntekt>
 	fradragsliste: Array<Fradrag>
 	forskuddstrekksliste: Array<Forskudd>
-	arbeidsforholdsliste: Array<Arbeidsforhold>
 	rapporteringsdato: string
 }
 
@@ -28,7 +27,6 @@ const hjelpetekst = `Den øverste inntektinformasjonen er den gjeldende inntekte
 export default ({ formMethods, path }: InntektendringForm) => {
 	const kopiAvGjeldendeInntekt = formMethods.watch(path)
 	const initialValues: Inntektslister = {
-		arbeidsforholdsliste: kopiAvGjeldendeInntekt.arbeidsforholdsliste,
 		forskuddstrekksliste: kopiAvGjeldendeInntekt.forskuddstrekksliste,
 		fradragsliste: kopiAvGjeldendeInntekt.fradragsliste,
 		inntektsliste: kopiAvGjeldendeInntekt.inntektsliste,

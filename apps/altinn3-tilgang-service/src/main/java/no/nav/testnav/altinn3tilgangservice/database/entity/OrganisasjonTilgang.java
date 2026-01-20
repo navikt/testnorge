@@ -13,14 +13,14 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "organisasjon_tilgang")
+@Table(name = "ORGANISASJON_TILGANG")
 public class OrganisasjonTilgang {
 
     @Id
-    @Column("id")
+    @Column("ID")
     private Long id;
 
-    @Column("organisajon_nummer")
+    @Column("ORGANISAJON_NUMMER")
     private String organisasjonNummer;
 
     @Column("miljoe")

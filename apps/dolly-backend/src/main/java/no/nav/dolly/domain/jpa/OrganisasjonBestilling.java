@@ -27,28 +27,28 @@ public class OrganisasjonBestilling {
     @Id
     private Long id;
 
-    @Column("miljoer")
+    @Column("MILJOER")
     private String miljoer;
 
-    @Column("antall")
+    @Column("ANTALL")
     private Integer antall;
 
-    @Column("sist_oppdatert")
+    @Column("SIST_OPPDATERT")
     private LocalDateTime sistOppdatert;
 
-    @Column("feil")
+    @Column("FEIL")
     private String feil;
 
-    @Column("ferdig")
+    @Column("FERDIG")
     private Boolean ferdig;
 
-    @Column("opprettet_fra_id")
+    @Column("OPPRETTET_FRA_ID")
     private Long opprettetFraId;
 
-    @Column("best_kriterier")
+    @Column("BEST_KRITERIER")
     private String bestKriterier;
 
-    @Column("bruker_id")
+    @Column("BRUKER_ID")
     private Long brukerId;
 
     @Transient

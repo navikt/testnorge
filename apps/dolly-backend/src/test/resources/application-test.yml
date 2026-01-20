@@ -77,17 +77,10 @@ spring:
   config:
     activate:
       on-profile: test
-  jackson:
-    deserialization:
-      FAIL_ON_NULL_FOR_PRIMITIVES: false
   data:
     r2dbc:
       repositories:
         enabled: true
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
   main:
     web-application-type: reactive
   security:
