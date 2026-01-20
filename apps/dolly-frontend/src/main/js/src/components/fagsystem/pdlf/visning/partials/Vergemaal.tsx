@@ -104,7 +104,7 @@ const VergemaalLes = ({
 				<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaalData.gyldigTilOgMed)} />
 				{tjenesteomraadeListe?.map((tjenesteomraade, tjIdx) => (
 					<React.Fragment key={tjIdx}>
-						<TitleValue title="Tjenesteoppgave" value={tjenesteomraade.tjenesteoppgave} />
+						<TitleValue title="Tjenesteoppgaver" value={tjenesteomraade.tjenesteoppgave} />
 						<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
 					</React.Fragment>
 				))}

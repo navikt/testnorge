@@ -4,30 +4,16 @@ import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { initialTjenesteomraade, TjenesteomraadeForm } from './TjenesteomraadeForm'
 
 interface VergemaalFormTypes {
 	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option
-}
-
-const initialTjenesteomraade = {
-	tjenesteoppgave: '',
-	tjenestevirksomhet: '',
-}
-
-const TjenesteomraadeForm = ({ path }: { path: string }) => {
-	return (
-		<>
-			<FormTextInput name={`${path}.tjenesteoppgave`} label="Tjenesteoppgave" />
-			<FormTextInput name={`${path}.tjenestevirksomhet`} label="Tjenestevirksomhet" />
-		</>
-	)
 }
 
 export const VergemaalForm = ({
