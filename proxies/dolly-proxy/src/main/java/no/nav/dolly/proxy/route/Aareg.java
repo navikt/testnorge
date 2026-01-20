@@ -31,9 +31,8 @@ class Aareg {
         var url = writeable ?
                 targets.aaregVedlikehold.formatted(env.code) :
                 targets.aaregServices.formatted(env.code);
-        var authenticationFilter = writeable?
-                authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url) :
-                authenticationFilterService.getNavAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
+        var authenticationFilter = authenticationFilterService
+                .getNavAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
 
         if (writeable) {
             return spec -> spec
