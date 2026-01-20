@@ -177,6 +177,11 @@ export type ForeldreansvarUtenId = {
 	statsborgerskap: string
 }
 
+export type TjenesteomraadeValues = {
+	tjenesteoppgave?: string[]
+	tjenestevirksomhet?: string
+}
+
 export type VergemaalValues = {
 	vergemaalEmbete?: string
 	mandatType?: string
@@ -185,6 +190,7 @@ export type VergemaalValues = {
 	gyldigTilOgMed: string
 	nyVergeIdent?: NyIdent | undefined
 	vergeIdent?: string
+	tjenesteomraade?: Array<TjenesteomraadeValues>
 	id: number
 }
 

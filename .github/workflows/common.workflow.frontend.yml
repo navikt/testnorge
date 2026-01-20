@@ -21,7 +21,7 @@ on:
         required: true
       deploy-tag-test:
         type: string
-        description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-test-frontend."
+        description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-test-dolly-frontend."
         required: false
       deploy-tag-idporten:
         type: string
