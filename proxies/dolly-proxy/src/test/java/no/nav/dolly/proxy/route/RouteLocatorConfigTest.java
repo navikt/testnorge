@@ -137,7 +137,7 @@ class RouteLocatorConfigTest {
                     .expectBody(String.class).isEqualTo(responseBody);
 
             wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath))
-                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-nav-token")));
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
             wireMockServer.verify(0, getRequestedFor(urlEqualTo(downstreamPath)));
 
         } else {
@@ -157,7 +157,7 @@ class RouteLocatorConfigTest {
                     .expectBody(String.class).isEqualTo(responseBody);
 
             wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-nav-token")));
             wireMockServer.verify(0, postRequestedFor(urlEqualTo(downstreamPath)));
 
         }
