@@ -343,7 +343,7 @@ export type VergemaalData = {
 }
 
 export type TjenesteomraadeData = {
-	tjenesteoppgave?: string
+	tjenesteoppgave?: string[]
 	tjenestevirksomhet?: string
 }
 

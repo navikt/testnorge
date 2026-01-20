@@ -14,7 +14,7 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 import React from 'react'
 
 type TjenesteomraadeType = {
-	tjenesteoppgave?: string
+	tjenesteoppgave?: string[]
 	tjenestevirksomhet?: string
 }
 
@@ -102,9 +102,16 @@ const VergemaalLes = ({
 				/>
 				<TitleValue title="Gyldig f.o.m." value={formatDate(vergemaalData.gyldigFraOgMed)} />
 				<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaalData.gyldigTilOgMed)} />
-				{tjenesteomraadeListe?.map((tjenesteomraade, tjIdx) => (
-					<React.Fragment key={tjIdx}>
-						<TitleValue title="Tjenesteoppgaver" value={tjenesteomraade.tjenesteoppgave} />
+				{tjenesteomraadeListe?.map((tjenesteomraade, toIdx) => (
+					<React.Fragment key={toIdx}>
+						<TitleValue
+							title="Tjenesteoppgaver"
+							value={
+								Array.isArray(tjenesteomraade.tjenesteoppgave)
+									? tjenesteomraade.tjenesteoppgave.join(', ')
+									: tjenesteomraade.tjenesteoppgave
+							}
+						/>
 						<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
 					</React.Fragment>
 				))}

@@ -178,7 +178,7 @@ export type ForeldreansvarUtenId = {
 }
 
 export type TjenesteomraadeValues = {
-	tjenesteoppgave?: string
+	tjenesteoppgave?: string[]
 	tjenestevirksomhet?: string
 }
 

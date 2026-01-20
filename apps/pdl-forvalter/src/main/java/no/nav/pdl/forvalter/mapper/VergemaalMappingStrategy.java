@@ -100,7 +100,7 @@ public class VergemaalMappingStrategy implements MappingStrategy {
         };
     }
 
-    private static List<Tjenesteomraade> mapTjenesteomraade(List<TjenesteomraadeDTO> tjenesteomraadeListe) {
+    static List<Tjenesteomraade> mapTjenesteomraade(List<TjenesteomraadeDTO> tjenesteomraadeListe) {
         return Optional.ofNullable(tjenesteomraadeListe)
                 .orElse(Collections.emptyList())
                 .stream()
