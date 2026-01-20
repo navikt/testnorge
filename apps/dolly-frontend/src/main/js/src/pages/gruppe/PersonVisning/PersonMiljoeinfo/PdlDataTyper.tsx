@@ -353,6 +353,11 @@ export type VergemaalData = {
 	metadata: Metadata
 }
 
+export type TjenesteomraadeData = {
+	tjenesteoppgave?: string[]
+	tjenestevirksomhet?: string
+}
+
 export type VergeEllerFullmektig = {
 	navn: {
 		fornavn: string
@@ -362,4 +367,5 @@ export type VergeEllerFullmektig = {
 	motpartsPersonident: string
 	omfang: string
 	omfangetErInnenPersonligOmraade: string
+	tjenesteomraade?: Array<TjenesteomraadeData>
 }

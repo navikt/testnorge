@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -48,6 +49,7 @@ public class PdlVergemaal extends DbVersjonDTO {
         private Personnavn navn;
         private Omfang omfang;
         private Boolean omfangetErInnenPersonligOmraade;
+        private List<Tjenesteomraade> tjenesteomraade;
     }
 
     @Data
@@ -59,5 +61,15 @@ public class PdlVergemaal extends DbVersjonDTO {
         private String etternavn;
         private String fornavn;
         private String mellomnavn;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Tjenesteomraade implements Serializable {
+
+        private String tjenesteoppgave;
+        private String tjenestevirksomhet;
     }
 }
