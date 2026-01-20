@@ -1,6 +1,6 @@
 import React from 'react'
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt } from '../Attributt'
+import { Attributt, AttributtKategori } from '../Attributt'
 
 // @ts-ignore
 export const BankinformasjonPanel = ({ stateModifier, formValues }) => {
@@ -25,8 +25,9 @@ export const BankinformasjonPanel = ({ stateModifier, formValues }) => {
                 }) as any
             }
             uncheckAttributeArray={sm.batchRemove}
-            iconType={'adresse'}
+            iconType={'bankkonto'}
         >
+            <AttributtKategori attr={sm.attrs}>
                 <Attributt
                     attr={sm.attrs.norskBankkonto}
                     vis={true}
@@ -37,6 +38,7 @@ export const BankinformasjonPanel = ({ stateModifier, formValues }) => {
                     vis={true}
                     disabled={sm.attrs.norskBankkonto.checked}
                 />
+            </AttributtKategori>
         </Panel>
     )
 }
