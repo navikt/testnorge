@@ -28,11 +28,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
@@ -43,6 +45,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Component
 public class AltinnConsumer {
+
+    private static final int MAX_PAGES = 100;
 
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
@@ -150,13 +154,17 @@ public class AltinnConsumer {
 
     private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers() {
 
-        return maskinportenConsumer.getAccessToken()
-                .flatMap(this::exchangeToken)
+        var token = "eyJraWQiOiJiZFhMRVduRGpMSGpwRThPZnl5TUp4UlJLbVo3MUxCOHUxeUREbVBpdVQwIiwiYWxnIjoiUlMyNTYifQ.eyJzY29wZSI6ImFsdGlubjphY2Nlc3NtYW5hZ2VtZW50L2F1dGhvcml6ZWRwYXJ0aWVzLnJlc291cmNlb3duZXIgYWx0aW5uOnJlc291cmNlcmVnaXN0cnkvYWNjZXNzbGlzdC53cml0ZSBhbHRpbm46cmVzb3VyY2VyZWdpc3RyeS9hY2Nlc3NsaXN0LnJlYWQiLCJpc3MiOiJodHRwczovL3Rlc3QubWFza2lucG9ydGVuLm5vLyIsImNsaWVudF9hbXIiOiJwcml2YXRlX2tleV9qd3QiLCJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiZXhwIjoxNzY4ODk0MjIyLCJpYXQiOjE3Njg4OTA2MjIsImNsaWVudF9pZCI6ImVmMjk2MGRlLTdmYTYtNDM5Ni04MGE1LTJlY2EwMGU0YWYyOCIsImp0aSI6IkxzUFhvMHRjMFFqaXZZaEI1ajRpVW1ZaFBJbmQ4MC1XdmRxSXk0U05wNW8iLCJjb25zdW1lciI6eyJhdXRob3JpdHkiOiJpc282NTIzLWFjdG9yaWQtdXBpcyIsIklEIjoiMDE5Mjo4ODk2NDA3ODIifX0.Kkv4vQW3uRZRDB8OXOjbH9BD_rxyLEa8d4pW6xX9StfkxCKTGQ032m9yW8uMRA8MB2yFllxcpSTPhv5OQZzTscDuo1qbtvSNAEmdBkiZ3EegoAiQNDTUwGzYS64YfH6V2Yw-1xAsN9x_QKZ1RwN-cGnTIj0AXelDpbNZgW5ARdVLGokMJghFBY9nr9hAnYaNdH-l1CfsxzGTXRL5d4o9JNEfL_sG65GxGfSAtK_5dGAySaB4SlUkBe2PsNBXN_SCw-DMD39237_Mr2i9jyCdnoU8qFMDKLNPFm4Q7fMGKvY8UpGGKdCWbIKn82QzPCU6KZ17ORZkzCCHAALXV9eULqW7YkXFEyC0zKoD618l-l5uJJpp4IlHxWVBtrZIoA4epoonu-7aL13LG6UB4sfsOf2chsLMQjNPEx2Uehp61Z6lK2O6jPuDROakTwkmbdyDK6D-55vkzNwr52-GEcMk9fDGxpc6MKtDKeGMYXsbfEV9rkNgkOW18Fb7xHx_FinP";
+
+        return exchangeToken(token)
+//        return maskinportenConsumer.getAccessToken()
+//                .flatMap(this::exchangeToken)
                 .flatMap(this::getAccessListMembers);
     }
 
     private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers(String exchangeToken) {
 
+        var counter = new AtomicInteger(0);
         return new GetAccessListMembersCommand(
                 webClient,
                 Optional.empty(),
@@ -164,10 +172,13 @@ public class AltinnConsumer {
                 altinnConfig).call()
                 .expand(response -> {
 
-                    if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext())) {
+                    if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext()) &&
+                            counter.getAndIncrement() < MAX_PAGES) {
 
                         var nextUrl = URLDecoder.decode(response.getLinks().getNext(), UTF_8);
-                        var continueToken = Arrays.stream(nextUrl.split("&"))
+                        var query = URI.create(nextUrl).getQuery();
+
+                        var continueToken = Arrays.stream(query.split("&"))
                                 .filter(param -> param.contains("token="))
                                 .map(param -> param.split("=")[1])
                                 .findFirst().orElse(null);
