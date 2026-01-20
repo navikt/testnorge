@@ -32,7 +32,7 @@ class Aareg {
                 targets.aaregVedlikehold.formatted(env.code) :
                 targets.aaregServices.formatted(env.code);
         var authenticationFilter = authenticationFilterService
-                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
+                .getNavAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
 
         if (writeable) {
             return spec -> spec
