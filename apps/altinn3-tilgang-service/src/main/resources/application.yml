@@ -18,6 +18,7 @@ spring:
       write_dates_as_timestamps: false
 
 altinn:
+  max-pages: 100
   api:
     url: ${ALTINN_URL}
   resource:

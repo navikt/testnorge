@@ -21,6 +21,7 @@ import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDele
 import no.nav.testnav.altinn3tilgangservice.consumer.brreg.BrregConsumer;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Component
 public class AltinnConsumer {
 
-    private static final int MAX_PAGES = 100;
+    @Value("${altinn.max-pages}")
+    private int maxPages;
 
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
@@ -170,7 +172,7 @@ public class AltinnConsumer {
                 .expand(response -> {
 
                     if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext()) &&
-                            counter.getAndIncrement() < MAX_PAGES) {
+                            counter.getAndIncrement() < maxPages) {
 
                         String continueToken;
                         try {
@@ -182,7 +184,7 @@ public class AltinnConsumer {
                                     .map(param -> param.split("=")[1])
                                     .findFirst().orElse(null);
 
-                        } catch (IllegalArgumentException e) {
+                        } catch (IllegalArgumentException | NullPointerException e) {
                             log.warn("Kunne ikke dekode neste-lenke for tilgangsliste-paginering\": {}", response.getLinks().getNext(), e);
                             return Mono.empty();
                         }
