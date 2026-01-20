@@ -15,7 +15,6 @@ import { FoererkortForm } from '@/components/fagsystem/arbeidsplassen/form/parti
 import { KursForm } from '@/components/fagsystem/arbeidsplassen/form/partials/KursForm'
 import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SammendragForm'
 import { validation } from '@/components/fagsystem/arbeidsplassen/form/validation'
-import { HjemmelForm } from '@/components/fagsystem/arbeidsplassen/form/partials/HjemmelForm'
 import { useFormContext } from 'react-hook-form'
 import './CvForm.less'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
@@ -64,7 +63,6 @@ export const ArbeidsplassenForm = () => {
 					<FoererkortForm />
 					<KursForm />
 					<SammendragForm />
-					<HjemmelForm />
 				</div>
 			</Panel>
 		</Vis>
