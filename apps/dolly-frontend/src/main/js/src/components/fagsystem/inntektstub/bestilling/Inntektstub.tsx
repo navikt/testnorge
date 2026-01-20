@@ -4,7 +4,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, formatDateTime } from '@/utils/DataFormatter'
-import { AdresseKodeverk, ArbeidKodeverk, InntektstubKodeverk } from '@/config/kodeverk'
+import { AdresseKodeverk, InntektstubKodeverk } from '@/config/kodeverk'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import texts from '@/components/inntektStub/texts'
 import * as _ from 'lodash-es'
@@ -112,54 +112,6 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 								title="Beskrivelse"
 								value={forskuddstrekk?.beskrivelse}
 								kodeverk={InntektstubKodeverk.Forskuddstrekkbeskrivelse}
-							/>
-						</React.Fragment>
-					)}
-				</DollyFieldArray>
-			)}
-			{inntektsinfo?.arbeidsforholdsliste?.length > 0 && (
-				<DollyFieldArray
-					header="Arbeidsforhold"
-					data={inntektsinfo?.arbeidsforholdsliste}
-					whiteBackground={whiteBackground}
-					nested
-				>
-					{(arbeidsforhold: any, idy: number) => (
-						<React.Fragment key={`arbeidsforhold_${idy}`}>
-							<TitleValue
-								title="Arbeidsforholdstype"
-								value={arbeidsforhold.arbeidsforholdstype}
-								kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-							/>
-							<TitleValue title="Startdato" value={formatDate(arbeidsforhold.startdato)} />
-							<TitleValue title="Sluttdato" value={formatDate(arbeidsforhold.sluttdato)} />
-							<TitleValue
-								title="Timer per uke (full stilling)"
-								value={arbeidsforhold.antallTimerPerUkeSomEnFullStillingTilsvarer}
-							/>
-							<TitleValue title="Stillingsprosent" value={arbeidsforhold.stillingsprosent} />
-							<TitleValue
-								title="Avlønningstype"
-								value={arbeidsforhold.avloenningstype}
-								kodeverk={ArbeidKodeverk.Avloenningstyper}
-							/>
-							<TitleValue
-								title="Yrke"
-								value={arbeidsforhold.yrke}
-								kodeverk={ArbeidKodeverk.Yrker}
-							/>
-							<TitleValue
-								title="Arbeidstidsordning"
-								value={arbeidsforhold.arbeidstidsordning}
-								kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
-							/>
-							<TitleValue
-								title="Siste lønnsendringsdato"
-								value={formatDate(arbeidsforhold.sisteLoennsendringsdato)}
-							/>
-							<TitleValue
-								title="Stillingsprosentendring"
-								value={formatDate(arbeidsforhold.sisteDatoForStillingsprosentendring)}
 							/>
 						</React.Fragment>
 					)}
