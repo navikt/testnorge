@@ -17,22 +17,16 @@ class Aareg {
 
     private static final String CLUSTER = "dev-fss";
     private static final String NAMESPACE = "arbeidsforhold";
-    private static final String NAME_READABLE = "aareg-services-nais-%s"; // Note replacement pattern.
-    private static final String NAME_WRITEABLE = "aareg-dolly-api-%s"; // Note replacement pattern.
 
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env, boolean writeable) {
 
-        var name = writeable ?
-                NAME_WRITEABLE.formatted(env.code) :
-                NAME_READABLE.formatted(env.code);
-        var url = writeable ?
-                targets.aaregVedlikehold.formatted(env.code) :
-                targets.aaregServices.formatted(env.code);
+        var name = getName(env, writeable);
+        var url = getUrl(env, writeable);
         var authenticationFilter = authenticationFilterService
-                .getNavAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
 
         if (writeable) {
             return spec -> spec
@@ -58,13 +52,29 @@ class Aareg {
 
     }
 
+    String getName(SpecialCase env, boolean writeable) {
+        return writeable ?
+                env.writeableName :
+                env.readableName;
+    }
+
+    String getUrl(SpecialCase env, boolean writeable) {
+        return writeable ?
+                targets.aaregVedlikehold.formatted(env.writeableHost) :
+                targets.aaregServices.formatted(env.readableHost);
+    }
+
     @RequiredArgsConstructor
     enum SpecialCase {
-        Q1("q1"),
-        Q2("q2"),
-        Q4("q4");
+        Q1("q1", "aareg-services-nais-q1", "aareg-services-q1", "aareg-dolly-api-q1", "aareg-dolly-api-q1"),
+        Q2("q2", "aareg-services-nais", "aareg-services", "aareg-dolly-api-q2", "aareg-dolly-api-q2"),
+        Q4("q4", "aareg-services-nais-q4", "aareg-services-q4", "aareg-dolly-api-q4", "aareg-dolly-api-q4");
 
         private final String code;
+        private final String readableName;
+        private final String readableHost;
+        private final String writeableName;
+        private final String writeableHost;
     }
 
 }
