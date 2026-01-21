@@ -4,8 +4,8 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { VergemaalKodeverk } from '@/config/kodeverk'
-import { VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
-import { formatDate } from '@/utils/DataFormatter'
+import { TjenesteomraadeValues, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
+import { arrayToString, codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import * as _ from 'lodash-es'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
@@ -46,6 +46,27 @@ export const Vergemaal = ({ vergemaalListe }: VergemaalTypes) => {
 								<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaal.gyldigTilOgMed)} />
 								<TitleValue title="Verge" value={vergemaal.vergeIdent} />
 								<TitleValue title="Master" value={vergemaal.master} />
+								<DollyFieldArray header="Tjenesteområde" data={vergemaal.tjenesteomraade} nested>
+									{(tjenesteomraade: TjenesteomraadeValues, idy: number) => {
+										return (
+											<React.Fragment key={idy}>
+												<TitleValue
+													title="Tjenestevirksomhet"
+													value={tjenesteomraade.tjenestevirksomhet}
+												/>
+												<TitleValue
+													title="Tjenesteområde"
+													value={arrayToString(
+														tjenesteomraade.tjenesteoppgave?.map((oppgave: string) =>
+															codeToNorskLabel(oppgave),
+														),
+														', ',
+													)}
+												/>
+											</React.Fragment>
+										)
+									}}
+								</DollyFieldArray>
 								<EkspanderbarVisning vis={_.get(vergemaal, 'nyVergeIdent')} header="VERGE">
 									<RelatertPerson personData={vergemaal.nyVergeIdent} tittel="Verge" />
 								</EkspanderbarVisning>
