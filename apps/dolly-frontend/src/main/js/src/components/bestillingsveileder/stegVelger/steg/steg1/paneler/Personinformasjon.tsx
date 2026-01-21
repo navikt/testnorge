@@ -64,11 +64,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		) {
 			ignoreKeys.push('vergemaal', 'innvandretFraLand', 'utvandretTilLand')
 		}
-		if (sm.attrs.utenlandskBankkonto.checked) {
-			ignoreKeys.push('norskBankkonto')
-		} else {
-			ignoreKeys.push('utenlandskBankkonto')
-		}
 		if (!testnorgeIdent && !harFnr) {
 			ignoreKeys.push(utvandret)
 		}
@@ -126,16 +121,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.navn} vis={true} />
 				<Attributt attr={sm.attrs.telefonnummer} vis={true} />
 				<Attributt
-					attr={sm.attrs.norskBankkonto}
-					vis={true}
-					disabled={sm.attrs.utenlandskBankkonto.checked}
-				/>
-				<Attributt
-					attr={sm.attrs.utenlandskBankkonto}
-					vis={true}
-					disabled={sm.attrs.norskBankkonto.checked}
-				/>
-				<Attributt
 					attr={sm.attrs.vergemaal}
 					vis={!testnorgeIdent}
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
@@ -183,8 +168,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		utflytting: 'pdldata.person.utflytting',
 		kjoenn: 'pdldata.person.kjoenn',
 		navn: 'pdldata.person.navn',
-		norskBankkonto: 'bankkonto.norskBankkonto',
-		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
 		telefonnummer: {
 			pdl: 'pdldata.person.telefonnummer',
 		},
@@ -283,34 +266,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			checked: has(paths.navn),
 			add: () => set(paths.navn, [getInitialNavn(initMaster)]),
 			remove: () => del(paths.navn),
-		},
-		norskBankkonto: {
-			label: 'Norsk bank',
-			checked: has(paths.norskBankkonto),
-			add: () =>
-				set(paths.norskBankkonto, {
-					kontonummer: '',
-					tilfeldigKontonummer: opts?.antall && opts?.antall > 1,
-				}),
-			remove: () => del(paths.norskBankkonto),
-		},
-		utenlandskBankkonto: {
-			label: 'Utenlandsk bank',
-			checked: has(paths.utenlandskBankkonto),
-			add: () =>
-				set(paths.utenlandskBankkonto, {
-					kontonummer: '',
-					tilfeldigKontonummer: false,
-					swift: 'BANKXX11222',
-					landkode: null,
-					banknavn: '',
-					iban: '',
-					valuta: null,
-					bankAdresse1: '',
-					bankAdresse2: '',
-					bankAdresse3: '',
-				}),
-			remove: () => del(paths.utenlandskBankkonto),
 		},
 		telefonnummer: {
 			label: 'Telefonnummer',

@@ -47,7 +47,7 @@ jobs:
       contents: read
     with:
       working-directory: "apps/dolly-frontend"
-      deploy-tag: "#deploy-frontend"
-      deploy-tag-test: "#deploy-test-frontend"
+      deploy-tag: "#deploy-dolly-frontend"
+      deploy-tag-test: "#deploy-test-dolly-frontend"
       deploy-tag-idporten: "#deploy-idporten-frontend"
     secrets: inherit

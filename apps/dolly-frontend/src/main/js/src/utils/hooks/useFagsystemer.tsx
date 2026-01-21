@@ -89,7 +89,6 @@ const histarkUrl = (transaksjonsid: any) => {
 }
 
 const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
-const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -270,19 +269,6 @@ export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilli
 
 	return {
 		arbeidsplassencvData: data,
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useArbeidsplassencvHjemmel = (ident: string) => {
-	const { data, isLoading, error } = useSWR<any, Error>(
-		[arbeidsforholdcvHjemmelUrl, { fnr: ident }],
-		([url, headers]) => fetcher(url, headers),
-	)
-
-	return {
-		arbeidsplassencvHjemmel: data,
 		loading: isLoading,
 		error: error,
 	}
