@@ -1,6 +1,5 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
-import { bankkontoValidation } from '@/components/fagsystem/bankkonto/form'
 import { tpsMessagingValidation } from '@/components/fagsystem/tpsmessaging/form/validation'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { isSameDay } from 'date-fns'
@@ -170,5 +169,4 @@ export const validation = {
 		}),
 	),
 	...tpsMessagingValidation,
-	...bankkontoValidation,
 }
