@@ -18,7 +18,6 @@ import { Alder } from '@/components/fagsystem/pdlf/form/partials/alder/Alder'
 import { Kjoenn } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { Navn } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
-import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 
@@ -36,8 +35,6 @@ const alderPaths = [
 	'pdldata.opprettNyPerson.foedtFoer',
 ]
 
-const utenlandskBankkontoPath = ['bankkonto.utenlandskBankkonto']
-const norskBankkontoPath = ['bankkonto.norskBankkonto']
 const kjoennPath = ['pdldata.person.kjoenn']
 const navnPath = ['pdldata.person.navn']
 const telefonnummerPath = ['pdldata.person.telefonnummer']
@@ -65,8 +62,6 @@ const panelPaths = [
 	vergemaalPath,
 	sikkerhetstiltakPath,
 	statsborgerskapPath,
-	utenlandskBankkontoPath,
-	norskBankkontoPath,
 ].flat()
 
 export const Personinformasjon = ({ formMethods }) => {
@@ -121,14 +116,6 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Navn" vis={navnPath}>
 					<Navn formMethods={formMethods} />
-				</Kategori>
-
-				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>
-					<NorskBankkonto formMethods={formMethods} />
-				</Kategori>
-
-				<Kategori title="Utenlandsk bankkonto" vis={utenlandskBankkontoPath}>
-					<UtenlandskBankkonto formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Telefonnummer" vis={telefonnummerPath}>
