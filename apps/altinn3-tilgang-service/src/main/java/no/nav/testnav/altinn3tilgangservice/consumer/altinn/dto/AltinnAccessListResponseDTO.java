@@ -22,6 +22,7 @@ import static java.util.Objects.isNull;
 public class AltinnAccessListResponseDTO {
 
     private List<AccessListMembershipDTO> data;
+    private LinksDTO links;
     private String feilmelding;
     private HttpStatus status;
 
@@ -50,5 +51,14 @@ public class AltinnAccessListResponseDTO {
         private String id;
         private LocalDateTime since;
         private JsonNode identifiers;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LinksDTO {
+
+        private String next;
     }
 }
