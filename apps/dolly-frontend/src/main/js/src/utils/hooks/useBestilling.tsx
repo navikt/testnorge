@@ -62,36 +62,6 @@ export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
 	}
 }
 
-export const useBestillingerGruppe = (gruppeId: string | number) => {
-	if (!gruppeId) {
-		return {
-			bestillinger: undefined as Bestilling[] | undefined,
-			bestillingerById: undefined as Record<string, Bestilling> | undefined,
-			loading: false,
-			error: 'GruppeId mangler!',
-		}
-	}
-
-	const { data, isLoading, error } = useSWR<Bestilling[], Error>(
-		getBestillingerGruppeUrl(gruppeId),
-		fetcher,
-	)
-
-	const bestillingerSorted = data
-		?.sort?.((a, b) => (a.id < b.id ? 1 : -1))
-		.reduce<Record<string, Bestilling>>((acc, curr) => {
-			acc[curr.id] = curr
-			return acc
-		}, {})
-
-	return {
-		bestillinger: data,
-		bestillingerById: bestillingerSorted,
-		loading: isLoading,
-		error: error,
-	}
-}
-
 export const useIkkeFerdigBestillingerGruppe = (
 	gruppeId: string | number,
 	visning: VisningType,

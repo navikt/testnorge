@@ -31,6 +31,50 @@ export type PaginertGruppe = {
 	pageSize: number
 }
 
+export type BestillingStatusDetaljert = {
+	miljo: string
+	identer: string[]
+}
+
+export type BestillingStatus = {
+	melding: string
+	identer?: string[]
+	detaljert?: BestillingStatusDetaljert[]
+}
+
+export type BestillingStatusGruppe = {
+	id: string
+	navn: string
+	statuser: BestillingStatus[]
+}
+
+export type Bestilling = {
+	id: number
+	antallIdenter: number
+	antallLevert: number
+	ferdig: boolean
+	sistOppdatert: string
+	bruker: string | null
+	gruppeId: number
+	stoppet: boolean
+	feil: string | null
+	environments: string[]
+	status: BestillingStatusGruppe[]
+	opprettetFraId: number | null
+	opprettetFraGruppeId: number | null
+	gjenopprettetFraIdent: string | null
+	bestilling: Record<string, unknown>
+	opprettFraIdenter: string[] | null
+}
+
+export type GruppeIdent = {
+	ident: string
+	bestillingId: number[]
+	bestillinger: Bestilling[]
+	master: string
+	ibruk: boolean
+}
+
 export type Gruppe = {
 	erLaast: boolean
 	id: number
@@ -41,7 +85,7 @@ export type Gruppe = {
 	opprettetAv: { brukernavn: string; navIdent: string }
 	datoEndret: Date
 	erEierAvGruppe: boolean
-	identer: any[]
+	identer: GruppeIdent[]
 	tags: string[]
 }
 
