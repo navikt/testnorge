@@ -1,3 +1,4 @@
+import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -38,6 +39,12 @@ export const Visning = ({ data }: VisningData) => {
 						title="Gyldig t.o.m."
 						value={formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
 					/>
+					{data.vergeEllerFullmektig?.tjenesteomraade?.map((tjenesteomraade, idx) => (
+						<React.Fragment key={idx}>
+							<TitleValue title="Tjenesteoppgave" value={tjenesteomraade.tjenesteoppgave} />
+							<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
+						</React.Fragment>
+					))}
 					<Verge data={data.vergeEllerFullmektig} type={data.type} />
 				</div>
 			</ErrorBoundary>
