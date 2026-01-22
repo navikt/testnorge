@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.adresseservice.dto.VegadresseRequest;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 
+import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.fuzzyQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.matchQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -22,7 +23,7 @@ public class OpenSearchVegadresseQueryUtils {
 
         if (isNotBlank(request.getAdressenavn())) {
 
-            queryBuilder.must(q -> q.match(matchQuery("vegadresse.veg.adressenavn", request.getAdressenavn())));
+            queryBuilder.must(q -> q.fuzzy(fuzzyQuery("vegadresse.veg.adressenavn", request.getAdressenavn())));
         }
     }
 
@@ -94,7 +95,7 @@ public class OpenSearchVegadresseQueryUtils {
 
         if (isNotBlank(request.getTilleggsnavn())) {
 
-            queryBuilder.must(q -> q.match(matchQuery("vegadresse.adressetilleggsnavn", request.getTilleggsnavn())));
+            queryBuilder.must(q -> q.fuzzy(fuzzyQuery("vegadresse.adressetilleggsnavn", request.getTilleggsnavn())));
         }
     }
 
@@ -102,7 +103,7 @@ public class OpenSearchVegadresseQueryUtils {
 
         if (isNotBlank(request.getFritekst())) {
 
-            queryBuilder.must(q -> q.match(matchQuery("custom_fields.fritekst.vegadresse", request.getFritekst())));
+            queryBuilder.must(q -> q.fuzzy(fuzzyQuery("custom_fields.fritekst.vegadresse", request.getFritekst())));
         }
     }
 }
