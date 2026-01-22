@@ -123,7 +123,7 @@ export type KontaktadresseData = {
 	vegadresse?: VegadresseData
 	postadresseIFrittFormat?: PostadresseIFrittFormat
 	utenlandskAdresse?: UtenlandskAdresseData
-	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormat
+	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormatData
 	metadata?: Metadata
 	id?: number
 }
@@ -139,7 +139,7 @@ export type PostadresseIFrittFormat = {
 	postnummer?: string
 }
 
-export type UtenlandskAdresseIFrittFormat = {
+export type UtenlandskAdresseIFrittFormatData = {
 	adresselinjer?: string[]
 	postkode?: string
 	byEllerStedsnavn?: string

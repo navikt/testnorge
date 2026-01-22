@@ -37,7 +37,7 @@ export const UtenlandskBankkonto = ({ utenlandskBankkonto }: UtenlandskBankkonto
 							title="Tilfeldig kontonummer"
 							value={utenlandskBankkonto.tilfeldigKontonummer && 'Ja'}
 						/>
-						<TitleValue title="Swift-kode" value={utenlandskBankkonto.swift} />
+						<TitleValue title="BIC/SWIFT-kode" value={utenlandskBankkonto.swift} />
 						<TitleValue
 							title="Land"
 							value={utenlandskBankkonto.landkode}
