@@ -1,10 +1,12 @@
 package no.nav.testnav.apps.adresseservice.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MatrikkeladresseDTO {
@@ -12,6 +14,7 @@ public class MatrikkeladresseDTO {
     private AdresseDTO matrikkeladresse;
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AdresseDTO {
@@ -25,6 +28,7 @@ public class MatrikkeladresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MatrikkelDTO {
@@ -34,6 +38,7 @@ public class MatrikkeladresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MatrikkelnummerDTO {
@@ -46,6 +51,7 @@ public class MatrikkeladresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PostdataDTO {

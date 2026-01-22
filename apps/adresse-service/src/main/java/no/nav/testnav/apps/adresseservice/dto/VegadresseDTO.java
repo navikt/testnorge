@@ -1,10 +1,12 @@
 package no.nav.testnav.apps.adresseservice.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class VegadresseDTO {
@@ -12,6 +14,7 @@ public class VegadresseDTO {
     private AdresseDTO vegadresse;
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AdresseDTO {
@@ -26,6 +29,7 @@ public class VegadresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class VegDTO {
@@ -39,6 +43,7 @@ public class VegadresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class KommuneDTO {
@@ -50,6 +55,7 @@ public class VegadresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FylkeDTO {
@@ -60,6 +66,7 @@ public class VegadresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PostdataDTO {
@@ -70,6 +77,7 @@ public class VegadresseDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BydelDTO {

@@ -20,22 +20,37 @@ public class VegadresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(no.nav.testnav.apps.adresseservice.dto.VegadresseDTO kilde, VegadresseDTO destinasjon, MappingContext context) {
 
-                        destinasjon.setMatrikkelId(kilde.getVegadresse().getId());
-                        destinasjon.setAdressekode(kilde.getVegadresse().getVeg().getAdressekode());
-                        destinasjon.setAdressenavn(kilde.getVegadresse().getVeg().getAdressenavn());
-                        destinasjon.setHusnummer(kilde.getVegadresse().getNummer());
-                        destinasjon.setHusbokstav(kilde.getVegadresse().getBokstav());
-                        destinasjon.setPostnummer(kilde.getVegadresse().getPostnummeromraade().getPostnummer());
-                        destinasjon.setPoststed(kilde.getVegadresse().getPostnummeromraade().getPoststed());
-                        destinasjon.setKommunenummer(kilde.getVegadresse().getVeg().getKommune().getKommunenummer());
-                        destinasjon.setKommunenavn(kilde.getVegadresse().getVeg().getKommune().getKommunenavn());
-                        if (nonNull(kilde.getVegadresse().getBydel())) {
-                            destinasjon.setBydelsnummer(kilde.getVegadresse().getBydel().getBydelsnummer());
-                            destinasjon.setBydelsnavn(kilde.getVegadresse().getBydel().getBydelsnavn());
+                        if (nonNull(kilde.getVegadresse())) {
+                            destinasjon.setMatrikkelId(kilde.getVegadresse().getId());
+                            destinasjon.setHusnummer(kilde.getVegadresse().getNummer());
+                            destinasjon.setHusbokstav(kilde.getVegadresse().getBokstav());
+                            destinasjon.setTilleggsnavn(kilde.getVegadresse().getAdressetilleggsnavn());
+
+                            if (nonNull(kilde.getVegadresse().getVeg())) {
+                                destinasjon.setAdressenavn(kilde.getVegadresse().getVeg().getAdressenavn());
+                                destinasjon.setAdressekode(kilde.getVegadresse().getVeg().getAdressekode());
+
+                                if (nonNull(kilde.getVegadresse().getVeg().getKommune())) {
+                                    destinasjon.setKommunenummer(kilde.getVegadresse().getVeg().getKommune().getKommunenummer());
+                                    destinasjon.setKommunenavn(kilde.getVegadresse().getVeg().getKommune().getKommunenavn());
+
+                                    if (nonNull(kilde.getVegadresse().getVeg().getKommune().getFylke())) {
+                                        destinasjon.setFylkesnummer(kilde.getVegadresse().getVeg().getKommune().getFylke().getFylkesnummer());
+                                        destinasjon.setFylkesnavn(kilde.getVegadresse().getVeg().getKommune().getFylke().getFylkesnavn());
+                                    }
+                                }
+                            }
+
+                            if (nonNull(kilde.getVegadresse().getBydel())) {
+                                destinasjon.setBydelsnummer(kilde.getVegadresse().getBydel().getBydelsnummer());
+                                destinasjon.setBydelsnavn(kilde.getVegadresse().getBydel().getBydelsnavn());
+                            }
+
+                            if (nonNull(kilde.getVegadresse().getPostnummeromraade())) {
+                                destinasjon.setPostnummer(kilde.getVegadresse().getPostnummeromraade().getPostnummer());
+                                destinasjon.setPoststed(kilde.getVegadresse().getPostnummeromraade().getPoststed());
+                            }
                         }
-                        destinasjon.setTilleggsnavn(kilde.getVegadresse().getAdressetilleggsnavn());
-                        destinasjon.setFylkesnummer(kilde.getVegadresse().getVeg().getKommune().getFylke().getFylkesnummer());
-                        destinasjon.setFylkesnavn(kilde.getVegadresse().getVeg().getKommune().getFylke().getFylkesnavn());
                     }
                 }).register();
     }
