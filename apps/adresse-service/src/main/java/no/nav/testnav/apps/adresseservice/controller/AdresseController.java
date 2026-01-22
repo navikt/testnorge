@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseRequest;
 import no.nav.testnav.apps.adresseservice.dto.VegadresseRequest;
 import no.nav.testnav.apps.adresseservice.service.OpenSearchQueryService;
-import no.nav.testnav.apps.adresseservice.service.PdlAdresseService;
 import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,41 +23,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class AdresseController {
 
-    private final PdlAdresseService pdlAdresseService;
     private final OpenSearchQueryService openSearchQueryService;
-
-    @GetMapping(value = "/veg")
-    @Operation(description = "Henter tilfeldige vegadresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig vegadresse")
-    public List<VegadresseDTO> getVegadresseDeprecated(@RequestParam(required = false) String matrikkelId,
-                                                       @RequestParam(required = false) String adressenavn,
-                                                       @RequestParam(required = false) String husnummer,
-                                                       @RequestParam(required = false) String husbokstav,
-                                                       @RequestParam(required = false) String postnummer,
-                                                       @RequestParam(required = false) String poststed,
-                                                       @RequestParam(required = false) String kommunenummer,
-                                                       @RequestParam(required = false) String kommunenavn,
-                                                       @RequestParam(required = false) String bydelsnummer,
-                                                       @RequestParam(required = false) String bydelsnavn,
-                                                       @RequestParam(required = false) String tilleggsnavn,
-                                                       @Schema(description = "Fritekstsøk", example = "Sannergata 2 0557 Oslo")
-                                                       @RequestParam(required = false) String fritekst,
-                                                       @Schema(defaultValue = "1") @RequestHeader(required = false) Long antall) {
-
-        return pdlAdresseService.getVegadresse(VegadresseRequest.builder()
-                .matrikkelId(matrikkelId)
-                .adressenavn(adressenavn)
-                .husnummer(husnummer)
-                .husbokstav(husbokstav)
-                .postnummer(postnummer)
-                .kommunenummer(kommunenummer)
-                .bydelsnummer(bydelsnummer)
-                .poststed(poststed)
-                .kommunenavn(kommunenavn)
-                .bydelsnavn(bydelsnavn)
-                .tilleggsnavn(tilleggsnavn)
-                .fritekst(fritekst)
-                .build(), nonNull(antall) ? antall : 1);
-    }
 
     @GetMapping(value = "/vegadresse")
     @Operation(description = "Henter tilfeldige vegadresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig vegadresse")
@@ -96,28 +61,6 @@ public class AdresseController {
     @GetMapping(value = "/matrikkeladresse")
     @Operation(description = "Henter tilfeldige matrikkeladresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig matrikkeladresse")
     public List<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) String matrikkelId,
-                                                         @RequestParam(required = false) String kommunenummer,
-                                                         @RequestParam(required = false) String gaardsnummer,
-                                                         @RequestParam(required = false) String bruksnummer,
-                                                         @RequestParam(required = false) String postnummer,
-                                                         @RequestParam(required = false) String poststed,
-                                                         @RequestParam(required = false) String tilleggsnavn,
-                                                         @Schema(defaultValue = "1") @RequestHeader(required = false) Long antall) {
-
-        return pdlAdresseService.getMatrikkelAdresse(MatrikkeladresseRequest.builder()
-                .matrikkelId(matrikkelId)
-                .kommunenummer(kommunenummer)
-                .gaardsnummer(gaardsnummer)
-                .brukesnummer(bruksnummer)
-                .postnummer(postnummer)
-                .poststed(poststed)
-                .tilleggsnavn(tilleggsnavn)
-                .build(), nonNull(antall) ? antall : 1);
-    }
-
-    @GetMapping(value = "/matrikkeladresse/ny")
-    @Operation(description = "Henter tilfeldige matrikkeladresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig matrikkeladresse")
-    public List<MatrikkeladresseDTO> getMatrikkeladresseNy(@RequestParam(required = false) String matrikkelId,
                                                          @RequestParam(required = false) String kommunenummer,
                                                          @RequestParam(required = false) String gaardsnummer,
                                                          @RequestParam(required = false) String bruksnummer,

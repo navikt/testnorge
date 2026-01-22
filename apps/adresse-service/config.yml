@@ -67,8 +67,6 @@ spec:
         - application: tps-forvalteren-dev
           cluster: dev-fss
     outbound:
-      external:
-        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
       rules:
         - application: logging
           namespace: nais-system
