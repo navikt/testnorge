@@ -20,6 +20,9 @@ spec:
       tenant: nav.no
   ingresses:
     - "https://testnav-adresse-service.intern.dev.nav.no"
+  openSearch:
+    instance: bestillinger
+    access: read
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30

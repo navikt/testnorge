@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.adresseservice.service;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.adresseservice.consumer.PdlAdresseConsumer;
 import no.nav.testnav.apps.adresseservice.dto.GraphQLRequest;
@@ -52,6 +53,8 @@ public class PdlAdresseService {
 
     public List<VegadresseDTO> getVegadresse(VegadresseRequest request, Long antall) {
 
+        val now = System.currentTimeMillis();
+
         if (isNull(request)) {
             request = VegadresseRequest.builder()
                     .build();
@@ -87,6 +90,7 @@ public class PdlAdresseService {
                 ))
                 .build());
 
+        log.info("Henting av vegadresse tok {} ms", System.currentTimeMillis() - now);
         return mapperFacade.mapAsList(response.getData().getSokAdresse().getHits(), VegadresseDTO.class);
     }
 
