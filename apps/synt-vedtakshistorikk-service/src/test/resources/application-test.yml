@@ -14,11 +14,6 @@ consumers:
     namespace: dolly
     name: testnav-dolly-search-service
     url: http://localhost:${wiremock.server.port:0}
-  pdl-api-proxy:
-    cluster: dummy
-    namespace: dolly
-    name: testnav-pdl-proxy
-    url: http://localhost:${wiremock.server.port:0}
 
 batch:
   miljoe: test
