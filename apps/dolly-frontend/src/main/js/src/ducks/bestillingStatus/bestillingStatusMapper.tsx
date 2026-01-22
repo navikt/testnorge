@@ -11,26 +11,11 @@
  */
 
 import { arrayToString, formatDateTimeWithSeconds } from '@/utils/DataFormatter'
-import { Bestilling } from '@/utils/hooks/useBestilling'
+import { Bestilling, BestillingStatusGruppe } from '@/types/bestilling'
 
-export type System = {
-	id: string
-	navn: string
-	statuser: [
-		{
-			identer: string[]
-			melding: string
-			detaljert: [
-				{
-					miljo: string
-					identer: string[]
-				},
-			]
-		},
-	]
-}
+export type System = BestillingStatusGruppe
 
-const finnesDetAvvikForBestillinger = (systemListe: [System]) => {
+const finnesDetAvvikForBestillinger = (systemListe: System[]) => {
 	if (!systemListe) {
 		return false
 	}

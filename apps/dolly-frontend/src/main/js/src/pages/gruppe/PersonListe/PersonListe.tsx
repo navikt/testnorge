@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
@@ -13,11 +13,10 @@ import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
-import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
-import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { Bestilling, useGruppeById } from '@/utils/hooks/useGruppe'
 import { useLocation } from 'react-router'
 
 const PersonIBrukButtonConnector = React.lazy(
@@ -51,8 +50,21 @@ export default function PersonListe({
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
-	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeId)
 	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
+
+	const bestillingStatuser = useMemo(() => {
+		if (!gruppeInfo?.identer) {
+			return undefined
+		}
+		return gruppeInfo.identer
+			.flatMap((ident) => ident.bestillinger ?? [])
+			.filter((bestilling) => bestilling?.id !== undefined)
+			.sort((a, b) => (a.id < b.id ? 1 : -1))
+			.reduce<Record<number, Bestilling>>((acc, bestilling) => {
+				acc[bestilling.id] = bestilling
+				return acc
+			}, {})
+	}, [gruppeInfo?.identer])
 
 	const location = useLocation()
 
