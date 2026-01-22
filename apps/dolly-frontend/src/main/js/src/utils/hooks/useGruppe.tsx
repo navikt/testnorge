@@ -1,5 +1,13 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
+import {
+	Bestilling,
+	BestillingStatus,
+	BestillingStatusDetaljert,
+	BestillingStatusGruppe,
+} from '@/types/bestilling'
+
+export type { Bestilling, BestillingStatusGruppe, BestillingStatus, BestillingStatusDetaljert }
 
 const getGrupperUrl = (pageNo, pageSize, brukerId) =>
 	`/dolly-backend/api/v1/gruppe?pageNo=${pageNo}&pageSize=${pageSize}${
@@ -29,42 +37,6 @@ export type PaginertGruppe = {
 	favoritter: Gruppe[]
 	pageNo: number
 	pageSize: number
-}
-
-export type BestillingStatusDetaljert = {
-	miljo: string
-	identer: string[]
-}
-
-export type BestillingStatus = {
-	melding: string
-	identer?: string[]
-	detaljert?: BestillingStatusDetaljert[]
-}
-
-export type BestillingStatusGruppe = {
-	id: string
-	navn: string
-	statuser: BestillingStatus[]
-}
-
-export type Bestilling = {
-	id: number
-	antallIdenter: number
-	antallLevert: number
-	ferdig: boolean
-	sistOppdatert: string
-	bruker: string | null
-	gruppeId: number
-	stoppet: boolean
-	feil: string | null
-	environments: string[]
-	status: BestillingStatusGruppe[]
-	opprettetFraId: number | null
-	opprettetFraGruppeId: number | null
-	gjenopprettetFraIdent: string | null
-	bestilling: Record<string, unknown>
-	opprettFraIdenter: string[] | null
 }
 
 export type GruppeIdent = {
