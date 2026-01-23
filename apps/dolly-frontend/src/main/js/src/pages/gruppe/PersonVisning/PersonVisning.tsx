@@ -271,7 +271,8 @@ export default (props: PersonVisningProps) => {
 		ident.ident,
 		harArenaBestilling(bestillingerFagsystemer) ||
 			(harAaregBestilling(bestillingerFagsystemer) &&
-				harSykemeldingBestilling(bestillingerFagsystemer)),
+				harSykemeldingBestilling(bestillingerFagsystemer)) ||
+			ident?.master === 'PDL',
 	)
 
 	const { pensjonEnvironments } = usePensjonEnvironments()
