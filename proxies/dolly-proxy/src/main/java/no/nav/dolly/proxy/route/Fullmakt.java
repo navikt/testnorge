@@ -21,8 +21,10 @@ class Fullmakt {
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
+
         var authenticationFilter = authenticationFilterService
                 .getFakedingsAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.fullmakt);
+
         return spec -> spec
                 .path("/fullmakt/**")
                 .filters(f -> f
@@ -30,6 +32,7 @@ class Fullmakt {
                         .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
                 .uri(targets.fullmakt);
+
     }
 
 }

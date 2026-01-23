@@ -1,7 +1,0 @@
-app:
-  arena:
-    services:
-      name: arena-dummy
-      namespace: teamarenanais
-      url: http://arena-dummy.dummy.no
-      cluster: dev-fss

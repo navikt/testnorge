@@ -33,7 +33,7 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<ResponseEntity<
         return webClient
                 .put()
                 .uri(builder -> builder
-                        .path("/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}")
+                        .path("/aareg/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}")
                         .build(MILJOE, requests.getNavArbeidsforholdId()))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .headers(WebClientHeader.bearer(token))

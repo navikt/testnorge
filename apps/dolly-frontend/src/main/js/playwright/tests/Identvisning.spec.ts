@@ -61,7 +61,7 @@ test('skal disable AAREG checkbox ved legg til/endre når Aareg timeout oppstår
 	page,
 }) => {
 	const AAREG_ROUTE = new RegExp(
-		/\/testnav-aareg-proxy\/.*\/api\/v1\/arbeidstaker\/arbeidsforhold.*$/,
+		/\/testnav-dolly-proxy\/aareg\/.*\/api\/v1\/arbeidstaker\/arbeidsforhold.*$/,
 	)
 	await page.route(AAREG_ROUTE, async (route) => {
 		await new Promise((r) => setTimeout(r, 2000))
