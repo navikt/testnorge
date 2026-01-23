@@ -37,7 +37,7 @@ public class OpenSearchQueryService {
     private final MapperFacade mapperFacade;
 
     @Value("${opensearch.index.adresser}")
-    private String pdlIndex;
+    private String adresseIndex;
 
     public List<VegadresseDTO> execQuery(VegadresseRequest request, Long antall) {
 
@@ -53,13 +53,13 @@ public class OpenSearchQueryService {
         return execQuery(queryBuilder, new no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO(), new MatrikkeladresseDTO(), antall);
     }
 
-    private <S,T> List<T> execQuery(BoolQuery.Builder queryBuilder, S clazz1, T clazz2, Long antall) {
+    private <S,T> List<T> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
 
         var now = System.currentTimeMillis();
 
         try {
             val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
-                    .index(pdlIndex)
+                    .index(adresseIndex)
                     .query(new Query.Builder()
                             .bool(queryBuilder.build())
                             .build())
@@ -69,7 +69,7 @@ public class OpenSearchQueryService {
 
             log.info("Adressesøk tok: {} ms", System.currentTimeMillis() - now);
 
-            return formatResponse(adresseSoekResponse, clazz1, clazz2);
+            return formatResponse(adresseSoekResponse, kilde, destinasjon);
 
         } catch (IOException e) {
 
@@ -79,7 +79,7 @@ public class OpenSearchQueryService {
     }
 
 
-    private <T, S> List<T> formatResponse(SearchResponse<JsonNode> response, S clazz1, T clazz2) {
+    private <T, S> List<T> formatResponse(SearchResponse<JsonNode> response, S kilde, T destinasjon) {
 
         if (nonNull(response.hits()) && nonNull(response.hits().hits())) {
 
@@ -88,10 +88,10 @@ public class OpenSearchQueryService {
                     .filter(Objects::nonNull)
                     .map(source -> {
                         try {
-                            val data = objectMapper.treeToValue(source, clazz1.getClass());
-                            return mapperFacade.map(data, clazz2.getClass());
+                            val data = objectMapper.treeToValue(source, kilde.getClass());
+                            return mapperFacade.map(data, destinasjon.getClass());
                         } catch (Exception e) {
-                            log.error("Feil ved mapping av {} fra OpenSearch", clazz2.getClass().getSimpleName(), e);
+                            log.error("Feil ved mapping av {} fra OpenSearch", destinasjon.getClass().getSimpleName(), e);
                             return null;
                         }
                     })

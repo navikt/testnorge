@@ -45,8 +45,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: testnav-adresse-service
-          cluster: dev-gcp
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
         - application: testnav-pdl-forvalter-dev
