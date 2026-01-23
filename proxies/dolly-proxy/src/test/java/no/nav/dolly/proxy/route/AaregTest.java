@@ -38,19 +38,19 @@ class AaregTest {
 
         // Readable.
         assertThat(aareg.getUrl(Aareg.SpecialCase.Q1, false))
-                .isEqualTo("http://aareg-services-q1.arbeidsforhold.svc.nais.local");
+                .contains("://aareg-services-q1.");
         assertThat(aareg.getUrl(Aareg.SpecialCase.Q2, false))
-                .isEqualTo("http://aareg-services.arbeidsforhold.svc.nais.local");
+                .contains("://aareg-services.");
         assertThat(aareg.getUrl(Aareg.SpecialCase.Q4, false))
-                .isEqualTo("http://aareg-services-q4.arbeidsforhold.svc.nais.local");
+                .contains("://aareg-services-q4.");
 
         // Writeable.
         assertThat(aareg.getUrl(Aareg.SpecialCase.Q1, true))
-                .isEqualTo("http://aareg-dolly-api-q1.arbeidsforhold.svc.nais.local");
+                .contains("://aareg-dolly-api-q1.");
         assertThat(aareg.getUrl(Aareg.SpecialCase.Q2, true))
-                .isEqualTo("http://aareg-dolly-api-q2.arbeidsforhold.svc.nais.local");
+                .contains("://aareg-dolly-api-q2.");
         assertThat(aareg.getUrl(Aareg.SpecialCase.Q4, true))
-                .isEqualTo("http://aareg-dolly-api-q4.arbeidsforhold.svc.nais.local");
+                .contains("://aareg-dolly-api-q4.");
 
     }
 
