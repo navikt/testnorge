@@ -10,6 +10,7 @@ import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/UtenlandskAdresse'
 import { Postboksadresse } from '@/components/fagsystem/pdlf/bestilling/Postboksadresse'
 import { UtenlandskAdresseIFrittFormat } from '@/components/fagsystem/pdlf/bestilling/UtenlandskAdresseIFrittFormat'
+import { PostadresseIFrittFormat } from '@/components/fagsystem/pdlf/bestilling/PostadresseIFrittFormat'
 
 type KontaktadresseTypes = {
 	kontaktadresseListe: Array<KontaktadresseData>
@@ -38,6 +39,9 @@ export const Kontaktadresse = ({ kontaktadresseListe }: KontaktadresseTypes) => 
 										<Vegadresse vegadresse={kontaktadresse.vegadresse} />
 										<UtenlandskAdresse utenlandskAdresse={kontaktadresse.utenlandskAdresse} />
 										<Postboksadresse postboksadresse={kontaktadresse.postboksadresse} />
+										<PostadresseIFrittFormat
+											postadresseIFrittFormat={kontaktadresse.postadresseIFrittFormat}
+										/>
 										<UtenlandskAdresseIFrittFormat
 											utenlandskAdresseIFrittFormat={kontaktadresse.utenlandskAdresseIFrittFormat}
 										/>

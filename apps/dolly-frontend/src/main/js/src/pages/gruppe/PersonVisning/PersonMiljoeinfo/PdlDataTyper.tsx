@@ -121,7 +121,7 @@ export type KontaktadresseData = {
 	coAdressenavn?: string
 	postboksadresse?: PostboksadresseData
 	vegadresse?: VegadresseData
-	postadresseIFrittFormat?: PostadresseIFrittFormat
+	postadresseIFrittFormat?: PostadresseIFrittFormatData
 	utenlandskAdresse?: UtenlandskAdresseData
 	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormatData
 	metadata?: Metadata
@@ -134,7 +134,7 @@ export type PostboksadresseData = {
 	postnummer?: string
 }
 
-export type PostadresseIFrittFormat = {
+export type PostadresseIFrittFormatData = {
 	adresselinjer?: string[]
 	postnummer?: string
 }
