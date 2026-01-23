@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -56,23 +57,18 @@ public class MergeService {
         Stream
                 .of(request.getClass().getDeclaredFields())
                 .filter(field -> !Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()))
-                .forEach(field -> {
-
-                    if (List.class.equals(field.getType()) && !(getValue(request, field.getName())).isEmpty()) {
-
-                        var infoElementRequest = getValue(request, field.getName());
-                        if (infoElementRequest != null) {
-                            var infoElementDbPerson = getValue(dbPerson, field.getName());
-                            if (infoElementDbPerson != null) {
-                                var dbId = new AtomicInteger(infoElementDbPerson.stream()
-                                        .mapToInt(DbVersjonDTO::getId)
-                                        .max().orElse(0));
-                                infoElementRequest.forEach(requestElement -> mergeElements(field, infoElementDbPerson, dbId, requestElement));
-                            }
-                        }
-
-                    }
-                });
+                .forEach(field ->
+                        Optional
+                                .ofNullable(getValue(request, field.getName()))
+                                .ifPresent(infoElementRequest ->
+                                        Optional
+                                                .ofNullable(getValue(dbPerson, field.getName()))
+                                                .ifPresent(infoElementDbPerson -> {
+                                                    var dbId = new AtomicInteger(infoElementDbPerson.stream()
+                                                            .mapToInt(DbVersjonDTO::getId)
+                                                            .max().orElse(0));
+                                                    infoElementRequest.forEach(requestElement -> mergeElements(field, infoElementDbPerson, dbId, requestElement));
+                                                })));
 
         return dbPerson;
     }
