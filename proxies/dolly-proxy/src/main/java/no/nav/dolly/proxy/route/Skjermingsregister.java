@@ -21,13 +21,17 @@ class Skjermingsregister {
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.skjermingsregister);
+
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.skjermingsregister);
+
         return spec -> spec
                 .path("/skjermingsregister/**")
                 .filters(f -> f
                         .stripPrefix(1)
                         .filter(authenticationFilter))
                 .uri(targets.skjermingsregister);
+
     }
 
 }

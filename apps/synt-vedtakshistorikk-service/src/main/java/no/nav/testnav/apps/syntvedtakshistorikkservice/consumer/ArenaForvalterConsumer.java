@@ -49,7 +49,7 @@ public class ArenaForvalterConsumer {
             TokenExchange tokenExchange,
             WebClient webClient
     ) {
-        serverProperties = consumers.getTestnavArenaForvalterenProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -208,17 +208,17 @@ public class ArenaForvalterConsumer {
 
     public DagpengerResponseDTO opprettMottaDagpengerSoknad(DagpengerRequestDTO soknad) {
         log.info("Sender inn motta dagpengesoknad til Arena-forvalteren");
-        return opprettDagpenger(soknad, "/api/v1/mottadagpengesoknad");
+        return opprettDagpenger(soknad, "/arena/api/v1/mottadagpengesoknad");
     }
 
     public DagpengerResponseDTO opprettMottaDagpengerVedtak(DagpengerRequestDTO vedtak) {
         log.info("Sender inn motta dagpengevedtak til Arena-forvalteren");
-        return opprettDagpenger(vedtak, "/api/v1/mottadagpengevedtak");
+        return opprettDagpenger(vedtak, "/arena/api/v1/mottadagpengevedtak");
     }
 
     public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak) {
         log.info("Sender inn dagpengevedtak til Arena-forvalteren");
-        return opprettDagpenger(vedtak, "/api/v1/dagpenger");
+        return opprettDagpenger(vedtak, "/arena/api/v1/dagpenger");
     }
 
     private DagpengerResponseDTO opprettDagpenger(DagpengerRequestDTO request, String path) {

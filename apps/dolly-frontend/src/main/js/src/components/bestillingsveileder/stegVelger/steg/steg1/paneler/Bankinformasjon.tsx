@@ -54,7 +54,7 @@ BankinformasjonPanel.initialValues = ({ set, opts, del, has }) => {
 
 	return {
 		norskBankkonto: {
-			label: 'Norsk bank',
+			label: 'Norsk bankkonto',
 			checked: has(paths.norskBankkonto),
 			add: () =>
 				set(paths.norskBankkonto, {
@@ -64,7 +64,7 @@ BankinformasjonPanel.initialValues = ({ set, opts, del, has }) => {
 			remove: () => del(paths.norskBankkonto),
 		},
 		utenlandskBankkonto: {
-			label: 'Utenlandsk bank',
+			label: 'Utenlandsk bankkonto',
 			checked: has(paths.utenlandskBankkonto),
 			add: () =>
 				set(paths.utenlandskBankkonto, {

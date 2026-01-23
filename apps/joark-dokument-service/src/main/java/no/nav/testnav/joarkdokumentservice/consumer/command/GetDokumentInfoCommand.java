@@ -26,7 +26,7 @@ public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/{miljo}/graphql")
+                        .path("/saf/{miljo}/graphql")
                         .build(miljo))
                 .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromValue(

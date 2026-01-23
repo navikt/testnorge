@@ -1044,7 +1044,7 @@ const mapBankkonto = (bestillingData, data) => {
 				items: [
 					obj('Kontonummer', bankkonto.utenlandskBankkonto.kontonummer),
 					obj('Tilfeldig kontonummer', bankkonto.utenlandskBankkonto.tilfeldigKontonummer && 'Ja'),
-					obj('Swift kode', bankkonto.utenlandskBankkonto.swift),
+					obj('BIC/SWIFT-kode', bankkonto.utenlandskBankkonto.swift),
 					obj('Land', bankkonto.utenlandskBankkonto.landkode),
 					obj('Banknavn', bankkonto.utenlandskBankkonto.banknavn),
 					obj('Bankkode', bankkonto.utenlandskBankkonto.iban),
