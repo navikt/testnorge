@@ -1,4 +1,4 @@
-import { Alert, Box, Tag, VStack } from '@navikt/ds-react'
+import { Alert, Box, Tag, Tooltip, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
@@ -21,6 +21,26 @@ const PersonIdent = styled.p`
 const TagsWrapper = styled.div`
 	margin: 10px 0;
 `
+
+const getTagTooltip = (relasjon: string): string => {
+	const tooltips: Record<string, string> = {
+		Arbeidsforhold: 'Personen har arbeidsforhold i Aareg',
+		BeregnetSkatt: 'Personen har beregnet skatt',
+		BrregErFr:
+			'Personen har rolle(r) i Brønnøysundregistrene (Enhetsregisteret og Foretaksregisteret)',
+		Freg: 'Personen har data i Folkeregisteret',
+		Inntekt: 'Personen har inntekt i A-ordningen',
+		TestinnsendingSkattPerson: 'Personen har testinnsending skatt (person)',
+		SamletReskontroinnsyn: 'Personen har samlet reskontroinnsyn',
+		Skattemelding: 'Personen har skattemelding',
+		Skatteplikt: 'Personen har skatteplikt',
+		SpesifisertSummertSkattegrunnlag: 'Personen har spesifisert summert skattegrunnlag',
+		SummertSkattegrunnlag: 'Personen har summert skattegrunnlag',
+		Tilleggsskatt: 'Personen har tilleggsskatt',
+		Tjenestepensjonsavtale: 'Personen har tjenestepensjonsavtale',
+	}
+	return tooltips[relasjon] || relasjon
+}
 
 export const TreffListe = ({
 	response,
@@ -111,15 +131,24 @@ export const TreffListe = ({
 								</PersonNavn>
 								<PersonIdent>{person?.id}</PersonIdent>
 								<TagsWrapper>
+									{person?.iarenaSynt && (
+										<Tooltip content="Person har allerede arbeidsytelse(r) i Arena">
+											<Tag
+												size="small"
+												variant="info"
+												key={person?.id + 'arena'}
+												style={{ margin: '0 5px 5px 0' }}
+											>
+												Arena
+											</Tag>
+										</Tooltip>
+									)}
 									{person?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
-										<Tag
-											size="small"
-											variant="neutral"
-											key={person?.id + idx}
-											style={{ margin: '0 5px 5px 0' }}
-										>
-											{relasjon}
-										</Tag>
+										<Tooltip content={getTagTooltip(relasjon)} key={person?.id + idx}>
+											<Tag size="small" variant="neutral" style={{ margin: '0 5px 5px 0' }}>
+												{relasjon}
+											</Tag>
+										</Tooltip>
 									))}
 								</TagsWrapper>
 								<ListeValg
@@ -154,6 +183,7 @@ export const TreffListe = ({
 						person={valgtPersonData?.data}
 						ident={valgtPerson?.id}
 						ibruk={valgtPerson?.ibruk}
+						iarenaSynt={valgtPerson?.iarenaSynt}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
 						inkluderPartnere={inkluderPartnere}
