@@ -93,13 +93,13 @@ public class IdentitetService {
                             try {
                                 return method.invoke(person);
                             } catch (IllegalAccessException | InvocationTargetException e) {
-                                log.error("Feilet å utføre metodekall for {} ", method);
+                                log.error("Feilet å utføre updateStandalone for {} ", method);
                                 return null;
                             }
                         })
                         .filter(Objects::nonNull)
                         .filter(List.class::isInstance)
-                        .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
+                        .map(IdentitetService::castValue)
                         .flatMap(Collection::stream)
                         .map(DbVersjonDTO::getIdentForRelasjon)
                         .filter(Objects::nonNull)
@@ -126,13 +126,13 @@ public class IdentitetService {
                                     try {
                                         return method.invoke(person1);
                                     } catch (IllegalAccessException | InvocationTargetException e) {
-                                        log.error("Feilet å utføre metodekall for {} ", method);
+                                        log.error("Feilet å utføre setStandalone for {} ", method);
                                         return null;
                                     }
                                 })
                                 .filter(Objects::nonNull)
                                 .filter(List.class::isInstance)
-                                .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
+                                .map(IdentitetService::castValue)
                                 .flatMap(Collection::stream)
                 )
                 .forEach(opplysning -> {
@@ -148,4 +148,10 @@ public class IdentitetService {
                     }
                 });
     }
+
+    @SuppressWarnings("unchecked")
+    private static List<? extends DbVersjonDTO> castValue(Object value) {
+        return (List<? extends DbVersjonDTO>) value;
+    }
+
 }
