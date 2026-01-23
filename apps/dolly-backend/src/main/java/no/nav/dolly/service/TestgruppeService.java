@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Math.ceilDiv;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -250,7 +251,7 @@ public class TestgruppeService {
                                 .collectList()))
                 .map(grupper -> RsTestgruppePage.builder()
                         .pageNo(pageNo)
-                        .antallPages(antall.intValue() / pageSize + 1)
+                        .antallPages(ceilDiv(antall.intValue(), pageSize))
                         .pageSize(pageSize)
                         .antallElementer(antall)
                         .contents(grupper.getT1())
