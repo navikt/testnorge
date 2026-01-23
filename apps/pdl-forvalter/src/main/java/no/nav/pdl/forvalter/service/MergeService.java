@@ -30,15 +30,17 @@ public class MergeService {
     private static Object getValue(Object object, String field) {
 
         Method method = null;
+        var methodName = format("get%s%s", field.substring(0, 1).toUpperCase(), field.substring(1));
         try {
-            method = object.getClass().getMethod(
-                    format("get%s%s", field.substring(0, 1).toUpperCase(), field.substring(1)), null);
-            return method.invoke(object, null);
+            method = object
+                    .getClass()
+                    .getMethod(methodName);
+            return method.invoke(object);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-
             log.error("Feilet å lese verdi fra {}, felt {}", object, nonNull(method) ? method.getName() : null, e);
             return null;
         }
+
     }
 
     public PersonDTO merge(PersonDTO request, PersonDTO dbPerson) {
@@ -46,23 +48,26 @@ public class MergeService {
         if (!request.getTelefonnummer().isEmpty()) {
             dbPerson.setTelefonnummer(null);
         }
-        Stream.of(request.getClass().getDeclaredFields())
-                .filter(field ->
-                        !Modifier.isStatic(field.getModifiers()) &&
-                        !Modifier.isFinal(field.getModifiers()))
+        Stream
+                .of(request.getClass().getDeclaredFields())
+                .filter(field -> !Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()))
                 .forEach(field -> {
 
-            if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {
+                    if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {
 
-                var infoElementRequest = (List<DbVersjonDTO>) getValue(request, field.getName());
-                var infoElementDbPerson = (List<DbVersjonDTO>) getValue(dbPerson, field.getName());
-                var dbId = new AtomicInteger(infoElementDbPerson.stream()
-                        .mapToInt(DbVersjonDTO::getId)
-                        .max().orElse(0));
+                        var infoElementRequest = (List<DbVersjonDTO>) getValue(request, field.getName());
+                        if (infoElementRequest != null) {
+                            var infoElementDbPerson = (List<DbVersjonDTO>) getValue(dbPerson, field.getName());
+                            if (infoElementDbPerson != null) {
+                                var dbId = new AtomicInteger(infoElementDbPerson.stream()
+                                        .mapToInt(DbVersjonDTO::getId)
+                                        .max().orElse(0));
+                                infoElementRequest.forEach(requestElement -> mergeElements(field, infoElementDbPerson, dbId, requestElement));
+                            }
+                        }
 
-                infoElementRequest.forEach(requestElement -> mergeElements(field, infoElementDbPerson, dbId, requestElement));
-            }
-        });
+                    }
+                });
 
         return dbPerson;
     }
