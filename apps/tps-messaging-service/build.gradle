@@ -31,6 +31,7 @@ dependencies {
     implementation "com.ibm.icu:icu4j:74.2"
     implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation "com.sun.xml.bind:jaxb-core:$versions.jaxb"
+    implementation "javax.xml.bind:jaxb-api:$versions.jaxbApi"
     implementation "io.netty:netty-transport-native-epoll"
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
     implementation "ma.glasnost.orika:orika-core:$versions.orika"

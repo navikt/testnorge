@@ -26,6 +26,7 @@ class DollyVersionCatalog {
     String javaxActivation = "1.1.1"
     String javaxAnnotation = "1.3.2"
     String jaxb = "4.0.5"
+    String jaxbApi = "2.3.1"
     String jaxws = "4.0.3"
     String junit = "5.12.2"
     String jweaver = "1.9.22.1"
