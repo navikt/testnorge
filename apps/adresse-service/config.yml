@@ -20,6 +20,9 @@ spec:
       tenant: nav.no
   ingresses:
     - "https://testnav-adresse-service.intern.dev.nav.no"
+  openSearch:
+    instance: bestillinger
+    access: read
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30
@@ -64,8 +67,6 @@ spec:
         - application: tps-forvalteren-dev
           cluster: dev-fss
     outbound:
-      external:
-        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
       rules:
         - application: logging
           namespace: nais-system
