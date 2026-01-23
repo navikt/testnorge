@@ -183,7 +183,6 @@ export const TreffListe = ({
 						person={valgtPersonData?.data}
 						ident={valgtPerson?.id}
 						ibruk={valgtPerson?.ibruk}
-						iarenaSynt={valgtPerson?.iarenaSynt}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
 						inkluderPartnere={inkluderPartnere}
