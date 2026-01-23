@@ -1,15 +1,16 @@
-consumers.testnav-saf-proxy:
-  url: https://testnav-saf-proxy.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: testnav-saf-proxy
+consumers:
+  testnav-dolly-proxy:
+    cluster: dev-fss
+    name: testnav-dolly-proxy
+    namespace: dolly
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
 
 spring:
   application:
     name: testnav-joark-dokument-service
     description: App for å hente ut joark dokumenter.
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:

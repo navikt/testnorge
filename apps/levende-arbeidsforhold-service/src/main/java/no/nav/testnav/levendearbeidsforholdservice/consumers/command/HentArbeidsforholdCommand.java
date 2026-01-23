@@ -39,7 +39,7 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
         return webClient
                 .get()
                 .uri(builder -> builder
-                        .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
+                        .path("/aareg/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
                         .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning",
                                 "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold",
                                 "ordinaertArbeidsforhold")

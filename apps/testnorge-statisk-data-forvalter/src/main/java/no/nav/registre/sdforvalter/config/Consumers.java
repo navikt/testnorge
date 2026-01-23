@@ -24,7 +24,7 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter(PACKAGE)
 public class Consumers {
 
-    private ServerProperties testnavAaregProxy;
+    private ServerProperties testnavDollyProxy;
     private ServerProperties genererNavnService;
     private ServerProperties testnavKodeverkService;
     private ServerProperties testnavOrganisasjonFasteDataService;

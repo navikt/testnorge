@@ -21,7 +21,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 @Slf4j
 public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRespons>> {
 
-    private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}";
+    private static final String AAREGDATA_URL = "/aareg/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}";
     private static final String NAV_ARBEIDSFORHOLD_PERIODE = "Nav-Arbeidsforhold-Periode";
 
     private final WebClient webClient;

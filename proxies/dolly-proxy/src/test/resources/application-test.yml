@@ -1,3 +1,11 @@
+app:
+  pdl:
+    elastic:
+      username: username
+      password: password
+    hendelse:
+      apikey: apikey
+
 management:
   endpoints:
     web:

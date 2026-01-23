@@ -66,7 +66,7 @@
 	"/testnav-dolly-proxy/brregstub/api": {
 		"changeOrigin": true
 	},
-	"/testnav-arena-forvalteren-proxy": {
+	"/testnav-dolly-proxy/arena": {
 		"changeOrigin": true
 	},
   "/testnav-dolly-proxy/krrstub/api": {
@@ -78,7 +78,7 @@
 	"/testnav-dolly-proxy/sigrunstub/api": {
 		"changeOrigin": true
 	},
-	"/testnav-aareg-proxy/": {
+	"/testnav-dolly-proxy/aareg": {
 		"changeOrigin": true
 	},
 	"/testnav-dolly-proxy/medl/rest": {
@@ -129,7 +129,7 @@
 	"/testnav-dolly-proxy/skjermingsregister/api": {
 		"changeOrigin": true
 	},
-	"/testnav-dokarkiv-proxy": {
+	"/testnav-dolly-proxy/dokarkiv": {
 		"changeOrigin": true
 	},
 	"/testnav-arbeidsplassencv-proxy": {

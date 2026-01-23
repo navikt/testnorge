@@ -24,21 +24,6 @@ consumers:
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/tps-messaging
     cluster: dev-fss
-  testnav-krrstub-proxy:
-    name: krrstub-mock
-    namespace: dolly
-    url: http://localhost:${wiremock.server.port:0}/krrstub
-    cluster: dev-fss
-  testnav-inst-proxy:
-    name: inst-mock
-    namespace: dolly
-    url: http://localhost:${wiremock.server.port:0}/inst
-    cluster: dev-gcp
-  testnav-aareg-proxy:
-    name: aareg-mock
-    namespace: dolly
-    url: http://localhost:${wiremock.server.port:0}/aareg
-    cluster: dev-fss
   testnav-dolly-proxy:
     name: testnav-dolly-proxy
     namespace: dolly
@@ -48,11 +33,6 @@ consumers:
     name: pdl-mock
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/pdl
-    cluster: dev-fss
-  testnav-arena-forvalteren-proxy:
-    name: arena-forvalteren-mock
-    namespace: dolly
-    url: http://localhost:${wiremock.server.port:0}/arenaforvalter
     cluster: dev-fss
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.intern.dev.nav.no

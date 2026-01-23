@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
 
-    private static final String ARENA_URL = "/{miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse";
+    private static final String ARENA_URL = "/arena/{miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse";
     private static final String FODSELSNR = "fodselsnr";
 
     private final WebClient webClient;
