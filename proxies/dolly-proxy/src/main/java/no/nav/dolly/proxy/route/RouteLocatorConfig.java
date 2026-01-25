@@ -31,6 +31,8 @@ class RouteLocatorConfig {
     private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
 
+    private final NotFound notfound;
+
     @Bean
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -76,6 +78,8 @@ class RouteLocatorConfig {
                 .route("sigrunstub", sigrunstub.build())
                 .route("skjermingsregister", skjermingsregister.build())
                 .route("udistub", udistub.build())
+
+                .route("not-found", notfound.build())
                 .build();
     }
 
