@@ -34,7 +34,7 @@ app:
   targets:
     aareg-services: https://%s.intern.dev.nav.no # Note host replacement pattern.
     aareg-vedlikehold: http://%s.arbeidsforhold.svc.nais.local # Note host replacement pattern.
-    arena-forvalteren: http://arena-forvalteren.teamarenanais.svc.nais.local/
+    arena-forvalteren: http://arena-forvalteren.teamarenanais.svc.nais.local
     arena-ords: http://arena-ords-%s.teamarenanais.svc.nais.local # Note replacement pattern.
     batch: https://batch.adeo.no
     brregstub: http://brreg-stub.dolly
