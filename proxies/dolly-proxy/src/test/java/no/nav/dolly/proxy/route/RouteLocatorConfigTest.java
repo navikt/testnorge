@@ -281,7 +281,7 @@ class RouteLocatorConfigTest {
                 .uri(requestedPath)
                 .exchange()
                 .expectStatus().isOk()
-                .expectHeader().contentType("application/text")
+                .expectHeader().contentType("application/json;charset=UTF-8")
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath))
