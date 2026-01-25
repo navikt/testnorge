@@ -17,7 +17,7 @@ class NotFound {
         return spec -> spec
                 .path("/**")
                 .filters(f -> f.filter((exchange, chain) -> {
-                    log.info("No route found for {}", exchange.getRequest().getPath());
+                    log.warn("No route found for {}", exchange.getRequest().getPath());
                     exchange
                             .getResponse()
                             .setStatusCode(HttpStatus.NOT_FOUND);
