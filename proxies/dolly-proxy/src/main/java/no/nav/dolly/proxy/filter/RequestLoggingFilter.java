@@ -1,25 +1,23 @@
 package no.nav.dolly.proxy.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.Ordered;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
 @Slf4j
 @Component
-class RequestLoggingFilter implements WebFilter, Ordered {
+class RequestLoggingFilter implements GlobalFilter, Ordered {
 
     @Override
-    @NonNull
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         log.info("Routing {} {} ...", exchange.getRequest().getMethod(), exchange.getRequest().getPath());
         return chain.filter(exchange)
