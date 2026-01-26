@@ -134,12 +134,12 @@ const ArbeidsforholdVisning = ({ arbeidsforhold }: ArbeidsforholdVisningData) =>
 	return (
 		<>
 			<TitleValue title="Organisasjonsnummer" value={arbeidsforhold?.arbeidsgiver?.orgnummer} />
+			<TitleValue title="Arbeidsgiver ident" value={arbeidsforhold?.arbeidsgiver?.ident} />
 			<TitleValue
 				title="Type arbeidsforhold"
 				value={arbeidsforhold?.arbeidsforholdstype}
 				kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 			/>
-			<TitleValue title="Arbeidsgiver ident" value={arbeidsforhold?.arbeidsgiver?.ident} />
 			<TitleValue title="Ansatt fra" value={formatDate(arbeidsforhold?.ansettelsesPeriode?.fom)} />
 			<TitleValue title="Ansatt til" value={formatDate(arbeidsforhold?.ansettelsesPeriode?.tom)} />
 			<TitleValue

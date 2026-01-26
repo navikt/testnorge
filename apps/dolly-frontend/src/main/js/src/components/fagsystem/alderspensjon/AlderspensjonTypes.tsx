@@ -1,5 +1,4 @@
 export type AlderspensjonTypes = {
-	kravFremsattDato?: string
 	iverksettelsesdato?: string
 	fom?: string
 	saksbehandler: string
@@ -10,5 +9,7 @@ export type AlderspensjonTypes = {
 	relasjoner?: Array<{
 		sumAvForvArbKapPenInntekt: string
 	}>
+	inkluderAfpPrivat?: boolean
+	afpPrivatResultat?: string
 	soknad: boolean
 }

@@ -5,7 +5,7 @@ import {
 	BestillingTitle,
 } from '@/components/bestilling/sammendrag/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import React from 'react'
 import { AlderspensjonTypes } from '@/components/fagsystem/alderspensjon/AlderspensjonTypes'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
@@ -33,7 +33,6 @@ export const Alderspensjon = ({ pensjon }: AlderspensjonProps) => {
 				</BestillingTitle>
 				<div className="bestilling-blokk">
 					<BestillingData>
-						<TitleValue title="Krav fremsatt dato" value={formatDate(pensjon?.kravFremsattDato)} />
 						<TitleValue
 							title="Iverksettelsesdato"
 							value={formatDate(pensjon?.iverksettelsesdato)}
@@ -45,6 +44,14 @@ export const Alderspensjon = ({ pensjon }: AlderspensjonProps) => {
 						<TitleValue
 							title="Ektefelle/partners inntekt"
 							value={pensjon?.relasjoner?.[0]?.sumAvForvArbKapPenInntekt}
+						/>
+						<TitleValue
+							title="Inkluder AFP privat"
+							value={oversettBoolean(pensjon?.inkluderAfpPrivat)}
+						/>
+						<TitleValue
+							title="AFP privat resultat"
+							value={showLabel('afpPrivatResultat', pensjon?.afpPrivatResultat)}
 						/>
 					</BestillingData>
 				</div>
