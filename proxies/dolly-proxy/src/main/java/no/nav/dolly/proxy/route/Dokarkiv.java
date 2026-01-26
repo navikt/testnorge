@@ -41,7 +41,7 @@ public class Dokarkiv {
 
     @RequiredArgsConstructor
     public enum SpecialCase {
-        Q1("q1", "dokarktiv-q1"),
+        Q1("q1", "dokarkiv-q1"),
         Q2("q2", "dokarkiv"),
         Q4("q4", "dokarkiv-q4");
 
