@@ -14,12 +14,15 @@ import {
 	BeloepTypes,
 	MocksvarTypes,
 } from '@/components/fagsystem/afpOffentlig/afpOffentligTypes'
+import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
 
 type AfpOffentligProps = {
 	pensjon: AfpOffentligTypes
 }
 
 export const AfpOffentlig = ({ pensjon }: AfpOffentligProps) => {
+	const { tpOrdningData } = useTpOrdningKodeverk()
+
 	if (!pensjon || isEmpty(pensjon)) {
 		return null
 	}
@@ -33,7 +36,9 @@ export const AfpOffentlig = ({ pensjon }: AfpOffentligProps) => {
 						<BestillingData>
 							<TitleValue
 								title="Direktekall"
-								value={pensjon.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')}
+								value={pensjon.direktekall
+									?.map((tpId) => showTpNavn(tpId, tpOrdningData))
+									?.join(', ')}
 								size="xlarge"
 							/>
 						</BestillingData>
@@ -42,7 +47,7 @@ export const AfpOffentlig = ({ pensjon }: AfpOffentligProps) => {
 				<DollyFieldArray header="AFP offentlig" data={pensjon?.mocksvar}>
 					{(afpOffentlig: MocksvarTypes, idx: number) => (
 						<React.Fragment key={idx}>
-							<TitleValue title="TP-ordning" value={showTpNavn(afpOffentlig.tpId)} />
+							<TitleValue title="TP-ordning" value={showTpNavn(afpOffentlig.tpId, tpOrdningData)} />
 							<TitleValue
 								title="Status AFP"
 								value={showLabel('statusAfp', afpOffentlig.statusAfp)}

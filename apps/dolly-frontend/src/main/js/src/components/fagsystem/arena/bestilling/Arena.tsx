@@ -62,7 +62,7 @@ export const Arena = ({ arbeidsytelse }: ArenaProps) => {
 					)}
 					{aap && (
 						<>
-							<BestillingTitle>AAP-vedtak</BestillingTitle>
+							<BestillingTitle>AAP-vedtak UA - positivt utfall</BestillingTitle>
 							<BestillingData>
 								<TitleValue title="Fra dato" value={formatDate(aap.fraDato)} />
 								<TitleValue title="Til dato" value={formatDate(aap.tilDato)} />

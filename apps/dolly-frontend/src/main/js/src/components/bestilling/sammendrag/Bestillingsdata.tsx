@@ -80,8 +80,6 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 			<Kjoenn kjoennListe={bestilling.pdldata?.person?.kjoenn} />
 			<Navn navnListe={bestilling.pdldata?.person?.navn} />
 			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
-			<NorskBankkonto norskBankkonto={bestilling.bankkonto?.norskBankkonto} />
-			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
 			<Vergemaal vergemaalListe={bestilling.pdldata?.person?.vergemaal} />
 			<Fullmakt fullmaktListe={bestilling.fullmakt || bestilling.pdldata?.person?.fullmakt} />
 			<Sikkerhetstiltak sikkerhetstiltakListe={bestilling.pdldata?.person?.sikkerhetstiltak} />
@@ -106,9 +104,8 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 			<NyIdentitet nyIdentitetListe={bestilling.pdldata?.person?.nyident} />
 			<NavAnsatt nomdata={bestilling.nomdata} />
 			<Skjerming skjerming={bestilling.skjerming} />
-			<KontaktinformasjonForDoedsbo
-				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
-			/>
+			<NorskBankkonto norskBankkonto={bestilling.bankkonto?.norskBankkonto} />
+			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
 			<Arbeidsforhold arbeidsforholdListe={bestilling.aareg} />
 			<SigrunstubPensjonsgivende
 				sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
@@ -135,6 +132,9 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 			<Sykemelding sykemelding={bestilling.sykemelding} />
 			<Yrkesskader yrkesskader={bestilling.yrkesskader} />
 			<Brregstub brregstub={bestilling.brregstub} />
+			<KontaktinformasjonForDoedsbo
+				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
+			/>
 			<Inst inst={bestilling.instdata} />
 			<Krrstub krrstub={bestilling.krrstub} />
 			<Medl medl={bestilling.medl} />
