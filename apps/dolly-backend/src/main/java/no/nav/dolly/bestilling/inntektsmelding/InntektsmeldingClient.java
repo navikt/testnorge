@@ -16,6 +16,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -39,6 +40,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -65,6 +67,10 @@ public class InntektsmeldingClient implements ClientRegister {
 
         return Mono.just(bestilling)
                 .filter(RsDollyBestilling::isExistInntekstsmelding)
+                .flatMap(bestilling1 -> oppdaterStatus(progress, bestilling.getEnvironments().stream()
+                        .map(miljoe -> STATUS_FMT.formatted(miljoe, getInfoVenter(SystemTyper.INNTKMELD.getBeskrivelse())))
+                        .collect(Collectors.joining(",")))
+                        .thenReturn(bestilling1))
                 .map(RsDollyBestilling::getInntektsmelding)
                 .flatMap(inntektsmelding -> Flux.fromIterable(bestilling.getEnvironments())
                         .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
