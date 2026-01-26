@@ -19,14 +19,9 @@ class RequestLoggingFilter implements WebFilter, Ordered {
 
     @Override
     @NonNull
-    public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        var path = exchange.getRequest().getPath().value();
-        if (path.startsWith("/internal")) {
-            return chain.filter(exchange);
-        }
-
-        log.info("Routing {} {} ...", exchange.getRequest().getMethod(), path);
+        log.info("Routing {} {} ...", exchange.getRequest().getMethod(), exchange.getRequest().getPath());
         return chain.filter(exchange)
                 .doOnSuccess(v -> {
                     Route route = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
