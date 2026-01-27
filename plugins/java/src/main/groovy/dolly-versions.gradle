@@ -28,6 +28,7 @@ class DollyVersionCatalog {
     String jaxb = "4.0.5"
     String jaxws = "4.0.3"
     String junit = "5.12.2"
+    String json = "20250517"
     String jweaver = "1.9.22.1"
     String jwt = "4.5.0"
     String logback = "8.1"
