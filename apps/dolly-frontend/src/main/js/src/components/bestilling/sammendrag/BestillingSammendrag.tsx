@@ -5,10 +5,6 @@ import { BestillingKriterier } from '@/components/bestilling/sammendrag/Bestilli
 import * as _ from 'lodash-es'
 import { BestillingKriterierOrganisasjon } from '@/components/bestilling/sammendrag/BestillingKriterierOrganisasjon'
 
-const Bestillingskriterier = React.lazy(
-	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
-)
-
 export default function BestillingSammendrag({
 	bestilling,
 	closeModal,

@@ -1,5 +1,9 @@
-import { arrayToString, formatDateTimeWithSeconds, oversettBoolean } from '@/utils/DataFormatter'
-import { getTypePerson } from '@/components/bestilling/sammendrag/kriterier/BestillingKriterieMapper'
+import {
+	arrayToString,
+	formatDateTimeWithSeconds,
+	getTypePerson,
+	oversettBoolean,
+} from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingData,
@@ -9,12 +13,10 @@ import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 
 export const Bestillingsinformasjon = ({ bestillingsinfo }) => {
-	console.log('bestillingsinfo: ', bestillingsinfo) //TODO - SLETT MEG
 	const firstIdent =
 		bestillingsinfo?.status
 			?.flatMap((s: any) => s?.statuser ?? [])
 			.find((sd: any) => sd?.identer?.length && sd?.melding === 'OK')?.identer?.[0] ?? null
-	//TODO: Fix denne, se bestilling 13768
 
 	return (
 		<div className="bestilling-visning">
