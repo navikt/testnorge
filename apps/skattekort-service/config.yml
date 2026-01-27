@@ -31,8 +31,10 @@ spec:
         - application: testnav-oversikt-frontend
     outbound:
       external:
-        - host: sokos-skattekort-dolly.dev-fss-pub.nais.io
+        - host: sokos-skattekort.intern.dev.nav.no
       rules:
+        - application: sokos-skattekort
+          namespace: okonomi
         - application: logging
           namespace: nais-system
   liveness:

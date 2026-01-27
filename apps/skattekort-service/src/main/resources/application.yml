@@ -14,7 +14,7 @@ spring:
 
 consumers:
   sokos-skattekort:
-    url: https://sokos-skattekort-dolly.dev-fss-pub.nais.io
-    cluster: dev-fss
-    name: sokos-skattekort-dolly
+    url: https://sokos-skattekort.intern.dev.nav.no
+    cluster: dev-gcp
+    name: sokos-skattekort
     namespace: okonomi

@@ -85,27 +85,25 @@ class SkattekortControllerTest {
         var response1 = SkattekortResponseDTO
                 .builder()
                 .ident(ident)
-                .inntektsaar("2024")
+                .inntektsaar("2025")
                 .arbeidsgiver(List.of(arbeidsgiver))
-                .skattekortXml("<xml>test1</xml>")
                 .build();
         var response2 = SkattekortResponseDTO
                 .builder()
                 .ident(ident)
-                .inntektsaar("2025")
+                .inntektsaar("2026")
                 .arbeidsgiver(List.of(arbeidsgiver))
-                .skattekortXml("<xml>test2</xml>")
                 .build();
-        when(skattekortService.hentSkattekort(eq(ident)))
+        when(skattekortService.hentSkattekort(eq(ident), eq(null)))
                 .thenReturn(Flux.just(response1, response2));
 
-        var result = skattekortController.hentSkattekort(ident);
+        var result = skattekortController.hentSkattekort(ident, null);
         StepVerifier
                 .create(result)
                 .expectNext(response1)
                 .expectNext(response2)
                 .verifyComplete();
-        verify(skattekortService).hentSkattekort(ident);
+        verify(skattekortService).hentSkattekort(ident, null);
 
     }
 
@@ -113,14 +111,14 @@ class SkattekortControllerTest {
     void shouldHandleEmptyResponseWhenHentSkattekort() {
 
         var ident = "12345678901";
-        when(skattekortService.hentSkattekort(eq(ident)))
+        when(skattekortService.hentSkattekort(eq(ident), eq(null)))
                 .thenReturn(Flux.empty());
 
-        var result = skattekortController.hentSkattekort(ident);
+        var result = skattekortController.hentSkattekort(ident, null);
         StepVerifier
                 .create(result)
                 .verifyComplete();
-        verify(skattekortService).hentSkattekort(ident);
+        verify(skattekortService).hentSkattekort(ident, null);
 
     }
 
@@ -148,15 +146,15 @@ class SkattekortControllerTest {
 
         var ident = "12345678901";
         var expectedError = new RuntimeException("Service error");
-        when(skattekortService.hentSkattekort(eq(ident)))
+        when(skattekortService.hentSkattekort(eq(ident), eq(null)))
                 .thenReturn(Flux.error(expectedError));
 
-        var result = skattekortController.hentSkattekort(ident);
+        var result = skattekortController.hentSkattekort(ident, null);
         StepVerifier
                 .create(result)
                 .expectError(RuntimeException.class)
                 .verify();
-        verify(skattekortService).hentSkattekort(ident);
+        verify(skattekortService).hentSkattekort(ident, null);
 
     }
 

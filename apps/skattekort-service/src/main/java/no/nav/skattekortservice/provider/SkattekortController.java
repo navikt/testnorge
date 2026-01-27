@@ -28,8 +28,10 @@ public class SkattekortController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<SkattekortResponseDTO> hentSkattekort(@RequestParam String ident) {
+    public Flux<SkattekortResponseDTO> hentSkattekort(
+            @RequestParam String ident,
+            @RequestParam(required = false) Integer inntektsaar) {
 
-        return skattekortService.hentSkattekort(ident);
+        return skattekortService.hentSkattekort(ident, inntektsaar);
     }
 }

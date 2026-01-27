@@ -8,10 +8,14 @@ import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Year;
 import java.util.Collection;
 
 @UtilityClass
 public class SkattekortValidator {
+
+    private static final int MIN_YEAR = 2025;
+    private static final int MAX_YEAR = 3000;
 
     public static void validate(SkattekortRequestDTO skattekort) {
 
@@ -43,6 +47,8 @@ public class SkattekortValidator {
 
     private static void validateArbeidstager(SkattekortRequestDTO skattekort) {
 
+        int currentYear = Year.now().getValue();
+
         skattekort.getArbeidsgiver().stream()
                 .map(ArbeidsgiverSkatt::getArbeidstaker)
                 .flatMap(Collection::stream)
@@ -53,6 +59,17 @@ public class SkattekortValidator {
                     } else if (arbeidstaker.isEmptyInntektsaar()) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                 "Inntektsår må være satt");
+                    } else {
+                        int inntektsaar = arbeidstaker.getInntektsaar();
+                        if (inntektsaar < MIN_YEAR || inntektsaar > MAX_YEAR) {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                    String.format("Inntektsår må være mellom %d og %d", MIN_YEAR, MAX_YEAR));
+                        }
+                        if (inntektsaar < currentYear - 1 || inntektsaar > currentYear + 1) {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                    String.format("Inntektsår må være innenfor gjeldende år +/- 1 (%d-%d)",
+                                            currentYear - 1, currentYear + 1));
+                        }
                     }
                 });
     }

@@ -3,8 +3,9 @@ package no.nav.skattekortservice.consumer;
 import no.nav.skattekortservice.config.Consumers;
 import no.nav.skattekortservice.consumer.command.SokosGetCommand;
 import no.nav.skattekortservice.consumer.command.SokosPostCommand;
-import no.nav.skattekortservice.dto.SokosRequest;
-import no.nav.skattekortservice.dto.SokosResponse;
+import no.nav.skattekortservice.dto.v2.HentSkattekortRequest;
+import no.nav.skattekortservice.dto.v2.OpprettSkattekortRequest;
+import no.nav.skattekortservice.dto.v2.SkattekortDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
@@ -32,16 +33,15 @@ public class SokosSkattekortConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<String> sendSkattekort(SokosRequest request) {
+    public Mono<String> sendSkattekort(OpprettSkattekortRequest request) {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new SokosPostCommand(webClient, request, token.getTokenValue()).call());
     }
 
-    public Flux<SokosResponse> hentSkattekort(String ident) {
+    public Flux<SkattekortDTO> hentSkattekort(HentSkattekortRequest request) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> new SokosGetCommand(webClient, ident,
-                        token.getTokenValue()).call());
+                .flatMapMany(token -> new SokosGetCommand(webClient, request, token.getTokenValue()).call());
     }
 }

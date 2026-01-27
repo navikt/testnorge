@@ -1,49 +1,34 @@
 package no.nav.skattekortservice.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.skattekortservice.consumer.SokosSkattekortConsumer;
-import no.nav.skattekortservice.dto.SkattekortRequest;
-import no.nav.skattekortservice.dto.SkattekortResponsIntermediate;
-import no.nav.skattekortservice.dto.SokosRequest;
-import no.nav.skattekortservice.dto.SokosResponse;
+import no.nav.skattekortservice.dto.v2.HentSkattekortRequest;
+import no.nav.skattekortservice.dto.v2.OpprettSkattekortRequest;
+import no.nav.skattekortservice.dto.v2.SkattekortDTO;
 import no.nav.skattekortservice.utility.SkattekortValidator;
-import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortResponseDTO;
-import org.json.XML;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 
 @Slf4j
 @Service
 public class SkattekortService {
 
-    private final JAXBContext jaxbContext;
     private final MapperFacade mapperFacade;
     private final SokosSkattekortConsumer skattekortConsumer;
-    private final ObjectMapper objectMapper;
 
     public SkattekortService(MapperFacade mapperFacade,
-                             SokosSkattekortConsumer skattekortConsumer,
-                             ObjectMapper objectMapper) throws JAXBException {
-        this.jaxbContext = JAXBContext.newInstance(SkattekortRequest.class);
+                             SokosSkattekortConsumer skattekortConsumer) {
         this.mapperFacade = mapperFacade;
         this.skattekortConsumer = skattekortConsumer;
-        this.objectMapper = objectMapper;
     }
 
-    @SneakyThrows
     public Mono<String> sendSkattekort(SkattekortRequestDTO skattekort) {
 
         SkattekortValidator.validate(skattekort);
@@ -51,66 +36,36 @@ public class SkattekortService {
         var arbeidstaker = skattekort.getArbeidsgiver().getFirst()
                 .getArbeidstaker().getFirst();
 
-        return Mono.just(mapperFacade.map(skattekort, SkattekortRequest.class))
-                .map(this::marshallToXml)
-                .doOnNext(xmlRequest -> log.info("XML Request: {}", xmlRequest))
-                .map(this::encodeRequest)
-                .doOnNext(encodedXml -> log.info("Base64 encoded request: {}", encodedXml))
-                .map(encodedXml -> SokosRequest.builder()
-                        .fnr(arbeidstaker.getArbeidstakeridentifikator())
-                        .inntektsar(arbeidstaker.getInntektsaar().toString())
-                        .skattekort(encodedXml)
-                        .build())
-                .flatMap(skattekortConsumer::sendSkattekort);
+        OpprettSkattekortRequest request = mapperFacade.map(arbeidstaker, OpprettSkattekortRequest.class);
+        log.info("Sender skattekort til Sokos med request: {}", request);
+
+        return skattekortConsumer.sendSkattekort(request);
     }
 
-    public Flux<SkattekortResponseDTO> hentSkattekort(String ident) {
+    public Flux<SkattekortResponseDTO> hentSkattekort(String ident, Integer inntektsaar) {
 
-        return skattekortConsumer.hentSkattekort(ident)
-                .doOnNext(response -> log.info("Hentet resultat fra Sokos {}", response))
-                .map(this::convertResponse);
-    }
-
-    @SneakyThrows
-    private String marshallToXml(SkattekortRequest melding) {
-
-        var marshaller = jaxbContext.createMarshaller();
-        var writer = new StringWriter();
-        marshaller.marshal(melding, writer);
-        return writer.toString()
-                .replace(":ns2", "")
-                .replace("ns2:", "");
-    }
-
-    private String encodeRequest(String request) {
-
-        return Base64.getEncoder()
-                .encodeToString(request.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private SkattekortResponseDTO convertResponse(SokosResponse response) {
-
-        var decoded = decodeRequest(response.getSkattekort());
-        var unmarshalled = unmarshal(decoded);
-        return SkattekortResponseDTO.builder()
-                .ident(response.getFnr())
-                .inntektsaar(response.getInntektsar())
-                .arbeidsgiver(unmarshalled)
-                .skattekortXml(decoded)
+        var request = HentSkattekortRequest.builder()
+                .fnr(ident)
+                .inntektsaar(inntektsaar)
                 .build();
+
+        return skattekortConsumer.hentSkattekort(request)
+                .doOnNext(response -> log.info("Hentet resultat fra Sokos {}", response))
+                .map(skattekortDTO -> convertResponse(ident, skattekortDTO));
     }
 
-    private String decodeRequest(String request) {
+    private SkattekortResponseDTO convertResponse(String ident, SkattekortDTO skattekortDTO) {
+        var skattekortmelding = mapperFacade.map(skattekortDTO, Skattekortmelding.class);
+        skattekortmelding.setArbeidstakeridentifikator(ident);
 
-        return new String(Base64.getDecoder().decode(request), StandardCharsets.UTF_8)
-                .replaceAll("\n *", "");
-    }
+        var arbeidsgiver = no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt.builder()
+                .arbeidstaker(List.of(skattekortmelding))
+                .build();
 
-    @SneakyThrows
-    private List<ArbeidsgiverSkatt> unmarshal(String xmlData) {
-
-        var jsonRoot = XML.toJSONObject(xmlData);
-        var intermediate = objectMapper.readValue(jsonRoot.toString(), SkattekortResponsIntermediate.class);
-        return mapperFacade.mapAsList(intermediate.getSkattekortTilArbeidsgiver().getArbeidsgiver(), ArbeidsgiverSkatt.class);
+        return SkattekortResponseDTO.builder()
+                .ident(ident)
+                .inntektsaar(String.valueOf(skattekortDTO.getInntektsaar()))
+                .arbeidsgiver(List.of(arbeidsgiver))
+                .build();
     }
 }
