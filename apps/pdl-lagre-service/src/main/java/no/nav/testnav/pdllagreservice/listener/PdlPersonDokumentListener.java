@@ -3,7 +3,6 @@ package no.nav.testnav.pdllagreservice.listener;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -50,8 +49,6 @@ public class PdlPersonDokumentListener {
     public void onMessage(ConsumerRecords<String, String> records) {
 
         log.info("Received {} records", records.count());
-        records.forEach(record1 ->
-                log.info("Received record: key: {}, value: {}", record1.key(), Json.pretty(record1.value())));
 
         val documentList = KafkaUtilities.asStream(records)
                 .map(this::convert)
