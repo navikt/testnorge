@@ -28,6 +28,7 @@ class RouteLocatorConfig {
     private final Pensjon pensjon;
     private final Saf saf;
     private final Sigrunstub sigrunstub;
+    private final Skattekort skattekort;
     private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
 
@@ -58,6 +59,7 @@ class RouteLocatorConfig {
                 .route("inntektstub", inntektstub.build())
                 .route("inst", inst.build())
                 .route("kontoregister", kontoregister.build())
+                .route("skattekort", skattekort.build())
                 .route("krrstub", krrstub.build())
                 .route("medl", medl.build())
                 .route("norg2", norg2.build())
