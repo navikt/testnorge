@@ -30,8 +30,11 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:
+      external:
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
       rules:
         - application: testnav-dolly-proxy
+          namespace: dolly
           cluster: dev-fss
         - application: logging
           namespace: nais-system
