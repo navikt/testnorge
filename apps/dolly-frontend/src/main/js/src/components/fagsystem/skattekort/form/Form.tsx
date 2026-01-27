@@ -8,7 +8,7 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { addYears, subYears } from 'date-fns'
+import { subYears } from 'date-fns'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
@@ -84,10 +84,7 @@ export const SkattekortForm = () => {
 									<FormSelect
 										name={`${path}.arbeidstaker[0].inntektsaar`}
 										label="Inntektsår"
-										options={getYearRangeOptions(
-											subYears(new Date(), 1).getFullYear(),
-											addYears(new Date(), 1).getFullYear(),
-										)}
+										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
 										size="xsmall"
 										isClearable={false}
 									/>
