@@ -21,6 +21,7 @@ class RouteLocatorConfig {
     private final Inntektstub inntektstub;
     private final Inst inst;
     private final Kontoregister kontoregister;
+    private final Skattekort skattekort;
     private final Krrstub krrstub;
     private final Medl medl;
     private final Norg2 norg2;
@@ -28,7 +29,6 @@ class RouteLocatorConfig {
     private final Pensjon pensjon;
     private final Saf saf;
     private final Sigrunstub sigrunstub;
-    private final Skattekort skattekort;
     private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
 
