@@ -25,7 +25,6 @@ class DokarkivController {
                 .stream(Dokarkiv.SpecialCase.values())
                 .map(Dokarkiv.SpecialCase::getCode)
                 .toArray(String[]::new);
-
     }
 
     @GetMapping(value = "/rest/miljoe", produces = MediaType.APPLICATION_JSON_VALUE)

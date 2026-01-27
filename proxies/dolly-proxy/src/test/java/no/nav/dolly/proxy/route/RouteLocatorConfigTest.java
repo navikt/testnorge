@@ -281,7 +281,7 @@ class RouteLocatorConfigTest {
                 .uri(requestedPath)
                 .exchange()
                 .expectStatus().isOk()
-                .expectHeader().contentType("application/text")
+                .expectHeader().contentType("application/json; charset=UTF-8")
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath))
@@ -807,4 +807,19 @@ class RouteLocatorConfigTest {
         wireMockServer.verify(0, getRequestedFor(urlEqualTo("/internal/health")));
 
     }
+
+    @Test
+    void testNotFound() {
+
+        webClient
+                .get()
+                .uri("/non-existing-service/some/path")
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+
+        wireMockServer.verify(0, getRequestedFor(urlMatching("/non-existing-service/.*")));
+
+    }
+
 }
