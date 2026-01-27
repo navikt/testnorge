@@ -18,7 +18,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class SokosGetCommand implements Callable<Flux<SkattekortDTO>> {
 
-    private static final String SOKOS_URL = "/api/v1/hent-skattekort";
+    private static final String SOKOS_URL = "/api/v1/person/hent-skattekort";
 
     private final WebClient webClient;
     private final HentSkattekortRequest request;
