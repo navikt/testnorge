@@ -30,11 +30,9 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:
-      external:
-        - host: sokos-skattekort.intern.dev.nav.no
       rules:
-        - application: sokos-skattekort
-          namespace: okonomi
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: logging
           namespace: nais-system
   liveness:

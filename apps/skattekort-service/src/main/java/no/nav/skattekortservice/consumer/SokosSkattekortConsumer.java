@@ -25,10 +25,10 @@ public class SokosSkattekortConsumer {
             Consumers consumers,
             WebClient webClient
     ) {
-        this.serverProperties = consumers.getSokosSkattekort();
+        this.serverProperties = consumers.getDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .baseUrl(serverProperties.getUrl())
+                .baseUrl(serverProperties.getUrl() + "/skattekort")
                 .build();
         this.tokenExchange = tokenExchange;
     }
