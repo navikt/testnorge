@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import static java.util.Objects.isNull;
+import static no.nav.testnav.pdllagreservice.listener.PdlPersonMappingAddendum.appendSizeAttribute;
 import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KAFKA_CONSUMER_TIMED;
 import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KEY;
 
@@ -66,7 +67,8 @@ public class PdlPersonDokumentListener {
             } else {
                 val dokument = mapper.readValue(post.value(), new TypeReference<HashMap<String, Object>>() {
                 });
-                return new OpensearchDocumentData(personIndex, post.key(), dokument);
+                val dokumentMedSizeAttributter = appendSizeAttribute(dokument);
+                return new OpensearchDocumentData(personIndex, post.key(), dokumentMedSizeAttributter);
             }
         } catch (RuntimeException | IOException exception) {
 
