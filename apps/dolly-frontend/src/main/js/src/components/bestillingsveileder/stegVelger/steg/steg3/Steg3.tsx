@@ -96,7 +96,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier ...'} />}>
 						<Bestillingsvisning bestilling={formMethods.getValues()} />
 						{/*//TODO: Fjernes naar bestillingsdata er klar*/}
-						<Bestillingskriterier bestilling={formMethods.getValues()} />
+						{/*<Bestillingskriterier bestilling={formMethods.getValues()} />*/}
 					</Suspense>
 				</div>
 			)}

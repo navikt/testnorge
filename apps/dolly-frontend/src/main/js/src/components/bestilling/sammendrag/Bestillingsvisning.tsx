@@ -34,10 +34,7 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 	const [visMer, setVisMer, setSkjulMer] = useBoolean(false)
 	const [showVisMerButton, setShowVisMerButton] = useState(false)
 
-	// const windowHeight = window.innerHeight
-	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
-	const bestillingMaxHeight = window.innerHeight * 0.4
-	// console.log('bestillingMaxHeight: ', bestillingMaxHeight) //TODO - SLETT MEG
+	const bestillingMaxHeight = window.innerHeight * 0.3
 
 	useEffect(() => {
 		const element = document.querySelector('.bestilling-data > div')
@@ -54,12 +51,6 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 			setShowVisMerButton(contentRef.current.scrollHeight > bestillingMaxHeight)
 		}
 	}, [bestillingMaxHeight])
-
-	const bestillingCurrentHeight =
-		document.getElementsByClassName('bestilling-data')?.[0]?.scrollHeight
-	// console.log('bestillingCurrentHeight: ', bestillingCurrentHeight) //TODO - SLETT MEG
-
-	// const showVisMerButton = bestillingCurrentHeight > bestillingMaxHeight
 
 	const erOrganisasjon = _.has(bestilling, 'organisasjon')
 
