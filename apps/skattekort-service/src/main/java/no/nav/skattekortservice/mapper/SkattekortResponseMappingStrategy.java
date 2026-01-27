@@ -90,6 +90,9 @@ public class SkattekortResponseMappingStrategy implements MappingStrategy {
     }
 
     private static Forskuddstrekk mapForskuddstrekk(ForskuddstrekkDTO dto) {
+        if (isNull(dto)) {
+            return null;
+        }
         if (nonNull(dto.getFrikortBeloep())) {
             return Forskuddstrekk.builder()
                     .frikort(Frikort.builder()
@@ -129,7 +132,8 @@ public class SkattekortResponseMappingStrategy implements MappingStrategy {
             case PENSJON_FRA_NAV -> Trekkode.PENSJON_FRA_NAV;
             case LOENN_TIL_UTENRIKSTJENESTEMANN -> Trekkode.LOENN_TIL_UTENRIKSTJENESTEMANN;
             case LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER -> Trekkode.LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER;
-            case LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER_SOM_GRENSEGJENGER -> Trekkode.LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER_SOM_GRENSEGJENGER;
+            case LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER_SOM_GRENSEGJENGER ->
+                    Trekkode.LOENN_KUN_TRYGDEAVGIFT_TIL_UTENLANDSK_BORGER_SOM_GRENSEGJENGER;
             case UFOERETRYGD_FRA_NAV -> Trekkode.UFOERETRYGD_FRA_NAV;
             case UFOEREYTELSER_FRA_ANDRE -> Trekkode.UFOEREYTELSER_FRA_ANDRE;
             case INTRODUKSJONSSTOENAD -> Trekkode.INTRODUKSJONSSTOENAD;

@@ -56,6 +56,9 @@ public class SkattekortRequestMappingStrategy implements MappingStrategy {
     }
 
     private static ForskuddstrekkDTO mapForskuddstrekkDTO(Forskuddstrekk source) {
+        if (isNull(source)) {
+            return null;
+        }
         var target = new ForskuddstrekkDTO();
         if (nonNull(source.getFrikort())) {
             mapFrikort(source.getFrikort(), target);
