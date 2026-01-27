@@ -1,6 +1,8 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAll } from '@/api'
-import { System } from '@/ducks/bestillingStatus/bestillingStatusMapper'
+import { Bestilling } from '@/types/bestilling'
+
+export type { Bestilling }
 
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
@@ -16,28 +18,6 @@ const getBestillingByIdUrl = (bestillingId: string | number) =>
 
 const getMultipleBestillingByIdUrl = (bestillingIdListe: Array<string>) =>
 	bestillingIdListe?.map((id) => `/dolly-backend/api/v1/bestilling/${id}`)
-
-export type Bestilling = {
-	id: number
-	antallIdenter: number
-	antallLevert: number
-	bestilling: any
-	ferdig: boolean
-	sistOppdatert: Date
-	opprettetFraId: string
-	gjenopprettetFraIdent: string
-	opprettetFraGruppeId: string
-	bruker: {
-		brukerId: string
-		brukernavn: string
-		brukertype: string
-		epost: string
-	}
-	gruppeId: number
-	stoppet: boolean
-	environments: string[]
-	status: System[]
-}
 
 type VisningType = 'personer' | 'liste' | string
 
@@ -57,36 +37,6 @@ export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
 
 	return {
 		miljoer: data,
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useBestillingerGruppe = (gruppeId: string | number) => {
-	if (!gruppeId) {
-		return {
-			bestillinger: undefined as Bestilling[] | undefined,
-			bestillingerById: undefined as Record<string, Bestilling> | undefined,
-			loading: false,
-			error: 'GruppeId mangler!',
-		}
-	}
-
-	const { data, isLoading, error } = useSWR<Bestilling[], Error>(
-		getBestillingerGruppeUrl(gruppeId),
-		fetcher,
-	)
-
-	const bestillingerSorted = data
-		?.sort?.((a, b) => (a.id < b.id ? 1 : -1))
-		.reduce<Record<string, Bestilling>>((acc, curr) => {
-			acc[curr.id] = curr
-			return acc
-		}, {})
-
-	return {
-		bestillinger: data,
-		bestillingerById: bestillingerSorted,
 		loading: isLoading,
 		error: error,
 	}

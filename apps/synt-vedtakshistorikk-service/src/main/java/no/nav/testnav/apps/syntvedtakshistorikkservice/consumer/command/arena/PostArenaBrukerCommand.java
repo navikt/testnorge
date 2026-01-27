@@ -38,7 +38,7 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
         log.info("Sender inn ny(e) bruker(e) til Arena-forvalteren.");
         return webClient.post()
                 .uri(builder -> builder
-                        .path("/api/v1/bruker")
+                        .path("/arena/api/v1/bruker")
                         .queryParam("eier", EIER)
                         .build())
                 .header(CALL_ID, NAV_CALL_ID)

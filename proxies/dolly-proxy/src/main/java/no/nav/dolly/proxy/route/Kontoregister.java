@@ -21,13 +21,17 @@ class Kontoregister {
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.kontoregister);
+
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.kontoregister);
+
         return spec -> spec
                 .path("/kontoregister/**")
                 .filters(f -> f
                         .stripPrefix(1)
                         .filter(authenticationFilter))
                 .uri(targets.kontoregister);
+
     }
 
 }

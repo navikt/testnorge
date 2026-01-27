@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-komponenter",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Bibliotek for diverse dolly komponenter.",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -33,7 +33,7 @@
     "dayjs": "^1.11.19",
     "focus-trap-react": "^11.0.6",
     "less-plugin-npm-import": "^2.1.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "prop-types": "^15.8.1",
     "react-datepicker": "^9.1.0",
     "react-day-picker": "^9.13.0",

@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
 
-    private static final String ADRESSER_VEG_URL = "/api/v1/adresser/veg";
+    private static final String ADRESSER_VEG_URL = "/api/v1/adresser/vegadresse";
 
     private final WebClient webClient;
     private final no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO query;

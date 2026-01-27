@@ -21,13 +21,17 @@ class Krrstub {
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.krrstub);
+
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.krrstub);
+
         return spec -> spec
                 .path("/krrstub/api/v2/**")
                 .filters(f -> f
                         .stripPrefix(1)
                         .filter(authenticationFilter))
                 .uri(targets.krrstub);
+
     }
 
 }

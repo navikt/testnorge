@@ -32,6 +32,12 @@ kind: "Application"
 metadata:
   name: testnav-dolly-proxy
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
   labels:
     team: dolly
 spec:
@@ -41,8 +47,8 @@ spec:
   envFrom:
     - secret: azure-nav-testnav-dolly-proxy
     - secret: azure-trygdeetaten-testnav-dolly-proxy
+    - secret: testnav-pdl-proxy
   image: "{{image}}"
-  port: 8080
   tokenx:
     enabled: true
   azure:
@@ -67,6 +73,8 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+        - application: pdl-testdata
+          namespace: pdl
         - application: pensjon-afp-offentlig-mock-q1
           namespace: pensjon-saksbehandling
           cluster: dev-gcp
@@ -81,7 +89,21 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-adresse-service
+          cluster: dev-gcp
+        - application: testnav-dolly-search-service
+          cluster: dev-gcp
+        - application: testnav-dolly-search-service-dev
+          cluster: dev-gcp
+        - application: testnav-inntektsmelding-service
+          cluster: dev-gcp
         - application: testnav-jenkins-batch-status-service
+          cluster: dev-gcp
+        - application: testnav-joark-dokument-service
+          cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-service
           cluster: dev-gcp
         - application: testnav-organisasjon-mottak-service
           cluster: dev-gcp
@@ -89,9 +111,24 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
+        - application: testnav-person-service
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api-dev
+          cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+        - application: testnav-tenor-search-service
+          cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
     outbound:
+      external:
+        - host: pdl-api.dev-fss-pub.nais.io
       rules:
         - application: digdir-krr-stub
           namespace: team-rocket
@@ -102,11 +139,23 @@ spec:
           namespace: arbeidsforhold
         - application: ereg-services-q4
           namespace: arbeidsforhold
+        - application: testnav-inntektsmelding-service
+          cluster: dev-gcp
+        - application: testnav-joark-dokument-service
+          cluster: dev-gcp
         - application: medlemskap-medl-testdata
           namespace: team-rocket
           cluster: dev-gcp
         - application: opphold-testdata
           namespace: team-rocket
+        - application: pdl-api
+          namespace: pdl
+        - application: pdl-api-q1
+          namespace: pdl
+        - application: pdl-identhendelse-lager
+          namespace: pdl
+        - application: pdl-testdata
+          namespace: pdl
         - application: pensjon-afp-offentlig-mock-q1
           namespace: pensjon-saksbehandling
           cluster: dev-gcp
@@ -158,3 +207,4 @@ spec:
   ingresses:
     - "https://testnav-dolly-proxy.intern.dev.nav.no"
     - "https://testnav-dolly-proxy.dev-fss-pub.nais.io"
+  webproxy: true

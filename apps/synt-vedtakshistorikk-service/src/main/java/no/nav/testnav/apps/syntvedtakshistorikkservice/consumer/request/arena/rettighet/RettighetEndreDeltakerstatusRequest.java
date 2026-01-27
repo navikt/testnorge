@@ -21,7 +21,7 @@ public class RettighetEndreDeltakerstatusRequest extends RettighetRequest {
     private List<NyttVedtakTiltak> nyeEndreDeltakerstatus;
 
     @Override public String getArenaForvalterUrlPath() {
-        return "/api/v1/endreDeltakerstatus";
+        return "/arena/api/v1/endreDeltakerstatus";
     }
 
     @Override public List<NyttVedtakAap> getVedtakAap() {

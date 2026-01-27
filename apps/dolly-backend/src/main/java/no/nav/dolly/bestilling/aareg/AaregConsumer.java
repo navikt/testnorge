@@ -35,7 +35,7 @@ public class AaregConsumer extends ConsumerStatus {
             WebClient webClient,
             WebClientLogger webClientLogger) {
 
-        serverProperties = consumers.getTestnavAaregProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenService = tokenService;
         var webClientBuilder = webClient
                 .mutate();
@@ -80,7 +80,7 @@ public class AaregConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-aareg-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

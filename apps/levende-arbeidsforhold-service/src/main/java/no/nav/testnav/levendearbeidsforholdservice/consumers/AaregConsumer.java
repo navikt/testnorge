@@ -25,7 +25,7 @@ public class AaregConsumer {
             TokenExchange tokenExchange,
             WebClient webClient
     ) {
-        this.serverProperties = consumers.getTestnavAaregProxy();
+        this.serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         this.webClient = webClient
                 .mutate()
@@ -45,7 +45,7 @@ public class AaregConsumer {
 
         tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue()).call())
-                .doOnNext(status -> log.info("Status fra endre arbeidsforhold:", status))
+                .doOnNext(status -> log.info("Status fra endre arbeidsforhold: {}", status))
                 .block();
     }
 }
