@@ -13,6 +13,12 @@ import static java.util.Objects.isNull;
 @UtilityClass
 public class PdlPersonMappingAddendum {
 
+    /**
+     * Appends a "size" attribute to each list-type attribute within the "hentPerson" map of the provided dokument.
+     *
+     * @param dokument The dokument map containing person data.
+     * @return The modified dokument map with "size" attributes added.
+     */
     public static Map<String, Object> appendSizeAttribute(Map<String, Object> dokument) {
 
         if (isNull(dokument.get("hentPerson"))) {
