@@ -2,6 +2,7 @@ package no.nav.testnav.pdllagreservice.listener;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,8 @@ public class PdlPersonMappingAddendum {
             if (value instanceof List<?> list) {
 
                 list.forEach(item -> {
-                    if (item instanceof Map egenskap) {
+                    if (item instanceof Map<?, ?> ) {
+                        val egenskap = (Map<String, Object>) item;
                         egenskap.put("size", list.size());
                     }
                 });

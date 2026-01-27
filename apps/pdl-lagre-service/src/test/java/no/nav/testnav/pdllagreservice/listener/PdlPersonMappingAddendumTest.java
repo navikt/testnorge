@@ -23,7 +23,7 @@ class PdlPersonMappingAddendumTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void appendSizeAttribute_OK() throws Exception {
+    void shouldAppendSizeAttribute_OK() throws Exception {
 
         val dokument = objectMapper.readValue(getJsonPerson(), new TypeReference<HashMap<String, Object>>() {
         });
