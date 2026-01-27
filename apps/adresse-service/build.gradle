@@ -21,6 +21,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
 
+    implementation "org.opensearch.client:opensearch-java:$versions.opensearchClient"
+    implementation "org.apache.httpcomponents.client5:httpclient5"
+
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
     implementation "org.aspectj:aspectjweaver:$versions.jweaver"
 

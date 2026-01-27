@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.enterprise" version "3.12.3"
+    id "com.gradle.develocity" version "4.3.1"
 }
 
 rootProject.name = "skattekort-service"
@@ -12,9 +12,9 @@ includeBuild "../../libs/reactive-security"
 includeBuild "../../libs/data-transfer-objects"
 includeBuild "../../libs/testing"
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
     }
 }

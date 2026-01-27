@@ -62,7 +62,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 					</div>
 				</div>
 				<div className="flexbox--flex-wrap">
-					<FormTextInput name={`${path}.swift`} label={'Swift kode'} size={'small'} />
+					<FormTextInput name={`${path}.swift`} label={'BIC/SWIFT-kode'} size={'small'} />
 					<FormSelect
 						name={`${path}.landkode`}
 						label={'Land'}
