@@ -1,0 +1,435 @@
+{
+  "tags": null,
+  "hentPerson": {
+    "adressebeskyttelse": [],
+    "bostedsadresse": [
+      {
+        "angittFlyttedato": "1959-01-10",
+        "gyldigFraOgMed": "1959-01-10T00:00:00",
+        "gyldigTilOgMed": null,
+        "coAdressenavn": null,
+        "vegadresse": {
+          "matrikkelId": 237722325,
+          "husnummer": "8",
+          "husbokstav": null,
+          "bruksenhetsnummer": null,
+          "adressenavn": "Ekeveien",
+          "kommunenummer": "3101",
+          "tilleggsnavn": null,
+          "postnummer": "1768",
+          "bydelsnummer": null,
+          "koordinater": {
+            "x": 636866.0,
+            "y": 6555358.0,
+            "z": 0.0
+          }
+        },
+        "matrikkeladresse": null,
+        "ukjentBosted": null,
+        "utenlandskAdresse": null,
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "1959-01-10T00:00:00",
+          "gyldighetstidspunkt": "1959-01-10T00:00:00",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "2653712c-cea6-4f9e-a7cd-bf383f2c6416",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "2653712c-cea6-4f9e-a7cd-bf383f2c6416"
+            }
+          ],
+          "historisk": false
+        }
+      },
+      {
+        "angittFlyttedato": "1959-01-10",
+        "gyldigFraOgMed": "1959-01-10T00:00:00",
+        "gyldigTilOgMed": null,
+        "coAdressenavn": null,
+        "vegadresse": {
+          "matrikkelId": 237722325,
+          "husnummer": "8",
+          "husbokstav": null,
+          "bruksenhetsnummer": null,
+          "adressenavn": "Ekeveien",
+          "kommunenummer": "3101",
+          "tilleggsnavn": null,
+          "postnummer": "1768",
+          "bydelsnummer": null,
+          "koordinater": {
+            "x": 636866.0,
+            "y": 6555358.0,
+            "z": 0.0
+          }
+        },
+        "matrikkeladresse": null,
+        "ukjentBosted": null,
+        "utenlandskAdresse": null,
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "1959-01-10T00:00:00",
+          "gyldighetstidspunkt": "1959-01-10T00:00:00",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "2653712c-cea6-4f9e-a7cd-bf383f2c6416",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "2653712c-cea6-4f9e-a7cd-bf383f2c6416"
+            }
+          ],
+          "historisk": false
+        }
+      },
+      {
+        "angittFlyttedato": "1959-01-10",
+        "gyldigFraOgMed": "1959-01-10T00:00:00",
+        "gyldigTilOgMed": null,
+        "coAdressenavn": null,
+        "vegadresse": {
+          "matrikkelId": 237722325,
+          "husnummer": "8",
+          "husbokstav": null,
+          "bruksenhetsnummer": null,
+          "adressenavn": "Ekeveien",
+          "kommunenummer": "3101",
+          "tilleggsnavn": null,
+          "postnummer": "1768",
+          "bydelsnummer": null,
+          "koordinater": {
+            "x": 636866.0,
+            "y": 6555358.0,
+            "z": 0.0
+          }
+        },
+        "matrikkeladresse": null,
+        "ukjentBosted": null,
+        "utenlandskAdresse": null,
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "1959-01-10T00:00:00",
+          "gyldighetstidspunkt": "1959-01-10T00:00:00",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "2653712c-cea6-4f9e-a7cd-bf383f2c6416",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "2653712c-cea6-4f9e-a7cd-bf383f2c6416"
+            }
+          ],
+          "historisk": false
+        }
+      }
+    ],
+    "deltBosted": [],
+    "doedsfall": [],
+    "doedfoedtBarn": [],
+    "falskIdentitet": null,
+    "foedested": [
+      {
+        "foedeland": "NOR",
+        "foedested": null,
+        "foedekommune": "3101",
+        "metadata": {
+          "opplysningsId": "e99eca65-86a8-43e7-b65b-0ce6c05d5112",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "e99eca65-86a8-43e7-b65b-0ce6c05d5112"
+            }
+          ],
+          "historisk": false
+        },
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "2026-01-27T07:54:54.485",
+          "gyldighetstidspunkt": "2026-01-27T07:54:54.485",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        }
+      }
+    ],
+    "foedselsdato": [
+      {
+        "foedselsaar": 1959,
+        "foedselsdato": "1959-01-10",
+        "metadata": {
+          "opplysningsId": "1611a868-e3ff-4476-98e3-66eec5db1f4c",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "1611a868-e3ff-4476-98e3-66eec5db1f4c"
+            }
+          ],
+          "historisk": false
+        },
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "1959-01-10T00:00:00",
+          "gyldighetstidspunkt": "1959-01-10T00:00:00",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        }
+      }
+    ],
+    "folkeregisteridentifikator": [
+      {
+        "identifikasjonsnummer": "10415942449x",
+        "type": "FNR",
+        "status": "I_BRUK",
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "2026-01-27T07:55:54.459",
+          "gyldighetstidspunkt": "2026-01-27T07:55:54.459",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "93028178-5dc6-49f3-9752-c947ce26f28f",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:42:46.908",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "7d1aff21-4796-43fe-afa8-d98c432ae484"
+            },
+            {
+              "type": "KORRIGER",
+              "registrert": "2026-01-27T07:55:54.543",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "93028178-5dc6-49f3-9752-c947ce26f28f"
+            }
+          ],
+          "historisk": false
+        }
+      }
+    ],
+    "folkeregisterpersonstatus": [
+      {
+        "status": "bosatt",
+        "forenkletStatus": "bosattEtterFolkeregisterloven",
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "1959-01-10T00:00:00",
+          "gyldighetstidspunkt": "1959-01-10T00:00:00",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "94714cca-f954-47fa-9b9c-f911f36ee86b",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "94714cca-f954-47fa-9b9c-f911f36ee86b"
+            }
+          ],
+          "historisk": false
+        }
+      }
+    ],
+    "forelderBarnRelasjon": [],
+    "foreldreansvar": [],
+    "identitetsgrunnlag": [],
+    "kontaktadresse": [],
+    "kontaktinformasjonForDoedsbo": [],
+    "kjoenn": [
+      {
+        "kjoenn": "KVINNE",
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "2026-01-27T06:55:53.485",
+          "gyldighetstidspunkt": "2026-01-27T06:55:53.485",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "59253bae-f629-4cb0-aedf-1480d19b6779",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "59253bae-f629-4cb0-aedf-1480d19b6779"
+            }
+          ],
+          "historisk": false
+        }
+      }
+    ],
+    "navn": [
+      {
+        "fornavn": "SVÆR",
+        "mellomnavn": null,
+        "etternavn": "HVITKLØVER",
+        "forkortetNavn": null,
+        "originaltNavn": null,
+        "gyldigFraOgMed": "1959-01-10",
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "2026-01-27T07:55:53.485",
+          "gyldighetstidspunkt": "1959-01-10T00:00:00",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "7775269e-3601-4f90-adcf-19e5d376a689",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "7775269e-3601-4f90-adcf-19e5d376a689"
+            }
+          ],
+          "historisk": false
+        }
+      }
+    ],
+    "navspersonidentifikator": [],
+    "opphold": [],
+    "oppholdsadresse": [],
+    "sikkerhetstiltak": [],
+    "sivilstand": [
+      {
+        "type": "UGIFT",
+        "gyldigFraOgMed": "1959-01-10",
+        "relatertVedSivilstand": null,
+        "bekreftelsesdato": null,
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": "1959-01-10T00:00:00",
+          "gyldighetstidspunkt": "1959-01-10T00:00:00",
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "b23629f3-5fc7-48a4-88aa-73703237f8ab",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "b23629f3-5fc7-48a4-88aa-73703237f8ab"
+            }
+          ],
+          "historisk": false
+        }
+      }
+    ],
+    "statsborgerskap": [
+      {
+        "land": "NOR",
+        "bekreftelsesdato": null,
+        "gyldigFraOgMed": null,
+        "gyldigTilOgMed": null,
+        "folkeregistermetadata": {
+          "ajourholdstidspunkt": null,
+          "gyldighetstidspunkt": null,
+          "opphoerstidspunkt": null,
+          "kilde": "Dolly",
+          "aarsak": null,
+          "sekvens": null
+        },
+        "metadata": {
+          "opplysningsId": "ebdcd53a-be2e-4984-af26-1d941395e6c4",
+          "master": "FREG",
+          "endringer": [
+            {
+              "type": "OPPRETT",
+              "registrert": "2026-01-27T07:55:53.514",
+              "registrertAv": "Folkeregisteret",
+              "systemkilde": "FREG",
+              "kilde": "Dolly",
+              "hendelseId": "ebdcd53a-be2e-4984-af26-1d941395e6c4"
+            }
+          ],
+          "historisk": false
+        }
+      }
+    ],
+    "tilrettelagtKommunikasjon": [],
+    "utenlandskIdentifikasjonsnummer": [],
+    "telefonnummer": [],
+    "innflyttingTilNorge": [],
+    "utflyttingFraNorge": [],
+    "vergemaalEllerFremtidsfullmakt": [],
+    "rettsligHandleevne": []
+  },
+  "hentIdenter": {
+    "identer": [
+      {
+        "ident": "10415942449x",
+        "historisk": false,
+        "gruppe": "FOLKEREGISTERIDENT"
+      },
+      {
+        "ident": "2047155638174",
+        "historisk": false,
+        "gruppe": "AKTORID"
+      }
+    ]
+  }
+}
