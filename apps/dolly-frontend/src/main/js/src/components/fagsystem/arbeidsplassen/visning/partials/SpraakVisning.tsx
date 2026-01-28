@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
+import { Spraak } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const SpraakVisning = ({ data }) => {
+type SpraakVisningProps = {
+	data?: Array<Spraak>
+}
+
+export const SpraakVisning = ({ data }: SpraakVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const SpraakVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Språk" nested>
-					{(spraak) => (
+					{(spraak: Spraak) => (
 						<>
 							<TitleValue title="Språk" value={showLabel('spraak', spraak.language)} />
 							<TitleValue

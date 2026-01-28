@@ -97,7 +97,9 @@ export const MiljoVelger = ({
 			{bestillingsdata && (
 				<>
 					{disableAllEnvironments && (
-						<Alert variant={'info'}>Denne bestillingen er uavhengig av miljøer.</Alert>
+						<Alert variant={'info'} size={'small'}>
+							Denne bestillingen er uavhengig av miljøer.
+						</Alert>
 					)}
 					<MiljoeInfo
 						bestillingsdata={bestillingsdata}
