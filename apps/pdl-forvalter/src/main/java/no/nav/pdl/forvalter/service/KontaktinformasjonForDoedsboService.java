@@ -9,6 +9,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -19,13 +20,14 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -198,9 +200,9 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     isNotBlank(kontaktinfo.getAdresse().getLandkode()) &&
                     !"NOR".equals(kontaktinfo.getAdresse().getLandkode())) {
                 return mapperFacade.map(enkelAdresseService.getUtenlandskAdresse(new UtenlandskAdresseDTO(),
-                                kontaktinfo.getAdresse().getLandkode(), kontaktinfo.getMaster()), KontaktinformasjonForDoedsboAdresse.class);
+                        kontaktinfo.getAdresse().getLandkode(), kontaktinfo.getMaster()), KontaktinformasjonForDoedsboAdresse.class);
 
-            } else{
+            } else {
                 return mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
                         .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
                         .build(), null), KontaktinformasjonForDoedsboAdresse.class);
@@ -218,13 +220,24 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 .findFirst()
                 .orElse(null);
 
-        organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
+        Optional
+                .ofNullable(organisasjon)
+                .ifPresent(nonNullOrganisasjon ->
+                        organisasjonDto.setOrganisasjonsnavn((String) nonNullOrganisasjon.get("organisasjonsnavn")));
 
         if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
-            kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
-                    mapperFacade.map(((List<Map>) organisasjon.get("adresser")).getFirst(), KontaktinformasjonForDoedsboAdresse.class) :
+            var adresses = organisasjon == null ?
+                    Collections.emptyList() :
+                    castValue(organisasjon.get("adresser"));
+            kontaktinfo.setAdresse(!adresses.isEmpty() ?
+                    mapperFacade.map(adresses.getFirst(), KontaktinformasjonForDoedsboAdresse.class) :
                     null);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Map<?, ?>> castValue(Object value) {
+        return (List<Map<?, ?>>) value;
     }
 
     private void leggTilPersonnavn(KontaktpersonDTO kontaktpersonDTO) {
