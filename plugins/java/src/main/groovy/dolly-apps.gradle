@@ -17,6 +17,11 @@ configurations {
     }
 }
 
+// android-json is a stripped down version of org.json which causes conflicts with other libraries using org.json.*.
+configurations.configureEach {
+    exclude group: "com.vaadin.external.google", module: "android-json"
+}
+
 dependencies {
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -29,6 +34,7 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
     implementation "org.glassfish.expressly:expressly:$versions.expressly"
     implementation "org.hibernate.validator:hibernate-validator"
+    implementation "org.json:json:$versions.json"
     implementation "org.projectlombok:lombok"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-undertow"
@@ -89,7 +95,7 @@ tasks.bootJar {
 tasks.test {
     useJUnitPlatform()
     doFirst {
-        jvmArgs += '-javaagent:' + configurations.testRuntimeClasspath.find { it.name.contains("byte-buddy-agent") }
+        jvmArgs += "-javaagent:" + configurations.testRuntimeClasspath.find { it.name.contains("byte-buddy-agent") }
         jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
     }
 }
