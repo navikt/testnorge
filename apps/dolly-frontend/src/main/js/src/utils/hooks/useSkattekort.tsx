@@ -1,5 +1,5 @@
-import useSWR from 'swr'
-import axios from 'axios'
+import useSWR from 'swr';
+import axios from 'axios';
 
 const skattekortBaseUrl = '/testnav-dolly-proxy/skattekort/api/v1'
 
@@ -35,6 +35,11 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 		'Lønn fra NAV': 'loennFraNAV',
 		'Pensjon fra NAV': 'pensjonFraNAV',
 		'Uføretrygd fra NAV': 'ufoeretrygdFraNAV',
+	},
+	TABELLTYPE: {
+		Trekktabell: 'trekktabell',
+		Standardtabell: 'standardtabell',
+		Pensjonisttabell: 'pensjonisttabell',
 	},
 }
 
