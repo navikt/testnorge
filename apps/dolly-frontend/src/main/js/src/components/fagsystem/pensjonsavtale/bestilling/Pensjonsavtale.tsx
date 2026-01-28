@@ -1,6 +1,6 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { showLabel } from '@/utils/DataFormatter'

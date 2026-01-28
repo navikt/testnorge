@@ -4,7 +4,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingData,
 	BestillingTitle,
-} from '@/components/bestilling/sammendrag/Bestillingsvisning'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import React from 'react'

@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingData,
 	BestillingTitle,
-} from '@/components/bestilling/sammendrag/Bestillingsvisning'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { allCapsToCapitalized, formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'

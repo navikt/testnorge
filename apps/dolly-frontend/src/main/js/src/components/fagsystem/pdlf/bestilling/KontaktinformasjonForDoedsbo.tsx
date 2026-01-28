@@ -3,14 +3,14 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingData,
 	BestillingTitle,
-} from '@/components/bestilling/sammendrag/Bestillingsvisning'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
-import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
+import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/partials/EkspanderbarVisning'
+import { RelatertPerson } from '@/components/bestilling/sammendrag/partials/RelatertPerson'
 import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 

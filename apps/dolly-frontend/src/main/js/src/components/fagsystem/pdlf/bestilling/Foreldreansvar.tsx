@@ -1,12 +1,12 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ForeldreansvarData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
-import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
-import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
+import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/partials/EkspanderbarVisning'
+import { RelatertPerson } from '@/components/bestilling/sammendrag/partials/RelatertPerson'
 import * as _ from 'lodash-es'
 
 type ForeldreansvarTypes = {

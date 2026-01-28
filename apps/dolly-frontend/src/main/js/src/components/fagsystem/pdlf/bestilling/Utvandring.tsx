@@ -1,6 +1,6 @@
 import { UtvandringValues } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'

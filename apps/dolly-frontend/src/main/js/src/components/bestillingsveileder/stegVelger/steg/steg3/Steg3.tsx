@@ -7,7 +7,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
-import { Bestillingsvisning } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import { Bestillingsvisning } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { useFormContext } from 'react-hook-form'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'

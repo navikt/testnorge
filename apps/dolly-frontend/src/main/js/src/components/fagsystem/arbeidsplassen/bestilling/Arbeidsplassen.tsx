@@ -4,7 +4,7 @@ import React from 'react'
 import {
 	BestillingData,
 	BestillingTitle,
-} from '@/components/bestilling/sammendrag/Bestillingsvisning'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'

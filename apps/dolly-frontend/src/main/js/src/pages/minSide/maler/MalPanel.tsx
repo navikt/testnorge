@@ -10,9 +10,9 @@ import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
-import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsdata/Bestillingsdata'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/BestillingsdataOrganisasjon'
+import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/bestillingsdata/BestillingsdataOrganisasjon'
 
 type Props = {
 	antallEgneMaler: any

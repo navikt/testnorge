@@ -4,7 +4,10 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { BestillingTitle, EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import {
+	BestillingTitle,
+	EmptyObject,
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { FoedselData } from '@/components/fagsystem/pdlf/PdlTypes'
 

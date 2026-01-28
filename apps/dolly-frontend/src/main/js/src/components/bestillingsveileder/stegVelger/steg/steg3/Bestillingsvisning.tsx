@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import React, { useEffect, useRef, useState } from 'react'
-import './Bestillingsdata.less'
+import '../../../../bestilling/sammendrag/bestillingsdata/Bestillingsdata.less'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsdata/Bestillingsdata'
 import * as _ from 'lodash-es'
-import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/BestillingsdataOrganisasjon'
+import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/bestillingsdata/BestillingsdataOrganisasjon'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;

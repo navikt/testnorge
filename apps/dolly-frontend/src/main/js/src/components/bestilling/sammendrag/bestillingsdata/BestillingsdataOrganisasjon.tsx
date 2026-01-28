@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import {
 	BestillingData,
 	BestillingTitle,
-} from '@/components/bestilling/sammendrag/Bestillingsvisning'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'

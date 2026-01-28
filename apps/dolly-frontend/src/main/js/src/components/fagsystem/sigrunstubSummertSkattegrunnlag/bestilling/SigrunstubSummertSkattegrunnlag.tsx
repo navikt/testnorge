@@ -1,5 +1,5 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	codeToNorskLabel,
@@ -14,7 +14,7 @@ import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
-import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
+import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/partials/EkspanderbarVisning'
 
 const SpesifiseringVisning = ({ spesifisering, key }) => {
 	return (

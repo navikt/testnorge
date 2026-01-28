@@ -7,7 +7,7 @@ import {
 	BestillingData,
 	BestillingTitle,
 	EmptyObject,
-} from '@/components/bestilling/sammendrag/Bestillingsvisning'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 type DeltBostedTypes = {

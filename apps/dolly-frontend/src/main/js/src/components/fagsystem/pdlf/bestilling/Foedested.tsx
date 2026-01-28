@@ -1,5 +1,8 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle, EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import {
+	BestillingTitle,
+	EmptyObject,
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'

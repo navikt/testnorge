@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingData,
 	BestillingTitle,
-} from '@/components/bestilling/sammendrag/Bestillingsvisning'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'

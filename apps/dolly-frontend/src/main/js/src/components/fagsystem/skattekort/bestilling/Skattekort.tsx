@@ -1,6 +1,6 @@
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import React from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { KodeverkTitleValue } from '@/components/fagsystem/skattekort/visning/Visning'

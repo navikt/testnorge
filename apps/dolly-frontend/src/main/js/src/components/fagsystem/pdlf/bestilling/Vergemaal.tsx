@@ -1,14 +1,14 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsvisning'
+import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { TjenesteomraadeValues, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { arrayToString, codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
-import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
+import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/partials/EkspanderbarVisning'
 import * as _ from 'lodash-es'
-import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
+import { RelatertPerson } from '@/components/bestilling/sammendrag/partials/RelatertPerson'
 
 type VergemaalTypes = {
 	vergemaalListe: Array<VergemaalValues>

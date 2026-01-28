@@ -3,9 +3,9 @@ import React, { Suspense } from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/visning/Bestillingsinformasjon'
-import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/BestillingsdataOrganisasjon'
-import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/partials/Bestillingsinformasjon'
+import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/bestillingsdata/BestillingsdataOrganisasjon'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsdata/Bestillingsdata'
 
 export const BestillingSammendrag = ({
 	bestilling,
