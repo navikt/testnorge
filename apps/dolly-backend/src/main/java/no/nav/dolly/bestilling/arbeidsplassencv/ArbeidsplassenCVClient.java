@@ -54,12 +54,11 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                                         AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG))
                         .zipWith(Mono.just(person.getDoedsfall().stream()
                                 .anyMatch(doed -> nonNull(doed.getDoedsdato())))))
-                .collectList()
                 .flatMap(harAdressebeskyttelseEllerDoed -> {
-                    if (!harAdressebeskyttelseEllerDoed.isEmpty() &&isTrue(harAdressebeskyttelseEllerDoed.getFirst().getT1())) {
-                        return oppdaterStatus(progress, "Feil: CV kan ikke opprettes - person har adressebeskyttelse STRENGT FORTROLIG");
-                    } else if (!harAdressebeskyttelseEllerDoed.isEmpty() && isTrue(harAdressebeskyttelseEllerDoed.getFirst().getT2())) {
-                        return oppdaterStatus(progress, "Feil: CV kan ikke opprettes - person er død");
+                    if (isTrue(harAdressebeskyttelseEllerDoed.getT1())) {
+                        return oppdaterStatus(progress, "Avvik: CV kan ikke opprettes - person har adressebeskyttelse STRENGT FORTROLIG");
+                    } else if (isTrue(harAdressebeskyttelseEllerDoed.getT2())) {
+                        return oppdaterStatus(progress, "Avvik: CV kan ikke opprettes - person er død");
                     } else {
 
                         return oppdaterStatus(progress, getInfoVenter("Arbeidsplassen"))
@@ -87,7 +86,7 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 });
     }
 
-    private Flux<PdlPerson.Person> getPerson(DollyPerson dollyPerson) {
+    private Mono<PdlPerson.Person> getPerson(DollyPerson dollyPerson) {
 
         return personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
@@ -95,7 +94,9 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
                 .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .map(PdlPersonBolk.PersonBolk::getPerson);
+                .map(PdlPersonBolk.PersonBolk::getPerson)
+                .next()
+                .switchIfEmpty(Mono.just(new PdlPerson.Person()));
     }
 
     private Consumer<Retry.RetrySignal> logRetries(BestillingProgress progress) {
