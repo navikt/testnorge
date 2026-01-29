@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -47,13 +48,7 @@ public class ArbeidsplassenCVClient implements ClientRegister {
             return Mono.empty();
         }
 
-        return personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
-                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
-                .map(PdlPersonBolk::getData)
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .map(PdlPersonBolk.PersonBolk::getPerson)
+        return getPerson(dollyPerson)
                 .flatMap(person -> Mono.just(person.getAdressebeskyttelse().stream()
                                 .anyMatch(ab -> ab.getGradering() ==
                                         AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG))
@@ -61,9 +56,9 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                                 .anyMatch(doed -> nonNull(doed.getDoedsdato())))))
                 .collectList()
                 .flatMap(harAdressebeskyttelseEllerDoed -> {
-                    if (isTrue(harAdressebeskyttelseEllerDoed.getFirst().getT1())) {
+                    if (!harAdressebeskyttelseEllerDoed.isEmpty() &&isTrue(harAdressebeskyttelseEllerDoed.getFirst().getT1())) {
                         return oppdaterStatus(progress, "Feil: CV kan ikke opprettes - person har adressebeskyttelse STRENGT FORTROLIG");
-                    } else if (isTrue(harAdressebeskyttelseEllerDoed.getFirst().getT2())) {
+                    } else if (!harAdressebeskyttelseEllerDoed.isEmpty() && isTrue(harAdressebeskyttelseEllerDoed.getFirst().getT2())) {
                         return oppdaterStatus(progress, "Feil: CV kan ikke opprettes - person er død");
                     } else {
 
@@ -90,6 +85,17 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                                                 .flatMap(resultat -> oppdaterStatus(progress, resultat))));
                     }
                 });
+    }
+
+    private Flux<PdlPerson.Person> getPerson(DollyPerson dollyPerson) {
+
+        return personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(PdlPersonBolk.PersonBolk::getPerson);
     }
 
     private Consumer<Retry.RetrySignal> logRetries(BestillingProgress progress) {
