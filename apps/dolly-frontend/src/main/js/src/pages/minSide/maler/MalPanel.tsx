@@ -56,7 +56,6 @@ export const MalPanel = ({
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
-	console.log('maler: ', maler) //TODO - SLETT MEG
 
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
