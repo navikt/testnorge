@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skattekort.domain.OpprettSkattekortRequest;
+import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -27,7 +28,7 @@ public class SkattekortClient implements ClientRegister {
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                              BestillingProgress progress, boolean isOpprettEndre) {
+                                                BestillingProgress progress, boolean isOpprettEndre) {
 
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getSkattekort()))
@@ -36,13 +37,22 @@ public class SkattekortClient implements ClientRegister {
                 .doOnNext(skattekortmelding -> skattekortmelding.setArbeidstakeridentifikator(dollyPerson.getIdent()))
                 .map(skattekortmelding -> mapperFacade.map(skattekortmelding, OpprettSkattekortRequest.class))
                 .flatMap(skattekortConsumer::sendSkattekort)
+                .map(this::formatStatus)
                 .collect(Collectors.joining(","))
                 .flatMap(status -> oppdaterStatus(progress, status));
     }
 
     @Override
     public void release(List<String> identer) {
+        // Støtter per nå ikke sletting i API
+    }
 
+    private String formatStatus(SkattekortResponse response) {
+
+        if (response.isOK()) {
+            return "OK";
+        }
+        return "FEIL: " + response.getFeilmelding();
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
