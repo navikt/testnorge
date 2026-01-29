@@ -21,6 +21,7 @@ class RouteLocatorConfig {
     private final Inntektstub inntektstub;
     private final Inst inst;
     private final Kontoregister kontoregister;
+    private final Skattekort skattekort;
     private final Krrstub krrstub;
     private final Medl medl;
     private final Norg2 norg2;
@@ -58,6 +59,7 @@ class RouteLocatorConfig {
                 .route("inntektstub", inntektstub.build())
                 .route("inst", inst.build())
                 .route("kontoregister", kontoregister.build())
+                .route("skattekort", skattekort.build())
                 .route("krrstub", krrstub.build())
                 .route("medl", medl.build())
                 .route("norg2", norg2.build())
