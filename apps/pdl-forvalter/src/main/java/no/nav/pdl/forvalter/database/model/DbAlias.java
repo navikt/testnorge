@@ -3,9 +3,11 @@ package no.nav.pdl.forvalter.database.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
@@ -13,8 +15,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -31,11 +31,8 @@ public class DbAlias {
     private static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
 
     @Id
-    @GeneratedValue(generator = "aliasIdGenerator")
-    @GenericGenerator(name = "aliasIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "alias_sequence"),
-            @Parameter(name = "increment_size", value = "1"),
-    })
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "aliasIdGenerator")
+    @SequenceGenerator(name = "aliasIdGenerator", sequenceName = "alias_sequence", allocationSize = 1)
     private Long id;
 
     @UpdateTimestamp
