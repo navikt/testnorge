@@ -1,6 +1,5 @@
 package no.nav.testnav.pdllagreservice.kafka;
 
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -20,10 +19,6 @@ public class KafkaBeanUtilities {
 
     public DefaultKafkaConsumerFactory<Object, Object> longStringConsumerFactory(Map<String, Object> configurationProperties) {
         return customConsumerFactory(configurationProperties, LongDeserializer.class, StringDeserializer.class);
-    }
-
-    public DefaultKafkaConsumerFactory<Object, Object> avroAvroConsumerFactory(Map<String, Object> configurationProperties) {
-        return customConsumerFactory(configurationProperties, KafkaAvroDeserializer.class, KafkaAvroDeserializer.class);
     }
 
     public DefaultKafkaConsumerFactory<Object, Object> customConsumerFactory(Map<String, Object> oldConfigurationProperties,

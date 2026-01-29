@@ -204,9 +204,9 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             }
         }
 
-        Optional
-                .ofNullable(folkeregisterPersonstatus.getFirst())
-                .ifPresent(first -> first.setGyldigTilOgMed(null));
+        if (!folkeregisterPersonstatus.isEmpty()) {
+            folkeregisterPersonstatus.getFirst().setGyldigTilOgMed(null);
+        }
 
     }
 

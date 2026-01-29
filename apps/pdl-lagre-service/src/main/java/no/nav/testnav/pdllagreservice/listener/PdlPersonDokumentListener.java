@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import static java.util.Objects.isNull;
+import static no.nav.testnav.pdllagreservice.listener.PdlPersonMappingAddendum.appendSizeAttribute;
 import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KAFKA_CONSUMER_TIMED;
 import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KEY;
 
@@ -40,9 +41,9 @@ public class PdlPersonDokumentListener {
 
     @KafkaListener(
             id = "pdl-lagre-person",
-            clientIdPrefix = "testnav-lagre-person-v3",
+            clientIdPrefix = "testnav-lagre-person-v4",
             topics = "pdl.pdl-persondokument-tagged-v1",
-            groupId = "testnav-pdl-lagre-person-v3",
+            groupId = "testnav-pdl-lagre-person-v4",
             containerFactory = "pdlDokumentKafkaFactory"
     )
     @Timed(value = KAFKA_CONSUMER_TIMED, extraTags = {KEY, "pdldokument"}, percentiles = {.99, .75, .50, .25})
@@ -66,7 +67,8 @@ public class PdlPersonDokumentListener {
             } else {
                 val dokument = mapper.readValue(post.value(), new TypeReference<HashMap<String, Object>>() {
                 });
-                return new OpensearchDocumentData(personIndex, post.key(), dokument);
+                val dokumentMedSizeAttributter = appendSizeAttribute(dokument);
+                return new OpensearchDocumentData(personIndex, post.key(), dokumentMedSizeAttributter);
             }
         } catch (RuntimeException | IOException exception) {
 
