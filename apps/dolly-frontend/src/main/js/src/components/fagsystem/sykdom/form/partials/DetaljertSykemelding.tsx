@@ -194,6 +194,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 		formMethods.clearErrors('sykemelding.detaljertSykemelding.mottaker.navn')
 		formMethods.setValue('sykemelding.detaljertSykemelding.arbeidsgiver.navn', null)
 		formMethods.setValue('sykemelding.detaljertSykemelding.mottaker', initialValuesMottaker)
+		hasErrorRef.current = false
 	}
 
 	const handleArbeidsgiverChange = (v: Arbeidsgiver | BaseSyntheticEvent) => {
