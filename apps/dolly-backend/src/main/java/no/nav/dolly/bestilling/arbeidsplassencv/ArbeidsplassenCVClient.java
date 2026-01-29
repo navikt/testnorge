@@ -15,7 +15,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -28,6 +27,7 @@ import java.util.function.Consumer;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -50,8 +50,8 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
         return getPerson(dollyPerson)
                 .flatMap(person -> Mono.just(person.getAdressebeskyttelse().stream()
-                                .anyMatch(ab -> ab.getGradering() ==
-                                        AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG))
+                                .anyMatch(ab ->
+                                        STRENGT_FORTROLIG.equals(ab.getGradering())))
                         .zipWith(Mono.just(person.getDoedsfall().stream()
                                 .anyMatch(doed -> nonNull(doed.getDoedsdato())))))
                 .flatMap(harAdressebeskyttelseEllerDoed -> {
