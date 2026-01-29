@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -29,13 +30,17 @@ public class SkattekortClient implements ClientRegister {
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                                 BestillingProgress progress, boolean isOpprettEndre) {
+        
 
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getSkattekort()))
                 .flatMapMany(bestilling1 -> Flux.fromIterable(bestilling1.getSkattekort().getArbeidsgiverSkatt()))
                 .flatMap(arbeidsgiver -> Flux.fromIterable(arbeidsgiver.getArbeidstaker()))
-                .doOnNext(skattekortmelding -> skattekortmelding.setArbeidstakeridentifikator(dollyPerson.getIdent()))
-                .map(skattekortmelding -> mapperFacade.map(skattekortmelding, OpprettSkattekortRequest.class))
+                .map(skattekortmelding -> {
+                    var context =  MappingContextUtils.getMappingContext();
+                    context.setProperty("ident", dollyPerson.getIdent());
+                    return mapperFacade.map(skattekortmelding, OpprettSkattekortRequest.class, context);
+                })
                 .flatMap(skattekortConsumer::sendSkattekort)
                 .map(this::formatStatus)
                 .collect(Collectors.joining(","))
