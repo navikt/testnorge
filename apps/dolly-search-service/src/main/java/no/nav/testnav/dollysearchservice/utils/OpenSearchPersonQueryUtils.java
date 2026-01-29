@@ -18,6 +18,8 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HISTO
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.METADATA_HISTORISK;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedExistQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedMatchQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRangeGtQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRangeGteQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRangeQuery;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -30,6 +32,7 @@ public class OpenSearchPersonQueryUtils {
     private static final String BOSTEDSADRESSE = "hentPerson.bostedsadresse";
     private static final String OPPHOLDSADRESSE = "hentPerson.oppholdsadresse";
     private static final String KONTAKTADRESSE = "hentPerson.kontaktadresse";
+    private static final String STATSBORGERSKAP = "hentPerson.statsborgerskap";
     private static final String VEGADRESSE = "vegadresse";
     private static final String MATRIKKELADRESSE = "matrikkeladresse";
     private static final String UTENLANDSKADRESSE = "utenlandskAdresse";
@@ -328,6 +331,39 @@ public class OpenSearchPersonQueryUtils {
                 );
     }
 
+    public static void addAntallBostedsadresserQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getAdresse())
+                .filter(adresse -> nonNull(adresse.getAdressehistorikk()) &&
+                        nonNull(adresse.getAdressehistorikk().getAntallBostedsadresser()))
+                .ifPresent(adresse ->
+                        queryBuilder
+                                .must(q -> q.nested(nestedRangeGtQuery(BOSTEDSADRESSE, "size",
+                                        adresse.getAdressehistorikk().getAntallBostedsadresser()))));
+    }
+
+    public static void addAntallKontaktadresserQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getAdresse())
+                .filter(adresse -> nonNull(adresse.getAdressehistorikk()) &&
+                        nonNull(adresse.getAdressehistorikk().getAntallKontaktadresser()))
+                .ifPresent(adresse ->
+                        queryBuilder
+                                .must(q -> q.nested(nestedRangeGtQuery(KONTAKTADRESSE, "size",
+                                        adresse.getAdressehistorikk().getAntallKontaktadresser()))));
+    }
+
+    public static void addAntallOppholdsadresserQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getAdresse())
+                .filter(adresse -> nonNull(adresse.getAdressehistorikk()) &&
+                        nonNull(adresse.getAdressehistorikk().getAntallOppholdsadresser()))
+                .ifPresent(adresse ->
+                        queryBuilder
+                                .must(q -> q.nested(nestedRangeGtQuery(OPPHOLDSADRESSE, "size",
+                                        adresse.getAdressehistorikk().getAntallOppholdsadresser()))));
+    }
+
     public static void addHarKontaktinformasjonForDoedsboQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
 
         if (isTrue(request.getPersonRequest().getHarKontaktinformasjonForDoedsbo())) {
@@ -367,10 +403,27 @@ public class OpenSearchPersonQueryUtils {
 
         if (isNotBlank(request.getPersonRequest().getStatsborgerskap())) {
             queryBuilder
-                    .must(q -> q.nested(nestedMatchQuery("hentPerson.statsborgerskap", METADATA_HISTORISK, false)))
-                    .must(q -> q.nested(nestedMatchQuery("hentPerson.statsborgerskap", "land",
-                            request.getPersonRequest().getStatsborgerskap()))
-                    );
+                    .must(q -> q.nested(nestedMatchQuery(STATSBORGERSKAP, METADATA_HISTORISK, false)))
+                    .must(q -> q.nested(nestedMatchQuery(STATSBORGERSKAP, "land",
+                            request.getPersonRequest().getStatsborgerskap())));
+        }
+    }
+
+    public static void addAntallStatsborgerskapQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        if (nonNull(request.getPersonRequest().getAntallStatsborgerskap())) {
+            queryBuilder
+                    .must(q -> q.nested(nestedRangeGteQuery(STATSBORGERSKAP, "size",
+                            request.getPersonRequest().getAntallStatsborgerskap())));
+        }
+    }
+
+    public static void addAntallRelasjonerQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        if (nonNull(request.getPersonRequest().getAntallRelasjoner())) {
+            queryBuilder
+                    .must(q -> q.nested(nestedRangeGteQuery(FAMILIE_RELASJON_PATH, "size",
+                            request.getPersonRequest().getAntallRelasjoner())));
         }
     }
 
