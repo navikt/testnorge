@@ -80,10 +80,6 @@ repositories {
         name = "Confluent"
         url = uri("https://packages.confluent.io/maven/")
     }
-    maven {
-        name = "Shibboleth"
-        url = uri("https://build.shibboleth.net/maven/releases/")
-    }
     mavenLocal()
 }
 
