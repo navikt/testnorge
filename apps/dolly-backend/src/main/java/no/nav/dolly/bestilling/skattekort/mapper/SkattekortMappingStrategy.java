@@ -87,11 +87,13 @@ public class SkattekortMappingStrategy implements MappingStrategy {
         factory.classMap(Trekktabell.class, ForskuddstrekkDTO.class)
                 .field("tabellnummer", "tabell")
                 .field("antallMaanederForTrekk", "antallMndForTrekk")
+                .field("prosentsats", "prosentSats")
                 .byDefault()
                 .register();
 
         factory.classMap(Trekkprosent.class, ForskuddstrekkDTO.class)
                 .field("antallMaanederForTrekk", "antallMndForTrekk")
+                .field("prosentsats", "prosentSats")
                 .byDefault()
                 .register();
     }
