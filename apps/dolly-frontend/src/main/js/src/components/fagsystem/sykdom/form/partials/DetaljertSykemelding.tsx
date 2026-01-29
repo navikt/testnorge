@@ -176,7 +176,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 				postnummer: fAddr.postnr || fAddr.postnummer || firstAdresse?.postnr || null,
 			},
 		}
-	}, [formMethods])
+	}, [])
 
 	const setMottakerFromForvalter = useCallback((org: any) => {
 		formMethods.setValue(
@@ -184,7 +184,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 			org?.navn || org?.organisasjonsnavn || null,
 		)
 		formMethods.setValue('sykemelding.detaljertSykemelding.mottaker', mapForvalterOrganisasjon(org))
-	}, [formMethods, mapForvalterOrganisasjon])
+	}, [mapForvalterOrganisasjon])
 
 	const clearValgtOrganisasjon = () => {
 		formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.arbeidsgiver.navn')
