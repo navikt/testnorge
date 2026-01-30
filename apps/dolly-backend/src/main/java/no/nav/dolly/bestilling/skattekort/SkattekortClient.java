@@ -36,11 +36,18 @@ public class SkattekortClient implements ClientRegister {
         SkattekortRequestDTO mapped = mapperFacade.map(bestilling.getSkattekort(), SkattekortRequestDTO.class);
 
         Flux<String> statusFlux = Flux.fromIterable(mapped.getArbeidsgiver())
-                .map(arbeidsgiver -> SkattekortRequestDTO.builder()
-                        .arbeidsgiver(List.of(arbeidsgiver))
-                        .build())
-                .flatMap(request -> skattekortConsumer.sendSkattekort(request))
-                .map(response -> formatStatus(response));
+                .flatMap(arbeidsgiver -> {
+                    SkattekortRequestDTO request = SkattekortRequestDTO.builder()
+                            .arbeidsgiver(List.of(arbeidsgiver))
+                            .build();
+                    
+                    String orgNumber = arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer();
+                    Integer year = arbeidsgiver.getArbeidstaker().isEmpty() ? null : 
+                            arbeidsgiver.getArbeidstaker().get(0).getInntektsaar();
+                    
+                    return skattekortConsumer.sendSkattekort(request)
+                            .map(response -> formatStatus(response, orgNumber, year));
+                });
 
         return statusFlux
                 .collectList()
@@ -53,11 +60,12 @@ public class SkattekortClient implements ClientRegister {
         // Deletion is not yet supported
     }
 
-    private String formatStatus(SkattekortResponse response) {
+    private String formatStatus(SkattekortResponse response, String orgNumber, Integer year) {
+        String prefix = orgNumber + "+" + year + ":";
         if (response.isOK()) {
-            return "OK";
+            return prefix + "Skattekort lagret";
         }
-        return "FEIL: " + response.getFeilmelding();
+        return prefix + "FEIL: " + response.getFeilmelding();
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
