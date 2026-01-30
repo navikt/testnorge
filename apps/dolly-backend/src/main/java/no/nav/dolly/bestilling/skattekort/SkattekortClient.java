@@ -43,7 +43,7 @@ public class SkattekortClient implements ClientRegister {
                     
                     String orgNumber = arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer();
                     Integer year = arbeidsgiver.getArbeidstaker().isEmpty() ? null : 
-                            arbeidsgiver.getArbeidstaker().get(0).getInntektsaar();
+                            arbeidsgiver.getArbeidstaker().getFirst().getInntektsaar();
                     
                     return skattekortConsumer.sendSkattekort(request)
                             .map(response -> formatStatus(response, orgNumber, year));

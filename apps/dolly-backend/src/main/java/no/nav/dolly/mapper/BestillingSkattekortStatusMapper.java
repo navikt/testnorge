@@ -91,9 +91,14 @@ public final class BestillingSkattekortStatusMapper {
 
     private static String formatMelding(String orgYear, String melding) {
 
+        String[] parts = orgYear.split("\\+");
+        if (parts.length < 2) {
+            return "FEIL: %s".formatted(decodeMsg(melding));
+        }
+        
         return "FEIL: organisasjon:%s, inntektsår:%s, melding:%s".formatted(
-                orgYear.split("\\+")[0],
-                orgYear.split("\\+")[1],
+                parts[0],
+                parts[1],
                 decodeMsg(melding));
     }
 }
