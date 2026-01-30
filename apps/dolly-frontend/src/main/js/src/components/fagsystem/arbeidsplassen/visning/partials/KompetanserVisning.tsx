@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
+import { Kompetanser } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const KompetanserVisning = ({ data }) => {
+type KompetanserVisningProps = {
+	data?: Array<Kompetanser>
+}
+
+export const KompetanserVisning = ({ data }: KompetanserVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const KompetanserVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Kompetanser" nested>
-					{(kompetanse) => (
+					{(kompetanse: Kompetanser) => (
 						<>
 							<TitleValue
 								title="Kompetanse/ferdighet/verktøy"

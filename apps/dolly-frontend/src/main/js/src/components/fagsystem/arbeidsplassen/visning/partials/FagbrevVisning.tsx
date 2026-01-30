@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
+import { Fagbrev } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const FagbrevVisning = ({ data }) => {
+type FagbrevVisningProps = {
+	data?: Array<Fagbrev>
+}
+
+export const FagbrevVisning = ({ data }: FagbrevVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const FagbrevVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Fagbrev" nested>
-					{(fagbrev) => (
+					{(fagbrev: Fagbrev) => (
 						<>
 							<TitleValue
 								title="Fagdokumentasjon"
