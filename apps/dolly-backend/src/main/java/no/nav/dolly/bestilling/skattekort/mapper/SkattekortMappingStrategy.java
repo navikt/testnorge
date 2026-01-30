@@ -42,7 +42,6 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
         factory.classMap(Skattekortmelding.class, SokosSkattekortRequest.SokosSkattekortDTO.class)
                 .field("skattekort.utstedtDato", "utstedtDato")
-                .field("skattekort.forskuddstrekk", "forskuddstrekkList")
                 .field("inntektsaar", "inntektsaar")
                 .field("tilleggsopplysning", "tilleggsopplysningList")
                 .customize(new CustomMapper<>() {
@@ -53,11 +52,10 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                         }
                         
                         if (source.getSkattekort() != null && source.getSkattekort().getForskuddstrekk() != null) {
-                            destination.setForskuddstrekkList(
-                                    source.getSkattekort().getForskuddstrekk().stream()
-                                            .map(SkattekortMappingStrategy::flattenForskuddstrekk)
-                                            .toList()
-                            );
+                            var flattened = source.getSkattekort().getForskuddstrekk().stream()
+                                    .map(SkattekortMappingStrategy::flattenForskuddstrekk)
+                                    .toList();
+                            destination.setForskuddstrekkList(flattened);
                         }
                     }
                 })
@@ -65,16 +63,33 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private static Forskuddstrekk flattenForskuddstrekk(Forskuddstrekk original) {
+    private static SokosSkattekortRequest.SokosForskuddstrekkDTO flattenForskuddstrekk(Forskuddstrekk original) {
         if (original == null) {
             return null;
         }
 
-        return Forskuddstrekk.builder()
-                .trekktabell(original.getTrekktabell())
-                .frikort(original.getFrikort())
-                .trekkprosent(original.getTrekkprosent())
-                .build();
+        SokosSkattekortRequest.SokosForskuddstrekkDTO.SokosForskuddstrekkDTOBuilder builder = 
+                SokosSkattekortRequest.SokosForskuddstrekkDTO.builder();
+        
+        if (original.getTrekktabell() != null) {
+            builder.trekkode(original.getTrekktabell().getTrekkode())
+                   .tabell(original.getTrekktabell().getTabellnummer())
+                   .prosentSats(original.getTrekktabell().getProsentsats() != null 
+                           ? original.getTrekktabell().getProsentsats().doubleValue() : null)
+                   .antallMndForTrekk(original.getTrekktabell().getAntallMaanederForTrekk() != null 
+                           ? original.getTrekktabell().getAntallMaanederForTrekk().doubleValue() : null);
+        }
+        
+        if (original.getFrikort() != null) {
+            builder.frikortBeloep(original.getFrikort().getFrikortbeloep());
+        }
+        
+        if (original.getTrekkprosent() != null) {
+            builder.prosentSats(original.getTrekkprosent().getProsentsats() != null 
+                    ? original.getTrekkprosent().getProsentsats().doubleValue() : null);
+        }
+        
+        return builder.build();
     }
 }
 

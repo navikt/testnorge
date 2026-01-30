@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -21,10 +22,22 @@ public class SokosSkattekortRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SokosSkattekortDTO {
-        private String utstedtDato;
+        private LocalDate utstedtDato;
         private Integer inntektsaar;
         private String resultatForSkattekort;
-        private List<Forskuddstrekk> forskuddstrekkList;
+        private List<SokosForskuddstrekkDTO> forskuddstrekkList;
         private List<Tilleggsopplysning> tilleggsopplysningList;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SokosForskuddstrekkDTO {
+        private Trekkode trekkode;
+        private Integer frikortBeloep;
+        private String tabell;
+        private Double prosentSats;
+        private Double antallMndForTrekk;
     }
 }

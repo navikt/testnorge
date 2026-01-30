@@ -110,12 +110,32 @@ class SkattekortMappingStrategyTest {
             String json = objectMapper.writeValueAsString(mapped);
 
             assertThat(json)
-                    .as("JSON must be valid and serializable for Sokos API")
-                    .contains("\"fnr\":\"" + IDENT + "\"")
-                    .contains("\"inntektsaar\":" + INNTEKTSAAR)
-                    .contains("\"resultatForSkattekort\":\"skattekortopplysningerOK\"")
-                    .contains("\"skattekort\"")
+                    .as("JSON must contain fnr field")
+                    .contains("\"fnr\":\"" + IDENT + "\"");
+            assertThat(json)
+                    .as("JSON must contain inntektsaar field")
+                    .contains("\"inntektsaar\":" + INNTEKTSAAR);
+            assertThat(json)
+                    .as("JSON must contain resultatForSkattekort enum value")
+                    .contains("\"resultatForSkattekort\":\"skattekortopplysningerOK\"");
+            assertThat(json)
+                    .as("JSON must contain skattekort object")
+                    .contains("\"skattekort\"");
+            assertThat(json)
+                    .as("JSON must contain forskuddstrekkList array")
                     .contains("\"forskuddstrekkList\"");
+            assertThat(json)
+                    .as("JSON must contain flat tabell field (not tabellnummer)")
+                    .contains("\"tabell\":\"8020\"");
+            assertThat(json)
+                    .as("JSON must contain flat trekkode field")
+                    .contains("\"trekkode\":\"loennFraNAV\"");
+            assertThat(json)
+                    .as("JSON must contain flat prosentSats field (not prosentsats)")
+                    .contains("\"prosentSats\"");
+            assertThat(json)
+                    .as("JSON must contain flat antallMndForTrekk field (not antallMaanederForTrekk)")
+                    .contains("\"antallMndForTrekk\"");
         }
 
         @Test
