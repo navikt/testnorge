@@ -50,6 +50,7 @@ export default ({ formMethods, path }: InntektendringForm) => {
 							hjelpetekst={hjelpetekst}
 							header={`Inntektsendring (versjon ${idx + 1})`}
 							handleRemove={clickRemove}
+							showDeleteButton
 						>
 							<FormDatepicker
 								format={'DD.MM.YYYY HH:mm'}

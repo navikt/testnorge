@@ -12,9 +12,8 @@ import {
 import { onSuccess } from '@/ducks/utils/requestActions'
 import { successMiljoSelector } from '@/ducks/bestillingStatus'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
-import { formatAlder, formatKjonn } from '@/utils/DataFormatter'
+import { formatAlder, formatKjonn, getTypePerson } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
-import { getTypePerson } from '@/components/bestilling/sammendrag/kriterier/BestillingKriterieMapper'
 
 export const actions = createActions(
 	{

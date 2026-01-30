@@ -1,6 +1,6 @@
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
-import BestillingSammendrag from '@/components/bestilling/sammendrag/BestillingSammendrag'
+import { BestillingSammendrag } from '@/components/bestilling/sammendrag/BestillingSammendrag'
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 
 import './BestillingDetaljer.less'
