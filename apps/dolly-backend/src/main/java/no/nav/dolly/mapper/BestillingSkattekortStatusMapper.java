@@ -25,6 +25,7 @@ public final class BestillingSkattekortStatusMapper {
     public static List<RsStatusRapport> buildSkattekortStatusMap(List<BestillingProgress> progressList) {
 
         log.info("[SKATTEKORT_MAPPER] Building skattekort status map for {} progress records", progressList.size());
+        progressList.forEach(p -> log.info("[SKATTEKORT_MAPPER] Progress: ident={}, skattekortStatus={}", p.getIdent(), p.getSkattekortStatus()));
 
         //  status     org+year       ident
         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
