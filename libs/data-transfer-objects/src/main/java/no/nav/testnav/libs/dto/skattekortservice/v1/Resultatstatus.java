@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.skattekortservice.v1;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +16,7 @@ public enum Resultatstatus {
     UGYLDIG_FOEDSELS_ELLER_DNUMMER("ugyldigFoedselsEllerDnummer"),
     UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT("utgaattDnummerSkattekortForFoedselsnummerErLevert");
 
+    @JsonValue
     private final String value;
 
     @Override

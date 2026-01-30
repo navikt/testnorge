@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.skattekortservice.v1;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,7 @@ public enum Trekkode {
     UFOEREYTELSER_FRA_ANDRE("ufoereytelserFraAndre"),
     INTRODUKSJONSSTOENAD("introduksjonsstoenad");
 
+    @JsonValue
     private final String value;
 
     @Override
