@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,6 +50,20 @@ public final class BestillingSkattekortStatusMapper {
         });
 
         if (errorEnvIdents.isEmpty()) {
+            if (!progressList.isEmpty() && progressList.stream().anyMatch(p -> isNotBlank(p.getIdent()))) {
+                return List.of(RsStatusRapport.builder()
+                        .id(SKATTEKORT)
+                        .navn(SKATTEKORT.getBeskrivelse())
+                        .statuser(List.of(RsStatusRapport.Status.builder()
+                                .melding("OK")
+                                .identer(progressList.stream()
+                                        .map(BestillingProgress::getIdent)
+                                        .filter(StringUtils::isNotBlank)
+                                        .distinct()
+                                        .toList())
+                                .build()))
+                        .build());
+            }
             return emptyList();
 
         } else {
