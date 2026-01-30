@@ -3,9 +3,9 @@ package no.nav.dolly.bestilling.skattekort.command;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.skattekort.domain.OpprettSkattekortRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
     private static final String CONSUMER = "Dolly";
 
     private final WebClient webClient;
-    private final OpprettSkattekortRequest request;
+    private final SkattekortRequestDTO request;
     private final String token;
 
     @Override

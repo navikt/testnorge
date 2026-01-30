@@ -12,9 +12,9 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-
         factory.classMap(SkattekortRequestDTO.class, no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO.class)
                 .mapNulls(false)
+                .field("arbeidsgiverSkatt", "arbeidsgiver")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(SkattekortRequestDTO kilde, no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO destinasjon, MappingContext context) {

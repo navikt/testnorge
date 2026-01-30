@@ -3,9 +3,9 @@ package no.nav.dolly.bestilling.skattekort;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.skattekort.command.SkattekortPostCommand;
-import no.nav.dolly.bestilling.skattekort.domain.OpprettSkattekortRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
 import no.nav.dolly.config.Consumers;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class SkattekortConsumer extends ConsumerStatus {
         this.tokenExchange = tokenExchange;
     }
 
-    public Flux<SkattekortResponse> sendSkattekort(OpprettSkattekortRequest skattekortRequest) {
+    public Flux<SkattekortResponse> sendSkattekort(SkattekortRequestDTO skattekortRequest) {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new SkattekortPostCommand(webClient, skattekortRequest, token.getTokenValue()).call())
