@@ -72,7 +72,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
-        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-sykemelding-api-dev
         - application: testnav-synt-vedtakshistorikk-service
@@ -133,7 +132,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
-        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-sykemelding-api-dev
         - application: testnav-synt-vedtakshistorikk-service

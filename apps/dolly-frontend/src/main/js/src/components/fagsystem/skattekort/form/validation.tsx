@@ -40,7 +40,6 @@ export const validation = {
 											'$trekktabell',
 											Yup.object({
 												trekkode: requiredString,
-												tabelltype: requiredString,
 												tabellnummer: Yup.string().nullable(),
 												prosentsats: Yup.number()
 													.transform((i, j) => (j === '' ? null : i))

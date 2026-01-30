@@ -56,7 +56,6 @@ spec:
         - application: testnorge-tilbakemelding-api
         - application: testnav-levende-arbeidsforhold-ansettelse
         - application: testnav-levende-arbeidsforhold-scheduler
-        - application: testnav-skattekort-service
         - application: testnav-yrkesskade-proxy
         - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-service
