@@ -2,15 +2,16 @@ package no.nav.dolly.bestilling.skattekort;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SokosSkattekortRequest;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -33,35 +34,22 @@ public class SkattekortClient implements ClientRegister {
             return Mono.just(progress);
         }
 
-        SkattekortRequestDTO mapped = mapperFacade.map(bestilling.getSkattekort(), SkattekortRequestDTO.class);
+        MappingContext context = MappingContextUtils.getMappingContext();
+        context.setProperty("ident", dollyPerson.getIdent());
+        
+        SokosSkattekortRequest request = mapperFacade.map(bestilling.getSkattekort(), SokosSkattekortRequest.class, context);
+        
+        String orgNumber = bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty() ? "unknown" :
+                bestilling.getSkattekort().getArbeidsgiverSkatt().get(0).getArbeidsgiveridentifikator().getOrganisasjonsnummer();
+        Integer year = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
 
-        Flux<String> statusFlux = Flux.fromIterable(mapped.getArbeidsgiver())
-                .flatMap(arbeidsgiver -> {
-                    arbeidsgiver.getArbeidstaker().forEach(arbeidstaker -> 
-                            arbeidstaker.setArbeidstakeridentifikator(dollyPerson.getIdent())
-                    );
-                    
-                    SkattekortRequestDTO request = SkattekortRequestDTO.builder()
-                            .arbeidsgiver(List.of(arbeidsgiver))
-                            .build();
-                    
-                    String orgNumber = arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer();
-                    Integer year = arbeidsgiver.getArbeidstaker().isEmpty() ? null : 
-                            arbeidsgiver.getArbeidstaker().getFirst().getInntektsaar();
-                    
-                    return skattekortConsumer.sendSkattekort(request)
-                            .map(response -> formatStatus(response, orgNumber, year));
-                });
-
-        return statusFlux
-                .collectList()
-                .map(statuses -> String.join(",", statuses))
+        return skattekortConsumer.sendSkattekort(request)
+                .map(response -> formatStatus(response, orgNumber, year))
                 .flatMap(status -> oppdaterStatus(progress, status));
     }
 
     @Override
     public void release(List<String> identer) {
-        // Deletion is not yet supported
     }
 
     private String formatStatus(SkattekortResponse response, String orgNumber, Integer year) {
@@ -73,7 +61,6 @@ public class SkattekortClient implements ClientRegister {
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
-
         return transactionHelperService.persister(progress, BestillingProgress::setSkattekortStatus, status);
 
     }

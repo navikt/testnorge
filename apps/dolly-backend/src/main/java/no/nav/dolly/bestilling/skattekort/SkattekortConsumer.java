@@ -5,12 +5,12 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.skattekort.command.SkattekortPostCommand;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
 import no.nav.dolly.config.Consumers;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SokosSkattekortRequest;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -33,10 +33,10 @@ public class SkattekortConsumer extends ConsumerStatus {
         this.tokenExchange = tokenExchange;
     }
 
-    public Flux<SkattekortResponse> sendSkattekort(SkattekortRequestDTO skattekortRequest) {
+    public Mono<SkattekortResponse> sendSkattekort(SokosSkattekortRequest skattekortRequest) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> new SkattekortPostCommand(webClient, skattekortRequest, token.getTokenValue()).call())
+                .flatMap(token -> new SkattekortPostCommand(webClient, skattekortRequest, token.getTokenValue()).call())
                 .doOnNext(response -> log.info("Skattekort sendt med response: {}", response));
     }
 

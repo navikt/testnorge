@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SokosSkattekortRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
@@ -27,13 +27,14 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
     private static final String CONSUMER = "Dolly";
 
     private final WebClient webClient;
-    private final SkattekortRequestDTO request;
+    private final SokosSkattekortRequest request;
     private final String token;
 
     @Override
     public Mono<SkattekortResponse> call() {
 
         log.info("Sender skattekort til Sokos med request: {}", request);
+        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(OPPRETT_SKATTEKORT_URL).build())
@@ -52,8 +53,8 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     WebClientError.Description description = WebClientError.describe(throwable);
-                    log.error("Feil ved sending av skattekort til Sokos: status={}, message={}, throwable={}", 
-                            description.getStatus(), description.getMessage(), throwable.getMessage());
+                    log.error("Feil ved sending av skattekort til Sokos: status={}, message={}", 
+                            description.getStatus(), description.getMessage());
                     return SkattekortResponse.of(description);
                 });
     }
