@@ -32,6 +32,9 @@ public class SkattekortClient implements ClientRegister {
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                                 BestillingProgress progress, boolean isOpprettEndre) {
 
+        log.info("SkattekortClient.gjenopprett called for ident: {}, hasSkattekort: {}", 
+                dollyPerson.getIdent(), nonNull(bestilling.getSkattekort()));
+
         if (!nonNull(bestilling.getSkattekort())) {
             return Mono.just(progress);
         }
@@ -46,8 +49,16 @@ public class SkattekortClient implements ClientRegister {
         Integer year = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
 
         return skattekortConsumer.sendSkattekort(request)
-                .map(response -> formatStatus(response, orgNumber, year))
-                .flatMap(status -> oppdaterStatus(progress, status))
+                .map(response -> {
+                    String status = formatStatus(response, orgNumber, year);
+                    log.info("Skattekort response received: status={}, formatted={}", response.getStatus(), status);
+                    return status;
+                })
+                .flatMap(status -> {
+                    log.info("Persisting skattekort status: {}", status);
+                    return oppdaterStatus(progress, status);
+                })
+                .doOnSuccess(updatedProgress -> log.info("Successfully updated progress with skattekort status: {}", updatedProgress.getSkattekortStatus()))
                 .onErrorResume(throwable -> {
                     Integer yr = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
                     String status = orgNumber + "+" + yr + "|Feil: " + throwable.getMessage();
