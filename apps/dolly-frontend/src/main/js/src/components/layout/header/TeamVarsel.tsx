@@ -14,7 +14,7 @@ const TeamVarselPanel = styled.div`
 	padding: 20px 20px 25px 20px;
 	border-radius: 8px;
 	width: 300px;
-	box-shadow: var(--a-shadow-medium);
+	box-shadow: var(--ax-shadow-dialog);
 	z-index: 8;
 
 	p {

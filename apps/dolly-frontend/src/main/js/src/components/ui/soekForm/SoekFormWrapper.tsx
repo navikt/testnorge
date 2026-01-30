@@ -49,7 +49,7 @@ export const SoekKategori = styled.div`
 				width: 190px;
 			}
 			.navds-checkbox {
-				padding: var(--a-spacing-1-alt) 0;
+				padding: var(--ax-space-6) 0;
 			}
 		}
 	}
