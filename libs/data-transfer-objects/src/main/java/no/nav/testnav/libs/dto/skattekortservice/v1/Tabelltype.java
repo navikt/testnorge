@@ -1,11 +1,10 @@
 package no.nav.testnav.libs.dto.skattekortservice.v1;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum Tabelltype {
 
     TREKKTABELL_FOR_PENSJON("trekktabellForPensjon"),
@@ -13,6 +12,11 @@ public enum Tabelltype {
 
     @JsonValue
     private final String value;
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    Tabelltype(String value) {
+        this.value = value;
+    }
 
     @Override
     public String toString() {

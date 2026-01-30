@@ -1,11 +1,10 @@
 package no.nav.testnav.libs.dto.skattekortservice.v1;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum Resultatstatus {
 
     IKKE_SKATTEKORT("ikkeSkattekort"),
@@ -18,6 +17,11 @@ public enum Resultatstatus {
 
     @JsonValue
     private final String value;
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    Resultatstatus(String value) {
+        this.value = value;
+    }
 
     @Override
     public String toString() {
