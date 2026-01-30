@@ -62,7 +62,6 @@ public final class BestillingSkattekortStatusMapper {
                                 .statuser(List.of(RsStatusRapport.Status.builder()
                                         .melding("OK")
                                         .identer(entry.values().stream()
-                                                .map(orgYear -> orgYear.stream().toList())
                                                 .flatMap(Collection::stream)
                                                 .distinct()
                                                 .toList())
@@ -89,13 +88,14 @@ public final class BestillingSkattekortStatusMapper {
         }
     }
 
+
     private static String formatMelding(String orgYear, String melding) {
 
         String[] parts = orgYear.split("\\+");
         if (parts.length < 2) {
             return "FEIL: " + decodeMsg(melding);
         }
-        
+
         return "FEIL: organisasjon:%s, inntektsår:%s, melding:%s".formatted(
                 parts[0],
                 parts[1],
