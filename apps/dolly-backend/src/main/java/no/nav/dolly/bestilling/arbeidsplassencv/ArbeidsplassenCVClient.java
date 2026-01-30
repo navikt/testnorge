@@ -49,10 +49,11 @@ public class ArbeidsplassenCVClient implements ClientRegister {
         }
 
         return getPerson(dollyPerson)
-                .flatMap(person -> Mono.just(person.getAdressebeskyttelse().stream()
+                .flatMap(person -> Mono.zip(
+                        Mono.just(person.getAdressebeskyttelse().stream()
                                 .anyMatch(ab ->
-                                        STRENGT_FORTROLIG.equals(ab.getGradering())))
-                        .zipWith(Mono.just(person.getDoedsfall().stream()
+                                        STRENGT_FORTROLIG.equals(ab.getGradering()))),
+                        Mono.just(person.getDoedsfall().stream()
                                 .anyMatch(doed -> nonNull(doed.getDoedsdato())))))
                 .flatMap(harAdressebeskyttelseEllerDoed -> {
                     if (isTrue(harAdressebeskyttelseEllerDoed.getT1())) {
