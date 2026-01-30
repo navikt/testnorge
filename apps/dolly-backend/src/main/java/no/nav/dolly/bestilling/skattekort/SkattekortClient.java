@@ -58,7 +58,6 @@ public class SkattekortClient implements ClientRegister {
                     log.info("Persisting skattekort status: {}", status);
                     return oppdaterStatus(progress, status);
                 })
-                .doOnSuccess(updatedProgress -> log.info("Successfully updated progress with skattekort status: {}", updatedProgress.getSkattekortStatus()))
                 .onErrorResume(throwable -> {
                     Integer yr = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
                     String status = orgNumber + "+" + yr + "|Feil: " + throwable.getMessage();
