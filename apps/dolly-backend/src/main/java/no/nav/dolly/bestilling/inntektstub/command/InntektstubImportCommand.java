@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektstub.domain.ImportRequest;
 import no.nav.dolly.bestilling.inntektstub.domain.ImportResponse;
-import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -42,7 +39,7 @@ public class InntektstubImportCommand implements Callable<Mono<ImportResponse>> 
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
-                    log.error("Import av Instdata for {} feilet: {}",
+                    log.error("Import av inntekt fra Tenor for {} feilet: {}",
                             ident, description.getMessage(), throwable);
                     return Mono.just(ImportResponse.builder()
                             .status(description.getStatus())

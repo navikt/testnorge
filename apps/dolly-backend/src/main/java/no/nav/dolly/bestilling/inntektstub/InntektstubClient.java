@@ -37,6 +37,7 @@ import static org.apache.commons.lang3.StringUtils.truncate;
 public class InntektstubClient implements ClientRegister {
 
     private static final int MAX_STATUS_LEN = 2048;
+    private static final String IMPORTERT_FRA_TENOR = "{\"status\": \"Import fra Tenor utført\"}";
 
     private final InntektstubConsumer inntektstubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -90,11 +91,9 @@ public class InntektstubClient implements ClientRegister {
 
         return transaksjonMappingService.existAlready(INNTK, dollyPerson.getIdent())
                 .flatMap(exist -> {
-                    if (isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())
-                            // && TPD sjekke Tenor status fra Inntektstub
-                            ||
-                            nonNull(bestilling.getInntektstub()) &&
-                                    !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
+                    if ((isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())) ||
+                            (nonNull(bestilling.getInntektstub()) &&
+                                    !bestilling.getInntektstub().getInntektsinformasjon().isEmpty())) {
                         return oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
                                 .thenReturn(exist);
                     } else {
@@ -106,11 +105,13 @@ public class InntektstubClient implements ClientRegister {
                         // && TPD sjekke Tenor status fra Inntektstub
                     ) {
                         return inntektstubConsumer.importInntekt(dollyPerson.getIdent())
+                                .doOnNext(response -> log.info("Import fra Tenor for {} returnerte {} {}",
+                                        dollyPerson.getIdent(), response.getStatus(), response.getMessage()))
                                 .flatMap(importResponse -> importResponse.getStatus().is2xxSuccessful() ?
                                         transaksjonMappingService.save(TransaksjonMapping.builder()
                                                         .ident(dollyPerson.getIdent())
                                                         .system(INNTK.name())
-                                                        .transaksjonId("{\"status\": \"Import fra Tenor utført\"}")
+                                                        .transaksjonId(IMPORTERT_FRA_TENOR)
                                                         .bestillingId(progress.getBestillingId())
                                                         .datoEndret(now())
                                                         .build())
