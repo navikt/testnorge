@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Forskuddstrekk;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SokosSkattekortRequest;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
         factory.classMap(Skattekortmelding.class, SokosSkattekortRequest.SokosSkattekortDTO.class)
                 .field("skattekort.utstedtDato", "utstedtDato")
                 .field("skattekort.forskuddstrekk", "forskuddstrekkList")
+                .field("inntektsaar", "inntektsaar")
                 .field("tilleggsopplysning", "tilleggsopplysningList")
                 .customize(new CustomMapper<>() {
                     @Override
@@ -49,9 +51,31 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                         if (source.getResultatPaaForespoersel() != null) {
                             destination.setResultatForSkattekort(source.getResultatPaaForespoersel().getValue());
                         }
+                        
+                        if (source.getSkattekort() != null && source.getSkattekort().getForskuddstrekk() != null) {
+                            destination.setForskuddstrekkList(
+                                    source.getSkattekort().getForskuddstrekk().stream()
+                                            .map(SkattekortMappingStrategy::flattenForskuddstrekk)
+                                            .toList()
+                            );
+                        }
                     }
                 })
                 .byDefault()
                 .register();
     }
+
+    private static Forskuddstrekk flattenForskuddstrekk(Forskuddstrekk original) {
+        if (original == null) {
+            return null;
+        }
+
+        return Forskuddstrekk.builder()
+                .trekktabell(original.getTrekktabell())
+                .frikort(original.getFrikort())
+                .trekkprosent(original.getTrekkprosent())
+                .build();
+    }
 }
+
+

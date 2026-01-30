@@ -1,14 +1,21 @@
 package no.nav.dolly.bestilling.skattekort.mapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Forskuddstrekk;
 import no.nav.testnav.libs.dto.skattekortservice.v1.IdentifikatorForEnhetEllerPerson;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Resultatstatus;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekort;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SokosSkattekortRequest;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Tilleggsopplysning;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Trekkode;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Trekktabell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,12 +28,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SkattekortMappingStrategyTest {
 
     private static final String IDENT = "01010112345";
-    private static final String ORG_NR = "123456789";
+    private static final String ORG_NR = "947064649";
     private static final Integer INNTEKTSAAR = 2026;
 
     private MapperFacade mapperFacade;
+    private ObjectMapper objectMapper;
 
-    private SkattekortRequestDTO createSkattekortRequest() {
+    private SkattekortRequestDTO createSkattekortRequestWithComplexForskuddstrekk() {
         return SkattekortRequestDTO.builder()
                 .arbeidsgiverSkatt(List.of(
                         ArbeidsgiverSkatt.builder()
@@ -36,6 +44,21 @@ class SkattekortMappingStrategyTest {
                                 .arbeidstaker(List.of(
                                         Skattekortmelding.builder()
                                                 .inntektsaar(INNTEKTSAAR)
+                                                .resultatPaaForespoersel(Resultatstatus.SKATTEKORTOPPLYSNINGER_OK)
+                                                .skattekort(Skattekort.builder()
+                                                        .skattekortidentifikator(998704L)
+                                                        .forskuddstrekk(List.of(
+                                                                Forskuddstrekk.builder()
+                                                                        .trekktabell(Trekktabell.builder()
+                                                                                .trekkode(Trekkode.LOENN_FRA_NAV)
+                                                                                .tabellnummer("8020")
+                                                                                .prosentsats(40)
+                                                                                .antallMaanederForTrekk(12)
+                                                                                .build())
+                                                                        .build()
+                                                        ))
+                                                        .build())
+                                                .tilleggsopplysning(List.of(Tilleggsopplysning.OPPHOLD_PAA_SVALBARD))
                                                 .build()
                                 ))
                                 .build()
@@ -50,55 +73,101 @@ class SkattekortMappingStrategyTest {
     }
 
     @Nested
-    @DisplayName("SkattekortRequestDTO mapping")
+    @DisplayName("SkattekortRequestDTO to SokosSkattekortRequest mapping with complex frontend structure")
     class SokosSkattekortRequestMappingTest {
 
         @Test
-        void shouldMapToFnrAndSkattekort() {
-            var source = createSkattekortRequest();
+        void shouldMapComplexFrontendStructureToSokosFormat() {
+            var source = createSkattekortRequestWithComplexForskuddstrekk();
             var context = createMappingContext(IDENT);
 
             var result = mapperFacade.map(source, SokosSkattekortRequest.class, context);
 
             assertThat(result.getFnr()).isEqualTo(IDENT);
             assertThat(result.getSkattekort()).isNotNull();
-        }
-
-        @Test
-        void shouldMapInntektsaar() {
-            var source = createSkattekortRequest();
-            var context = createMappingContext(IDENT);
-
-            var result = mapperFacade.map(source, SokosSkattekortRequest.class, context);
-
             assertThat(result.getSkattekort().getInntektsaar()).isEqualTo(INNTEKTSAAR);
+            assertThat(result.getSkattekort().getForskuddstrekkList()).isNotNull();
         }
 
         @Test
-        void shouldSetFnrFromContext() {
-            var source = createSkattekortRequest();
+        void shouldMapForskuddstrekkWithTrekktabel() {
+            var source = createSkattekortRequestWithComplexForskuddstrekk();
             var context = createMappingContext(IDENT);
 
             var result = mapperFacade.map(source, SokosSkattekortRequest.class, context);
 
-            assertThat(result.getFnr()).isEqualTo(IDENT);
+            assertThat(result.getSkattekort().getForskuddstrekkList())
+                    .isNotEmpty()
+                    .as("Forskuddstrekk list should contain the trekktabell data");
         }
 
         @Test
-        void shouldNotMapNullValues() {
-            var source = SkattekortRequestDTO.builder().build();
+        void shouldSerializeComplexStructureToValidJson() throws Exception {
+            var source = createSkattekortRequestWithComplexForskuddstrekk();
             var context = createMappingContext(IDENT);
 
-            var result = mapperFacade.map(source, SokosSkattekortRequest.class, context);
+            var mapped = mapperFacade.map(source, SokosSkattekortRequest.class, context);
+            String json = objectMapper.writeValueAsString(mapped);
 
-            assertThat(result).isNotNull();
-            assertThat(result.getFnr()).isNull();
-            assertThat(result.getSkattekort()).isNull();
+            assertThat(json)
+                    .as("JSON must be valid and serializable for Sokos API")
+                    .contains("\"fnr\":\"" + IDENT + "\"")
+                    .contains("\"inntektsaar\":" + INNTEKTSAAR)
+                    .contains("\"resultatForSkattekort\":\"skattekortopplysningerOK\"")
+                    .contains("\"skattekort\"")
+                    .contains("\"forskuddstrekkList\"");
+        }
+
+        @Test
+        void shouldDeserializeComplexJsonFromMapping() throws Exception {
+            var source = createSkattekortRequestWithComplexForskuddstrekk();
+            var context = createMappingContext(IDENT);
+
+            var mapped = mapperFacade.map(source, SokosSkattekortRequest.class, context);
+            String json = objectMapper.writeValueAsString(mapped);
+            SokosSkattekortRequest deserialized = objectMapper.readValue(json, SokosSkattekortRequest.class);
+
+            assertThat(deserialized.getFnr()).isEqualTo(IDENT);
+            assertThat(deserialized.getSkattekort().getInntektsaar()).isEqualTo(INNTEKTSAAR);
+            assertThat(deserialized.getSkattekort().getResultatForSkattekort())
+                    .isEqualTo("skattekortopplysningerOK");
+        }
+
+        @Test
+        void shouldIncludeAllRequiredFieldsForSokosCompatibility() throws Exception {
+            var source = createSkattekortRequestWithComplexForskuddstrekk();
+            var context = createMappingContext(IDENT);
+
+            var mapped = mapperFacade.map(source, SokosSkattekortRequest.class, context);
+            String json = objectMapper.writeValueAsString(mapped);
+
+            assertThat(json)
+                    .as("JSON must contain fnr field required by Sokos API")
+                    .contains("\"fnr\"");
+            assertThat(json)
+                    .as("JSON must contain skattekort object required by Sokos API")
+                    .contains("\"skattekort\"");
+            assertThat(json)
+                    .as("JSON must contain inntektsaar field inside skattekort")
+                    .contains("\"inntektsaar\":" + INNTEKTSAAR);
+            assertThat(json)
+                    .as("JSON must contain resultatForSkattekort as enum value")
+                    .contains("\"resultatForSkattekort\":\"skattekortopplysningerOK\"");
+
+            SokosSkattekortRequest deserialized = objectMapper.readValue(json, SokosSkattekortRequest.class);
+            assertThat(deserialized.getSkattekort().getInntektsaar())
+                    .as("Must deserialize inntektsaar correctly from JSON")
+                    .isEqualTo(INNTEKTSAAR);
+            assertThat(deserialized.getFnr())
+                    .as("Must deserialize fnr correctly from JSON")
+                    .isEqualTo(IDENT);
         }
     }
 
     @BeforeEach
     void setUp() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new SkattekortMappingStrategy());
+        objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
     }
 }
