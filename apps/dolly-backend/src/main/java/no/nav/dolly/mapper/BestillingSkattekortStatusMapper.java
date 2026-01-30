@@ -29,7 +29,7 @@ public final class BestillingSkattekortStatusMapper {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
-                    var parts = entry.split(":");
+                    var parts = entry.split("\\|");
                     if (parts.length < 2) {
                         continue;
                     }
@@ -93,7 +93,7 @@ public final class BestillingSkattekortStatusMapper {
 
         String[] parts = orgYear.split("\\+");
         if (parts.length < 2) {
-            return "FEIL: %s".formatted(decodeMsg(melding));
+            return "FEIL: " + decodeMsg(melding);
         }
         
         return "FEIL: organisasjon:%s, inntektsår:%s, melding:%s".formatted(

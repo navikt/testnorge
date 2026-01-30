@@ -37,6 +37,10 @@ public class SkattekortClient implements ClientRegister {
 
         Flux<String> statusFlux = Flux.fromIterable(mapped.getArbeidsgiver())
                 .flatMap(arbeidsgiver -> {
+                    arbeidsgiver.getArbeidstaker().forEach(arbeidstaker -> 
+                            arbeidstaker.setArbeidstakeridentifikator(dollyPerson.getIdent())
+                    );
+                    
                     SkattekortRequestDTO request = SkattekortRequestDTO.builder()
                             .arbeidsgiver(List.of(arbeidsgiver))
                             .build();
@@ -61,11 +65,11 @@ public class SkattekortClient implements ClientRegister {
     }
 
     private String formatStatus(SkattekortResponse response, String orgNumber, Integer year) {
-        String prefix = orgNumber + "+" + year + ":";
+        String prefix = orgNumber + "+" + year + "|";
         if (response.isOK()) {
             return prefix + "Skattekort lagret";
         }
-        return prefix + "FEIL: " + response.getFeilmelding();
+        return prefix + response.getFeilmelding();
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

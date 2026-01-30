@@ -50,6 +50,11 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> SkattekortResponse.of(WebClientError.describe(throwable)));
+                .onErrorResume(throwable -> {
+                    WebClientError.Description description = WebClientError.describe(throwable);
+                    log.error("Feil ved sending av skattekort til Sokos: status={}, message={}, throwable={}", 
+                            description.getStatus(), description.getMessage(), throwable.getMessage());
+                    return SkattekortResponse.of(description);
+                });
     }
 }
