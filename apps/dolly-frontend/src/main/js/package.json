@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "@hookform/error-message": "^2.0.1",
+    "@navikt/aksel": "^8.1.0",
     "@navikt/ds-css": "^7.40.0",
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^7.40.0",
