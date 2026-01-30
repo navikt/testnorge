@@ -119,6 +119,14 @@ const texts = {
 	honorarAkkordProsentProvisjon: 'Honorar/akkord/prosent/provisjon',
 	skattepliktigPersonalrabatt: 'Skattepliktig personalrabatt',
 	tips: 'Tips',
+	reiseKostMedOvernattingTilLangtransportsjaafoerForKjoeringInnenlands:
+		'Reise kost m/overnatting til langtransportsjåfør, kjøring innenlands',
+	loennTilVergeFraStatsforvalteren: 'Lønn til verge fra statsforvalteren',
+	reiseKostMedOvernattingPaaHybelMedKokEllerPrivat:
+		'Reise kost m/overnatting på hybel med kok/privat',
+	reiseKostMedOvernattingPaaHybelUtenKokEllerPensjonatEllerBrakke:
+		'Reise kost m/overnatting på hybel uten kok/pensjonat/brakke',
+	skattepliktigGodtgjoerelseSaeravtaleUtland: 'Skattepliktig godtgjørelse særavtale utland',
 
 	// BESKRIVELSE YTELSE FRA OFFENTLIGE
 	foreldrepenger: 'Foreldrepenger',
@@ -137,6 +145,21 @@ const texts = {
 	ufoeretrygd: 'Ufoeretrygd',
 	ektefelletilleggUfoeretrygd: 'Ektefelletillegg uføretrygd',
 	ufoereytelseEtteroppgjoer: 'Uføreytelse etteroppgjør',
+	pleiepenger: 'Pleiepenger',
+	opplaeringspenger: 'Opplæringspenger',
+	omsorgspenger: 'Omsorgspenger',
+	omstillingsstoenad: 'Omstillingsstønad',
+	feriepengerForeldrepenger: 'Feriepenger foreldrepenger',
+	ferietilleggDagpengerVedArbeidsloeshet: 'Ferietillegg dagpenger ved arbeidsløshet',
+	ferietilleggDagpengerTilFiskerSomBareHarHyre:
+		'Ferietillegg dagpenger til fisker som bare har hyre',
+	feriepengerSykepenger: 'Feriepenger sykepenger',
+	feriepengerSykepengerTilFiskerSomBareHarHyre:
+		'Feriepenger sykepenger til fisker som bare har hyre',
+	feriepengerSvangerskapspenger: 'Feriepenger svangerskapspenger',
+	feriepengerPleiepenger: 'Feriepenger pleiepenger',
+	feriepengerOpplaeringspenger: 'Feriepenger opplæringspenger',
+	feriepengerOmsorgspenger: 'Feriepenger omsorgspenger',
 
 	// BESKRIVELSE PENSJON ELLER TRYGD
 	pensjonOgLivrenterIArbeidsforhold: 'Pensjon og livrenter i arbeidsforhold',
@@ -171,6 +194,12 @@ const texts = {
 	ufoereytelseEtteroppgjoerFraAndreEnnFolketrygden:
 		'Uføreytelse etteroppgjør fra andre enn folketrygden',
 	etterloenn: 'Etterlønn',
+	slitertillegg: 'Slitertillegg',
+	supplerendeStoenadTilUfoerFlyktning: 'Supplerende stønad til ufør flyktning',
+	alderspensjonSkjermingstillegg: 'Alderspesnjon skjermingstillegg',
+	barnepensjonFra2024: 'Barnepensjon fra 2024',
+	barnepensjonFraAndreEnnFolketrygdenFra2024: 'Barnepensjon fra andre enn folketrygden fra 2024',
+	ipaEllerIpsBarnepensjonFra2024: 'Ipa eller ips barnepensjon fra 2024',
 
 	// BESKRIVELSE NÆRINGSINNTEKT
 	vederlagDagmammaIEgetHjem: 'Vederlag til dagmamma i eget hjem',
@@ -180,6 +209,22 @@ const texts = {
 	dagpengerTilFisker: 'Dagpenger til fisker',
 	sykepengerTilFisker: 'Sykepenger til fisker',
 	lottKunTrygdeavgift: 'Lott det skal beregnes trygdeavgift av',
+	kompensasjonForTaptPersoninntekt: 'Kompensasjon for tapt personinntekt',
+	foreldrepengerTilDagmamma: 'Foreldrepenger til dagmamma',
+	foreldrepengerTilJordOgSkogbrukere: 'Foreldrepenger til jord- og skogbrukere',
+	foreldrepengerTilFisker: 'Foreldrepenger til fisker',
+	svangerskapspengerTilDagmamma: 'Svangerskapspenger til dagmamma',
+	svangerskapspengerTilJordOgSkogbrukere: 'Svangerskapspenger til jord- og skogbrukere',
+	svangerskapspengerTilFisker: 'Svangerskapspenger til fisker',
+	pleiepengerTilDagmamma: 'Pleiepenger til dagmamma',
+	pleiepengerTilJordOgSkogbrukere: 'Pleiepenger til jord- og skogbrukere',
+	pleiepengerTilFisker: 'Pleiepenger til fisker',
+	opplaeringspengerTilDagmamma: 'Opplæringspenger til dagmamma',
+	opplaeringspengerTilJordOgSkogbrukere: 'Opplæringspenger til jord- og skogbrukere',
+	opplaeringspengerTilFisker: 'Opplæringspenger til fisker',
+	omsorgspengerTilDagmamma: 'Omsorgspenger til dagmamma',
+	omsorgspengerTilJordOgSkogbrukere: 'Omsorgspenger til jord- og skogbrukere',
+	omsorgspengerTilFisker: 'Omsorgspenger til fisker',
 
 	// TILLEGGSINFORMASJON
 	tilleggsinformasjon: 'Tilleggsinformasjon',
@@ -250,6 +295,11 @@ const texts = {
 	ufoeregrad: 'Uføregrad',
 	pensjonsgrad: 'Pensjonsgrad',
 	heravEtterlattepensjon: 'Herav etterlattepensjon',
+
+	//FELLES
+	beloep: 'Beløp',
+	startOpptjeningsperiode: 'Start opptjeningsperiode',
+	sluttOpptjeningsperiode: 'Slutt opptjeningsperiode',
 }
 
 export default (key) => (texts[key] ? texts[key] : key)
