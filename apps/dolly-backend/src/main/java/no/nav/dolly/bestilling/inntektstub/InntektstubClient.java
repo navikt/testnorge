@@ -40,7 +40,6 @@ public class InntektstubClient implements ClientRegister {
     private static final String IMPORTERT_FRA_TENOR = "{\"status\": \"Import fra Tenor utført\"}";
 
     private final InntektstubConsumer inntektstubConsumer;
-    private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -77,7 +76,7 @@ public class InntektstubClient implements ClientRegister {
                                                             "Feil= " + inntekter.stream()
                                                                     .map(Inntektsinformasjon::getFeilmelding)
                                                                     .filter(StringUtils::isNotBlank)
-                                                                    .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
+                                                                    .map(ErrorStatusDecoder::encodeStatus)
                                                                     .collect(Collectors.joining(","));
                                                 }));
                     } else {
@@ -91,6 +90,7 @@ public class InntektstubClient implements ClientRegister {
 
         return transaksjonMappingService.existAlready(INNTK, dollyPerson.getIdent())
                 .flatMap(exist -> {
+
                     if ((isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())) ||
                             (nonNull(bestilling.getInntektstub()) &&
                                     !bestilling.getInntektstub().getInntektsinformasjon().isEmpty())) {
@@ -101,9 +101,9 @@ public class InntektstubClient implements ClientRegister {
                     }
                 })
                 .flatMap(exist -> {
-                    if (isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())
-                        // && TPD sjekke Tenor status fra Inntektstub
-                    ) {
+
+                    if (isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())) {
+
                         return inntektstubConsumer.importInntekt(dollyPerson.getIdent())
                                 .doOnNext(response -> log.info("Import fra Tenor for {} returnerte {} {}",
                                         dollyPerson.getIdent(), response.getStatus(), response.getMessage()))
@@ -116,8 +116,8 @@ public class InntektstubClient implements ClientRegister {
                                                         .datoEndret(now())
                                                         .build())
                                                 .then(Mono.just("OK")) :
-                                        Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(
-                                                "Import av inntektsdata feilet: " + importResponse.getMessage()))));
+                                        Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(
+                                                "Import av inntektsdata feilet: " + importResponse.getMessage())));
                     } else {
                         return Mono.just("");
                     }
