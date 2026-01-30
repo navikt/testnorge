@@ -37,10 +37,12 @@ public final class BestillingSkattekortStatusMapper {
                 for (var entry : entries) {
                     var parts = entry.split("\\|");
                     if (parts.length < 2) {
+                        log.warn("[SKATTEKORT_MAPPER] Skipping entry with invalid format: '{}'. Expected format: 'org+year|status'", entry);
                         continue;
                     }
                     var orgYear = parts[0];
                     var status = parts[1];
+                    log.info("[SKATTEKORT_MAPPER] Parsed entry - orgYear: '{}', status: '{}'", orgYear, status);
                     if (errorEnvIdents.containsKey(status)) {
                         if (errorEnvIdents.get(status).containsKey(orgYear)) {
                             errorEnvIdents.get(status).get(orgYear).add(progress.getIdent());
