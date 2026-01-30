@@ -30,7 +30,7 @@ import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SokosSkattekortRequest;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -93,7 +93,7 @@ public class BestillingDokument implements Persistable<Long> {
     
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     
-    private SkattekortRequestDTO skattekort;
+    private SokosSkattekortRequest skattekort;
     
     private List<YrkesskadeRequest> yrkesskader;
     

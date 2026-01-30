@@ -8,12 +8,9 @@ export const validation = {
 			arbeidsgiverSkatt: Yup.array().of(
 				Yup.object({
 					arbeidsgiveridentifikator: Yup.object({
-						organisasjonsnummer: ifPresent(
-							'$organisasjonsnummer',
-							requiredString
-								.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
-								.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val?.length === 9),
-						),
+						organisasjonsnummer: requiredString
+							.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
+							.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val?.length === 9),
 						personidentifikator: ifPresent(
 							'$personidentifikator',
 							requiredString
@@ -40,7 +37,6 @@ export const validation = {
 											'$trekktabell',
 											Yup.object({
 												trekkode: requiredString,
-												tabelltype: requiredString,
 												tabellnummer: Yup.string().nullable(),
 												prosentsats: Yup.number()
 													.transform((i, j) => (j === '' ? null : i))

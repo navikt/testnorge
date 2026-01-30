@@ -28,6 +28,7 @@ class Targets {
     String inntektstub;
     String inst;
     String kontoregister;
+    String skattekort;
     String krrstub;
     String medl;
     String norg2;

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public final class BestillingSkattekortStatusMapper {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
-                    var parts = entry.split(":");
+                    var parts = entry.split("\\|");
                     if (parts.length < 2) {
                         continue;
                     }
@@ -49,6 +50,20 @@ public final class BestillingSkattekortStatusMapper {
         });
 
         if (errorEnvIdents.isEmpty()) {
+            if (!progressList.isEmpty() && progressList.stream().anyMatch(p -> isNotBlank(p.getIdent()))) {
+                return List.of(RsStatusRapport.builder()
+                        .id(SKATTEKORT)
+                        .navn(SKATTEKORT.getBeskrivelse())
+                        .statuser(List.of(RsStatusRapport.Status.builder()
+                                .melding("OK")
+                                .identer(progressList.stream()
+                                        .map(BestillingProgress::getIdent)
+                                        .filter(StringUtils::isNotBlank)
+                                        .distinct()
+                                        .toList())
+                                .build()))
+                        .build());
+            }
             return emptyList();
 
         } else {
@@ -62,7 +77,6 @@ public final class BestillingSkattekortStatusMapper {
                                 .statuser(List.of(RsStatusRapport.Status.builder()
                                         .melding("OK")
                                         .identer(entry.values().stream()
-                                                .map(orgYear -> orgYear.stream().toList())
                                                 .flatMap(Collection::stream)
                                                 .distinct()
                                                 .toList())
@@ -89,11 +103,17 @@ public final class BestillingSkattekortStatusMapper {
         }
     }
 
+
     private static String formatMelding(String orgYear, String melding) {
 
+        String[] parts = orgYear.split("\\+");
+        if (parts.length < 2) {
+            return "FEIL: " + decodeMsg(melding);
+        }
+
         return "FEIL: organisasjon:%s, inntektsår:%s, melding:%s".formatted(
-                orgYear.split("\\+")[0],
-                orgYear.split("\\+")[1],
+                parts[0],
+                parts[1],
                 decodeMsg(melding));
     }
 }

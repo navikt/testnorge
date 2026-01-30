@@ -14,7 +14,6 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
@@ -27,24 +26,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
     public void register(MapperFactory factory) {
         factory.classMap(RsDollyUtvidetBestilling.class, RsDollyUtvidetBestilling.class)
                 .mapNulls(false)
-                .field("arbeidsplassenCV", "arbeidsplassenCV")
-                .field("arbeidssoekerregisteret", "arbeidssoekerregisteret")
-                .field("arenaforvalter", "arenaforvalter")
-                .field("bankkonto", "bankkonto")
-                .field("brregstub", "brregstub")
-                .field("fullmakt", "fullmakt")
-                .field("environments", "environments")
-                .field("inntektsmelding", "inntektsmelding")
-                .field("inntektstub", "inntektstub")
-                .field("krrstub", "krrstub")
-                .field("medl", "medl")
-                .field("nomdata", "nomdata")
-                .field("navSyntetiskIdent", "navSyntetiskIdent")
-                .field("pdldata", "pdldata")
-                .field("pensjonforvalter", "pensjonforvalter")
-                .field("skjerming", "skjerming")
-                .field("sykemelding", "sykemelding")
-                .field("udistub", "udistub")
 
                 .customize(new CustomMapper<>() {
                     @Override
@@ -76,22 +57,11 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         }
                     }
                 })
-                .register();
-
-        factory.classMap(SkattekortRequestDTO.class, SkattekortRequestDTO.class)
-                .mapNulls(false)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(SkattekortRequestDTO skattekort, SkattekortRequestDTO akkumulert, MappingContext context) {
-                        akkumulert.getArbeidsgiver().addAll(skattekort.getArbeidsgiver());
-                    }
-                })
+                .byDefault()
                 .register();
 
         factory.classMap(ArbeidsplassenCVDTO.Jobboensker.class, ArbeidsplassenCVDTO.Jobboensker.class)
                 .mapNulls(false)
-                .field("active", "active")
-                .field("startOption", "startOption")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(ArbeidsplassenCVDTO.Jobboensker jobboensker, ArbeidsplassenCVDTO.Jobboensker akkumulert, MappingContext context) {
@@ -103,15 +73,11 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getWorkScheduleTypes().addAll(jobboensker.getWorkScheduleTypes());
                     }
                 })
+                .byDefault()
                 .register();
 
         factory.classMap(ArbeidsplassenCVDTO.class, ArbeidsplassenCVDTO.class)
                 .mapNulls(false)
-                .field("harBil", "harBil")
-                .field("sammendrag", "sammendrag")
-                .field("jobboensker", "jobboensker")
-                .field("sistEndretAvNav", "sistEndretAvNav")
-                .field("sistEndret", "sistEndret")
 
                 .customize(new CustomMapper<>() {
                     @Override
@@ -128,6 +94,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getUtdanning().addAll(arbeidsplassenCV.getUtdanning());
                     }
                 })
+                .byDefault()
                 .register();
 
         factory.classMap(RsDigitalKontaktdata.class, RsDigitalKontaktdata.class)
@@ -152,15 +119,11 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumlert.getInntektsinformasjon().addAll(inntekt.getInntektsinformasjon());
                     }
                 })
+                .byDefault()
                 .register();
 
         factory.classMap(PensjonData.class, PensjonData.class)
                 .mapNulls(false)
-                .field("afpOffentlig", "afpOffentlig")
-                .field("alderspensjon", "alderspensjon")
-                .field("alderspensjonNyUtaksgrad", "alderspensjonNyUtaksgrad")
-                .field("inntekt", "inntekt")
-                .field("uforetrygd", "uforetrygd")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(PensjonData pensjonData, PensjonData akkumulert, MappingContext context) {
@@ -168,15 +131,11 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getPensjonsavtale().addAll(pensjonData.getPensjonsavtale());
                     }
                 })
+                .byDefault()
                 .register();
 
         factory.classMap(Arenadata.class, Arenadata.class)
                 .mapNulls(false)
-                .field("aktiveringDato", "aktiveringDato")
-                .field("arenaBrukertype", "arenaBrukertype")
-                .field("automatiskInnsendingAvMeldekort", "automatiskInnsendingAvMeldekort")
-                .field("inaktiveringDato", "inaktiveringDato")
-                .field("kvalifiseringsgruppe", "kvalifiseringsgruppe")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Arenadata arenadata, Arenadata akkumulert, MappingContext context) {
@@ -185,6 +144,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getDagpenger().addAll(arenadata.getDagpenger());
                     }
                 })
+                .byDefault()
                 .register();
 
         factory.classMap(PdlPersondata.class, PdlPersondata.class)
@@ -194,8 +154,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
 
         factory.classMap(PersonDTO.class, PersonDTO.class)
                 .mapNulls(false)
-                .field("ident", "ident")
-                .field("identtype", "identtype")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(PersonDTO personDTO, PersonDTO akkumulertDTO, MappingContext context) {
@@ -230,6 +188,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulertDTO.getVergemaal().addAll(personDTO.getVergemaal());
                     }
                 })
+                .byDefault()
                 .register();
     }
 }

@@ -1,7 +1,6 @@
 export type Forskuddstrekk = {
 	trekktabell?: {
 		trekkode?: string
-		tabelltype?: string
 		tabellnummer?: string
 		prosentsats?: number
 		antallMaanederForTrekk?: number

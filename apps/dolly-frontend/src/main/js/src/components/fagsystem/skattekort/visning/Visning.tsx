@@ -1,81 +1,69 @@
 import Loading from '@/components/ui/loading/Loading'
-import React, { lazy, Suspense } from 'react'
+import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Alert } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, formatXml } from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
-import Button from '@/components/ui/button/Button'
-import useBoolean from '@/utils/hooks/useBoolean'
 
-type SkattekortVisning = {
-	liste?: Array<any>
+interface ForskuddstrekkDTO {
+	trekkode?: string
+	frikortBeloep?: number
+	tabell?: string
+	prosentSats?: number
+	antallMndForTrekk?: number
+}
+
+interface SkattekortDTO {
+	utstedtDato?: string
+	inntektsaar: number
+	resultatForSkattekort: string
+	forskuddstrekkList: ForskuddstrekkDTO[]
+	tilleggsopplysningList?: string[]
+}
+
+interface SkattekortVisningProps {
+	liste?: SkattekortDTO[]
 	loading?: boolean
 }
 
-type KodeverkTypes = {
+interface KodeverkTypesProps {
 	kodeverkstype: string
 	value: string | string[]
 	label: string
 }
 
-const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
-
-export const KodeverkTitleValue = ({ kodeverkstype, value, label }: KodeverkTypes) => {
+export const KodeverkTitleValue = ({ kodeverkstype, value, label }: KodeverkTypesProps) => {
 	const { kodeverk, loading, error } = useSkattekortKodeverk(kodeverkstype)
+
 	if (loading || error || !kodeverk) {
 		return <TitleValue title={label} value={value} />
 	}
+
 	if (Array.isArray(value)) {
 		const labels = value.map(
-			(val) => kodeverk?.find((kode: any) => kode?.value === val)?.label || val,
+			(val) =>
+				kodeverk?.find((kode: { label: string; value: string }) => kode?.value === val)?.label ||
+				val,
 		)
 		const arrayString = labels?.join(', ')
 		return <TitleValue title={label} value={arrayString} />
 	}
-	const visningValue = kodeverk?.find((kode: any) => kode?.value === value)?.label || value
+
+	const visningValue =
+		kodeverk?.find((kode: { label: string; value: string }) => kode?.value === value)?.label ||
+		value
 	return <TitleValue title={label} value={visningValue} />
 }
 
-const XmlVisning = ({ xmlString }: { xmlString: string }) => {
-	const [viserXml, vis, skjul] = useBoolean(false)
-
-	if (!xmlString) {
-		return null
-	}
-
-	const xmlFormatted = formatXml(xmlString, '  ')
-
-	return (
-		<>
-			<Button
-				onClick={viserXml ? skjul : vis}
-				kind={viserXml ? 'chevron-up' : 'chevron-down'}
-				style={{ position: 'initial', paddingTop: '0' }}
-			>
-				{(viserXml ? 'SKJUL ' : 'VIS ') + 'SKATTEKORT-XML'}
-			</Button>
-			{viserXml &&
-				(xmlString ? (
-					<Suspense fallback={<Loading label={'Laster xml...'} />}>
-						<PrettyCode language={'xml'} codeString={xmlFormatted} wrapLongLines />
-					</Suspense>
-				) : (
-					<Alert variant="error" size="small" inline>
-						Kunne ikke vise skattekort-xml
-					</Alert>
-				))}
-		</>
-	)
-}
-
-export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
+export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster skattekort-data" />
 	}
+
 	if (!liste) {
 		return null
 	}
@@ -96,44 +84,24 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 			) : (
 				<ErrorBoundary>
 					<DollyFieldArray header="" data={liste} expandable={liste.length > 5} nested>
-						{(skattekort: any, idx: number) => {
-							const arbeidsgiver = skattekort?.arbeidsgiver?.[0]
-							const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
-							const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
-
+						{(skattekort: SkattekortDTO, idx: number) => {
 							return (
 								<React.Fragment key={idx}>
 									<div className="person-visning_content">
 										<KodeverkTitleValue
 											kodeverkstype="RESULTATSTATUS"
-											value={arbeidstaker?.resultatPaaForespoersel}
-											label="Resultat på forespørsel"
+											value={skattekort?.resultatForSkattekort}
+											label="Resultat for skattekort"
 										/>
-										<TitleValue title="Inntektsår" value={arbeidstaker?.inntektsaar} />
-										<TitleValue
-											title="Utstedt dato"
-											value={formatDate(arbeidstaker?.skattekort?.utstedtDato)}
-										/>
-										<TitleValue
-											title="Skattekortidentifikator"
-											value={arbeidstaker?.skattekort?.skattekortidentifikator}
-										/>
+										<TitleValue title="Inntektsår" value={skattekort?.inntektsaar} />
+										<TitleValue title="Utstedt dato" value={formatDate(skattekort?.utstedtDato)} />
 										<KodeverkTitleValue
 											kodeverkstype="TILLEGGSOPPLYSNING"
-											value={arbeidstaker?.tilleggsopplysning}
+											value={skattekort?.tilleggsopplysningList || []}
 											label="Tilleggsopplysning"
 										/>
-										<TitleValue
-											title="Arbeidsgiver (org.nr.)"
-											value={arbeidsgiver?.arbeidsgiveridentifikator?.organisasjonsnummer}
-										/>
-										<TitleValue
-											title="Arbeidsgiver (ident)"
-											value={arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator}
-										/>
-										<ForskuddstrekkVisning trekkliste={trekkListe} />
+										<ForskuddstrekkVisning trekkliste={skattekort?.forskuddstrekkList} />
 									</div>
-									<XmlVisning xmlString={skattekort?.skattekortXml} />
 								</React.Fragment>
 							)
 						}}
