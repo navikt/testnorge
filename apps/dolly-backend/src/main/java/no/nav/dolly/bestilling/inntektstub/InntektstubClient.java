@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.inntektstub;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
@@ -21,7 +20,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
@@ -30,7 +28,6 @@ import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.util.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
@@ -91,38 +88,39 @@ public class InntektstubClient implements ClientRegister {
 
     private Mono<String> importFraTenor(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
-        val exists = new AtomicBoolean(false);
-
         return transaksjonMappingService.existAlready(INNTK, dollyPerson.getIdent())
-                .doOnNext(exists::set)
-                .filter(exist -> isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())
-                        // && TPD sjekke Tenor status fra Inntektstub
-                        ||
-                        nonNull(bestilling.getInntektstub()) &&
-                                !bestilling.getInntektstub().getInntektsinformasjon().isEmpty())
-                .flatMap(oppdatereStatusVenter -> isTrue(oppdatereStatusVenter) ?
-                            oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse())) : Mono.just(progress))
-                .then(Mono.just(exists.get())
-                        .flatMap(exist -> {
-                            if (isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())
+                .flatMap(exist -> {
+                    if (isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())
                             // && TPD sjekke Tenor status fra Inntektstub
-                            ){
-                                return inntektstubConsumer.importInntekt(dollyPerson.getIdent())
-                                        .flatMap(importResponse -> importResponse.getStatus().is2xxSuccessful() ?
-                                                transaksjonMappingService.save(TransaksjonMapping.builder()
-                                                                .ident(dollyPerson.getIdent())
-                                                                .system(INNTK.name())
-                                                                .transaksjonId("{\"status\": \"Import fra Tenor utført\"}")
-                                                                .bestillingId(progress.getBestillingId())
-                                                                .datoEndret(now())
-                                                                .build())
-                                                        .then(Mono.just("OK")) :
-                                                Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(
-                                                        "Import av inntektsdata feilet: " + importResponse.getMessage()))));
-                            } else {
-                                return Mono.just("");
-                            }
-                        }));
+                            ||
+                            nonNull(bestilling.getInntektstub()) &&
+                                    !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
+                        return oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
+                                .thenReturn(exist);
+                    } else {
+                        return Mono.just(exist);
+                    }
+                })
+                .flatMap(exist -> {
+                    if (isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())
+                        // && TPD sjekke Tenor status fra Inntektstub
+                    ) {
+                        return inntektstubConsumer.importInntekt(dollyPerson.getIdent())
+                                .flatMap(importResponse -> importResponse.getStatus().is2xxSuccessful() ?
+                                        transaksjonMappingService.save(TransaksjonMapping.builder()
+                                                        .ident(dollyPerson.getIdent())
+                                                        .system(INNTK.name())
+                                                        .transaksjonId("{\"status\": \"Import fra Tenor utført\"}")
+                                                        .bestillingId(progress.getBestillingId())
+                                                        .datoEndret(now())
+                                                        .build())
+                                                .then(Mono.just("OK")) :
+                                        Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(
+                                                "Import av inntektsdata feilet: " + importResponse.getMessage()))));
+                    } else {
+                        return Mono.just("");
+                    }
+                });
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

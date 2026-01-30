@@ -70,7 +70,7 @@ public class TransaksjonMappingService {
                 .filter(mapping -> (isBlank(miljoe) || miljoe.equals(mapping.getMiljoe())) &&
                         (isNull(bestillingId) || bestillingId.equals(mapping.getBestillingId())))
                 .collectList()
-                .thenReturn(true)
+                .map(exists -> !exists.isEmpty())
                 .switchIfEmpty(Mono.just(false));
     }
 
