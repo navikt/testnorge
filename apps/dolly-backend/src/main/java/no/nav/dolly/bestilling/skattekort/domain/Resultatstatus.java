@@ -18,7 +18,6 @@ public enum Resultatstatus {
     @JsonValue
     private final String value;
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     Resultatstatus(String value) {
         this.value = value;
     }
@@ -26,5 +25,20 @@ public enum Resultatstatus {
     @Override
     public String toString() {
         return this.name() + "," + value;
+    }
+
+    @JsonCreator
+    public static Resultatstatus fromValue(String input) {
+        if (input == null) {
+            return null;
+        }
+        
+        for (Resultatstatus status : Resultatstatus.values()) {
+            if (status.value.equalsIgnoreCase(input) || status.name().equalsIgnoreCase(input)) {
+                return status;
+            }
+        }
+        
+        throw new IllegalArgumentException("Unknown Resultatstatus: " + input);
     }
 }
