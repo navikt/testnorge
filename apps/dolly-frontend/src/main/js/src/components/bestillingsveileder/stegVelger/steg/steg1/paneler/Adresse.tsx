@@ -36,7 +36,6 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 				<Attributt attr={sm.attrs.oppholdsadresse} />
 				<Attributt data-testid="attributt-kontaktadresse" attr={sm.attrs.kontaktadresse} />
 			</AttributtKategori>
-
 			<AttributtKategori title="Delt bosted" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.deltBosted}
@@ -47,7 +46,6 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>
-
 			<AttributtKategori title="Adressebeskyttelse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.adressebeskyttelse} />
 			</AttributtKategori>
