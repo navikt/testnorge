@@ -21,46 +21,36 @@ public final class BestillingSkattekortStatusMapper {
 
     public static List<RsStatusRapport> buildSkattekortStatusMap(List<BestillingProgress> progressList) {
 
+        boolean hasSkattekortStatus = progressList.stream()
+                .anyMatch(p -> isNotBlank(p.getSkattekortStatus()));
+
+        if (!hasSkattekortStatus) {
+            return emptyList();
+        }
+
         Map<String, Set<String>> statusIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
-
-                    if (!entry.contains("|")) {
+                    if (isNotBlank(entry)) {
                         if (statusIdents.containsKey(entry)) {
                             statusIdents.get(entry).add(progress.getIdent());
                         } else {
                             statusIdents.put(entry, new HashSet<>(Set.of(progress.getIdent())));
                         }
-                        continue;
-                    }
-
-                    var parts = entry.split("\\|");
-                    if (parts.length < 2) {
-                        continue;
-                    }
-
-                    if (statusIdents.containsKey(entry)) {
-                        statusIdents.get(entry).add(progress.getIdent());
-                    } else {
-                        statusIdents.put(entry, new HashSet<>(Set.of(progress.getIdent())));
                     }
                 }
             }
         });
-
-        if (statusIdents.isEmpty()) {
-            return emptyList();
-        }
 
         var statuser = statusIdents.entrySet().stream()
                 .map(entry -> {
                     String melding = entry.getKey();
 
                     if (melding.contains("|")) {
-                        var parts = melding.split("\\|");
+                        var parts = melding.split("\\|", 2);
                         var orgYear = parts[0];
                         var status = parts[1];
 
