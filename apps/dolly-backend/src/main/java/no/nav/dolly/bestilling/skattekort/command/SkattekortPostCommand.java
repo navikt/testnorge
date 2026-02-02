@@ -1,6 +1,8 @@
 package no.nav.dolly.bestilling.skattekort.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
@@ -25,6 +27,7 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
 
     private static final String OPPRETT_SKATTEKORT_URL = "/skattekort/api/v1/person/opprett";
     private static final String CONSUMER = "Dolly";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final WebClient webClient;
     private final SokosSkattekortRequest request;
@@ -33,8 +36,8 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
     @Override
     public Mono<SkattekortResponse> call() {
 
-        log.info("Sender skattekort til Sokos med request: {}", request);
-        
+        log.info("Sender skattekort til Sokos: {}", Json.pretty(request));
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(OPPRETT_SKATTEKORT_URL).build())
@@ -53,8 +56,11 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     WebClientError.Description description = WebClientError.describe(throwable);
-                    log.error("Feil ved sending av skattekort til Sokos: status={}, message={}", 
-                            description.getStatus(), description.getMessage());
+                    log.error("Feil ved sending av skattekort til Sokos. FNR: {}, Inntektsår: {}, Status: {}, Message: {}",
+                            request.getFnr(),
+                            request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null,
+                            description.getStatus(),
+                            description.getMessage());
                     return SkattekortResponse.of(description);
                 });
     }

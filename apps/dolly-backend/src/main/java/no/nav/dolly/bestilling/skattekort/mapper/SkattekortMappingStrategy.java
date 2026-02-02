@@ -43,6 +43,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                         if (source.getSkattekort() != null && source.getSkattekort().getForskuddstrekk() != null) {
                             var flattened = source.getSkattekort().getForskuddstrekk().stream()
                                     .map(SkattekortMappingStrategy::flattenForskuddstrekk)
+                                    .filter(f -> f != null && f.getTrekkode() != null)
                                     .toList();
                             destination.setForskuddstrekkList(flattened);
                         }
