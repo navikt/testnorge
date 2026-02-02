@@ -23,11 +23,13 @@ public final class BestillingSkattekortStatusMapper {
 
     public static List<RsStatusRapport> buildSkattekortStatusMap(List<BestillingProgress> progressList) {
 
+        log.info("[SKATTEKORT_MAPPER] buildSkattekortStatusMap called with {} progress records", progressList.size());
+
         boolean hasSkattekortStatus = progressList.stream()
                 .anyMatch(p -> isNotBlank(p.getSkattekortStatus()));
 
         if (!hasSkattekortStatus) {
-            log.debug("[SKATTEKORT_MAPPER] No skattekort statuses found, returning empty list");
+            log.info("[SKATTEKORT_MAPPER] No skattekort statuses found in any progress record, returning empty list");
             return emptyList();
         }
 
@@ -35,7 +37,7 @@ public final class BestillingSkattekortStatusMapper {
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
-                log.debug("[SKATTEKORT_MAPPER] Processing progress for ident: {}, skattekortStatus: '{}'", 
+                log.info("[SKATTEKORT_MAPPER] Processing progress for ident: {}, skattekortStatus: '{}'", 
                     progress.getIdent(), progress.getSkattekortStatus());
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
@@ -50,7 +52,7 @@ public final class BestillingSkattekortStatusMapper {
             }
         });
 
-        log.debug("[SKATTEKORT_MAPPER] Building skattekort status map for {} status entries", statusIdents.size());
+        log.info("[SKATTEKORT_MAPPER] Building skattekort status map for {} status entries", statusIdents.size());
 
         var statusMap = new HashMap<String, Set<String>>();
         statusIdents.forEach((key, identsSet) -> {
@@ -63,6 +65,7 @@ public final class BestillingSkattekortStatusMapper {
 
                 if (status.equals("Skattekort lagret")) {
                     melding = "OK";
+                    log.info("[SKATTEKORT_MAPPER] Converted status 'Skattekort lagret' to 'OK'");
                 } else {
                     var orgYearParts = orgYear.split("\\+");
                     if (orgYearParts.length >= 2) {
@@ -70,9 +73,11 @@ public final class BestillingSkattekortStatusMapper {
                     } else {
                         melding = "FEIL: " + decodeMsg(status);
                     }
+                    log.info("[SKATTEKORT_MAPPER] Converted error status: {}", melding);
                 }
             } else {
                 melding = decodeMsg(melding);
+                log.info("[SKATTEKORT_MAPPER] Decoded non-pipe status: {}", melding);
             }
 
             if (statusMap.containsKey(melding)) {
@@ -82,11 +87,11 @@ public final class BestillingSkattekortStatusMapper {
             }
         });
 
-        log.debug("[SKATTEKORT_MAPPER] Aggregated to {} unique status messages", statusMap.size());
+        log.info("[SKATTEKORT_MAPPER] Aggregated to {} unique status messages", statusMap.size());
 
         var statuser = statusMap.entrySet().stream()
                 .map(entry -> {
-                    log.debug("[SKATTEKORT_MAPPER] Creating status report with melding: '{}', identer count: {}", entry.getKey(), entry.getValue().size());
+                    log.info("[SKATTEKORT_MAPPER] Creating status report with melding: '{}', identer count: {}", entry.getKey(), entry.getValue().size());
                     return RsStatusRapport.Status.builder()
                             .melding(entry.getKey())
                             .identer(entry.getValue().stream().toList())
@@ -94,7 +99,7 @@ public final class BestillingSkattekortStatusMapper {
                 })
                 .toList();
 
-        log.debug("[SKATTEKORT_MAPPER] Returning {} status rapporter with {} total status messages", 1, statuser.size());
+        log.info("[SKATTEKORT_MAPPER] Returning status rapport with {} status messages", statuser.size());
 
         return List.of(RsStatusRapport.builder()
                 .id(SKATTEKORT)
