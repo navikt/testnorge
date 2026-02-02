@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,16 +21,19 @@ public final class BestillingSkattekortStatusMapper {
 
     public static List<RsStatusRapport> buildSkattekortStatusMap(List<BestillingProgress> progressList) {
 
-        //  status     org+year       ident
-        Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
+        Map<String, Set<String>> statusIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
                     
-                    if (entry.contains("Info") || entry.contains("venter") || entry.contains("Venter") || 
-                        entry.contains("startet") || !entry.contains("|")) {
+                    if (!entry.contains("|")) {
+                        if (statusIdents.containsKey(entry)) {
+                            statusIdents.get(entry).add(progress.getIdent());
+                        } else {
+                            statusIdents.put(entry, new HashSet<>(Set.of(progress.getIdent())));
+                        }
                         continue;
                     }
                     
@@ -42,67 +44,53 @@ public final class BestillingSkattekortStatusMapper {
                     var orgYear = parts[0];
                     var status = parts[1];
                     
-                    if (errorEnvIdents.containsKey(status)) {
-                        if (errorEnvIdents.get(status).containsKey(orgYear)) {
-                            errorEnvIdents.get(status).get(orgYear).add(progress.getIdent());
-                        } else {
-                            errorEnvIdents.get(status).put(orgYear, new HashSet<>(Set.of(progress.getIdent())));
-                        }
+                    var fullStatus = "org:" + orgYear + ", status:" + status;
+                    
+                    if (statusIdents.containsKey(fullStatus)) {
+                        statusIdents.get(fullStatus).add(progress.getIdent());
                     } else {
-                        errorEnvIdents.put(status, new HashMap<>(Map.of(orgYear, new HashSet<>(Set.of(progress.getIdent())))));
+                        statusIdents.put(fullStatus, new HashSet<>(Set.of(progress.getIdent())));
                     }
                 }
             }
         });
 
-        if (errorEnvIdents.isEmpty()) {
+        if (statusIdents.isEmpty()) {
             return emptyList();
         }
 
-        if (errorEnvIdents.entrySet().stream()
-                .allMatch(entry -> entry.getKey().equals("Skattekort lagret"))) {
+        var statuser = statusIdents.entrySet().stream()
+                .map(entry -> {
+                    String melding = entry.getKey();
+                    
+                    if (melding.startsWith("org:")) {
+                        var statusPart = melding.substring(melding.indexOf("status:") + 7);
+                        if (statusPart.equals("Skattekort lagret")) {
+                            melding = "OK";
+                        } else {
+                            var orgPart = melding.substring(4, melding.indexOf(", status:"));
+                            var parts = orgPart.split("\\+");
+                            if (parts.length >= 2) {
+                                melding = "FEIL: organisasjon:" + parts[0] + ", inntektsår:" + parts[1] + ", melding:" + decodeMsg(statusPart);
+                            } else {
+                                melding = "FEIL: " + decodeMsg(statusPart);
+                            }
+                        }
+                    } else {
+                        melding = decodeMsg(melding);
+                    }
+                    
+                    return RsStatusRapport.Status.builder()
+                            .melding(melding)
+                            .identer(entry.getValue().stream().toList())
+                            .build();
+                })
+                .toList();
 
-            return List.of(RsStatusRapport.builder()
-                    .id(SKATTEKORT)
-                    .navn(SKATTEKORT.getBeskrivelse())
-                    .statuser(List.of(RsStatusRapport.Status.builder()
-                            .melding("OK")
-                            .identer(errorEnvIdents.values().stream()
-                                    .flatMap(map -> map.values().stream())
-                                    .flatMap(Collection::stream)
-                                    .distinct()
-                                    .toList())
-                            .build()))
-                    .build());
-        } else {
-
-            return errorEnvIdents.entrySet().stream()
-                    .filter(entry -> !entry.getKey().equals("Skattekort lagret"))
-                    .map(entry -> RsStatusRapport.builder()
-                            .id(SKATTEKORT)
-                            .navn(SKATTEKORT.getBeskrivelse())
-                            .statuser(entry.getValue().entrySet().stream()
-                                    .map(orgYear -> RsStatusRapport.Status.builder()
-                                            .melding(formatMelding(orgYear.getKey(), entry.getKey()))
-                                            .identer(orgYear.getValue().stream().toList())
-                                            .build())
-                                    .toList())
-                            .build())
-                    .toList();
-        }
-    }
-
-
-    private static String formatMelding(String orgYear, String melding) {
-
-        String[] parts = orgYear.split("\\+");
-        if (parts.length < 2) {
-            return "FEIL: " + decodeMsg(melding);
-        }
-
-        return "FEIL: organisasjon:%s, inntektsår:%s, melding:%s".formatted(
-                parts[0],
-                parts[1],
-                decodeMsg(melding));
+        return List.of(RsStatusRapport.builder()
+                .id(SKATTEKORT)
+                .navn(SKATTEKORT.getBeskrivelse())
+                .statuser(statuser)
+                .build());
     }
 }
