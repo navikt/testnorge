@@ -27,7 +27,7 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 	},
 	TILLEGGSOPPLYSNING: {
 		'Opphold på Svalbard': 'oppholdPaaSvalbard',
-		Kildeskattpensjonist: 'kildeskattpensjonist',
+		'Kildeskatt på pensjonist': 'kildeskattPaaPensjon',
 		'Opphold i tiltakssone': 'oppholdITiltakssone',
 		'Kildeskatt på lønn': 'kildeskattPaaLoenn',
 	},

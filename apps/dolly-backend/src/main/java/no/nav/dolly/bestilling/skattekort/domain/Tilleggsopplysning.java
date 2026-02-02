@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum Tilleggsopplysning {
 
     OPPHOLD_PAA_SVALBARD("oppholdPaaSvalbard"),
-    KILDESKATTPENSJONIST("kildeskattpensjonist"),
+    KILDESKATT_PAA_PENSJON("kildeskattPaaPensjon"),
     OPPHOLD_I_TILTAKSSONE("oppholdITiltakssone"),
     KILDESKATT_PAA_LOENN("kildeskattPaaLoenn");
 
