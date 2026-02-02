@@ -45,28 +45,28 @@ public class SkattekortClient implements ClientRegister {
             return Mono.empty();
         }
 
-        log.info("Processing skattekort for person: {}, arbeidsgiverSkatt count: {}", 
+        log.info("[SKATTEKORT] Processing skattekort for person: {}, arbeidsgiverSkatt count: {}", 
                 dollyPerson.getIdent(), bestilling.getSkattekort().getArbeidsgiverSkatt().size());
 
         return oppdaterStatus(progress, getInfoVenter(SYSTEM))
                 .flatMap(updatedProgress -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
-                        .doOnNext(arbeidsgiver -> log.info("Processing arbeidsgiver with org: {}", 
+                        .doOnNext(arbeidsgiver -> log.info("[SKATTEKORT] Processing arbeidsgiver with org: {}", 
                             arbeidsgiver.getArbeidsgiveridentifikator() != null ? 
                             arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer() : "unknown"))
                         .flatMap(arbeidsgiver -> sendSkattekortForArbeidsgiver(arbeidsgiver, dollyPerson))
-                        .doOnNext(status -> log.info("Received status from arbeidsgiver: '{}'", status))
+                        .doOnNext(status -> log.info("[SKATTEKORT] Received status from arbeidsgiver: '{}'", status))
                         .switchIfEmpty(Flux.defer(() -> {
-                            log.warn("No skattekort status emitted for person: {}, flux completed empty", dollyPerson.getIdent());
+                            log.warn("[SKATTEKORT] No skattekort status emitted for person: {}, flux completed empty", dollyPerson.getIdent());
                             return Flux.empty();
                         }))
                         .collect(Collectors.joining(","))
-                        .doOnSuccess(resultat -> log.info("Collected results for person {}: '{}'", dollyPerson.getIdent(), resultat))
+                        .doOnSuccess(resultat -> log.info("[SKATTEKORT] Collected results for person {}: '{}'", dollyPerson.getIdent(), resultat))
                         .flatMap(resultat -> {
                             if (isNotBlank(resultat)) {
-                                log.info("Skattekort processing complete for person: {}, updating final status with: '{}'", dollyPerson.getIdent(), resultat);
+                                log.info("[SKATTEKORT] Processing complete for person: {}, updating final status with: '{}'", dollyPerson.getIdent(), resultat);
                                 return oppdaterStatus(updatedProgress, resultat);
                             } else {
-                                log.warn("No skattekort results to persist for ident: {}, keeping pending status", dollyPerson.getIdent());
+                                log.warn("[SKATTEKORT] No results to persist for ident: {}, keeping pending status", dollyPerson.getIdent());
                                 return Mono.just(updatedProgress);
                             }
                         }));
@@ -78,6 +78,7 @@ public class SkattekortClient implements ClientRegister {
 
     private Flux<String> sendSkattekortForArbeidsgiver(ArbeidsgiverSkatt arbeidsgiver, DollyPerson dollyPerson) {
         if (isNull(arbeidsgiver.getArbeidstaker()) || arbeidsgiver.getArbeidstaker().isEmpty()) {
+            log.warn("[SKATTEKORT] Arbeidsgiver has no arbeidstaker, skipping");
             return Flux.empty();
         }
 
@@ -85,8 +86,13 @@ public class SkattekortClient implements ClientRegister {
                 ? arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer()
                 : "unknown";
 
+        log.info("[SKATTEKORT] Processing {} arbeidstaker(s) for org: {}", arbeidsgiver.getArbeidstaker().size(), orgNumber);
+
         return Flux.fromIterable(arbeidsgiver.getArbeidstaker())
-                .flatMap(arbeidstaker -> sendSkattekortForArbeidstaker(arbeidstaker, dollyPerson, orgNumber));
+                .flatMap(arbeidstaker -> {
+                    log.info("[SKATTEKORT] Processing arbeidstaker for org: {}, inntektsaar: {}", orgNumber, arbeidstaker.getInntektsaar());
+                    return sendSkattekortForArbeidstaker(arbeidstaker, dollyPerson, orgNumber);
+                });
     }
 
     private Mono<String> sendSkattekortForArbeidstaker(Skattekortmelding arbeidstaker, DollyPerson dollyPerson, String orgNumber) {
@@ -99,18 +105,29 @@ public class SkattekortClient implements ClientRegister {
         if (request.getSkattekort() == null || 
             request.getSkattekort().getForskuddstrekkList() == null || 
             request.getSkattekort().getForskuddstrekkList().isEmpty()) {
-            log.warn("Skipping skattekort for person: {}, org: {}, year: {} - forskuddstrekkList is empty", 
+            log.warn("[SKATTEKORT] Skipping - forskuddstrekkList is empty for person: {}, org: {}, year: {}", 
                     dollyPerson.getIdent(), orgNumber, year);
             return Mono.just(orgNumber + "+" + year + "|Feil: Forskuddstrekk list er tom");
         }
 
-        log.info("Sending skattekort to Sokos for person: {}, org: {}, year: {}", 
+        log.info("[SKATTEKORT] Sending to Sokos for person: {}, org: {}, year: {}", 
                 dollyPerson.getIdent(), orgNumber, year);
 
         return skattekortConsumer.sendSkattekort(request)
-                .map(response -> formatStatus(response, orgNumber, year))
+                .doOnSubscribe(s -> log.info("[SKATTEKORT] Subscribed to Sokos request for person: {}, org: {}, year: {}", 
+                    dollyPerson.getIdent(), orgNumber, year))
+                .doOnSuccess(response -> log.info("[SKATTEKORT] Received response from Sokos for person: {}, org: {}, year: {}, isOK: {}", 
+                    dollyPerson.getIdent(), orgNumber, year, response != null ? response.isOK() : "null"))
+                .map(response -> {
+                    String status = formatStatus(response, orgNumber, year);
+                    log.info("[SKATTEKORT] Formatted status for person: {}, org: {}, year: {}: '{}'", 
+                        dollyPerson.getIdent(), orgNumber, year, status);
+                    return status;
+                })
+                .doOnError(throwable -> log.error("[SKATTEKORT] Error in Sokos request processing for person: {}, org: {}, year: {}: {}", 
+                    dollyPerson.getIdent(), orgNumber, year, throwable.getMessage()))
                 .onErrorResume(throwable -> {
-                    log.error("Error sending skattekort for person: {}, org: {}, year: {}: {}", 
+                    log.error("[SKATTEKORT] Error sending to Sokos for person: {}, org: {}, year: {}: {}", 
                             dollyPerson.getIdent(), orgNumber, year, throwable.getMessage());
                     String status = orgNumber + "+" + year + "|Feil: " + throwable.getMessage();
                     return Mono.just(status);
