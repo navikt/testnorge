@@ -27,7 +27,7 @@ public final class BestillingSkattekortStatusMapper {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
-                    
+
                     if (!entry.contains("|")) {
                         if (statusIdents.containsKey(entry)) {
                             statusIdents.get(entry).add(progress.getIdent());
@@ -36,20 +36,16 @@ public final class BestillingSkattekortStatusMapper {
                         }
                         continue;
                     }
-                    
+
                     var parts = entry.split("\\|");
                     if (parts.length < 2) {
                         continue;
                     }
-                    var orgYear = parts[0];
-                    var status = parts[1];
-                    
-                    var fullStatus = "org:" + orgYear + ", status:" + status;
-                    
-                    if (statusIdents.containsKey(fullStatus)) {
-                        statusIdents.get(fullStatus).add(progress.getIdent());
+
+                    if (statusIdents.containsKey(entry)) {
+                        statusIdents.get(entry).add(progress.getIdent());
                     } else {
-                        statusIdents.put(fullStatus, new HashSet<>(Set.of(progress.getIdent())));
+                        statusIdents.put(entry, new HashSet<>(Set.of(progress.getIdent())));
                     }
                 }
             }
@@ -62,24 +58,26 @@ public final class BestillingSkattekortStatusMapper {
         var statuser = statusIdents.entrySet().stream()
                 .map(entry -> {
                     String melding = entry.getKey();
-                    
-                    if (melding.startsWith("org:")) {
-                        var statusPart = melding.substring(melding.indexOf("status:") + 7);
-                        if (statusPart.equals("Skattekort lagret")) {
+
+                    if (melding.contains("|")) {
+                        var parts = melding.split("\\|");
+                        var orgYear = parts[0];
+                        var status = parts[1];
+
+                        if (status.equals("Skattekort lagret")) {
                             melding = "OK";
                         } else {
-                            var orgPart = melding.substring(4, melding.indexOf(", status:"));
-                            var parts = orgPart.split("\\+");
-                            if (parts.length >= 2) {
-                                melding = "FEIL: organisasjon:" + parts[0] + ", inntektsår:" + parts[1] + ", melding:" + decodeMsg(statusPart);
+                            var orgYearParts = orgYear.split("\\+");
+                            if (orgYearParts.length >= 2) {
+                                melding = "FEIL: organisasjon:" + orgYearParts[0] + ", inntektsår:" + orgYearParts[1] + ", melding:" + decodeMsg(status);
                             } else {
-                                melding = "FEIL: " + decodeMsg(statusPart);
+                                melding = "FEIL: " + decodeMsg(status);
                             }
                         }
                     } else {
                         melding = decodeMsg(melding);
                     }
-                    
+
                     return RsStatusRapport.Status.builder()
                             .melding(melding)
                             .identer(entry.getValue().stream().toList())
