@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -51,7 +52,15 @@ public class SkattekortClient implements ClientRegister {
                 .flatMap(updatedProgress -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
                         .flatMap(arbeidsgiver -> sendSkattekortForArbeidsgiver(arbeidsgiver, dollyPerson))
                         .collect(Collectors.joining(","))
-                        .flatMap(resultat -> oppdaterStatus(updatedProgress, resultat)));
+                        .flatMap(resultat -> {
+                            if (isNotBlank(resultat)) {
+                                log.info("Skattekort processing complete for person: {}, updating final status", dollyPerson.getIdent());
+                                return oppdaterStatus(updatedProgress, resultat);
+                            } else {
+                                log.warn("No skattekort results to persist for ident: {}, keeping pending status", dollyPerson.getIdent());
+                                return Mono.just(updatedProgress);
+                            }
+                        }));
     }
 
     @Override
@@ -66,8 +75,6 @@ public class SkattekortClient implements ClientRegister {
         String orgNumber = nonNull(arbeidsgiver.getArbeidsgiveridentifikator())
                 ? arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer()
                 : "unknown";
-
-        log.info("Processing arbeidsgiver: {}, arbeidstaker count: {}", orgNumber, arbeidsgiver.getArbeidstaker().size());
 
         return Flux.fromIterable(arbeidsgiver.getArbeidstaker())
                 .flatMap(arbeidstaker -> sendSkattekortForArbeidstaker(arbeidstaker, dollyPerson, orgNumber));
@@ -88,8 +95,8 @@ public class SkattekortClient implements ClientRegister {
             return Mono.just(orgNumber + "+" + year + "|Feil: Forskuddstrekk list er tom");
         }
 
-        log.info("Sending skattekort for person: {}, org: {}, year: {}, forskuddstrekkList size: {}", 
-                dollyPerson.getIdent(), orgNumber, year, request.getSkattekort().getForskuddstrekkList().size());
+        log.info("Sending skattekort to Sokos for person: {}, org: {}, year: {}", 
+                dollyPerson.getIdent(), orgNumber, year);
 
         return skattekortConsumer.sendSkattekort(request)
                 .map(response -> formatStatus(response, orgNumber, year))
@@ -103,22 +110,14 @@ public class SkattekortClient implements ClientRegister {
 
     private String formatStatus(SkattekortResponse response, String orgNumber, Integer year) {
         String prefix = orgNumber + "+" + year + "|";
-        String status;
         if (response.isOK()) {
-            status = prefix + "Skattekort lagret";
-            log.info("[SKATTEKORT_CLIENT] Success response - formatted status: '{}'", status);
-        } else {
-            status = prefix + response.getFeilmelding();
-            log.info("[SKATTEKORT_CLIENT] Error response - formatted status: '{}'", status);
+            return prefix + "Skattekort lagret";
         }
-        return status;
+        return prefix + response.getFeilmelding();
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
-        log.info("[SKATTEKORT_CLIENT] Persisting status for ident {}: '{}'", progress.getIdent(), status);
         return transactionHelperService.persister(progress, BestillingProgress::getSkattekortStatus,
-                BestillingProgress::setSkattekortStatus, status)
-                .doOnSuccess(p -> log.info("[SKATTEKORT_CLIENT] Successfully persisted status for ident: {}", p != null ? p.getIdent() : "null"))
-                .doOnError(e -> log.error("[SKATTEKORT_CLIENT] Error persisting status: {}", e.getMessage()));
+                BestillingProgress::setSkattekortStatus, status);
     }
 }
