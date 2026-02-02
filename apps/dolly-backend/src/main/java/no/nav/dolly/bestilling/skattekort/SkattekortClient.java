@@ -50,8 +50,15 @@ public class SkattekortClient implements ClientRegister {
 
         return oppdaterStatus(progress, getInfoVenter(SYSTEM))
                 .flatMap(updatedProgress -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
+                        .doOnNext(arbeidsgiver -> log.info("Processing arbeidsgiver with org: {}", 
+                            arbeidsgiver.getArbeidsgiveridentifikator() != null ? 
+                            arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer() : "unknown"))
                         .flatMap(arbeidsgiver -> sendSkattekortForArbeidsgiver(arbeidsgiver, dollyPerson))
                         .doOnNext(status -> log.info("Received status from arbeidsgiver: '{}'", status))
+                        .switchIfEmpty(Flux.defer(() -> {
+                            log.warn("No skattekort status emitted for person: {}, flux completed empty", dollyPerson.getIdent());
+                            return Flux.empty();
+                        }))
                         .collect(Collectors.joining(","))
                         .doOnSuccess(resultat -> log.info("Collected results for person {}: '{}'", dollyPerson.getIdent(), resultat))
                         .flatMap(resultat -> {
