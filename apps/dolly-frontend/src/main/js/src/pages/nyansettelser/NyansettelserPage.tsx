@@ -29,7 +29,7 @@ export default () => {
 	return (
 		<>
 			<h1>Nyansettelser</h1>
-			<VStack gap="4">
+			<VStack gap="space-16">
 				<NyansettelserSoek
 					setIdentSoekData={setIdentSoekData}
 					setOrgnummerSoekData={setOrgnummerSoekData}

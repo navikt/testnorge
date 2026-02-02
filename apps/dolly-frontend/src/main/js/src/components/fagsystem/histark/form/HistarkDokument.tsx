@@ -115,7 +115,7 @@ export const HistarkDokument = ({ path, formMethods }) => {
 					size={'xsmall'}
 				/>
 				<div className="flexbox--full-width">
-					<VStack gap="4" style={{ marginTop: '10px' }}>
+					<VStack gap="space-16" style={{ marginTop: '10px' }}>
 						<FileUpload.Dropzone
 							label="Last opp vedlegg til dokumentet"
 							accept=".pdf"

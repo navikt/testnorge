@@ -47,7 +47,7 @@ export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 			<p>
 				{`Team Dolly er tilgjengelige på ${bankIdBruker ? '' : 'Slack (#dolly), '}e-post (dolly@nav.no), og via kontaktskjema.`}
 			</p>
-			<VStack gap="2">
+			<VStack gap="space-8">
 				{!bankIdBruker && (
 					<a href={'https://nav-it.slack.com/archives/CA3P9NGA2'} target="_blank">
 						<Button

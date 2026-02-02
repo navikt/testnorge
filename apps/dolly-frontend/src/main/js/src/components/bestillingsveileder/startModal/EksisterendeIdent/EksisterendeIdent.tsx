@@ -71,7 +71,7 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 					{error.message}
 				</Alert>
 			)}
-			<VStack gap="2" style={{ maxHeight: '20vh', marginRight: '20px' }}>
+			<VStack gap="space-8" style={{ maxHeight: '20vh', marginRight: '20px' }}>
 				<Textarea
 					UNSAFE_autoScrollbar
 					onChange={(event) => setInput(event.target.value)}
