@@ -35,7 +35,7 @@ export default () => {
 					setOrgnummerSoekData={setOrgnummerSoekData}
 					setPage={setPage}
 				/>
-				<Box background="surface-default" padding="4">
+				<Box background="default" padding="space-16">
 					{loading ? (
 						<Loading label="Laster arbeidsforhold ..." />
 					) : !sortData || sortData.length < 1 ? (

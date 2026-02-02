@@ -44,7 +44,7 @@ export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setP
 	}
 
 	return (
-		<Box background="surface-default" padding="4">
+		<Box background="default" padding="space-16">
 			<ToggleGroup
 				defaultValue={soekKategori}
 				onChange={(kategori: string) => setSoekKategori(kategori)}

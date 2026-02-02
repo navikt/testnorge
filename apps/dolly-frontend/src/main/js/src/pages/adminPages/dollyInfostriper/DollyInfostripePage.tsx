@@ -25,7 +25,7 @@ export default function DollyInfostripePage() {
 				<>
 					<ActionMenu.Divider style={{ marginTop: '20px' }} />
 					<h2>Aktive infostriper</h2>
-					<Box background="surface-default" padding="4" style={{ marginTop: '1.5rem' }}>
+					<Box background="default" padding="space-16" style={{ marginTop: '1.5rem' }}>
 						<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
 							{infostriper
 								?.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime())

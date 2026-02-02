@@ -53,7 +53,7 @@ export default () => {
 				representere. Dette vil si at når du har valgt et team der, vil alle grupper, personer,
 				maler, osv. du oppretter tilhøre valgt team, og ikke deg selv.
 			</p>
-			<Box background="surface-default" padding="4">
+			<Box background="default" padding="space-16">
 				<ErrorBoundary>
 					{loading ? (
 						<Loading label="Laster team ..." />

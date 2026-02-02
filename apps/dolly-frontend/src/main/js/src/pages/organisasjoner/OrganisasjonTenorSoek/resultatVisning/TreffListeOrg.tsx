@@ -55,7 +55,7 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 				className="flexbox--full-width"
 				style={{ marginBottom: '20px', position: 'sticky', top: '10px', zIndex: 1 }}
 			>
-				<Box background="surface-default" padding="3" borderRadius="medium">
+				<Box background="default" padding="space-12" borderRadius="4">
 					<div className="flexbox--space">
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
 							{antallTreff || antallTreff === 0 ? `${antallTreff} treff` : ''}
@@ -64,19 +64,25 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 				</Box>
 			</div>
 			<div style={{ width: '30%' }}>
-				<VStack gap="4">
+				<VStack gap="space-16">
 					{organisasjonListe?.map((organisasjon: any) => {
 						return (
 							<Box
 								key={organisasjon?.organisasjonsnummer}
 								data-testid={TestComponentSelectors.BUTTON_ORGANISASJON_TENORSOEK}
-								padding="2"
+								padding="space-8"
 								background={
 									organisasjon?.organisasjonsnummer === valgtOrganisasjon?.organisasjonsnummer
-										? 'surface-alt-3-moderate'
-										: 'surface-alt-3-subtle'
+										? 'accent-moderate-pressed'
+										: 'accent-moderate'
 								}
-								borderRadius="medium"
+								borderColor={
+									organisasjon?.organisasjonsnummer === valgtOrganisasjon?.organisasjonsnummer
+										? 'accent-strong'
+										: 'accent'
+								}
+								borderWidth="1"
+								borderRadius="4"
 								onClick={() => setValgtOrganisasjon(organisasjon)}
 								style={{ cursor: 'pointer' }}
 							>
