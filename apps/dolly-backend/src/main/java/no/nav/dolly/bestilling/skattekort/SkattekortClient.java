@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.skattekort;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -19,7 +18,6 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SkattekortClient implements ClientRegister {
@@ -31,9 +29,6 @@ public class SkattekortClient implements ClientRegister {
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                                 BestillingProgress progress, boolean isOpprettEndre) {
-
-        log.info("[SKATTEKORT_CLIENT] SkattekortClient.gjenopprett called for ident: {}, hasSkattekort: {}", 
-                dollyPerson.getIdent(), nonNull(bestilling.getSkattekort()));
 
         if (!nonNull(bestilling.getSkattekort())) {
             return Mono.just(progress);
@@ -49,19 +44,11 @@ public class SkattekortClient implements ClientRegister {
         Integer year = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
 
         return skattekortConsumer.sendSkattekort(request)
-                .map(response -> {
-                    String status = formatStatus(response, orgNumber, year);
-                    log.info("[SKATTEKORT_CLIENT] Skattekort response received: status={}, formatted={}", response.getStatus(), status);
-                    return status;
-                })
-                .flatMap(status -> {
-                    log.info("[SKATTEKORT_CLIENT] Persisting skattekort status: {}", status);
-                    return oppdaterStatus(progress, status);
-                })
+                .map(response -> formatStatus(response, orgNumber, year))
+                .flatMap(status -> oppdaterStatus(progress, status))
                 .onErrorResume(throwable -> {
                     Integer yr = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
                     String status = orgNumber + "+" + yr + "|Feil: " + throwable.getMessage();
-                    log.error("[SKATTEKORT_CLIENT] Error processing skattekort for org: {}, year: {}, error: {}", orgNumber, yr, throwable.getMessage(), throwable);
                     return oppdaterStatus(progress, status);
                 });
     }

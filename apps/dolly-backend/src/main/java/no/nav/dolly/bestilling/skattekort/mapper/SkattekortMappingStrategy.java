@@ -23,10 +23,10 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                     public void mapAtoB(SkattekortRequestDTO source, SokosSkattekortRequest destination, MappingContext context) {
                         var ident = (String) context.getProperty("ident");
 
-                        if (source.getArbeidsgiverSkatt() != null && !source.getArbeidsgiverSkatt().isEmpty()) {
+                        if (!source.getArbeidsgiverSkatt().isEmpty()) {
                             ArbeidsgiverSkatt arbeidsgiver = source.getArbeidsgiverSkatt().getFirst();
 
-                            if (arbeidsgiver.getArbeidstaker() != null && !arbeidsgiver.getArbeidstaker().isEmpty()) {
+                            if (!arbeidsgiver.getArbeidstaker().isEmpty()) {
                                 Skattekortmelding arbeidstaker = arbeidsgiver.getArbeidstaker().getFirst();
 
                                 destination.setFnr(ident);
@@ -50,7 +50,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                         if (source.getResultatPaaForespoersel() != null) {
                             destination.setResultatForSkattekort(source.getResultatPaaForespoersel().getValue());
                         }
-                        
+
                         if (source.getSkattekort() != null && source.getSkattekort().getForskuddstrekk() != null) {
                             var flattened = source.getSkattekort().getForskuddstrekk().stream()
                                     .map(SkattekortMappingStrategy::flattenForskuddstrekk)
@@ -68,27 +68,27 @@ public class SkattekortMappingStrategy implements MappingStrategy {
             return null;
         }
 
-        SokosSkattekortRequest.SokosForskuddstrekkDTO.SokosForskuddstrekkDTOBuilder builder = 
+        SokosSkattekortRequest.SokosForskuddstrekkDTO.SokosForskuddstrekkDTOBuilder builder =
                 SokosSkattekortRequest.SokosForskuddstrekkDTO.builder();
-        
+
         if (original.getTrekktabell() != null) {
             builder.trekkode(original.getTrekktabell().getTrekkode())
-                   .tabell(original.getTrekktabell().getTabellnummer())
-                   .prosentSats(original.getTrekktabell().getProsentsats() != null 
-                           ? original.getTrekktabell().getProsentsats().doubleValue() : null)
-                   .antallMndForTrekk(original.getTrekktabell().getAntallMaanederForTrekk() != null 
-                           ? original.getTrekktabell().getAntallMaanederForTrekk().doubleValue() : null);
+                    .tabell(original.getTrekktabell().getTabellnummer())
+                    .prosentSats(original.getTrekktabell().getProsentsats() != null
+                            ? original.getTrekktabell().getProsentsats().doubleValue() : null)
+                    .antallMndForTrekk(original.getTrekktabell().getAntallMaanederForTrekk() != null
+                            ? original.getTrekktabell().getAntallMaanederForTrekk().doubleValue() : null);
         }
-        
+
         if (original.getFrikort() != null) {
             builder.frikortBeloep(original.getFrikort().getFrikortbeloep());
         }
-        
+
         if (original.getTrekkprosent() != null) {
-            builder.prosentSats(original.getTrekkprosent().getProsentsats() != null 
+            builder.prosentSats(original.getTrekkprosent().getProsentsats() != null
                     ? original.getTrekkprosent().getProsentsats().doubleValue() : null);
         }
-        
+
         return builder.build();
     }
 }
