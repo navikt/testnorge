@@ -4,23 +4,31 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.skattekort.domain.ArbeidsgiverSkatt;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
+import no.nav.dolly.bestilling.skattekort.domain.Skattekortmelding;
+import no.nav.dolly.bestilling.skattekort.domain.SokosSkattekortRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SokosSkattekortRequest;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Service
 @RequiredArgsConstructor
 public class SkattekortClient implements ClientRegister {
+
+    private static final String SYSTEM = "SKATTEKORT";
 
     private final SkattekortConsumer skattekortConsumer;
     private final MapperFacade mapperFacade;
@@ -30,31 +38,47 @@ public class SkattekortClient implements ClientRegister {
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                                 BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (!nonNull(bestilling.getSkattekort())) {
-            return Mono.just(progress);
+        if (isNull(bestilling.getSkattekort()) || bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty()) {
+            return Mono.empty();
         }
 
-        MappingContext context = MappingContextUtils.getMappingContext();
-        context.setProperty("ident", dollyPerson.getIdent());
-
-        SokosSkattekortRequest request = mapperFacade.map(bestilling.getSkattekort(), SokosSkattekortRequest.class, context);
-
-        String orgNumber = bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty() ? "unknown" :
-                bestilling.getSkattekort().getArbeidsgiverSkatt().get(0).getArbeidsgiveridentifikator().getOrganisasjonsnummer();
-        Integer year = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
-
-        return skattekortConsumer.sendSkattekort(request)
-                .map(response -> formatStatus(response, orgNumber, year))
-                .flatMap(status -> oppdaterStatus(progress, status))
-                .onErrorResume(throwable -> {
-                    Integer yr = request.getSkattekort() != null ? request.getSkattekort().getInntektsaar() : null;
-                    String status = orgNumber + "+" + yr + "|Feil: " + throwable.getMessage();
-                    return oppdaterStatus(progress, status);
-                });
+        return oppdaterStatus(progress, getInfoVenter(SYSTEM))
+                .flatMap(updatedProgress -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
+                        .flatMap(arbeidsgiver -> sendSkattekortForArbeidsgiver(arbeidsgiver, dollyPerson))
+                        .collect(Collectors.joining(","))
+                        .flatMap(resultat -> oppdaterStatus(updatedProgress, resultat)));
     }
 
     @Override
     public void release(List<String> identer) {
+    }
+
+    private Flux<String> sendSkattekortForArbeidsgiver(ArbeidsgiverSkatt arbeidsgiver, DollyPerson dollyPerson) {
+        if (isNull(arbeidsgiver.getArbeidstaker()) || arbeidsgiver.getArbeidstaker().isEmpty()) {
+            return Flux.empty();
+        }
+
+        String orgNumber = nonNull(arbeidsgiver.getArbeidsgiveridentifikator())
+                ? arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer()
+                : "unknown";
+
+        return Flux.fromIterable(arbeidsgiver.getArbeidstaker())
+                .flatMap(arbeidstaker -> sendSkattekortForArbeidstaker(arbeidstaker, dollyPerson, orgNumber));
+    }
+
+    private Mono<String> sendSkattekortForArbeidstaker(Skattekortmelding arbeidstaker, DollyPerson dollyPerson, String orgNumber) {
+        MappingContext context = MappingContextUtils.getMappingContext();
+        context.setProperty("ident", dollyPerson.getIdent());
+
+        SokosSkattekortRequest request = mapperFacade.map(arbeidstaker, SokosSkattekortRequest.class, context);
+        Integer year = arbeidstaker.getInntektsaar();
+
+        return skattekortConsumer.sendSkattekort(request)
+                .map(response -> formatStatus(response, orgNumber, year))
+                .onErrorResume(throwable -> {
+                    String status = orgNumber + "+" + year + "|Feil: " + throwable.getMessage();
+                    return Mono.just(status);
+                });
     }
 
     private String formatStatus(SkattekortResponse response, String orgNumber, Integer year) {
@@ -66,7 +90,7 @@ public class SkattekortClient implements ClientRegister {
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
-        return transactionHelperService.persister(progress, BestillingProgress::setSkattekortStatus, status)
-                .defaultIfEmpty(progress);
+        return transactionHelperService.persister(progress, BestillingProgress::getSkattekortStatus,
+                BestillingProgress::setSkattekortStatus, status);
     }
 }

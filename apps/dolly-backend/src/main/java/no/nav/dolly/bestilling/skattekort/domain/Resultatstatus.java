@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.dto.skattekortservice.v1;
+package no.nav.dolly.bestilling.skattekort.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

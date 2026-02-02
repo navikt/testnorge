@@ -1,6 +1,5 @@
-package no.nav.testnav.libs.dto.skattekortservice.v1;
+package no.nav.dolly.bestilling.skattekort.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Data
 @Builder
@@ -33,15 +31,4 @@ public class Skattekortmelding {
         return tilleggsopplysning;
     }
 
-    @JsonIgnore
-    public boolean isEmptyArbeidstakeridentifikator() {
-
-        return isBlank(arbeidstakeridentifikator);
-    }
-
-    @JsonIgnore
-    public boolean isEmptyInntektsaar() {
-
-        return isNull(inntektsaar);
-    }
 }

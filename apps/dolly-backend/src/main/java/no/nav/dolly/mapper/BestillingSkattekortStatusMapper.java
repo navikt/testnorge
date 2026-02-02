@@ -70,20 +70,18 @@ public final class BestillingSkattekortStatusMapper {
             if (errorEnvIdents.entrySet().stream()
                     .allMatch(entry -> entry.getKey().equals("Skattekort lagret"))) {
 
-                return errorEnvIdents.values().stream()
-                        .map(entry -> RsStatusRapport.builder()
-                                .id(SKATTEKORT)
-                                .navn(SKATTEKORT.getBeskrivelse())
-                                .statuser(List.of(RsStatusRapport.Status.builder()
-                                        .melding("OK")
-                                        .identer(entry.values().stream()
-                                                .flatMap(Collection::stream)
-                                                .distinct()
-                                                .toList())
-                                        .build()))
-                                .build())
-                        .toList();
-
+                return List.of(RsStatusRapport.builder()
+                        .id(SKATTEKORT)
+                        .navn(SKATTEKORT.getBeskrivelse())
+                        .statuser(List.of(RsStatusRapport.Status.builder()
+                                .melding("OK")
+                                .identer(errorEnvIdents.values().stream()
+                                        .flatMap(map -> map.values().stream())
+                                        .flatMap(Collection::stream)
+                                        .distinct()
+                                        .toList())
+                                .build()))
+                        .build());
             } else {
 
                 return errorEnvIdents.entrySet().stream()
