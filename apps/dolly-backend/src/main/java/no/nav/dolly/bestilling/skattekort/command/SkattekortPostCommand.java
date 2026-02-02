@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.skattekort.domain.SokosSkattekortRequest;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -45,7 +46,7 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
                 .retrieve()
                 .toBodilessEntity()
                 .map(responseEntity -> SkattekortResponse.builder()
-                        .status(responseEntity.getStatusCode())
+                        .status(HttpStatus.resolve(responseEntity.getStatusCode().value()))
                         .body(null)
                         .build())
                 .doOnError(WebClientError.logTo(log))
