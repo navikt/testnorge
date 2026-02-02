@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.skattekort;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -24,6 +25,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SkattekortClient implements ClientRegister {
@@ -41,6 +43,9 @@ public class SkattekortClient implements ClientRegister {
         if (isNull(bestilling.getSkattekort()) || bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty()) {
             return Mono.empty();
         }
+
+        log.info("Processing skattekort for person: {}, arbeidsgiverSkatt count: {}", 
+                dollyPerson.getIdent(), bestilling.getSkattekort().getArbeidsgiverSkatt().size());
 
         return oppdaterStatus(progress, getInfoVenter(SYSTEM))
                 .flatMap(updatedProgress -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
@@ -62,6 +67,8 @@ public class SkattekortClient implements ClientRegister {
                 ? arbeidsgiver.getArbeidsgiveridentifikator().getOrganisasjonsnummer()
                 : "unknown";
 
+        log.info("Processing arbeidsgiver: {}, arbeidstaker count: {}", orgNumber, arbeidsgiver.getArbeidstaker().size());
+
         return Flux.fromIterable(arbeidsgiver.getArbeidstaker())
                 .flatMap(arbeidstaker -> sendSkattekortForArbeidstaker(arbeidstaker, dollyPerson, orgNumber));
     }
@@ -73,9 +80,22 @@ public class SkattekortClient implements ClientRegister {
         SokosSkattekortRequest request = mapperFacade.map(arbeidstaker, SokosSkattekortRequest.class, context);
         Integer year = arbeidstaker.getInntektsaar();
 
+        if (request.getSkattekort() == null || 
+            request.getSkattekort().getForskuddstrekkList() == null || 
+            request.getSkattekort().getForskuddstrekkList().isEmpty()) {
+            log.warn("Skipping skattekort for person: {}, org: {}, year: {} - forskuddstrekkList is empty", 
+                    dollyPerson.getIdent(), orgNumber, year);
+            return Mono.just(orgNumber + "+" + year + "|Feil: Forskuddstrekk list er tom");
+        }
+
+        log.info("Sending skattekort for person: {}, org: {}, year: {}, forskuddstrekkList size: {}", 
+                dollyPerson.getIdent(), orgNumber, year, request.getSkattekort().getForskuddstrekkList().size());
+
         return skattekortConsumer.sendSkattekort(request)
                 .map(response -> formatStatus(response, orgNumber, year))
                 .onErrorResume(throwable -> {
+                    log.error("Error sending skattekort for person: {}, org: {}, year: {}: {}", 
+                            dollyPerson.getIdent(), orgNumber, year, throwable.getMessage());
                     String status = orgNumber + "+" + year + "|Feil: " + throwable.getMessage();
                     return Mono.just(status);
                 });
