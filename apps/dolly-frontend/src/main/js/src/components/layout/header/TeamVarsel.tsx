@@ -24,16 +24,7 @@ const TeamVarselPanel = styled.div`
 	}
 
 	&& {
-		.navds-popover__arrow {
-			top: -0.5rem;
-			left: 240px;
-			background-color: #0067c5;
-			border-color: #0067c5;
-		}
-	}
-
-	&& {
-		.navds-button--secondary {
+		.aksel-button {
 			background-color: white;
 		}
 	}
@@ -66,7 +57,6 @@ export const TeamVarsel = () => {
 					OK
 				</Button>
 			</div>
-			<div className="navds-popover__arrow"></div>
 		</TeamVarselPanel>
 	)
 }
