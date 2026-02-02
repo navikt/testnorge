@@ -103,14 +103,22 @@ public class SkattekortClient implements ClientRegister {
 
     private String formatStatus(SkattekortResponse response, String orgNumber, Integer year) {
         String prefix = orgNumber + "+" + year + "|";
+        String status;
         if (response.isOK()) {
-            return prefix + "Skattekort lagret";
+            status = prefix + "Skattekort lagret";
+            log.info("[SKATTEKORT_CLIENT] Success response - formatted status: '{}'", status);
+        } else {
+            status = prefix + response.getFeilmelding();
+            log.info("[SKATTEKORT_CLIENT] Error response - formatted status: '{}'", status);
         }
-        return prefix + response.getFeilmelding();
+        return status;
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+        log.info("[SKATTEKORT_CLIENT] Persisting status for ident {}: '{}'", progress.getIdent(), status);
         return transactionHelperService.persister(progress, BestillingProgress::getSkattekortStatus,
-                BestillingProgress::setSkattekortStatus, status);
+                BestillingProgress::setSkattekortStatus, status)
+                .doOnSuccess(p -> log.info("[SKATTEKORT_CLIENT] Successfully persisted status for ident: {}", p != null ? p.getIdent() : "null"))
+                .doOnError(e -> log.error("[SKATTEKORT_CLIENT] Error persisting status: {}", e.getMessage()));
     }
 }
