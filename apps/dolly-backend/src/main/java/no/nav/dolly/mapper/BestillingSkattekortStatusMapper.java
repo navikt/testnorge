@@ -2,6 +2,7 @@ package no.nav.dolly.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
@@ -16,6 +17,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SKATTEKORT;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSkattekortStatusMapper {
 
@@ -25,6 +27,7 @@ public final class BestillingSkattekortStatusMapper {
                 .anyMatch(p -> isNotBlank(p.getSkattekortStatus()));
 
         if (!hasSkattekortStatus) {
+            log.debug("[SKATTEKORT_MAPPER] No skattekort statuses found, returning empty list");
             return emptyList();
         }
 
@@ -32,6 +35,8 @@ public final class BestillingSkattekortStatusMapper {
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
+                log.debug("[SKATTEKORT_MAPPER] Processing progress for ident: {}, skattekortStatus: '{}'", 
+                    progress.getIdent(), progress.getSkattekortStatus());
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
                     if (isNotBlank(entry)) {
@@ -45,35 +50,51 @@ public final class BestillingSkattekortStatusMapper {
             }
         });
 
-        var statuser = statusIdents.entrySet().stream()
-                .map(entry -> {
-                    String melding = entry.getKey();
+        log.debug("[SKATTEKORT_MAPPER] Building skattekort status map for {} status entries", statusIdents.size());
 
-                    if (melding.contains("|")) {
-                        var parts = melding.split("\\|", 2);
-                        var orgYear = parts[0];
-                        var status = parts[1];
+        var statusMap = new HashMap<String, Set<String>>();
+        statusIdents.forEach((key, identsSet) -> {
+            String melding = key;
 
-                        if (status.equals("Skattekort lagret")) {
-                            melding = "OK";
-                        } else {
-                            var orgYearParts = orgYear.split("\\+");
-                            if (orgYearParts.length >= 2) {
-                                melding = "FEIL: organisasjon:" + orgYearParts[0] + ", inntektsår:" + orgYearParts[1] + ", melding:" + decodeMsg(status);
-                            } else {
-                                melding = "FEIL: " + decodeMsg(status);
-                            }
-                        }
+            if (melding.contains("|")) {
+                var parts = melding.split("\\|", 2);
+                var orgYear = parts[0];
+                var status = parts[1];
+
+                if (status.equals("Skattekort lagret")) {
+                    melding = "OK";
+                } else {
+                    var orgYearParts = orgYear.split("\\+");
+                    if (orgYearParts.length >= 2) {
+                        melding = "FEIL: organisasjon:" + orgYearParts[0] + ", inntektsår:" + orgYearParts[1] + ", melding:" + decodeMsg(status);
                     } else {
-                        melding = decodeMsg(melding);
+                        melding = "FEIL: " + decodeMsg(status);
                     }
+                }
+            } else {
+                melding = decodeMsg(melding);
+            }
 
+            if (statusMap.containsKey(melding)) {
+                statusMap.get(melding).addAll(identsSet);
+            } else {
+                statusMap.put(melding, new HashSet<>(identsSet));
+            }
+        });
+
+        log.debug("[SKATTEKORT_MAPPER] Aggregated to {} unique status messages", statusMap.size());
+
+        var statuser = statusMap.entrySet().stream()
+                .map(entry -> {
+                    log.debug("[SKATTEKORT_MAPPER] Creating status report with melding: '{}', identer count: {}", entry.getKey(), entry.getValue().size());
                     return RsStatusRapport.Status.builder()
-                            .melding(melding)
+                            .melding(entry.getKey())
                             .identer(entry.getValue().stream().toList())
                             .build();
                 })
                 .toList();
+
+        log.debug("[SKATTEKORT_MAPPER] Returning {} status rapporter with {} total status messages", 1, statuser.size());
 
         return List.of(RsStatusRapport.builder()
                 .id(SKATTEKORT)
