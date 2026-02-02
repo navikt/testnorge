@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,12 +29,19 @@ public final class BestillingSkattekortStatusMapper {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
+                    
+                    if (entry.contains("Info") || entry.contains("venter") || entry.contains("Venter") || 
+                        entry.contains("startet") || !entry.contains("|")) {
+                        continue;
+                    }
+                    
                     var parts = entry.split("\\|");
                     if (parts.length < 2) {
                         continue;
                     }
                     var orgYear = parts[0];
                     var status = parts[1];
+                    
                     if (errorEnvIdents.containsKey(status)) {
                         if (errorEnvIdents.get(status).containsKey(orgYear)) {
                             errorEnvIdents.get(status).get(orgYear).add(progress.getIdent());
@@ -50,54 +56,39 @@ public final class BestillingSkattekortStatusMapper {
         });
 
         if (errorEnvIdents.isEmpty()) {
-            if (!progressList.isEmpty() && progressList.stream().anyMatch(p -> isNotBlank(p.getIdent()))) {
-                return List.of(RsStatusRapport.builder()
-                        .id(SKATTEKORT)
-                        .navn(SKATTEKORT.getBeskrivelse())
-                        .statuser(List.of(RsStatusRapport.Status.builder()
-                                .melding("OK")
-                                .identer(progressList.stream()
-                                        .map(BestillingProgress::getIdent)
-                                        .filter(StringUtils::isNotBlank)
-                                        .distinct()
-                                        .toList())
-                                .build()))
-                        .build());
-            }
             return emptyList();
+        }
 
+        if (errorEnvIdents.entrySet().stream()
+                .allMatch(entry -> entry.getKey().equals("Skattekort lagret"))) {
+
+            return List.of(RsStatusRapport.builder()
+                    .id(SKATTEKORT)
+                    .navn(SKATTEKORT.getBeskrivelse())
+                    .statuser(List.of(RsStatusRapport.Status.builder()
+                            .melding("OK")
+                            .identer(errorEnvIdents.values().stream()
+                                    .flatMap(map -> map.values().stream())
+                                    .flatMap(Collection::stream)
+                                    .distinct()
+                                    .toList())
+                            .build()))
+                    .build());
         } else {
-            if (errorEnvIdents.entrySet().stream()
-                    .allMatch(entry -> entry.getKey().equals("Skattekort lagret"))) {
 
-                return List.of(RsStatusRapport.builder()
-                        .id(SKATTEKORT)
-                        .navn(SKATTEKORT.getBeskrivelse())
-                        .statuser(List.of(RsStatusRapport.Status.builder()
-                                .melding("OK")
-                                .identer(errorEnvIdents.values().stream()
-                                        .flatMap(map -> map.values().stream())
-                                        .flatMap(Collection::stream)
-                                        .distinct()
-                                        .toList())
-                                .build()))
-                        .build());
-            } else {
-
-                return errorEnvIdents.entrySet().stream()
-                        .filter(entry -> !entry.getKey().equals("Skattekort lagret"))
-                        .map(entry -> RsStatusRapport.builder()
-                                .id(SKATTEKORT)
-                                .navn(SKATTEKORT.getBeskrivelse())
-                                .statuser(entry.getValue().entrySet().stream()
-                                        .map(orgYear -> RsStatusRapport.Status.builder()
-                                                .melding(formatMelding(orgYear.getKey(), entry.getKey()))
-                                                .identer(orgYear.getValue().stream().toList())
-                                                .build())
-                                        .toList())
-                                .build())
-                        .toList();
-            }
+            return errorEnvIdents.entrySet().stream()
+                    .filter(entry -> !entry.getKey().equals("Skattekort lagret"))
+                    .map(entry -> RsStatusRapport.builder()
+                            .id(SKATTEKORT)
+                            .navn(SKATTEKORT.getBeskrivelse())
+                            .statuser(entry.getValue().entrySet().stream()
+                                    .map(orgYear -> RsStatusRapport.Status.builder()
+                                            .melding(formatMelding(orgYear.getKey(), entry.getKey()))
+                                            .identer(orgYear.getValue().stream().toList())
+                                            .build())
+                                    .toList())
+                            .build())
+                    .toList();
         }
     }
 
