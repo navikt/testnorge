@@ -51,10 +51,12 @@ public class SkattekortClient implements ClientRegister {
         return oppdaterStatus(progress, getInfoVenter(SYSTEM))
                 .flatMap(updatedProgress -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
                         .flatMap(arbeidsgiver -> sendSkattekortForArbeidsgiver(arbeidsgiver, dollyPerson))
+                        .doOnNext(status -> log.info("Received status from arbeidsgiver: '{}'", status))
                         .collect(Collectors.joining(","))
+                        .doOnSuccess(resultat -> log.info("Collected results for person {}: '{}'", dollyPerson.getIdent(), resultat))
                         .flatMap(resultat -> {
                             if (isNotBlank(resultat)) {
-                                log.info("Skattekort processing complete for person: {}, updating final status", dollyPerson.getIdent());
+                                log.info("Skattekort processing complete for person: {}, updating final status with: '{}'", dollyPerson.getIdent(), resultat);
                                 return oppdaterStatus(updatedProgress, resultat);
                             } else {
                                 log.warn("No skattekort results to persist for ident: {}, keeping pending status", dollyPerson.getIdent());
