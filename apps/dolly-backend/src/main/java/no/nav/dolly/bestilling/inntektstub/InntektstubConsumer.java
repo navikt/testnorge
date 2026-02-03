@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubGetCommand;
+import no.nav.dolly.bestilling.inntektstub.command.InntektstubImportCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubPostCommand;
+import no.nav.dolly.bestilling.inntektstub.domain.ImportResponse;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
@@ -77,6 +79,15 @@ public class InntektstubConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inntk_import"})
+    public Mono<ImportResponse> importInntekt(String ident) {
+
+        log.info("Import av inntekt for {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new InntektstubImportCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Override
