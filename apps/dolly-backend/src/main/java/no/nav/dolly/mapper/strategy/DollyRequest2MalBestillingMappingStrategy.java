@@ -10,11 +10,11 @@ import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
+import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
@@ -68,7 +68,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                             }
                         }
                         if (nonNull(request.getSkattekort())) {
-                            if(isNull(akkumulert.getSkattekort())) {
+                            if (isNull(akkumulert.getSkattekort())) {
                                 akkumulert.setSkattekort(request.getSkattekort());
                             }
                             akkumulert.getSkattekort().getArbeidsgiverSkatt()
@@ -83,7 +83,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(SkattekortRequestDTO skattekort, SkattekortRequestDTO akkumulert, MappingContext context) {
-                        akkumulert.getArbeidsgiver().addAll(skattekort.getArbeidsgiver());
+                        akkumulert.getArbeidsgiverSkatt().addAll(skattekort.getArbeidsgiverSkatt());
                     }
                 })
                 .register();

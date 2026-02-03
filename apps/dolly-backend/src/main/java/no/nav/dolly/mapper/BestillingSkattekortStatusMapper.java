@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,78 +21,72 @@ public final class BestillingSkattekortStatusMapper {
 
     public static List<RsStatusRapport> buildSkattekortStatusMap(List<BestillingProgress> progressList) {
 
-        //  status     org+year       ident
-        Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
+        boolean hasSkattekortStatus = progressList.stream()
+                .anyMatch(p -> isNotBlank(p.getSkattekortStatus()));
+
+        if (!hasSkattekortStatus) {
+            return emptyList();
+        }
+
+        Map<String, Set<String>> statusIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
-                    var parts = entry.split(":");
-                    if (parts.length < 2) {
-                        continue;
-                    }
-                    var orgYear = parts[0];
-                    var status = parts[1];
-                    if (errorEnvIdents.containsKey(status)) {
-                        if (errorEnvIdents.get(status).containsKey(orgYear)) {
-                            errorEnvIdents.get(status).get(orgYear).add(progress.getIdent());
+                    if (isNotBlank(entry)) {
+                        if (statusIdents.containsKey(entry)) {
+                            statusIdents.get(entry).add(progress.getIdent());
                         } else {
-                            errorEnvIdents.get(status).put(orgYear, new HashSet<>(Set.of(progress.getIdent())));
+                            statusIdents.put(entry, new HashSet<>(Set.of(progress.getIdent())));
                         }
-                    } else {
-                        errorEnvIdents.put(status, new HashMap<>(Map.of(orgYear, new HashSet<>(Set.of(progress.getIdent())))));
                     }
                 }
             }
         });
 
-        if (errorEnvIdents.isEmpty()) {
-            return emptyList();
+        var statusMap = new HashMap<String, Set<String>>();
+        statusIdents.forEach((key, identsSet) -> {
+            String melding = key;
 
-        } else {
-            if (errorEnvIdents.entrySet().stream()
-                    .allMatch(entry -> entry.getKey().equals("Skattekort lagret"))) {
+            if (melding.contains("|")) {
+                var parts = melding.split("\\|", 2);
+                var orgYear = parts[0];
+                var status = parts[1];
 
-                return errorEnvIdents.values().stream()
-                        .map(entry -> RsStatusRapport.builder()
-                                .id(SKATTEKORT)
-                                .navn(SKATTEKORT.getBeskrivelse())
-                                .statuser(List.of(RsStatusRapport.Status.builder()
-                                        .melding("OK")
-                                        .identer(entry.values().stream()
-                                                .map(orgYear -> orgYear.stream().toList())
-                                                .flatMap(Collection::stream)
-                                                .distinct()
-                                                .toList())
-                                        .build()))
-                                .build())
-                        .toList();
-
+                if (status.equals("Skattekort lagret")) {
+                    melding = "OK";
+                } else {
+                    var orgYearParts = orgYear.split("\\+");
+                    if (orgYearParts.length >= 2) {
+                        melding = "FEIL: organisasjon:" + orgYearParts[0] + ", inntektsår:" + orgYearParts[1] + ", melding:" + decodeMsg(status);
+                    } else {
+                        melding = "FEIL: " + decodeMsg(status);
+                    }
+                }
             } else {
-
-                return errorEnvIdents.entrySet().stream()
-                        .filter(entry -> !entry.getKey().equals("Skattekort lagret"))
-                        .map(entry -> RsStatusRapport.builder()
-                                .id(SKATTEKORT)
-                                .navn(SKATTEKORT.getBeskrivelse())
-                                .statuser(entry.getValue().entrySet().stream()
-                                        .map(orgYear -> RsStatusRapport.Status.builder()
-                                                .melding(formatMelding(orgYear.getKey(), entry.getKey()))
-                                                .identer(orgYear.getValue().stream().toList())
-                                                .build())
-                                        .toList())
-                                .build())
-                        .toList();
+                melding = decodeMsg(melding);
             }
-        }
-    }
 
-    private static String formatMelding(String orgYear, String melding) {
+            if (statusMap.containsKey(melding)) {
+                statusMap.get(melding).addAll(identsSet);
+            } else {
+                statusMap.put(melding, new HashSet<>(identsSet));
+            }
+        });
 
-        return "FEIL: organisasjon:%s, inntektsår:%s, melding:%s".formatted(
-                orgYear.split("\\+")[0],
-                orgYear.split("\\+")[1],
-                decodeMsg(melding));
+        var statuser = statusMap.entrySet().stream()
+                .map(entry -> RsStatusRapport.Status.builder()
+                        .melding(entry.getKey())
+                        .identer(entry.getValue().stream().toList())
+                        .build())
+                .toList();
+
+
+        return List.of(RsStatusRapport.builder()
+                .id(SKATTEKORT)
+                .navn(SKATTEKORT.getBeskrivelse())
+                .statuser(statuser)
+                .build());
     }
 }

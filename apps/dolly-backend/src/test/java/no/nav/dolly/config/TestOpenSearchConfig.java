@@ -26,20 +26,19 @@ public class TestOpenSearchConfig {
     private static final DockerImageName OPENSEARCH_IMAGE = DockerImageName.parse("opensearchproject/opensearch:3");
     private static final OpenSearchContainer<?> OPENSEARCH_CONTAINER;
 
-    @Value( "${open.search.username}" )
-    private String username;
-
-    @Value( "${open.search.password}" )
-    private String password;
-
     static {
         OPENSEARCH_CONTAINER = new OpenSearchContainer<>(OPENSEARCH_IMAGE);
         OPENSEARCH_CONTAINER.withEnv("DISABLE_SECURITY_PLUGIN", "true");
         OPENSEARCH_CONTAINER.withEnv("discovery.type", "single-node");
-        OPENSEARCH_CONTAINER.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m");
+        OPENSEARCH_CONTAINER.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1024m -Xmx1024m");
 
         OPENSEARCH_CONTAINER.start();
     }
+
+    @Value( "${open.search.username}" )
+    private String username;
+    @Value( "${open.search.password}" )
+    private String password;
 
     @Bean
     public OpenSearchClient opensearchClient() throws URISyntaxException {
