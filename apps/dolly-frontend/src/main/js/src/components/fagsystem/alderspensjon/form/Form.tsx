@@ -291,7 +291,7 @@ export const AlderspensjonForm = () => {
 							}}
 							size={'small'}
 							defaultValue={soknad ? SOKNAD : VEDTAK}
-							style={{ backgroundColor: '#ffffff' }}
+							style={{ marginBottom: '10px' }}
 						>
 							<ToggleGroup.Item value={VEDTAK} style={{ marginRight: 0 }}>
 								{VEDTAK}
