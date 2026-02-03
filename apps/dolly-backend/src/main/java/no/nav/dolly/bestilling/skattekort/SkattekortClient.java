@@ -82,10 +82,8 @@ public class SkattekortClient implements ClientRegister {
         SokosSkattekortRequest request = mapperFacade.map(arbeidstaker, SokosSkattekortRequest.class, context);
         Integer year = arbeidstaker.getInntektsaar();
 
-        if (request.getSkattekort() == null || 
-            request.getSkattekort().getForskuddstrekkList() == null || 
-            request.getSkattekort().getForskuddstrekkList().isEmpty()) {
-            log.warn("Skipping skattekort for person: {}, org: {}, year: {} - forskuddstrekkList is empty", 
+        if (request.getSkattekort().getForskuddstrekkList().isEmpty()) {
+            log.warn("Skipping skattekort for person: {}, org: {}, year: {} - forskuddstrekkList is empty",
                     dollyPerson.getIdent(), orgNumber, year);
             return Mono.just(orgNumber + "+" + year + "|Feil: Forskuddstrekk list er tom");
         }
@@ -93,7 +91,7 @@ public class SkattekortClient implements ClientRegister {
         return skattekortConsumer.sendSkattekort(request)
                 .map(response -> formatStatus(response, orgNumber, year))
                 .onErrorResume(throwable -> {
-                    log.error("Error sending skattekort for person: {}, org: {}, year: {}: {}", 
+                    log.error("Error sending skattekort for person: {}, org: {}, year: {}: {}",
                             dollyPerson.getIdent(), orgNumber, year, throwable.getMessage());
                     String status = orgNumber + "+" + year + "|Feil: " + throwable.getMessage();
                     return Mono.just(status);
