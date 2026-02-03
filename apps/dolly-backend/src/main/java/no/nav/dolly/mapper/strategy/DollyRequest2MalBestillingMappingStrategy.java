@@ -69,7 +69,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         }
                         if (nonNull(request.getSkattekort())) {
                             if(isNull(akkumulert.getSkattekort())) {
-                                akkumulert.setSkattekort(request.getSkattekort());
+                                akkumulert.setSkattekort(new no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO());
                             }
                             akkumulert.getSkattekort().getArbeidsgiverSkatt()
                                     .addAll(request.getSkattekort().getArbeidsgiverSkatt());
