@@ -29,10 +29,10 @@ export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 				style={{ position: 'relative' }}
 			>
 				<div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-					<Tag size="small" variant="neutral-filled">
+					<Tag data-color="neutral" size="small" variant="strong">
 						{stripe.id}
 					</Tag>
-					<Tag size="small" variant="neutral">
+					<Tag data-color="neutral" size="small" variant="outline">
 						{stripe.type.toUpperCase()}
 					</Tag>
 					<BodyShort size="small">

@@ -136,8 +136,9 @@ export const TreffListe = ({
 									{person?.iarenaSynt && (
 										<Tooltip content="Person har allerede arbeidsytelse(r) i Arena">
 											<Tag
+												data-color="meta-purple"
 												size="small"
-												variant="info"
+												variant="outline"
 												key={person?.id + 'arena'}
 												style={{ margin: '0 5px 5px 0' }}
 											>
@@ -147,7 +148,12 @@ export const TreffListe = ({
 									)}
 									{person?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
 										<Tooltip content={getTagTooltip(relasjon)} key={person?.id + idx}>
-											<Tag size="small" variant="neutral" style={{ margin: '0 5px 5px 0' }}>
+											<Tag
+												data-color="brand-beige"
+												size="small"
+												variant="outline"
+												style={{ margin: '0 5px 5px 0' }}
+											>
 												{relasjon}
 											</Tag>
 										</Tooltip>

@@ -91,8 +91,9 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 								<TagsWrapper>
 									{organisasjon?.kilder?.map((relasjon: any, idx: number) => (
 										<Tag
+											data-color="brand-beige"
 											size="small"
-											variant="neutral"
+											variant="outline"
 											key={organisasjon?.organisasjonsnummer + idx}
 											style={{ margin: '0 5px 5px 0' }}
 										>
