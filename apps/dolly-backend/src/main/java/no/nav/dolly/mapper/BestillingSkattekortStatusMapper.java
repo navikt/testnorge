@@ -2,7 +2,6 @@ package no.nav.dolly.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
@@ -17,7 +16,6 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SKATTEKORT;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSkattekortStatusMapper {
 
@@ -27,18 +25,13 @@ public final class BestillingSkattekortStatusMapper {
                 .anyMatch(p -> isNotBlank(p.getSkattekortStatus()));
 
         if (!hasSkattekortStatus) {
-            log.debug("[SKATTEKORT] No skattekort status found in progress list, returning empty");
             return emptyList();
         }
-
-        log.debug("[SKATTEKORT] Building status map from {} progress records", progressList.size());
 
         Map<String, Set<String>> statusIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
-                log.debug("[SKATTEKORT] Processing status for ident: {}, status: '{}'", 
-                    progress.getIdent(), progress.getSkattekortStatus());
                 var entries = progress.getSkattekortStatus().split(",");
                 for (var entry : entries) {
                     if (isNotBlank(entry)) {
@@ -83,16 +76,12 @@ public final class BestillingSkattekortStatusMapper {
         });
 
         var statuser = statusMap.entrySet().stream()
-                .map(entry -> {
-                    log.debug("[SKATTEKORT] Status: '{}', identer: {}", entry.getKey(), entry.getValue().size());
-                    return RsStatusRapport.Status.builder()
-                            .melding(entry.getKey())
-                            .identer(entry.getValue().stream().toList())
-                            .build();
-                })
+                .map(entry -> RsStatusRapport.Status.builder()
+                        .melding(entry.getKey())
+                        .identer(entry.getValue().stream().toList())
+                        .build())
                 .toList();
 
-        log.debug("[SKATTEKORT] Returning status rapport with {} status messages", statuser.size());
 
         return List.of(RsStatusRapport.builder()
                 .id(SKATTEKORT)
