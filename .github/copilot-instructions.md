@@ -15,8 +15,8 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 - Java tests: JUnit 5, AssertJ, Mockito; name test methods: `should<Behavior>()`.
 - Null handling: prefer `Optional` only at API boundaries.
 - Keep functions small; extract private helpers.
-- use isBlank/isNotBlank from Apache Commons Lang3.
-- use isNull from java.util.Objects.
+- IMPORTANT: Always use `isNull(obj)` and `nonNull(obj)` from `java.util.Objects` instead of `obj == null` or `obj != null`.
+- IMPORTANT: Always use `isBlank(str)` and `isNotBlank(str)` from Apache Commons Lang3 instead of manual string checks.
 - Logging: SLF4J, no `System.out`.
 - Avoid deprecated Spring APIs.
 - Always use explicit, fully qualified Java imports.
