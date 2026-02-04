@@ -3,8 +3,14 @@ package no.nav.dolly.bestilling.skattekort.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
 
 @Getter
+@RequiredArgsConstructor
 public enum Resultatstatus {
 
     IKKE_SKATTEKORT("ikkeSkattekort"),
@@ -18,8 +24,15 @@ public enum Resultatstatus {
     @JsonValue
     private final String value;
 
-    Resultatstatus(String value) {
-        this.value = value;
+    @JsonCreator
+    public static Resultatstatus fromValue(String value) {
+        if (isNull(value)) {
+            return null;
+        }
+        return Stream.of(values())
+                .filter(status -> status.value.equalsIgnoreCase(value) || status.name().equalsIgnoreCase(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown Resultatstatus: " + value));
     }
 
     @Override
@@ -27,18 +40,4 @@ public enum Resultatstatus {
         return this.name() + "," + value;
     }
 
-    @JsonCreator
-    public static Resultatstatus fromValue(String input) {
-        if (input == null) {
-            return null;
-        }
-        
-        for (Resultatstatus status : Resultatstatus.values()) {
-            if (status.value.equalsIgnoreCase(input) || status.name().equalsIgnoreCase(input)) {
-                return status;
-            }
-        }
-        
-        throw new IllegalArgumentException("Unknown Resultatstatus: " + input);
-    }
 }
