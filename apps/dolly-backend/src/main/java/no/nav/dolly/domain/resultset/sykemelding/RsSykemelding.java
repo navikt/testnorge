@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,8 +14,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,9 +36,7 @@ public class RsSykemelding {
         return nonNull(nySykemelding);
     }
 
-    @Getter
-    @Setter
-    @Builder
+    @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -55,8 +51,7 @@ public class RsSykemelding {
             return aktivitet;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -68,8 +63,7 @@ public class RsSykemelding {
         }
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -109,8 +103,7 @@ public class RsSykemelding {
             INGEN, AVVENTENDE
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -122,8 +115,7 @@ public class RsSykemelding {
             private String yrkesbetegnelse;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -135,8 +127,7 @@ public class RsSykemelding {
             private String system;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -149,8 +140,7 @@ public class RsSykemelding {
             private String tiltakNav;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -165,8 +155,7 @@ public class RsSykemelding {
             private String samhandlerType;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -178,8 +167,7 @@ public class RsSykemelding {
             private String orgNr;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -196,8 +184,7 @@ public class RsSykemelding {
             private String telefon;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -209,8 +196,7 @@ public class RsSykemelding {
             private LocalDate tom;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -224,8 +210,7 @@ public class RsSykemelding {
 
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -238,8 +223,7 @@ public class RsSykemelding {
             private String postnummer;
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor

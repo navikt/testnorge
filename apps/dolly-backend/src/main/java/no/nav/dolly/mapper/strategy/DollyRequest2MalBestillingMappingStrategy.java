@@ -11,18 +11,15 @@ import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
-import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
-import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
-import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
-import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -74,7 +71,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("arenaforvalter", "arenaforvalter")
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
-                .field("fullmakt", "fullmakt")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
                 .field("krrstub", "krrstub")
@@ -94,6 +90,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getAareg().addAll(mapperFacade.mapAsList(request.getAareg(), RsAareg.class));
                         akkumulert.getEnvironments().addAll(request.getEnvironments());
                         akkumulert.getInstdata().addAll(mapperFacade.mapAsList(request.getInstdata(), RsInstdata.class));
+                        akkumulert.getFullmakt().addAll(mapperFacade.mapAsList(request.getFullmakt(), RsFullmakt.class));
                         akkumulert.getSigrunstub().addAll(mapperFacade.mapAsList(request.getSigrunstub(), RsLignetInntekt.class));
                         akkumulert.getSigrunstubPensjonsgivende().addAll(mapperFacade.mapAsList(request.getSigrunstubPensjonsgivende(), RsPensjonsgivendeForFolketrygden.class));
                         akkumulert.getSigrunstubSummertSkattegrunnlag().addAll(mapperFacade.mapAsList(request.getSigrunstubSummertSkattegrunnlag(), RsSummertSkattegrunnlag.class));
@@ -171,21 +168,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 })
                 .register();
 
-        factory.classMap(RsDigitalKontaktdata.class, RsDigitalKontaktdata.class)
-                .mapNulls(false)
-                .byDefault()
-                .register();
-
-        factory.classMap(RsSykemelding.class, RsSykemelding.class)
-                .mapNulls(false)
-                .byDefault()
-                .register();
-
-        factory.classMap(BankkontoData.class, BankkontoData.class)
-                .mapNulls(false)
-                .byDefault()
-                .register();
-
         factory.classMap(InntektMultiplierWrapper.class, InntektMultiplierWrapper.class)
                 .customize(new CustomMapper<>() {
                     @Override
@@ -201,6 +183,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("alderspensjon", "alderspensjon")
                 .field("alderspensjonNyUtaksgrad", "alderspensjonNyUtaksgrad")
                 .field("inntekt", "inntekt")
+                .field("generertInntekt", "generertInntekt")
                 .field("uforetrygd", "uforetrygd")
                 .customize(new CustomMapper<>() {
                     @Override
@@ -226,11 +209,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getDagpenger().addAll(mapperFacade.mapAsList(arenadata.getDagpenger(), RsArenaDagpenger.class));
                     }
                 })
-                .register();
-
-        factory.classMap(PdlPersondata.class, PdlPersondata.class)
-                .mapNulls(false)
-                .byDefault()
                 .register();
 
         factory.classMap(PersonDTO.class, PersonDTO.class)
