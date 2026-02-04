@@ -42,6 +42,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
                         if (source.getTilleggsopplysning() != null) {
                             var tilleggsopplysningValues = source.getTilleggsopplysning().stream()
+                                    .filter(java.util.Objects::nonNull)
                                     .map(Tilleggsopplysning::getValue)
                                     .toList();
                             destination.setTilleggsopplysningList(tilleggsopplysningValues);
