@@ -105,7 +105,7 @@ export default class DollyEndpoints {
 	}
 
 	static personoppslag(ident: string) {
-		return `${personoppslagBase}/ident/${ident}}`
+		return `${personoppslagBase}/ident/${ident}`
 	}
 
 	static personoppslagMange(identer) {
