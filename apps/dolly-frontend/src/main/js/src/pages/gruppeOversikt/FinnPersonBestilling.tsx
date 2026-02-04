@@ -1,7 +1,7 @@
 import './FinnPersonBestilling.less'
-import { components } from 'react-select'
+import { components, DropdownIndicatorProps, GroupBase, OptionProps } from 'react-select'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
-import React, { JSX, useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -9,7 +9,7 @@ import Highlighter from 'react-highlight-words'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
-import { useDispatch, useSelector } from 'react-redux'
+import { useReduxDispatch, useReduxSelector } from '@/utils/hooks/useRedux'
 import { identerSearch } from '@/service/services/dollysearch/DollySearch'
 import AsyncSelect from 'react-select/async'
 import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
@@ -56,20 +56,20 @@ interface GroupedOption {
 }
 
 const FinnPersonBestilling = () => {
-	const dispatch = useDispatch()
+	const dispatch = useReduxDispatch()
 	const searchInputRef = React.useRef(null)
 	const shortcutKey = useSearchHotkey(searchInputRef)
 
-	const feilmelding = useSelector((state: any) => state.finnPerson.feilmelding)
-	const gruppe = useSelector((state: any) => state.finnPerson.navigerTilGruppe)
+	const feilmelding = useReduxSelector((state) => state.finnPerson.feilmelding)
+	const gruppe = useReduxSelector((state) => state.finnPerson.navigerTilGruppe)
 
-	const [searchQuery, setSearchQuery] = useState(null as unknown as FinnPersonBestillingOption)
+	const [searchQuery, setSearchQuery] = useState<FinnPersonBestillingOption | null>(null)
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
 
-	const [pdlfIdenter, setPdlfIdenter] = useState([])
-	const [pdlIdenter, setPdlIdenter] = useState([])
-	const [pdlAktoerer, setPdlAktoerer] = useState([])
+	const [pdlfIdenter, setPdlfIdenter] = useState<Person[]>([])
+	const [pdlIdenter, setPdlIdenter] = useState<Person[]>([])
+	const [pdlAktoerer, setPdlAktoerer] = useState<Person[]>([])
 
 	const navigate = useNavigate()
 
@@ -119,11 +119,13 @@ const FinnPersonBestilling = () => {
 			return
 		}
 		personData
-			.filter((person: Person) => person.fornavn && person.etternavn)
+			.filter((person: Person) => person && person.ident)
 			.forEach((person: Person) => {
-				const navn = person.mellomnavn
-					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
-					: `${person.fornavn} ${person.etternavn}`
+				const hasName = person.fornavn || person.etternavn
+				const navn = hasName
+					? [person.fornavn, person.mellomnavn, person.etternavn].filter(Boolean).join(' ')
+					: 'UKJENT'
+
 				personer.push({
 					value: person.ident,
 					label: `${person?.aktoerId || person.ident} - ${navn.toUpperCase()}`,
@@ -154,12 +156,12 @@ const FinnPersonBestilling = () => {
 		let finnesPdl = false
 
 		if (feilmelding) {
-			if (pdlfIdenter?.find((element) => element.ident === feilmeldingIdent)) {
+			if (pdlfIdenter?.find((element: Person) => element.ident === feilmeldingIdent)) {
 				finnesPdlf = true
 			}
 			if (
-				pdlIdenter?.find((element) => element.ident === feilmeldingIdent) ||
-				pdlAktoerer?.find((element) => element.ident === feilmeldingIdent)
+				pdlIdenter?.find((element: Person) => element.ident === feilmeldingIdent) ||
+				pdlAktoerer?.find((element: Person) => element.ident === feilmeldingIdent)
 			) {
 				finnesPdl = true
 			}
@@ -260,11 +262,14 @@ const FinnPersonBestilling = () => {
 		setFragment(tekst)
 	}
 
-	const CustomOption = ({ children, ...props }) => (
+	const CustomOption = ({
+		children,
+		...props
+	}: OptionProps<FinnPersonBestillingOption, false, GroupBase<FinnPersonBestillingOption>>) => (
 		<components.Option {...props} className={'group-option'}>
 			<span data-testid={TestComponentSelectors.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
-					textToHighlight={children}
+					textToHighlight={children as string}
 					searchWords={fragment?.replaceAll('#', '').split(' ')}
 					autoEscape={true}
 					caseSensitive={false}
@@ -275,9 +280,14 @@ const FinnPersonBestilling = () => {
 
 	const windowHeight = window.innerHeight
 
-	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
+	const DropdownIndicator = (
+		props: DropdownIndicatorProps<
+			FinnPersonBestillingOption,
+			false,
+			GroupBase<FinnPersonBestillingOption>
+		>,
+	) => {
 		return (
-			// @ts-ignore
 			<components.DropdownIndicator {...props}>
 				<div
 					style={{
@@ -315,10 +325,8 @@ const FinnPersonBestilling = () => {
 						isClearable={true}
 						value={null}
 						formatGroupLabel={formatGroupLabel}
-						maxMenuHeight={
-							windowHeight > 800 ? '500px' : `${windowHeight < 500 ? 300 : windowHeight - 400}px`
-						}
-						onChange={(e: GroupedOption) => setSearchQuery(e)}
+						maxMenuHeight={windowHeight > 800 ? 500 : windowHeight < 500 ? 300 : windowHeight - 400}
+						onChange={(e: FinnPersonBestillingOption | null) => setSearchQuery(e)}
 						backspaceRemovesValue={true}
 						label="Person"
 						placeholder={'Søk etter navn, ident, aktør-ID, bestilling eller gruppe'}
