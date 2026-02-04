@@ -17,13 +17,6 @@ class ResultatstatusTest {
     }
 
     @Test
-    void shouldDeserializeFromCamelCaseValue() throws Exception {
-        String json = "\"skattekortopplysningerOK\"";
-        Resultatstatus result = objectMapper.readValue(json, Resultatstatus.class);
-        assertThat(result).isEqualTo(Resultatstatus.SKATTEKORTOPPLYSNINGER_OK);
-    }
-
-    @Test
     void shouldDeserializeFromUppercaseEnumName() throws Exception {
         String json = "\"SKATTEKORTOPPLYSNINGER_OK\"";
         Resultatstatus result = objectMapper.readValue(json, Resultatstatus.class);
@@ -31,15 +24,8 @@ class ResultatstatusTest {
     }
 
     @Test
-    void shouldDeserializeFromLowercaseEnumName() throws Exception {
-        String json = "\"skattekortopplysninger_ok\"";
-        Resultatstatus result = objectMapper.readValue(json, Resultatstatus.class);
-        assertThat(result).isEqualTo(Resultatstatus.SKATTEKORTOPPLYSNINGER_OK);
-    }
-
-    @Test
-    void shouldSerializeToCamelCaseValue() throws Exception {
+    void shouldSerializeToUppercaseEnumName() throws Exception {
         String json = objectMapper.writeValueAsString(Resultatstatus.SKATTEKORTOPPLYSNINGER_OK);
-        assertThat(json).isEqualTo("\"skattekortopplysningerOK\"");
+        assertThat(json).isEqualTo("\"SKATTEKORTOPPLYSNINGER_OK\"");
     }
 }

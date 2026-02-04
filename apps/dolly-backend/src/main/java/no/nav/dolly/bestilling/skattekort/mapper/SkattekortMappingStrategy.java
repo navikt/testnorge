@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.skattekort.domain.Forskuddstrekk;
 import no.nav.dolly.bestilling.skattekort.domain.Skattekortmelding;
 import no.nav.dolly.bestilling.skattekort.domain.SokosSkattekortRequest;
+import no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -32,12 +33,18 @@ public class SkattekortMappingStrategy implements MappingStrategy {
         factory.classMap(Skattekortmelding.class, SokosSkattekortRequest.SokosSkattekortDTO.class)
                 .field("skattekort.utstedtDato", "utstedtDato")
                 .field("inntektsaar", "inntektsaar")
-                .field("tilleggsopplysning", "tilleggsopplysningList")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Skattekortmelding source, SokosSkattekortRequest.SokosSkattekortDTO destination, MappingContext context) {
                         if (source.getResultatPaaForespoersel() != null) {
                             destination.setResultatForSkattekort(source.getResultatPaaForespoersel().getValue());
+                        }
+
+                        if (source.getTilleggsopplysning() != null) {
+                            var tilleggsopplysningValues = source.getTilleggsopplysning().stream()
+                                    .map(Tilleggsopplysning::getValue)
+                                    .toList();
+                            destination.setTilleggsopplysningList(tilleggsopplysningValues);
                         }
 
                         if (source.getSkattekort() != null && source.getSkattekort().getForskuddstrekk() != null) {
@@ -62,7 +69,8 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                 SokosSkattekortRequest.SokosForskuddstrekkDTO.builder();
 
         if (original.getTrekktabell() != null) {
-            builder.trekkode(original.getTrekktabell().getTrekkode())
+            builder.trekkode(original.getTrekktabell().getTrekkode() != null
+                            ? original.getTrekktabell().getTrekkode().getValue() : null)
                     .tabell(original.getTrekktabell().getTabellnummer())
                     .prosentSats(original.getTrekktabell().getProsentsats() != null
                             ? original.getTrekktabell().getProsentsats().doubleValue() : null)

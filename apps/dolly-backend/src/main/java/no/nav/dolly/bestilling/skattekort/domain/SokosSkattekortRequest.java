@@ -26,7 +26,7 @@ public class SokosSkattekortRequest {
         private Integer inntektsaar;
         private String resultatForSkattekort;
         private List<SokosForskuddstrekkDTO> forskuddstrekkList;
-        private List<Tilleggsopplysning> tilleggsopplysningList;
+        private List<String> tilleggsopplysningList;
     }
 
     @Data
@@ -34,7 +34,7 @@ public class SokosSkattekortRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SokosForskuddstrekkDTO {
-        private Trekkode trekkode;
+        private String trekkode;
         private Integer frikortBeloep;
         private String tabell;
         private Double prosentSats;
