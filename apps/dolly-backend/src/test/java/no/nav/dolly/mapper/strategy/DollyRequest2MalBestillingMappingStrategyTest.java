@@ -2,6 +2,14 @@ package no.nav.dolly.mapper.strategy;
 
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.skattekort.domain.ArbeidsgiverSkatt;
+import no.nav.dolly.bestilling.skattekort.domain.Forskuddstrekk;
+import no.nav.dolly.bestilling.skattekort.domain.Frikort;
+import no.nav.dolly.bestilling.skattekort.domain.IdentifikatorForEnhetEllerPerson;
+import no.nav.dolly.bestilling.skattekort.domain.Skattekort;
+import no.nav.dolly.bestilling.skattekort.domain.Skattekortmelding;
+import no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning;
+import no.nav.dolly.bestilling.skattekort.domain.Trekkprosent;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
@@ -62,14 +70,6 @@ import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Forskuddstrekk;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Frikort;
-import no.nav.testnav.libs.dto.skattekortservice.v1.IdentifikatorForEnhetEllerPerson;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekort;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Tilleggsopplysning;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Trekkprosent;
 import no.nav.testnav.libs.dto.yrkesskade.v1.FerdigstillSak;
 import no.nav.testnav.libs.dto.yrkesskade.v1.InnmelderRolletype;
 import no.nav.testnav.libs.dto.yrkesskade.v1.Klassifisering;
@@ -367,7 +367,7 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                                                 .build()))
                                         .build())
                                 .inntektsaar(2025)
-                                .tilleggsopplysning(List.of(Tilleggsopplysning.KILDESKATTPENSJONIST))
+                                .tilleggsopplysning(List.of(Tilleggsopplysning.KILDESKATT_PAA_PENSJON))
                                 .build()))
                         .build()));
         assertThat(target.getSkattekort().getArbeidsgiverSkatt(), hasItem(ArbeidsgiverSkatt.builder()
@@ -1241,7 +1241,7 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                                                         .build()))
                                                 .build())
                                         .inntektsaar(2025)
-                                        .tilleggsopplysning(List.of(Tilleggsopplysning.KILDESKATTPENSJONIST))
+                                        .tilleggsopplysning(List.of(Tilleggsopplysning.KILDESKATT_PAA_PENSJON))
                                         .build()))
                                 .build()))
                         .build())
