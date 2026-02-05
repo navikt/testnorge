@@ -86,7 +86,7 @@ export const MalPanel = ({
 							setUnderRedigering(underRedigering.concat([id]))
 						}}
 						variant={'tertiary'}
-						icon={<PencilWritingIcon />}
+						icon={<PencilWritingIcon title="Endre navn" />}
 						size={'small'}
 					/>
 				)}

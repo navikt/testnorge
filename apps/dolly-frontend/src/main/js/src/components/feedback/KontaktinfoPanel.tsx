@@ -1,13 +1,13 @@
 import { Button, VStack } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { ChatElipsisIcon, EnvelopeClosedIcon } from '@navikt/aksel-icons'
+import { ChatElipsisIcon, ChevronDownIcon, EnvelopeClosedIcon } from '@navikt/aksel-icons'
 import '@/styles/variables.less'
 import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 const Panel = styled.div`
-	background-color: #0067c5;
+	background-color: var(--ax-bg-accent-strong);
 	color: white;
 	padding: 5px 20px 25px 20px;
 	border-radius: 8px;
@@ -30,6 +30,16 @@ const Header = styled.div`
 	}
 `
 
+const StyledButton = styled(Button)`
+	background-color: var(--ax-bg-default);
+	color: var(--ax-bg-accent-strong);
+	width: 100%;
+
+	&:hover {
+		background-color: var(--ax-bg-accent-moderate-hover);
+	}
+`
+
 export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 	const { currentBruker } = useCurrentBruker()
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
@@ -40,48 +50,42 @@ export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 		<Panel>
 			<Header>
 				<h2>Kontakt oss</h2>
-				<Button size="small" onClick={closePanel}>
-					<Icon kind={'chevron-down'} />
-				</Button>
+				<Button size="small" onClick={closePanel} icon={<ChevronDownIcon title="Lukk" />} />
 			</Header>
 			<p>
 				{`Team Dolly er tilgjengelige på ${bankIdBruker ? '' : 'Slack (#dolly), '}e-post (dolly@nav.no), og via kontaktskjema.`}
 			</p>
-			<VStack gap="space-8">
+			<VStack gap="space-12">
 				{!bankIdBruker && (
 					<a href={'https://nav-it.slack.com/archives/CA3P9NGA2'} target="_blank">
-						<Button
-							variant="secondary"
+						<StyledButton
 							iconPosition="left"
-							icon={<Icon kind="slack" />}
-							style={{ width: '100%' }}
+							icon={<Icon kind="slack" fill="#2176d4" />}
 							onClick={closePanel}
 						>
 							Gå til Slack-kanal
-						</Button>
+						</StyledButton>
 					</a>
 				)}
 				<a href={'mailto:dolly@nav.no'}>
-					<Button
-						variant="secondary"
+					<StyledButton
 						iconPosition="left"
-						icon={<EnvelopeClosedIcon />}
+						icon={<EnvelopeClosedIcon aria-hidden />}
 						style={{ width: '100%' }}
 						onClick={closePanel}
 					>
 						Send e-post
-					</Button>
+					</StyledButton>
 				</a>
-				<Button
+				<StyledButton
 					data-testid={TestComponentSelectors.BUTTON_OPEN_KONTAKTSKJEMA}
-					variant="secondary"
 					iconPosition="left"
-					icon={<ChatElipsisIcon />}
+					icon={<ChatElipsisIcon aria-hidden />}
 					style={{ width: '100%' }}
 					onClick={openKontaktskjema}
 				>
 					Åpne kontaktskjema
-				</Button>
+				</StyledButton>
 			</VStack>
 		</Panel>
 	)

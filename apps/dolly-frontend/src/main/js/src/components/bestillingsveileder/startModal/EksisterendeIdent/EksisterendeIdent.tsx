@@ -71,7 +71,7 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 					{error.message}
 				</Alert>
 			)}
-			<VStack gap="space-8" style={{ maxHeight: '20vh', marginRight: '20px' }}>
+			<VStack gap="space-16" style={{ maxHeight: '20vh', margin: '15px 20px 0 0' }}>
 				<Textarea
 					UNSAFE_autoScrollbar
 					onChange={(event) => setInput(event.target.value)}
@@ -85,22 +85,22 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 					}
 					autoComplete="off"
 				/>
+				<div style={{ width: '-webkit-fill-available' }} className="form-actions">
+					<Button
+						style={{ marginRight: '10px' }}
+						type="submit"
+						onClick={onSubmit}
+						variant="primary"
+						disabled={!input || loading}
+						loading={loading}
+					>
+						Valider identifikatorer
+					</Button>
+				</div>
 			</VStack>
-			<div style={{ width: '-webkit-fill-available' }} className="form-actions">
-				<Button
-					style={{ marginRight: '10px' }}
-					type="submit"
-					onClick={onSubmit}
-					variant="primary"
-					disabled={!input || loading}
-					loading={loading}
-				>
-					Valider identifikatorer
-				</Button>
-			</div>
 			{pdlfEksistens?.length > 0 && (
-				<div className="flexbox--full-width" style={{ marginRight: '20px' }}>
-					<Table size="medium" zebraStripes style={{ marginBottom: '20px', marginRight: '20px' }}>
+				<div className="flexbox--full-width" style={{ margin: '10px 20px 0 0' }}>
+					<Table size="medium" zebraStripes style={{ margin: '0 20px 20px 0' }}>
 						<Table.Header>
 							<Table.Row>
 								<Table.HeaderCell scope="col">Ident</Table.HeaderCell>

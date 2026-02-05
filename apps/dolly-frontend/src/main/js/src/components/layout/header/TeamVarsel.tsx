@@ -9,7 +9,7 @@ const TeamVarselPanel = styled.div`
 	position: fixed;
 	top: 80px;
 	right: 20px;
-	background-color: #0067c5;
+	background-color: var(--ax-bg-accent-strong);
 	color: white;
 	padding: 20px 20px 25px 20px;
 	border-radius: 8px;
@@ -25,7 +25,11 @@ const TeamVarselPanel = styled.div`
 
 	&& {
 		.aksel-button {
-			background-color: white;
+			background-color: var(--ax-bg-default);
+			color: var(--ax-bg-accent-strong);
+			&:hover {
+				background-color: var(--ax-bg-accent-moderate-hover);
+			}
 		}
 	}
 `
@@ -53,9 +57,7 @@ export const TeamVarsel = () => {
 					Du representer nå teamet {currentBruker.representererTeam?.navn}, og alle data du
 					oppretter vil tilhøre dette teamet. Hvem du vil represente velges i menyen over.
 				</p>
-				<Button variant="secondary" onClick={dismiss}>
-					OK
-				</Button>
+				<Button onClick={dismiss}>OK</Button>
 			</div>
 		</TeamVarselPanel>
 	)

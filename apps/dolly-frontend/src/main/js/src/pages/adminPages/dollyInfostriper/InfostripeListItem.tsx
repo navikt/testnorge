@@ -54,8 +54,9 @@ export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 					)}
 					{!editing && !confirm && (
 						<Button
+							data-color="danger"
 							size="xsmall"
-							variant="danger"
+							variant="primary"
 							onClick={() => setConfirm(true)}
 							data-testid={TestComponentSelectors.BUTTON_DELETE_INFOSTRIPE}
 						>
@@ -64,7 +65,13 @@ export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 					)}
 					{confirm && !editing && (
 						<>
-							<Button size="xsmall" variant="danger" loading={deleting} onClick={handleDelete}>
+							<Button
+								data-color="danger"
+								size="xsmall"
+								variant="primary"
+								loading={deleting}
+								onClick={handleDelete}
+							>
 								Bekreft slett
 							</Button>
 							<Button size="xsmall" variant="secondary" onClick={() => setConfirm(false)}>

@@ -304,60 +304,56 @@ export const VisningRedigerbarPersondetaljer = ({
 									id={'navn'}
 									size={'xxsmall'}
 									checked={slettAttr.navn}
+									label="Navn"
 									onChange={() => {
 										setSlettAttr({
 											...slettAttr,
 											navn: !slettAttr.navn,
 										})
 									}}
-								>
-									Navn
-								</SlettCheckbox>
+								/>
 							)}
 							{harKjoenn && (
 								<SlettCheckbox
 									id={'kjoenn'}
 									size={'xxsmall'}
 									checked={slettAttr.kjoenn}
+									label="Kjønn"
 									onChange={() => {
 										setSlettAttr({
 											...slettAttr,
 											kjoenn: !slettAttr.kjoenn,
 										})
 									}}
-								>
-									Kjønn
-								</SlettCheckbox>
+								/>
 							)}
 							{harPersonstatus && (
 								<SlettCheckbox
 									id={'folkeregisterpersonstatus'}
 									size={'xxsmall'}
 									checked={slettAttr.folkeregisterpersonstatus}
+									label="Personstatus"
 									onChange={() => {
 										setSlettAttr({
 											...slettAttr,
 											folkeregisterpersonstatus: !slettAttr.folkeregisterpersonstatus,
 										})
 									}}
-								>
-									Personstatus
-								</SlettCheckbox>
+								/>
 							)}
 							{harSkjerming && (
 								<Checkbox
 									id={'skjerming'}
 									size={'xxsmall'}
 									checked={slettAttr.skjerming}
+									label="Skjerming (egenansatt)"
 									onChange={() => {
 										setSlettAttr({
 											...slettAttr,
 											skjerming: !slettAttr.skjerming,
 										})
 									}}
-								>
-									Skjerming (egenansatt)
-								</Checkbox>
+								/>
 							)}
 						</div>
 					</div>
@@ -421,6 +417,7 @@ export const VisningRedigerbarPersondetaljer = ({
 								<Knappegruppe>
 									<NavButton
 										variant={'secondary'}
+										style={{ marginRight: '10px' }}
 										onClick={() => setVisningModus(Modus.Les)}
 										disabled={formMethods.formState.isSubmitting}
 									>

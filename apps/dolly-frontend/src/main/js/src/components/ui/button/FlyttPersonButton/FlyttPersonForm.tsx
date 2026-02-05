@@ -42,11 +42,7 @@ const ValgtePersonerList = styled.div`
 `
 
 const GruppeVelger = styled.div`
-	margin-bottom: 20px;
-
-	.skjemaelement {
-		margin-bottom: 0;
-	}
+	padding-bottom: 10px;
 
 	.error-message {
 		margin-top: 10px;
@@ -190,7 +186,7 @@ export const FlyttPersonForm = ({
 							)}
 						</PersonvelgerCheckboxes>
 					)}
-					<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
+					<div className="flexbox--flex-wrap" style={{ marginTop: '10px', gap: '10px' }}>
 						<Button
 							onClick={() => {
 								formMethods.setValue('identer', gruppeIdenterListe)

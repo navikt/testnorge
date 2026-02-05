@@ -111,9 +111,8 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy 
 					}}
 					data-testid={TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER}
 					variant={'tertiary'}
-					icon={<TrashIcon />}
+					icon={<TrashIcon title="Tøm kategori" />}
 					size={'small'}
-					title="Tøm kategori"
 				/>
 			)}
 		</KategoriHeader>
