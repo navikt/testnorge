@@ -33,7 +33,6 @@ const initialFrikort = {
 export const initialTrekktabell = {
 	trekktabell: {
 		trekkode: '',
-		tabelltype: '',
 		tabellnummer: '',
 		prosentsats: null,
 		antallMaanederForTrekk: null,
@@ -64,8 +63,6 @@ const FrikortForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 }
 
 const TrekktabellForm = ({ path, trekkode }: ForskuddstrekkProps) => {
-	const { kodeverk: tabelltype } = useSkattekortKodeverk('TABELLTYPE')
-
 	return (
 		<>
 			<FormSelect
@@ -73,13 +70,6 @@ const TrekktabellForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 				label="Trekkode"
 				options={trekkode}
 				size="xlarge"
-				isClearable={false}
-			/>
-			<FormSelect
-				name={`${path}.trekktabell.tabelltype`}
-				label="Tabelltype"
-				options={tabelltype}
-				size="large"
 				isClearable={false}
 			/>
 			<FormTextInput name={`${path}.trekktabell.tabellnummer`} label="Tabellnummer" type="number" />

@@ -39,13 +39,14 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter
         - application: testnav-person-service
-        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api
         - application: etterlatte-testdata
           namespace: etterlatte
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: logging
           namespace: nais-system
         - application: testnav-yrkesskade-proxy
