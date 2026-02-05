@@ -3,22 +3,39 @@ package no.nav.dolly.mapper.strategy;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret.JobbsituasjonDetaljer;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata.PersonRolle;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding.Inntektsmelding;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding.RsArbeidsgiver;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding.RsKontaktinformasjon;
+import no.nav.dolly.domain.resultset.inntektstub.Inntekt;
+import no.nav.dolly.domain.resultset.inntektstub.Inntekt.InntektType;
+import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
+import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.medl.RsMedl;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.AfpOffentlig;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.Alderspensjon;
@@ -63,6 +80,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -714,13 +732,260 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                         .build()));
     }
 
+    @Test
+    void shouldCopyArenadata() {
+
+        var bestilling = RsDollyUtvidetBestilling.builder()
+                .arenaforvalter(Arenadata.builder()
+                        .arenaBrukertype(ArenaBrukertype.MED_SERVICEBEHOV)
+                        .aktiveringDato(LocalDateTime.of(2020, 1, 1, 0, 0))
+                        .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.BKART)
+                        .automatiskInnsendingAvMeldekort(true)
+                        .inaktiveringDato(LocalDateTime.of(2026, 1, 1, 0, 0))
+                        .build())
+                .build();
+
+        var target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getArenaforvalter().getArenaBrukertype(), is(equalTo(ArenaBrukertype.MED_SERVICEBEHOV)));
+        assertThat(target.getArenaforvalter().getAktiveringDato(), is(equalTo(LocalDateTime.of(2020, 1, 1, 0, 0))));
+        assertThat(target.getArenaforvalter().getKvalifiseringsgruppe(), is(equalTo(ArenaKvalifiseringsgruppe.BKART)));
+        assertThat(target.getArenaforvalter().getAutomatiskInnsendingAvMeldekort(), is(equalTo(true)));
+        assertThat(target.getArenaforvalter().getInaktiveringDato(), is(equalTo(LocalDateTime.of(2026, 1, 1, 0, 0))));
+    }
+
+    @Test
+    void shouldAccumulateArenaDagpenger() {
+
+        var target = mapperFacade.map(buildArenaDagpenger("2023-01-01", "2023-06-30"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildArenaDagpenger("2024-01-01", "2024-06-30"), target);
+
+        assertThat(target.getArenaforvalter().getDagpenger(), hasItems(
+                RsArenaDagpenger.builder()
+                        .fraDato(LocalDate.parse("2023-01-01").atStartOfDay())
+                        .tilDato(LocalDate.parse("2023-06-30").atStartOfDay())
+                        .build(),
+                RsArenaDagpenger.builder()
+                        .fraDato(LocalDate.parse("2024-01-01").atStartOfDay())
+                        .tilDato(LocalDate.parse("2024-06-30").atStartOfDay())
+                        .build()));
+    }
+
+    @Test
+    void shouldAccumulateArenaAap() {
+
+        var target = mapperFacade.map(buildArenaAap("2023-01-01", "2023-06-30"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildArenaAap("2024-01-01", "2024-06-30"), target);
+
+        assertThat(target.getArenaforvalter().getAap(), hasItems(
+                RsArenaAap.builder()
+                        .fraDato(LocalDate.parse("2023-01-01").atStartOfDay())
+                        .tilDato(LocalDate.parse("2023-06-30").atStartOfDay())
+                        .build(),
+                RsArenaAap.builder()
+                        .fraDato(LocalDate.parse("2024-01-01").atStartOfDay())
+                        .tilDato(LocalDate.parse("2024-06-30").atStartOfDay())
+                        .build()));
+    }
+
+    @Test
+    void shouldAccumulateArenaAap115() {
+
+        var target = mapperFacade.map(buildArenaAap115("2023-01-01", "2023-06-30"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildArenaAap115("2024-01-01", "2024-06-30"), target);
+
+        assertThat(target.getArenaforvalter().getAap115(), hasItems(
+                RsArenaAap115.builder()
+                        .fraDato(LocalDate.parse("2023-01-01").atStartOfDay())
+                        .tilDato(LocalDate.parse("2023-06-30").atStartOfDay())
+                        .build(),
+                RsArenaAap115.builder()
+                        .fraDato(LocalDate.parse("2024-01-01").atStartOfDay())
+                        .tilDato(LocalDate.parse("2024-06-30").atStartOfDay())
+                        .build()));
+    }
+
+    @Test
+    void shouldCopyNomdata() {
+
+        val bestilling = RsDollyUtvidetBestilling.builder()
+                .nomdata(RsNomData.builder()
+                        .startDato(LocalDate.parse("2023-01-01").atStartOfDay())
+                        .sluttDato(LocalDate.parse("2025-12-31").atStartOfDay())
+                        .build())
+                .build();
+
+        val target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getNomdata().getStartDato(), is(equalTo(LocalDate.parse("2023-01-01").atStartOfDay())));
+        assertThat(target.getNomdata().getSluttDato(), is(equalTo(LocalDate.parse("2025-12-31").atStartOfDay())));
+    }
+
+    @Test
+    void shouldCopyMedl() {
+
+        val bestilling = RsDollyUtvidetBestilling.builder()
+                .medl(RsMedl.builder()
+                        .dekning("FULL")
+                        .grunnlag("TEST_GRUNNLAG")
+                        .lovvalg("NORSK_LOV")
+                        .kildedokument("TEST_DOKUMENT")
+                        .studieinformasjon(RsMedl.Studieinformasjon.builder()
+                                .soeknadInnvilget(true)
+                                .build())
+                        .build())
+                .build();
+
+        val target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getMedl().getDekning(), is(equalTo("FULL")));
+        assertThat(target.getMedl().getGrunnlag(), is(equalTo("TEST_GRUNNLAG")));
+        assertThat(target.getMedl().getLovvalg(), is(equalTo("NORSK_LOV")));
+        assertThat(target.getMedl().getKildedokument(), is(equalTo("TEST_DOKUMENT")));
+        assertThat(target.getMedl().getStudieinformasjon().getSoeknadInnvilget(), is(equalTo(true)));
+    }
+
+    @Test
+    void shouldCopyKrrstub() {
+
+        val bestilling = RsDollyUtvidetBestilling.builder()
+                .krrstub(RsDigitalKontaktdata.builder()
+                        .epost("tull@toeys.com")
+                        .mobil("12345678")
+                        .gyldigFra(LocalDate.parse("2023-01-01"))
+                        .landkode("+47")
+                        .reservert(true)
+                        .build())
+                .build();
+
+        val target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getKrrstub().getEpost(), is(equalTo("tull@toeys.com")));
+        assertThat(target.getKrrstub().getMobil(), is(equalTo("12345678")));
+        assertThat(target.getKrrstub().getGyldigFra(), is(equalTo(LocalDate.parse("2023-01-01"))));
+        assertThat(target.getKrrstub().getLandkode(), is(equalTo("+47")));
+        assertThat(target.getKrrstub().isReservert(), is(equalTo(true)));
+    }
+
+    @Test
+    void shouldCopyInntektsmelding() {
+
+        val bestilling = RsDollyUtvidetBestilling.builder()
+                .inntektsmelding(RsInntektsmelding.builder()
+                        .joarkMetadata(RsInntektsmelding.JoarkMetadata.builder()
+                                .tema("TEST")
+                                .journalpostType("TYPE")
+                                .kanal("KANAL")
+                                .build())
+                        .inntekter(List.of(Inntektsmelding.builder()
+                                .arbeidsgiver(RsArbeidsgiver.builder()
+                                        .virksomhetsnummer("123456789")
+                                        .kontaktinformasjon(RsKontaktinformasjon.builder()
+                                                .kontaktinformasjonNavn("Arbeidsgiver AS")
+                                                .telefonnummer("99887766")
+                                                .build())
+                                        .build())
+                                .build()))
+                        .build())
+                .build();
+
+        val target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getInntektsmelding().getJoarkMetadata().getTema(), is(equalTo("TEST")));
+        assertThat(target.getInntektsmelding().getJoarkMetadata().getJournalpostType(), is(equalTo("TYPE")));
+        assertThat(target.getInntektsmelding().getJoarkMetadata().getKanal(), is(equalTo("KANAL")));
+        assertThat(target.getInntektsmelding().getInntekter(), hasItem(Inntektsmelding.builder()
+                .arbeidsgiver(RsArbeidsgiver.builder()
+                        .virksomhetsnummer("123456789")
+                        .kontaktinformasjon(RsKontaktinformasjon.builder()
+                                .kontaktinformasjonNavn("Arbeidsgiver AS")
+                                .telefonnummer("99887766")
+                                .build())
+                        .build())
+                .build()));
+    }
+
+    @Test
+    void shouldAccumulateInntektstub() {
+
+        var target = mapperFacade.map(buildInntektstub(31321.0, InntektType.LOENNSINNTEKT, "Lønn for oktober"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildInntektstub(2131322.0, InntektType.NAERINGSINNTEKT, "Inntekt fra næring"), target);
+
+        assertThat(target.getInntektstub().getInntektsinformasjon(), hasItems(
+                RsInntektsinformasjon.builder()
+                        .inntektsliste(List.of(Inntekt.builder()
+                                .beloep(31321.0)
+                                .inntektstype(InntektType.LOENNSINNTEKT)
+                                .beskrivelse("Lønn for oktober")
+                                .build()))
+                        .build(),
+                RsInntektsinformasjon.builder()
+                        .inntektsliste(List.of(Inntekt.builder()
+                                .beloep(2131322.0)
+                                .inntektstype(InntektType.NAERINGSINNTEKT)
+                                .beskrivelse("Inntekt fra næring")
+                                .build()))
+                        .build()));
+    }
+
+    private static RsDollyUtvidetBestilling buildInntektstub(Double beloep, InntektType inntektstype, String beskrivelse) {
+
+        return RsDollyUtvidetBestilling.builder()
+                .inntektstub(InntektMultiplierWrapper.builder()
+                        .inntektsinformasjon(List.of(RsInntektsinformasjon.builder()
+                                .inntektsliste(List.of(Inntekt.builder()
+                                        .beloep(beloep)
+                                        .inntektstype(inntektstype)
+                                        .beskrivelse(beskrivelse)
+                                        .build()))
+                                .build()))
+                        .build())
+                .build();
+    }
+
+    private static RsDollyUtvidetBestilling buildArenaAap115(String fraDato, String tilDato) {
+
+        return RsDollyUtvidetBestilling.builder()
+                .arenaforvalter(Arenadata.builder()
+                        .aap115(List.of(RsArenaAap115.builder()
+                                .fraDato(LocalDate.parse(fraDato).atStartOfDay())
+                                .tilDato(LocalDate.parse(tilDato).atStartOfDay())
+                                .build()))
+                        .build())
+                .build();
+    }
+
+    private static RsDollyUtvidetBestilling buildArenaAap(String fraDato, String tilDato) {
+
+        return RsDollyUtvidetBestilling.builder()
+                .arenaforvalter(Arenadata.builder()
+                        .aap(List.of(RsArenaAap.builder()
+                                .fraDato(LocalDate.parse(fraDato).atStartOfDay())
+                                .tilDato(LocalDate.parse(tilDato).atStartOfDay())
+                                .build()))
+                        .build())
+                .build();
+    }
+
+    private static RsDollyUtvidetBestilling buildArenaDagpenger(String fraDato, String tilDato) {
+
+        return RsDollyUtvidetBestilling.builder()
+                .arenaforvalter(Arenadata.builder()
+                        .dagpenger(List.of(RsArenaDagpenger.builder()
+                                .fraDato(LocalDate.parse(fraDato).atStartOfDay())
+                                .tilDato(LocalDate.parse(tilDato).atStartOfDay())
+                                .build()))
+                        .build())
+                .build();
+    }
+
     private static RsDollyUtvidetBestilling buildPensjonsavtale(AvtaleKategori kategori, String beskrivelse) {
 
         return RsDollyUtvidetBestilling.builder()
                 .pensjonforvalter(PensjonData.builder()
                         .pensjonsavtale(List.of(Pensjonsavtale.builder()
-                                        .avtaleKategori(kategori)
-                                        .produktBetegnelse(beskrivelse)
+                                .avtaleKategori(kategori)
+                                .produktBetegnelse(beskrivelse)
                                 .build()))
                         .build())
                 .build();

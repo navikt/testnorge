@@ -59,6 +59,10 @@ import org.springframework.stereotype.Component;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * Mapper for å kopiere fra RsDollyUtvidetBestilling til RsDollyUtvidetBestilling. Brukes for å lage mal fra person
+ * Spesielt å legge merke til er at lister blir akkumulert ved mapping
+ */
 @Component
 public class DollyRequest2MalBestillingMappingStrategy implements MappingStrategy {
 
