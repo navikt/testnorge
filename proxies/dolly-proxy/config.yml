@@ -172,6 +172,9 @@ spec:
           namespace: repr
         - application: skjermede-personer
           namespace: nom
+        - application: sokos-skattekort
+          namespace: okonomi
+          cluster: dev-gcp
         - application: sokos-kontoregister-person
           namespace: okonomi
           cluster: dev-gcp

@@ -16,9 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RsArenaDagpenger extends ArenaPeriode {
 
-
-    @Schema(
-            type = "String")
+    @Schema(type = "String")
     private String rettighetKode;
 
     @Schema(type = "LocalDateTime")

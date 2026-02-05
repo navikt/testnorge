@@ -59,13 +59,18 @@ public class TransaksjonMappingService {
         return transaksjonMappingRepository.existsByIdentAndMiljoe(ident, miljoe);
     }
 
+    public Mono<Boolean> existAlready(SystemTyper system, String ident) {
+
+        return existAlready(system, ident, null, null);
+    }
+
     public Mono<Boolean> existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
                 .filter(mapping -> (isBlank(miljoe) || miljoe.equals(mapping.getMiljoe())) &&
                         (isNull(bestillingId) || bestillingId.equals(mapping.getBestillingId())))
                 .collectList()
-                .thenReturn(true)
+                .map(exists -> !exists.isEmpty())
                 .switchIfEmpty(Mono.just(false));
     }
 
