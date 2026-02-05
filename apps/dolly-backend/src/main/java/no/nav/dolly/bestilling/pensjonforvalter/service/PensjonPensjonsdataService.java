@@ -91,9 +91,10 @@ public class PensjonPensjonsdataService {
                 .flatMap(generertInntekt -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> {
 
-                            var request = mapperFacade.map(generertInntekt, PensjonPoppGenerertInntektRequest.class);
-                            request.setFnr(ident);
-                            request.setMiljoer(List.of(miljoe));
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty(IDENT, ident);
+                            context.setProperty("miljoe", miljoe);
+                            var request = mapperFacade.map(generertInntekt, PensjonPoppGenerertInntektRequest.class, context);
                             return pensjonforvalterConsumer.lagreGenererteInntekter(request);
                         }));
     }
