@@ -103,7 +103,7 @@ class DollyRequest2MalBestillingMappingStrategyTest {
     }
 
     @Test
-    void shouldAccuulateEnvironments() {
+    void shouldAccumulateEnvironments() {
 
         var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
                 .environments(Set.of("Q1", "Q4"))
@@ -230,8 +230,8 @@ class DollyRequest2MalBestillingMappingStrategyTest {
     @Test
     void shouldAccumulateInstdata() {
 
-        var target = mapperFacade.map(buildInstdata1(), RsDollyUtvidetBestilling.class);
-        mapperFacade.map(buildInstdata2(), target);
+        var target = mapperFacade.map(buildInstdata(InstdataInstitusjonstype.FO, InstdataKategori.F, "2023-01-01"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildInstdata(InstdataInstitusjonstype.AS, InstdataKategori.A, "2025-01-01"), target);
 
         assertThat(target.getInstdata(), hasItems(
                 RsInstdata.builder()
@@ -1112,24 +1112,13 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                 .build();
     }
 
-    private static RsDollyUtvidetBestilling buildInstdata1() {
+    private static RsDollyUtvidetBestilling buildInstdata(InstdataInstitusjonstype institusjonstype, InstdataKategori kategori, String startdato) {
 
         return RsDollyUtvidetBestilling.builder()
                 .instdata(List.of(RsInstdata.builder()
-                        .institusjonstype(InstdataInstitusjonstype.AS)
-                        .kategori(InstdataKategori.A)
-                        .startdato(LocalDate.of(2025, 1, 1).atStartOfDay())
-                        .build()))
-                .build();
-    }
-
-    private static RsDollyUtvidetBestilling buildInstdata2() {
-
-        return RsDollyUtvidetBestilling.builder()
-                .instdata(List.of(RsInstdata.builder()
-                        .institusjonstype(InstdataInstitusjonstype.FO)
-                        .kategori(InstdataKategori.F)
-                        .startdato(LocalDate.of(2023, 1, 1).atStartOfDay())
+                        .institusjonstype(institusjonstype)
+                        .kategori(kategori)
+                        .startdato(LocalDate.parse(startdato).atStartOfDay())
                         .build()))
                 .build();
     }

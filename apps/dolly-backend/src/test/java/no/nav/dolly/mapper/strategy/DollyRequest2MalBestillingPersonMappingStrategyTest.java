@@ -101,7 +101,7 @@ class DollyRequest2MalBestillingPersonMappingStrategyTest {
     }
 
     @Test
-    void shouldAccumulatePersonBostaedsadresse() {
+    void shouldAccumulatePersonBostedsadresse() {
 
         var target = mapperFacade.map(buildBostedsadresse("Blåbærstien", "12", "1234"), RsDollyUtvidetBestilling.class);
         mapperFacade.map(buildBostedsadresse("Rødbergveien", "34", "5678"), target);
@@ -557,8 +557,8 @@ class DollyRequest2MalBestillingPersonMappingStrategyTest {
     @Test
     void shouldAccumulatePersonUtflytting() {
 
-        var target = mapperFacade.map(builUtflytting("Finland", "Vapriikki"), RsDollyUtvidetBestilling.class);
-        mapperFacade.map(builUtflytting("Russland", "Kolomenskoye"), target);
+        var target = mapperFacade.map(buildUtflytting("Finland", "Vapriikki"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildUtflytting("Russland", "Kolomenskoye"), target);
 
         assertThat(target.getPdldata().getPerson().getUtflytting(), hasItems(
                 UtflyttingDTO.builder()
@@ -579,13 +579,13 @@ class DollyRequest2MalBestillingPersonMappingStrategyTest {
 
         assertThat(target.getPdldata().getPerson().getVergemaal(), hasItems(
                 VergemaalDTO.builder()
-                        .vergemaalEmbete(VergemaalEmbete.FMRO)
-                        .mandatType(VergemaalMandattype.FOR)
+                        .vergemaalEmbete(VergemaalEmbete.FMAV)
+                        .mandatType(VergemaalMandattype.FIN)
                         .eksisterendePerson(false)
                         .build(),
                 VergemaalDTO.builder()
-                        .vergemaalEmbete(VergemaalEmbete.FMAV)
-                        .mandatType(VergemaalMandattype.FIN)
+                        .vergemaalEmbete(VergemaalEmbete.FMRO)
+                        .mandatType(VergemaalMandattype.FOR)
                         .eksisterendePerson(false)
                         .build()));
     }
@@ -605,7 +605,7 @@ class DollyRequest2MalBestillingPersonMappingStrategyTest {
                 .build();
     }
 
-    private static RsDollyUtvidetBestilling builUtflytting(String land, String sted) {
+    private static RsDollyUtvidetBestilling buildUtflytting(String land, String sted) {
 
         return RsDollyUtvidetBestilling.builder()
                 .pdldata(PdlPersondata.builder()
@@ -714,14 +714,14 @@ class DollyRequest2MalBestillingPersonMappingStrategyTest {
                 .build();
     }
 
-    private static RsDollyUtvidetBestilling buildNyIdent(Identtype identtype, Boolean id20232) {
+    private static RsDollyUtvidetBestilling buildNyIdent(Identtype identtype, Boolean id2032) {
 
         return RsDollyUtvidetBestilling.builder()
                 .pdldata(PdlPersondata.builder()
                         .person(PersonDTO.builder()
                                 .nyident(List.of(IdentRequestDTO.builder()
                                         .identtype(identtype)
-                                        .id2032(id20232)
+                                        .id2032(id2032)
                                         .build()))
                                 .build())
                         .build())

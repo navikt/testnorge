@@ -37,6 +37,7 @@ public class RsSykemelding {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
