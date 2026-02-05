@@ -21,6 +21,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
+import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -56,9 +57,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 /**
  * Mapper for å kopiere fra RsDollyUtvidetBestilling til RsDollyUtvidetBestilling. Brukes for å lage mal fra person
  * Spesielt å legge merke til er at lister blir akkumulert ved mapping
@@ -75,14 +73,16 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("arenaforvalter", "arenaforvalter")
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
+                .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
                 .field("krrstub", "krrstub")
                 .field("medl", "medl")
-                .field("nomdata", "nomdata")
                 .field("navSyntetiskIdent", "navSyntetiskIdent")
+                .field("nomdata", "nomdata")
                 .field("pdldata", "pdldata")
                 .field("pensjonforvalter", "pensjonforvalter")
+                .field("skattekort", "skattekort")
                 .field("skjerming", "skjerming")
                 .field("sykemelding", "sykemelding")
                 .field("udistub", "udistub")
@@ -92,29 +92,24 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                     public void mapAtoB(RsDollyUtvidetBestilling request, RsDollyUtvidetBestilling akkumulert, MappingContext context) {
 
                         akkumulert.getAareg().addAll(mapperFacade.mapAsList(request.getAareg(), RsAareg.class));
+                        akkumulert.getDokarkiv().addAll(mapperFacade.mapAsList(request.getDokarkiv(), RsDokarkiv.class));
                         akkumulert.getEnvironments().addAll(request.getEnvironments());
-                        akkumulert.getInstdata().addAll(mapperFacade.mapAsList(request.getInstdata(), RsInstdata.class));
+                        akkumulert.getEtterlatteYtelser().addAll(mapperFacade.mapAsList(request.getEtterlatteYtelser(), EtterlatteYtelse.class));
                         akkumulert.getFullmakt().addAll(mapperFacade.mapAsList(request.getFullmakt(), RsFullmakt.class));
+                        akkumulert.getInstdata().addAll(mapperFacade.mapAsList(request.getInstdata(), RsInstdata.class));
                         akkumulert.getSigrunstub().addAll(mapperFacade.mapAsList(request.getSigrunstub(), RsLignetInntekt.class));
                         akkumulert.getSigrunstubPensjonsgivende().addAll(mapperFacade.mapAsList(request.getSigrunstubPensjonsgivende(), RsPensjonsgivendeForFolketrygden.class));
                         akkumulert.getSigrunstubSummertSkattegrunnlag().addAll(mapperFacade.mapAsList(request.getSigrunstubSummertSkattegrunnlag(), RsSummertSkattegrunnlag.class));
                         akkumulert.getYrkesskader().addAll(mapperFacade.mapAsList(request.getYrkesskader(), YrkesskadeRequest.class));
-                        akkumulert.getDokarkiv().addAll(mapperFacade.mapAsList(request.getDokarkiv(), RsDokarkiv.class));
-                        akkumulert.getEtterlatteYtelser().addAll(mapperFacade.mapAsList(request.getEtterlatteYtelser(), EtterlatteYtelse.class));
-                        if (nonNull(request.getHistark())) {
-                            if (isNull(akkumulert.getHistark())) {
-                                akkumulert.setHistark(new RsHistark());
-                            }
-                            akkumulert.getHistark().getDokumenter()
-                                    .addAll(mapperFacade.mapAsList(request.getHistark().getDokumenter(), RsHistark.RsHistarkDokument.class));
-                        }
-                        if (nonNull(request.getSkattekort())) {
-                            if (isNull(akkumulert.getSkattekort())) {
-                                akkumulert.setSkattekort(new no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO());
-                            }
-                            akkumulert.getSkattekort().getArbeidsgiverSkatt()
-                                    .addAll(mapperFacade.mapAsList(request.getSkattekort().getArbeidsgiverSkatt(), ArbeidsgiverSkatt.class));
-                        }
+                    }
+                })
+                .register();
+
+        factory.classMap(SkattekortRequestDTO.class, SkattekortRequestDTO.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(SkattekortRequestDTO skattekortRequest, SkattekortRequestDTO akkumulert, MappingContext context) {
+                        akkumulert.getArbeidsgiverSkatt().addAll(mapperFacade.mapAsList(skattekortRequest.getArbeidsgiverSkatt(), ArbeidsgiverSkatt.class));
                     }
                 })
                 .register();
@@ -180,6 +175,17 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                     }
                 })
                 .register();
+
+        factory.classMap(RsHistark.class, RsHistark.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsHistark rsHistark, RsHistark akkumulert, MappingContext context) {
+                        akkumulert.getDokumenter()
+                                .addAll(mapperFacade.mapAsList(rsHistark.getDokumenter(), RsHistark.RsHistarkDokument.class));
+                    }
+                })
+                .register();
+
 
         factory.classMap(PensjonData.class, PensjonData.class)
                 .mapNulls(false)

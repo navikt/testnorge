@@ -227,7 +227,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                         .build()));
     }
 
-
     @Test
     void shouldAccumulateInstdata() {
 
