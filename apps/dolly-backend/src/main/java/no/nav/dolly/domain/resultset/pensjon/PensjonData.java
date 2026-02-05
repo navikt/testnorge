@@ -367,6 +367,7 @@ public class PensjonData {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Barnetillegg {
@@ -393,6 +394,7 @@ public class PensjonData {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ForventetInntekt {
@@ -404,6 +406,7 @@ public class PensjonData {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AfpOffentlig {
@@ -433,6 +436,7 @@ public class PensjonData {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AfpOffentligStub {
@@ -457,6 +461,7 @@ public class PensjonData {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DatoBeloep {
@@ -470,6 +475,7 @@ public class PensjonData {
     public enum StatusAfp {UKJENT, INNVILGET, SOKT, AVSLAG, IKKE_SOKT}
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AlderspensjonNyUtaksgrad {
