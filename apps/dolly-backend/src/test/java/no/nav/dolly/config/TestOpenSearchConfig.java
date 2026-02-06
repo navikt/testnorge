@@ -30,7 +30,8 @@ public class TestOpenSearchConfig {
         OPENSEARCH_CONTAINER = new OpenSearchContainer<>(OPENSEARCH_IMAGE);
         OPENSEARCH_CONTAINER.withEnv("DISABLE_SECURITY_PLUGIN", "true");
         OPENSEARCH_CONTAINER.withEnv("discovery.type", "single-node");
-        OPENSEARCH_CONTAINER.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1024m -Xmx1024m");
+        OPENSEARCH_CONTAINER.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m");
+        OPENSEARCH_CONTAINER.withReuse(true);
 
         OPENSEARCH_CONTAINER.start();
     }

@@ -3,8 +3,14 @@ package no.nav.dolly.bestilling.skattekort.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
 
 @Getter
+@RequiredArgsConstructor
 public enum Trekkode {
 
     LOENN_FRA_HOVEDARBEIDSGIVER("loennFraHovedarbeidsgiver"),
@@ -22,9 +28,15 @@ public enum Trekkode {
     @JsonValue
     private final String value;
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    Trekkode(String value) {
-        this.value = value;
+    @JsonCreator
+    public static Trekkode fromValue(String value) {
+        if (isNull(value)) {
+            return null;
+        }
+        return Stream.of(values())
+                .filter(kode -> kode.value.equalsIgnoreCase(value) || kode.name().equalsIgnoreCase(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown Trekkode: " + value));
     }
 
     @Override

@@ -3,9 +3,9 @@ package no.nav.dolly.domain.resultset.breg;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -39,8 +39,8 @@ public class RsBregdata {
 
     public enum Egenskap {DELTAGER, KOMPLEMENTAR, KONTAKTPERSON, SAMEIER, STYRE}
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -70,8 +70,8 @@ public class RsBregdata {
         }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -83,8 +83,8 @@ public class RsBregdata {
         private Boolean fratraadt;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -98,8 +98,8 @@ public class RsBregdata {
         private String navn3;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
