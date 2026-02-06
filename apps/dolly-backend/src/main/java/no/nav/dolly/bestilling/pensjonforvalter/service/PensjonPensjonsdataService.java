@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOE;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_AFP_OFFENTLIG;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_PENSJONSAVTALE;
@@ -93,7 +94,7 @@ public class PensjonPensjonsdataService {
 
                             var context = MappingContextUtils.getMappingContext();
                             context.setProperty(IDENT, ident);
-                            context.setProperty("miljoe", miljoe);
+                            context.setProperty(MILJOE, miljoe);
                             var request = mapperFacade.map(generertInntekt, PensjonPoppGenerertInntektRequest.class, context);
                             return pensjonforvalterConsumer.lagreGenererteInntekter(request);
                         }));

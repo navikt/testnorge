@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOE;
+
 @Component
 public class PensjonGenerertInntektMappingStrategy implements MappingStrategy {
 
@@ -24,8 +27,8 @@ public class PensjonGenerertInntektMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PensjonData.PoppGenerertInntektWrapper generertInntektWrapper, PensjonPoppGenerertInntektRequest request, MappingContext context) {
 
-                        val ident = (String) context.getProperty("ident");
-                        val miljoe = (String) context.getProperty("miljoe");
+                        val ident = (String) context.getProperty(IDENT);
+                        val miljoe = (String) context.getProperty(MILJOE);
 
                         request.setFnr(ident);
                         request.setMiljoer(List.of(miljoe));
