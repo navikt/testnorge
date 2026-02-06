@@ -22,11 +22,6 @@ management:
       enabled: false
 
 consumers:
-  pdl-proxy:
-    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-pdl-proxy
   testnav-dolly-proxy:
     name: testnav-dolly-proxy
     namespace: dolly

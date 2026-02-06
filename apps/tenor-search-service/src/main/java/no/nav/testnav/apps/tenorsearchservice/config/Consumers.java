@@ -17,7 +17,7 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties tenorSearchService;
-    private ServerProperties pdlTestdata;
+    private ServerProperties testnavDollyProxy;
     private ServerProperties dollyBackend;
     private ServerProperties dollyBackendDev;
 }
