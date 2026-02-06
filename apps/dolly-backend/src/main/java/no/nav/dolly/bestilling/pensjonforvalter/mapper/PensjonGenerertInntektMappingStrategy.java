@@ -5,7 +5,9 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest.PoppGenerertInntektRequest;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
+import no.nav.dolly.domain.resultset.pensjon.PensjonData.PoppGenerertInntekt;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,17 @@ public class PensjonGenerertInntektMappingStrategy implements MappingStrategy {
 
                         request.setFnr(ident);
                         request.setMiljoer(List.of(miljoe));
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(PoppGenerertInntekt.class, PoppGenerertInntektRequest.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(PoppGenerertInntekt generertInntekt, PoppGenerertInntektRequest request, MappingContext context) {
+
+                        request.setAar(generertInntekt.getAr());
                     }
                 })
                 .byDefault()
