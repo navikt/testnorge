@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -34,7 +35,7 @@ public class SlettePoppInntektCommand implements Callable<Flux<PensjonforvalterR
                 .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(POPP_DELETE_URL)
-                        .queryParam("miljoer", miljoer)
+                        .queryParam(MILJOER, miljoer)
                         .build())
                 .header("pid", ident)
                 .headers(WebClientHeader.bearer(token))
