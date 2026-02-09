@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useLocation } from 'react-router'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
@@ -8,21 +8,16 @@ import { dollySoekLocalStorageKey } from '@/pages/dollySoek/SoekForm'
 import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from '@/pages/tenorSoek/constants'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
+const activePaths = ['/gruppe', '/dollysoek', '/nyansettelser', '/tenorpersoner', '/identvalidator']
+
 export const PersonDropdown = () => {
 	const location = useLocation()
-	const [isActive, setIsActive] = useState(false)
-
 	const { currentBruker } = useCurrentBruker()
 
-	useEffect(() => {
-		setIsActive(
-			location?.pathname === '/gruppe' ||
-				location?.pathname === '/dollysoek' ||
-				location?.pathname === '/nyansettelser' ||
-				location?.pathname === '/tenorpersoner' ||
-				location?.pathname === '/identvalidator',
-		)
-	}, [location])
+	const isActive = useMemo(
+		() => activePaths.includes(location?.pathname),
+		[location?.pathname],
+	)
 
 	return (
 		<ActionMenuWrapper
@@ -37,7 +32,7 @@ export const PersonDropdown = () => {
 					style={{ color: '#212529' }}
 				>
 					<Icon kind="person" fontSize="1.5rem" />
-					<DropdownStyledLink href="/gruppe">Mine personer</DropdownStyledLink>
+					<DropdownStyledLink>Mine personer</DropdownStyledLink>
 				</PreloadableActionMenuItem>
 				<PreloadableActionMenuItem
 					route="/dollysoek"
@@ -47,7 +42,6 @@ export const PersonDropdown = () => {
 					<Icon kind="search" fontSize="1.5rem" />
 					<DropdownStyledLink
 						onClick={() => localStorage.removeItem(dollySoekLocalStorageKey)}
-						href="/dollysoek"
 					>
 						Søk i Dolly
 					</DropdownStyledLink>
@@ -63,7 +57,6 @@ export const PersonDropdown = () => {
 							localStorage.removeItem(tenorSoekLocalStorageKey)
 							localStorage.removeItem(tenorSoekStateLocalStorageKey)
 						}}
-						href="/tenorpersoner"
 					>
 						Søk i Tenor (Test-Norge)
 					</DropdownStyledLink>
@@ -71,12 +64,12 @@ export const PersonDropdown = () => {
 				{currentBruker?.brukertype === 'AZURE' && (
 					<PreloadableActionMenuItem route="/identvalidator" style={{ color: '#212529' }}>
 						<Icon kind="arena" fontSize="1.5rem" />
-						<DropdownStyledLink href="/identvalidator">Valider identer</DropdownStyledLink>
+						<DropdownStyledLink>Valider identer</DropdownStyledLink>
 					</PreloadableActionMenuItem>
 				)}
 				<PreloadableActionMenuItem route="/nyansettelser" style={{ color: '#212529' }}>
 					<Icon kind="ansettelse" fontSize="1.5rem" />
-					<DropdownStyledLink href="/nyansettelser">Vis nyansettelser</DropdownStyledLink>
+					<DropdownStyledLink>Vis nyansettelser</DropdownStyledLink>
 				</PreloadableActionMenuItem>
 			</>
 		</ActionMenuWrapper>

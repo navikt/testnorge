@@ -27,6 +27,7 @@ import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -338,7 +339,7 @@ public class TestgruppeService {
                 .orElse("");
         var gruppeNavn = Arrays.stream(searchQueries)
                 .filter(word -> !word.matches("\\d+"))
-                .filter(org.apache.commons.lang3.StringUtils::isNotBlank)
+                .filter(StringUtils::isNotBlank)
                 .map(word -> "%" + word + "%")
                 .collect(Collectors.joining(" "));
 
@@ -346,12 +347,8 @@ public class TestgruppeService {
                 .flatMapMany(fragment -> isNotBlank(gruppeNavn) && isNotBlank(gruppeId) ?
                         testgruppeRepository.findByIdContainingAndNavnContaining(gruppeId, gruppeNavn) :
                         Flux.merge(
-                                testgruppeRepository.findByIdContaining(wrapSearchString(gruppeId)),
-                                testgruppeRepository.findByNavnContaining(wrapSearchString(gruppeNavn))))
+                                testgruppeRepository.findByIdContaining(gruppeId),
+                                testgruppeRepository.findByNavnContaining(gruppeNavn)))
                 .sort(Comparator.comparing(RsGruppeFragment::getId));
-    }
-
-    private String wrapSearchString(String searchString) {
-        return isNotBlank(searchString) ? searchString : "";
     }
 }
