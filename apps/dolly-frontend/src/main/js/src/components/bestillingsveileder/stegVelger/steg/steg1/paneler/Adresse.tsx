@@ -44,6 +44,7 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 						'Vilkåret er at barn(a) har to foreldre med forskjellig norsk bostedsadresse.  Gjelder kun for master FREG.'
 					}
 					vis={!testNorgePerson}
+					wrapperSize="tight"
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Adressebeskyttelse" attr={sm.attrs}>
