@@ -10,10 +10,13 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.util.concurrent.Callable;
 
+import static java.time.Duration.ofSeconds;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.ACCEPT;
@@ -50,7 +53,11 @@ public class SkattekortPostCommand implements Callable<Mono<SkattekortResponse>>
                         .body(null)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+                .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
+                        .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
+                                responseException.getStatusCode().is5xxServerError())
+                        .onRetryExhaustedThrow((retryBackoffSpec, lastSignal) ->
+                                new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage()))))
                 .onErrorResume(throwable -> {
                     WebClientError.Description description = WebClientError.describe(throwable);
                     log.error("Feil ved sending av skattekort til Sokos. FNR: {}, Inntektsår: {}, Status: {}, Message: {}",
