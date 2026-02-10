@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static java.util.Objects.isNull;
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO.hasArenaSyntTag;
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO.hasDollyTag;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -48,6 +49,7 @@ public class PdlFilterService {
                                     .etternavn(person.getEtternavn())
                                     .tenorRelasjoner(person.getTenorRelasjoner())
                                     .iBruk(kilde.getT1().getIBruk().get(person.getId()))
+                                    .iArenaSynt(hasArenaSyntTag(kilde.getT2().getPersonerTags().get(person.getId())))
                                     .build())
                             .toList();
                     oversiktDTO.getData().setPersoner(personer);

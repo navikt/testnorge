@@ -39,13 +39,14 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter
         - application: testnav-person-service
-        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api
         - application: etterlatte-testdata
           namespace: etterlatte
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: logging
           namespace: nais-system
         - application: testnav-yrkesskade-proxy
@@ -54,13 +55,10 @@ spec:
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-sykemelding-proxy
       external:
-        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
-        - host: testnav-saf-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:

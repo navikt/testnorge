@@ -24,7 +24,7 @@ public class GetDokumentCommand implements Callable<Mono<String>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/{miljo}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/{type}")
+                        .path("/saf/{miljo}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/{type}")
                         .build(miljo, journalpostId, dokumentInfoId, type.name()))
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()

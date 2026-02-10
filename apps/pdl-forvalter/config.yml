@@ -64,6 +64,8 @@ spec:
       rules:
         - application: generer-navn-service
         - application: testnav-adresse-service
+        - application: testnav-dolly-proxy
+          cluster: dev-fss
         - application: testnav-ident-pool
         - application: testnav-kodeverk-service
         - application: testnav-organisasjon-forvalter

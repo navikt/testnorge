@@ -29,7 +29,7 @@ public class OpprettArbeidsforholdCommand implements Callable<Mono<Arbeidsforhol
     public Mono<ArbeidsforholdResponseDTO> call() {
         return webClient
                 .post()
-                .uri(builder -> builder.path("/{miljoe}/api/v1/arbeidsforhold")
+                .uri(builder -> builder.path("/aareg/{miljoe}/api/v1/arbeidsforhold")
                         .build(MILJOE))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .headers(WebClientHeader.bearer(token))

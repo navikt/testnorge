@@ -4,11 +4,6 @@ consumers:
     cluster: dummy
     namespace: dolly
     name: synthdata-arena-vedtakshistorikk
-  testnav-arena-forvalteren-proxy:
-    cluster: dummy
-    namespace: dolly
-    name: testnav-arena-forvalteren-proxy
-    url: http://localhost:${wiremock.server.port:0}
   testnav-dolly-proxy:
     cluster: dummy
     namespace: dolly

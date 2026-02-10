@@ -1,8 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
@@ -51,7 +49,7 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
             ObjectMapper objectMapper,
             WebClient webClient) {
 
-        serverProperties = consumers.getTestnavArenaForvalterenProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         this.webClient = webClient
                 .mutate()
@@ -141,7 +139,7 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-arena-forvalteren-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

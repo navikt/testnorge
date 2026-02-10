@@ -275,19 +275,19 @@ export const FormDollyFieldArray = ({
 					if (nested)
 						return (
 							<DollyFaBlokkNested
-								key={field.id}
+								key={field.key}
 								idx={idx}
 								handleRemove={handleRemove}
 								showDeleteButton={showDeleteButton}
 								whiteBackground={whiteBackground}
 							>
-								{children(path, idx, curr, number, field.id)}
+								{children(path, idx, curr, number, field.key)}
 							</DollyFaBlokkNested>
 						)
 					if (isOrganisasjon)
 						return (
 							<DollyFaBlokkOrg
-								key={field.id}
+								key={field.key}
 								idx={idx}
 								number={number}
 								header={header}
@@ -295,12 +295,12 @@ export const FormDollyFieldArray = ({
 								handleRemove={showDeleteButton ? handleRemove : null}
 								showDeleteButton={showDeleteButton}
 							>
-								{children(path, idx, curr, number, field.id)}
+								{children(path, idx, curr, number, field.key)}
 							</DollyFaBlokkOrg>
 						)
 					return (
 						<DollyFaBlokk
-							key={field.id}
+							key={field.key}
 							idx={idx}
 							number={number}
 							header={header}
@@ -309,7 +309,7 @@ export const FormDollyFieldArray = ({
 							showDeleteButton={showDeleteButton}
 							whiteBackground={whiteBackground}
 						>
-							{children(path, idx, curr, number, field.id)}
+							{children(path, idx, curr, number, field.key)}
 						</DollyFaBlokk>
 					)
 				})}

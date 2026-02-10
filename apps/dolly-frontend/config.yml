@@ -49,7 +49,6 @@ spec:
         - application: testnav-person-faste-data-service
         - application: testnav-dolly-search-service
         - application: testnav-person-service
-        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
@@ -68,10 +67,7 @@ spec:
         - application: logging
           namespace: nais-system
       external:
-        - host: testnav-aareg-proxy.dev-fss-pub.nais.io
-        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
-        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

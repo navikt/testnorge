@@ -1,1 +1,5 @@
 minimumReleaseAge: 2880
+minimumReleaseAgeExclude:
+  # Midlertidig exclude for å fikse security vuln
+  - lodash
+  - lodash-es

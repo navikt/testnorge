@@ -64,6 +64,7 @@ public class TenorOversiktResponse {
         private String etternavn;
         private List<TenorRelasjon> tenorRelasjoner;
         private Boolean iBruk;
+        private Boolean iArenaSynt;
     }
 
     public TenorOversiktResponse copy() {

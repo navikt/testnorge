@@ -62,7 +62,6 @@ public class PersonArtifactService {
         person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
         person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService.convert(person));
         person.setVergemaal(vergemaalService.convert(person));
-        person.setFalskIdentitet(falskIdentitetService.convert(person));
         person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));
         person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
         person.setForeldreansvar(foreldreansvarService.convert(person));
@@ -76,6 +75,7 @@ public class PersonArtifactService {
         person = identtypeService.convert(person);
 
         person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
+        person.setFalskIdentitet(falskIdentitetService.convert(person));
 
         return person;
     }

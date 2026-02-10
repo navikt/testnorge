@@ -143,6 +143,17 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
                             .getId() + 1)
                     .build());
         }
+
+        person.setBostedsadresse(null);
+        person.setOppholdsadresse(null);
+        person.setKontaktadresse(null);
+        person.setNavn(null);
+        person.setKjoenn(null);
+        person.setFoedselsdato(null);
+        person.setFoedested(null);
+        person.setFoedsel(null);
+        person.setSivilstand(null);
+        person.setStatsborgerskap(null);
     }
 
     private void opprettNyeOpplysningstyper(FalskIdentitetDTO identitet, PersonDTO person) {

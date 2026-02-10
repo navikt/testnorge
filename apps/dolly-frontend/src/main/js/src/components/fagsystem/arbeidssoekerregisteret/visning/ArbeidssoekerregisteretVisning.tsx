@@ -11,12 +11,13 @@ type ArbeidssoekerregisteretVisning = {
 	loading?: boolean
 }
 
-export const showTyperLabel = (type: string, value: string) => {
-	const { data, loading, error } = useArbeidssoekerTyper(type)
-	if (loading || error) {
-		return value
+export const TyperLabel = ({ type, value, label }) => {
+	const { data: options, loading, error } = useArbeidssoekerTyper(type)
+	if (loading || error || !options) {
+		return <TitleValue title={label} value={value} />
 	}
-	return data?.find((item: any) => item?.value === value)?.label || value
+	const optionValue = options.find((option: any) => option.value === value)?.label ?? value
+	return <TitleValue title={label} value={optionValue} />
 }
 
 export const ArbeidssoekerregisteretVisning = ({
@@ -37,13 +38,14 @@ export const ArbeidssoekerregisteretVisning = ({
 		<div>
 			<SubOverskrift label="Arbeidssøkerregisteret" iconKind="cv" />
 			<div className="person-visning_content">
-				<TitleValue title="Utført av" value={showTyperLabel('BRUKERTYPE', data.utfoertAv)} />
+				<TyperLabel type={'BRUKERTYPE'} value={data.utfoertAv} label={'Utført av'} />
 				<TitleValue title="Kilde" value={data.kilde} />
 				<TitleValue title="Årsak" value={data.aarsak} />
-				<TitleValue title="Utdanningsnivå" value={showTyperLabel('NUSKODE', data.nuskode)} />
-				<TitleValue
-					title="Beskrivelse av jobbsituasjonen"
-					value={showTyperLabel('JOBBSITUASJONSBESKRIVELSE', data.jobbsituasjonsbeskrivelse)}
+				<TyperLabel type={'NUSKODE'} value={data.nuskode} label={'Utdanningsnivå'} />
+				<TyperLabel
+					type={'JOBBSITUASJONSBESKRIVELSE'}
+					value={data.jobbsituasjonsbeskrivelse}
+					label={'Beskrivelse av jobbsituasjonen'}
 				/>
 				<TitleValue title="Utdanning bestått" value={oversettBoolean(data.utdanningBestaatt)} />
 				<TitleValue title="Utdanning godkjent" value={oversettBoolean(data.utdanningGodkjent)} />

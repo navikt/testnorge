@@ -15,20 +15,32 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter
 class Targets {
 
+    String aaregServices;
+    String aaregVedlikehold;
+    String arenaForvalteren;
+    String arenaOrds;
     String batch;
     String brregstub;
+    String dokarkiv;
     String ereg;
     String fullmakt;
     String histark;
     String inntektstub;
     String inst;
     String kontoregister;
+    String skattekort;
     String krrstub;
     String medl;
     String norg2;
+    String pdlApi;
+    String pdlApiQ1;
+    String pdlElastic;
+    String pdlIdenthendelse;
+    String pdlTestdata;
     String pensjon;
     String pensjonAfp;
     String pensjonSamboer;
+    String saf;
     String sigrunstub;
     String skjermingsregister;
     String udistub;

@@ -1,4 +1,7 @@
 minimumReleaseAge: 2880
+minimumReleaseAgeExclude:
+  # Midlertidig exclude for å fikse security vuln
+  - "@storybook/*"
 
 onlyBuiltDependencies:
   - esbuild

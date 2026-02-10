@@ -6,6 +6,8 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
 import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
+import Panel from '@/components/ui/panel/Panel'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
@@ -35,7 +37,12 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 
 	return (
 		<Vis attributt={path}>
-			<div className="flexbox--flex-wrap">
+			<Panel
+				heading={'Utenlandsk bankkonto'}
+				iconType="bankkonto"
+				hasErrors={panelError(path)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [path])}
+			>
 				<div className="flexbox--flex-wrap">
 					<FormTextInput
 						name={`${path}.kontonummer`}
@@ -55,7 +62,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 					</div>
 				</div>
 				<div className="flexbox--flex-wrap">
-					<FormTextInput name={`${path}.swift`} label={'Swift kode'} size={'small'} />
+					<FormTextInput name={`${path}.swift`} label={'BIC/SWIFT-kode'} size={'small'} />
 					<FormSelect
 						name={`${path}.landkode`}
 						label={'Land'}
@@ -77,7 +84,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 					<FormTextInput name={`${path}.bankAdresse2`} label={'Adresselinje 2'} />
 					<FormTextInput name={`${path}.bankAdresse3`} label={'Adresselinje 3'} />
 				</div>
-			</div>
+			</Panel>
 		</Vis>
 	)
 }

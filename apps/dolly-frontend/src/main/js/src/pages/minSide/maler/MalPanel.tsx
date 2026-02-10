@@ -4,13 +4,15 @@ import { Alert, Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsdata/Bestillingsdata'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/bestillingsdata/BestillingsdataOrganisasjon'
 
 type Props = {
 	antallEgneMaler: any
@@ -54,6 +56,7 @@ export const MalPanel = ({
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
+
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
 			<Table.DataCell scope="row" width={'75%'}>
@@ -111,11 +114,18 @@ export const MalPanel = ({
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{maler.map(({ malNavn, id, malBestilling }) => {
-									const alert = harUtdaterteVerdier(malBestilling)
+								{maler.map(({ malNavn, id, malBestilling, bestilling }) => {
+									const bestillingData = malBestilling || bestilling
+									const erOrganisasjon = _.has(bestillingData, 'organisasjon')
+									const alert = harUtdaterteVerdier(bestillingData)
+									const erTomBestilling = isEmpty(bestillingData, [
+										'id2032',
+										'identtype',
+										'syntetisk',
+									])
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
-											bestilling: malBestilling,
+											bestilling: bestillingData,
 										},
 										dollyEnvironments,
 									)
@@ -133,7 +143,20 @@ export const MalPanel = ({
 															{alert}
 														</Alert>
 													)}
-													<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+													{erTomBestilling && (
+														<Alert variant={'info'} size={'small'} style={{ marginBottom: '20px' }}>
+															Denne malen inneholder ingen bestillingsdata.
+														</Alert>
+													)}
+													<div className="bestilling-data">
+														{erOrganisasjon ? (
+															<BestillingsdataOrganisasjon
+																bestilling={bestillingData.organisasjon}
+															/>
+														) : (
+															<Bestillingsdata bestilling={bestillingBasedOnMal} />
+														)}
+													</div>
 												</>
 											}
 										>
