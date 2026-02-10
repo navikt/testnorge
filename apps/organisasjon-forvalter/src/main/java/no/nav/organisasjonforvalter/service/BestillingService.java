@@ -108,7 +108,7 @@ public class BestillingService {
         }
         val adressefragment = adresse.getAdresselinjer().stream()
                 .filter(StringUtils::isNotBlank)
-                .map(adresselinje -> adresselinje.split(" ")[0])
+                .map(adresselinje -> adresselinje.split("\\s+",2)[0])
                 .findFirst()
                 .orElse("");
 
