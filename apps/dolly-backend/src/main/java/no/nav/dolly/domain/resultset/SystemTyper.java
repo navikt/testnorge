@@ -47,7 +47,7 @@ public enum SystemTyper {
     SIGRUN_LIGNET("Lignet skatteinntekt (Sigrunstub)"),
     SIGRUN_PENSJONSGIVENDE("Pensjonsgivende inntekt (Sigrunstub)"),
     SIGRUN_SUMMERT("Summert skattegrunnlag (Sigrunstub)"),
-    SKATTEKORT("Skattekort (SOKOS)"),
+    SKATTEKORT("Nav skattekort)"),
     SKJERMINGSREGISTER("Skjermingsregisteret"),
     SYKEMELDING("Nav sykemelding"),
     TPS_MESSAGING("Meldinger til TPS"),
