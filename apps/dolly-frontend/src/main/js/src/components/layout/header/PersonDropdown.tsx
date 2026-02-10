@@ -32,7 +32,7 @@ export const PersonDropdown = () => {
 					style={{ color: '#212529' }}
 				>
 					<Icon kind="person" fontSize="1.5rem" />
-					<DropdownStyledLink>Mine personer</DropdownStyledLink>
+					<DropdownStyledLink href="/gruppe">Mine personer</DropdownStyledLink>
 				</PreloadableActionMenuItem>
 				<PreloadableActionMenuItem
 					route="/dollysoek"
@@ -42,6 +42,7 @@ export const PersonDropdown = () => {
 					<Icon kind="search" fontSize="1.5rem" />
 					<DropdownStyledLink
 						onClick={() => localStorage.removeItem(dollySoekLocalStorageKey)}
+						href="/dollysoek"
 					>
 						Søk i Dolly
 					</DropdownStyledLink>
@@ -57,6 +58,7 @@ export const PersonDropdown = () => {
 							localStorage.removeItem(tenorSoekLocalStorageKey)
 							localStorage.removeItem(tenorSoekStateLocalStorageKey)
 						}}
+						href="/tenorpersoner"
 					>
 						Søk i Tenor (Test-Norge)
 					</DropdownStyledLink>
@@ -64,12 +66,12 @@ export const PersonDropdown = () => {
 				{currentBruker?.brukertype === 'AZURE' && (
 					<PreloadableActionMenuItem route="/identvalidator" style={{ color: '#212529' }}>
 						<Icon kind="arena" fontSize="1.5rem" />
-						<DropdownStyledLink>Valider identer</DropdownStyledLink>
+						<DropdownStyledLink href="/identvalidator">Valider identer</DropdownStyledLink>
 					</PreloadableActionMenuItem>
 				)}
 				<PreloadableActionMenuItem route="/nyansettelser" style={{ color: '#212529' }}>
 					<Icon kind="ansettelse" fontSize="1.5rem" />
-					<DropdownStyledLink>Vis nyansettelser</DropdownStyledLink>
+					<DropdownStyledLink href="/nyansettelser">Vis nyansettelser</DropdownStyledLink>
 				</PreloadableActionMenuItem>
 			</>
 		</ActionMenuWrapper>
