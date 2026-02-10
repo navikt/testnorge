@@ -4,8 +4,7 @@ import Panel from '@/components/ui/panel/Panel'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { Alert, ToggleGroup } from '@navikt/ds-react'
-import styled from 'styled-components'
+import { ToggleGroup } from '@navikt/ds-react'
 import * as _ from 'lodash-es'
 import { add, getYear, isAfter, isDate, parseISO } from 'date-fns'
 import {
@@ -24,16 +23,7 @@ import {
 } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { useFormContext } from 'react-hook-form'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-
-const StyledAlert = styled(Alert)`
-	margin-bottom: 20px;
-
-	&&& {
-		.navds-alert__wrapper {
-			max-width: 60rem;
-		}
-	}
-`
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 

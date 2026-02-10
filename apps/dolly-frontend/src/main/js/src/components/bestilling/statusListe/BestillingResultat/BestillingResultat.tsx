@@ -90,11 +90,13 @@ export default function BestillingResultat({
 						Bestillingen er stoppet
 					</Alert>
 				)}
-				<Feedback
-					label="Hvordan var din opplevelse med bruk av Dolly?"
-					feedbackFor="Bruk av Dolly etter bestilling"
-					etterBestilling={true}
-				/>
+				<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					<Feedback
+						label="Hvordan var din opplevelse med bruk av Dolly?"
+						feedbackFor="Bruk av Dolly etter bestilling"
+						etterBestilling={true}
+					/>
+				</div>
 				{showConfetti && (
 					<div data-testid="confetti" style={{ display: 'flex', flexDirection: 'column' }}>
 						<StyledConfettiExplosion particleCount={70} force={0.3} duration={confettiDuration} />

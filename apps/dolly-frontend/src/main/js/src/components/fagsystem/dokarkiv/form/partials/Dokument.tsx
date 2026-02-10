@@ -14,6 +14,7 @@ import {
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form'
+import styled from 'styled-components'
 
 type Skjema = {
 	data: string
@@ -47,6 +48,14 @@ type DokumentObjekt = {
 	brevkode: string
 	dokumentvarianter?: Dokumentvariant[]
 }
+
+export const StyledVedlegg = styled(FileUpload.Item)`
+	&&& {
+		a {
+			color: var(--ax-text-subtle);
+		}
+	}
+`
 
 export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
@@ -273,10 +282,9 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 				{vedlegg?.length > 0 && (
 					<VStack gap="space-8">
 						<Heading level="3" size="xsmall">{`Vedlegg (${vedlegg?.length})`}</Heading>
-						<VStack as="ul" gap="space-12">
+						<VStack gap="space-12">
 							{vedlegg?.map((file, idx) => (
-								<FileUpload.Item
-									as="li"
+								<StyledVedlegg
 									key={file?.file?.name + idx}
 									file={file?.file}
 									button={{ action: 'delete', onClick: () => handleDeleteFile(file) }}

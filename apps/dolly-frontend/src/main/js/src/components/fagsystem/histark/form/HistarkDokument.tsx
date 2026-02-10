@@ -8,6 +8,7 @@ import { FileObject, FileUpload, VStack } from '@navikt/ds-react'
 import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 import React, { useEffect, useState } from 'react'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { StyledVedlegg } from '@/components/fagsystem/dokarkiv/form/partials/Dokument'
 
 type Vedlegg = {
 	file: File
@@ -124,8 +125,7 @@ export const HistarkDokument = ({ path, formMethods }) => {
 							onSelect={setVedlegg}
 						/>
 						{vedlegg.map((file: FileObject) => (
-							<FileUpload.Item
-								as="li"
+							<StyledVedlegg
 								key={file.file?.name}
 								file={file.file}
 								button={{
