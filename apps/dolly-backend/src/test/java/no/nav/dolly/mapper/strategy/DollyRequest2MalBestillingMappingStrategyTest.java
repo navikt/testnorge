@@ -2,10 +2,9 @@ package no.nav.dolly.mapper.strategy;
 
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.skattekort.domain.ArbeidsgiverSkatt;
+import no.nav.dolly.bestilling.skattekort.domain.ArbeidstakerSkatt;
 import no.nav.dolly.bestilling.skattekort.domain.Forskuddstrekk;
 import no.nav.dolly.bestilling.skattekort.domain.Frikort;
-import no.nav.dolly.bestilling.skattekort.domain.IdentifikatorForEnhetEllerPerson;
 import no.nav.dolly.bestilling.skattekort.domain.Skattekort;
 import no.nav.dolly.bestilling.skattekort.domain.Skattekortmelding;
 import no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning;
@@ -352,12 +351,8 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         mapperFacade.map(buildSkattekort2(), target);
 
         assertThat(target.getSkattekort().getArbeidsgiverSkatt(), hasItem(
-                ArbeidsgiverSkatt.builder()
-                        .arbeidsgiveridentifikator(IdentifikatorForEnhetEllerPerson.builder()
-                                .organisasjonsnummer("123456789")
-                                .build())
+                ArbeidstakerSkatt.builder()
                         .arbeidstaker(List.of(Skattekortmelding.builder()
-                                .arbeidstakeridentifikator("10987654321")
                                 .skattekort(Skattekort.builder()
                                         .forskuddstrekk(List.of(Forskuddstrekk.builder()
                                                 .frikort(Frikort.builder()
@@ -369,12 +364,8 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                                 .tilleggsopplysning(List.of(Tilleggsopplysning.KILDESKATT_PAA_PENSJON))
                                 .build()))
                         .build()));
-        assertThat(target.getSkattekort().getArbeidsgiverSkatt(), hasItem(ArbeidsgiverSkatt.builder()
-                .arbeidsgiveridentifikator(IdentifikatorForEnhetEllerPerson.builder()
-                        .organisasjonsnummer("987654321")
-                        .build())
+        assertThat(target.getSkattekort().getArbeidsgiverSkatt(), hasItem(ArbeidstakerSkatt.builder()
                 .arbeidstaker(List.of(Skattekortmelding.builder()
-                        .arbeidstakeridentifikator("12345678901")
                         .skattekort(Skattekort.builder()
                                 .forskuddstrekk(List.of(Forskuddstrekk.builder()
                                         .trekkprosent(Trekkprosent.builder()
@@ -1215,12 +1206,8 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
         return RsDollyUtvidetBestilling.builder()
                 .skattekort(SkattekortRequestDTO.builder()
-                        .arbeidsgiverSkatt(List.of(ArbeidsgiverSkatt.builder()
-                                .arbeidsgiveridentifikator(IdentifikatorForEnhetEllerPerson.builder()
-                                        .organisasjonsnummer("123456789")
-                                        .build())
+                        .arbeidsgiverSkatt(List.of(ArbeidstakerSkatt.builder()
                                 .arbeidstaker(List.of(Skattekortmelding.builder()
-                                        .arbeidstakeridentifikator("10987654321")
                                         .skattekort(Skattekort.builder()
                                                 .forskuddstrekk(List.of(Forskuddstrekk.builder()
                                                         .frikort(Frikort.builder()
@@ -1241,12 +1228,8 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         return RsDollyUtvidetBestilling.builder()
                 .skattekort(
                         SkattekortRequestDTO.builder()
-                                .arbeidsgiverSkatt(List.of(ArbeidsgiverSkatt.builder()
-                                        .arbeidsgiveridentifikator(IdentifikatorForEnhetEllerPerson.builder()
-                                                .organisasjonsnummer("987654321")
-                                                .build())
+                                .arbeidsgiverSkatt(List.of(ArbeidstakerSkatt.builder()
                                         .arbeidstaker(List.of(Skattekortmelding.builder()
-                                                .arbeidstakeridentifikator("12345678901")
                                                 .skattekort(Skattekort.builder()
                                                         .forskuddstrekk(List.of(Forskuddstrekk.builder()
                                                                 .trekkprosent(Trekkprosent.builder()
