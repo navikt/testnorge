@@ -2,6 +2,7 @@ package no.nav.organisasjonforvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.AdresseServiceConsumer;
 import no.nav.organisasjonforvalter.consumer.GenererNavnServiceConsumer;
@@ -18,9 +19,7 @@ import no.nav.organisasjonforvalter.util.UtenlandskAdresseUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -41,7 +40,7 @@ public class BestillingService {
 
     public BestillingResponse execute(BestillingRequest request) {
 
-        Set<String> orgnumre = request.getOrganisasjoner().stream()
+        val orgnumre = request.getOrganisasjoner().stream()
                 .map(org -> {
                     Organisasjon parent = processOrganisasjon(org, null);
                     return parent.getOrganisasjonsnummer();
@@ -53,9 +52,7 @@ public class BestillingService {
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {
 
-        getAdresse(orgRequest.getAdresser());
-
-        orgRequest.getUnderenheter().forEach(underenhet -> getAdresse(underenhet.getAdresser()));
+        setAdresse(orgRequest.getAdresser());
 
         Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
         organisasjon.setOrganisasjonsnummer(organisasjonOrgnummerServiceConsumer.getOrgnummer());
@@ -72,7 +69,7 @@ public class BestillingService {
         return organisasjon;
     }
 
-    private void getAdresse(List<AdresseRequest> adresseRequest) {
+    private void setAdresse(List<AdresseRequest> adresseRequest) {
 
         if (adresseRequest.isEmpty()) {
             adresseRequest.add(AdresseRequest.builder()
@@ -83,10 +80,11 @@ public class BestillingService {
         adresseRequest.forEach(adresse -> {
 
             if (isBlank(adresse.getLandkode()) || NORGE.equals(adresse.getLandkode())) {
-                String query = adresseQuery(adresse);
-                adresse.setAdresselinjer(new ArrayList<>());
-                mapperFacade.map(adresseServiceConsumer.getAdresser(query).stream().findFirst().get(), adresse);
 
+                val query = adresseQuery(adresse);
+                adresseServiceConsumer.getAdresser(query).stream().findFirst()
+                        .ifPresent(adressedetaljer ->
+                                mapperFacade.map(adressedetaljer, adresse));
             } else {
                 UtenlandskAdresseUtil.prepareUtenlandskAdresse(adresse);
             }
@@ -95,23 +93,28 @@ public class BestillingService {
 
     private static String adresseQuery(AdresseRequest adresse) {
 
-        var query = new StringBuilder();
+        val query = new StringBuilder();
         if (isNotBlank(adresse.getPostnr())) {
             query.append("postnummer=").append(adresse.getPostnr());
         }
-        if (query.length() > 0) {
+        if (!query.isEmpty()) {
             query.append('&');
         }
         if (isNotBlank(adresse.getKommunenr())) {
             query.append("kommunenummer=").append(adresse.getKommunenr());
         }
-        if (query.length() > 0) {
+        if (!query.isEmpty()) {
             query.append('&');
         }
-        if (isNotBlank(adresse.getAdresselinjer().stream()
-                .filter(StringUtils::isNotBlank).findFirst().orElse(""))) {
-            query.append("fritekst=").append(adresse.getAdresselinjer().stream()
-                    .filter(StringUtils::isNotBlank).findFirst().get());
+        val adressefragment = adresse.getAdresselinjer().stream()
+                .filter(StringUtils::isNotBlank)
+                .map(adresselinje -> adresselinje.split(" ")[0])
+                .findFirst()
+                .orElse("");
+
+        if (isNotBlank(adressefragment)) {
+            query.append("fritekst=")
+                    .append(adressefragment);
         }
         return query.toString();
     }
