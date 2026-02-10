@@ -10,11 +10,14 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
+import static java.time.Duration.ofSeconds;
 import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
@@ -44,7 +47,11 @@ public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>>
                         .skattekort(Arrays.asList(skattekort))
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+                .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
+                        .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
+                                responseException.getStatusCode().is5xxServerError())
+                        .onRetryExhaustedThrow((retryBackoffSpec, lastSignal) ->
+                                new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage()))))
                 .onErrorResume(throwable -> {
                     WebClientError.Description description = WebClientError.describe(throwable);
                     log.error("Feil ved Henting av skattekort til Sokos. FNR: {}, Inntektsår: {}, Status: {}, Message: {}",

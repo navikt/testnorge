@@ -7,9 +7,12 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skattekort.domain.ArbeidstakerSkatt;
-import no.nav.dolly.bestilling.skattekort.domain.SkattekortHentRequest;
+import no.nav.dolly.bestilling.skattekort.domain.Forskuddstrekk;
+import no.nav.dolly.bestilling.skattekort.domain.Skattekort;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
+import no.nav.dolly.bestilling.skattekort.domain.Skattekortmelding;
+import no.nav.dolly.bestilling.skattekort.domain.Trekktabell;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +47,9 @@ public class SkattekortClient implements ClientRegister {
 
         if (isNull(bestilling.getSkattekort()) || bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty()) {
             return Mono.empty();
+        } else if (!isValidateOK(bestilling)) {
+            return oppdaterStatus(progress, getInfoVenter(SYSTEM))
+                    .flatMap(updatedProgress -> oppdaterStatus(updatedProgress, "Avvik: Validering feilet: Trekkode er ikke gyldig"));
         }
 
         return oppdaterStatus(progress, getInfoVenter(SYSTEM))
@@ -60,19 +67,23 @@ public class SkattekortClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
+            // No resources to release for SkattekortClient
+    }
 
-        Flux.fromIterable(identer)
-                .flatMap(ident -> skattekortConsumer.hentSkattekort(SkattekortHentRequest.builder().fnr(ident).build())
-                        .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort()))
-                        .flatMap(skattekort -> {
-                            val context = MappingContextUtils.getMappingContext();
-                            context.setProperty("ident", ident);
+    private boolean isValidateOK(RsDollyUtvidetBestilling bestilling) {
 
-                            val request = mapperFacade.map(skattekort, SkattekortRequest.class, context);
-                            return skattekortConsumer.sendSkattekort(request);
-                        }))
-                .collectList()
-                .subscribe(skattekorts -> log.info("Slettet skattekort for identer: {}", identer));
+        return bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
+                .map(ArbeidsgiverSkatt::getArbeidstaker)
+                .flatMap(Collection::stream)
+                .map(Skattekortmelding::getSkattekort)
+                .map(Skattekort::getForskuddstrekk)
+                .flatMap(Collection::stream)
+                .map(Forskuddstrekk::getTrekktabell)
+                .map(Trekktabell::getTrekkode)
+                .anyMatch(trekkode -> isNull(trekkode) ||
+                        LOENN_FRA_NAV.equals(trekkode) ||
+                        PENSJON_FRA_NAV.equals(trekkode) ||
+                        UFOERETRYGD_FRA_NAV.equals(trekkode));
     }
 
     private Mono<String> sendSkattekortForArbeidstaker(ArbeidstakerSkatt arbeidstaker, DollyPerson dollyPerson) {
