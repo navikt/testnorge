@@ -97,15 +97,14 @@ public class BestillingService {
         if (isNotBlank(adresse.getPostnr())) {
             query.append("postnummer=").append(adresse.getPostnr());
         }
-        if (!query.isEmpty()) {
-            query.append('&');
-        }
+
         if (isNotBlank(adresse.getKommunenr())) {
+            if (!query.isEmpty()) {
+                query.append('&');
+            }
             query.append("kommunenummer=").append(adresse.getKommunenr());
         }
-        if (!query.isEmpty()) {
-            query.append('&');
-        }
+
         val adressefragment = adresse.getAdresselinjer().stream()
                 .filter(StringUtils::isNotBlank)
                 .map(adresselinje -> adresselinje.split("\\s+",2)[0])
@@ -113,6 +112,9 @@ public class BestillingService {
                 .orElse("");
 
         if (isNotBlank(adressefragment)) {
+            if (!query.isEmpty()) {
+                query.append('&');
+            }
             query.append("fritekst=")
                     .append(adressefragment);
         }
