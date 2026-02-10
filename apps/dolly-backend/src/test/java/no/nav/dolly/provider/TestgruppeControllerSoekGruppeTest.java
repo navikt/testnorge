@@ -152,4 +152,62 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                     assertThat(resultat.get(2).getId(), is(gruppe3.getId()));
                 });
     }
+
+    @Test
+    @DisplayName("Returnerer grupper som matcher på både ID og navn")
+    void shouldReturnGrupperMatchingByBothIdAndNavn() {
+
+        var matchGruppe = createTestgruppe("KombiTestUnik BeggeMatch", bruker).block();
+        createTestgruppe("KombiTestUnik AnnenGruppe", bruker).block();
+
+        webTestClient
+                .get()
+                .uri("/api/v1/gruppe/soekGruppe?fragment={fragment}",
+                        matchGruppe.getId() + " BeggeMatch")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBodyList(RsGruppeFragment.class)
+                .value(resultat -> {
+                    assertThat(resultat.size(), is(1));
+                    assertThat(resultat.getFirst().getId(), is(matchGruppe.getId()));
+                    assertThat(resultat.getFirst().getNavn(), is("KombiTestUnik BeggeMatch"));
+                });
+    }
+
+    @Test
+    @DisplayName("Returnerer tomt resultat ved kun mellomrom som fragment")
+    void shouldReturnEmptyForBlankFragment() {
+
+        createTestgruppe("BlankTestUnik Gruppe", bruker).block();
+
+        webTestClient
+                .get()
+                .uri("/api/v1/gruppe/soekGruppe?fragment={fragment}", "   ")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBodyList(RsGruppeFragment.class)
+                .value(resultat -> assertThat(resultat.size(), is(0)));
+    }
+
+    @Test
+    @DisplayName("Returnerer kun grupper der alle ord i søk matcher på navn")
+    void shouldMatchAllWordsInMultiWordSearch() {
+
+        createTestgruppe("FlereordUnik for skattetesting", bruker).block();
+        createTestgruppe("FlereordUnik for pensjonstesting", bruker).block();
+
+        webTestClient
+                .get()
+                .uri("/api/v1/gruppe/soekGruppe?fragment=FlereordUnik skatte")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBodyList(RsGruppeFragment.class)
+                .value(resultat -> {
+                    assertThat(resultat.size(), is(1));
+                    assertThat(resultat.getFirst().getNavn(), is("FlereordUnik for skattetesting"));
+                });
+    }
 }
