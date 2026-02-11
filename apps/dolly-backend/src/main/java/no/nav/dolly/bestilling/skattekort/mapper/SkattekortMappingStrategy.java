@@ -17,6 +17,8 @@ import no.nav.dolly.bestilling.skattekort.domain.Trekkode;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -36,6 +38,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
                         val sokosSkattekort = mapperFacade.map(skattekortDTO, SkattekortDTO.class);
                         sokosSkattekort.setResultatForSkattekort(Resultatstatus.IKKE_SKATTEKORT.getValue());
+                        sokosSkattekort.setUtstedtDato(LocalDate.now().toString());
                         skattekortRequest.setSkattekort(sokosSkattekort);
                     }
                 })
@@ -111,8 +114,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
             builder.trekkode(getTrekkode(original.getFrikort().getTrekkode()))
                     .frikort(FrikortDTO.builder()
-                            .frikortBeloep(nonNull(original.getFrikort().getFrikortbeloep()) ?
-                                    original.getFrikort().getFrikortbeloep().toString() : null)
+                            .frikortBeloep(original.getFrikort().getFrikortbeloep())
                             .build());
         }
 

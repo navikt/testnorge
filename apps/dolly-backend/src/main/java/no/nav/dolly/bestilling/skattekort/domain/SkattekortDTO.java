@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -14,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SkattekortDTO {
 
-    private LocalDate utstedtDato;
+    private String utstedtDato; // ISO 8601 format (YYYY-MM-DD)
     private Integer inntektsaar;
     private String resultatForSkattekort;
     private List<ForskuddstrekkDTO> forskuddstrekkList;
@@ -38,7 +37,7 @@ public class SkattekortDTO {
     @AllArgsConstructor
     public static class FrikortDTO {
 
-        private String frikortBeloep;
+        private Integer frikortBeloep;
     }
 
     @Data
