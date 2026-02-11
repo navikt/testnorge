@@ -70,11 +70,11 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		}
 		hasProcessedMalRef.current = true
 
-		const currentDokumenter: DokumentObjekt[] =
-			formMethods.getValues(`${path}.dokumenter`) || []
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
 		const vedleggFraMal: FileObject[] = []
+		const malDokumentListe = dokumenterFraMal as any[]
 
-		;(dokumenterFraMal as any).forEach((malDokument: any) => {
+		malDokumentListe.forEach((malDokument: any) => {
 			currentDokumenter.forEach((dokument: DokumentObjekt, idx: number) => {
 				dokument?.dokumentvarianter?.forEach((variant: Dokumentvariant, idy: number) => {
 					if (variant?.dokumentReferanse === malDokument?.id) {
@@ -101,7 +101,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		})
 
 		if (vedleggFraMal.length > 0) {
-			const newVedlegg = [...vedleggFraMal, ...formMethods.getValues(`${path}.vedlegg`) || []]
+			const newVedlegg = [...vedleggFraMal, ...(formMethods.getValues(`${path}.vedlegg`) || [])]
 			setVedlegg(newVedlegg)
 			formMethods.setValue(`${path}.vedlegg`, newVedlegg)
 		}
@@ -124,10 +124,9 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		}
 		formMethods.setValue(`${path}.tittel`, skjema.data)
 		formMethods.setValue(`${path}.skjema`, skjema)
-		const currentDokumenter: DokumentObjekt[] =
-			formMethods.getValues(`${path}.dokumenter`) || []
+		formMethods.setValue(`${path}.dokumenter[0].brevkode`, skjema.value)
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
 		currentDokumenter.forEach((dokument: DokumentObjekt, idx: number) => {
-			formMethods.setValue(`${path}.dokumenter[${idx}].brevkode`, skjema.value)
 			if (!dokument?.tittel) {
 				formMethods.setValue(`${path}.dokumenter[${idx}].tittel`, skjema.data)
 			}
@@ -145,13 +144,11 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 	}
 
 	const handleSelectFiles = (newFiles: FileObject[], files: File[]) => {
-		const currentDokumenter: DokumentObjekt[] =
-			formMethods.getValues(`${path}.dokumenter`) || []
+		const currentBrevkode = formMethods.getValues(`${path}.dokumenter[0].brevkode`) || ''
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
 		const dokumenterIsEmpty =
 			currentDokumenter.length === 1 && !currentDokumenter[0]?.dokumentvarianter
 		const newDokumenter: DokumentObjekt[] = dokumenterIsEmpty ? [] : [...currentDokumenter]
-		const brevkode = formMethods.getValues(`${path}.skjema`)?.value || ''
-
 		updateVedlegg([...vedlegg, ...newFiles])
 
 		files.forEach((file: File) => {
@@ -162,7 +159,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 				const binaryStr = reader.result?.slice(28)
 				newDokumenter.push({
 					tittel: file.name,
-					brevkode,
+					brevkode: '',
 					dokumentvarianter: [
 						{
 							filtype: 'PDFA',
@@ -172,22 +169,22 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 					],
 				})
 				updateDokumenter(newDokumenter)
+				formMethods.setValue(`${path}.dokumenter[0].brevkode`, currentBrevkode)
 			}
 			reader.readAsDataURL(file)
 		})
 	}
 
 	const handleDeleteFile = (file: FileObject) => {
+		const currentBrevkode = formMethods.getValues(`${path}.dokumenter[0].brevkode`) || ''
 		updateVedlegg(vedlegg.filter((f) => f !== file))
-		const currentDokumenter: DokumentObjekt[] =
-			formMethods.getValues(`${path}.dokumenter`) || []
-		const index = currentDokumenter.findIndex(
-			(d: DokumentObjekt) => d.tittel === file.file.name,
-		)
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
+		const index = currentDokumenter.findIndex((d: DokumentObjekt) => d.tittel === file.file.name)
 		if (index >= 0) {
 			const newDokumenter = [...currentDokumenter]
 			newDokumenter.splice(index, 1)
 			updateDokumenter(newDokumenter)
+			formMethods.setValue(`${path}.dokumenter[0].brevkode`, currentBrevkode)
 		}
 	}
 
@@ -207,11 +204,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
-				<FormTextInput
-					name={`${path}.dokumenter[0].brevkode`}
-					label="Brevkode"
-					size="large"
-				/>
+				<FormTextInput name={`${path}.dokumenter[0].brevkode`} label="Brevkode" size="large" />
 				<FormSelect
 					name={`${path}.tema`}
 					label="Tema"
