@@ -57,7 +57,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		error: errorDokumenterFraMal,
 	} = useDokumenterFraMal(malId)
 
-	const hasProcessedMalRef = useRef(false)
+	const processedMalIdRef = useRef<string | undefined>(undefined)
 	const [vedlegg, setVedlegg] = useState<FileObject[]>(
 		() => formMethods.getValues(`${path}.vedlegg`) || [],
 	)
@@ -65,10 +65,10 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
 
 	useEffect(() => {
-		if (hasProcessedMalRef.current || !(dokumenterFraMal as any)?.length) {
+		if (!(dokumenterFraMal as any)?.length || !malId || processedMalIdRef.current === malId) {
 			return
 		}
-		hasProcessedMalRef.current = true
+		processedMalIdRef.current = malId
 
 		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
 		const vedleggFraMal: FileObject[] = []
@@ -105,7 +105,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 			setVedlegg(newVedlegg)
 			formMethods.setValue(`${path}.vedlegg`, newVedlegg)
 		}
-	}, [dokumenterFraMal])
+	}, [dokumenterFraMal, malId])
 
 	const updateVedlegg = (newVedlegg: FileObject[]) => {
 		setVedlegg(newVedlegg)
@@ -120,6 +120,10 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
+			formMethods.setValue(`${path}.tittel`, '')
+			formMethods.setValue(`${path}.skjema`, undefined)
+			formMethods.setValue(`${path}.dokumenter[0].brevkode`, '')
+			formMethods.trigger(`${path}.dokumenter`)
 			return
 		}
 		formMethods.setValue(`${path}.tittel`, skjema.data)
