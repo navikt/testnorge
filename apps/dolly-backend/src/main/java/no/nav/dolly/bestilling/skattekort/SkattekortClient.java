@@ -131,7 +131,8 @@ public class SkattekortClient implements ClientRegister {
                                     isNull(forskuddstrekk.getProsentkort()) &&
                                     isNull(forskuddstrekk.getFrikort())) &&
                             request.getSkattekort().getTilleggsopplysningList().isEmpty()) {
-                        log.warn("Utelater skattekort for person: {}, year: {} -- ingen forskuddstrekk er definert",
+                        log.warn("Utelater skattekort for person: {}, year: {} -- ingen forskuddstrekk " +
+                                        "eller tillegssopplysninger er definert",
                                 dollyPerson.getIdent(), request.getSkattekort().getInntektsaar());
                         return Mono.just("%d|Ingen forskuddstrekk er definert".formatted(request.getSkattekort().getInntektsaar()));
                     } else {
