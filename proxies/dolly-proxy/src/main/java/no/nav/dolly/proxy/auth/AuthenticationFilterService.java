@@ -41,11 +41,6 @@ public class AuthenticationFilterService {
                 .bearerAuthenticationHeaderFilter(serverProperties);
     }
 
-    public GatewayFilter getBasicAuthenticationFilter(String username, String password) {
-        return AddAuthenticationRequestGatewayFilterFactory
-                .basicAuthAuthenticationHeaderFilter(username, password);
-    }
-
     public GatewayFilter getApiKeyAuthenticationFilter(String apiKey) {
         return AddAuthenticationRequestGatewayFilterFactory
                 .apiKeyAuthenticationHeaderFilter(apiKey);
