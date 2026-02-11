@@ -31,6 +31,8 @@ app:
       password: ${ELASTIC_PASSWORD}
     hendelse:
       apikey: ${HENDELSE_LAGER_API_KEY}
+  token-cache:
+    grace-period-seconds: 120
   targets:
     aareg-services: https://%s.intern.dev.nav.no # Note host replacement pattern.
     aareg-vedlikehold: http://%s.arbeidsforhold.svc.nais.local # Note host replacement pattern.

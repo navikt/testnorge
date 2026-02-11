@@ -16,5 +16,7 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:testing"
 
+    implementation "com.auth0:java-jwt:$versions.jwt"
+
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 }
