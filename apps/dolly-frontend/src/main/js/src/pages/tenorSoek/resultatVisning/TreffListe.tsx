@@ -149,7 +149,7 @@ export const TreffListe = ({
 									{person?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
 										<Tooltip content={getTagTooltip(relasjon)} key={person?.id + idx}>
 											<Tag
-												data-color="brand-beige"
+												data-color="neutral"
 												size="small"
 												variant="outline"
 												style={{ margin: '0 5px 5px 0' }}

@@ -8,7 +8,7 @@ SyntaxHighlighter.registerLanguage('xml', xml)
 SyntaxHighlighter.registerLanguage('json', json)
 
 const StyledSyntaxHighlighter = styled(SyntaxHighlighter)`
-	font-size: 0.9em;
+	font-size: 0.75em;
 	width: 100%;
 	margin: 0;
 `

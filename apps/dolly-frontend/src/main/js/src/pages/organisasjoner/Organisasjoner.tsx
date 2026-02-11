@@ -58,9 +58,9 @@ export default () => {
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) {
-			return 'Søk i bestillinger'
+			return `Søk i bestillinger (${shortcutKey})`
 		}
-		return 'Søk i organisasjoner'
+		return `Søk i organisasjoner (${shortcutKey})`
 	}
 
 	const antallBest = bestillinger?.length
@@ -123,10 +123,9 @@ export default () => {
 					</ToggleGroup>
 
 					<SearchField
-						style={{ width: '280px', marginRight: '-79px' }}
-						shortcutKey={shortcutKey}
 						placeholder={searchfieldPlaceholderSelector()}
 						setText={undefined}
+						size={'small'}
 						ref={searchInputRef}
 					/>
 				</div>

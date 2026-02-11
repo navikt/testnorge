@@ -42,8 +42,10 @@ export const MalOppsummering = ({
 			<Switch
 				data-testid={TestComponentSelectors.TOGGLE_BESTILLING_MAL}
 				onChange={onChange}
-				children={null}
-			/>
+				hideLabel
+			>
+				Legg til mal
+			</Switch>
 		</Tittel>
 		{opprettMal && (
 			<span>

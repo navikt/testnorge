@@ -1,15 +1,17 @@
 import { useDispatch } from 'react-redux'
 import { setSearchText } from '@/ducks/search'
-
-import './SearchField.less'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Search } from '@navikt/ds-react'
+import styled from 'styled-components'
+
+const StyledSearch = styled.div`
+	width: 270px;
+`
 
 export const SearchField = ({
 	placeholder = 'Hva leter du etter?',
 	setText,
-	label = 'Søk',
-	shortcutKey,
+	size = 'medium',
 	ref,
 	...rest
 }) => {
@@ -29,22 +31,22 @@ export const SearchField = ({
 	}
 
 	return (
-		<div className="searchfield-container skjemaelement">
+		<StyledSearch>
 			<FormProvider {...formMethods}>
 				<Search
-					label={label}
+					label={'Søk'}
 					placeholder={placeholder}
 					onChange={handleChange}
 					aria-label="Search"
-					size={'small'}
+					size={size}
 					maxLength={20}
 					ref={ref}
 					variant={'secondary'}
 					{...rest}
 				>
-					<Search.Button onClick={focusSearchInput}>{shortcutKey}</Search.Button>
+					<Search.Button onClick={focusSearchInput} />
 				</Search>
 			</FormProvider>
-		</div>
+		</StyledSearch>
 	)
 }
