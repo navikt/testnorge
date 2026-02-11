@@ -39,6 +39,8 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                         val sokosSkattekort = mapperFacade.map(skattekortDTO, SkattekortDTO.class);
                         sokosSkattekort.setResultatForSkattekort(Resultatstatus.IKKE_SKATTEKORT.getValue());
                         sokosSkattekort.setUtstedtDato(LocalDate.now().toString());
+                        sokosSkattekort.setForskuddstrekkList(null);
+                        sokosSkattekort.setTilleggsopplysningList(null);
                         skattekortRequest.setSkattekort(sokosSkattekort);
                     }
                 })

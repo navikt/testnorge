@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skattekort.domain.ArbeidstakerSkatt;
 import no.nav.dolly.bestilling.skattekort.domain.Skattekort;
@@ -24,6 +23,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -91,6 +91,7 @@ public class SkattekortClient implements ClientRegister {
                 .map(ArbeidstakerSkatt::getArbeidstaker)
                 .flatMap(Collection::stream)
                 .map(Skattekortmelding::getSkattekort)
+                .filter(Objects::nonNull)
                 .map(Skattekort::getForskuddstrekk)
                 .flatMap(Collection::stream)
                 .anyMatch(forskuddstrekk ->
@@ -99,7 +100,13 @@ public class SkattekortClient implements ClientRegister {
                                 nonNull(forskuddstrekk.getTrekkprosent()) &&
                                         isGyldigTrekkode(forskuddstrekk.getTrekkprosent().getTrekkode()) ||
                                 nonNull(forskuddstrekk.getTrekktabell()) &&
-                                        isGyldigTrekkode(forskuddstrekk.getTrekktabell().getTrekkode()));
+                                        isGyldigTrekkode(forskuddstrekk.getTrekktabell().getTrekkode()))
+                ||
+                bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
+                        .map(ArbeidstakerSkatt::getArbeidstaker)
+                        .flatMap(Collection::stream)
+                        .map(Skattekortmelding::getTilleggsopplysning)
+                        .anyMatch(opplysninger -> !opplysninger.isEmpty());
     }
 
     private static boolean isGyldigTrekkode(Trekkode trekkode) {
@@ -111,19 +118,19 @@ public class SkattekortClient implements ClientRegister {
 
     private Mono<String> sendSkattekortForArbeidstaker(ArbeidstakerSkatt arbeidstaker, DollyPerson dollyPerson) {
 
-        MappingContext context = MappingContextUtils.getMappingContext();
+        val context = MappingContextUtils.getMappingContext();
         context.setProperty("ident", dollyPerson.getIdent());
 
         return Flux.fromIterable(arbeidstaker.getArbeidstaker())
                 .map(skattekortmelding ->
-                        mapperFacade.map(skattekortmelding, SkattekortRequest.class, context)
-                )
+                        mapperFacade.map(skattekortmelding, SkattekortRequest.class, context))
                 .flatMap(request -> {
 
                     if (request.getSkattekort().getForskuddstrekkList().stream()
                             .anyMatch(forskuddstrekk -> isNull(forskuddstrekk.getTrekktabell()) &&
                                     isNull(forskuddstrekk.getProsentkort()) &&
-                                    isNull(forskuddstrekk.getFrikort()))) {
+                                    isNull(forskuddstrekk.getFrikort())) &&
+                            request.getSkattekort().getTilleggsopplysningList().isEmpty()) {
                         log.warn("Utelater skattekort for person: {}, year: {} -- ingen forskuddstrekk er definert",
                                 dollyPerson.getIdent(), request.getSkattekort().getInntektsaar());
                         return Mono.just("%d|Ingen forskuddstrekk er definert".formatted(request.getSkattekort().getInntektsaar()));

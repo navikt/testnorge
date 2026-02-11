@@ -29,6 +29,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class SkattekortMappingStrategyTest {
@@ -146,6 +147,8 @@ class SkattekortMappingStrategyTest {
         assertThat(result.getSkattekort().getResultatForSkattekort(), is(equalTo(Resultatstatus.IKKE_SKATTEKORT.getValue())));
         assertThat(result.getSkattekort().getUtstedtDato(), is(equalTo(LocalDate.now().toString())));
         assertThat(result.getSkattekort().getInntektsaar(), is(equalTo(INNTEKTSAAR)));
+        assertThat(result.getSkattekort().getForskuddstrekkList(), is(nullValue()));
+        assertThat(result.getSkattekort().getTilleggsopplysningList(), is(nullValue()));
     }
 
     private static Skattekortmelding buildSkattekort() {

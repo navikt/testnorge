@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -18,6 +21,20 @@ public class SkattekortDTO {
     private String resultatForSkattekort;
     private List<ForskuddstrekkDTO> forskuddstrekkList;
     private List<String> tilleggsopplysningList;
+
+    public List<ForskuddstrekkDTO> getForskuddstrekkList() {
+        if (isNull(forskuddstrekkList)) {
+            return new ArrayList<>();
+        }
+        return forskuddstrekkList;
+    }
+
+    public List<String> getTilleggsopplysningList() {
+        if (isNull(tilleggsopplysningList)) {
+            return new ArrayList<>();
+        }
+        return tilleggsopplysningList;
+    }
 
     @Data
     @Builder
