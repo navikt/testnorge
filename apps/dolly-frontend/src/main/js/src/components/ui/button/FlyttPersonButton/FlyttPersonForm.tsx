@@ -223,7 +223,7 @@ export const FlyttPersonForm = ({
 						{fieldMethods.fields.length > 0 ? (
 							<ul>
 								{fieldMethods.fields?.map((field: any) => (
-									<li key={field.id}>
+									<li key={field.key}>
 										{gruppeOptions?.find((person: Option) => person?.value === field.fnr)?.label}
 									</li>
 								))}

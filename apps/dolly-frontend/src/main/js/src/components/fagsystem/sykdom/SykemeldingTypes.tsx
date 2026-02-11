@@ -14,30 +14,39 @@ export type Sykemelding = {
 }
 
 export type SykemeldingSynt = {
-	sykemelding: {
-		startDato: string
-		orgnummer: string
-		arbeidsforholdId: string
-	}
+	sykemelding: SyntData
 	idx: number
 	erGjenopprettet?: boolean
 }
 
+type SyntData = {
+	startDato: string
+	orgnummer: string
+	arbeidsforholdId: string
+}
+
 export type SykemeldingDetaljert = {
-	sykemelding: {
-		startDato: string
-		umiddelbarBistand: boolean
-		manglendeTilretteleggingPaaArbeidsplassen: boolean
-		hovedDiagnose: Diagnose
-		biDiagnoser: Array<Diagnose>
-		helsepersonell: Helsepersonell
-		arbeidsgiver: Arbeidsgiver
-		detaljer: Detaljer
-		kontaktMedPasient?: KontaktMedPasient
-		perioder: Array<Periode>
-	}
+	sykemelding: DetaljertData
 	idx: number
 	erGjenopprettet?: boolean
+}
+
+type DetaljertData = {
+	startDato: string
+	umiddelbarBistand: boolean
+	manglendeTilretteleggingPaaArbeidsplassen: boolean
+	hovedDiagnose: Diagnose
+	biDiagnoser: Array<Diagnose>
+	helsepersonell: Helsepersonell
+	arbeidsgiver: Arbeidsgiver
+	detaljer: Detaljer
+	kontaktMedPasient?: KontaktMedPasient
+    perioder: Array<Periode>
+}
+
+export type SykemeldingBestilling = {
+	detaljertSykemelding: DetaljertData
+	syntSykemelding: SyntData
 }
 
 export type Diagnose = {

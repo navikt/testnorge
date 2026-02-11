@@ -50,26 +50,33 @@ class RouteLocatorConfigTest {
             .withExpiresAt(Date.from(Instant.now().plusSeconds(60)))
             .sign(Algorithm.none());
 
-    @MockitoBean
-    private TokenExchange tokenExchange;
-
-    @MockitoSpyBean
-    private AzureNavTokenService navTokenService;
-
-    @MockitoSpyBean
-    private AzureTrygdeetatenTokenService trygdeetatenTokenService;
-
-    @MockitoBean
-    private TokenXService tokenXService;
-
-    @Autowired
-    private WebTestClient webClient;
-
     @RegisterExtension
     static WireMockExtension wireMockServer = WireMockExtension
             .newInstance()
             .options(wireMockConfig().dynamicPort())
             .build();
+    @MockitoBean
+    private TokenExchange tokenExchange;
+    @MockitoSpyBean
+    private AzureNavTokenService navTokenService;
+    @MockitoSpyBean
+    private AzureTrygdeetatenTokenService trygdeetatenTokenService;
+    @MockitoBean
+    private TokenXService tokenXService;
+    @Autowired
+    private WebTestClient webClient;
+
+    @BeforeEach
+    public void setup() {
+        when(tokenExchange.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken(jwt)));
+        when(navTokenService.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken(jwt)));
+        when(trygdeetatenTokenService.exchange(any()))
+                .thenReturn(Mono.just(new AccessToken(jwt)));
+        when(tokenXService.exchange(any(), any()))
+                .thenReturn(Mono.just(new AccessToken(jwt)));
+    }
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
@@ -88,6 +95,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.skattekort", () -> wireMockServer.baseUrl());
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.medl", () -> wireMockServer.baseUrl());
         registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
@@ -102,18 +110,6 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
-    }
-
-    @BeforeEach
-    public void setup() {
-        when(tokenExchange.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
-        when(navTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
-        when(trygdeetatenTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
-        when(tokenXService.exchange(any(), any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
     }
 
     @ParameterizedTest
@@ -200,7 +196,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2", "q4"})
+    @ValueSource(strings = { "q1", "q2", "q4" })
     void testArenaForvalteren(String miljo) {
 
         var downstreamPath = "/some/arena/forvalteren/path";
@@ -273,7 +269,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2", "q4"})
+    @ValueSource(strings = { "q1", "q2", "q4" })
     void testDokarkiv(String env) {
 
         var requestedPath = "/dokarkiv/api/%s/some/path".formatted(env);
@@ -300,7 +296,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2", "q4"})
+    @ValueSource(strings = { "q1", "q2", "q4" })
     void testEreg(String miljo) {
 
         var requestedPath = "/api/%s/some/nested/path".formatted(miljo);
@@ -453,6 +449,32 @@ class RouteLocatorConfigTest {
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
+
+    @Test
+    void testSkattekort() {
+
+        var downstreamPath = "/api/v1/testdata";
+        var responseBody = "Success from mocked skattekort";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/skattekort" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+
+    }
+
 
     @Test
     void testKrrstub() {
@@ -650,7 +672,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2"})
+    @ValueSource(strings = { "q1", "q2" })
     void testPensjonAfp(String env) {
 
         var downstreamPath = "/api/mock-oppsett/test";
@@ -676,7 +698,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2"})
+    @ValueSource(strings = { "q1", "q2" })
     void testPensjonSamboer(String env) {
 
         var downstreamPath = "/api/samboer/test";
@@ -702,7 +724,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2", "q4"})
+    @ValueSource(strings = { "q1", "q2", "q4" })
     void testSaf(String env) {
 
         var downstreamPath = "/some/random/path";

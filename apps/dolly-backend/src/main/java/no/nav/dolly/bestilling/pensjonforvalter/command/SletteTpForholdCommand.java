@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -34,7 +35,7 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
                 .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(PENSJON_TP_PERSON_FORHOLD_URL)
-                        .queryParam("miljoer", String.join(",", miljoer))
+                        .queryParam(MILJOER, String.join(",", miljoer))
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, generateCallId())

@@ -143,11 +143,6 @@ consumers:
     namespace: dolly
     name: testnav-tenor-search-service
     url: http://testnav-tenor-search-service.dolly.svc.cluster.local
-  testnav-skattekort-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-skattekort-service
-    url: http://testnav-skattekort-service.dolly.svc.cluster.local
   testnav-levende-arbeidsforhold-ansettelse:
     cluster: dev-gcp
     namespace: dolly

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
+import no.nav.dolly.bestilling.skattekort.domain.ArbeidsgiverSkatt;
 
 import java.util.ArrayList;
 import java.util.List;
