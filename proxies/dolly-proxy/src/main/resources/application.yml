@@ -61,4 +61,4 @@ app:
     skjermingsregister: https://skjermede-personer.dev.adeo.no
     udistub: http://testnav-udi-stub.dolly
   token-cache:
-    grace-period-seconds: 120
+    grace-period-seconds: 60
