@@ -51,7 +51,7 @@ class TokenCacheUnitTest {
     }
 
     @Test
-    void testTokenCacheNotTriggeringTwice() {
+    void shouldNotTriggerCallToTokenServiceMoreThanOnce() {
 
         when(navTokenService
                 .exchange(any()))
