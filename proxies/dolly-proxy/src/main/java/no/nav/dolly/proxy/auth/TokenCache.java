@@ -12,25 +12,30 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 @Slf4j
 class TokenCache {
 
-    private final Map<ServerProperties, Mono<String>> cache = new ConcurrentHashMap<>();
+    private final Map<Object, Mono<String>> cache = new ConcurrentHashMap<>();
 
     private final long gracePeriodSeconds;
 
     Mono<String> get(ServerProperties serverProperties, Function<ServerProperties, Mono<AccessToken>> tokenExchange) {
-        return cache.computeIfAbsent(serverProperties, key ->
-                tokenExchange.apply(key)
+        return get(serverProperties, () -> tokenExchange.apply(serverProperties));
+    }
+
+    Mono<String> get(Object key, Supplier<Mono<AccessToken>> tokenExchange) {
+        return cache.computeIfAbsent(key, value ->
+                tokenExchange
+                        .get()
                         .map(AccessToken::getTokenValue)
                         .cache(
                                 this::getTTL,
                                 error -> Duration.ZERO,
                                 () -> Duration.ZERO
                         )
-                        .doOnNext(token -> log.debug("Token cached for {}", key))
         );
     }
 
@@ -43,7 +48,9 @@ class TokenCache {
             var ttl = Duration
                     .between(Instant.now(), expiry)
                     .minusSeconds(gracePeriodSeconds);
-            return ttl.isNegative() ? Duration.ZERO : ttl;
+            var nonNegativeTTL = ttl.isNegative() ? Duration.ZERO : ttl;
+            log.info("Token cached for {} with TTL {} seconds", tokenValue, nonNegativeTTL.getSeconds());
+            return nonNegativeTTL;
         } catch (Exception e) {
             log.warn("Failed to decode token to calculate TTL, disabling cache", e);
             return Duration.ZERO;
@@ -51,4 +58,3 @@ class TokenCache {
     }
 
 }
-
