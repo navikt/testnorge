@@ -31,8 +31,6 @@ app:
       password: ${ELASTIC_PASSWORD}
     hendelse:
       apikey: ${HENDELSE_LAGER_API_KEY}
-  token-cache:
-    grace-period-seconds: 120
   targets:
     aareg-services: https://%s.intern.dev.nav.no # Note host replacement pattern.
     aareg-vedlikehold: http://%s.arbeidsforhold.svc.nais.local # Note host replacement pattern.
@@ -61,3 +59,5 @@ app:
     sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
     skjermingsregister: https://skjermede-personer.dev.adeo.no
     udistub: http://testnav-udi-stub.dolly
+  token-cache:
+    grace-period-seconds: 120
