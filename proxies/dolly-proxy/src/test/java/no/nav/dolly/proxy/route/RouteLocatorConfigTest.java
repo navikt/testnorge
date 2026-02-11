@@ -471,7 +471,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
