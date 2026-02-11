@@ -28,6 +28,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -47,7 +48,7 @@ class RouteLocatorConfigTest {
 
     private static final String jwt = JWT
             .create()
-            .withExpiresAt(Date.from(Instant.now().plusSeconds(60)))
+            .withExpiresAt(Date.from(Instant.now().plusSeconds(TimeUnit.MINUTES.toSeconds(5))))
             .sign(Algorithm.none());
 
     @RegisterExtension
@@ -196,7 +197,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testArenaForvalteren(String miljo) {
 
         var downstreamPath = "/some/arena/forvalteren/path";
@@ -269,7 +270,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testDokarkiv(String env) {
 
         var requestedPath = "/dokarkiv/api/%s/some/path".formatted(env);
@@ -296,7 +297,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testEreg(String miljo) {
 
         var requestedPath = "/api/%s/some/nested/path".formatted(miljo);
@@ -672,7 +673,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2" })
+    @ValueSource(strings = {"q1", "q2"})
     void testPensjonAfp(String env) {
 
         var downstreamPath = "/api/mock-oppsett/test";
@@ -698,7 +699,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2" })
+    @ValueSource(strings = {"q1", "q2"})
     void testPensjonSamboer(String env) {
 
         var downstreamPath = "/api/samboer/test";
@@ -724,7 +725,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testSaf(String env) {
 
         var downstreamPath = "/some/random/path";
