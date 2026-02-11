@@ -7,9 +7,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import * as _ from 'lodash-es'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { isToday } from 'date-fns'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
@@ -105,16 +103,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									size={'xxxlarge'}
 									options={navEnheter}
 								/>
-								<InputWarning
-									visWarning={gyldigFraOgMed && !isToday(gyldigFraOgMed)}
-									warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
-							gyldig sikkerhetstiltak fra TPS er ønsket."
-								>
-									<FormDatepicker
-										name={`${path}.gyldigFraOgMed`}
-										label="Sikkerhetstiltak starter"
-									/>
-								</InputWarning>
+								<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Sikkerhetstiltak starter" />
 								<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Sikkerhetstiltak opphører" />
 								<AvansertForm path={path} kanVelgeMaster={false} />
 							</>
