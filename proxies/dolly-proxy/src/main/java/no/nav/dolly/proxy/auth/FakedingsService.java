@@ -1,10 +1,10 @@
 package no.nav.dolly.proxy.auth;
 
 import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 class FakedingsService {
 
@@ -19,10 +19,30 @@ class FakedingsService {
                 .build();
     }
 
-    Mono<AccessToken> exchange(String ident, ServerProperties serverProperties) {
-        return new FakedingsCommand(webClient, ident)
-                .call()
-                .flatMap(faketoken -> tokenXService.exchange(serverProperties, faketoken));
+    GatewayFilter bearerAuthenticationHeaderFilter(ServerProperties serverProperties) {
+
+        return (exchange, chain) -> {
+            var ident = exchange
+                    .getRequest()
+                    .getHeaders()
+                    .getFirst("fnr");
+            if (!StringUtils.hasText(ident)) {
+                throw new NullPointerException("Required header 'fnr' is empty; cannot request Fakedings token with correct pid.");
+            }
+            return new FakedingsCommand(webClient, ident)
+                    .call()
+                    .flatMap(faketoken -> tokenXService
+                            .exchange(serverProperties, faketoken)
+                            .flatMap(token -> {
+                                var mutatedExchange = exchange
+                                        .mutate()
+                                        .request(builder -> builder
+                                                .headers(headers -> headers.setBearerAuth(token.getTokenValue())))
+                                        .build();
+                                return chain.filter(mutatedExchange);
+                            }));
+        };
+
     }
 
 }

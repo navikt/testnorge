@@ -12,49 +12,44 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 @Slf4j
 class TokenCache {
 
-    private final Map<Object, Mono<String>> cache = new ConcurrentHashMap<>();
+    private final Map<ServerProperties, Mono<String>> cache = new ConcurrentHashMap<>();
 
     private final long gracePeriodSeconds;
 
     Mono<String> get(ServerProperties serverProperties, Function<ServerProperties, Mono<AccessToken>> tokenExchange) {
-        return get(serverProperties, () -> tokenExchange.apply(serverProperties));
-    }
-
-    Mono<String> get(Object key, Supplier<Mono<AccessToken>> tokenExchange) {
-        return cache.computeIfAbsent(key, value ->
-                tokenExchange
-                        .get()
+        return cache.computeIfAbsent(serverProperties, key ->
+                tokenExchange.apply(key)
                         .map(AccessToken::getTokenValue)
                         .cache(
-                                this::getTTL,
+                                token -> getTTL(key, token),
                                 error -> Duration.ZERO,
                                 () -> Duration.ZERO
                         )
         );
     }
 
-    private Duration getTTL(String tokenValue) {
+    private Duration getTTL(ServerProperties key, String token) {
         try {
             var expiry = JWT
-                    .decode(tokenValue)
+                    .decode(token)
                     .getExpiresAt()
                     .toInstant();
             var ttl = Duration
                     .between(Instant.now(), expiry)
                     .minusSeconds(gracePeriodSeconds);
             var nonNegativeTTL = ttl.isNegative() ? Duration.ZERO : ttl;
-            log.info("Token cached for {} with TTL {} seconds", tokenValue, nonNegativeTTL.getSeconds());
+            log.info("Token cached for {} with TTL of {} seconds", key, nonNegativeTTL.getSeconds());
             return nonNegativeTTL;
         } catch (Exception e) {
-            log.warn("Failed to decode token to calculate TTL, disabling cache", e);
+            log.warn("Failed to decode token for {} to calculate TTL, disabling cache", key, e);
             return Duration.ZERO;
         }
     }
 
 }
+
