@@ -6,7 +6,7 @@ import no.nav.pdl.forvalter.consumer.command.GenererNavnServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VerifiserNavnServiceCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

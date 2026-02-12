@@ -18,16 +18,15 @@ dependencies {
     implementation "no.nav.testnav.libs:kafka-config"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:servlet-core"
-    implementation "no.nav.testnav.libs:servlet-insecure-security"
+    implementation "no.nav.testnav.libs:reactive-insecure-security"
     implementation "no.nav.testnav.libs:testing"
 
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
 
     implementation "org.springframework.kafka:spring-kafka"
 
