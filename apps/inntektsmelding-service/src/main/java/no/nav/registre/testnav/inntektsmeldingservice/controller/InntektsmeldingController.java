@@ -2,22 +2,19 @@ package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
 import io.swagger.v3.core.util.Json;
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.nio.charset.StandardCharsets;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(
@@ -25,16 +22,13 @@ import java.nio.charset.StandardCharsets;
         produces = MediaType.APPLICATION_JSON_VALUE
 )
 @Slf4j
+@RequiredArgsConstructor
 public class InntektsmeldingController {
 
     private final InntektsmeldingService inntektsmeldingService;
 
-    public InntektsmeldingController(InntektsmeldingService inntektsmeldingService) {
-        this.inntektsmeldingService = inntektsmeldingService;
-    }
-
     @PostMapping
-    public InntektsmeldingResponse genererMeldingForIdent(
+    public Mono<InntektsmeldingResponse> genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request) {
 
@@ -42,19 +36,14 @@ public class InntektsmeldingController {
 
         validerInntektsmelding(request);
 
-        try {
-            var prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
-            return new InntektsmeldingResponse(
-                    request.getArbeidstakerFnr(),
-                    prosessertInntektDokuments
-                            .stream()
-                            .map(ProsessertInntektDokument::toResponse)
-                            .toList()
-            );
-        } catch (WebClientResponseException.BadRequest ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
-        }
+        return inntektsmeldingService.opprettInntektsmelding(navCallId, request)
+                .map(prosessertInntektDokuments -> new InntektsmeldingResponse(
+                        request.getArbeidstakerFnr(),
+                        prosessertInntektDokuments
+                                .stream()
+                                .map(ProsessertInntektDokument::toResponse)
+                                .toList()
+                ));
     }
 
     private void validerInntektsmelding(InntektsmeldingRequest dollyRequest) {
