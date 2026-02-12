@@ -9,10 +9,13 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
+import reactor.util.retry.Retry;
 
 import java.util.concurrent.Callable;
 
+import static java.time.Duration.ofSeconds;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_ARBEIDSFORHOLD;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -46,7 +49,11 @@ public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRes
                         .miljoe(miljoe)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+                .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
+                        .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
+                                responseException.getStatusCode().is5xxServerError())
+                        .onRetryExhaustedThrow(((retryBackoffSpec, lastSignal) ->
+                                new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
                         .miljoe(miljoe)
                         .error(error)
