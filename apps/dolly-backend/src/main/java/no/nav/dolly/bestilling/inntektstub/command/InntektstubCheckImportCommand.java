@@ -54,8 +54,9 @@ public class InntektstubCheckImportCommand implements Callable<Mono<CheckImportR
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(error -> {
                     var description = WebClientError.describe(error);
-                    log.error("Import av inntekt fra Tenor for {} feilet: {}",
-                            ident, description.getMessage(), error);
+                    if (description.getStatus().is5xxServerError()) {
+                        log.error("Import av inntekt fra Tenor for {} feilet: {}", ident, description.getMessage(), error);
+                    }
                     return Mono.just(CheckImportResponse.builder()
                             .status(description.getStatus())
                             .message(description.getMessage())
