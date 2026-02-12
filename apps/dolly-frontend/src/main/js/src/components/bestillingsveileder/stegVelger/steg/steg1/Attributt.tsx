@@ -30,7 +30,7 @@ export const Attributt: React.FC<AttributtProps> = ({
 	...props
 }) => {
 	return vis ? (
-		<div title={title} style={{ display: 'flex', alignItems: 'center', marginBottom: '6px' }}>
+		<div title={title} style={{ display: 'flex', alignItems: 'center' }}>
 			<DollyCheckbox
 				wrapperSize={wrapperSize as any}
 				label={attr?.label || ''}

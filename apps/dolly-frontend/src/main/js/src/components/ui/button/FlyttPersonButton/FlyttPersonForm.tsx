@@ -47,10 +47,6 @@ const GruppeVelger = styled.div`
 	.error-message {
 		margin-top: 10px;
 	}
-
-	.navds-button {
-		margin-top: 10px;
-	}
 `
 
 const PersonVelger = styled.div`
@@ -65,9 +61,9 @@ const PersonKolonne = styled.div`
 	flex-direction: column;
 	width: 50%;
 
-	.navds-alert {
+	.aksel-alert {
 		margin-left: 20px;
-		color: #368da8;
+		color: var(--ax-text-info-subtle);
 	}
 
 	&&& {

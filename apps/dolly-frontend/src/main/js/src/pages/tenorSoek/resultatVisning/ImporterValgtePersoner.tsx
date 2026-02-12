@@ -22,12 +22,6 @@ const CheckboxWrapper = styled.div`
 	height: 20px;
 	margin-left: auto;
 	margin-right: 15px;
-
-	&& {
-		.navds-checkbox {
-			margin-bottom: 20px;
-		}
-	}
 `
 
 export const ImporterValgtePersoner = ({

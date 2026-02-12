@@ -14,7 +14,7 @@ const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 
 	:hover {
-		background-color: white;
+		background-color: unset;
 		cursor: default;
 	}
 
@@ -23,7 +23,7 @@ const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
 			color: #aab0ba;
 		}
 
-		.navds-toggle-group__button[aria-checked='true'] {
+		.aksel-toggle-group__button[aria-checked='true'] {
 			background-color: #aab0ba;
 			color: white;
 

@@ -3,7 +3,6 @@ import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
 import { addYears, isDate, subYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 import * as _ from 'lodash-es'
-import styled from 'styled-components'
 
 interface MonthpickerProps {
 	name: string
@@ -14,23 +13,6 @@ interface MonthpickerProps {
 	minDate?: Date
 	maxDate?: Date
 }
-
-const MonthpickerWrapper = styled.div`
-	margin-right: 20px;
-
-	&& {
-		.aksel-form-field {
-			gap: 0;
-		}
-	}
-
-	&&&& {
-		input {
-			width: 220px;
-			height: 38px;
-		}
-	}
-`
 
 export const Monthpicker = ({
 	name,
@@ -67,18 +49,16 @@ export const Monthpicker = ({
 	})
 
 	return (
-		<MonthpickerWrapper>
-			<Label name={name} label={label}>
-				<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
-					<MonthPicker.Input
-						error={!!errorOutput}
-						label={null}
-						size={'small'}
-						placeholder={'MM.YYYY'}
-						{...inputProps}
-					/>
-				</MonthPicker>
-			</Label>
-		</MonthpickerWrapper>
+		<Label name={name} label={label}>
+			<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
+				<MonthPicker.Input
+					error={!!errorOutput}
+					label={null}
+					size={'small'}
+					placeholder={'MM.YYYY'}
+					{...inputProps}
+				/>
+			</MonthPicker>
+		</Label>
 	)
 }

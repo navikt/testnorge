@@ -57,24 +57,6 @@ const validationSchema = Yup.object().shape(
 	],
 )
 
-const FieldArrayEdit = styled.div`
-	&&& {
-		.navds-date__field-button {
-			position: absolute;
-			top: 19px;
-			right: 1px;
-			margin-right: 0;
-		}
-
-		.navds-button--secondary {
-			position: relative;
-			top: 0;
-			right: 0;
-			margin-right: 10px;
-		}
-	}
-`
-
 const PersondetaljerVisning = styled.div`
 	width: 100%;
 	position: relative;
@@ -405,33 +387,31 @@ export const VisningRedigerbarPersondetaljer = ({
 				<FormProvider {...formMethods}>
 					<Form onSubmit={(data) => handleSubmit(data)}>
 						<>
-							<FieldArrayEdit>
-								<div className="flexbox--flex-wrap">
-									<PersondetaljerSamlet
-										formMethods={formMethods}
-										tpsMessaging={tpsMessagingData}
-										harSkjerming={harSkjerming}
-										identtype={identtype}
-									/>
-								</div>
-								<Knappegruppe>
-									<NavButton
-										variant={'secondary'}
-										style={{ marginRight: '10px' }}
-										onClick={() => setVisningModus(Modus.Les)}
-										disabled={formMethods.formState.isSubmitting}
-									>
-										Avbryt
-									</NavButton>
-									<NavButton
-										variant={'primary'}
-										onClick={() => handleSubmit(formMethods.watch())}
-										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-									>
-										Endre
-									</NavButton>
-								</Knappegruppe>
-							</FieldArrayEdit>
+							<div className="flexbox--flex-wrap">
+								<PersondetaljerSamlet
+									formMethods={formMethods}
+									tpsMessaging={tpsMessagingData}
+									harSkjerming={harSkjerming}
+									identtype={identtype}
+								/>
+							</div>
+							<Knappegruppe>
+								<NavButton
+									variant={'secondary'}
+									style={{ marginRight: '10px' }}
+									onClick={() => setVisningModus(Modus.Les)}
+									disabled={formMethods.formState.isSubmitting}
+								>
+									Avbryt
+								</NavButton>
+								<NavButton
+									variant={'primary'}
+									onClick={() => handleSubmit(formMethods.watch())}
+									disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+								>
+									Endre
+								</NavButton>
+							</Knappegruppe>
 						</>
 					</Form>
 				</FormProvider>
