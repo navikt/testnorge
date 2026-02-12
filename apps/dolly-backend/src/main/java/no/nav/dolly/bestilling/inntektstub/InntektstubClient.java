@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
@@ -47,7 +48,22 @@ public class InntektstubClient implements ClientRegister {
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return importFraTenor(bestilling, dollyPerson, progress)
+        if (!isTestnorgeIdent(dollyPerson.getIdent()) &&
+                (isNull(bestilling.getInntektstub()) || bestilling.getInntektstub().getInntektsinformasjon().isEmpty())) {
+            return Mono.empty();
+        }
+
+        return Mono.just(bestilling)
+                .flatMap(best -> {
+                    if (isTestnorgeIdent(dollyPerson.getIdent())) {
+                        return importFraTenor(dollyPerson, progress);
+                    } else {
+                        return nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty() ?
+                                oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
+                                        .then(Mono.just("")) :
+                                Mono.just("");
+                    }
+                })
                 .flatMap(status -> {
                     if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
@@ -86,46 +102,34 @@ public class InntektstubClient implements ClientRegister {
                 .flatMap(status -> oppdaterStatus(progress, status));
     }
 
-    private Mono<String> importFraTenor(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
+    private Mono<String> importFraTenor(DollyPerson dollyPerson, BestillingProgress progress) {
 
         return transaksjonMappingService.existAlready(INNTK, dollyPerson.getIdent())
                 .flatMap(exist -> {
-
-                    if ((isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())) ||
-                            (nonNull(bestilling.getInntektstub()) &&
-                                    !bestilling.getInntektstub().getInntektsinformasjon().isEmpty())) {
+                    if (isFalse(exist)) {
                         return oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
-                                .thenReturn(exist);
-                    } else {
-                        return Mono.just(exist);
-                    }
-                })
-                .flatMap(exist -> {
-
-                    if (isFalse(exist) && isTestnorgeIdent(dollyPerson.getIdent())) {
-
-                        return inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), true)
-                                .flatMap(checkResponse -> {
-                                    if (checkResponse.getStatus().is2xxSuccessful()) {
-                                        return inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), false)
-                                                .flatMap(importResponse -> {
-                                                    if (importResponse.getStatus().is2xxSuccessful()) {
-                                                        log.info("Import av inntektsdata fra Tenor for {} utført", dollyPerson.getIdent());
-                                                        return oppdaterTransaksjonMapping(dollyPerson, progress, IMPORTERT_FRA_TENOR)
-                                                                .then(Mono.just("OK"));
-                                                    } else {
-                                                        log.error("Import av inntektsdata fra Tenor for {} feilet: {}",
-                                                                dollyPerson.getIdent(), importResponse.getMessage());
-                                                        return Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(
-                                                                "Import av inntektsdata feilet: " + importResponse.getMessage()));
-                                                    }
-                                                });
-                                    } else {
-                                        log.info("Inntekt for {} finnes ikke i Tenor.", dollyPerson.getIdent());
-                                        return oppdaterTransaksjonMapping(dollyPerson, progress, INGENDATA_FRA_TENOR)
-                                                .then(Mono.just(""));
-                                    }
-                                });
+                                .then(inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), true)
+                                        .flatMap(checkResponse -> {
+                                            if (checkResponse.getStatus().is2xxSuccessful()) {
+                                                return inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), false)
+                                                        .flatMap(importResponse -> {
+                                                            if (importResponse.getStatus().is2xxSuccessful()) {
+                                                                log.info("Import av inntektsdata fra Tenor for {} utført", dollyPerson.getIdent());
+                                                                return oppdaterTransaksjonMapping(dollyPerson, progress, IMPORTERT_FRA_TENOR)
+                                                                        .then(Mono.just("OK"));
+                                                            } else {
+                                                                log.error("Import av inntektsdata fra Tenor for {} feilet: {}",
+                                                                        dollyPerson.getIdent(), importResponse.getMessage());
+                                                                return Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(
+                                                                        "Import av inntektsdata feilet: " + importResponse.getMessage()));
+                                                            }
+                                                        });
+                                            } else {
+                                                log.info("Inntekt for {} finnes ikke i Tenor.", dollyPerson.getIdent());
+                                                return oppdaterTransaksjonMapping(dollyPerson, progress, INGENDATA_FRA_TENOR)
+                                                        .then(Mono.just(""));
+                                            }
+                                        }));
                     } else {
                         return Mono.just("");
                     }

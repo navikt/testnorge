@@ -113,7 +113,6 @@ class InntektstubClientTest {
                 .verifyComplete();
     }
 
-
     @Test
     void shouldIkkeFunnetFraTenorSjekk_OK() {
 
@@ -143,13 +142,21 @@ class InntektstubClientTest {
     @Test
     void shouldIgnoreImportFraTenor() {
 
+        val statusCaptor = ArgumentCaptor.forClass(String.class);
         val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
 
-        when(transaksjonMappingService.existAlready(eq(INNTK), anyString()))
+        when(transaksjonMappingService.existAlready(INNTK, TESTNORGE_IDENT))
                 .thenReturn(Mono.just(true));
+        when(transactionHelperService.persister(any(), any(), anyString()))
+                .thenReturn(Mono.just(new BestillingProgress()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
-                .expectNextCount(0)
+                .assertNext(status -> {
+            verify(transaksjonMappingService).existAlready(eq(INNTK), eq(TESTNORGE_IDENT));
+            verify(transactionHelperService, times(1)).persister(any(), any(),
+                    statusCaptor.capture());
+            assertThat(statusCaptor.getAllValues().getFirst(), equalTo(""));
+        })
                 .verifyComplete();
     }
 
@@ -161,8 +168,6 @@ class InntektstubClientTest {
         val bestilling = new RsDollyUtvidetBestilling();
         bestilling.setInntektstub(buildInntektsinformasjon());
 
-        when(transaksjonMappingService.existAlready(eq(INNTK), anyString()))
-                .thenReturn(Mono.just(false));
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.getInntekter(anyString()))
@@ -193,8 +198,6 @@ class InntektstubClientTest {
         val bestilling = new RsDollyUtvidetBestilling();
         bestilling.setInntektstub(buildInntektsinformasjon());
 
-        when(transaksjonMappingService.existAlready(eq(INNTK), anyString()))
-                .thenReturn(Mono.just(false));
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.getInntekter(anyString()))
