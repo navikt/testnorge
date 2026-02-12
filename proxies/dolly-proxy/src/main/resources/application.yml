@@ -60,3 +60,5 @@ app:
     sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
     skjermingsregister: https://skjermede-personer.dev.adeo.no
     udistub: http://testnav-udi-stub.dolly
+  token-cache:
+    grace-period-seconds: 60
