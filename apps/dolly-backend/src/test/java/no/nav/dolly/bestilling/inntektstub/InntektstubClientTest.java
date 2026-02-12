@@ -130,10 +130,9 @@ class InntektstubClientTest {
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
                 .assertNext(status -> {
-                    verify(transactionHelperService, times(2)).persister(any(), any(),
+                    verify(transactionHelperService).persister(any(), any(),
                             statusCaptor.capture());
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
-                    assertThat(statusCaptor.getAllValues().getFirst(), equalTo("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
                     assertThat(statusCaptor.getAllValues().getLast(), equalTo(""));
                 })
                 .verifyComplete();

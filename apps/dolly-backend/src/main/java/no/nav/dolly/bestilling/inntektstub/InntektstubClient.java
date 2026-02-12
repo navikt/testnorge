@@ -107,11 +107,11 @@ public class InntektstubClient implements ClientRegister {
         return transaksjonMappingService.existAlready(INNTK, dollyPerson.getIdent())
                 .flatMap(exist -> {
                     if (isFalse(exist)) {
-                        return oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
-                                .then(inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), true)
-                                        .flatMap(checkResponse -> {
-                                            if (checkResponse.getStatus().is2xxSuccessful()) {
-                                                return inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), false)
+                        return inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), true)
+                                .flatMap(checkResponse -> {
+                                    if (checkResponse.getStatus().is2xxSuccessful()) {
+                                        return oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
+                                                .then(inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), false)
                                                         .flatMap(importResponse -> {
                                                             if (importResponse.getStatus().is2xxSuccessful()) {
                                                                 log.info("Import av inntektsdata fra Tenor for {} utført", dollyPerson.getIdent());
@@ -123,13 +123,13 @@ public class InntektstubClient implements ClientRegister {
                                                                 return Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(
                                                                         "Import av inntektsdata feilet: " + importResponse.getMessage()));
                                                             }
-                                                        });
-                                            } else {
-                                                log.info("Inntekt for {} finnes ikke i Tenor.", dollyPerson.getIdent());
-                                                return oppdaterTransaksjonMapping(dollyPerson, progress, INGENDATA_FRA_TENOR)
-                                                        .then(Mono.just(""));
-                                            }
-                                        }));
+                                                        }));
+                                    } else {
+                                        log.info("Inntekt for {} finnes ikke i Tenor.", dollyPerson.getIdent());
+                                        return oppdaterTransaksjonMapping(dollyPerson, progress, INGENDATA_FRA_TENOR)
+                                                .then(Mono.just(""));
+                                    }
+                                });
                     } else {
                         return Mono.just("");
                     }
