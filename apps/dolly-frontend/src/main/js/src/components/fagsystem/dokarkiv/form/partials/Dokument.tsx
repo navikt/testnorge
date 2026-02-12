@@ -1,6 +1,6 @@
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import React, { BaseSyntheticEvent, useEffect, useRef, useState } from 'react'
+import { BaseSyntheticEvent, useEffect, useRef, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import Digitalinnsending from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
@@ -66,83 +66,85 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		error: errorDokumenterFraMal,
 	} = useDokumenterFraMal(malId)
 
-	const prevDokumenterFraMalRef = useRef(dokumenterFraMal)
-	const prevDokumenterFraMal = prevDokumenterFraMalRef.current
-
-	useEffect(() => {
-		prevDokumenterFraMalRef.current = dokumenterFraMal
-	}, [dokumenterFraMal])
-
-	const [vedlegg, setVedlegg] = useState<FileObject[]>(formMethods.watch(`${path}.vedlegg`) || [])
-	const [dokumenter, setDokumenter] = useState<DokumentObjekt[]>(
-		formMethods.watch(`${path}.dokumenter`) || [],
-	)
-	const [skjemaValues, setSkjemaValues] = useState<Skjema | undefined>(
-		formMethods.watch(`${path}.skjema`),
+	const processedMalIdRef = useRef<string | undefined>(undefined)
+	const [vedlegg, setVedlegg] = useState<FileObject[]>(
+		() => formMethods.getValues(`${path}.vedlegg`) || [],
 	)
 
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
 
 	useEffect(() => {
-		if (dokumenterFraMal !== prevDokumenterFraMal && (dokumenterFraMal as any)?.length > 0) {
-			const vedleggFraMal: FileObject[] = []
-			;(dokumenterFraMal as any)?.forEach((malDokument: any) => {
-				dokumenter?.forEach((dokument: DokumentObjekt, idx: number) => {
-					dokument?.dokumentvarianter?.forEach((variant: Dokumentvariant, idy: number) => {
-						if (variant?.dokumentReferanse === malDokument?.id) {
-							formMethods.setValue(
-								`${path}.dokumenter[${idx}].dokumentvarianter[${idy}].fysiskDokument`,
-								malDokument?.contents,
-							)
-						}
-					})
+		if (!(dokumenterFraMal as any)?.length || !malId || processedMalIdRef.current === malId) {
+			return
+		}
+		processedMalIdRef.current = malId
+
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
+		const vedleggFraMal: FileObject[] = []
+		const malDokumentListe = dokumenterFraMal as any[]
+
+		malDokumentListe.forEach((malDokument: any) => {
+			currentDokumenter.forEach((dokument: DokumentObjekt, idx: number) => {
+				dokument?.dokumentvarianter?.forEach((variant: Dokumentvariant, idy: number) => {
+					if (variant?.dokumentReferanse === malDokument?.id) {
+						formMethods.setValue(
+							`${path}.dokumenter[${idx}].dokumentvarianter[${idy}].fysiskDokument`,
+							malDokument?.contents,
+						)
+					}
 				})
-				setDokumenter(formMethods.watch(`${path}.dokumenter`) || [])
-
-				const fileName = dokumenter?.find((dok: DokumentObjekt) =>
-					dok?.dokumentvarianter?.find(
-						(variant: Dokumentvariant) => variant.dokumentReferanse === malDokument.id,
-					),
-				)?.tittel
-				if (fileName) {
-					vedleggFraMal.push({
-						file: new File([malDokument.contents], fileName, { type: 'application/pdf' }),
-						error: false,
-						reasons: [],
-					})
-				}
 			})
-			setVedlegg([...vedleggFraMal, ...vedlegg])
-		}
-	}, [dokumenterFraMal, prevDokumenterFraMal])
 
-	useEffect(() => {
-		if (formMethods.watch(path)) {
-			formMethods.setValue(`${path}.dokumenter`, dokumenter)
-			formMethods.trigger(`${path}.dokumenter`)
-		}
-	}, [dokumenter])
+			const fileName = currentDokumenter.find((dok: DokumentObjekt) =>
+				dok?.dokumentvarianter?.find(
+					(variant: Dokumentvariant) => variant.dokumentReferanse === malDokument.id,
+				),
+			)?.tittel
+			if (fileName) {
+				vedleggFraMal.push({
+					file: new File([malDokument.contents], fileName, { type: 'application/pdf' }),
+					error: false,
+					reasons: [],
+				})
+			}
+		})
 
-	useEffect(() => {
-		if (formMethods.watch(path)) {
-			formMethods.setValue(`${path}.vedlegg`, vedlegg)
-			formMethods.trigger(`${path}.vedlegg`)
+		if (vedleggFraMal.length > 0) {
+			const newVedlegg = [...vedleggFraMal, ...(formMethods.getValues(`${path}.vedlegg`) || [])]
+			setVedlegg(newVedlegg)
+			formMethods.setValue(`${path}.vedlegg`, newVedlegg)
 		}
-	}, [vedlegg])
+	}, [dokumenterFraMal, malId])
+
+	const updateVedlegg = (newVedlegg: FileObject[]) => {
+		setVedlegg(newVedlegg)
+		formMethods.setValue(`${path}.vedlegg`, newVedlegg)
+		formMethods.trigger(`${path}.vedlegg`)
+	}
+
+	const updateDokumenter = (newDokumenter: DokumentObjekt[]) => {
+		formMethods.setValue(`${path}.dokumenter`, newDokumenter)
+		formMethods.trigger(`${path}.dokumenter`)
+	}
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
+			formMethods.setValue(`${path}.tittel`, '')
+			formMethods.setValue(`${path}.skjema`, undefined)
+			formMethods.setValue(`${path}.dokumenter[0].brevkode`, '')
+			formMethods.trigger(`${path}.dokumenter`)
 			return
 		}
-		setSkjemaValues(skjema)
 		formMethods.setValue(`${path}.tittel`, skjema.data)
 		formMethods.setValue(`${path}.skjema`, skjema)
-		formMethods.watch(`${path}.dokumenter`)?.forEach((dokument: DokumentObjekt, idx: number) => {
-			formMethods.setValue(`${path}.dokumenter[${idx}].brevkode`, skjema.value)
+		formMethods.setValue(`${path}.dokumenter[0].brevkode`, skjema.value)
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
+		currentDokumenter.forEach((dokument: DokumentObjekt, idx: number) => {
 			if (!dokument?.tittel) {
 				formMethods.setValue(`${path}.dokumenter[${idx}].tittel`, skjema.data)
 			}
 		})
+		formMethods.trigger(`${path}.dokumenter`)
 	}
 
 	const handleSakstypeChange = (target: Option) => {
@@ -154,42 +156,48 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		formMethods.trigger(`${path}.sak`)
 	}
 
-	const handleSelectFiles = (selectedFiles: File[]) => {
-		const dokumenterIsEmpty = dokumenter?.length === 1 && !dokumenter[0]?.dokumentvarianter
-		const newDokumenter: DokumentObjekt[] = dokumenterIsEmpty ? [] : [...dokumenter]
+	const handleSelectFiles = (newFiles: FileObject[], files: File[]) => {
+		const currentBrevkode = formMethods.getValues(`${path}.dokumenter[0].brevkode`) || ''
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
+		const dokumenterIsEmpty =
+			currentDokumenter.length === 1 && !currentDokumenter[0]?.dokumentvarianter
+		const newDokumenter: DokumentObjekt[] = dokumenterIsEmpty ? [] : [...currentDokumenter]
+		updateVedlegg([...vedlegg, ...newFiles])
 
-		selectedFiles.forEach((file: File) => {
+		files.forEach((file: File) => {
 			const reader = new FileReader()
 			reader.onabort = () => console.warn('file reading was aborted')
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {
 				const binaryStr = reader.result?.slice(28)
-				const dokumentvariant: Dokumentvariant = {
-					filtype: 'PDFA',
-					fysiskDokument: binaryStr,
-					variantformat: 'ARKIV',
-				}
-				const newDokument: DokumentObjekt = {
+				newDokumenter.push({
 					tittel: file.name,
-					brevkode: skjemaValues?.value || '',
-					dokumentvarianter: [dokumentvariant],
-				}
-				newDokumenter.push(newDokument)
-				setDokumenter(newDokumenter)
+					brevkode: '',
+					dokumentvarianter: [
+						{
+							filtype: 'PDFA',
+							fysiskDokument: binaryStr,
+							variantformat: 'ARKIV',
+						},
+					],
+				})
+				updateDokumenter(newDokumenter)
+				formMethods.setValue(`${path}.dokumenter[0].brevkode`, currentBrevkode)
 			}
 			reader.readAsDataURL(file)
 		})
 	}
 
 	const handleDeleteFile = (file: FileObject) => {
-		setVedlegg(vedlegg.filter((f) => f !== file))
-		const filtrerteDokumenter: DokumentObjekt[] = [...dokumenter]
-		const index = filtrerteDokumenter.findIndex((d: DokumentObjekt) => d.tittel === file.file.name)
+		const currentBrevkode = formMethods.getValues(`${path}.dokumenter[0].brevkode`) || ''
+		updateVedlegg(vedlegg.filter((f) => f !== file))
+		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
+		const index = currentDokumenter.findIndex((d: DokumentObjekt) => d.tittel === file.file.name)
 		if (index >= 0) {
-			filtrerteDokumenter.splice(index, 1)
-			setDokumenter(filtrerteDokumenter)
-			formMethods.setValue(`${path}.dokumenter`, filtrerteDokumenter)
-			formMethods.trigger(`${path}.dokumenter`)
+			const newDokumenter = [...currentDokumenter]
+			newDokumenter.splice(index, 1)
+			updateDokumenter(newDokumenter)
+			formMethods.setValue(`${path}.dokumenter[0].brevkode`, currentBrevkode)
 		}
 	}
 
@@ -199,16 +207,17 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		<>
 			<div className="flexbox--full-width">
 				<FormSelect
-					name={`${path}.dokumenter[0].brevkode`}
+					name={`${path}.skjemaValg`}
 					label="Skjema"
 					afterChange={handleSkjemaChange}
 					kodeverk={Kodeverk.NAVSKJEMA}
 					size="grow"
 					optionHeight={50}
-					isClearable={false}
+					isClearable={true}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
+				<FormTextInput name={`${path}.dokumenter[0].brevkode`} label="Brevkode" size="large" />
 				<FormSelect
 					name={`${path}.tema`}
 					label="Tema"
@@ -266,10 +275,12 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 					description={`Du kan laste opp PDF-filer. Maks 10 filer.`}
 					accept=".pdf"
 					fileLimit={{ max: 10, current: vedlegg?.length }}
-					onSelect={(selectedFiles) => {
-						setVedlegg([...vedlegg, ...selectedFiles])
-						handleSelectFiles(selectedFiles?.map((f) => f.file))
-					}}
+					onSelect={(selectedFiles) =>
+						handleSelectFiles(
+							selectedFiles,
+							selectedFiles.map((f) => f.file),
+						)
+					}
 				/>
 				{vedlegg?.length < 1 && loadingDokumenterFraMal && malId && (
 					<Loading label="Laster vedlegg fra mal ..." />
