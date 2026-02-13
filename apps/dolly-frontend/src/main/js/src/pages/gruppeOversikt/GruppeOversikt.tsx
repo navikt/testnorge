@@ -12,7 +12,7 @@ import { bottom } from '@popperjs/core'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
+import Navigering from '@/pages/gruppeOversikt/Navigering'
 import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 
 type RootState = {
@@ -122,7 +122,7 @@ const GruppeOversikt: React.FC = () => {
 				>
 					Ny gruppe
 				</StyledNavButton>
-				{!isBankIdBruker && <FinnPersonBestilling />}
+				{!isBankIdBruker && <Navigering />}
 			</div>
 
 			{visNyGruppeState && <RedigerGruppe onCancel={skjulNyGruppe} />}

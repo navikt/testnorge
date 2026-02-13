@@ -14,6 +14,7 @@ import {
 	eksisterendeGruppeMock,
 	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
+	gruppeFragmentSearchMock,
 	histarkMock,
 	instMock,
 	joarkDokumentMock,
@@ -61,6 +62,9 @@ const histark = new RegExp(/testnav-dolly-proxy\/histark\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
 const bestillingFragmentSearch = new RegExp(
 	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
+)
+const gruppeFragmentSearch = new RegExp(
+	/\/dolly-backend\/api\/v1\/gruppe\/soekGruppe\?fragment/,
 )
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 const bestillingFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/naviger\/1/)
@@ -122,6 +126,7 @@ const mockRoutes: RouteInfo[] = [
 	{ url: pensjonMiljoer, response: miljoeMock },
 	{ url: personFragmentSearch, response: personFragmentSearchMock },
 	{ url: bestillingFragmentSearch, response: bestillingFragmentSearchMock },
+	{ url: gruppeFragmentSearch, response: gruppeFragmentSearchMock },
 	{ url: personFragmentNaviger, response: personFragmentNavigerMock },
 	{ url: bestillingFragmentNaviger, response: bestillingFragmentNavigerMock },
 	{ url: hentGrupper, response: paginerteGrupperMock },

@@ -49,6 +49,11 @@ export const personFragmentSearchMock = [
 
 export const bestillingFragmentSearchMock = [{ id: 1, navn: 'Testytest' }]
 
+export const gruppeFragmentSearchMock = [
+	{ id: 1, navn: 'Testytest' },
+	{ id: 2, navn: 'Min testgruppe' },
+]
+
 export const kodeverkMock = {
 	name: 'Tema',
 	koder: [
