@@ -6,13 +6,11 @@ import no.nav.dolly.bestilling.inntektstub.domain.CheckImportResponse;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.service.TransactionHelperService;
-import no.nav.dolly.service.TransaksjonMappingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -26,7 +24,6 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,9 +49,6 @@ class InntektstubClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
-    @Mock
-    private TransaksjonMappingService transaksjonMappingService;
-
     @InjectMocks
     private InntektstubClient inntektstubClient;
 
@@ -64,10 +58,6 @@ class InntektstubClientTest {
         val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
-        when(transaksjonMappingService.existAlready(eq(INNTK), anyString()))
-                .thenReturn(Mono.just(false));
-        when(transaksjonMappingService.save(any(TransaksjonMapping.class)))
-                .thenReturn(Mono.just(new TransaksjonMapping()));
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
@@ -77,7 +67,6 @@ class InntektstubClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
-                    verify(transaksjonMappingService).save(any(TransaksjonMapping.class));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     assertThat(statusCaptor.getAllValues().getFirst(), equalTo("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
@@ -92,8 +81,6 @@ class InntektstubClientTest {
         val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
-        when(transaksjonMappingService.existAlready(eq(INNTK), anyString()))
-                .thenReturn(Mono.just(false));
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
@@ -117,46 +104,15 @@ class InntektstubClientTest {
     void shouldIkkeFunnetFraTenorSjekk_OK() {
 
         val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
-        val statusCaptor = ArgumentCaptor.forClass(String.class);
 
-        when(transaksjonMappingService.existAlready(eq(INNTK), anyString()))
-                .thenReturn(Mono.just(false));
-        when(transaksjonMappingService.save(any(TransaksjonMapping.class)))
-                .thenReturn(Mono.just(new TransaksjonMapping()));
-        when(transactionHelperService.persister(any(), any(), anyString()))
-                .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
                 .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.NOT_FOUND).build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
-                .assertNext(status -> {
-                    verify(transactionHelperService).persister(any(), any(),
-                            statusCaptor.capture());
-                    verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
-                    assertThat(statusCaptor.getAllValues().getLast(), equalTo(""));
-                })
+                .expectNextCount(0)
                 .verifyComplete();
-    }
 
-    @Test
-    void shouldIgnoreImportFraTenor() {
-
-        val statusCaptor = ArgumentCaptor.forClass(String.class);
-        val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
-
-        when(transaksjonMappingService.existAlready(INNTK, TESTNORGE_IDENT))
-                .thenReturn(Mono.just(true));
-        when(transactionHelperService.persister(any(), any(), anyString()))
-                .thenReturn(Mono.just(new BestillingProgress()));
-
-        StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
-                .assertNext(status -> {
-            verify(transaksjonMappingService).existAlready(eq(INNTK), eq(TESTNORGE_IDENT));
-            verify(transactionHelperService, times(1)).persister(any(), any(),
-                    statusCaptor.capture());
-            assertThat(statusCaptor.getAllValues().getFirst(), equalTo(""));
-        })
-                .verifyComplete();
+        verify(inntektstubConsumer).sjekkImporterInntekt(TESTNORGE_IDENT, true);
     }
 
     @Test
@@ -228,6 +184,5 @@ class InntektstubClientTest {
                         .sisteAarMaaned("2025-12")
                         .build()))
                 .build();
-
     }
 }
