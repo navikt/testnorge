@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="oppdragServiceWSBinding"
+                  targetNamespace="http://nav.no/system/os/eksponering/oppdragServiceWSBinding"
+                  xmlns:oppdragService="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceGrensesnitt"
+                  xmlns:tns="http://nav.no/system/os/eksponering/oppdragServiceWSBinding"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+    <wsdl:import namespace="http://nav.no/system/os/tjenester/oppdragService/oppdragServiceGrensesnitt" location="../tjenester/oppdragService/oppdragServiceGrensesnitt.wsdl">
+    </wsdl:import>
+
+    <wsdl:binding name="oppdragServiceBinding" type="oppdragService:oppdragService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsaw:UsingAddressing/>
+        <wsdl:operation name="sendInnOppdrag">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="feilUnderBehandling">
+                <soap:fault name="feilUnderBehandling" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="simulerBeregning">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="feilUnderBehandling">
+                <soap:fault name="feilUnderBehandling" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+    </wsdl:binding>
+
+    <wsdl:service name="oppdragService">
+        <wsdl:port name="oppdragServicePort" binding="tns:oppdragServiceBinding">
+            <soap:address location="http://localhost:9080/system/os/eksponering/oppdragServiceWSBinding"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
