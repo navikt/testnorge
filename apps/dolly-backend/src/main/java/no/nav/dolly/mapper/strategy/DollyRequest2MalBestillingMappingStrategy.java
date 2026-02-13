@@ -3,7 +3,7 @@ package no.nav.dolly.mapper.strategy;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.skattekort.domain.ArbeidsgiverSkatt;
+import no.nav.dolly.bestilling.skattekort.domain.ArbeidstakerSkatt;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -109,7 +109,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(SkattekortRequestDTO skattekortRequest, SkattekortRequestDTO akkumulert, MappingContext context) {
-                        akkumulert.getArbeidsgiverSkatt().addAll(mapperFacade.mapAsList(skattekortRequest.getArbeidsgiverSkatt(), ArbeidsgiverSkatt.class));
+                        akkumulert.getArbeidsgiverSkatt().addAll(mapperFacade.mapAsList(skattekortRequest.getArbeidsgiverSkatt(), ArbeidstakerSkatt.class));
                     }
                 })
                 .register();

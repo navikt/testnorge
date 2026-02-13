@@ -28,7 +28,5 @@ public enum NaturalytelseType {
     INNBETALING_TIL_UTENLANDSK_PENSJONSORDNING("innbetalingTilUtenlandskPensjonsordning"),
     ELEKTRONISK_KOMMUNIKASJON("elektroniskKommunikasjon");
 
-
     private final String jsonValue;
-
 }

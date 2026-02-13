@@ -16,8 +16,6 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class Skattekortmelding {
 
-
-    private String arbeidstakeridentifikator;
     private Resultatstatus resultatPaaForespoersel;
     private Skattekort skattekort;
     private List<Tilleggsopplysning> tilleggsopplysning;
@@ -30,5 +28,4 @@ public class Skattekortmelding {
         }
         return tilleggsopplysning;
     }
-
 }
