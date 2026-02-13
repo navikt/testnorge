@@ -2,6 +2,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import React, { SyntheticEvent } from 'react'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { adressePath, personPath } from '@/pages/dollySoek/SoekForm'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
@@ -55,6 +56,18 @@ export const Familierelasjoner = ({ handleChange }: any) => {
 				label="Har delt bosted"
 				onChange={(val: SyntheticEvent) =>
 					handleChange(val.target.checked, `${adressePath}.harDeltBosted`, 'Har delt bosted')
+				}
+			/>
+			<FormTextInput
+				name={`${personPath}.antallRelasjoner`}
+				placeholder="Skriv inn antall relasjoner ..."
+				type="number"
+				onBlur={(val: SyntheticEvent) =>
+					handleChange(
+						val?.target?.value || null,
+						`${personPath}.antallRelasjoner`,
+						`Antall relasjoner: ${val?.target?.value}`,
+					)
 				}
 			/>
 		</SoekKategori>

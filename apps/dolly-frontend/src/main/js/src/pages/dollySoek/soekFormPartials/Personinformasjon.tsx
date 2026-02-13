@@ -49,6 +49,18 @@ export const Personinformasjon = ({
 					)
 				}
 			/>
+			<FormTextInput
+            				name={`${personPath}.antallStatsborgerskap`}
+            				placeholder="Skriv inn antall statsborgerskap ..."
+            				type="number"
+            				onBlur={(val: SyntheticEvent) =>
+            					handleChange(
+            						val?.target?.value || null,
+            						`${personPath}.antallStatsborgerskap`,
+            						`Antall statsborgerskap: ${val?.target?.value}`,
+            					)
+            				}
+            			/>
 			<FormSelect
 				name={`${personPath}.personStatus`}
 				options={Options('personstatus')}
