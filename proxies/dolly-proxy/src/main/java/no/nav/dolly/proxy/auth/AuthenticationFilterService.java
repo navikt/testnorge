@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.stereotype.Service;
@@ -16,34 +15,26 @@ public class AuthenticationFilterService {
     private final AzureNavTokenService navTokenService;
     private final AzureTrygdeetatenTokenService trygdeetatenTokenService;
     private final FakedingsService fakedingsService;
+    private final TokenCache tokenCache;
 
     public GatewayFilter getNavAuthenticationFilter(String cluster, String namespace, String name, String url) {
         var serverProperties = ServerProperties.of(cluster, namespace, name, url);
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
-                        () -> navTokenService
-                                .exchange(serverProperties)
-                                .map(AccessToken::getTokenValue));
+                        () -> tokenCache.get(serverProperties, navTokenService::exchange));
     }
 
     public GatewayFilter getTrygdeetatenAuthenticationFilter(String cluster, String namespace, String name, String url) {
         var serverProperties = ServerProperties.of(cluster, namespace, name, url);
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
-                        () -> trygdeetatenTokenService
-                                .exchange(serverProperties)
-                                .map(AccessToken::getTokenValue));
+                        () -> tokenCache.get(serverProperties, trygdeetatenTokenService::exchange));
     }
 
     public GatewayFilter getFakedingsAuthenticationFilter(String cluster, String namespace, String name, String url) {
         var serverProperties = ServerProperties.of(cluster, namespace, name, url);
         return fakedingsService
                 .bearerAuthenticationHeaderFilter(serverProperties);
-    }
-
-    public GatewayFilter getBasicAuthenticationFilter(String username, String password) {
-        return AddAuthenticationRequestGatewayFilterFactory
-                .basicAuthAuthenticationHeaderFilter(username, password);
     }
 
     public GatewayFilter getApiKeyAuthenticationFilter(String apiKey) {
