@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.KILDESKATT_PAA_PENSJON;
+import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.OPPHOLD_I_TILTAKSSONE;
+import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.OPPHOLD_PAA_SVALBARD;
 import static no.nav.dolly.bestilling.skattekort.domain.Trekkode.LOENN_FRA_NAV;
 import static no.nav.dolly.bestilling.skattekort.domain.Trekkode.PENSJON_FRA_NAV;
 import static no.nav.dolly.bestilling.skattekort.domain.Trekkode.UFOERETRYGD_FRA_NAV;
@@ -51,8 +54,7 @@ public class SkattekortClient implements ClientRegister {
         if (isNull(bestilling.getSkattekort()) || bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty()) {
             return Mono.empty();
         } else if (!isValidateOK(bestilling)) {
-            return oppdaterStatus(progress, getInfoVenter(SKATTEKORT.name()))
-                    .flatMap(updatedProgress -> oppdaterStatus(updatedProgress, "Avvik: Validering feilet: Trekkode er ikke gyldig"));
+            return oppdaterStatus(progress, "Avvik: Validering feilet: Trekkode er ikke gyldig");
         }
 
         return oppdaterStatus(progress, getInfoVenter(SKATTEKORT.name()))
@@ -85,6 +87,36 @@ public class SkattekortClient implements ClientRegister {
                 .subscribe(skattekorts -> log.info("Slettet skattekort for identer: {}", identer));
     }
 
+    private Mono<String> sendSkattekortForArbeidstaker(ArbeidstakerSkatt arbeidstaker, DollyPerson dollyPerson) {
+
+        val context = MappingContextUtils.getMappingContext();
+        context.setProperty("ident", dollyPerson.getIdent());
+
+        return Flux.fromIterable(arbeidstaker.getArbeidstaker())
+                .map(skattekortmelding ->
+                        mapperFacade.map(skattekortmelding, SkattekortRequest.class, context))
+                .flatMap(request -> {
+
+                    if (request.getSkattekort().getForskuddstrekkList().stream()
+                            .allMatch(forskuddstrekk -> isNull(forskuddstrekk.getTrekktabell()) &&
+                                    isNull(forskuddstrekk.getProsentkort()) &&
+                                    isNull(forskuddstrekk.getFrikort())) &&
+                            request.getSkattekort().getTilleggsopplysningList().isEmpty()) {
+                        log.warn("Utelater skattekort for person: {}, year: {} -- ingen forskuddstrekk " +
+                                        "eller tillegssopplysninger er definert",
+                                dollyPerson.getIdent(), request.getSkattekort().getInntektsaar());
+                        return Mono.just("%d|Ingen forskuddstrekk er definert".formatted(request.getSkattekort().getInntektsaar()));
+                    } else {
+
+                        return skattekortConsumer.sendSkattekort(request)
+                                .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
+                                        dollyPerson.getIdent()));
+                    }
+                })
+                .onErrorResume(throwable -> Mono.just("xxxx|%s".formatted(throwable.getMessage())))
+                .collect(Collectors.joining(","));
+    }
+
     private static boolean isValidateOK(RsDollyUtvidetBestilling bestilling) {
 
         return bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
@@ -106,7 +138,11 @@ public class SkattekortClient implements ClientRegister {
                         .map(ArbeidstakerSkatt::getArbeidstaker)
                         .flatMap(Collection::stream)
                         .map(Skattekortmelding::getTilleggsopplysning)
-                        .anyMatch(opplysninger -> !opplysninger.isEmpty());
+                        .flatMap(Collection::stream)
+                        .anyMatch(tilleggsopplysning ->
+                                OPPHOLD_PAA_SVALBARD.equals(tilleggsopplysning) ||
+                                        KILDESKATT_PAA_PENSJON.equals(tilleggsopplysning) ||
+                                        OPPHOLD_I_TILTAKSSONE.equals(tilleggsopplysning));
     }
 
     private static boolean isGyldigTrekkode(Trekkode trekkode) {
@@ -114,36 +150,6 @@ public class SkattekortClient implements ClientRegister {
         return LOENN_FRA_NAV.equals(trekkode) ||
                 PENSJON_FRA_NAV.equals(trekkode) ||
                 UFOERETRYGD_FRA_NAV.equals(trekkode);
-    }
-
-    private Mono<String> sendSkattekortForArbeidstaker(ArbeidstakerSkatt arbeidstaker, DollyPerson dollyPerson) {
-
-        val context = MappingContextUtils.getMappingContext();
-        context.setProperty("ident", dollyPerson.getIdent());
-
-        return Flux.fromIterable(arbeidstaker.getArbeidstaker())
-                .map(skattekortmelding ->
-                        mapperFacade.map(skattekortmelding, SkattekortRequest.class, context))
-                .flatMap(request -> {
-
-                    if (request.getSkattekort().getForskuddstrekkList().stream()
-                            .anyMatch(forskuddstrekk -> isNull(forskuddstrekk.getTrekktabell()) &&
-                                    isNull(forskuddstrekk.getProsentkort()) &&
-                                    isNull(forskuddstrekk.getFrikort())) &&
-                            request.getSkattekort().getTilleggsopplysningList().isEmpty()) {
-                        log.warn("Utelater skattekort for person: {}, year: {} -- ingen forskuddstrekk " +
-                                        "eller tillegssopplysninger er definert",
-                                dollyPerson.getIdent(), request.getSkattekort().getInntektsaar());
-                        return Mono.just("%d|Ingen forskuddstrekk er definert".formatted(request.getSkattekort().getInntektsaar()));
-                    } else {
-
-                        return skattekortConsumer.sendSkattekort(request)
-                                .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
-                                        dollyPerson.getIdent()));
-                    }
-                })
-                .onErrorResume(throwable -> Mono.just("xxxx|%s".formatted(throwable.getMessage())))
-                .collect(Collectors.joining(","));
     }
 
     private static String formatStatus(SkattekortResponse response, Integer year, String ident) {
