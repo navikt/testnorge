@@ -30,7 +30,7 @@ public class PdlTestdataConsumer {
             ObjectMapper objectMapper,
             WebClient webClient
     ) {
-        serverProperties = consumers.getPdlProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         var jacksonStrategy = ExchangeStrategies
                 .builder()

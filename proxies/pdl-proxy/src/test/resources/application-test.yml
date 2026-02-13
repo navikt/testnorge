@@ -1,6 +1,0 @@
-app:
-  elastic:
-    username: placeholder
-    password: placeholder
-  hendelse.lager.api.key: placeholder
-  person.aktor.api.key: placeholder
