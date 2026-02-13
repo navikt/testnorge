@@ -10,7 +10,7 @@ type Props = {
 }
 
 const Overskrift = styled.div`
-	background-color: #d3dee3;
+	background-color: var(--ax-bg-info-moderate);
 	margin: 5px 0 15px;
 	display: flex;
 	align-items: center;

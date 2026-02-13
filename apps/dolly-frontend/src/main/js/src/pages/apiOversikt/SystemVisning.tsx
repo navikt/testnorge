@@ -38,15 +38,11 @@ const ReadWriteDeleteVisning = ({ data, type }: { data: any; type: string }) => 
 	const nestedData = _.get(data, type)
 
 	const backgroundColor =
-		type === 'read'
-			? 'surface-info-subtle'
-			: type === 'write'
-				? 'surface-success-subtle'
-				: 'surface-danger-subtle'
+		type === 'read' ? 'info-moderate' : type === 'write' ? 'success-moderate' : 'danger-moderate'
 
 	return (
 		<ReadWriteDelete>
-			<Box padding="3" background={backgroundColor}>
+			<Box padding="space-12" background={backgroundColor}>
 				<h3>{type}</h3>
 				<DataVisning system={nestedData ? { ...data, ...nestedData } : data} />
 			</Box>

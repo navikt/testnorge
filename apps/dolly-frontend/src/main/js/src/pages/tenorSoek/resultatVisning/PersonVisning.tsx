@@ -63,7 +63,7 @@ export const PersonVisning = ({
 
 	return (
 		<PersonVisningWrapper>
-			<Box background="surface-default" padding="3" borderRadius="medium">
+			<Box background="default" padding="space-12" borderRadius="4">
 				<div className="flexbox--space">
 					<NavnHeader>{personData?.visningnavn}</NavnHeader>
 					{ibruk ? (

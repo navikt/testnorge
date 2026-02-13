@@ -86,7 +86,7 @@ export const MalPanel = ({
 							setUnderRedigering(underRedigering.concat([id]))
 						}}
 						variant={'tertiary'}
-						icon={<PencilWritingIcon />}
+						icon={<PencilWritingIcon title="Endre navn" />}
 						size={'small'}
 					/>
 				)}
@@ -98,7 +98,7 @@ export const MalPanel = ({
 	)
 
 	return (
-		<Box background="surface-default" padding="4">
+		<Box background="default" padding="space-16">
 			{antallEgneMaler > 0 ? (
 				malerFiltrert(malListe, searchText).length > 0 ? (
 					<ErrorBoundary>

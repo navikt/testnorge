@@ -8,7 +8,7 @@ const TabsVisningFormatter = styled.div`
 	width: 100%;
 
 	&& {
-		.navds-tabs__tablist-wrapper {
+		.aksel-tabs__tablist-wrapper {
 			margin-bottom: 20px;
 		}
 	}

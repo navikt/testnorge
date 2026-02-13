@@ -1,14 +1,4 @@
-import { Alert } from '@navikt/ds-react'
-import styled from 'styled-components'
-
-const StyledAlert = styled(Alert)`
-	margin-bottom: 20px;
-	&&& {
-		.navds-alert__wrapper {
-			max-width: 60rem;
-		}
-	}
-`
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export const AlertAaregRequired = ({ meldingSkjema }: { meldingSkjema: string }) => {
 	return (

@@ -1,18 +1,8 @@
 import React, { SyntheticEvent, useState } from 'react'
-import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import styled from 'styled-components'
+import { Switch } from '@navikt/ds-react'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
-const StyledSwitch = styled(DollyCheckbox)`
-	.navds-switch__input:checked ~ .navds-switch__track {
-		background-color: #0067c5;
-	}
-
-	.navds-switch__input:checked ~ .navds-switch__track > .navds-switch__thumb {
-		color: #0067c5;
-	}
-`
-
-export const PersonIBrukButton = ({ ident, updateIdentIbruk, ...props }) => {
+export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
 	const [brukt, setBrukt] = useState(ident.ibruk)
 	const handleOnChange = (event: any) => {
 		const erIBruk = event.target.checked
@@ -21,13 +11,14 @@ export const PersonIBrukButton = ({ ident, updateIdentIbruk, ...props }) => {
 	}
 
 	return (
-		<StyledSwitch
-			title={brukt ? 'Marker som ikke i bruk' : 'Marker som i bruk'}
+		<Switch
 			checked={brukt}
 			onChange={handleOnChange}
 			onClick={(e: SyntheticEvent) => e.stopPropagation()}
-			isSwitch
-			{...props}
-		/>
+			hideLabel
+			data-testid={TestComponentSelectors.TOGGLE_PERSON_IBRUK}
+		>
+			{brukt ? 'Marker som ikke i bruk' : 'Marker som i bruk'}
+		</Switch>
 	)
 }

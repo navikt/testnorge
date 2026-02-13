@@ -180,10 +180,7 @@ export default function PersonListe({
 			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => (
 				<Suspense fallback={<Loading label={'Laster...'} />}>
-					<PersonIBrukButtonConnector
-						data-testid={TestComponentSelectors.TOGGLE_PERSON_IBRUK}
-						ident={row.ident}
-					/>
+					<PersonIBrukButtonConnector ident={row.ident} />
 				</Suspense>
 			),
 		},

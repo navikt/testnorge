@@ -19,10 +19,6 @@ export enum Gruppevalg {
 	NY = 'Ny',
 }
 
-const StyledToggleGroup = styled(ToggleGroup)`
-	margin-bottom: 10px;
-`
-
 export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) => {
 	const formMethods = useFormContext()
 
@@ -67,7 +63,12 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) 
 
 	return (
 		<div className="toggle--wrapper">
-			<StyledToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
+			<ToggleGroup
+				size={'small'}
+				value={gruppevalg}
+				onChange={handleToggleChange}
+				style={{ marginBottom: '10px' }}
+			>
 				<ToggleGroup.Item
 					data-testid={TestComponentSelectors.TOGGLE_EKSISTERENDE_GRUPPE}
 					key={Gruppevalg.MINE}
@@ -90,7 +91,7 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) 
 				>
 					Ny gruppe
 				</ToggleGroup.Item>
-			</StyledToggleGroup>
+			</ToggleGroup>
 
 			{gruppevalg === Gruppevalg.MINE && (
 				<EksisterendeGruppe fraGruppe={fraGruppe} grupper={grupper} />

@@ -23,7 +23,7 @@ export const SlettMal = ({ id, organisasjon, mutate }) => {
 				data-testid={TestComponentSelectors.BUTTON_MALER_SLETT}
 				onClick={openModal}
 				variant={'tertiary'}
-				icon={<TrashIcon />}
+				icon={<TrashIcon title="Slett" />}
 				size={'small'}
 			/>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'40%'} overflow={'auto'}>

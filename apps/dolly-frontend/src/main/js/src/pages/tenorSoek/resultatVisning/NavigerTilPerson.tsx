@@ -42,7 +42,7 @@ export const NavigerTilPerson = ({ ident }: NavigerTilPersonProps) => {
 			data-testid={TestComponentSelectors.BUTTON_VIS_I_GRUPPE}
 			variant="tertiary"
 			size="xsmall"
-			icon={<ArrowRightIcon />}
+			icon={<ArrowRightIcon aria-hidden />}
 			loading={loading}
 			onClick={handleClick}
 			style={{ minWidth: '118px' }}

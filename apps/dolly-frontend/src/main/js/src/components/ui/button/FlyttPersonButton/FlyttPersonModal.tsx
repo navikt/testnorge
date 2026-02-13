@@ -103,14 +103,15 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		return relatertePersonerHentet
 	}
 
-	const harRelatertePersoner = (identer: Array<string>) => {
+	const harRelatertePersoner = (identer: Array<{ fnr: string }>) => {
 		if (!identer || identer?.length < 1) {
 			return false
 		}
 		let relatert = false
 		identer.forEach((ident) => {
 			if (
-				gruppeOptions?.find((option: Option) => option?.value === ident)?.relasjoner?.length > 0
+				gruppeOptions?.find((option: Option) => option?.value === ident?.fnr)?.relasjoner?.length >
+				0
 			) {
 				relatert = true
 			}

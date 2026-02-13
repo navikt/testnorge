@@ -26,7 +26,7 @@ const StyledInput = styled.input`
 	}
 
 	&.skjemaelement__input--harFeil {
-		border-color: var(--a-border-danger);
+		border-color: var(--ax-border-danger);
 	}
 `
 

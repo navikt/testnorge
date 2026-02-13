@@ -55,7 +55,7 @@ test('Testing av forskjellige actions på gruppeheaderen', async ({ page }) => {
 	await page.getByTestId(TestComponentSelectors.INPUT_NY_GRUPPE_HENSIKT).fill('TestHensikt')
 	await page.getByTestId(TestComponentSelectors.BUTTON_NY_GRUPPE_OPPRETT).click()
 	await page
-		.locator('.navds-checkbox__label')
+		.locator('.aksel-checkbox__label')
 		.getByText(/12345678912/)
 		.first()
 		.click()

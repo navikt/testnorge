@@ -18,5 +18,5 @@ export const StatusBox = (data: Jobbstatus) => {
 		)
 	}
 
-	return <VStack gap="4">{renderedBox(data.status)}</VStack>
+	return <VStack gap="space-16">{renderedBox(data.status)}</VStack>
 }

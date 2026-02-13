@@ -94,7 +94,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 					defaultValue={formSimple ? FormType.FORENKLET : FormType.STANDARD}
 					onChange={(value: FormType) => changeFormType(value)}
 					size={'small'}
-					style={{ backgroundColor: '#ffffff' }}
+					style={{ marginBottom: '10px' }}
 				>
 					<ToggleGroup.Item value={FormType.STANDARD}>Standard</ToggleGroup.Item>
 					<ToggleGroup.Item value={FormType.FORENKLET}>Forenklet</ToggleGroup.Item>

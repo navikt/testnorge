@@ -12,9 +12,9 @@ const StyledHjelpetekstDiv = styled.div`
 	margin-left: unset;
 	margin-top: 30px;
 
-	.navds-help-text {
-		margin-left: -10px;
-		margin-right: 10px;
+	.aksel-help-text {
+		margin-left: -20px;
+		margin-right: 20px;
 	}
 `
 

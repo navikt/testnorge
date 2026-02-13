@@ -10,6 +10,7 @@ import { Alert } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useDispatch } from 'react-redux'
 import { useTags } from '@/utils/hooks/useTags'
+import './TagsButton.less'
 
 type Props = {
 	gruppeId: number

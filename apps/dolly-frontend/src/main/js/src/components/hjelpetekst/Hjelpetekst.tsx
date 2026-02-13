@@ -14,9 +14,11 @@ export const Hjelpetekst = ({
 	style,
 	...props
 }: HjelpetekstProps) => {
+	const defaultStyle = { marginLeft: '10px' }
+
 	return (
 		<HelpText
-			style={style}
+			style={style ?? defaultStyle}
 			placement={placement}
 			onClick={(event) => {
 				event.stopPropagation()
