@@ -79,7 +79,7 @@ public class Organisasjon implements Serializable {
     private String brukerId;
 
     @OrderBy("id desc")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisasjon", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "organisasjon", cascade = CascadeType.ALL)
     @Builder.Default
     private Set<Adresse> adresser = new LinkedHashSet<>();
 
@@ -87,7 +87,7 @@ public class Organisasjon implements Serializable {
     @JoinColumn(name = "parent_org")
     private Organisasjon parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
     @Builder.Default
     private List<Organisasjon> underenheter = new ArrayList<>();
 
