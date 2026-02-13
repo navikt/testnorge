@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPerson;
@@ -48,6 +49,7 @@ public class PersonServiceClient {
 
     private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
     private static final String HENDELSER = "hendelser";
+    private static final String FEIL = "Feil= ";
 
     private static final int TIMEOUT = 500;
     private final PersonServiceConsumer personServiceConsumer;
@@ -77,15 +79,21 @@ public class PersonServiceClient {
                             .collectList()
                             .flatMap(status -> oppdaterStatus(dollyPerson, progress, status))
                     );
-                });
+                })
+                .onErrorResume(error ->
+                        getError(error, dollyPerson)
+                                .flatMap(response -> oppdaterStatus(dollyPerson, progress, List.of(response)))
+                                .doOnNext(bestProgress ->
+                                        log.error("Feil ved synkronisering mot PersonService for ident {}: {}", dollyPerson.getIdent(),
+                                                bestProgress.getPdlOrdreStatus().substring(FEIL.length()))));
     }
 
-    private Flux<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
-        var description = WebClientError.describe(throwable);
-        return Flux.just(PersonServiceResponse
+    private Mono<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
+        val description = WebClientError.describe(throwable);
+        return Mono.just(PersonServiceResponse
                 .builder()
                 .ident(person.getIdent())
-                .formattertMelding("Feil= %s".formatted(ErrorStatusDecoder.encodeStatus(description.getMessage())))
+                .formattertMelding(FEIL + "%s".formatted(ErrorStatusDecoder.encodeStatus(description.getMessage())))
                 .status(description.getStatus())
                 .exists(false)
                 .build());
