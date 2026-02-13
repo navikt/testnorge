@@ -12,7 +12,6 @@ on:
       - libs/kafka-producers/**
       - libs/reactive-core/**
       - libs/security-core/**
-      - libs/servlet-core/**
       - libs/reactive-standalone-security/**
       - libs/testing/**
       - plugins/**

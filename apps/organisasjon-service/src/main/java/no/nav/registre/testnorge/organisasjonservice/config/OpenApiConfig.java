@@ -7,17 +7,20 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.Arrays;
 
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
-
 @Configuration
-public class OpenApiConfig implements WebMvcConfigurer {
+public class OpenApiConfig implements WebFilter {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -49,7 +52,12 @@ public class OpenApiConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
+            exchange.getResponse().setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            exchange.getResponse().getHeaders().setLocation(URI.create("/swagger-ui.html"));
+            return exchange.getResponse().setComplete();
+        }
+        return chain.filter(exchange);
     }
 }

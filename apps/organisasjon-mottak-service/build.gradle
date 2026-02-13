@@ -17,19 +17,20 @@ dependencies {
     implementation "no.nav.testnav.libs:kafka-producers"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:reactive-standalone-security"
     implementation "no.nav.testnav.libs:testing"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.kafka:spring-kafka"
 
     implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
     implementation "org.apache.httpcomponents.core5:httpcore5:5.3"
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.springframework.security:spring-security-test"
 }
