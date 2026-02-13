@@ -4,8 +4,8 @@ plugins {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "testnav-reactive-insecure-security"
-        property "sonar.projectName", "testnav-reactive-insecure-security"
+        property "sonar.projectKey", "testnav-reactive-standalone-security"
+        property "sonar.projectName", "testnav-reactive-standalone-security"
     }
 }
 

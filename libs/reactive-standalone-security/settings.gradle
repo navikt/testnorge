@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "4.3.1"
 }
 
-rootProject.name = 'reactive-insecure-security'
+rootProject.name = 'reactive-standalone-security'
 
 includeBuild "../../plugins/java"
 

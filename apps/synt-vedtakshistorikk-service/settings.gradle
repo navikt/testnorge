@@ -10,7 +10,7 @@ includeBuild "../../libs/data-transfer-objects"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/servlet-core"
-includeBuild "../../libs/reactive-insecure-security"
+includeBuild "../../libs/reactive-standalone-security"
 includeBuild "../../libs/servlet-security"
 includeBuild "../../libs/testing"
 
