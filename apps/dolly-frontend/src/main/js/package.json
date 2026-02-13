@@ -62,7 +62,6 @@
 		"@hookform/error-message": "^2.0.1",
 		"@navikt/aksel": "^8.1.0",
 		"@navikt/ds-css": "^8.1.0",
-		"@navikt/ds-icons": "^3.4.3",
 		"@navikt/ds-react": "^8.1.0",
 		"@playwright/experimental-ct-react": "^1.58.2",
 		"@playwright/test": "^1.58.2",
