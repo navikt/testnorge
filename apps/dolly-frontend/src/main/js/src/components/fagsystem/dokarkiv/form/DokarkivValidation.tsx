@@ -1,6 +1,5 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
-import * as _ from 'lodash-es'
 
 export const dokarkivValidation = {
 	dokarkiv: ifPresent(
@@ -61,16 +60,7 @@ export const dokarkivValidation = {
 				dokumenter: Yup.array().of(
 					Yup.object({
 						tittel: requiredString,
-						brevkode: Yup.string().test(
-							'is-valid-brevkode',
-							'Feltet er påkrevd',
-							(_val, testContext) => {
-								const fullForm =
-									testContext.from && testContext.from[testContext.from.length - 1]?.value
-								const brevkode = _.get(fullForm, 'dokarkiv.dokumenter[0].brevkode')
-								return brevkode !== ''
-							},
-						),
+						brevkode: Yup.string().optional().nullable(),
 					}),
 				),
 			}),

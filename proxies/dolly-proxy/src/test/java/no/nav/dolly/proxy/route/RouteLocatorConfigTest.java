@@ -1,5 +1,7 @@
 package no.nav.dolly.proxy.route;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
@@ -24,6 +26,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -39,6 +45,11 @@ import static org.mockito.Mockito.when;
 @DollySpringBootTest
 @AutoConfigureWebTestClient(timeout = "30000")
 class RouteLocatorConfigTest {
+
+    private static final String jwt = JWT
+            .create()
+            .withExpiresAt(Date.from(Instant.now().plusSeconds(TimeUnit.MINUTES.toSeconds(5))))
+            .sign(Algorithm.none());
 
     @RegisterExtension
     static WireMockExtension wireMockServer = WireMockExtension
@@ -59,13 +70,13 @@ class RouteLocatorConfigTest {
     @BeforeEach
     public void setup() {
         when(tokenExchange.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+                .thenReturn(Mono.just(new AccessToken(jwt)));
         when(navTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-nav-token")));
+                .thenReturn(Mono.just(new AccessToken(jwt)));
         when(trygdeetatenTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-trygdeetaten-token")));
+                .thenReturn(Mono.just(new AccessToken(jwt)));
         when(tokenXService.exchange(any(), any()))
-                .thenReturn(Mono.just(new AccessToken("dummy-tokenx-token")));
+                .thenReturn(Mono.just(new AccessToken(jwt)));
     }
 
     @DynamicPropertySource
@@ -133,7 +144,7 @@ class RouteLocatorConfigTest {
                     .expectBody(String.class).isEqualTo(responseBody);
 
             wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath))
-                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
             wireMockServer.verify(0, getRequestedFor(urlEqualTo(downstreamPath)));
 
         } else {
@@ -153,7 +164,7 @@ class RouteLocatorConfigTest {
                     .expectBody(String.class).isEqualTo(responseBody);
 
             wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
             wireMockServer.verify(0, postRequestedFor(urlEqualTo(downstreamPath)));
 
         }
@@ -186,7 +197,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testArenaForvalteren(String miljo) {
 
         var downstreamPath = "/some/arena/forvalteren/path";
@@ -259,7 +270,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testDokarkiv(String env) {
 
         var requestedPath = "/dokarkiv/api/%s/some/path".formatted(env);
@@ -281,12 +292,12 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testEreg(String miljo) {
 
         var requestedPath = "/api/%s/some/nested/path".formatted(miljo);
@@ -338,7 +349,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-tokenx-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -411,7 +422,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -436,7 +447,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -461,7 +472,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -487,7 +498,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -512,7 +523,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -565,7 +576,7 @@ class RouteLocatorConfigTest {
                         .expectBody(String.class).isEqualTo(responseBody);
 
                 wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
             }
 
@@ -586,7 +597,7 @@ class RouteLocatorConfigTest {
                         .expectBody(String.class).isEqualTo(responseBody);
 
                 wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
             }
 
@@ -628,7 +639,7 @@ class RouteLocatorConfigTest {
                         .expectBody(String.class).isEqualTo(responseBody);
 
                 wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
             }
 
@@ -662,7 +673,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2" })
+    @ValueSource(strings = {"q1", "q2"})
     void testPensjonAfp(String env) {
 
         var downstreamPath = "/api/mock-oppsett/test";
@@ -683,12 +694,12 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2" })
+    @ValueSource(strings = {"q1", "q2"})
     void testPensjonSamboer(String env) {
 
         var downstreamPath = "/api/samboer/test";
@@ -709,12 +720,12 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "q1", "q2", "q4" })
+    @ValueSource(strings = {"q1", "q2", "q4"})
     void testSaf(String env) {
 
         var downstreamPath = "/some/random/path";
@@ -735,7 +746,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
 
     }
@@ -785,7 +796,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-trygdeetaten-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -810,7 +821,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer dummy-nav-token")));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
 
     }
 
@@ -845,3 +856,4 @@ class RouteLocatorConfigTest {
     }
 
 }
+
