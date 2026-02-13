@@ -5,9 +5,10 @@ import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.organisasjonforvalter.consumer.command.AdresseServiceCommand;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,21 +47,19 @@ public class AdresseServiceConsumer {
                 .build();
     }
 
-    public List<VegadresseDTO> getAdresser(String query) {
+    public Mono<List<VegadresseDTO>> getAdresser(String query) {
 
         long startTime = currentTimeMillis();
 
-        try {
-            var adresser = tokenExchange.exchange(serverProperties)
-                    .flatMap(token -> new AdresseServiceCommand(webClient, query, token.getTokenValue()).call()).block();
-
-            log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
-            return Arrays.asList(adresser);
-
-        } catch (RuntimeException e) {
-
-            log.error("Henting av adresse feilet", e);
-            return List.of(getDefaultAdresse());
-        }
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new AdresseServiceCommand(webClient, query, token.getTokenValue()).call())
+                .map(adresser -> {
+                    log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
+                    return Arrays.asList(adresser);
+                })
+                .onErrorResume(e -> {
+                    log.error("Henting av adresse feilet", e);
+                    return Mono.just(List.of(getDefaultAdresse()));
+                });
     }
 }

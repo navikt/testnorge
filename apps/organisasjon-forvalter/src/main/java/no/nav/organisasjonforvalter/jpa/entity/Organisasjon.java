@@ -23,7 +23,9 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -77,15 +79,15 @@ public class Organisasjon implements Serializable {
     private String brukerId;
 
     @OrderBy("id desc")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisasjon", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "organisasjon", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<Adresse> adresser = new ArrayList<>();
+    private Set<Adresse> adresser = new LinkedHashSet<>();
 
     @ManyToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "parent_org")
     private Organisasjon parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
     @Builder.Default
     private List<Organisasjon> underenheter = new ArrayList<>();
 

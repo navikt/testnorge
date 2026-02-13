@@ -18,3 +18,7 @@ spring:
 opensearch:
   index:
     adresser: pdl-adresse
+    
+springdoc:
+  swagger-ui:
+    path: /swagger

@@ -10,7 +10,7 @@ import no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariable
 import no.nav.testnav.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;

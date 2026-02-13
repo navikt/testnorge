@@ -1,27 +1,29 @@
 package no.nav.registre.testnav.inntektsmeldingservice.config;
 
-import no.nav.dolly.libs.security.config.DollyHttpSecurity;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+@RequiredArgsConstructor
 class SecurityConfig {
 
+    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
+
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests("/h2/**"))
-                .oauth2ResourceServer(configurer -> configurer.jwt(Customizer.withDefaults()))
+    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();
     }
-
 }

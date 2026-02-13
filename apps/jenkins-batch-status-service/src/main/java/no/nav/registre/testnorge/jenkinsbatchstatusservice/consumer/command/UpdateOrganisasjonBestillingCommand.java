@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.organisajonbestilling.v1.OrderDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class UpdateOrganisasjonBestillingCommand implements Runnable {
+public class UpdateOrganisasjonBestillingCommand implements Callable<Mono<Void>> {
 
     private final WebClient webClient;
     private final OrderDTO orderDTO;
@@ -20,17 +20,16 @@ public class UpdateOrganisasjonBestillingCommand implements Runnable {
     private final Long id;
 
     @Override
-    public void run() {
-        webClient
+    public Mono<Void> call() {
+        return webClient
                 .put()
                 .uri(builder -> builder.path("/api/v1/order/{uuid}/items/{id}").build(uuid, id))
-                .body(BodyInserters.fromPublisher(Mono.just(orderDTO), OrderDTO.class))
+                .bodyValue(orderDTO)
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(Void.class)
                 .timeout(Duration.ofSeconds(10))
-                .retryWhen(WebClientError.is5xxException())
-                .block();
+                .retryWhen(WebClientError.is5xxException());
     }
 
 }

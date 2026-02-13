@@ -4,14 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.config.Consumers;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.GetBEREG007LogCommand;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.GetQueueItemCommand;
+import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.dto.ItemDTO;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Slf4j
 @Component
@@ -34,28 +35,24 @@ public class JenkinsConsumer {
                 .build();
     }
 
-    private JenkinsCrumb getCrumb() {
-        return new GetCrumbCommand(webClient, getAccessTokenValue())
-                .call();
+    public Mono<Long> getJobNumber(Long itemId) {
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(accessToken -> {
+                    String token = accessToken.getTokenValue();
+                    return getCrumb(token)
+                            .flatMap(crumb -> new GetQueueItemCommand(webClient, token, crumb, itemId).call());
+                })
+                .map(ItemDTO::getNumber);
     }
 
-    public Long getJobNumber(Long itemId) {
-        return new GetQueueItemCommand(webClient, getAccessTokenValue(), getCrumb(), itemId)
-                .call()
-                .getNumber();
+    public Mono<String> getJobLog(Long jobNumber) {
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(accessToken -> new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), jobNumber).call());
     }
 
-    public String getJobLog(Long jobNumber) {
-        return new GetBEREG007LogCommand(webClient, getAccessTokenValue(), jobNumber)
-                .call();
-    }
-
-    private String getAccessTokenValue() {
-        return Optional.ofNullable(tokenExchange
-                        .exchange(serverProperties)
-                        .block())
-                .orElseThrow(() -> new NullPointerException("Failed to retrieve access token"))
-                .getTokenValue();
+    private Mono<JenkinsCrumb> getCrumb(String token) {
+        return Mono.fromCallable(() -> new GetCrumbCommand(webClient, token).call())
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
 }

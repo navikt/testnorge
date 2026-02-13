@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -55,30 +56,32 @@ public class PersonerSearchService {
 
         log.debug("Mappet request: {}", request);
 
-        Set<String> identer;
-        if (nonNull(request.getPersonRequest()) && isNotBlank(request.getPersonRequest().getIdent())) {
+        return Mono.fromCallable(() -> {
+                    if (nonNull(request.getPersonRequest()) && isNotBlank(request.getPersonRequest().getIdent())) {
 
-            log.debug("Utfører registersøk uten cache for ident: {}", request.getPersonRequest().getIdent());
-            identer = bestillingQueryService.execRegisterNoCacheQuery(request).stream()
-                    .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
-                    .collect(Collectors.toSet());
+                        log.debug("Utfører registersøk uten cache for ident: {}", request.getPersonRequest().getIdent());
+                        return bestillingQueryService.execRegisterNoCacheQuery(request).stream()
+                                .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
+                                .collect(Collectors.toSet());
+                    } else {
 
-        } else {
+                        log.debug("Utfører registersøk med cache");
+                        return bestillingQueryService.execRegisterCacheQuery(request);
+                    }
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMap(identer -> {
+                    log.debug("Fant {} identer fra bestillingsquery", identer.size());
 
-            log.debug("Utfører registersøk med cache");
-            identer = bestillingQueryService.execRegisterCacheQuery(request);
-        }
+                    request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
-        log.debug("Fant {} identer fra bestillingsquery", identer.size());
+                    var query = OpenSearchQueryBuilder.buildSearchQuery(request);
+                    addIdenterQuery(query, request.getIdenter());
 
-        request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
-
-        var query = OpenSearchQueryBuilder.buildSearchQuery(request);
-        addIdenterQuery(query, request.getIdenter());
-
-        return openSearchQueryService.execQuery(request, query)
-                .map(response -> mapperFacade.map(response, SearchResponse.class))
-                .doOnError(error -> log.error("Feil ved søk i OpenSearch: {}", error.getMessage(), error));
+                    return openSearchQueryService.execQuery(request, query)
+                            .map(response -> mapperFacade.map(response, SearchResponse.class))
+                            .doOnError(error -> log.error("Feil ved søk i OpenSearch: {}", error.getMessage(), error));
+                });
     }
 
     public List<Kategori> getTyper() {

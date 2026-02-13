@@ -3,22 +3,20 @@ package no.nav.registre.testnorge.organisasjonmottak.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
-@EnableWebSecurity
+@EnableWebFluxSecurity
 @Configuration
 class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityWebFilterChain filterChain(ServerHttpSecurity httpSecurity) {
 
-        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
+        return httpSecurity
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
                         "/internal/**",
                         "/webjars/**",
                         "/swagger-resources/**",
@@ -27,9 +25,8 @@ class SecurityConfig {
                         "/swagger",
                         "/error",
                         "/swagger-ui.html"
-                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
-
-        return httpSecurity.build();
+                ).permitAll().pathMatchers("/api/**").authenticated().anyExchange().permitAll())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()))
+                .build();
     }
 }

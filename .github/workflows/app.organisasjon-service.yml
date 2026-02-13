@@ -8,8 +8,7 @@ on:
       - libs/data-transfer-objects/**
       - libs/reactive-core/**
       - libs/security-core/**
-      - libs/servlet-core/**
-      - libs/servlet-security/**
+      - libs/reactive-security/**
       - libs/testing/**
       - apps/organisasjon-service/**
       - .github/workflows/app.organisasjon-service.yml

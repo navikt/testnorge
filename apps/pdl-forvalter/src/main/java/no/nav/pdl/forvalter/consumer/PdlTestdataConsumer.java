@@ -4,8 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
-import no.nav.pdl.forvalter.consumer.command.*;
-import no.nav.pdl.forvalter.dto.*;
+import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlDeleteHendelseIdCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlMergeNpidCommand;
+import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlOpprettNpidCommand;
+import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
+import no.nav.pdl.forvalter.dto.ArtifactValue;
+import no.nav.pdl.forvalter.dto.HendelseIdRequest;
+import no.nav.pdl.forvalter.dto.MergeIdent;
+import no.nav.pdl.forvalter.dto.OpprettIdent;
+import no.nav.pdl.forvalter.dto.OrdreRequest;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
@@ -13,7 +22,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -56,28 +65,6 @@ public class PdlTestdataConsumer {
                 .build();
         this.objectMapper = objectMapper;
         this.personServiceConsumer = personServiceConsumer;
-    }
-
-    private ExchangeFilterFunction logRequest() {
-
-        return (clientRequest, next) -> {
-            var buffer = new StringBuilder(250)
-                    .append("Request: ")
-                    .append(clientRequest.method())
-                    .append(' ')
-                    .append(clientRequest.url())
-                    .append(System.lineSeparator());
-
-            clientRequest.headers()
-                    .forEach((name, values) -> values
-                            .forEach(value -> buffer.append('\t')
-                                    .append(name)
-                                    .append('=')
-                                    .append(value.contains("Bearer ") ? "Bearer token" : value)
-                                    .append(System.lineSeparator())));
-            log.trace(buffer.substring(0, buffer.length() - 1));
-            return next.exchange(clientRequest);
-        };
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(OrdreRequest orders) {
@@ -194,6 +181,28 @@ public class PdlTestdataConsumer {
                             value.getBody().getId()
                     ).call() :
                     Flux.empty();
+        };
+    }
+
+    private ExchangeFilterFunction logRequest() {
+
+        return (clientRequest, next) -> {
+            var buffer = new StringBuilder(250)
+                    .append("Request: ")
+                    .append(clientRequest.method())
+                    .append(' ')
+                    .append(clientRequest.url())
+                    .append(System.lineSeparator());
+
+            clientRequest.headers()
+                    .forEach((name, values) -> values
+                            .forEach(value -> buffer.append('\t')
+                                    .append(name)
+                                    .append('=')
+                                    .append(value.contains("Bearer ") ? "Bearer token" : value)
+                                    .append(System.lineSeparator())));
+            log.trace(buffer.substring(0, buffer.length() - 1));
+            return next.exchange(clientRequest);
         };
     }
 }

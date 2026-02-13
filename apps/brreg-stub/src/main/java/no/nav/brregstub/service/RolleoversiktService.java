@@ -20,6 +20,8 @@ import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import no.nav.brregstub.mapper.HentRolleMapper;
 import no.nav.brregstub.mapper.RolleoversiktMapper;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,71 +38,86 @@ public class RolleoversiktService {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public Optional<RolleoversiktTo> opprettRolleoversiktV1(RolleoversiktTo rolleoversiktTo) {
-        RolleoversiktMapper.map(rolleoversiktTo); //Sjekker om object kan mappes
+    public Mono<Optional<RolleoversiktTo>> opprettRolleoversiktV1(RolleoversiktTo rolleoversiktTo) {
+        return Mono.fromCallable(() -> {
+                    RolleoversiktMapper.map(rolleoversiktTo); //Sjekker om object kan mappes
 
-        var rolleoversikt = rolleoversiktRepository.findByIdent(rolleoversiktTo.getFnr())
-                .orElseGet(() -> {
-                    var rolleutskrift = new Rolleoversikt();
-                    rolleutskrift.setIdent(rolleoversiktTo.getFnr());
-                    return rolleutskrift;
-                });
+                    var rolleoversikt = rolleoversiktRepository.findByIdent(rolleoversiktTo.getFnr())
+                            .orElseGet(() -> {
+                                var rolleutskrift = new Rolleoversikt();
+                                rolleutskrift.setIdent(rolleoversiktTo.getFnr());
+                                return rolleutskrift;
+                            });
 
-        rolleoversikt.setJson(objectMapper.writeValueAsString(rolleoversiktTo));
+                    rolleoversikt.setJson(objectMapper.writeValueAsString(rolleoversiktTo));
 
-        rolleoversiktRepository.save(rolleoversikt);
-        return Optional.of(rolleoversiktTo);
+                    rolleoversiktRepository.save(rolleoversikt);
+                    return Optional.of(rolleoversiktTo);
+                })
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @SneakyThrows
-    public Optional<RsRolleoversikt> opprettRolleoversiktV2(RsRolleoversikt rsRolleoversikt) {
-        log.info("Mottok rsRolleoversikt: {}", rsRolleoversikt);
-        RolleoversiktMapper.map(rsRolleoversikt); //Sjekker om object kan mappes
+    public Mono<Optional<RsRolleoversikt>> opprettRolleoversiktV2(RsRolleoversikt rsRolleoversikt) {
+        return Mono.fromCallable(() -> {
+                    log.info("Mottok rsRolleoversikt: {}", rsRolleoversikt);
+                    RolleoversiktMapper.map(rsRolleoversikt); //Sjekker om object kan mappes
 
-        setRollebeskrivelse(rsRolleoversikt);
+                    setRollebeskrivelse(rsRolleoversikt);
 
-        var organisasjoner = byggOrganisasjoner(rsRolleoversikt);
+                    var organisasjoner = byggOrganisasjoner(rsRolleoversikt);
 
-        var rolleoversikt = rolleoversiktRepository.findByIdent(rsRolleoversikt.getFnr())
-                .orElseGet(() -> {
-                    var rolleutskrift = new Rolleoversikt();
-                    rolleutskrift.setIdent(rsRolleoversikt.getFnr());
-                    return rolleutskrift;
-                });
+                    var rolleoversikt = rolleoversiktRepository.findByIdent(rsRolleoversikt.getFnr())
+                            .orElseGet(() -> {
+                                var rolleutskrift = new Rolleoversikt();
+                                rolleutskrift.setIdent(rsRolleoversikt.getFnr());
+                                return rolleutskrift;
+                            });
 
-        rolleoversikt.setJson(objectMapper.writeValueAsString(rsRolleoversikt));
+                    rolleoversikt.setJson(objectMapper.writeValueAsString(rsRolleoversikt));
 
-        rolleoversiktRepository.save(rolleoversikt);
+                    rolleoversiktRepository.save(rolleoversikt);
 
-        organisasjoner.forEach(this::lagreEllerOppdaterOrganisasjon);
+                    organisasjoner.forEach(this::lagreEllerOppdaterOrganisasjon);
 
-        return Optional.of(rsRolleoversikt);
+                    return Optional.of(rsRolleoversikt);
+                })
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @SneakyThrows
-    public Optional<RolleoversiktTo> hentRolleoversiktV1(String ident) {
-        var rolleoversikt = rolleoversiktRepository.findByIdent(ident);
+    public Mono<Optional<RolleoversiktTo>> hentRolleoversiktV1(String ident) {
+        return Mono.fromCallable(() -> {
+                    var rolleoversikt = rolleoversiktRepository.findByIdent(ident);
 
-        if (rolleoversikt.isPresent()) {
-            var to = objectMapper.readValue(rolleoversikt.get().getJson(), RolleoversiktTo.class);
-            return Optional.of(to);
-        }
-        return Optional.empty();
+                    if (rolleoversikt.isPresent()) {
+                        var to = objectMapper.readValue(rolleoversikt.get().getJson(), RolleoversiktTo.class);
+                        return Optional.of(to);
+                    }
+                    return Optional.<RolleoversiktTo>empty();
+                })
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @SneakyThrows
-    public Optional<RsRolleoversikt> hentRolleoversiktV2(String ident) {
-        var rolleoversikt = rolleoversiktRepository.findByIdent(ident);
+    public Mono<Optional<RsRolleoversikt>> hentRolleoversiktV2(String ident) {
+        return Mono.fromCallable(() -> {
+                    var rolleoversikt = rolleoversiktRepository.findByIdent(ident);
 
-        if (rolleoversikt.isPresent()) {
-            var rsRolleoversikt = objectMapper.readValue(rolleoversikt.get().getJson(), RsRolleoversikt.class);
-            return Optional.of(rsRolleoversikt);
-        }
-        return Optional.empty();
+                    if (rolleoversikt.isPresent()) {
+                        var rsRolleoversikt = objectMapper.readValue(rolleoversikt.get().getJson(), RsRolleoversikt.class);
+                        return Optional.of(rsRolleoversikt);
+                    }
+                    return Optional.<RsRolleoversikt>empty();
+                })
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public void slettRolleoversikt(String ident) {
-        rolleoversiktRepository.findByIdent(ident).ifPresent(rolleoversiktRepository::delete);
+    public Mono<Void> slettRolleoversikt(String ident) {
+        return Mono.fromRunnable(() ->
+                        rolleoversiktRepository.findByIdent(ident).ifPresent(rolleoversiktRepository::delete))
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
     }
 
     private List<RsOrganisasjon> byggOrganisasjoner(RsRolleoversikt rsRolleoversikt) {

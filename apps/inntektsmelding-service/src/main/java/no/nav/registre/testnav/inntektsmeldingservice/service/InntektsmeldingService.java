@@ -15,6 +15,9 @@ import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.ZoneId;
 import java.util.Date;
@@ -31,37 +34,38 @@ public class InntektsmeldingService {
     private final DokmotConsumer dokmotConsumer;
     private final InntektsmeldingRepository repository;
 
-    public List<ProsessertInntektDokument> opprettInntektsmelding(
+    public Mono<List<ProsessertInntektDokument>> opprettInntektsmelding(
             String navCallId,
             InntektsmeldingRequest request) {
 
-        var dokumentListe = request
-                .getInntekter()
-                .stream()
-                .map(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr()))
-                .toList();
-        return dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId);
+        return Flux.fromIterable(request.getInntekter())
+                .flatMapSequential(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr()))
+                .collectList()
+                .flatMap(dokumentListe -> dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId));
     }
 
-    private InntektDokument lagInntektDokument(
+    private Mono<InntektDokument> lagInntektDokument(
             RsInntektsmeldingRequest rsInntektsmelding,
             String ident) {
 
         var inntektsmelding = RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident);
         log.info("Inntektsmelding json {}", Json.pretty(inntektsmelding));
 
-        var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(inntektsmelding);
-        var model = repository.save(new InntektsmeldingModel());
-        log.info("Inntektsmelding generert med id: {}.\n{}", model.getId(), xmlString);
-        return InntektDokument
-                .builder()
-                .arbeidstakerFnr(ident)
-                .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
-                .virksomhetsnavn(getVirksomhetsnavn(rsInntektsmelding))
-                .virksomhetsnummer(getVirksomhetsnummer(rsInntektsmelding))
-                .metadata(RsJoarkMetadataFactory.create(rsInntektsmelding, model.getId()))
-                .xml(xmlString)
-                .build();
+        return genererInntektsmeldingConsumer.getInntektsmeldingXml201812(inntektsmelding)
+                .flatMap(xmlString -> Mono.fromCallable(() -> repository.save(new InntektsmeldingModel()))
+                        .subscribeOn(Schedulers.boundedElastic())
+                        .map(model -> {
+                            log.info("Inntektsmelding generert med id: {}.\n{}", model.getId(), xmlString);
+                            return InntektDokument
+                                    .builder()
+                                    .arbeidstakerFnr(ident)
+                                    .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
+                                    .virksomhetsnavn(getVirksomhetsnavn(rsInntektsmelding))
+                                    .virksomhetsnummer(getVirksomhetsnummer(rsInntektsmelding))
+                                    .metadata(RsJoarkMetadataFactory.create(rsInntektsmelding, model.getId()))
+                                    .xml(xmlString)
+                                    .build();
+                        }));
     }
 
     private String getVirksomhetsnavn(RsInntektsmeldingRequest inntekt) {

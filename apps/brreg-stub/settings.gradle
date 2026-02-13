@@ -6,7 +6,8 @@ rootProject.name = "brreg-stub"
 
 includeBuild "../../plugins/java"
 
-includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/data-transfer-objects"
 includeBuild "../../libs/testing"
 includeBuild "../../libs/vault"
 

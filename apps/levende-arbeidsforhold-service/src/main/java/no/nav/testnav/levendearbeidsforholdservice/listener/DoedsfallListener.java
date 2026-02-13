@@ -32,7 +32,7 @@ public class DoedsfallListener {
             var hendelsestype = hendelse.value().get(4).toString();
 
             if (validerHendelse(hendelsestype)){
-                arbeidsforholdService.arbeidsforholdService(aktoerId);
+                arbeidsforholdService.arbeidsforholdService(aktoerId).block();
             }
         }
     }

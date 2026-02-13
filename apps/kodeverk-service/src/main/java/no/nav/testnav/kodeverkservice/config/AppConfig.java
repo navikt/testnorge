@@ -1,11 +1,10 @@
 package no.nav.testnav.kodeverkservice.config;
 
-import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({ApplicationCoreConfig.class})
+@Import({CoreConfig.class})
 public class AppConfig {
 }
-

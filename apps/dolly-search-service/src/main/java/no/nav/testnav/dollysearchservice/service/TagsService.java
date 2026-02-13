@@ -25,24 +25,26 @@ public class TagsService {
 
     public Mono<TagsOpprettingResponse> setDollyTagAlleTestnorgeIdenter() {
 
-        var identer = bestillingQueryService.execTestnorgeIdenterQuery();
-        log.info("Hentet alle testnorge identer: {}", identer.size());
-        var bolker = Lists.partition(identer.stream().toList(), BOLK_SIZE);
-        log.info("Antall bolker: {}", bolker.size());
+        return bestillingQueryService.execTestnorgeIdenterQuery()
+                .flatMap(identer -> {
+                    log.info("Hentet alle testnorge identer: {}", identer.size());
+                    var bolker = Lists.partition(identer.stream().toList(), BOLK_SIZE);
+                    log.info("Antall bolker: {}", bolker.size());
 
-        return Flux.fromIterable(bolker)
-                .flatMap(pdlProxyConsumer::getTags)
-                .map(TagsService::filterTags)
-                .reduce(new ArrayList<String>(), (l1, l2) -> {
-                    l1.addAll(l2);
-                    return l1;
-                })
-                .filter(tags -> !tags.isEmpty())
-                .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
-                .flatMap(pdlProxyConsumer::setTags)
-                .switchIfEmpty(Mono.just(TagsOpprettingResponse.builder()
-                        .message("Fant ingen personer som mangler Dolly-tag")
-                        .build()));
+                    return Flux.fromIterable(bolker)
+                            .flatMap(pdlProxyConsumer::getTags)
+                            .map(TagsService::filterTags)
+                            .reduce(new ArrayList<String>(), (l1, l2) -> {
+                                l1.addAll(l2);
+                                return l1;
+                            })
+                            .filter(tags -> !tags.isEmpty())
+                            .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
+                            .flatMap(pdlProxyConsumer::setTags)
+                            .switchIfEmpty(Mono.just(TagsOpprettingResponse.builder()
+                                    .message("Fant ingen personer som mangler Dolly-tag")
+                                    .build()));
+                });
     }
 
     private static List<String> filterTags(Map<String, List<String>> tags) {

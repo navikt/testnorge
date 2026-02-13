@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
-import no.nav.testnav.libs.servletcore.headers.NavHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -23,6 +22,8 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
 
     private static final String MILJOE = "q2";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
+    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
+    private static final String NAV_CALL_ID = "Nav-Call-Id";
     private static final String CONSUMER = "Dolly";
 
     private final WebClient webClient;
@@ -46,8 +47,8 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
                         .build(MILJOE))
                 .headers(WebClientHeader.bearer(token))
                 .header(NAV_PERSON_IDENT, ident)
-                .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
-                .header(NavHeaders.NAV_CALL_ID, getNavCallId())
+                .header(NAV_CONSUMER_ID, CONSUMER)
+                .header(NAV_CALL_ID, getNavCallId())
                 .retrieve()
                 .bodyToFlux(Arbeidsforhold.class)
                 .retryWhen(WebClientError.is5xxException())

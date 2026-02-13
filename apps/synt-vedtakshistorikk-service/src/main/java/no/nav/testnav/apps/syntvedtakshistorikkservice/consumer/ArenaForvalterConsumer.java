@@ -20,7 +20,7 @@ import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -156,6 +156,21 @@ public class ArenaForvalterConsumer {
         }
     }
 
+    public DagpengerResponseDTO opprettMottaDagpengerSoknad(DagpengerRequestDTO soknad) {
+        log.info("Sender inn motta dagpengesoknad til Arena-forvalteren");
+        return opprettDagpenger(soknad, "/arena/api/v1/mottadagpengesoknad");
+    }
+
+    public DagpengerResponseDTO opprettMottaDagpengerVedtak(DagpengerRequestDTO vedtak) {
+        log.info("Sender inn motta dagpengevedtak til Arena-forvalteren");
+        return opprettDagpenger(vedtak, "/arena/api/v1/mottadagpengevedtak");
+    }
+
+    public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak) {
+        log.info("Sender inn dagpengevedtak til Arena-forvalteren");
+        return opprettDagpenger(vedtak, "/arena/api/v1/dagpenger");
+    }
+
     private MultiValueMap<String, String> getQueryParams(
             String personident,
             String eier,
@@ -204,21 +219,6 @@ public class ArenaForvalterConsumer {
         }
 
         return arbeidssoekere;
-    }
-
-    public DagpengerResponseDTO opprettMottaDagpengerSoknad(DagpengerRequestDTO soknad) {
-        log.info("Sender inn motta dagpengesoknad til Arena-forvalteren");
-        return opprettDagpenger(soknad, "/arena/api/v1/mottadagpengesoknad");
-    }
-
-    public DagpengerResponseDTO opprettMottaDagpengerVedtak(DagpengerRequestDTO vedtak) {
-        log.info("Sender inn motta dagpengevedtak til Arena-forvalteren");
-        return opprettDagpenger(vedtak, "/arena/api/v1/mottadagpengevedtak");
-    }
-
-    public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak) {
-        log.info("Sender inn dagpengevedtak til Arena-forvalteren");
-        return opprettDagpenger(vedtak, "/arena/api/v1/dagpenger");
     }
 
     private DagpengerResponseDTO opprettDagpenger(DagpengerRequestDTO request, String path) {
