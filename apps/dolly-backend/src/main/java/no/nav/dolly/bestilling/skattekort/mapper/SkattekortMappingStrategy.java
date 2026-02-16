@@ -21,7 +21,6 @@ import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class SkattekortMappingStrategy implements MappingStrategy {
@@ -100,16 +99,12 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
         if (nonNull(original.getTrekktabell())) {
 
-            val trekktabell = original.getTrekktabell();
-            builder.trekkode(getTrekkode(trekktabell.getTrekkode()))
-                    .trekktabell(isNotBlank(trekktabell.getTabellnummer()) &&
-                            nonNull(trekktabell.getProsentsats()) &&
-                            nonNull(trekktabell.getAntallMaanederForTrekk()) ?
-                            SkattekortDTO.TabellkortDTO.builder()
+            builder.trekkode(getTrekkode(original.getTrekktabell().getTrekkode()))
+                    .trekktabell(SkattekortDTO.TabellkortDTO.builder()
                                     .tabell(original.getTrekktabell().getTabellnummer())
-                                    .antallMndForTrekk(getDouble(original.getTrekktabell().getAntallMaanederForTrekk()))
-                                    .prosentSats(getDouble(original.getTrekktabell().getProsentsats()))
-                                    .build() : null);
+                                    .antallMndForTrekk(original.getTrekktabell().getAntallMaanederForTrekk())
+                                    .prosentSats(original.getTrekktabell().getProsentsats())
+                                    .build());
         }
 
         if (nonNull(original.getFrikort())) {
@@ -124,8 +119,8 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
             builder.trekkode(getTrekkode(original.getTrekkprosent().getTrekkode()))
                     .prosentkort(ProsentkortDTO.builder()
-                            .prosentSats(getDouble(original.getTrekkprosent().getProsentsats()))
-                            .antallMndForTrekk(getDouble(original.getTrekkprosent().getAntallMaanederForTrekk()))
+                            .prosentSats(original.getTrekkprosent().getProsentsats())
+                            .antallMndForTrekk(original.getTrekkprosent().getAntallMaanederForTrekk())
                             .build())
                     .build();
         }
@@ -135,10 +130,6 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
     private static String getTrekkode(Trekkode trekkode) {
         return nonNull(trekkode) ? trekkode.getValue() : null;
-    }
-
-    private static Double getDouble(Integer value) {
-        return nonNull(value) ? value.doubleValue() : null;
     }
 }
 

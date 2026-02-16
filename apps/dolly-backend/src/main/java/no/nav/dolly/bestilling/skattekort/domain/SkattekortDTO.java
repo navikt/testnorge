@@ -63,8 +63,8 @@ public class SkattekortDTO {
     @AllArgsConstructor
     public static class ProsentkortDTO {
 
-        private Double prosentSats;
-        private Double antallMndForTrekk;
+        private Float prosentSats;
+        private Float antallMndForTrekk;
     }
 
     @Data
@@ -74,7 +74,7 @@ public class SkattekortDTO {
     public static class TabellkortDTO {
 
         private String tabell;
-        private Double prosentSats;
-        private Double antallMndForTrekk;
+        private Float prosentSats;
+        private Float antallMndForTrekk;
     }
 }

@@ -78,8 +78,8 @@ class SkattekortMappingStrategyTest {
                         .trekkode(Trekkode.LOENN_FRA_NAV.getValue())
                         .trekktabell(TabellkortDTO.builder()
                                 .tabell("8020")
-                                .prosentSats(40.0)
-                                .antallMndForTrekk(12.0)
+                                .prosentSats(40.0F)
+                                .antallMndForTrekk(12.0F)
                                 .build())
                         .build()));
     }
@@ -96,8 +96,8 @@ class SkattekortMappingStrategyTest {
                 SkattekortDTO.ForskuddstrekkDTO.builder()
                         .trekkode(Trekkode.PENSJON_FRA_NAV.getValue())
                         .prosentkort(ProsentkortDTO.builder()
-                                .prosentSats(30.0)
-                                .antallMndForTrekk(10.0)
+                                .prosentSats(30.0F)
+                                .antallMndForTrekk(10.0F)
                                 .build())
                         .build()));
     }
@@ -163,15 +163,15 @@ class SkattekortMappingStrategyTest {
                                         .trekktabell(Trekktabell.builder()
                                                 .trekkode(Trekkode.LOENN_FRA_NAV)
                                                 .tabellnummer("8020")
-                                                .prosentsats(40)
-                                                .antallMaanederForTrekk(12)
+                                                .prosentsats(40.0F)
+                                                .antallMaanederForTrekk(12.0F)
                                                 .build())
                                         .build(),
                                 Forskuddstrekk.builder()
                                         .trekkprosent(Trekkprosent.builder()
                                                 .trekkode(Trekkode.PENSJON_FRA_NAV)
-                                                .prosentsats(30)
-                                                .antallMaanederForTrekk(10)
+                                                .prosentsats(30.0F)
+                                                .antallMaanederForTrekk(10.0F)
                                                 .build())
                                         .build(),
                                 Forskuddstrekk.builder()
