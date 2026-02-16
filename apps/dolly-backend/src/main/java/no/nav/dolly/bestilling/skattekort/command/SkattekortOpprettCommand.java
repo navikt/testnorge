@@ -9,9 +9,13 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.util.concurrent.Callable;
+
+import static java.time.Duration.ofSeconds;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -40,7 +44,11 @@ public class SkattekortOpprettCommand implements Callable<Mono<SkattekortRespons
                         .skattekort(null)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+                .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
+                        .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
+                                responseException.getStatusCode().is5xxServerError())
+                        .onRetryExhaustedThrow(((retryBackoffSpec, lastSignal) ->
+                                new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(throwable ->
                     SkattekortResponse.of(WebClientError.describe(throwable)));
     }
