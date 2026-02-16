@@ -7,17 +7,6 @@ export const validation = {
 		Yup.object({
 			arbeidsgiverSkatt: Yup.array().of(
 				Yup.object({
-					arbeidsgiveridentifikator: Yup.object({
-						organisasjonsnummer: requiredString
-							.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
-							.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val?.length === 9),
-						personidentifikator: ifPresent(
-							'$personidentifikator',
-							requiredString
-								.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
-								.test('len', 'Ident må være et tall med 11 sifre', (val) => val?.length === 11),
-						),
-					}),
 					arbeidstaker: Yup.array().of(
 						Yup.object({
 							resultatPaaForespoersel: requiredString,
@@ -30,20 +19,31 @@ export const validation = {
 											'$frikort',
 											Yup.object({
 												trekkode: requiredString,
-												frikortbeloep: Yup.string().nullable(),
+												frikortbeloep: Yup.number()
+													.transform((i, j) => (j === '' ? null : i))
+													.min(1, 'Kan ikke være mindre enn ${min}')
+													.max(1000000, 'Kan ikke være større enn ${max}')
+													.required('Frikortbeløp er påkrevd'),
 											}),
 										),
 										trekktabell: ifPresent(
 											'$trekktabell',
 											Yup.object({
 												trekkode: requiredString,
-												tabellnummer: Yup.string().nullable(),
+												tabellnummer: Yup.number()
+													.min(1000, 'Kan ikke være mindre enn ${min}')
+													.max(9999, 'Kan ikke være større enn ${max}')
+													.required('Tabellnummer er påkrevd'),
 												prosentsats: Yup.number()
 													.transform((i, j) => (j === '' ? null : i))
 													.min(0, 'Kan ikke være mindre enn ${min}')
 													.max(100, 'Kan ikke være større enn ${max}')
-													.nullable(),
-												antallMaanederForTrekk: Yup.string().nullable(),
+													.required('Prosentsats er påkrevd'),
+												antallMaanederForTrekk: Yup.number()
+													.transform((i, j) => (j === '' ? null : i))
+													.min(1, 'Kan ikke være mindre enn ${min}')
+													.max(12, 'Kan ikke være større enn ${max}')
+													.required('Antall måneder for trekk er påkrevd'),
 											}),
 										),
 										trekkprosent: ifPresent(
@@ -54,8 +54,12 @@ export const validation = {
 													.transform((i, j) => (j === '' ? null : i))
 													.min(0, 'Kan ikke være mindre enn ${min}')
 													.max(100, 'Kan ikke være større enn ${max}')
+													.required('Prosentsats er påkrevd'),
+												antallMaanederForTrekk: Yup.number()
+													.transform((i, j) => (j === '' ? null : i))
+													.min(1, 'Kan ikke være mindre enn ${min}')
+													.max(12, 'Kan ikke være større enn ${max}')
 													.nullable(),
-												antallMaanederForTrekk: Yup.string().nullable(),
 											}),
 										),
 									}),

@@ -73,7 +73,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 	return (
 		<>
 			<SubOverskrift
-				label="Skattekort (SOKOS)"
+				label="Nav skattekort"
 				iconKind="skattekort"
 				isWarning={manglerFagsystemdata}
 			/>
@@ -95,12 +95,12 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 										/>
 										<TitleValue title="Inntektsår" value={skattekort?.inntektsaar} />
 										<TitleValue title="Utstedt dato" value={formatDate(skattekort?.utstedtDato)} />
+										<ForskuddstrekkVisning trekkliste={skattekort?.forskuddstrekkList} />
 										<KodeverkTitleValue
 											kodeverkstype="TILLEGGSOPPLYSNING"
 											value={skattekort?.tilleggsopplysningList || []}
 											label="Tilleggsopplysning"
 										/>
-										<ForskuddstrekkVisning trekkliste={skattekort?.forskuddstrekkList} />
 									</div>
 								</React.Fragment>
 							)

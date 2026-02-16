@@ -24,7 +24,7 @@ import static java.util.Objects.nonNull;
 @Slf4j
 public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>> {
 
-    private static final String OPPRETT_SKATTEKORT_URL = "/skattekort/api/v1/person/hent-skattekort";
+    private static final String HENT_SKATTEKORT_URL = "/skattekort/api/v1/person/hent-skattekort";
 
     private final WebClient webClient;
     private final SkattekortHentRequest request;
@@ -37,7 +37,7 @@ public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>>
 
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder.path(OPPRETT_SKATTEKORT_URL).build())
+                .uri(uriBuilder -> uriBuilder.path(HENT_SKATTEKORT_URL).build())
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()

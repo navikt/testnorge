@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import axios from 'axios'
 
-const skattekortBaseUrl = '/testnav-dolly-proxy/skattekort/api/v1'
+const skattekortBaseUrl = '/testnav-dolly-proxy/skattekort/api/v1/person'
 
 interface SkattekortResponse {
 	utstedtDato?: string
@@ -21,20 +21,19 @@ interface ForskuddstrekkDTO {
 
 const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 	RESULTATSTATUS: {
-		'Skattekortopplysninger OK': 'skattekortopplysningerOK',
-		'Ikke skattekort': 'ikkeSkattekort',
-		'Ikke trekkplikt': 'ikkeTrekkplikt',
+		'Skattekortopplysninger OK': 'SKATTEKORTOPPLYSNINGER_OK',
+		'Ikke skattekort': 'IKKE_SKATTEKORT',
+		'Ikke trekkplikt': 'IKKE_TREKKPLIKT',
 	},
 	TILLEGGSOPPLYSNING: {
-		'Opphold på Svalbard': 'oppholdPaaSvalbard',
-		'Kildeskatt på pensjonist': 'kildeskattPaaPensjon',
-		'Opphold i tiltakssone': 'oppholdITiltakssone',
-		'Kildeskatt på lønn': 'kildeskattPaaLoenn',
+		'Opphold på Svalbard': 'OPPHOLD_PAA_SVALBARD',
+		'Kildeskatt på pensjon': 'KILDESKATT_PAA_PENSJON',
+		'Opphold i tiltakssone': 'OPPHOLD_I_TILTAKSSONE',
 	},
 	TREKKODE: {
-		'Lønn fra NAV': 'loennFraNAV',
-		'Pensjon fra NAV': 'pensjonFraNAV',
-		'Uføretrygd fra NAV': 'ufoeretrygdFraNAV',
+		'Lønn fra NAV': 'LOENN_FRA_NAV',
+		'Pensjon fra NAV': 'PENSJON_FRA_NAV',
+		'Uføretrygd fra NAV': 'UFOERETRYGD_FRA_NAV',
 	},
 }
 

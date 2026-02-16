@@ -8,14 +8,12 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { subYears } from 'date-fns'
+import { addYears, subYears } from 'date-fns'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	ForskuddstrekkForm,
 	initialTrekktabell,
 } from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
-import { ArbeidsforholdToggle } from '@/components/shared/ArbeidsforholdToggle/ArbeidsforholdToggle'
 import { validation } from '@/components/fagsystem/skattekort/form/validation'
 
 export const initialArbeidsgiverSkatt = (
@@ -58,7 +56,7 @@ export const SkattekortForm = () => {
 	return (
 		<Vis attributt={skattekortAttributt}>
 			<Panel
-				heading="Skattekort (SOKOS)"
+				heading="Nav skattekort"
 				hasErrors={panelError(skattekortAttributt)}
 				iconType="skattekort"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [skattekortAttributt])}
@@ -78,13 +76,14 @@ export const SkattekortForm = () => {
 										name={`${path}.arbeidstaker[0].resultatPaaForespoersel`}
 										label="Resultat på forespørsel"
 										options={resultatstatus}
+										defaultValue={'skattekortopplysningerOK'}
 										size="large"
 										isClearable={false}
 									/>
 									<FormSelect
 										name={`${path}.arbeidstaker[0].inntektsaar`}
 										label="Inntektsår"
-										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
+										options={getYearRangeOptions(subYears(new Date(), 1), addYears(new Date(), 1))}
 										size="xsmall"
 										isClearable={false}
 									/>
@@ -92,30 +91,17 @@ export const SkattekortForm = () => {
 										name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
 										label="Utstedt dato"
 									/>
-									<FormTextInput
-										name={`${path}.arbeidstaker[0].skattekort.skattekortidentifikator`}
-										label="Skattekortidentifikator"
-										size="xxsmall"
-									/>
-									<FormSelect
-										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
-										label="Tilleggsopplysning"
-										options={tilleggsopplysning}
-										size="grow"
-										isMulti={true}
-									/>
 								</div>
-								<ArbeidsforholdToggle
-									formMethods={formMethods}
-									path={`${path}.arbeidsgiveridentifikator`}
-									organisasjonPath={`${path}.arbeidsgiveridentifikator.organisasjonsnummer`}
-									personPath={`${path}.arbeidsgiveridentifikator.personidentifikator`}
-									useKategori={true}
-									useValidation={true}
-								/>
 								<ForskuddstrekkForm
 									formMethods={formMethods}
 									path={`${path}.arbeidstaker[0].skattekort`}
+								/>
+								<FormSelect
+									name={`${path}.arbeidstaker[0].tilleggsopplysning`}
+									label="Tilleggsopplysning"
+									options={tilleggsopplysning}
+									size="grow"
+									isMulti={true}
 								/>
 							</>
 						)}
