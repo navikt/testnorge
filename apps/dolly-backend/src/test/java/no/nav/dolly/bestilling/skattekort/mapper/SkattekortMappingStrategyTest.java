@@ -22,8 +22,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -147,8 +149,8 @@ class SkattekortMappingStrategyTest {
         assertThat(result.getSkattekort().getResultatForSkattekort(), is(equalTo(Resultatstatus.IKKE_SKATTEKORT.getValue())));
         assertThat(result.getSkattekort().getUtstedtDato(), is(equalTo(LocalDate.now().toString())));
         assertThat(result.getSkattekort().getInntektsaar(), is(equalTo(INNTEKTSAAR)));
-        assertThat(result.getSkattekort().getForskuddstrekkList(), is(nullValue()));
-        assertThat(result.getSkattekort().getTilleggsopplysningList(), is(nullValue()));
+        assertThat(result.getSkattekort().getForskuddstrekkList(), is(emptyList()));
+        assertThat(result.getSkattekort().getTilleggsopplysningList(), is(emptyList()));
     }
 
     private static Skattekortmelding buildSkattekort() {
