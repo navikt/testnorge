@@ -15,6 +15,7 @@ import no.nav.dolly.bestilling.skattekort.domain.Trekkode;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class SkattekortClient implements ClientRegister {
     private final SkattekortConsumer skattekortConsumer;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
@@ -152,7 +154,7 @@ public class SkattekortClient implements ClientRegister {
                 UFOERETRYGD_FRA_NAV.equals(trekkode);
     }
 
-    private static String formatStatus(SkattekortResponse response, Integer year, String ident) {
+    private String formatStatus(SkattekortResponse response, Integer year, String ident) {
 
         val prefix = year + "|";
         if (response.getStatus().is2xxSuccessful()) {
@@ -160,7 +162,7 @@ public class SkattekortClient implements ClientRegister {
         } else {
             log.error("Feil ved innsending av skattekort for person: {}, inntektsaar: {}: {}",
                     ident, year, response.getFeilmelding());
-            return prefix + response.getFeilmelding();
+            return prefix + errorStatusDecoder.getStatusMessage(response.getFeilmelding());
         }
     }
 
