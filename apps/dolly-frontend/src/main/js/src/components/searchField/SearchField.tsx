@@ -22,14 +22,6 @@ export const SearchField = ({
 		return setText ? setText(value?.trim()) : dispatch(setSearchText(value?.trim()))
 	}
 
-	const focusSearchInput = (event: MouseEvent) => {
-		event.preventDefault()
-		const inputElement = ref.current
-		if (inputElement) {
-			inputElement.focus()
-		}
-	}
-
 	return (
 		<StyledSearch>
 			<FormProvider {...formMethods}>
@@ -41,11 +33,9 @@ export const SearchField = ({
 					size={size}
 					maxLength={20}
 					ref={ref}
-					variant={'secondary'}
+					variant={'simple'}
 					{...rest}
-				>
-					<Search.Button onClick={focusSearchInput} />
-				</Search>
+				/>
 			</FormProvider>
 		</StyledSearch>
 	)
