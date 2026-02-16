@@ -40,7 +40,7 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(VergemaalDTO kilde, PdlVergemaal destinasjon, MappingContext context) {
 
-                        destinasjon.setEmbete(kodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
+                        destinasjon.setEmbete(kodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()).block());
                         destinasjon.setType(getSakstype(kilde.getSakType()));
 
                         var personnavn = personRepository.findByIdent(kilde.getVergeIdent())

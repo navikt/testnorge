@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +117,7 @@ class KontaktAdresseServiceTest {
                 .kommunenummer("5678")
                 .matrikkelId("111111111")
                 .build();
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(vegadresse);
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(Mono.just(vegadresse));
         doNothing().when(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
 
         var request = PersonDTO.builder()

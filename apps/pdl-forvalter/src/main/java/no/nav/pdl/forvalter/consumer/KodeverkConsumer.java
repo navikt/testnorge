@@ -42,42 +42,37 @@ public class KodeverkConsumer {
                 .build();
     }
 
-    public String getTilfeldigKommune() {
+    public Mono<String> getTilfeldigKommune() {
 
         return hentKodeverk(KOMMUNER)
                 .map(verdier -> verdier.keySet().stream().toList())
-                .map(list -> list.get(random.nextInt(list.size())))
-                .block();
+                .map(list -> list.get(random.nextInt(list.size())));
     }
 
-    public String getTilfeldigLand() {
+    public Mono<String> getTilfeldigLand() {
 
         return hentKodeverk(LANDKODER)
                 .map(landkoder -> landkoder.keySet().stream()
                         .filter(landkode -> !landkode.equals("9999") && !landkode.contains("???"))
                         .toList())
-                .map(list -> list.get(random.nextInt(list.size())))
-                .block();
+                .map(list -> list.get(random.nextInt(list.size())));
     }
 
-    public String getPoststedNavn(String postnummer) {
+    public Mono<String> getPoststedNavn(String postnummer) {
 
         return hentKodeverk(POSTNUMMER)
-                .map(postnumre -> postnumre.get(postnummer))
-                .block();
+                .map(postnumre -> postnumre.get(postnummer));
     }
 
-    public String getEmbeteNavn(String embete) {
+    public Mono<String> getEmbeteNavn(String embete) {
 
         return hentKodeverk(EMBETER)
-                .map(embeter -> embeter.get(embete))
-                .block();
+                .map(embeter -> embeter.get(embete));
     }
 
-    public Map<String, String> getKommunerMedHistoriske() {
+    public Mono<Map<String, String>> getKommunerMedHistoriske() {
 
-        return hentKodeverk(KOMMUNER_MED_HISTORISKE)
-                .block();
+        return hentKodeverk(KOMMUNER_MED_HISTORISKE);
     }
 
     private Mono<Map<String, String>> hentKodeverkInner(String kodeverk) {
