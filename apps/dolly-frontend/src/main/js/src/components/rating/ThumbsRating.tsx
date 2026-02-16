@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { BaseSyntheticEvent, useState } from 'react'
 // @ts-ignore
-import Icon from '@/components/ui/icon/Icon'
-import NavButton from '../ui/button/NavButton/NavButton'
-import styled from 'styled-components'
 import './ThumbsRating.less'
 import { Logger } from '@/logger/Logger'
 import { useBrukerProfil } from '@/utils/hooks/useBruker'
+import { ThumbDownFillIcon, ThumbUpFillIcon } from '@navikt/aksel-icons'
+import { Button } from '@navikt/ds-react'
 
 enum Rating {
 	Positive = 'POSITIVE',
@@ -22,34 +21,6 @@ interface ThumbsRatingProps {
 	children?: React.ReactNode
 	etterBestilling?: boolean
 }
-
-const ThumbsButton = styled(NavButton)`
-	&& {
-		border: 0;
-		padding: 7px 10px;
-		border-radius: 50%;
-		margin-left: 7px;
-		box-shadow: inset 0 0 0 1.5px #0067c5;
-	}
-
-	&& :hover {
-		outline: none;
-		box-shadow: 0 0 2px @color-nav-black;
-	}
-`
-
-interface IconButton {
-	className?: string
-}
-
-const ThumpsUp = ({ className }: IconButton) => (
-	// @ts-ignore
-	<Icon className={className} kind="thumbs-up" title="tommel opp" fontSize={'1.6rem'} />
-)
-const ThumpsDown = ({ className }: IconButton) => (
-	// @ts-ignore
-	<Icon className={className} kind="thumbs-down" title="tommel ned" fontSize={'1.6rem'} />
-)
 
 export const ThumbsRating = ({
 	label,
@@ -87,34 +58,37 @@ export const ThumbsRating = ({
 		}
 
 		return (
-			<div className="thumbs-rating flexbox--all-center">
-				<p>Takk for din tilbakemelding.</p>
-			</div>
+			<p>
+				<b>Takk for din tilbakemelding.</b>
+			</p>
 		)
 	}
+
 	return (
-		<div className="thumbs-rating flexbox--all-center">
-			<p>{label}</p>
-			<ThumbsButton
-				variant={'secondary'}
-				size={'small'}
-				onClick={(event: BaseSyntheticEvent) => {
-					event.stopPropagation()
-					_onClick(Rating.Positive)
-				}}
-			>
-				<ThumpsUp className="thumbs-rating__icon thumbs-rating__icon__left" />
-			</ThumbsButton>
-			<ThumbsButton
-				variant={'secondary'}
-				size={'small'}
-				onClick={(event: BaseSyntheticEvent) => {
-					event.stopPropagation()
-					_onClick(Rating.Negative)
-				}}
-			>
-				<ThumpsDown className="thumbs-rating__icon thumbs-rating__icon__right" />
-			</ThumbsButton>
-		</div>
+		<>
+			<p>
+				<b>{label}</b>
+			</p>
+			<div className="thumbs-rating flexbox--align-start">
+				<Button
+					variant="secondary"
+					size="medium"
+					onClick={(event: BaseSyntheticEvent) => {
+						event.stopPropagation()
+						_onClick(Rating.Positive)
+					}}
+					icon={<ThumbUpFillIcon title="Ja" />}
+				/>
+				<Button
+					variant="secondary"
+					size="medium"
+					onClick={(event: BaseSyntheticEvent) => {
+						event.stopPropagation()
+						_onClick(Rating.Negative)
+					}}
+					icon={<ThumbDownFillIcon title="Nei" />}
+				/>
+			</div>
+		</>
 	)
 }

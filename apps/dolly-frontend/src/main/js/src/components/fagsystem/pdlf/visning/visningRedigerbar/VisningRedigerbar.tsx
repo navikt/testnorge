@@ -19,34 +19,24 @@ import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergema
 import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
-	getIdenttype
+	getIdenttype,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { Modus, RedigerLoading } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import {
+	Modus,
+	RedigerLoading,
+} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Option } from '@/service/SelectOptionsOppslag'
-import {
-	KontaktinformasjonForDoedsboForm
-} from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
-import {
-	ForelderBarnRelasjonForm
-} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
-import {
-	ForeldreansvarForm
-} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
-import {
-	DeltBostedForm
-} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
-import {
-	DoedfoedtBarnForm
-} from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
+import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
+import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
+import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
+import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { Form, FormProvider, useForm } from 'react-hook-form'
-import {
-	visningRedigerbarValidation
-} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
+import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
-import './VisningRedigerbarForm.less'
 import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
@@ -420,9 +410,7 @@ export const VisningRedigerbar = ({
 								</>
 							)}
 							<FieldArrayEdit>
-								<div className="flexbox--flex-wrap visning-redigerbar-form">
-									{getForm(formMethods)}
-								</div>
+								<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
 								<Knappegruppe>
 									<NavButton
 										variant="secondary"

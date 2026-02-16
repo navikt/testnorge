@@ -36,7 +36,6 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 				<Attributt attr={sm.attrs.oppholdsadresse} />
 				<Attributt data-testid="attributt-kontaktadresse" attr={sm.attrs.kontaktadresse} />
 			</AttributtKategori>
-
 			<AttributtKategori title="Delt bosted" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.deltBosted}
@@ -45,9 +44,9 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 						'Vilkåret er at barn(a) har to foreldre med forskjellig norsk bostedsadresse.  Gjelder kun for master FREG.'
 					}
 					vis={!testNorgePerson}
+					wrapperSize="tight"
 				/>
 			</AttributtKategori>
-
 			<AttributtKategori title="Adressebeskyttelse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.adressebeskyttelse} />
 			</AttributtKategori>

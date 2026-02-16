@@ -19,10 +19,6 @@ type Props = {
 	malbestillinger: Mal[]
 }
 
-const StyledToggleGroup = styled(ToggleGroup)`
-	margin-bottom: 10px;
-`
-
 const Tittel = styled.div`
 	display: flex;
 	flex-wrap: wrap;
@@ -46,24 +42,27 @@ export const MalOppsummering = ({
 			<Switch
 				data-testid={TestComponentSelectors.TOGGLE_BESTILLING_MAL}
 				onChange={onChange}
-				children={null}
-			/>
+				hideLabel
+			>
+				Legg til mal
+			</Switch>
 		</Tittel>
 		{opprettMal && (
 			<span>
 				<div className="flexbox--align-center">
 					<div className="toggle--wrapper">
-						<StyledToggleGroup
+						<ToggleGroup
 							size={'small'}
 							onChange={onToggleChange}
 							defaultValue={MalTyper.OPPRETT}
+							style={{ marginBottom: '10px' }}
 						>
 							{toggleMalValues.map((type) => (
 								<ToggleGroup.Item key={type.value} value={type.value}>
 									{type.label}
 								</ToggleGroup.Item>
 							))}
-						</StyledToggleGroup>
+						</ToggleGroup>
 					</div>
 				</div>
 				{typeMal === MalTyper.ENDRE ? (

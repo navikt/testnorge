@@ -71,7 +71,7 @@ export function NyIdent() {
 							}}
 							checkboxMargin
 						/>
-						<Hjelpetekst style={{ marginLeft: -50 }}>
+						<Hjelpetekst style={{ marginLeft: -35 }}>
 							For å øke tilgangen på gyldige fødselsnumre og d-numre, har Stortinget vedtatt å ta i
 							bruk nye nummerserier fra 2032. Alle eksisterende fødselsnumre og d-numre vil
 							fremdeles være gyldige, men datasystemene må i tillegg kunne lese de nye

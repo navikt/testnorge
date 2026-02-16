@@ -53,7 +53,7 @@ export default () => {
 				representere. Dette vil si at når du har valgt et team der, vil alle grupper, personer,
 				maler, osv. du oppretter tilhøre valgt team, og ikke deg selv.
 			</p>
-			<Box background="surface-default" padding="4">
+			<Box background="default" padding="space-16">
 				<ErrorBoundary>
 					{loading ? (
 						<Loading label="Laster team ..." />
@@ -101,14 +101,17 @@ export default () => {
 														openForlatTeamModal()
 													}}
 													variant="tertiary"
-													icon={<LeaveIcon fontSize="1.5rem" />}
+													icon={
+														<LeaveIcon
+															title={
+																antallMedlemmer <= 1
+																	? 'Du kan ikke forlate et team hvor du er eneste medlem'
+																	: 'Forlat team'
+															}
+														/>
+													}
 													size="small"
 													disabled={antallMedlemmer <= 1}
-													title={
-														antallMedlemmer <= 1
-															? 'Du kan ikke forlate et team hvor du er eneste medlem'
-															: ''
-													}
 												/>
 											</Table.DataCell>
 											<Table.DataCell width="10%" align="center">
@@ -118,7 +121,7 @@ export default () => {
 														openOpprettRedigerTeamModal()
 													}}
 													variant="tertiary"
-													icon={<PencilWritingIcon fontSize="1.5rem" />}
+													icon={<PencilWritingIcon title="Rediger team" />}
 													size="small"
 												/>
 											</Table.DataCell>
@@ -129,7 +132,7 @@ export default () => {
 														openSlettTeamModal()
 													}}
 													variant="tertiary"
-													icon={<TrashIcon fontSize="1.5rem" />}
+													icon={<TrashIcon title="Slett team" />}
 													size="small"
 												/>
 											</Table.DataCell>

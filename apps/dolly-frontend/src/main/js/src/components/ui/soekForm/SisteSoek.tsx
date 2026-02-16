@@ -77,7 +77,7 @@ export const SisteSoek = ({ type, formValues, handleChange, handleChangeList }) 
 	}
 
 	return (
-		<VStack gap="3" style={{ marginBottom: '15px' }}>
+		<VStack gap="space-12" style={{ marginBottom: '15px' }}>
 			<Chips>
 				{lagredeSoekData?.slice(0, 10).map((option, idx) => (
 					<Chips.Toggle
