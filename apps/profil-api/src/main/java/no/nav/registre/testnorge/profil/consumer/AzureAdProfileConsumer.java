@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
 import no.nav.registre.testnorge.profil.domain.Profil;
-import no.nav.registre.testnorge.profil.service.AzureAdTokenService;
+import no.nav.registre.testnorge.profil.service.AzureOnBehalfOfTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -16,13 +16,13 @@ import reactor.core.publisher.Mono;
 public class AzureAdProfileConsumer {
 
     private final WebClient webClient;
-    private final AzureAdTokenService azureAdTokenService;
+    private final AzureOnBehalfOfTokenService azureAdTokenService;
 
     private final String url;
 
     public AzureAdProfileConsumer(
             @Value("${api.azuread.url}") String url,
-            AzureAdTokenService azureAdTokenService,
+            AzureOnBehalfOfTokenService azureAdTokenService,
             WebClient webClient
     ) {
         this.url = url;

@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.profil.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -13,13 +13,13 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-public class AzureAdTokenService {
+public class AzureOnBehalfOfTokenService {
 
     private final WebClient webClient;
     private final AzureClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
 
-    AzureAdTokenService(
+    AzureOnBehalfOfTokenService(
             WebClient webClient,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
