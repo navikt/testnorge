@@ -17,12 +17,6 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 public class SykemeldingApiApplicationStarter {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(SykemeldingApiApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
     @Bean
     public ApplicationInfo systemInfo(
             @Value("${spring.application.name}") String name,
@@ -33,6 +27,12 @@ public class SykemeldingApiApplicationStarter {
                 .name(name)
                 .version(version)
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(SykemeldingApiApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
 }
