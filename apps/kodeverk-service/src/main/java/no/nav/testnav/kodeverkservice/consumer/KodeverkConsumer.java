@@ -4,7 +4,7 @@ import no.nav.testnav.kodeverkservice.config.Consumers;
 import no.nav.testnav.kodeverkservice.consumer.command.KodeverkGetCommand;
 import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
