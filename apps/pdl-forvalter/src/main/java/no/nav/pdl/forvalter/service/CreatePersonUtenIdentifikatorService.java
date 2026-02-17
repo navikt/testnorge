@@ -51,7 +51,7 @@ public class CreatePersonUtenIdentifikatorService {
 
             relatertPerson.setStatsborgerskap(isNotBlank(request.getRelatertStatsborgerskap()) ?
                     request.getRelatertStatsborgerskap() :
-                    kodeverkConsumer.getTilfeldigLand());
+                    kodeverkConsumer.getTilfeldigLand().block());
         }
 
         if (isNull(request.getKjoenn())) {

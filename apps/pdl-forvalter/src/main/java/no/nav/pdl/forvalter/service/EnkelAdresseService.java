@@ -99,6 +99,6 @@ public class EnkelAdresseService {
     private String getLandkode(String landkode) {
 
         return isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
-                kodeverkConsumer.getTilfeldigLand();
+                kodeverkConsumer.getTilfeldigLand().block();
     }
 }

@@ -1,27 +1,26 @@
 package no.nav.testnav.apps.personservice.config;
 
-import no.nav.dolly.libs.security.config.DollyHttpSecurity;
+import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
+@Profile({"prod", "local"})
+@EnableWebFluxSecurity
 class SecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityWebFilterChain filterChain(ServerHttpSecurity httpSecurity, JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager) {
         return httpSecurity
-                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests())
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(withDefaults()))
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();
     }
 
 }
-
