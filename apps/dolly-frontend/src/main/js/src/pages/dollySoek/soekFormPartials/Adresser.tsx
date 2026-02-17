@@ -7,6 +7,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { adressePath } from '../SoekForm'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 export const Adresser = ({ handleChange }: any) => {
 	return (
@@ -66,6 +67,47 @@ export const Adresser = ({ handleChange }: any) => {
 						}
 					/>
 				</div>
+				<div className="flexbox--flex-wrap" >
+                    <FormTextInput
+                        name={`${adressePath}.adressehistorikk.antallBostedsadresser`}
+                        placeholder="Antall bostedsadresser ..."
+                        type="number"
+                        onBlur={(val: SyntheticEvent) =>
+                            handleChange(
+                                val?.target?.value || null,
+                                `${adressePath}.adressehistorikk.antallBostedsadresser`,
+                                `Antall bostedsadresser: ${val?.target?.value}`,
+                            )
+                        }
+                    />
+                    <FormTextInput
+                        name={`${adressePath}.adressehistorikk.antallKontaktadresser`}
+                        placeholder="Antall kontaktadresser ..."
+                        type="number"
+                        onBlur={(val: SyntheticEvent) =>
+                            handleChange(
+                                val?.target?.value || null,
+                                `${adressePath}.adressehistorikk.antallKontaktadresser`,
+                                `Antall kontaktadresser: ${val?.target?.value}`,
+                            )
+                        }
+                    />
+                    <FormTextInput
+                        name={`${adressePath}.adressehistorikk.antallOppholdsadresser`}
+                        placeholder="Antall oppholdsadresser ..."
+                        type="number"
+                        onBlur={(val: SyntheticEvent) =>
+                            handleChange(
+                                val?.target?.value || null,
+                                `${adressePath}.adressehistorikk.antallOppholdsadresser`,
+                                `Antall historiske oppholdsadresser: ${val?.target?.value}`,
+                            )
+                        }
+                    />
+                    <div style={{ marginLeft: '-30px', marginTop: '3px' }}>
+                        <Hjelpetekst>I disse tre feltene velges minimum antall historiske adresser (pluss gjeldende). Eks: "2" bostedsadresser gir treff på personer med tre eller flere adresser.</Hjelpetekst>
+                    </div>
+                </div>
 			</div>
 			<FormCheckbox
 				name={`${adressePath}.harBostedsadresse`}
@@ -123,42 +165,6 @@ export const Adresser = ({ handleChange }: any) => {
 				label="Har bydelsnummer"
 				onChange={(val: SyntheticEvent) =>
 					handleChange(val.target.checked, `${adressePath}.harBydelsnummer`, 'Har bydelsnummer')
-				}
-			/>
-			<FormTextInput
-				name={`${adressePath}.adressehistorikk.antallBostedsadresser`}
-				placeholder="Skriv inn antall bostedsadresser ..."
-				type="number"
-				onBlur={(val: SyntheticEvent) =>
-					handleChange(
-						val?.target?.value || null,
-						`${adressePath}.adressehistorikk.antallBostedsadresser`,
-						`Antall bostedsadresser: ${val?.target?.value}`,
-					)
-				}
-			/>
-			<FormTextInput
-				name={`${adressePath}.adressehistorikk.antallKontaktadresser`}
-				placeholder="Skriv inn antall kontaktadresser ..."
-				type="number"
-				onBlur={(val: SyntheticEvent) =>
-					handleChange(
-						val?.target?.value || null,
-						`${adressePath}.adressehistorikk.antallKontaktadresser`,
-						`Antall kontaktadresser: ${val?.target?.value}`,
-					)
-				}
-			/>
-			<FormTextInput
-				name={`${adressePath}.adressehistorikk.antallOppholdsadresser`}
-				placeholder="Skriv inn antall oppholdsadresser ..."
-				type="number"
-				onBlur={(val: SyntheticEvent) =>
-					handleChange(
-						val?.target?.value || null,
-						`${adressePath}.adressehistorikk.antallOppholdsadresser`,
-						`Antall oppholdsadresser: ${val?.target?.value}`,
-					)
 				}
 			/>
 		</SoekKategori>

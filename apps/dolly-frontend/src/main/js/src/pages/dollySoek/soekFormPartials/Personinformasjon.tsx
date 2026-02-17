@@ -38,9 +38,21 @@ export const Personinformasjon = ({
 				}
 			/>
 			<FormSelect
+                name={`${personPath}.personStatus`}
+                options={Options('personstatus')}
+                size="medium"
+                placeholder="Velg personstatus ..."
+                onChange={(val: SyntheticEvent) =>
+                    handleChange((val as any)?.value || null,
+                        `${personPath}.personStatus`,
+                        `Personstatus: ${codeToNorskLabel(val?.value)}`,
+                    )
+                }
+            />
+			<FormSelect
 				name={`${personPath}.statsborgerskap`}
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				size="large"
+				size="medium"
 				placeholder="Velg statsborgerskap ..."
 				onChange={(val: SyntheticEvent) =>
 					handleChange((val as any)?.value || null,
@@ -50,29 +62,21 @@ export const Personinformasjon = ({
 				}
 			/>
 			<FormTextInput
-            				name={`${personPath}.antallStatsborgerskap`}
-            				placeholder="Skriv inn antall statsborgerskap ..."
-            				type="number"
-            				onBlur={(val: SyntheticEvent) =>
-            					handleChange(
-            						val?.target?.value || null,
-            						`${personPath}.antallStatsborgerskap`,
-            						`Antall statsborgerskap: ${val?.target?.value}`,
-            					)
-            				}
-            			/>
-			<FormSelect
-				name={`${personPath}.personStatus`}
-				options={Options('personstatus')}
-				size="medium"
-				placeholder="Velg personstatus ..."
-				onChange={(val: SyntheticEvent) =>
-					handleChange((val as any)?.value || null,
-						`${personPath}.personStatus`,
-						`Personstatus: ${codeToNorskLabel(val?.value)}`,
-					)
-				}
-			/>
+                name={`${personPath}.antallStatsborgerskap`}
+                placeholder="Antall statsborgerskap..."
+                type="number"
+                size="medium"
+                onBlur={(val: SyntheticEvent) =>
+                    handleChange(
+                        val?.target?.value || null,
+                        `${personPath}.antallStatsborgerskap`,
+                        `Antall statsborgerskap: ${val?.target?.value}`,
+                    )
+                }
+            />
+            <div style={{ marginLeft: '-30px', marginTop: '3px' }}>
+                <Hjelpetekst>Minimum antall statsborgerskap. Eks: "2" gir treff på personer med to eller flere statsborgerskap.</Hjelpetekst>
+            </div>
 			<FormTextInput
 				name={`${personPath}.alderFom`}
 				useControlled={true}
