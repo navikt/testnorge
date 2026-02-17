@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
@@ -100,7 +101,7 @@ class FalskIdentitetServiceTest {
     @Test
     void whenInvalidNameGiven_thenThrowExecption() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(false);
+        when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(Mono.just(false));
 
         var request = FalskIdentitetDTO.builder()
                         .erFalsk(true)

@@ -9,6 +9,8 @@ import no.nav.registre.sdforvalter.domain.GruppeListe;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 
 @AllArgsConstructor
@@ -29,8 +31,9 @@ public class GruppeController {
                     @ApiResponse(description = "JSON som inneholder key 'liste', med et array av grupper.")
             }
     )
-    public GruppeListe getGruppeListe() {
-        return adapter.fetchGruppeListe();
+    public Mono<GruppeListe> getGruppeListe() {
+        return Mono.fromCallable(adapter::fetchGruppeListe)
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
 }

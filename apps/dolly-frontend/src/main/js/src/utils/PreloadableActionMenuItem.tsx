@@ -20,7 +20,10 @@ export const PreloadableActionMenuItem: React.FC<PreloadableActionMenuItemProps>
 
 	return (
 		<ActionMenu.Item
-			onClick={() => navigate(route)}
+			onClick={(event: React.MouseEvent) => {
+				event.preventDefault()
+				navigate(route)
+			}}
 			onMouseOver={() => preloadComponentOnRoute(route)}
 			style={style}
 			data-testid={dataTestId}

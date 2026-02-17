@@ -5,6 +5,8 @@ import no.nav.registre.testnorge.tilbakemeldingapi.domain.Tilbakemelding;
 import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
@@ -24,18 +26,25 @@ public class TilbakemeldingService {
         this.channel = channel;
     }
 
-    public void publish(Tilbakemelding tilbakemelding) {
-        String visningsNavn = Boolean.TRUE.equals(tilbakemelding.getIsAnonym())
-                ? "Anonym"
-                : utledVisningsNavn(tilbakemelding);
-        slackConsumer.publish(tilbakemelding.toSlackMessage(channel, visningsNavn));
+    public Mono<Void> publish(Tilbakemelding tilbakemelding) {
+        return utledVisningsNavn(tilbakemelding)
+                .flatMap(visningsNavn -> Mono.fromCallable(() -> {
+                    slackConsumer.publish(tilbakemelding.toSlackMessage(channel, visningsNavn));
+                    return visningsNavn;
+                }).subscribeOn(Schedulers.boundedElastic()))
+                .then();
     }
 
-    public String utledVisningsNavn(Tilbakemelding tilbakemelding) {
-        return isNoneBlank(tilbakemelding.getBrukernavn()) ?
-                String.format("%s (%s)", tilbakemelding.getBrukernavn(),
-                        isNoneBlank(tilbakemelding.getTilknyttetOrganisasjon()) ? tilbakemelding.getTilknyttetOrganisasjon() : "Ukjent organisasjon") :
-                profilApiConsumer.getBruker().getVisningsNavn();
+    private Mono<String> utledVisningsNavn(Tilbakemelding tilbakemelding) {
+        if (Boolean.TRUE.equals(tilbakemelding.getIsAnonym())) {
+            return Mono.just("Anonym");
+        }
+        if (isNoneBlank(tilbakemelding.getBrukernavn())) {
+            return Mono.just(String.format("%s (%s)", tilbakemelding.getBrukernavn(),
+                    isNoneBlank(tilbakemelding.getTilknyttetOrganisasjon()) ? tilbakemelding.getTilknyttetOrganisasjon() : "Ukjent organisasjon"));
+        }
+        return profilApiConsumer.getBruker()
+                .map(profil -> profil.getVisningsNavn());
     }
 
 }

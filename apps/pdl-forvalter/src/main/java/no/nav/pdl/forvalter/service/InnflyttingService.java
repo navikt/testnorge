@@ -56,7 +56,7 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
     protected void handle(InnflyttingDTO innflytting, PersonDTO person) {
 
         if (isBlank(innflytting.getFraflyttingsland())) {
-            innflytting.setFraflyttingsland(kodeverkConsumer.getTilfeldigLand());
+            innflytting.setFraflyttingsland(kodeverkConsumer.getTilfeldigLand().block());
         }
 
         if (isNull(innflytting.getInnflyttingsdato())) {
