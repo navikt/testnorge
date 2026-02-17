@@ -4,9 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.organisasjonforvalter.consumer.command.GenererNavnCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,18 +35,17 @@ public class GenererNavnServiceConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public List<String> getOrgName(Integer antall) {
+    public Mono<List<String>> getOrgName(Integer antall) {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> new GenererNavnCommand(webClient, antall, token.getTokenValue()).call())
                 .map(value -> format("%s %s", value.getAdjektiv(), value.getSubstantiv()))
-                .collect(Collectors.toList())
-                .block();
+                .collect(Collectors.toList());
     }
 
-    public String getOrgName() {
+    public Mono<String> getOrgName() {
 
-        List<String> orgName = getOrgName(1);
-        return orgName.isEmpty() ? null : orgName.getFirst();
+        return getOrgName(1)
+                .map(orgNames -> orgNames.isEmpty() ? null : orgNames.getFirst());
     }
 }

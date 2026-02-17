@@ -9,6 +9,7 @@ import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.Set;
@@ -27,20 +28,23 @@ public class ImportService {
     private final MapperFacade mapperFacade;
 
     @Transactional
-    public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
+    public Mono<Map<String, RsOrganisasjon>> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
-        var miljoerAaSjekke = nonNull(miljoer) && !miljoer.isEmpty() ?
-                miljoerServiceConsumer.getOrgMiljoer().stream()
-                        .filter(miljoer::contains)
-                        .collect(Collectors.toSet()) :
-                miljoerServiceConsumer.getOrgMiljoer();
-
-          return organisasjonServiceConsumer.getStatus(Set.of(orgnummer), miljoerAaSjekke)
-                  .map(Map::entrySet)
-                  .flatMap(Flux::fromIterable)
-                  .filter(org -> isNotBlank(org.getValue().getOrgnummer()))
-                  .collect(Collectors.toMap(Map.Entry::getKey,
-                          org -> mapperFacade.map(org.getValue(), RsOrganisasjon.class)))
-                  .block();
+        return miljoerServiceConsumer.getOrgMiljoer()
+                .map(tilgjengeligeMiljoer -> {
+                    if (nonNull(miljoer) && !miljoer.isEmpty()) {
+                        return tilgjengeligeMiljoer.stream()
+                                .filter(miljoer::contains)
+                                .collect(Collectors.toSet());
+                    }
+                    return tilgjengeligeMiljoer;
+                })
+                .flatMap(miljoerAaSjekke ->
+                        organisasjonServiceConsumer.getStatus(Set.of(orgnummer), miljoerAaSjekke)
+                                .map(Map::entrySet)
+                                .flatMap(Flux::fromIterable)
+                                .filter(org -> isNotBlank(org.getValue().getOrgnummer()))
+                                .collect(Collectors.toMap(Map.Entry::getKey,
+                                        org -> mapperFacade.map(org.getValue(), RsOrganisasjon.class))));
     }
 }
