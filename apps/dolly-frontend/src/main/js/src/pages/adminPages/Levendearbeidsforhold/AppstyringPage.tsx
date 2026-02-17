@@ -1,5 +1,5 @@
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
-import { Alert, Button } from '@navikt/ds-react'
+import { Button, VStack } from '@navikt/ds-react'
 import { AppstyringTable } from '@/pages/adminPages/Levendearbeidsforhold/AppstyringTable'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 import React, { useEffect, useState } from 'react'
@@ -111,20 +111,26 @@ export default () => {
 		<>
 			<h1>Levende arbeidsforhold</h1>
 			<h2>Kontrollpanel for styring av app</h2>
-			{/*<Alert variant={'info'} style={{ marginBottom: '15px' }}>*/}
-			{/*	Denne siden er under utvikling.*/}
-			{/*</Alert>*/}
-			<StatusBox nesteKjoring={statusData.nesteKjoring} status={statusData.status} />
-			{!statusData.status ? (
-				<Button loading={henterStatus} onClick={aktiverScheduler} style={{ marginBottom: '8px' }}>
-					Aktiver
-				</Button>
-			) : (
-				<Button loading={henterStatus} onClick={deaktiverScheduler} variant={'danger'}>
-					Deaktiver
-				</Button>
-			)}
-			<AppstyringTable data={apiData} setData={setApiData} />
+			<VStack gap="space-16">
+				<StatusBox nesteKjoring={statusData.nesteKjoring} status={statusData.status} />
+				<div style={{ width: '150px' }}>
+					{!statusData.status ? (
+						<Button loading={henterStatus} onClick={aktiverScheduler}>
+							Aktiver
+						</Button>
+					) : (
+						<Button
+							data-color="danger"
+							loading={henterStatus}
+							onClick={deaktiverScheduler}
+							variant={'primary'}
+						>
+							Deaktiver
+						</Button>
+					)}
+				</div>
+				<AppstyringTable data={apiData} setData={setApiData} />
+			</VStack>
 		</>
 	)
 }

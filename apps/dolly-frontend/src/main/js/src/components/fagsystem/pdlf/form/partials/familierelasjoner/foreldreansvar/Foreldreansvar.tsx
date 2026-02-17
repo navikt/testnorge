@@ -15,13 +15,12 @@ import { ForeldreBarnRelasjon, TypeAnsvarlig } from '@/components/fagsystem/pdlf
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
-import { Alert } from '@navikt/ds-react'
 import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import styled from 'styled-components'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 interface ForeldreansvarForm {
 	formMethods: UseFormReturn
@@ -33,16 +32,6 @@ type Target = {
 	label: string
 	value: string
 }
-
-const StyledAlert = styled(Alert)`
-	margin-bottom: 20px;
-
-	&&& {
-		.navds-alert__wrapper {
-			max-width: 60rem;
-		}
-	}
-`
 
 export const ForeldreansvarForm = ({
 	formMethods,

@@ -148,7 +148,7 @@ export const Select = ({
 				// Naar vi bruker modal fra Aksel maa vi referere til modalens className for at dropdowns ikke skal forsvinne bak modalen
 				menuPortalTarget={
 					isInDialog
-						? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
+						? (document.getElementsByClassName('aksel-modal')[0] as HTMLElement)
 						: document.getElementById('root')
 				}
 				menuPosition={isInDialog ? 'fixed' : undefined}

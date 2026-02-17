@@ -12,7 +12,7 @@ export const AppstyringTable = ({
 	setData: (data: Array<FetchData>) => void
 }) => {
 	return (
-		<Box background="surface-default" padding="4">
+		<Box background="default" padding="space-16">
 			<ErrorBoundary>
 				<Table>
 					<Table.Header>

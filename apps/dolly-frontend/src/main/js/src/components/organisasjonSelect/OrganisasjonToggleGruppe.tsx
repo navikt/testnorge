@@ -15,7 +15,7 @@ export const OrganisasjonToggleGruppe = ({
 			size={'small'}
 			onChange={handleToggleChange}
 			value={inputType}
-			style={{ margin: '5px 0 5px', backgroundColor: '#ffffff' }}
+			style={{ margin: '5px 0 10px 0' }}
 		>
 			<ToggleGroup.Item key={ArbeidsgiverTyper.felles} value={ArbeidsgiverTyper.felles}>
 				Felles organisasjoner

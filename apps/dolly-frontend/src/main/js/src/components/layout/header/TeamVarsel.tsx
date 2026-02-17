@@ -9,12 +9,12 @@ const TeamVarselPanel = styled.div`
 	position: fixed;
 	top: 80px;
 	right: 20px;
-	background-color: #0067c5;
+	background-color: var(--ax-bg-accent-strong);
 	color: white;
 	padding: 20px 20px 25px 20px;
 	border-radius: 8px;
 	width: 300px;
-	box-shadow: var(--a-shadow-medium);
+	box-shadow: var(--ax-shadow-dialog);
 	z-index: 8;
 
 	p {
@@ -24,17 +24,12 @@ const TeamVarselPanel = styled.div`
 	}
 
 	&& {
-		.navds-popover__arrow {
-			top: -0.5rem;
-			left: 240px;
-			background-color: #0067c5;
-			border-color: #0067c5;
-		}
-	}
-
-	&& {
-		.navds-button--secondary {
-			background-color: white;
+		.aksel-button {
+			background-color: var(--ax-bg-default);
+			color: var(--ax-bg-accent-strong);
+			&:hover {
+				background-color: var(--ax-bg-accent-moderate-hover);
+			}
 		}
 	}
 `
@@ -62,11 +57,8 @@ export const TeamVarsel = () => {
 					Du representer nå teamet {currentBruker.representererTeam?.navn}, og alle data du
 					oppretter vil tilhøre dette teamet. Hvem du vil represente velges i menyen over.
 				</p>
-				<Button variant="secondary" onClick={dismiss}>
-					OK
-				</Button>
+				<Button onClick={dismiss}>OK</Button>
 			</div>
-			<div className="navds-popover__arrow"></div>
 		</TeamVarselPanel>
 	)
 }
