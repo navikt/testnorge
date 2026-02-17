@@ -11,8 +11,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 public class AzureAdProfileConsumer {
@@ -46,15 +44,13 @@ public class AzureAdProfileConsumer {
                 .map(Profil::new);
     }
 
-    public Optional<byte[]> getProfilImage() {
-        try {
-            return Optional.ofNullable(azureAdTokenService.exchange(url + "/.default")
-                    .flatMap(accessToken -> new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call())
-                    .block());
-        } catch (IllegalStateException e) {
-            log.warn("Finner ikke profilbilde", e);
-            return Optional.empty();
-        }
+    public Mono<byte[]> getProfilImage() {
+        return azureAdTokenService.exchange(url + "/.default")
+                .flatMap(accessToken -> new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call())
+                .onErrorResume(e -> {
+                    log.warn("Finner ikke profilbilde", e);
+                    return Mono.empty();
+                });
     }
 
 }

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
-import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,8 @@ public class AzureAdTokenService {
     }
 
     public Mono<AccessToken> exchange(String scope) {
-        return new OnBehalfOfExchangeCommand(webClient, clientCredential, scope, getAuthenticatedToken.call()).call();
+        return getAuthenticatedToken.call()
+                .flatMap(token -> new OnBehalfOfExchangeCommand(webClient, clientCredential, scope, token).call());
     }
 
 }
