@@ -38,45 +38,50 @@ export const Personinformasjon = ({
 				}
 			/>
 			<FormSelect
-                name={`${personPath}.personStatus`}
-                options={Options('personstatus')}
-                size="medium"
-                placeholder="Velg personstatus ..."
-                onChange={(val: SyntheticEvent) =>
-                    handleChange((val as any)?.value || null,
-                        `${personPath}.personStatus`,
-                        `Personstatus: ${codeToNorskLabel(val?.value)}`,
-                    )
-                }
-            />
+				name={`${personPath}.personStatus`}
+				options={Options('personstatus')}
+				size="medium"
+				placeholder="Velg personstatus ..."
+				onChange={(val: SyntheticEvent) =>
+					handleChange(
+						(val as any)?.value || null,
+						`${personPath}.personStatus`,
+						`Personstatus: ${codeToNorskLabel(val?.value)}`,
+					)
+				}
+			/>
 			<FormSelect
 				name={`${personPath}.statsborgerskap`}
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 				size="medium"
 				placeholder="Velg statsborgerskap ..."
 				onChange={(val: SyntheticEvent) =>
-					handleChange((val as any)?.value || null,
+					handleChange(
+						(val as any)?.value || null,
 						`${personPath}.statsborgerskap`,
 						`Statsborgerskap: ${val?.value}`,
 					)
 				}
 			/>
 			<FormTextInput
-                name={`${personPath}.antallStatsborgerskap`}
-                placeholder="Antall statsborgerskap..."
-                type="number"
-                size="medium"
-                onBlur={(val: SyntheticEvent) =>
-                    handleChange(
-                        val?.target?.value || null,
-                        `${personPath}.antallStatsborgerskap`,
-                        `Antall statsborgerskap: ${val?.target?.value}`,
-                    )
-                }
-            />
-            <div style={{ marginLeft: '-30px', marginTop: '3px' }}>
-                <Hjelpetekst>Minimum antall statsborgerskap. Eks: "2" gir treff på personer med to eller flere statsborgerskap.</Hjelpetekst>
-            </div>
+				name={`${personPath}.antallStatsborgerskap`}
+				placeholder="Antall statsborgerskap..."
+				type="number"
+				size="medium"
+				onBlur={(val: SyntheticEvent) =>
+					handleChange(
+						val?.target?.value || null,
+						`${personPath}.antallStatsborgerskap`,
+						`Antall statsborgerskap: ${val?.target?.value}`,
+					)
+				}
+			/>
+			<div style={{ marginLeft: '-30px', marginTop: '3px' }}>
+				<Hjelpetekst>
+					Minimum antall statsborgerskap. Eks: "2" gir treff på personer med to eller flere
+					statsborgerskap.
+				</Hjelpetekst>
+			</div>
 			<FormTextInput
 				name={`${personPath}.alderFom`}
 				useControlled={true}
@@ -113,9 +118,7 @@ export const Personinformasjon = ({
 			<FormCheckbox
 				name={`${personPath}.erDoed`}
 				label="Er død"
-				onChange={(val: any) =>
-					handleChange(val.target.checked, `${personPath}.erDoed`, 'Er død')
-				}
+				onChange={(val: any) => handleChange(val.target.checked, `${personPath}.erDoed`, 'Er død')}
 				disabled={watch(`${personPath}.erLevende`)}
 			/>
 			<FormCheckbox
@@ -154,9 +157,13 @@ export const Personinformasjon = ({
 			<FormCheckbox
 				name={`${personPath}.harTilrettelagtKommunikasjon`}
 				label="Har tilrettelagt kommunikasjon"
-				onChange={(val: any) => handleChange(val.target.checked, `${personPath}.harTilrettelagtKommunikasjon`,
+				onChange={(val: any) =>
+					handleChange(
+						val.target.checked,
+						`${personPath}.harTilrettelagtKommunikasjon`,
 						'Har tilrettelagt kommunikasjon',
-					)}
+					)
+				}
 			/>
 			<FormCheckbox
 				name={`${personPath}.harSkjerming`}
