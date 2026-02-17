@@ -7,9 +7,8 @@ on:
       - apps/varslinger-service/**
       - libs/data-transfer-objects/**
       - libs/reactive-core/**
+      - libs/reactive-security/**
       - libs/security-core/**
-      - libs/servlet-core/**
-      - libs/servlet-security/**
       - libs/testing/**
       - plugins/**
 

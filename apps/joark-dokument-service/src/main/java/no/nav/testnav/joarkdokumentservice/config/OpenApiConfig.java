@@ -9,15 +9,18 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.WebFilter;
 
+import java.net.URI;
 import java.util.Arrays;
 
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 
 @Configuration
-public class OpenApiConfig implements WebMvcConfigurer {
+@Import(ApplicationProperties.class)
+public class OpenApiConfig {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -48,8 +51,15 @@ public class OpenApiConfig implements WebMvcConfigurer {
                 );
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
+    @Bean
+    public WebFilter swaggerRedirectFilter() {
+        return (exchange, chain) -> {
+            if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
+                exchange.getResponse().setStatusCode(HttpStatus.FOUND);
+                exchange.getResponse().getHeaders().setLocation(URI.create("/swagger-ui.html"));
+                return exchange.getResponse().setComplete();
+            }
+            return chain.filter(exchange);
+        };
     }
 }

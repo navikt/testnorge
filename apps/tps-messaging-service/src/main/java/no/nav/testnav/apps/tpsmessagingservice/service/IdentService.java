@@ -14,6 +14,8 @@ import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,40 +56,45 @@ public class IdentService {
                 .build();
     }
 
-    public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
+    public Mono<List<TpsIdentStatusDTO>> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
 
         if (identer.size() > MAX_LIMIT) {
             throw new BadRequestException(BAD_REQUEST);
         }
 
-        Map<String, TpsServicerutineM201Response> tpsResponse = new HashMap<>();
+        Mono<List<String>> miljoerMono = (isNull(miljoer) || !miljoer.contains("pp"))
+                ? (isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer))
+                : Mono.just(miljoer);
 
-        if (isNull(miljoer) || !miljoer.contains("pp")) {
-            tpsResponse.putAll(readFromTps(identer, isNull(miljoer) ?
-                    testmiljoerServiceConsumer.getMiljoer() : miljoer, false));
-        }
+        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
+            Map<String, TpsServicerutineM201Response> tpsResponse = new HashMap<>();
 
-        if (isTrue(includeProd)) {
-            tpsResponse.put(PROD, readFromTps(identer, List.of(PROD_LIKE_ENV), true).get(PROD_LIKE_ENV));
-        }
+            if (isNull(miljoer) || !miljoer.contains("pp")) {
+                tpsResponse.putAll(readFromTps(identer, resolvedMiljoer, false));
+            }
 
-        return identer.parallelStream()
-                .map(ident -> TpsIdentStatusDTO.builder()
-                        .ident(ident)
-                        .miljoer(tpsResponse.entrySet().stream()
-                                .filter(entry -> exists(ident, entry.getValue()))
-                                .map(Map.Entry::getKey)
-                                .toList())
-                        .status(tpsResponse.values().stream()
-                                .filter(tpsServicerutineM201Response ->
-                                        nonNull(tpsServicerutineM201Response.getTpsSvar()) &&
-                                        nonNull(tpsServicerutineM201Response.getTpsSvar().getSvarStatus()) &&
-                                        isNotBlank(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()) &&
-                                        !"Person ikke funnet".equalsIgnoreCase(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()))
-                                .map(tpsServicerutineM201Response -> tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding())
-                                .findFirst().orElse(null))
-                        .build())
-                .toList();
+            if (isTrue(includeProd)) {
+                tpsResponse.put(PROD, readFromTps(identer, List.of(PROD_LIKE_ENV), true).get(PROD_LIKE_ENV));
+            }
+
+            return identer.parallelStream()
+                    .map(ident -> TpsIdentStatusDTO.builder()
+                            .ident(ident)
+                            .miljoer(tpsResponse.entrySet().stream()
+                                    .filter(entry -> exists(ident, entry.getValue()))
+                                    .map(Map.Entry::getKey)
+                                    .toList())
+                            .status(tpsResponse.values().stream()
+                                    .filter(tpsServicerutineM201Response ->
+                                            nonNull(tpsServicerutineM201Response.getTpsSvar()) &&
+                                            nonNull(tpsServicerutineM201Response.getTpsSvar().getSvarStatus()) &&
+                                            isNotBlank(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()) &&
+                                            !"Person ikke funnet".equalsIgnoreCase(tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding()))
+                                    .map(tpsServicerutineM201Response -> tpsServicerutineM201Response.getTpsSvar().getSvarStatus().getUtfyllendeMelding())
+                                    .findFirst().orElse(null))
+                            .build())
+                    .toList();
+        }).subscribeOn(Schedulers.boundedElastic()));
     }
 
     private boolean exists(String ident, TpsServicerutineM201Response response) {
