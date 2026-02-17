@@ -6,7 +6,7 @@ import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG0
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;

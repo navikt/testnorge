@@ -7,16 +7,16 @@ import no.nav.registre.testnorge.organisasjonfastedataservice.service.Organisasj
 import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -30,38 +30,36 @@ public class OrganisasjonOrdreController {
     private final OrganisasjonOrdreService ordreService;
 
     @PostMapping("/organisasjon/{orgnummer}")
-    public ResponseEntity<HttpStatus> create(
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Void> create(
             @PathVariable String orgnummer,
             @RequestHeader String miljo,
             @RequestHeader Boolean update
     ) {
-        var organisasjon = service.getOrganisasjon(orgnummer);
-        if (organisasjon.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        return service.getOrganisasjon(orgnummer)
+                .flatMap(optOrg -> {
+                    if (optOrg.isEmpty()) {
+                        return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND));
+                    }
 
-        var org = organisasjon.get();
+                    var org = optOrg.get();
 
-        if (org.getEnhetstype().equals("BEDR") && isNull(org.getOverenhet())) {
-            log.error("Organisasjon er av type BEDR men mangler overenhet!");
-            return ResponseEntity.badRequest().build();
-        }
+                    if (org.getEnhetstype().equals("BEDR") && isNull(org.getOverenhet())) {
+                        log.error("Organisasjon er av type BEDR men mangler overenhet!");
+                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+                    }
 
-        var ordreId = update != null && update
-                ? ordreService.change(org, miljo)
-                : ordreService.create(org, miljo);
+                    Mono<String> ordreMono = update != null && update
+                            ? ordreService.change(org, miljo)
+                            : ordreService.create(org, miljo);
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .replacePath("/api/v1/ordre/{ordreId}")
-                .buildAndExpand(ordreId)
-                .toUri();
-
-        return ResponseEntity.created(uri).build();
+                    return ordreMono.then();
+                });
     }
 
     @PostMapping("/organisasjon")
-    public ResponseEntity<HttpStatus> create(
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Void> create(
             @RequestHeader Gruppe gruppe,
             @RequestHeader String miljo,
             @RequestHeader Boolean update
@@ -69,35 +67,24 @@ public class OrganisasjonOrdreController {
 
         if (gruppe.equals(Gruppe.KUN_TIL_Q1) && !miljo.equals("q1")) {
             log.error("Gruppe kan kun sendes til Q1 da den inneholder reelle orgnummer");
-            return ResponseEntity.badRequest().build();
+            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST));
         }
 
         if (gruppe.equals(Gruppe.OTP)) {
             log.error("Gruppe kan kun sendes ved bruk av subsets. Den er på over en million linjer og skaper tidvis problemer med tusenvis av duplikate Jenkins jobber");
-            return ResponseEntity.badRequest().build();
+            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST));
         }
 
-        var ordreId = update != null && update
+        Mono<String> ordreMono = update != null && update
                 ? ordreService.change(gruppe, miljo)
                 : ordreService.create(gruppe, miljo);
 
-
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{ordreId}")
-                .buildAndExpand(ordreId)
-                .toUri();
-
-        return ResponseEntity.created(uri).build();
+        return ordreMono.then();
     }
 
     @GetMapping("/{ordreId}")
-    public ResponseEntity<List<ItemDTO>> getStatus(@PathVariable String ordreId) {
-        var status = ordreService.getStatus(ordreId);
-
-        if (status == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(status);
+    public Mono<List<ItemDTO>> getStatus(@PathVariable String ordreId) {
+        return ordreService.getStatus(ordreId)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 }

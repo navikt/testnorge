@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-orgnummer-service
     description: Genererer gyldige organisasjonsnummer. Sjekker at det ikke finnes i q1.
+  main:
+    web-application-type: reactive
   config:
     import: "classpath:dolly-application.yml"
   flyway:
