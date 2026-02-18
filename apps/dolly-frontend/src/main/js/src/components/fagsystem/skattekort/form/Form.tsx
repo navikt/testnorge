@@ -16,19 +16,13 @@ import {
 } from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
 import { validation } from '@/components/fagsystem/skattekort/form/validation'
 
-export const initialArbeidsgiverSkatt = (
-	skattekortidentifikator = Math.floor(100000 + Math.random() * 900000), //NOSONAR not used in secure contexts
-) => {
+export const initialArbeidsgiverSkatt = () => {
 	return {
-		arbeidsgiveridentifikator: {
-			organisasjonsnummer: '',
-		},
 		arbeidstaker: [
 			{
 				resultatPaaForespoersel: 'SKATTEKORTOPPLYSNINGER_OK',
 				skattekort: {
-					utstedtDato: '',
-					skattekortidentifikator: skattekortidentifikator,
+					utstedtDato: new Date().toISOString(),
 					forskuddstrekk: [initialTrekktabell],
 				},
 				tilleggsopplysning: [],
@@ -53,6 +47,32 @@ export const SkattekortForm = () => {
 		formMethods.trigger('skattekort.arbeidsgiverSkatt')
 	}
 
+	const onBlurResultatPaaForespoersel = (path: string) => {
+		const value = formMethods.getValues(`${path}.arbeidstaker[0].resultatPaaForespoersel`)
+		if (value !== 'SKATTEKORTOPPLYSNINGER_OK') {
+			formMethods.setValue(`${path}.arbeidstaker[0].tilleggsopplysning`, [])
+			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
+		}
+	}
+
+	const onBlurTillegsinformasjon = (path: string) => {
+		let tilleggsinformasjon = formMethods.getValues(`${path}.arbeidstaker[0].tilleggsopplysning`)
+
+		if (
+			tilleggsinformasjon !== undefined &&
+			tilleggsinformasjon.some((element: string) => element !== 'OPPHOLD_I_TILTAKSSONE')
+		) {
+			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
+		}
+	}
+
+	const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[0]?.arbeidstaker?.[0]
+
+	const isResultatOK = arbeidstaker.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
+	const isNotTilleggsopplysning = arbeidstaker.tilleggsopplysning?.find(
+		(opl: string) => opl === 'OPPHOLD_PAA_SVALBARD' || opl === 'KILDESKATT_PAA_PENSJON',
+	)
+
 	return (
 		<Vis attributt={skattekortAttributt}>
 			<Panel
@@ -76,9 +96,9 @@ export const SkattekortForm = () => {
 										name={`${path}.arbeidstaker[0].resultatPaaForespoersel`}
 										label="Resultat på forespørsel"
 										options={resultatstatus}
-										defaultValue={'skattekortopplysningerOK'}
 										size="large"
 										isClearable={false}
+										onBlur={() => onBlurResultatPaaForespoersel(path)}
 									/>
 									<FormSelect
 										name={`${path}.arbeidstaker[0].inntektsaar`}
@@ -92,17 +112,22 @@ export const SkattekortForm = () => {
 										label="Utstedt dato"
 									/>
 								</div>
-								<ForskuddstrekkForm
-									formMethods={formMethods}
-									path={`${path}.arbeidstaker[0].skattekort`}
-								/>
-								<FormSelect
-									name={`${path}.arbeidstaker[0].tilleggsopplysning`}
-									label="Tilleggsopplysning"
-									options={tilleggsopplysning}
-									size="grow"
-									isMulti={true}
-								/>
+								{isResultatOK && (
+									<FormSelect
+										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
+										label="Tilleggsopplysning"
+										options={tilleggsopplysning}
+										size="grow"
+										isMulti={true}
+										onBlur={() => onBlurTillegsinformasjon(path)}
+									/>
+								)}
+								{isResultatOK && !isNotTilleggsopplysning && (
+									<ForskuddstrekkForm
+										formMethods={formMethods}
+										path={`${path}.arbeidstaker[0].skattekort`}
+									/>
+								)}
 							</>
 						)}
 					</FormDollyFieldArray>

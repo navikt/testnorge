@@ -38,6 +38,11 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 									title="Utstedt dato"
 									value={formatDate(arbeidstaker?.skattekort?.utstedtDato)}
 								/>
+								<KodeverkTitleValue
+									kodeverkstype="TILLEGGSOPPLYSNING"
+									value={arbeidstaker?.tilleggsopplysning}
+									label="Tilleggsopplysning"
+								/>
 								<DollyFieldArray header="Forskuddstrekk" data={trekkListe} nested>
 									{(trekk: Forskuddstrekk, idx: number) => {
 										const forskuddstrekkType = Object.keys(trekk)?.filter((key) => trekk[key])?.[0]
@@ -69,11 +74,6 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 										)
 									}}
 								</DollyFieldArray>
-								<KodeverkTitleValue
-									kodeverkstype="TILLEGGSOPPLYSNING"
-									value={arbeidstaker?.tilleggsopplysning}
-									label="Tilleggsopplysning"
-								/>
 							</React.Fragment>
 						)
 					}}

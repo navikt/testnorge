@@ -22,8 +22,8 @@ interface ForskuddstrekkDTO {
 const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 	RESULTATSTATUS: {
 		'Skattekortopplysninger OK': 'SKATTEKORTOPPLYSNINGER_OK',
-		'Ikke skattekort': 'IKKE_SKATTEKORT',
 		'Ikke trekkplikt': 'IKKE_TREKKPLIKT',
+		'Ikke skattekort': 'IKKE_SKATTEKORT',
 	},
 	TILLEGGSOPPLYSNING: {
 		'Opphold på Svalbard': 'OPPHOLD_PAA_SVALBARD',

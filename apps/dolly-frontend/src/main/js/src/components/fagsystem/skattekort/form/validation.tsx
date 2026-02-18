@@ -1,6 +1,20 @@
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 
+const uniqueTrekkodeTest = (val: string, context: Yup.TestContext<any>) => {
+	const forskuddstrekk = context.from[2].value?.forskuddstrekk || []
+	return (
+		forskuddstrekk.reduce((counter: number, entry: any) => {
+			return (
+				counter +
+				(entry.frikort?.trekkode === val ? 1 : 0) +
+				(entry.trekktabell?.trekkode === val ? 1 : 0) +
+				(entry.trekkprosent?.trekkode === val ? 1 : 0)
+			)
+		}, 0) < 2
+	)
+}
+
 export const validation = {
 	skattekort: ifPresent(
 		'$skattekort',
@@ -18,20 +32,28 @@ export const validation = {
 										frikort: ifPresent(
 											'$frikort',
 											Yup.object({
-												trekkode: requiredString,
+												trekkode: Yup.string()
+													.required()
+													.test('isFrikort', 'Trekkode må være unik', (val, context) =>
+														uniqueTrekkodeTest(val, context),
+													),
 												frikortbeloep: Yup.number()
 													.transform((i, j) => (j === '' ? null : i))
 													.min(1, 'Kan ikke være mindre enn ${min}')
 													.max(1000000, 'Kan ikke være større enn ${max}')
-													.required('Frikortbeløp er påkrevd'),
+													.nullable(),
 											}),
 										),
 										trekktabell: ifPresent(
 											'$trekktabell',
 											Yup.object({
-												trekkode: requiredString,
+												trekkode: Yup.string()
+													.required()
+													.test('isTrekktabell', 'Trekkode må være unik', (val, context) =>
+														uniqueTrekkodeTest(val, context),
+													),
 												tabellnummer: Yup.number()
-													.min(1000, 'Kan ikke være mindre enn ${min}')
+													.min(7000, 'Kan ikke være mindre enn ${min}')
 													.max(9999, 'Kan ikke være større enn ${max}')
 													.required('Tabellnummer er påkrevd'),
 												prosentsats: Yup.number()
@@ -49,7 +71,11 @@ export const validation = {
 										trekkprosent: ifPresent(
 											'$trekkprosent',
 											Yup.object({
-												trekkode: requiredString,
+												trekkode: Yup.string()
+													.required()
+													.test('isTrekkprosent', 'Trekkode må være unik', (val, context) =>
+														uniqueTrekkodeTest(val, context),
+													),
 												prosentsats: Yup.number()
 													.transform((i, j) => (j === '' ? null : i))
 													.min(0, 'Kan ikke være mindre enn ${min}')

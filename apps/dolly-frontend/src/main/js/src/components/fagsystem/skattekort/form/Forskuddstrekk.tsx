@@ -33,9 +33,9 @@ const initialFrikort = {
 export const initialTrekktabell = {
 	trekktabell: {
 		trekkode: 'LOENN_FRA_NAV',
-		tabellnummer: '1234',
-		prosentsats: 50,
-		antallMaanederForTrekk: 12,
+		tabellnummer: '8020',
+		prosentsats: 35.3,
+		antallMaanederForTrekk: 10.5,
 	},
 }
 
