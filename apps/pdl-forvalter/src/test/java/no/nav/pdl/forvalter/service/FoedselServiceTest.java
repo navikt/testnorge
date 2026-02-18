@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -109,7 +110,7 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndKommuneOfBirthIsUnknown_thenVerifyGetTilfeldigKommuneIsCalled() {
 
-        when(kodeverkConsumer.getTilfeldigKommune()).thenReturn("4777");
+        when(kodeverkConsumer.getTilfeldigKommune()).thenReturn(Mono.just("4777"));
 
         var target = foedselService.convert(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()
@@ -164,7 +165,7 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsDnrAndLandOfBirthUnkown_thenLandkodeServiceIsCalled() {
 
-        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("COL");
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("COL"));
 
         var target = foedselService.convert(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()

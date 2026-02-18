@@ -1,25 +1,42 @@
 package no.nav.testnav.apps.adresseservice.config;
 
-import no.nav.dolly.libs.security.config.DollyHttpSecurity;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
+import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import reactor.core.publisher.Mono;
 
 @Configuration
+@RequiredArgsConstructor
 class SecurityConfig {
 
+    private final AzureAdResourceServerProperties azureAdProperties;
+
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
-                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests())
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()))
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 
+    @Bean
+    @Profile("!test")
+    ReactiveJwtDecoder jwtDecoder() {
+        return ReactiveJwtDecoders.fromOidcIssuerLocation(azureAdProperties.getIssuerUri());
+    }
+
+    @Bean
+    @Profile("test")
+    ReactiveJwtDecoder jwtDecoderForTest() {
+        return token -> Mono.empty();
+    }
 }

@@ -6,7 +6,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search.P
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search.PersonSearchResponse;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonSearch;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

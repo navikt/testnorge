@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -165,7 +166,7 @@ class OppholdsadresseServiceTest {
                 .build();
 
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
-                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
+                .thenReturn(Mono.just(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO()));
 
         var target = oppholdsadresseService.convert(request).getFirst();
 

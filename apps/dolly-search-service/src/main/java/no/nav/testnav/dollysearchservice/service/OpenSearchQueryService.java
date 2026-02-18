@@ -14,8 +14,8 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-import java.io.IOException;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -33,8 +33,6 @@ public class OpenSearchQueryService {
 
     public Mono<SearchInternalResponse> execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
 
-        var now = System.currentTimeMillis();
-
         if (isNull(request.getSide())) {
             request.setSide(0);
         }
@@ -43,8 +41,10 @@ public class OpenSearchQueryService {
             request.setAntall(10);
         }
 
-        try {
-            val personSoekResponse = Mono.just(openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+        return Mono.fromCallable(() -> {
+                    var now = System.currentTimeMillis();
+
+                    val personSoekResponse = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                             .index(pdlIndex)
                             .query(new Query.Builder()
                                     .bool(queryBuilder.build())
@@ -52,18 +52,13 @@ public class OpenSearchQueryService {
                             .from(request.getSide() * request.getAntall())
                             .size(request.getAntall())
                             .timeout("3s")
-                            .build(), JsonNode.class))
-                    .map(response -> formatResponse(response, request));
+                            .build(), JsonNode.class);
 
-            log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
+                    log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
-            return personSoekResponse;
-
-        } catch (IOException e) {
-
-            log.error("Feil ved personsøk i OpenSearch", e);
-            throw new InternalError("Feil ved personsøk i OpenSearch", e);
-        }
+                    return formatResponse(personSoekResponse, request);
+                })
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
@@ -79,7 +74,7 @@ public class OpenSearchQueryService {
                     .personer(List.of())
                     .build();
         }
-        
+
         var hitsList = hits.hits();
 
         return SearchInternalResponse.builder()
