@@ -19,21 +19,27 @@ dependencies {
     implementation "no.nav.testnav.libs:kafka-config"
     implementation "no.nav.testnav.libs:kafka-producers"
     implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:servlet-core"
-    implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:vault"
+
+    implementation "no.nav.testnav.libs:avro-schema"
+    implementation "no.nav.testnav.libs:commands"
+    implementation "no.nav.testnav.libs:csv-converter"
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:kafka-config"
+    implementation "no.nav.testnav.libs:kafka-producers"
 
     implementation "org.springframework.kafka:spring-kafka"
     implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
 
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.cloud:spring-cloud-vault-config-databases"
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
 
     implementation "org.aspectj:aspectjweaver:$versions.jweaver"
     implementation "org.postgresql:postgresql"
@@ -45,7 +51,7 @@ dependencies {
     implementation "com.h2database:h2"
 
     implementation "org.apache.httpcomponents.client5:httpclient5:5.4.1"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
 

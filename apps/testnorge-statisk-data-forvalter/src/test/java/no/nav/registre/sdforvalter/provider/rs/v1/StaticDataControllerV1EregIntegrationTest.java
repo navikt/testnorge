@@ -13,35 +13,33 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.Gruppe;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
+import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DollySpringBootTest
-@AutoConfigureMockMvc()
+@AutoConfigureWebTestClient
 @AutoConfigureWireMock(port = 0)
-//@Import(JwtDecoderConfig.class)
+@Import(JwtDecoderConfig.class)
 class StaticDataControllerV1EregIntegrationTest {
 
     private static final String EREG_API = "/api/v1/faste-data/ereg";
 
     @Autowired
-    private MockMvc mvc;
+    private WebTestClient webTestClient;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -101,49 +99,47 @@ class StaticDataControllerV1EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void should_not_have_arbeidsforhold() throws Exception {
+    void should_not_have_arbeidsforhold() {
         EregModel as = createEregModel("999999999", "AS");
         EregModel ans = createEregModel("888888888", "ANS");
 
         eregRepository.saveAll(Arrays.asList(as, ans));
 
-        String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).hasSize(2);
-        assertThat(response.getListe().get(0).isKanHaArbeidsforhold()).isFalse();
-        assertThat(response.getListe().get(1).isKanHaArbeidsforhold()).isFalse();
+        webTestClient.get()
+                .uri(EREG_API)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EregListe.class)
+                .value(response -> {
+                    assertThat(response.getListe()).hasSize(2);
+                    assertThat(response.getListe().get(0).isKanHaArbeidsforhold()).isFalse();
+                    assertThat(response.getListe().get(1).isKanHaArbeidsforhold()).isFalse();
+                });
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void should_have_arbeidsforhold() throws Exception {
+    void should_have_arbeidsforhold() {
         EregModel aafy = createEregModel("999999999", "AAFY");
         EregModel bedr = createEregModel("888888888", "BEDR");
 
         eregRepository.saveAll(Arrays.asList(aafy, bedr));
 
-        String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).hasSize(2);
-        assertThat(response.getListe().get(0).isKanHaArbeidsforhold()).isTrue();
-        assertThat(response.getListe().get(1).isKanHaArbeidsforhold()).isTrue();
+        webTestClient.get()
+                .uri(EREG_API)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EregListe.class)
+                .value(response -> {
+                    assertThat(response.getListe()).hasSize(2);
+                    assertThat(response.getListe().get(0).isKanHaArbeidsforhold()).isTrue();
+                    assertThat(response.getListe().get(1).isKanHaArbeidsforhold()).isTrue();
+                });
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void should_only_get_EREGS() throws Exception {
+    void should_only_get_EREGS() {
         EregModel as = createEregModel("999999999", "AS");
         EregModel bedr = createEregModel("888888888", "BEDR");
         EregModel ans = createEregModel("888888881", "ANS");
@@ -151,49 +147,45 @@ class StaticDataControllerV1EregIntegrationTest {
 
         eregRepository.saveAll(Arrays.asList(as, bedr, ans, enk));
 
-        String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).containsOnly(
-                new Ereg(as, new ArrayList<>()),
-                new Ereg(bedr, new ArrayList<>()),
-                new Ereg(enk, new ArrayList<>()),
-                new Ereg(ans, new ArrayList<>())
-        );
+        webTestClient.get()
+                .uri(EREG_API)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EregListe.class)
+                .value(response -> assertThat(response.getListe()).containsOnly(
+                        new Ereg(as, new ArrayList<>()),
+                        new Ereg(bedr, new ArrayList<>()),
+                        new Ereg(enk, new ArrayList<>()),
+                        new Ereg(ans, new ArrayList<>())
+                ));
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldGetEregsWithOpprinnelse() throws Exception {
+    void shouldGetEregsWithOpprinnelse() {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         EregModel model = createEregModel("123456789", "BEDR", altinn);
 
         eregRepository.save(model);
 
-        String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).containsOnly(new Ereg(model, new ArrayList<>()));
+        webTestClient.get()
+                .uri(EREG_API)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EregListe.class)
+                .value(response -> assertThat(response.getListe()).containsOnly(new Ereg(model, new ArrayList<>())));
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldAddEregSetToDatabase() throws Exception {
+    void shouldAddEregSetToDatabase() {
         Ereg ereg = createEreg("987654321", "BEDR");
-        mvc.perform(post(EREG_API)
-                        .content(objectMapper.writeValueAsString(create(ereg)))
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk());
+        webTestClient.post()
+                .uri(EREG_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(create(ereg))
+                .exchange()
+                .expectStatus().isOk();
 
         assertThat(eregRepository.findAll())
                 .hasSize(1)
@@ -205,7 +197,7 @@ class StaticDataControllerV1EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldGetEregWithGruppe() throws Exception {
+    void shouldGetEregWithGruppe() {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -214,20 +206,17 @@ class StaticDataControllerV1EregIntegrationTest {
         EregModel eregModel = createEregModel("987654321", "BEDR", gruppeModel);
         eregRepository.save(eregModel);
 
-        String json = mvc.perform(get(EREG_API + "?gruppe=" + gruppeModel.getKode())
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).containsOnly(new Ereg(eregModel, new ArrayList<>()));
+        webTestClient.get()
+                .uri(EREG_API + "?gruppe=" + gruppeModel.getKode())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EregListe.class)
+                .value(response -> assertThat(response.getListe()).containsOnly(new Ereg(eregModel, new ArrayList<>())));
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldOnlyGetEregWithGruppe() throws Exception {
+    void shouldOnlyGetEregWithGruppe() {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -238,23 +227,17 @@ class StaticDataControllerV1EregIntegrationTest {
 
         eregRepository.saveAll(Arrays.asList(eregModel, eregWithGruppeModel));
 
-        String json = mvc.perform(
-                        get(EREG_API)
-                                .param("gruppe", gruppeModel.getKode())
-                                .contentType(MediaType.APPLICATION_JSON).with(jwt())
-                )
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).containsOnly(new Ereg(eregWithGruppeModel, new ArrayList<>()));
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(EREG_API).queryParam("gruppe", gruppeModel.getKode()).build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EregListe.class)
+                .value(response -> assertThat(response.getListe()).containsOnly(new Ereg(eregWithGruppeModel, new ArrayList<>())));
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldAddEregWithGruppe() throws Exception {
+    void shouldAddEregWithGruppe() {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -262,10 +245,12 @@ class StaticDataControllerV1EregIntegrationTest {
         ));
         Ereg ereg = createEreg("987654321", "BEDR", new Gruppe(gruppeModel));
 
-        mvc.perform(post(EREG_API)
-                        .content(objectMapper.writeValueAsString(create(ereg)))
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk());
+        webTestClient.post()
+                .uri(EREG_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(create(ereg))
+                .exchange()
+                .expectStatus().isOk();
 
         Iterable<EregModel> iterable = eregRepository.findAll();
         assertThat(iterable).hasSize(1);
@@ -277,14 +262,16 @@ class StaticDataControllerV1EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldAddOpprinnelseToDatabase() throws Exception {
+    void shouldAddOpprinnelseToDatabase() {
         Opprinnelse altinn = new Opprinnelse("Altinn");
         var ereg123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
         var ereg987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
-        mvc.perform(post(EREG_API)
-                        .content(objectMapper.writeValueAsString(create(ereg123456789, ereg987654321)))
-                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
-                .andExpect(status().isOk());
+        webTestClient.post()
+                .uri(EREG_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(create(ereg123456789, ereg987654321))
+                .exchange()
+                .expectStatus().isOk();
         assertThat(Lists.newArrayList(opprinnelseRepository.findAll()))
                 .hasSize(1)
                 .first()

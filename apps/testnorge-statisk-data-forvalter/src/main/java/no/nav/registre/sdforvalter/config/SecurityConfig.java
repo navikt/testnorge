@@ -1,28 +1,27 @@
 package no.nav.registre.sdforvalter.config;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.libs.security.config.DollyHttpSecurity;
+import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Slf4j
 @Configuration
-@Order(1)
+@EnableWebFluxSecurity
+@Profile({"prod", "local"})
 class SecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity, JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager) {
         return httpSecurity
-                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests())
-                .oauth2ResourceServer(c -> c.jwt(Customizer.withDefaults()))
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
+                .oauth2ResourceServer(c -> c.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();
     }
 
