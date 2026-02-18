@@ -37,7 +37,7 @@ export default () => {
 		<>
 			<h1>Valider identer</h1>
 			<VStack gap="space-16">
-				<Box background={'surface-default'} padding="6">
+				<Box background={'default'} padding="space-16">
 					<FormProvider {...formMethods}>
 						<form onSubmit={formMethods.handleSubmit(handleValidate)}>
 							<Textarea

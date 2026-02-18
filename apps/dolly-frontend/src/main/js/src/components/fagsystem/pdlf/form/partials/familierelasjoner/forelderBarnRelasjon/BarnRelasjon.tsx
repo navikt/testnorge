@@ -50,6 +50,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 					id={`${path}.partnerErIkkeForelder`}
 					vis={!testnorgePerson}
 					checkboxMargin
+					wrapperSize="shrink"
 				/>
 				{!hideDeltBostedCheckbox && (
 					<DollyCheckbox

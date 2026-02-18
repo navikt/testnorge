@@ -41,6 +41,8 @@ export type SoekRequest = {
 		personStatus: string
 		harNyIdentitet: boolean
 		harSkjerming: boolean
+		antallStatsborgerskap: number
+		antallRelasjoner: number
 		adresse: {
 			addressebeskyttelse: string
 			kommunenummer: string
@@ -54,6 +56,11 @@ export type SoekRequest = {
 			harBostedsadresse: boolean
 			harKontaktadresse: boolean
 			harOppholdsadresse: boolean
+			adressehistorikk: {
+				antallBostedsadresser: number
+				antallKontaktadresser: number
+				antallOppholdsadresser: number
+			}
 		}
 	}
 }

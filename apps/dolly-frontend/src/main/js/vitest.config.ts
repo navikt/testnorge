@@ -19,7 +19,6 @@ export default defineConfig({
 			'redux-promise-middleware',
 			'history',
 			'react-toastify',
-			'@navikt/ds-icons',
 			'@testing-library/user-event',
 		],
 	},
