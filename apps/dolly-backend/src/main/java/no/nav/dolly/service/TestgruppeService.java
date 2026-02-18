@@ -12,6 +12,7 @@ import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.projection.RsGruppeFragment;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
@@ -26,6 +27,7 @@ import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,10 +38,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.ceilDiv;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -322,5 +327,28 @@ public class TestgruppeService {
                     }
                 })
                 .then();
+    }
+
+    public Flux<RsGruppeFragment> fetchGruppeByFragment(String gruppeFragment) {
+
+        var searchQueries = gruppeFragment.split(" ");
+        var gruppeId = Arrays.stream(searchQueries)
+                .filter(word -> word.matches("\\d+"))
+                .map(id -> "%" + id + "%")
+                .findFirst()
+                .orElse("");
+        var gruppeNavn = Arrays.stream(searchQueries)
+                .filter(word -> !word.matches("\\d+"))
+                .filter(StringUtils::isNotBlank)
+                .map(word -> "%" + word + "%")
+                .collect(Collectors.joining(" "));
+
+        return Mono.just(gruppeFragment)
+                .flatMapMany(fragment -> isNotBlank(gruppeNavn) && isNotBlank(gruppeId) ?
+                        testgruppeRepository.findByIdContainingAndNavnContaining(gruppeId, gruppeNavn) :
+                        Flux.merge(
+                                testgruppeRepository.findByIdContaining(gruppeId),
+                                testgruppeRepository.findByNavnContaining(gruppeNavn)))
+                .sort(Comparator.comparing(RsGruppeFragment::getId));
     }
 }
