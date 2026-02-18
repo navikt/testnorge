@@ -43,7 +43,7 @@ public class OrganisasjonController {
             @RequestParam(required = false) String opprinnelse,
             @RequestParam(required = false) String tag
     ) {
-        Mono<List<Organisasjon>> orgMono = gruppe == null ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
+        var orgMono = isNull(gruppe) ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
         return orgMono.map(organisasjoner -> organisasjoner
                 .stream()
                 .filter(value -> kanHaArbeidsforhold == null || value.kanHaArbeidsforhold() == kanHaArbeidsforhold)
