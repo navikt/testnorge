@@ -23,10 +23,13 @@ export const DollyPagination = ({
 	items,
 	render,
 	visSide = 1,
+	manualLocalStorageKey = null,
 }: PaginationProps) => {
 	const [currentPage, setCurrentPage] = useState(visSide)
 
-	const currentPageSizeFromStorage = localStorage.getItem(sideStoerrelseLocalStorageKey)
+	const currentPageSizeFromStorage = localStorage.getItem(
+		manualLocalStorageKey ?? sideStoerrelseLocalStorageKey,
+	)
 	const [currentPageSize, setCurrentPageSize] = useState(
 		currentPageSizeFromStorage ? Number(currentPageSizeFromStorage) : (pageSize ?? ITEM_PER_PAGE),
 	)
@@ -50,7 +53,10 @@ export const DollyPagination = ({
 		dispatch(setSidetall(0))
 		setCurrentPage(0)
 		setCurrentPageSize(event.value)
-		localStorage.setItem(sideStoerrelseLocalStorageKey, event.value?.toString())
+		localStorage.setItem(
+			manualLocalStorageKey ?? sideStoerrelseLocalStorageKey,
+			event.value?.toString(),
+		)
 	}
 
 	const calculatePageCount = () => {
