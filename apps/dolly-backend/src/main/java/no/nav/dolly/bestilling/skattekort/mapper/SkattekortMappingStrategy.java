@@ -101,10 +101,10 @@ public class SkattekortMappingStrategy implements MappingStrategy {
 
             builder.trekkode(getTrekkode(original.getTrekktabell().getTrekkode()))
                     .trekktabell(SkattekortDTO.TabellkortDTO.builder()
-                                    .tabell(original.getTrekktabell().getTabellnummer())
-                                    .antallMndForTrekk(original.getTrekktabell().getAntallMaanederForTrekk())
-                                    .prosentSats(original.getTrekktabell().getProsentsats())
-                                    .build());
+                            .tabell(original.getTrekktabell().getTabellnummer())
+                            .antallMndForTrekk(original.getTrekktabell().getAntallMaanederForTrekk())
+                            .prosentSats(original.getTrekktabell().getProsentsats())
+                            .build());
         }
 
         if (nonNull(original.getFrikort())) {
@@ -121,8 +121,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                     .prosentkort(ProsentkortDTO.builder()
                             .prosentSats(original.getTrekkprosent().getProsentsats())
                             .antallMndForTrekk(original.getTrekkprosent().getAntallMaanederForTrekk())
-                            .build())
-                    .build();
+                            .build());
         }
 
         return builder.build();
