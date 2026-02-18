@@ -43,7 +43,7 @@ public class OrganisasjonController {
             @RequestParam(required = false) String opprinnelse,
             @RequestParam(required = false) String tag
     ) {
-        Mono<List<Organisasjon>> orgMono = gruppe == null ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
+        var orgMono = isNull(gruppe) ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
         return orgMono.map(organisasjoner -> organisasjoner
                 .stream()
                 .filter(value -> kanHaArbeidsforhold == null || value.kanHaArbeidsforhold() == kanHaArbeidsforhold)
@@ -75,15 +75,6 @@ public class OrganisasjonController {
                 .then(Mono.just(responseMap));
     }
 
-    private Mono<Void> saveOrg(Map<String, String> responseMap, OrganisasjonDTO dto, Gruppe gruppe) {
-        if (isNull(dto.getForretningsAdresse()) && isNull(dto.getPostadresse())) {
-            handleError(responseMap, dto, "Kan ikke opprette organisasjon %s med overenhet %s fordi den mangler begge typer adresse.");
-            return Mono.empty();
-        }
-        return service.save(new Organisasjon(dto), gruppe)
-                .doOnSuccess(v -> responseMap.put(dto.getOrgnummer(), HttpStatus.CREATED.name()));
-    }
-
     @GetMapping("/{orgnummer}")
     public Mono<OrganisasjonDTO> get(@PathVariable String orgnummer) {
         return service.getOrganisasjon(orgnummer)
@@ -96,6 +87,15 @@ public class OrganisasjonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> delete(@PathVariable String orgnummer) {
         return service.delete(orgnummer);
+    }
+
+    private Mono<Void> saveOrg(Map<String, String> responseMap, OrganisasjonDTO dto, Gruppe gruppe) {
+        if (isNull(dto.getForretningsAdresse()) && isNull(dto.getPostadresse())) {
+            handleError(responseMap, dto, "Kan ikke opprette organisasjon %s med overenhet %s fordi den mangler begge typer adresse.");
+            return Mono.empty();
+        }
+        return service.save(new Organisasjon(dto), gruppe)
+                .doOnSuccess(v -> responseMap.put(dto.getOrgnummer(), HttpStatus.CREATED.name()));
     }
 
     private void handleError(Map<String, String> responseMap, OrganisasjonDTO dto, String errorMessage) {
