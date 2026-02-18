@@ -60,7 +60,7 @@ class SkattekortMappingStrategyTest {
         assertThat(target.getFnr(), is(equalTo(IDENT)));
         assertThat(target.getSkattekort(), is(notNullValue()));
         assertThat(target.getSkattekort().getInntektsaar(), is(equalTo(INNTEKTSAAR)));
-        assertThat(target.getSkattekort().getResultatForSkattekort(), is(equalTo(Resultatstatus.SKATTEKORTOPPLYSNINGER_OK.getValue())));
+        assertThat(target.getSkattekort().getResultatForSkattekort(), is(equalTo(Resultatstatus.SKATTEKORTOPPLYSNINGER_OK.getDescription())));
         assertThat(target.getSkattekort().getUtstedtDato(), is(equalTo(UTSTEDT_DATO.toString())));
         assertThat(target.getSkattekort().getForskuddstrekkList(), is(notNullValue()));
     }
@@ -75,7 +75,7 @@ class SkattekortMappingStrategyTest {
 
         assertThat(result.getSkattekort().getForskuddstrekkList(), hasItem(
                 SkattekortDTO.ForskuddstrekkDTO.builder()
-                        .trekkode(Trekkode.LOENN_FRA_NAV.getValue())
+                        .trekkode(Trekkode.LOENN_FRA_NAV.getDescription())
                         .trekktabell(TabellkortDTO.builder()
                                 .tabell("8020")
                                 .prosentSats(40.0F)
@@ -94,7 +94,7 @@ class SkattekortMappingStrategyTest {
 
         assertThat(result.getSkattekort().getForskuddstrekkList(), hasItem(
                 SkattekortDTO.ForskuddstrekkDTO.builder()
-                        .trekkode(Trekkode.PENSJON_FRA_NAV.getValue())
+                        .trekkode(Trekkode.PENSJON_FRA_NAV.getDescription())
                         .prosentkort(ProsentkortDTO.builder()
                                 .prosentSats(30.0F)
                                 .antallMndForTrekk(10.0F)
@@ -112,7 +112,7 @@ class SkattekortMappingStrategyTest {
 
         assertThat(result.getSkattekort().getForskuddstrekkList(), hasItem(
                 SkattekortDTO.ForskuddstrekkDTO.builder()
-                        .trekkode(Trekkode.UFOERETRYGD_FRA_NAV.getValue())
+                        .trekkode(Trekkode.UFOERETRYGD_FRA_NAV.getDescription())
                         .frikort(SkattekortDTO.FrikortDTO.builder()
                                 .frikortBeloep(50000)
                                 .build())
@@ -128,10 +128,10 @@ class SkattekortMappingStrategyTest {
         val result = mapperFacade.map(kilde, SkattekortRequest.class, context);
 
         assertThat(result.getSkattekort().getTilleggsopplysningList(), hasItems(
-                Tilleggsopplysning.OPPHOLD_PAA_SVALBARD.getValue(),
-                Tilleggsopplysning.KILDESKATT_PAA_LOENN.getValue(),
-                Tilleggsopplysning.KILDESKATT_PAA_PENSJON.getValue(),
-                Tilleggsopplysning.OPPHOLD_I_TILTAKSSONE.getValue()));
+                Tilleggsopplysning.OPPHOLD_PAA_SVALBARD.getDescription(),
+                Tilleggsopplysning.KILDESKATT_PAA_LOENN.getDescription(),
+                Tilleggsopplysning.KILDESKATT_PAA_PENSJON.getDescription(),
+                Tilleggsopplysning.OPPHOLD_I_TILTAKSSONE.getDescription()));
     }
 
     @Test
@@ -144,7 +144,7 @@ class SkattekortMappingStrategyTest {
 
         val result = mapperFacade.map(kilde, SkattekortRequest.class, context);
 
-        assertThat(result.getSkattekort().getResultatForSkattekort(), is(equalTo(Resultatstatus.IKKE_SKATTEKORT.getValue())));
+        assertThat(result.getSkattekort().getResultatForSkattekort(), is(equalTo(Resultatstatus.IKKE_SKATTEKORT.getDescription())));
         assertThat(result.getSkattekort().getUtstedtDato(), is(equalTo(LocalDate.now().toString())));
         assertThat(result.getSkattekort().getInntektsaar(), is(equalTo(INNTEKTSAAR)));
         assertThat(result.getSkattekort().getForskuddstrekkList(), is(emptyList()));

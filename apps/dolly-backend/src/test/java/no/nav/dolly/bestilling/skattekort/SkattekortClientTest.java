@@ -79,7 +79,7 @@ class SkattekortClientTest {
         when(mapperFacade.map(any(), eq(SkattekortRequest.class), any())).thenReturn(SkattekortRequest.builder()
                 .skattekort(SkattekortDTO.builder()
                         .inntektsaar(2025)
-                        .tilleggsopplysningList(List.of(OPPHOLD_I_TILTAKSSONE.getValue()))
+                        .tilleggsopplysningList(List.of(OPPHOLD_I_TILTAKSSONE.getDescription()))
                         .build())
                 .build());
         when(transactionHelperService.persister(any(), any(), any(), argumentCaptor.capture()))
@@ -154,7 +154,7 @@ class SkattekortClientTest {
                 .skattekort(SkattekortDTO.builder()
                         .inntektsaar(2026)
                         .forskuddstrekkList(List.of(SkattekortDTO.ForskuddstrekkDTO.builder()
-                                .trekkode(LOENN_FRA_NAV.getValue())
+                                .trekkode(LOENN_FRA_NAV.getDescription())
                                 .frikort(SkattekortDTO.FrikortDTO.builder()
                                         .frikortBeloep(50000)
                                         .build())

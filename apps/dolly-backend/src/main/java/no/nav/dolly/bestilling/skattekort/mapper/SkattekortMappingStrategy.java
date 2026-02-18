@@ -36,7 +36,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                         skattekortRequest.setFnr(ident);
 
                         val sokosSkattekort = mapperFacade.map(skattekortDTO, SkattekortDTO.class);
-                        sokosSkattekort.setResultatForSkattekort(Resultatstatus.IKKE_SKATTEKORT.getValue());
+                        sokosSkattekort.setResultatForSkattekort(Resultatstatus.IKKE_SKATTEKORT.getDescription());
                         sokosSkattekort.setUtstedtDato(LocalDate.now().toString());
                         sokosSkattekort.setForskuddstrekkList(null);
                         sokosSkattekort.setTilleggsopplysningList(null);
@@ -66,12 +66,12 @@ public class SkattekortMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Skattekortmelding source, SkattekortDTO destination, MappingContext context) {
 
                         if (nonNull(source.getResultatPaaForespoersel())) {
-                            destination.setResultatForSkattekort(source.getResultatPaaForespoersel().getValue());
+                            destination.setResultatForSkattekort(source.getResultatPaaForespoersel().getDescription());
                         }
 
                         val tilleggsopplysningValues = source.getTilleggsopplysning().stream()
                                 .filter(java.util.Objects::nonNull)
-                                .map(Tilleggsopplysning::getValue)
+                                .map(Tilleggsopplysning::getDescription)
                                 .toList();
                         destination.setTilleggsopplysningList(tilleggsopplysningValues);
 
@@ -129,7 +129,7 @@ public class SkattekortMappingStrategy implements MappingStrategy {
     }
 
     private static String getTrekkode(Trekkode trekkode) {
-        return nonNull(trekkode) ? trekkode.getValue() : null;
+        return nonNull(trekkode) ? trekkode.getDescription() : null;
     }
 }
 
