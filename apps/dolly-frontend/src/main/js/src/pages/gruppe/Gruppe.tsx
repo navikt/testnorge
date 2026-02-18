@@ -20,6 +20,7 @@ import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
 import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
 import Navigering from '@/pages/gruppeOversikt/Navigering'
 import GruppeHeader from '@/pages/gruppe/GruppeHeader/GruppeHeader'
+import { sideStoerrelseLocalStorageKey } from '@/components/ui/dollyTable/pagination/DollyPagination'
 
 export type GruppeProps = {
 	sidetall: number
@@ -33,13 +34,15 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
+export default ({ sidetall, sorting, update }: GruppeProps) => {
 	const { gruppeId } = useParams<{ gruppeId: number }>()
 	const { currentBruker, loading: loadingBruker } = useCurrentBruker()
 	const location = useLocation()
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const visning = useSelector((state: any) => state.finnPerson.visning)
+
+	const sideStoerrelse = localStorage.getItem(sideStoerrelseLocalStorageKey) ?? 10
 
 	useEffect(() => {
 		dispatch(setGruppeNavigerTil(null))

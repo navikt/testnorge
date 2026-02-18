@@ -1,6 +1,8 @@
+export const dollySoekSideStoerrelseLocalStorageKey = 'dollySoekSideStoerrelse'
+
 export const dollySoekInitialValues = {
 	side: 0,
-	antall: 10,
+	antall: localStorage.getItem(dollySoekSideStoerrelseLocalStorageKey) ?? 10,
 	seed: null,
 	registreRequest: [],
 	miljoer: [],

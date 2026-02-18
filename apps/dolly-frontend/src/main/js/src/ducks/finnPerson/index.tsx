@@ -5,6 +5,7 @@ import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { VisningType } from '@/pages/gruppe/Gruppe'
 import * as _ from 'lodash-es'
 import { ERROR_NAVIGATE_IDENT } from '../errors/ErrorMessages'
+import { sideStoerrelseLocalStorageKey } from '@/components/ui/dollyTable/pagination/DollyPagination'
 
 export const {
 	navigerTilPerson,
@@ -42,7 +43,7 @@ const initialState = {
 	navigerTilGruppe: null,
 	feilmelding: null,
 	sidetall: 0,
-	sideStoerrelse: 10,
+	sideStoerrelse: localStorage.getItem(sideStoerrelseLocalStorageKey) || 10,
 	sorting: null,
 	update: null,
 }

@@ -25,7 +25,7 @@ export default function ItemCountSelect({ value, onChangeHandler }) {
 				name="item-count"
 				openOnFocus
 				clearable={false}
-				value={options.filter((o) => o.value === value)}
+				value={options.filter((o) => o.value === Number(value))}
 				options={options}
 				onChange={onChangeHandler}
 			/>

@@ -13,6 +13,9 @@ type PaginationProps = {
 	items: any[]
 	render: (arg0: any) => boolean | React.ReactChild
 }
+
+export const sideStoerrelseLocalStorageKey = 'sideStoerrelse'
+
 const ITEM_PER_PAGE = 10
 
 export const DollyPagination = ({
@@ -22,7 +25,11 @@ export const DollyPagination = ({
 	visSide = 1,
 }: PaginationProps) => {
 	const [currentPage, setCurrentPage] = useState(visSide)
-	const [currentPageSize, setCurrentPageSize] = useState(pageSize || ITEM_PER_PAGE)
+
+	const currentPageSizeFromStorage = localStorage.getItem(sideStoerrelseLocalStorageKey)
+	const [currentPageSize, setCurrentPageSize] = useState(
+		currentPageSizeFromStorage ? Number(currentPageSizeFromStorage) : (pageSize ?? ITEM_PER_PAGE),
+	)
 
 	const location = useLocation()
 
@@ -43,6 +50,7 @@ export const DollyPagination = ({
 		dispatch(setSidetall(0))
 		setCurrentPage(0)
 		setCurrentPageSize(event.value)
+		localStorage.setItem(sideStoerrelseLocalStorageKey, event.value?.toString())
 	}
 
 	const calculatePageCount = () => {
