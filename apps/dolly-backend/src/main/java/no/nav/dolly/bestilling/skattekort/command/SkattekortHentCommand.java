@@ -54,7 +54,7 @@ public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>>
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage()))))
                 .onErrorResume(throwable -> {
                     WebClientError.Description description = WebClientError.describe(throwable);
-                    log.error("Feil ved Henting av skattekort til Sokos. FNR: {}, Inntektsår: {}, Status: {}, Message: {}",
+                    log.error("Feil ved Henting av skattekort for ident: {}, Inntektsår: {}, Status: {}, Message: {}",
                             request.getFnr(),
                             nonNull(request.getInntektsaar()) ? request.getInntektsaar() : null,
                             description.getStatus(),
