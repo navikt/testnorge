@@ -6,8 +6,6 @@ on:
       - .github/workflows/app.udi-stub.yml
       - apps/udi-stub/**
       - libs/reactive-core/**
-      - libs/servlet-core/**
-      - libs/servlet-security/**
       - libs/testing/**
       - libs/vault/**
       - plugins/**
