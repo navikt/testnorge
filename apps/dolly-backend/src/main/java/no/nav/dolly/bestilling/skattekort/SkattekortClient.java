@@ -29,8 +29,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.skattekort.domain.Resultatstatus.IKKE_SKATTEKORT;
+import static no.nav.dolly.bestilling.skattekort.domain.Resultatstatus.IKKE_TREKKPLIKT;
 import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.KILDESKATT_PAA_PENSJON;
-import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.OPPHOLD_I_TILTAKSSONE;
 import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.OPPHOLD_PAA_SVALBARD;
 import static no.nav.dolly.bestilling.skattekort.domain.Trekkode.LOENN_FRA_NAV;
 import static no.nav.dolly.bestilling.skattekort.domain.Trekkode.PENSJON_FRA_NAV;
@@ -124,17 +125,25 @@ public class SkattekortClient implements ClientRegister {
         return bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
                 .map(ArbeidstakerSkatt::getArbeidstaker)
                 .flatMap(Collection::stream)
-                .map(Skattekortmelding::getSkattekort)
-                .filter(Objects::nonNull)
-                .map(Skattekort::getForskuddstrekk)
-                .flatMap(Collection::stream)
-                .anyMatch(forskuddstrekk ->
-                        nonNull(forskuddstrekk.getFrikort()) &&
-                                isGyldigTrekkode(forskuddstrekk.getFrikort().getTrekkode()) ||
-                                nonNull(forskuddstrekk.getTrekkprosent()) &&
-                                        isGyldigTrekkode(forskuddstrekk.getTrekkprosent().getTrekkode()) ||
-                                nonNull(forskuddstrekk.getTrekktabell()) &&
-                                        isGyldigTrekkode(forskuddstrekk.getTrekktabell().getTrekkode()))
+                .map(Skattekortmelding::getResultatPaaForespoersel)
+                .anyMatch(status ->
+                        IKKE_TREKKPLIKT.equals(status) ||
+                        IKKE_SKATTEKORT.equals(status)
+                ||
+                bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
+                        .map(ArbeidstakerSkatt::getArbeidstaker)
+                        .flatMap(Collection::stream)
+                        .map(Skattekortmelding::getSkattekort)
+                        .filter(Objects::nonNull)
+                        .map(Skattekort::getForskuddstrekk)
+                        .flatMap(Collection::stream)
+                        .anyMatch(forskuddstrekk ->
+                                nonNull(forskuddstrekk.getFrikort()) &&
+                                        isGyldigTrekkode(forskuddstrekk.getFrikort().getTrekkode()) ||
+                                        nonNull(forskuddstrekk.getTrekkprosent()) &&
+                                                isGyldigTrekkode(forskuddstrekk.getTrekkprosent().getTrekkode()) ||
+                                        nonNull(forskuddstrekk.getTrekktabell()) &&
+                                                isGyldigTrekkode(forskuddstrekk.getTrekktabell().getTrekkode()))
                 ||
                 bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
                         .map(ArbeidstakerSkatt::getArbeidstaker)
@@ -143,8 +152,7 @@ public class SkattekortClient implements ClientRegister {
                         .flatMap(Collection::stream)
                         .anyMatch(tilleggsopplysning ->
                                 OPPHOLD_PAA_SVALBARD.equals(tilleggsopplysning) ||
-                                        KILDESKATT_PAA_PENSJON.equals(tilleggsopplysning) ||
-                                        OPPHOLD_I_TILTAKSSONE.equals(tilleggsopplysning));
+                                        KILDESKATT_PAA_PENSJON.equals(tilleggsopplysning)));
     }
 
     private static boolean isGyldigTrekkode(Trekkode trekkode) {
