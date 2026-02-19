@@ -47,22 +47,27 @@ export const SkattekortForm = () => {
 		formMethods.trigger('skattekort.arbeidsgiverSkatt')
 	}
 
-	const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[0]?.arbeidstaker?.[0]
+	const isResultatOK = (index: number): boolean => {
+		const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[index]?.arbeidstaker?.[0]
+		return arbeidstaker?.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
+	}
 
-	const isResultatOK = arbeidstaker?.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
-	const isTilleggsopplysning = arbeidstaker?.tilleggsopplysning?.find(
-		(opl: string) => opl === 'OPPHOLD_PAA_SVALBARD' || opl === 'KILDESKATT_PAA_PENSJON',
-	)
+	const isTilleggsopplysning = (index: number): boolean => {
+		const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[index]?.arbeidstaker?.[0]
+		return arbeidstaker?.tilleggsopplysning?.find(
+			(opl: string) => opl === 'OPPHOLD_PAA_SVALBARD' || opl === 'KILDESKATT_PAA_PENSJON',
+		)
+	}
 
-	const onBlurResultatPaaForespoersel = (path: string) => {
-		if (!isResultatOK) {
+	const onBlurResultatPaaForespoersel = (path: string, index: number) => {
+		if (!isResultatOK(index)) {
 			formMethods.setValue(`${path}.arbeidstaker[0].tilleggsopplysning`, [])
 			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
 		}
 	}
 
-	const onBlurTillegsinformasjon = (path: string) => {
-		if (isTilleggsopplysning) {
+	const onBlurTillegsinformasjon = (path: string, index: number) => {
+		if (isTilleggsopplysning(index)) {
 			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
 		}
 	}
@@ -83,7 +88,7 @@ export const SkattekortForm = () => {
 						canBeEmpty={false}
 						handleRemoveEntry={handleRemoveEntry}
 					>
-						{(path: string) => (
+						{(path: string, index: number) => (
 							<>
 								<div className="flexbox--flex-wrap">
 									<FormSelect
@@ -92,7 +97,7 @@ export const SkattekortForm = () => {
 										options={resultatstatus}
 										size="large"
 										isClearable={false}
-										onBlur={() => onBlurResultatPaaForespoersel(path)}
+										onBlur={() => onBlurResultatPaaForespoersel(path, index)}
 									/>
 									<FormSelect
 										name={`${path}.arbeidstaker[0].inntektsaar`}
@@ -106,17 +111,17 @@ export const SkattekortForm = () => {
 										label="Utstedt dato"
 									/>
 								</div>
-								{isResultatOK && (
+								{isResultatOK(index) && (
 									<FormSelect
 										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
 										label="Tilleggsopplysning"
 										options={tilleggsopplysning}
 										size="grow"
 										isMulti={true}
-										onBlur={() => onBlurTillegsinformasjon(path)}
+										onBlur={() => onBlurTillegsinformasjon(path, index)}
 									/>
 								)}
-								{isResultatOK && !isTilleggsopplysning && (
+								{isResultatOK(index) && !isTilleggsopplysning(index) && (
 									<ForskuddstrekkForm
 										formMethods={formMethods}
 										path={`${path}.arbeidstaker[0].skattekort`}

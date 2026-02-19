@@ -10,7 +10,7 @@ interface ForskuddstrekkDTO {
 }
 
 interface FrikortDTO {
-	frikortBeloep: number
+	frikortBeloep?: number
 }
 
 interface ProsentkortDTO {
