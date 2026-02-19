@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 
 @Configuration
+@Import(ApplicationProperties.class)
 public class OpenApiConfig implements WebFilter {
 
     @Bean

@@ -38,7 +38,7 @@ public class GetOrdreCommand implements Callable<Mono<List<ItemDTO>>> {
                         .orElse(List.of()))
                 .onErrorResume(WebClientResponseException.NotFound.class, e -> {
                     log.warn("Fant ikke ordre med ordreId {}.", ordreId);
-                    return Mono.empty();
+                    return Mono.just(List.of());
                 });
     }
 }

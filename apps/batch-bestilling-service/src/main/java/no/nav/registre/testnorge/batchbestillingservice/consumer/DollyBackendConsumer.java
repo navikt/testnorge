@@ -10,6 +10,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -49,7 +50,7 @@ public class DollyBackendConsumer {
                 .exchange(serverProperties)
                 .flatMapMany(token -> new GetAktiveBestillingerCommand(webClient, token.getTokenValue(), gruppeId).execute())
                 .doOnError(error -> log.error("Henting av aktive bestillinger feilet for gruppe {}", gruppeId, error))
-                .onErrorResume(throwable -> Flux.empty());
+                .onErrorResume(WebClientResponseException.NotFound.class, throwable -> Flux.empty());
     }
 
 }
