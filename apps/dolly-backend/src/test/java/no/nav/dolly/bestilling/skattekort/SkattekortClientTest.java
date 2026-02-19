@@ -70,7 +70,7 @@ class SkattekortClientTest {
                         .arbeidsgiverSkatt(List.of(ArbeidstakerSkatt.builder()
                                 .arbeidstaker(List.of(Skattekortmelding.builder()
                                         .inntektsaar(2025)
-                                        .tilleggsopplysning(List.of(Tilleggsopplysning.OPPHOLD_I_TILTAKSSONE))
+                                        .tilleggsopplysning(List.of(Tilleggsopplysning.OPPHOLD_PAA_SVALBARD))
                                         .build()))
                                 .build()))
                         .build())
