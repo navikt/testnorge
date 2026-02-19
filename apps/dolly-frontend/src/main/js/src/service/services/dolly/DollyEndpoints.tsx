@@ -15,6 +15,8 @@ const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
 const teamBase = `${uri}/team`
 
+const pageSize = localStorage.getItem('sideStoerrelse')
+
 export default class DollyEndpoints {
 	static gruppe() {
 		return groupBase
@@ -142,11 +144,11 @@ export default class DollyEndpoints {
 	}
 
 	static navigerTilIdent(ident) {
-		return `${identBase}/naviger/${ident}`
+		return `${identBase}/naviger/${ident}${pageSize ? '?pageSize=' + pageSize : ''}`
 	}
 
 	static navigerTilBestilling(bestillingId) {
-		return `${bestillingBase}/naviger/${bestillingId}`
+		return `${bestillingBase}/naviger/${bestillingId}${pageSize ? '?pageSize=' + pageSize : ''}`
 	}
 
 	static ordre(ident) {

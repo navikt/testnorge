@@ -20,7 +20,7 @@ import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
 import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
 import Navigering from '@/pages/gruppeOversikt/Navigering'
 import GruppeHeader from '@/pages/gruppe/GruppeHeader/GruppeHeader'
-import { sideStoerrelseLocalStorageKey } from '@/components/ui/dollyTable/pagination/DollyPagination'
+import { sideStoerrelseLocalStorageKey } from '@/pages/gruppeOversikt/GruppeOversikt'
 
 export type GruppeProps = {
 	sidetall: number

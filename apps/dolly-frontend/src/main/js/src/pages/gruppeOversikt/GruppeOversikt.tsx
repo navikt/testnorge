@@ -14,7 +14,6 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import Navigering from '@/pages/gruppeOversikt/Navigering'
 import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 import { PersonGroupIcon, SilhouetteIcon, StarIcon } from '@navikt/aksel-icons'
-import { sideStoerrelseLocalStorageKey } from '@/components/ui/dollyTable/pagination/DollyPagination'
 
 type RootState = {
 	search: any
@@ -41,6 +40,8 @@ const StyledDiv = styled.div`
 		margin-bottom: 10px;
 	}
 `
+
+export const sideStoerrelseLocalStorageKey = 'sideStoerrelse'
 
 const GruppeOversikt: React.FC = () => {
 	const searchActive = useSelector((state: RootState) => Boolean(state.search))

@@ -6,6 +6,7 @@ import { setSideStoerrelse, setSidetall } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router'
 import { Pagination } from '@navikt/ds-react'
+import { sideStoerrelseLocalStorageKey } from '@/pages/gruppeOversikt/GruppeOversikt'
 
 type PaginationProps = {
 	visSide?: number
@@ -13,8 +14,6 @@ type PaginationProps = {
 	items: any[]
 	render: (arg0: any) => boolean | React.ReactChild
 }
-
-export const sideStoerrelseLocalStorageKey = 'sideStoerrelse'
 
 const ITEM_PER_PAGE = 10
 
