@@ -7,16 +7,21 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
 @Configuration
-public class OpenApiConfig {
+public class OpenApiConfig implements WebFilter {
 
     @Bean
-    public OpenAPI openApi() {
+    public OpenAPI openApi(ApplicationProperties applicationProperties) {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
@@ -28,9 +33,9 @@ public class OpenApiConfig {
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
                 .info(new Info()
-                        .title("Batch Bestilling Service API")
-                        .version("1")
-                        .description("App for å sende batch bestillinger til backend")
+                        .title(applicationProperties.getName())
+                        .version(applicationProperties.getVersion())
+                        .description(applicationProperties.getDescription())
                         .termsOfService("https://nav.no")
                         .contact(new Contact()
                                 .url("https://nav-it.slack.com/archives/CA3P9NGA2")
@@ -42,5 +47,18 @@ public class OpenApiConfig {
                                 .url("https://opensource.org/licenses/MIT")
                         )
                 );
+    }
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
+            return chain
+                    .filter(exchange.mutate()
+                            .request(exchange.getRequest()
+                                    .mutate().path("/swagger-ui.html").build())
+                            .build());
+        }
+
+        return chain.filter(exchange);
     }
 }
