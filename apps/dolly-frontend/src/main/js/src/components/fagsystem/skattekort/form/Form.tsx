@@ -8,7 +8,7 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { addYears, subYears } from 'date-fns'
+import { subYears } from 'date-fns'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import {
 	ForskuddstrekkForm,
@@ -72,6 +72,12 @@ export const SkattekortForm = () => {
 		}
 	}
 
+	const upperYearInntektsaar = (): any => {
+		const currentYear = new Date().getFullYear()
+		const boundaryDate = new Date(currentYear + '-12-15') // 15. desember i inneværende år`
+		return new Date() < boundaryDate ? currentYear : currentYear + 1
+	}
+
 	return (
 		<Vis attributt={skattekortAttributt}>
 			<Panel
@@ -102,7 +108,7 @@ export const SkattekortForm = () => {
 									<FormSelect
 										name={`${path}.arbeidstaker[0].inntektsaar`}
 										label="Inntektsår"
-										options={getYearRangeOptions(subYears(new Date(), 1), addYears(new Date(), 1))}
+										options={getYearRangeOptions(subYears(new Date(), 1), upperYearInntektsaar())}
 										size="xsmall"
 										isClearable={false}
 									/>
