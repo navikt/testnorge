@@ -4,7 +4,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Alert } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
@@ -88,15 +88,17 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 							return (
 								<React.Fragment key={idx}>
 									<div className="person-visning_content">
-										<TitleValue
-											title="Resultat for skattekort"
-											value={codeToNorskLabel(skattekort?.resultatForSkattekort)}
+										<KodeverkTitleValue
+											kodeverkstype="RESULTATSTATUS_FRA_SOKOS"
+											value={skattekort?.resultatForSkattekort}
+											label="Resultat for skattekort"
 										/>
 										<TitleValue title="Inntektsår" value={skattekort?.inntektsaar} />
 										<TitleValue title="Utstedt dato" value={formatDate(skattekort?.utstedtDato)} />
-										<TitleValue
-											title="Tilleggsopplysning"
-											value={codeToNorskLabel(skattekort?.tilleggsopplysningList)}
+										<KodeverkTitleValue
+											kodeverkstype="TILLEGGSOPPLYSNING_FRA_SOKOS"
+											value={skattekort?.tilleggsopplysningList}
+											label="Tilleggsopplysning"
 										/>
 										<ForskuddstrekkVisning trekkliste={skattekort?.forskuddstrekkList} />
 									</div>

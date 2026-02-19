@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { codeToNorskLabel } from '@/utils/DataFormatter'
+import { KodeverkTitleValue } from '@/components/fagsystem/skattekort/visning/Visning'
 
 interface ForskuddstrekkDTO {
 	trekkode: string
@@ -33,22 +33,29 @@ export const ForskuddstrekkVisning = ({ trekkliste }: ForskuddstrekkVisningProps
 		return null
 	}
 
+	const getFrikortBeloep = (frikort: any): any => {
+		if (frikort === undefined) {
+			return undefined
+		}
+
+		if (frikort.frikortBeloep === undefined) {
+			return 'Ingen beløpsgrense'
+		}
+
+		return frikort.frikortBeloep
+	}
+
 	return (
 		<DollyFieldArray header="Forskuddstrekk" data={trekkliste} nested whiteBackground>
 			{(trekk: ForskuddstrekkDTO, idx: number) => {
 				return (
 					<div className="person-visning_content" key={idx}>
-						<TitleValue title="Trekkode" value={codeToNorskLabel(trekk?.trekkode)} />
-						<TitleValue
-							title="Frikortbeløp"
-							value={
-								trekk?.frikort !== undefined
-									? trekk?.frikort?.frikortBeloep === undefined
-										? 'Ingen beløpsgrense'
-										: trekk?.frikort?.frikortBeloep
-									: undefined
-							}
+						<KodeverkTitleValue
+							kodeverkstype="TREKKODE_FRA_SOKOS"
+							value={trekk?.trekkode}
+							label="Trekkode"
 						/>
+						<TitleValue title="Frikortbeløp" value={getFrikortBeloep(trekk?.frikort)} />
 						<TitleValue title="Prosentsats" value={trekk?.prosentkort?.prosentSats} />
 						<TitleValue
 							title="Antall måneder for trekk"

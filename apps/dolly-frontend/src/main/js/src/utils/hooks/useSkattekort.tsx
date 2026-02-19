@@ -13,10 +13,24 @@ interface SkattekortResponse {
 
 interface ForskuddstrekkDTO {
 	trekkode?: string
-	frikortBeloep?: number
-	tabell?: string
-	prosentSats?: number
+	frikort?: FrikortDTO
+	prosentkort?: ProsentkortDTO
+	trekktabell?: TabellkortDTO
+}
+
+interface FrikortDTO {
+	frikortBeloep: number
+}
+
+interface ProsentkortDTO {
+	prosentSats: number
 	antallMndForTrekk?: number
+}
+
+interface TabellkortDTO {
+	tabell: string
+	prosentSats: number
+	antallMndForTrekk: number
 }
 
 const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
@@ -34,6 +48,21 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 		'Lønn fra NAV': 'LOENN_FRA_NAV',
 		'Pensjon fra NAV': 'PENSJON_FRA_NAV',
 		'Uføretrygd fra NAV': 'UFOERETRYGD_FRA_NAV',
+	},
+	RESULTATSTATUS_FRA_SOKOS: {
+		'Skattekortopplysninger OK': 'skattekortopplysningerOK',
+		'Ikke trekkplikt': 'ikkeTrekkplikt',
+		'Ikke skattekort': 'ikkeSkattekort',
+	},
+	TILLEGGSOPPLYSNING_FRA_SOKOS: {
+		'Opphold på Svalbard': 'oppholdPaaSvalbard',
+		'Kildeskatt på pensjon': 'kildeskattPaaPensjon',
+		'Opphold i tiltakssone': 'oppholdITiltakssone',
+	},
+	TREKKODE_FRA_SOKOS: {
+		'Lønn fra NAV': 'loennFraNAV',
+		'Pensjon fra NAV': 'pensjonFraNAV',
+		'Uføretrygd fra NAV': 'ufoeretrygdFraNAV',
 	},
 }
 

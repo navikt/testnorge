@@ -47,31 +47,25 @@ export const SkattekortForm = () => {
 		formMethods.trigger('skattekort.arbeidsgiverSkatt')
 	}
 
+	const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[0]?.arbeidstaker?.[0]
+
+	const isResultatOK = arbeidstaker?.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
+	const isTilleggsopplysning = arbeidstaker?.tilleggsopplysning?.find(
+		(opl: string) => opl === 'OPPHOLD_PAA_SVALBARD' || opl === 'KILDESKATT_PAA_PENSJON',
+	)
+
 	const onBlurResultatPaaForespoersel = (path: string) => {
-		const value = formMethods.getValues(`${path}.arbeidstaker[0].resultatPaaForespoersel`)
-		if (value !== 'SKATTEKORTOPPLYSNINGER_OK') {
+		if (!isResultatOK) {
 			formMethods.setValue(`${path}.arbeidstaker[0].tilleggsopplysning`, [])
 			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
 		}
 	}
 
 	const onBlurTillegsinformasjon = (path: string) => {
-		let tilleggsinformasjon = formMethods.getValues(`${path}.arbeidstaker[0].tilleggsopplysning`)
-
-		if (
-			tilleggsinformasjon !== undefined &&
-			tilleggsinformasjon.some((element: string) => element !== 'OPPHOLD_I_TILTAKSSONE')
-		) {
+		if (isTilleggsopplysning) {
 			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
 		}
 	}
-
-	const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[0]?.arbeidstaker?.[0]
-
-	const isResultatOK = arbeidstaker.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
-	const isNotTilleggsopplysning = arbeidstaker.tilleggsopplysning?.find(
-		(opl: string) => opl === 'OPPHOLD_PAA_SVALBARD' || opl === 'KILDESKATT_PAA_PENSJON',
-	)
 
 	return (
 		<Vis attributt={skattekortAttributt}>
@@ -122,7 +116,7 @@ export const SkattekortForm = () => {
 										onBlur={() => onBlurTillegsinformasjon(path)}
 									/>
 								)}
-								{isResultatOK && !isNotTilleggsopplysning && (
+								{isResultatOK && !isTilleggsopplysning && (
 									<ForskuddstrekkForm
 										formMethods={formMethods}
 										path={`${path}.arbeidstaker[0].skattekort`}
