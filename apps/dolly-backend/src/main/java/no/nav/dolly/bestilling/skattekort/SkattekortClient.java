@@ -98,24 +98,9 @@ public class SkattekortClient implements ClientRegister {
         return Flux.fromIterable(arbeidstaker.getArbeidstaker())
                 .map(skattekortmelding ->
                         mapperFacade.map(skattekortmelding, SkattekortRequest.class, context))
-                .flatMap(request -> {
-
-                    if (request.getSkattekort().getForskuddstrekkList().stream()
-                            .allMatch(forskuddstrekk -> isNull(forskuddstrekk.getTrekktabell()) &&
-                                    isNull(forskuddstrekk.getProsentkort()) &&
-                                    isNull(forskuddstrekk.getFrikort())) &&
-                            request.getSkattekort().getTilleggsopplysningList().isEmpty()) {
-                        log.warn("Utelater skattekort for person: {}, year: {} -- ingen forskuddstrekk " +
-                                        "eller tillegssopplysninger er definert",
-                                dollyPerson.getIdent(), request.getSkattekort().getInntektsaar());
-                        return Mono.just("%d|Ingen forskuddstrekk er definert".formatted(request.getSkattekort().getInntektsaar()));
-                    } else {
-
-                        return skattekortConsumer.sendSkattekort(request)
-                                .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
-                                        dollyPerson.getIdent()));
-                    }
-                })
+                .flatMap(request -> skattekortConsumer.sendSkattekort(request)
+                        .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
+                                dollyPerson.getIdent())))
                 .onErrorResume(throwable -> Mono.just("xxxx|%s".formatted(throwable.getMessage())))
                 .collect(Collectors.joining(","));
     }
@@ -128,7 +113,7 @@ public class SkattekortClient implements ClientRegister {
                 .map(Skattekortmelding::getResultatPaaForespoersel)
                 .anyMatch(status ->
                         IKKE_TREKKPLIKT.equals(status) ||
-                        IKKE_SKATTEKORT.equals(status)
+                                IKKE_SKATTEKORT.equals(status))
                 ||
                 bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
                         .map(ArbeidstakerSkatt::getArbeidstaker)
@@ -152,7 +137,7 @@ public class SkattekortClient implements ClientRegister {
                         .flatMap(Collection::stream)
                         .anyMatch(tilleggsopplysning ->
                                 OPPHOLD_PAA_SVALBARD.equals(tilleggsopplysning) ||
-                                        KILDESKATT_PAA_PENSJON.equals(tilleggsopplysning)));
+                                        KILDESKATT_PAA_PENSJON.equals(tilleggsopplysning));
     }
 
     private static boolean isGyldigTrekkode(Trekkode trekkode) {
