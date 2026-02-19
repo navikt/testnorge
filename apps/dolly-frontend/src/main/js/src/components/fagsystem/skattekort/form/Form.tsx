@@ -72,9 +72,9 @@ export const SkattekortForm = () => {
 		}
 	}
 
-	const upperYearInntektsaar = (): any => {
+	const upperYearInntektsaar = (): number => {
 		const currentYear = new Date().getFullYear()
-		const boundaryDate = new Date(currentYear + '-12-15') // 15. desember i inneværende år`
+		const boundaryDate = new Date(currentYear + '-12-15') // 15. desember i inneværende år
 		return new Date() < boundaryDate ? currentYear : currentYear + 1
 	}
 
