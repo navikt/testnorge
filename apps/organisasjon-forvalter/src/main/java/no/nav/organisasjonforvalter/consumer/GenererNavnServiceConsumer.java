@@ -46,6 +46,6 @@ public class GenererNavnServiceConsumer {
     public Mono<String> getOrgName() {
 
         return getOrgName(1)
-                .map(orgNames -> orgNames.isEmpty() ? null : orgNames.getFirst());
+                .flatMap(orgNames -> Mono.justOrEmpty(orgNames.isEmpty() ? null : orgNames.getFirst()));
     }
 }

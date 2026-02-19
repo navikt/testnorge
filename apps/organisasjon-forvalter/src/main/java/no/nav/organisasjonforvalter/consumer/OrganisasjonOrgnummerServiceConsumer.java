@@ -61,6 +61,6 @@ public class OrganisasjonOrgnummerServiceConsumer {
     public Mono<String> getOrgnummer() {
 
         return getOrgnummer(1)
-                .map(orgnummer -> orgnummer.isEmpty() ? null : orgnummer.get(0));
+                .flatMap(orgnummer -> Mono.justOrEmpty(orgnummer.isEmpty() ? null : orgnummer.get(0)));
     }
 }
