@@ -83,7 +83,7 @@ export default handleActions(
 		},
 		[resetPaginering]: (state) => {
 			state.sidetall = initialState.sidetall
-			state.sideStoerrelse = initialState.sideStoerrelse
+			// state.sideStoerrelse = initialState.sideStoerrelse
 		},
 		[setSideStoerrelse]: (state, action) => {
 			state.sideStoerrelse = action.payload
@@ -93,7 +93,7 @@ export default handleActions(
 				...initialState,
 				visning: state.visning,
 				sidetall: state.sidetall,
-				sideStoerrelse: state.sideStoerrelse,
+				// sideStoerrelse: state.sideStoerrelse,
 			}
 		},
 		[resetFeilmelding]: (state) => {
