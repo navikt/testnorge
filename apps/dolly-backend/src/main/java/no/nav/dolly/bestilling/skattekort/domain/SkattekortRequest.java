@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Trekkprosent {
+public class SkattekortRequest {
 
-    private Trekkode trekkode;
-
-    private Float prosentsats;
-    private Float antallMaanederForTrekk;
+    private String fnr;
+    private SkattekortDTO skattekort;
 }

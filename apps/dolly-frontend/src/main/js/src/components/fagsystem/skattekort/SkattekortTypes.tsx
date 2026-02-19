@@ -29,10 +29,6 @@ type Arbeidstaker = {
 }
 
 export type ArbeidsgiverSkatt = {
-	arbeidsgiveridentifikator: {
-		organisasjonsnummer?: string
-		personidentifikator?: string
-	}
 	arbeidstaker: Array<Arbeidstaker>
 }
 

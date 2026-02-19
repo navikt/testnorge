@@ -14,6 +14,6 @@ public class Trekktabell {
     private Trekkode trekkode;
 
     private String tabellnummer;
-    private Integer prosentsats;
-    private Integer antallMaanederForTrekk;
+    private Float prosentsats;
+    private Float antallMaanederForTrekk;
 }
