@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,9 +25,7 @@ public class EregBatchController {
             @RequestHeader("uuid") String uuid,
             @PathVariable("id") Long id
     ) {
-        batchService.registerEregBestilling(uuid, miljo, id)
-                .subscribeOn(Schedulers.boundedElastic())
-                .subscribe();
-        return Mono.empty();
+        return batchService.registerEregBestilling(uuid, miljo, id)
+                .then();
     }
 }
