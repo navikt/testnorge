@@ -58,7 +58,7 @@ public class NavigasjonService {
     private final BrukerRepository brukerRepository;
 
     @Transactional
-    public Mono<RsWhereAmI> navigerTilIdent(String ident) {
+    public Mono<RsWhereAmI> navigerTilIdent(String ident, int pageSize) {
         return brukerService.fetchOrCreateBruker()
                 .flatMapMany(bruker -> Flux.merge(
                                 getPdlForvalterIdenter(ident),
@@ -87,7 +87,7 @@ public class NavigasjonService {
                                                     .gruppe(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))
                                                     .identHovedperson(testident.getIdent())
                                                     .identNavigerTil(ident)
-                                                    .sidetall(Math.floorDiv(tuple.getT2(), 10))
+                                                    .sidetall(Math.floorDiv(tuple.getT2(), pageSize))
                                                     .build();
                                         }))))
                 .collectList()
@@ -96,7 +96,7 @@ public class NavigasjonService {
                         Mono.just(list.getFirst()));
     }
 
-    public Mono<RsWhereAmI> navigerTilBestilling(Long bestillingId) {
+    public Mono<RsWhereAmI> navigerTilBestilling(Long bestillingId, int pageSize) {
 
         return bestillingService.fetchBestillingById(bestillingId)
                 .switchIfEmpty(Mono.error(() -> new NotFoundException(String.format(IKKE_FUNNET, bestillingId))))
@@ -122,7 +122,7 @@ public class NavigasjonService {
                     return RsWhereAmI.builder()
                             .bestillingNavigerTil(bestillingId)
                             .gruppe(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))
-                            .sidetall(Math.floorDiv(tuple.getT2(), 10))
+                            .sidetall(Math.floorDiv(tuple.getT2(), pageSize))
                             .build();
                 });
     }
