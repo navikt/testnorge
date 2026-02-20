@@ -33,6 +33,7 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -60,7 +61,7 @@ public class BestillingController {
                 .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class));
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/{bestillingId}")
     @Operation(description = "Slett Bestilling med bestillingsId")
     public Mono<Void> deleteBestillingById(@PathVariable("bestillingId") Long bestillingId) {
@@ -79,7 +80,7 @@ public class BestillingController {
     @Transactional
     @GetMapping("/naviger/{bestillingId}")
     public Mono<RsWhereAmI> navigerTilBestilling(@PathVariable Long bestillingId,
-                                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+                                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
 
         return navigasjonService.navigerTilBestilling(bestillingId, pageSize);
     }
@@ -117,7 +118,7 @@ public class BestillingController {
         return bestillingService.fetchBestilteMiljoerByIds(bestillingIds);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
     @Transactional
@@ -129,17 +130,17 @@ public class BestillingController {
                 .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class));
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
     @Transactional
     public Mono<RsBestillingStatus> gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
 
         return bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer)
-                        .map(bestilling -> {
-                            gjenopprettBestillingService.executeAsync(bestilling);
-                            return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                        });
+                .map(bestilling -> {
+                    gjenopprettBestillingService.executeAsync(bestilling);
+                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
+                });
     }
 
     @GetMapping(value = "/{bestillingId}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -210,8 +211,8 @@ public class BestillingController {
 
                     return Flux.merge(Flux.concat(initial, updates), heartbeat)
                             .doOnNext(sse -> {
-                                if ("completed".equals(sse.event()) && sse.data() != null) {
-                                    completedIds.put((long) sse.data().id(), true);
+                                if ("completed".equals(sse.event()) && nonNull(sse.data())) {
+                                    completedIds.put(sse.data().id(), true);
                                 }
                             })
                             .takeUntil(sse -> completedIds.values().stream().allMatch(Boolean::booleanValue));
