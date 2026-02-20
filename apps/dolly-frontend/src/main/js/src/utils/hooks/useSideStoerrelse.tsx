@@ -14,6 +14,15 @@ export const useSideStoerrelse = () => {
 	const sideStoerrelse = useSelector((state: RootState) => state.finnPerson.sideStoerrelse)
 
 	useEffect(() => {
+		const storedValue = localStorage.getItem(sideStoerrelseLocalStorageKey)
+		const storedSize = storedValue ? Number(storedValue) : null
+
+		if (storedSize && storedSize !== sideStoerrelse) {
+			dispatch(setSideStoerrelse(storedSize))
+		}
+	}, [])
+
+	useEffect(() => {
 		localStorage.setItem(sideStoerrelseLocalStorageKey, sideStoerrelse.toString())
 	}, [sideStoerrelse])
 

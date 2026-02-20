@@ -39,6 +39,12 @@ export const DollyPagination = ({
 		setCurrentPage(visSide)
 	})
 
+	useEffect(() => {
+		if (pageSize && pageSize !== currentPageSize) {
+			setCurrentPageSize(pageSize)
+		}
+	}, [pageSize])
+
 	const dispatch = useDispatch()
 
 	const pageChangeHandler = (page: number) => {
