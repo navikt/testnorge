@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -54,6 +54,10 @@ public class HistarkConsumer extends ConsumerStatus {
                         token.getTokenValue()).call());
     }
 
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
+    }
+
     @Override
     public String serviceUrl() {
         return serverProperties.getUrl();
@@ -62,9 +66,5 @@ public class HistarkConsumer extends ConsumerStatus {
     @Override
     public String consumerName() {
         return "testnav-dolly-proxy";
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }

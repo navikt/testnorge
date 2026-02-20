@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -24,17 +23,17 @@ public class GenerateNavnController {
     private final VerifyNavnService verifyNavnService;
 
     @GetMapping
-    public Mono<List<NavnDTO>> generateName(
+    public List<NavnDTO> generateName(
             @RequestParam(required = false, defaultValue = "10") Integer antall,
             @RequestParam(required = false) Long seed) {
 
-        return Mono.just(generateNavnService.getRandomNavn(seed, antall));
+        return generateNavnService.getRandomNavn(seed, antall);
     }
 
     @PostMapping("/check")
     @Schema(description = "Verifiser om navn finnes i liste over godkjente alternativer")
-    public Mono<Boolean> checkName(@RequestBody NavnDTO navn) {
+    public boolean checkName(@RequestBody NavnDTO navn) {
 
-        return Mono.just(verifyNavnService.verifyNavn(navn));
+        return verifyNavnService.verifyNavn(navn);
     }
 }

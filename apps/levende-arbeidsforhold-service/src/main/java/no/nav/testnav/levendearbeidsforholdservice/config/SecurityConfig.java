@@ -3,32 +3,35 @@ package no.nav.testnav.levendearbeidsforholdservice.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 
-@EnableWebFluxSecurity
+@EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
     @Bean
     @SuppressWarnings("java:S4502")
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchange -> exchange
-                        .pathMatchers(
-                                "/internal/**",
-                                "/webjars/**",
-                                "/swagger-resources/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger",
-                                "/error",
-                                "/swagger-ui.html"
-                        ).permitAll()
-                        .pathMatchers("/api/**").authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-                .build();
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+
+        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
+                        "/internal/**",
+                        "/webjars/**",
+                        "/swagger-resources/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger",
+                        "/error",
+                        "/swagger-ui.html"
+                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
+
+        return httpSecurity.build();
     }
 }
+

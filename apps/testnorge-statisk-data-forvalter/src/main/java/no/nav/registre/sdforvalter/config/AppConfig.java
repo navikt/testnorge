@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.config;
 
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -12,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "no.nav.registre.sdforvalter.database.repository")
-@Import({CoreConfig.class, SecureOAuth2ServerToServerConfiguration.class})
+@Import({ApplicationCoreConfig.class})
 public class AppConfig {
 
     @Bean

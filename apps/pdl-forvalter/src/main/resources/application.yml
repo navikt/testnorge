@@ -36,10 +36,6 @@ consumers:
     name: testnav-person-service
 
 spring:
-  application:
-    name: testnav-pdl-forvalter
-  main:
-    web-application-type: reactive
   config:
     import: "classpath:dolly-application.yml"
   security:

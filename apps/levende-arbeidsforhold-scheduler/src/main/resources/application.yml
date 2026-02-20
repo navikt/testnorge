@@ -3,8 +3,6 @@ spring:
     name: testnav-levende-arbeidsforhold-scheduler
     version: 1
     description: App for å ansette personer i en organisasjon
-  main:
-    web-application-type: reactive
   config:
     import: "classpath:dolly-application.yml"
   security:

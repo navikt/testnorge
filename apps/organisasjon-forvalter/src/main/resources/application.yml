@@ -3,8 +3,6 @@ spring:
     name: Testnav-Organisasjon-Forvalter
     version: 1.0
     description: Bestilling, persistering og opphenting av testorganisasjoner
-  main:
-    web-application-type: reactive
   config:
     import: "classpath:dolly-application.yml"
   flyway:

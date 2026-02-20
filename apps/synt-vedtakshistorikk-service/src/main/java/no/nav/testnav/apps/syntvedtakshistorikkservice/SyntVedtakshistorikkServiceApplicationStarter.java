@@ -1,12 +1,11 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-@Import({CoreConfig.class})
+@EnableWebSecurity
 @SpringBootApplication
 public class SyntVedtakshistorikkServiceApplicationStarter {
     public static void main(String[] args) {

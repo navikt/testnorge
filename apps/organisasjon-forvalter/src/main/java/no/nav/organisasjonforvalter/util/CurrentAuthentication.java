@@ -2,20 +2,23 @@ package no.nav.organisasjonforvalter.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @UtilityClass
 @Slf4j
 public final class CurrentAuthentication {
 
-    public static Mono<String> getUserId() {
-        return ReactiveSecurityContextHolder.getContext()
-                .map(context -> context.getAuthentication())
+    public static String getUserId() {
+        return (String) getToken().getToken().getClaims().get("oid");
+    }
+
+    private static JwtAuthenticationToken getToken() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast)
-                .map(token -> (String) token.getToken().getClaims().get("oid"))
-                .switchIfEmpty(Mono.error(new RuntimeException("Finner ikke Jwt Authentication Token")));
+                .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
     }
 }

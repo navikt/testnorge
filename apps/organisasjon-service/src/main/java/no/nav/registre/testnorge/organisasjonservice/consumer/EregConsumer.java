@@ -3,12 +3,14 @@ package no.nav.registre.testnorge.organisasjonservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonservice.config.Consumers;
 import no.nav.registre.testnorge.organisasjonservice.consumer.command.GetOrganisasjonCommand;
+import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjonservice.domain.Organisasjon;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 
 @Slf4j
@@ -32,9 +34,12 @@ public class EregConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<Organisasjon> getOrganisasjon(String orgnummer, String miljo) {
-        return tokenExchange.exchange(serverProperties)
-                .flatMap(accessToken -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), miljo, orgnummer).call())
-                .map(Organisasjon::new);
+    public Organisasjon getOrganisasjon(String orgnummer, String miljo) {
+        var accessToken = Optional
+                .ofNullable(tokenExchange.exchange(serverProperties).block())
+                .orElseThrow(() -> new IllegalStateException("Unable to get token for %s".formatted(serverProperties.getName())))
+                .getTokenValue();
+        OrganisasjonDTO dto = new GetOrganisasjonCommand(webClient, accessToken, miljo, orgnummer).call();
+        return dto != null ? new Organisasjon(dto) : null;
     }
 }

@@ -5,14 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.AzureAdProfileConsumer;
 import no.nav.registre.testnorge.profil.consumer.PersonOrganisasjonTilgangConsumer;
 import no.nav.registre.testnorge.profil.domain.Profil;
-import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
-import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerProperties;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,67 +22,63 @@ public class ProfilService {
     private static final String UKJENT = "[ukjent]";
     private static final String BANK_ID = "BankId";
     private final AzureAdProfileConsumer azureAdProfileConsumer;
-    private final TokenxResourceServerProperties tokenXResourceServerProperties;
+    private final TokenXResourceServerProperties tokenXResourceServerProperties;
     private final PersonOrganisasjonTilgangConsumer organisasjonTilgangConsumer;
     private final GetUserInfo getUserInfo;
 
     public Mono<Profil> getProfile() {
-        return isTokenX()
-                .flatMap(tokenX -> {
-                    if (tokenX) {
-                        return getUserInfo.call()
-                                .flatMap(userInfo -> getIdent()
-                                        .flatMap(ident -> organisasjonTilgangConsumer
-                                                .getOrganisasjon(ident, userInfo.organisasjonsnummer())
-                                                .map(organisasjon -> new Profil(
-                                                        userInfo.brukernavn(),
-                                                        UKJENT,
-                                                        UKJENT,
-                                                        organisasjon.getNavn(),
-                                                        userInfo.organisasjonsnummer(),
-                                                        BANK_ID))
-                                        ))
-                                .switchIfEmpty(Mono.just(new Profil(
-                                        BANK_ID,
-                                        UKJENT,
-                                        UKJENT,
-                                        UKJENT,
-                                        UKJENT,
-                                        BANK_ID
-                                )));
-                    }
-                    return azureAdProfileConsumer.getProfil();
-                });
+
+        if (isTokenX()) {
+            return getUserInfo.call()
+                    .map(userInfo -> organisasjonTilgangConsumer
+                            .getOrganisasjon(getIdent(), userInfo.organisasjonsnummer())
+                            .map(organisasjon -> new Profil(
+                                    userInfo.brukernavn(),
+                                    UKJENT,
+                                    UKJENT,
+                                    organisasjon.getNavn(),
+                                    userInfo.organisasjonsnummer(),
+                                    BANK_ID)
+                            ))
+                    .orElse(Mono.just(new Profil(
+                            BANK_ID,
+                            UKJENT,
+                            UKJENT,
+                            UKJENT,
+                            UKJENT,
+                            BANK_ID
+                    )));
+        }
+        return azureAdProfileConsumer.getProfil();
     }
 
-    public Mono<byte[]> getImage() {
-        return isTokenX()
-                .flatMap(tokenX -> {
-                    if (tokenX) {
-                        return Mono.empty();
-                    }
-                    return azureAdProfileConsumer.getProfilImage();
-                });
+    public Optional<byte[]> getImage() {
+        return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
     }
 
-    private Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
-        return ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication)
+    private Optional<JwtAuthenticationToken> getJwtAuthenticationToken() {
+
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast);
     }
 
-    private Mono<Boolean> isTokenX() {
+    private boolean isTokenX() {
+
         return getJwtAuthenticationToken()
                 .map(token -> token
                         .getTokenAttributes()
                         .get(JwtClaimNames.ISS)
-                        .equals(tokenXResourceServerProperties.getIssuerUri()));
+                        .equals(tokenXResourceServerProperties.getIssuerUri()))
+                .orElseThrow();
     }
 
-    private Mono<String> getIdent() {
+    private String getIdent() {
+
         return getJwtAuthenticationToken()
                 .map(JwtAuthenticationToken::getTokenAttributes)
-                .map(attribs -> (String) attribs.get("pid"));
+                .map(attribs -> attribs.get("pid"))
+                .map(ident -> (String) ident)
+                .orElseThrow();
     }
 }

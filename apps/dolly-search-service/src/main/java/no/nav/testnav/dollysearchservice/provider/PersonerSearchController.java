@@ -36,8 +36,8 @@ public class PersonerSearchController {
 
     @GetMapping("/typer")
     @Operation(description = "Henter alle søketyper mot registre")
-    public Mono<List<Kategori>> getKategorier() {
+    public List<Kategori> getKategorier() {
 
-        return Mono.just(personerSearchService.getTyper());
+        return personerSearchService.getTyper();
     }
 }

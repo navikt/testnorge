@@ -9,6 +9,6 @@
     </springProfile>
 
     <logger level="TRACE" name="no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer" />
-    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
+    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
 </configuration>
 

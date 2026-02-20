@@ -3,7 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -13,11 +13,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -33,20 +29,6 @@ class SyntVedtakshistorikkConsumerTest {
 
     @Autowired
     private SyntVedtakshistorikkConsumer syntVedtakshistorikkConsumer;
-
-    private void stubHistorikkResponse() {
-        stubFor(post(urlPathMatching("(.*)/api/v1/vedtakshistorikk"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("files/synt/historikk.json")))
-        );
-    }
-
-    private void stubErrorResponse() {
-        stubFor(post(urlPathMatching("(.*)/api/v1/vedtakshistorikk"))
-                .willReturn(aResponse().withStatus(500))
-        );
-    }
 
     @BeforeEach
     void setup() {
@@ -76,12 +58,26 @@ class SyntVedtakshistorikkConsumerTest {
         assertThat(historikk2.getAlleTiltakVedtak()).isEmpty();
     }
 
+    private void stubHistorikkResponse() {
+        stubFor(post(urlPathMatching("(.*)/api/v1/vedtakshistorikk"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("files/synt/historikk.json")))
+        );
+    }
+
     @Test
     void shouldHandleErrorResponse() {
         stubErrorResponse();
         var response = syntVedtakshistorikkConsumer.syntetiserVedtakshistorikk(1);
 
         assertThat(response).isEmpty();
+    }
+
+    private void stubErrorResponse() {
+        stubFor(post(urlPathMatching("(.*)/api/v1/vedtakshistorikk"))
+                .willReturn(aResponse().withStatus(500))
+        );
     }
 
 }

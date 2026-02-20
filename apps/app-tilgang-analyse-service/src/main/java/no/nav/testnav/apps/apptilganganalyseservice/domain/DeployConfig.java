@@ -17,22 +17,16 @@ public class DeployConfig {
     }
 
     public boolean isDeploying(ApplicationConfig applicationConfig) {
-        var path = applicationConfig.getPath();
-        if (content.contains("resource: '" + path + "'") || content.contains("resource: \"" + path + "\"")) {
-            return true;
-        }
-        var parentDir = path.contains("/") ? path.substring(0, path.lastIndexOf('/')) : path;
-        return content.contains("working-directory: \"" + parentDir + "\"")
-                || content.contains("working-directory: '" + parentDir + "'");
+        return content.contains("resource: '" + applicationConfig.getPath() + "'");
     }
 
     private String findCluster(String value) {
-        var pattern = Pattern.compile("cluster:\\s*[\"']([a-zA-Z\\-]+)[\"']", Pattern.MULTILINE);
+        var pattern = Pattern.compile("(cluster: ')([a-zA-Z\\-]+)(')", Pattern.MULTILINE);
         var matcher = pattern.matcher(value);
         if (matcher.find()) {
-            return matcher.group(1);
+            return matcher.group(2);
         }
-        return "dev-gcp";
+        throw new RuntimeException("Fant ikke cluster.");
     }
 
 }
