@@ -13,6 +13,7 @@ public class BestillingEventPublisher {
 
     private static final int BUFFER_SIZE = 256;
     private final Sinks.Many<Long> sink = Sinks.many().multicast().onBackpressureBuffer(BUFFER_SIZE, false);
+    private final Sinks.Many<Long> orgSink = Sinks.many().multicast().onBackpressureBuffer(BUFFER_SIZE, false);
 
     public void publish(Long bestillingId) {
         var result = sink.tryEmitNext(bestillingId);
@@ -21,8 +22,20 @@ public class BestillingEventPublisher {
         }
     }
 
+    public void publishOrg(Long bestillingId) {
+        var result = orgSink.tryEmitNext(bestillingId);
+        if (result.isFailure()) {
+            log.warn("Kunne ikke publisere org-bestilling-event for bestillingId {}: {}", bestillingId, result);
+        }
+    }
+
     public Flux<Long> subscribe(Long bestillingId) {
         return sink.asFlux()
+                .filter(bestillingId::equals);
+    }
+
+    public Flux<Long> subscribeOrg(Long bestillingId) {
+        return orgSink.asFlux()
                 .filter(bestillingId::equals);
     }
 

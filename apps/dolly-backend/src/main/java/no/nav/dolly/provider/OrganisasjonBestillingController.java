@@ -12,6 +12,7 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper;
+import no.nav.dolly.service.BestillingEventPublisher;
 import no.nav.dolly.service.OrganisasjonBestillingMalService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -46,6 +47,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class OrganisasjonBestillingController {
 
     private final OrganisasjonClient organisasjonClient;
+    private final BestillingEventPublisher bestillingEventPublisher;
     private final OrganisasjonBestillingService bestillingService;
     private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
 
@@ -58,6 +60,7 @@ public class OrganisasjonBestillingController {
         return bestillingService.saveBestilling(request)
                 .flatMap(bestilling ->
                         organisasjonClient.opprett(request, bestilling)
+                                .doOnSuccess(v -> bestillingService.monitorDeployCompletion(bestilling.getId()))
                                 .then(getStatus(bestilling, "Ubestemt")));
     }
 
@@ -133,23 +136,27 @@ public class OrganisasjonBestillingController {
     public Flux<ServerSentEvent<RsOrganisasjonBestillingStatus>> streamBestillingStatus(
             @RequestParam Long bestillingId) {
 
-        return bestillingService.fetchBestillingStatusById(bestillingId)
+        return bestillingService.fetchBestillingSnapshot(bestillingId)
                 .flatMapMany(initial -> {
-                    var initialSse = toOrgSse(initial);
-
                     if (Boolean.TRUE.equals(initial.getFerdig())) {
-                        return Flux.just(initialSse);
+                        return Flux.just(toOrgSse(initial));
                     }
 
-                    var updates = Flux.interval(Duration.ofSeconds(3))
-                            .concatMap(tick -> bestillingService.fetchBestillingStatusById(bestillingId)
+                    var updates = bestillingEventPublisher.subscribeOrg(bestillingId)
+                            .sample(Duration.ofSeconds(1))
+                            .concatMap(id -> bestillingService.fetchBestillingSnapshot(bestillingId)
                                     .onErrorResume(e -> {
                                         log.warn("Feil ved henting av org-bestilling-status for {}: {}", bestillingId, e.getMessage());
                                         return Mono.empty();
                                     }))
                             .map(this::toOrgSse);
 
-                    return Flux.concat(Flux.just(initialSse), updates)
+                    var heartbeat = Flux.interval(Duration.ofSeconds(15))
+                            .map(tick -> ServerSentEvent.<RsOrganisasjonBestillingStatus>builder()
+                                    .comment("heartbeat")
+                                    .build());
+
+                    return Flux.merge(Flux.concat(Flux.just(toOrgSse(initial)), updates), heartbeat)
                             .takeUntil(sse -> "completed".equals(sse.event()));
                 });
     }
