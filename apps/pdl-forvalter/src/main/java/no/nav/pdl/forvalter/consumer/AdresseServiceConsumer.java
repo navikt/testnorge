@@ -75,7 +75,10 @@ public class AdresseServiceConsumer {
                         adresse.setKommunenummer(vegadresse.getKommunenummer());
                     }
                     return adresse;
-                });
+                })
+                .map(adresse -> isNotBlank(adresse.getAdressenavn()) ?
+                        adresse :
+                        VegadresseServiceCommand.defaultAdresse());
     }
 
     public Mono<no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO> getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
