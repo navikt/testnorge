@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
-import java.util.Set;
-
 @Slf4j
 @Service
 public class BestillingEventPublisher {
@@ -37,10 +35,5 @@ public class BestillingEventPublisher {
     public Flux<Long> subscribeOrg(Long bestillingId) {
         return orgSink.asFlux()
                 .filter(bestillingId::equals);
-    }
-
-    public Flux<Long> subscribeAny(Set<Long> bestillingIds) {
-        return sink.asFlux()
-                .filter(bestillingIds::contains);
     }
 }

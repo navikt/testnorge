@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
-import no.nav.dolly.domain.resultset.entity.bestilling.BestillingStatusEvent;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.service.BestillingEventPublisher;
@@ -31,9 +29,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -177,61 +173,10 @@ public class BestillingController {
                 });
     }
 
-    @GetMapping(value = "/gruppe/{gruppeId}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @Operation(description = "Strøm oppdateringer for aktive bestillinger i en gruppe via Server-Sent Events")
-    public Flux<ServerSentEvent<BestillingStatusEvent>> streamGruppeBestillinger(
-            @PathVariable("gruppeId") Long gruppeId) {
-
-        return bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId)
-                .map(Bestilling::getId)
-                .collect(Collectors.toSet())
-                .flatMapMany(activeIds -> {
-                    if (activeIds.isEmpty()) {
-                        return Flux.empty();
-                    }
-
-                    var initial = Flux.fromIterable(activeIds)
-                            .concatMap(bestillingService::fetchBestillingStatusEvent)
-                            .map(this::toSse);
-
-                    var updates = bestillingEventPublisher.subscribeAny(activeIds)
-                            .sample(Duration.ofSeconds(2))
-                            .concatMap(id -> bestillingService.fetchBestillingStatusEvent(id)
-                                    .onErrorResume(e -> {
-                                        log.warn("Feil ved henting av bestilling-status for {} i gruppe {}: {}", id, gruppeId, e.getMessage());
-                                        return Mono.empty();
-                                    }))
-                            .map(this::toSse);
-
-                    var heartbeat = Flux.interval(Duration.ofSeconds(15))
-                            .map(tick -> ServerSentEvent.<BestillingStatusEvent>builder()
-                                    .comment("heartbeat")
-                                    .build());
-
-                    var completedIds = new java.util.concurrent.ConcurrentHashMap<Long, Boolean>();
-                    activeIds.forEach(id -> completedIds.put(id, false));
-
-                    return Flux.merge(Flux.concat(initial, updates), heartbeat)
-                            .doOnNext(sse -> {
-                                if ("completed".equals(sse.event()) && nonNull(sse.data())) {
-                                    completedIds.put(sse.data().id(), true);
-                                }
-                            })
-                            .takeUntil(sse -> completedIds.values().stream().allMatch(Boolean::booleanValue));
-                });
-    }
-
     private ServerSentEvent<RsBestillingStatus> toBestillingSse(RsBestillingStatus status) {
         return ServerSentEvent.<RsBestillingStatus>builder()
                 .event(status.isFerdig() ? "completed" : "progress")
                 .data(status)
-                .build();
-    }
-
-    private ServerSentEvent<BestillingStatusEvent> toSse(BestillingStatusEvent event) {
-        return ServerSentEvent.<BestillingStatusEvent>builder()
-                .event(event.ferdig() ? "completed" : "progress")
-                .data(event)
                 .build();
     }
 }

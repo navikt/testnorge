@@ -172,14 +172,4 @@ class BestillingControllerTest {
                 })
                 .verifyComplete();
     }
-
-    @Test
-    void shouldStreamGruppeEmptyWhenNoActiveBestillinger() {
-
-        when(bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(GRUPPE_ID))
-                .thenReturn(Flux.empty());
-
-        StepVerifier.create(bestillingController.streamGruppeBestillinger(GRUPPE_ID))
-                .verifyComplete();
-    }
 }

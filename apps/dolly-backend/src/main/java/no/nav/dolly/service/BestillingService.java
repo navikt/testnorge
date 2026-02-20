@@ -19,7 +19,6 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.entity.bestilling.BestillingStatusEvent;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.opensearch.service.OpenSearchService;
@@ -90,25 +89,6 @@ public class BestillingService {
                             bestilling.setBruker(bruker);
                             return bestilling;
                         }));
-    }
-
-    public Mono<BestillingStatusEvent> fetchBestillingStatusEvent(Long bestillingId) {
-
-        return bestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException(format("Fant ikke bestillingId %d", bestillingId))))
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> new BestillingStatusEvent(
-                                bestilling.getId(),
-                                bestilling.getGruppeId(),
-                                bestilling.isFerdig(),
-                                bestilling.isStoppet(),
-                                (int) progresser.stream()
-                                        .filter(BestillingProgress::isIdentGyldig)
-                                        .count(),
-                                bestilling.getAntallIdenter(),
-                                bestilling.getFeil(),
-                                bestilling.getSistOppdatert()
-                        )));
     }
 
     public Flux<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
