@@ -145,28 +145,30 @@ public class BestillingController {
 
     @GetMapping(value = "/{bestillingId}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(description = "Strøm sanntidsstatus for en bestilling via Server-Sent Events")
-    public Flux<ServerSentEvent<BestillingStatusEvent>> streamBestillingStatus(
+    public Flux<ServerSentEvent<RsBestillingStatus>> streamBestillingStatus(
             @PathVariable("bestillingId") Long bestillingId) {
 
-        return bestillingService.fetchBestillingStatusEvent(bestillingId)
+        return bestillingService.fetchBestillingById(bestillingId)
+                .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                 .flatMapMany(initial -> {
-                    var initialSse = toSse(initial);
+                    var initialSse = toBestillingSse(initial);
 
-                    if (initial.ferdig()) {
+                    if (initial.isFerdig()) {
                         return Flux.just(initialSse);
                     }
 
                     var updates = bestillingEventPublisher.subscribe(bestillingId)
                             .sample(Duration.ofSeconds(1))
-                            .concatMap(id -> bestillingService.fetchBestillingStatusEvent(bestillingId)
+                            .concatMap(id -> bestillingService.fetchBestillingById(bestillingId)
+                                    .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .onErrorResume(e -> {
                                         log.warn("Feil ved henting av bestilling-status for {}: {}", bestillingId, e.getMessage());
                                         return Mono.empty();
                                     }))
-                            .map(this::toSse);
+                            .map(this::toBestillingSse);
 
                     var heartbeat = Flux.interval(Duration.ofSeconds(15))
-                            .map(tick -> ServerSentEvent.<BestillingStatusEvent>builder()
+                            .map(tick -> ServerSentEvent.<RsBestillingStatus>builder()
                                     .comment("heartbeat")
                                     .build());
 
@@ -217,6 +219,13 @@ public class BestillingController {
                             })
                             .takeUntil(sse -> completedIds.values().stream().allMatch(Boolean::booleanValue));
                 });
+    }
+
+    private ServerSentEvent<RsBestillingStatus> toBestillingSse(RsBestillingStatus status) {
+        return ServerSentEvent.<RsBestillingStatus>builder()
+                .event(status.isFerdig() ? "completed" : "progress")
+                .data(status)
+                .build();
     }
 
     private ServerSentEvent<BestillingStatusEvent> toSse(BestillingStatusEvent event) {
