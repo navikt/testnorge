@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -55,6 +57,7 @@ public class OrganisasjonBestillingService {
     private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
 
     private final BrukerService brukerService;
+    private final BestillingEventPublisher bestillingEventPublisher;
     private final JsonBestillingMapper jsonBestillingMapper;
     private final ObjectMapper objectMapper;
     private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
@@ -122,7 +125,8 @@ public class OrganisasjonBestillingService {
                     orgBestilling.setSistOppdatert(now());
                     return orgBestilling;
                 })
-                .flatMap(organisasjonBestillingRepository::save);
+                .flatMap(organisasjonBestillingRepository::save)
+                .doOnNext(saved -> bestillingEventPublisher.publishOrg(saved.getId()));
     }
 
     @Transactional
@@ -184,6 +188,7 @@ public class OrganisasjonBestillingService {
                     return bestilling;
                 })
                 .flatMap(organisasjonBestillingRepository::save)
+                .doOnNext(saved -> bestillingEventPublisher.publishOrg(saved.getId()))
                 .then();
     }
 
@@ -219,6 +224,54 @@ public class OrganisasjonBestillingService {
                 .buffer(BLOCK_SIZE)
                 .flatMap(organisasjonConsumer::hentOrganisasjon)
                 .sort(Comparator.comparing(OrganisasjonDetaljer::getId).reversed());
+    }
+
+    @Transactional(readOnly = true)
+    public Mono<RsOrganisasjonBestillingStatus> fetchBestillingSnapshot(Long bestillingId) {
+
+        return organisasjonBestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
+                .flatMap(bestilling -> organisasjonProgressRepository.findByBestillingId(bestillingId)
+                        .next()
+                        .switchIfEmpty(Mono.just(OrganisasjonBestillingProgress.builder().build()))
+                        .map(progress -> RsOrganisasjonBestillingStatus.builder()
+                                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, emptyList()))
+                                .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
+                                .sistOppdatert(bestilling.getSistOppdatert())
+                                .organisasjonNummer(progress.getOrganisasjonsnummer())
+                                .id(bestillingId)
+                                .ferdig(isTrue(bestilling.getFerdig()))
+                                .feil(bestilling.getFeil())
+                                .environments(Set.of(bestilling.getMiljoer().split(",")))
+                                .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
+                                .build()));
+    }
+
+    public void monitorDeployCompletion(Long bestillingId) {
+
+        Flux.interval(Duration.ofSeconds(5))
+                .concatMap(tick -> fetchBestillingStatusById(bestillingId)
+                        .doOnNext(status -> bestillingEventPublisher.publishOrg(bestillingId))
+                        .onErrorResume(e -> {
+                            log.warn("Feil under overvåking av org-bestilling {}: {}", bestillingId, e.getMessage());
+                            return Mono.empty();
+                        }))
+                .takeUntil(status -> Boolean.TRUE.equals(status.getFerdig()))
+                .take(Duration.ofMinutes(30))
+                .subscribeOn(Schedulers.boundedElastic())
+                .subscribe(
+                        null,
+                        error -> log.error("Overvåking av org-bestilling {} feilet: {}", bestillingId, error.getMessage()),
+                        () -> log.info("Overvåking av org-bestilling {} fullført", bestillingId)
+                );
+    }
+
+    public Mono<Void> slettBestillingById(Long bestillingId) {
+
+        return organisasjonBestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
+                .flatMap(ignore -> organisasjonProgressRepository.deleteByBestillingId(bestillingId))
+                .then(organisasjonBestillingRepository.deleteBestillingWithNoChildren(bestillingId));
     }
 
     private Mono<OrganisasjonBestilling> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
@@ -272,14 +325,6 @@ public class OrganisasjonBestillingService {
                     return organisasjonProgressRepository.save(bestillingProgress)
                             .thenReturn(organisasjonDeployStatus);
                 });
-    }
-
-    public Mono<Void> slettBestillingById(Long bestillingId) {
-
-        return organisasjonBestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
-                .flatMap(ignore -> organisasjonProgressRepository.deleteByBestillingId(bestillingId))
-                .then(organisasjonBestillingRepository.deleteBestillingWithNoChildren(bestillingId));
     }
 
     private String toJson(Object object) {

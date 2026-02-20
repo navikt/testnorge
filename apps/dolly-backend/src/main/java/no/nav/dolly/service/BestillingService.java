@@ -19,9 +19,9 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
@@ -129,6 +129,15 @@ public class BestillingService {
 
         return bestillingRepository.findByGruppeId(gruppeId)
                 .doOnNext(bestilling -> log.info("Bestilling {}", bestilling))
+                .filter(bestilling -> isNotBlank(bestilling.getMiljoer()))
+                .map(Bestilling::getMiljoer)
+                .flatMap(miljoer -> Flux.just(miljoer.split(",")))
+                .collect(toSet());
+    }
+
+    public Mono<Set<String>> fetchBestilteMiljoerByIds(List<Long> bestillingIds) {
+
+        return bestillingRepository.findByIdIn(bestillingIds)
                 .filter(bestilling -> isNotBlank(bestilling.getMiljoer()))
                 .map(Bestilling::getMiljoer)
                 .flatMap(miljoer -> Flux.just(miljoer.split(",")))
@@ -654,6 +663,12 @@ public class BestillingService {
         return null;
     }
 
+    private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
+
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
+                .collectList();
+    }
+
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
 
         aaregdata.forEach(arbeidforhold -> {
@@ -662,11 +677,5 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
-    }
-
-    private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
-
-        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
-                .collectList();
     }
 }
