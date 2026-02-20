@@ -27,6 +27,8 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle',
 }
 
+export const organisasjonerSideStoerrelseLocalStorageKey = 'organisasjonerSideStoerrelse'
+
 export default function OrganisasjonListe({
 	bestillinger,
 	setAntallOrg,
@@ -185,6 +187,7 @@ export default function OrganisasjonListe({
 				columns={columns}
 				visSide={sidetall}
 				pagination
+				manualLocalStorageKey={organisasjonerSideStoerrelseLocalStorageKey}
 				iconItem={<OrganisasjonItem />}
 				onExpand={(organisasjon: EnhetData) => (
 					<OrganisasjonVisning data={organisasjon} bestillinger={bestillinger} />
