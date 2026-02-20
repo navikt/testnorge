@@ -13,6 +13,6 @@ public class Trekkprosent {
 
     private Trekkode trekkode;
 
-    private Integer prosentsats;
-    private Integer antallMaanederForTrekk;
+    private Float prosentsats;
+    private Float antallMaanederForTrekk;
 }

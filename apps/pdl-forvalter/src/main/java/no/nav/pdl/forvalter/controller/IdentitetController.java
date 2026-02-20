@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -28,26 +30,28 @@ public class IdentitetController {
     @ResponseBody
     @GetMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Søk etter identitet i databasen basert på fragment av ident og/eller en eller flere navn")
-    public List<PersonIDDTO> getPerson(@Parameter(description = "Fragment av ident og/eller en eller flere navn")
-                                       @RequestParam(required = false) String fragment,
-                                       @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
-                                       @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
-                                       @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først")
-                                       @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
+    public Mono<List<PersonIDDTO>> getPerson(@Parameter(description = "Fragment av ident og/eller en eller flere navn")
+                                              @RequestParam(required = false) String fragment,
+                                              @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
+                                              @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
+                                              @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først")
+                                              @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
 
-        return identitetService.getfragment(fragment, Paginering.builder()
-                .sidenummer(sidenummer)
-                .sidestoerrelse(sidestorrelse)
-                .build());
+        return Mono.fromCallable(() -> identitetService.getfragment(fragment, Paginering.builder()
+                        .sidenummer(sidenummer)
+                        .sidestoerrelse(sidestorrelse)
+                        .build()))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @PutMapping(value = "/{ident}/standalone/{standalone}")
     @Operation(description = "Oppdaterer angitt person med standalone satt (true/false).<br>" +
             "Når satt, blir dette håndtert som en ekstern person som ikke skal inkluderes ved sletting.")
-    public void updateStandalone(@Parameter(description = "Ident for testperson")
-                                 @PathVariable String ident,
-                                 @PathVariable Boolean standalone) {
+    public Mono<Void> updateStandalone(@Parameter(description = "Ident for testperson")
+                                        @PathVariable String ident,
+                                        @PathVariable Boolean standalone) {
 
-        identitetService.updateStandalone(ident, standalone);
+        return Mono.<Void>fromRunnable(() -> identitetService.updateStandalone(ident, standalone))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }

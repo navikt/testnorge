@@ -11,7 +11,7 @@ import { bottom } from '@popperjs/core'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import Navigering from '@/pages/gruppeOversikt/Navigering'
+import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
 import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 import { PersonGroupIcon, SilhouetteIcon, StarIcon } from '@navikt/aksel-icons'
 import { useSideStoerrelse } from '@/utils/hooks/useSideStoerrelse'
@@ -119,7 +119,7 @@ const GruppeOversikt: React.FC = () => {
 				>
 					Ny gruppe
 				</StyledNavButton>
-				{!isBankIdBruker && <Navigering />}
+				{!isBankIdBruker && <FinnPersonBestilling />}
 			</div>
 
 			{visNyGruppeState && <RedigerGruppe onCancel={skjulNyGruppe} />}

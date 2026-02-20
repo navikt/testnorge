@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -21,27 +22,27 @@ public class DokumentController {
     private final DokumentService service;
 
     @GetMapping
-    public ResponseEntity<List<DokumentInfoDTO>> hentDokumenter(
+    public Mono<ResponseEntity<List<DokumentInfoDTO>>> hentDokumenter(
             @RequestHeader("miljo") String miljo,
             @PathVariable("journalpostId") String journalpostId
     ) {
-        var journalpost = service.getJournalpost(journalpostId, miljo);
-        var list = journalpost.getDokumenter().stream().map(dokument -> DokumentInfoDTO
-                .builder()
-                .journalpostId(journalpost.getJournalpostId())
-                .dokumentInfoId(dokument.getDokumentInfoId())
-                .build()
-        ).toList();
-        return ResponseEntity.ok(list);
+        return service.getJournalpost(journalpostId, miljo)
+                .map(journalpost -> journalpost.getDokumenter().stream().map(dokument -> DokumentInfoDTO
+                        .builder()
+                        .journalpostId(journalpost.getJournalpostId())
+                        .dokumentInfoId(dokument.getDokumentInfoId())
+                        .build()
+                ).toList())
+                .map(ResponseEntity::ok);
     }
 
     @GetMapping("/{dokumentInfoId}")
-    public ResponseEntity<String> hentDokument(
+    public Mono<ResponseEntity<String>> hentDokument(
             @RequestHeader("miljo") String miljo,
             @PathVariable("dokumentInfoId") String dokumentInfoId,
             @PathVariable("journalpostId") String journalpostId
     ) {
-        var dokument = service.getDokument(journalpostId, dokumentInfoId, DokumentType.ORIGINAL, miljo);
-        return ResponseEntity.ok(dokument);
+        return service.getDokument(journalpostId, dokumentInfoId, DokumentType.ORIGINAL, miljo)
+                .map(ResponseEntity::ok);
     }
 }

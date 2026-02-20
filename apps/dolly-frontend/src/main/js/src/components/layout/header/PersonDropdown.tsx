@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
@@ -11,16 +11,21 @@ import {
 } from '@/pages/tenorSoek/constants'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
-const activePaths = ['/gruppe', '/dollysoek', '/nyansettelser', '/tenorpersoner', '/identvalidator']
-
 export const PersonDropdown = () => {
 	const location = useLocation()
+	const [isActive, setIsActive] = useState(false)
+
 	const { currentBruker } = useCurrentBruker()
 
-	const isActive = useMemo(
-		() => activePaths.includes(location?.pathname),
-		[location?.pathname],
-	)
+	useEffect(() => {
+		setIsActive(
+			location?.pathname === '/gruppe' ||
+				location?.pathname === '/dollysoek' ||
+				location?.pathname === '/nyansettelser' ||
+				location?.pathname === '/tenorpersoner' ||
+				location?.pathname === '/identvalidator',
+		)
+	}, [location])
 
 	return (
 		<ActionMenuWrapper

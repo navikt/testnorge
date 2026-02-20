@@ -179,7 +179,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                             .adjektiv(navn.getFornavn())
                             .adverb(navn.getMellomnavn())
                             .substantiv(navn.getEtternavn())
-                            .build()))) {
+                            .build()).block())) {
 
                 throw new InvalidRequestException(INVALID_NAVN_ERROR);
             }
@@ -548,14 +548,15 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 isBlank(forespurtNavn.getMellomnavn()) ||
                 isBlank(forespurtNavn.getEtternavn())) {
 
-            genererNavnServiceConsumer.getNavn(1)
-                    .ifPresent(nyttNavn ->
-                            foreldreansvar.getAnsvarligUtenIdentifikator().setNavn(
-                                    PersonnavnDTO.builder()
-                                            .fornavn(blankCheck(forespurtNavn.getFornavn(), nyttNavn.getAdjektiv()))
-                                            .etternavn(blankCheck(forespurtNavn.getEtternavn(), nyttNavn.getSubstantiv()))
-                                            .mellomnavn(blankCheck(forespurtNavn.getMellomnavn(), nyttNavn.getAdverb()))
-                                            .build()));
+            var nyttNavn = genererNavnServiceConsumer.getNavn(1).block();
+            if (nonNull(nyttNavn)) {
+                foreldreansvar.getAnsvarligUtenIdentifikator().setNavn(
+                        PersonnavnDTO.builder()
+                                .fornavn(blankCheck(forespurtNavn.getFornavn(), nyttNavn.getAdjektiv()))
+                                .etternavn(blankCheck(forespurtNavn.getEtternavn(), nyttNavn.getSubstantiv()))
+                                .mellomnavn(blankCheck(forespurtNavn.getMellomnavn(), nyttNavn.getAdverb()))
+                                .build());
+            }
         }
 
         if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator().getKjoenn())) {

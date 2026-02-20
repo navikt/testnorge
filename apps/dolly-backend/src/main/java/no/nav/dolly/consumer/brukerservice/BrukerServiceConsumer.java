@@ -5,7 +5,7 @@ import no.nav.dolly.config.Consumers;
 import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetTilgangCommand;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

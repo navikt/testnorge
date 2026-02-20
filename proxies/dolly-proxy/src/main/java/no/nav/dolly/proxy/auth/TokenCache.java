@@ -48,10 +48,10 @@ class TokenCache {
                     .between(Instant.now(), expiry)
                     .minusSeconds(gracePeriodSeconds);
             var nonNegativeTTL = ttl.isNegative() ? Duration.ZERO : ttl;
-            log.info("Token cached for {} with TTL of {} seconds", key, nonNegativeTTL.getSeconds());
+            log.info("Token cached for {} with TTL of {} seconds", key.getUrl(), nonNegativeTTL.getSeconds());
             return nonNegativeTTL;
         } catch (Exception e) {
-            log.warn("Failed to decode token for {} to calculate TTL, disabling cache", key, e);
+            log.warn("Failed to decode token for {} to calculate TTL, disabling cache", key.getUrl(), e);
             return Duration.ZERO;
         }
     }
