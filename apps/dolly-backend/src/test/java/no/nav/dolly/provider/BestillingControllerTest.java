@@ -2,7 +2,6 @@ package no.nav.dolly.provider;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.BestillingStatusEvent;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.service.BestillingEventPublisher;
 import no.nav.dolly.service.BestillingService;
@@ -14,8 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-
-import java.time.LocalDateTime;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -92,16 +89,23 @@ class BestillingControllerTest {
     @Test
     void shouldStreamCompletedBestillingAsSingleEvent() {
 
-        var event = new BestillingStatusEvent(
-                BESTILLING_ID, GRUPPE_ID, true, false, 5, 5, null, LocalDateTime.now());
+        var bestillingEntity = new Bestilling();
+        var bestillingStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(true)
+                .antallLevert(5)
+                .antallIdenter(5)
+                .build();
 
-        when(bestillingService.fetchBestillingStatusEvent(BESTILLING_ID)).thenReturn(Mono.just(event));
+        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class))).thenReturn(bestillingStatus);
 
         StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
                 .assertNext(sse -> {
                     assertThat(sse.event(), is(equalTo("completed")));
-                    assertThat(sse.data().ferdig(), is(true));
-                    assertThat(sse.data().antallLevert(), is(5));
+                    assertThat(sse.data().isFerdig(), is(true));
+                    assertThat(sse.data().getAntallLevert(), is(5));
                 })
                 .verifyComplete();
     }
@@ -109,14 +113,26 @@ class BestillingControllerTest {
     @Test
     void shouldStreamProgressThenCompleteWhenBestillingFinishes() {
 
-        var progressEvent = new BestillingStatusEvent(
-                BESTILLING_ID, GRUPPE_ID, false, false, 2, 5, null, LocalDateTime.now());
-        var completedEvent = new BestillingStatusEvent(
-                BESTILLING_ID, GRUPPE_ID, true, false, 5, 5, null, LocalDateTime.now());
+        var bestillingEntity = new Bestilling();
+        var progressStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(false)
+                .antallLevert(2)
+                .antallIdenter(5)
+                .build();
+        var completedStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(true)
+                .antallLevert(5)
+                .antallIdenter(5)
+                .build();
 
-        when(bestillingService.fetchBestillingStatusEvent(BESTILLING_ID))
-                .thenReturn(Mono.just(progressEvent))
-                .thenReturn(Mono.just(completedEvent));
+        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class)))
+                .thenReturn(progressStatus)
+                .thenReturn(completedStatus);
 
         when(bestillingEventPublisher.subscribe(BESTILLING_ID))
                 .thenReturn(Flux.just(BESTILLING_ID));
@@ -124,11 +140,11 @@ class BestillingControllerTest {
         StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
                 .assertNext(sse -> {
                     assertThat(sse.event(), is(equalTo("progress")));
-                    assertThat(sse.data().antallLevert(), is(2));
+                    assertThat(sse.data().getAntallLevert(), is(2));
                 })
                 .assertNext(sse -> {
                     assertThat(sse.event(), is(equalTo("completed")));
-                    assertThat(sse.data().antallLevert(), is(5));
+                    assertThat(sse.data().getAntallLevert(), is(5));
                 })
                 .verifyComplete();
     }
@@ -136,15 +152,23 @@ class BestillingControllerTest {
     @Test
     void shouldStreamProgressWithFeil() {
 
-        var event = new BestillingStatusEvent(
-                BESTILLING_ID, GRUPPE_ID, true, false, 0, 5, "Feil ved opprettelse", LocalDateTime.now());
+        var bestillingEntity = new Bestilling();
+        var bestillingStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(true)
+                .antallLevert(0)
+                .antallIdenter(5)
+                .feil("Feil ved opprettelse")
+                .build();
 
-        when(bestillingService.fetchBestillingStatusEvent(BESTILLING_ID)).thenReturn(Mono.just(event));
+        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class))).thenReturn(bestillingStatus);
 
         StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
                 .assertNext(sse -> {
                     assertThat(sse.event(), is(equalTo("completed")));
-                    assertThat(sse.data().feil(), is(equalTo("Feil ved opprettelse")));
+                    assertThat(sse.data().getFeil(), is(equalTo("Feil ved opprettelse")));
                 })
                 .verifyComplete();
     }
