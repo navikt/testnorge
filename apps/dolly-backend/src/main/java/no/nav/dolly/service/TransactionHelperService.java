@@ -34,18 +34,21 @@ public class TransactionHelperService {
     private final BestillingRepository bestillingRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingService bestillingService;
+    private final BestillingEventPublisher bestillingEventPublisher;
 
     public TransactionHelperService(R2dbcTransactionManager transactionManager,
                                     CacheManager cacheManager,
                                     BestillingRepository bestillingRepository,
                                     BestillingProgressRepository bestillingProgressRepository,
-                                    BestillingService bestillingService) {
+                                    BestillingService bestillingService,
+                                    BestillingEventPublisher bestillingEventPublisher) {
 
         this.transactionalOperator = TransactionalOperator.create(transactionManager);
         this.cacheManager = cacheManager;
         this.bestillingRepository = bestillingRepository;
         this.bestillingProgressRepository = bestillingProgressRepository;
         this.bestillingService = bestillingService;
+        this.bestillingEventPublisher = bestillingEventPublisher;
     }
 
     @Retryable
@@ -58,6 +61,7 @@ public class TransactionHelperService {
                                     setter.accept(progress, status);
                                     return bestillingProgressRepository.save(progress);
                                 })
+                                .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()))
                                 .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
                 .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
@@ -85,6 +89,7 @@ public class TransactionHelperService {
                                     setter.accept(progress, result);
                                 })
                                 .flatMap(bestillingProgressRepository::save)
+                                .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()))
                                 .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
                 .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
@@ -144,6 +149,7 @@ public class TransactionHelperService {
                         bestilling.setFeil(feil);
                         return bestillingService.cleanBestilling(bestilling)
                                 .flatMap(bestillingRepository::save)
+                                .doOnNext(saved -> bestillingEventPublisher.publish(saved.getId()))
                                 .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
                     })
                     .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))

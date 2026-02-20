@@ -3,6 +3,7 @@ package no.nav.dolly.provider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
@@ -15,6 +16,8 @@ import no.nav.dolly.service.OrganisasjonBestillingMalService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "api/v1/organisasjon/bestilling")
@@ -121,6 +126,39 @@ public class OrganisasjonBestillingController {
     public Mono<OrganisasjonBestillingMal> redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
 
         return organisasjonBestillingMalService.updateOrganisasjonMalNavnById(id, malNavn);
+    }
+
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @Operation(description = "Strøm sanntidsstatus for en organisasjon-bestilling via Server-Sent Events")
+    public Flux<ServerSentEvent<RsOrganisasjonBestillingStatus>> streamBestillingStatus(
+            @RequestParam Long bestillingId) {
+
+        return bestillingService.fetchBestillingStatusById(bestillingId)
+                .flatMapMany(initial -> {
+                    var initialSse = toOrgSse(initial);
+
+                    if (Boolean.TRUE.equals(initial.getFerdig())) {
+                        return Flux.just(initialSse);
+                    }
+
+                    var updates = Flux.interval(Duration.ofSeconds(3))
+                            .concatMap(tick -> bestillingService.fetchBestillingStatusById(bestillingId)
+                                    .onErrorResume(e -> {
+                                        log.warn("Feil ved henting av org-bestilling-status for {}: {}", bestillingId, e.getMessage());
+                                        return Mono.empty();
+                                    }))
+                            .map(this::toOrgSse);
+
+                    return Flux.concat(Flux.just(initialSse), updates)
+                            .takeUntil(sse -> "completed".equals(sse.event()));
+                });
+    }
+
+    private ServerSentEvent<RsOrganisasjonBestillingStatus> toOrgSse(RsOrganisasjonBestillingStatus status) {
+        return ServerSentEvent.<RsOrganisasjonBestillingStatus>builder()
+                .event(Boolean.TRUE.equals(status.getFerdig()) ? "completed" : "progress")
+                .data(status)
+                .build();
     }
 
     static Mono<RsOrganisasjonBestillingStatus> getStatus(OrganisasjonBestilling bestilling, String orgnummer) {

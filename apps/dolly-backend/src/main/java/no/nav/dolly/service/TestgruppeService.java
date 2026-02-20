@@ -311,6 +311,11 @@ public class TestgruppeService {
         return identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
     }
 
+    public Flux<Testident> getIdenterLightweight(Long gruppeId) {
+
+        return identRepository.findByGruppeId(gruppeId, Pageable.unpaged());
+    }
+
     public Mono<Void> endreGruppeTilknytning(Long gruppeId, String brukerId) {
 
         return Mono.zip(fetchTestgruppeById(gruppeId),
