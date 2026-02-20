@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.IdentitetService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonIDDTO;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,9 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -55,9 +52,6 @@ public class IdentitetController {
                                         @PathVariable Boolean standalone) {
 
         return Mono.<Void>fromRunnable(() -> identitetService.updateStandalone(ident, standalone))
-                .subscribeOn(Schedulers.boundedElastic())
-                .retryWhen(Retry.backoff(3, Duration.ofMillis(100))
-                        .filter(ObjectOptimisticLockingFailureException.class::isInstance)
-                        .doBeforeRetry(signal -> log.warn("Optimistic lock conflict for ident {}, forsøk {}", ident, signal.totalRetries() + 1)));
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }
