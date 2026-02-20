@@ -7,6 +7,9 @@ import no.nav.registre.orgnrservice.repository.OrgnummerRepository;
 import no.nav.registre.orgnrservice.repository.model.OrgnummerModel;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -17,47 +20,52 @@ public class OrgnummerAdapter {
 
     private final OrgnummerRepository organisasjonRepoistory;
 
-    public Organisasjon save(Organisasjon organisasjon) {
-        log.info("Lagrer orgnummer {}", organisasjon.getOrgnummer());
-        OrgnummerModel orgFraDb = organisasjonRepoistory.findByOrgnummer(organisasjon.getOrgnummer());
+    public Mono<Organisasjon> save(Organisasjon organisasjon) {
+        return Mono.fromCallable(() -> {
+            log.info("Lagrer orgnummer {}", organisasjon.getOrgnummer());
+            OrgnummerModel orgFraDb = organisasjonRepoistory.findByOrgnummer(organisasjon.getOrgnummer());
 
-        OrgnummerModel orgnummerModel = organisasjonRepoistory.save(
-                OrgnummerModel.builder()
-                        .orgnummer(organisasjon.getOrgnummer())
-                        .ledig(organisasjon.isLedig())
-                        .id(orgFraDb == null ? null : orgFraDb.getId())
-                        .build()
-        );
-        return new Organisasjon(orgnummerModel);
+            OrgnummerModel orgnummerModel = organisasjonRepoistory.save(
+                    OrgnummerModel.builder()
+                            .orgnummer(organisasjon.getOrgnummer())
+                            .ledig(organisasjon.isLedig())
+                            .id(orgFraDb == null ? null : orgFraDb.getId())
+                            .build()
+            );
+            return new Organisasjon(orgnummerModel);
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public List<Organisasjon> saveAll(List<Organisasjon> organisasjoner) {
-
-        return organisasjoner.stream()
-                .map(this::save)
-                .toList();
+    public Flux<Organisasjon> saveAll(List<Organisasjon> organisasjoner) {
+        return Flux.fromIterable(organisasjoner)
+                .flatMap(this::save);
     }
 
     @Transactional
-    public void deleteByOrgnummer(String orgnummer) {
-        Organisasjon orgFraDb = hentByOrgnummer(orgnummer);
-        if (orgFraDb == null) {
-            return;
-        }
-        log.info("Sletter orgnummer {}", orgnummer);
-        organisasjonRepoistory.deleteByOrgnummer(orgnummer);
+    public Mono<Void> deleteByOrgnummer(String orgnummer) {
+        return hentByOrgnummer(orgnummer)
+                .flatMap(org -> Mono.<Void>fromCallable(() -> {
+                    log.info("Sletter orgnummer {}", orgnummer);
+                    organisasjonRepoistory.deleteByOrgnummer(orgnummer);
+                    return null;
+                }).subscribeOn(Schedulers.boundedElastic()));
     }
 
-    public List<Organisasjon> hentAlleLedige() {
-        log.info("Henter alle ledige orgnr...");
-        var orgModeller = organisasjonRepoistory.findAllByLedigIsTrue();
-        return orgModeller.stream()
-                .map(Organisasjon::new)
-                .toList();
+    public Mono<List<Organisasjon>> hentAlleLedige() {
+        return Mono.fromCallable(() -> {
+            log.info("Henter alle ledige orgnr...");
+            var orgModeller = organisasjonRepoistory.findAllByLedigIsTrue();
+            return orgModeller.stream()
+                    .map(Organisasjon::new)
+                    .toList();
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Organisasjon hentByOrgnummer(String orgnummer) {
-        OrgnummerModel model = organisasjonRepoistory.findByOrgnummer(orgnummer);
-        return model == null ? null : new Organisasjon(model);
+    public Mono<Organisasjon> hentByOrgnummer(String orgnummer) {
+        return Mono.fromCallable(() -> {
+            OrgnummerModel model = organisasjonRepoistory.findByOrgnummer(orgnummer);
+            return model == null ? null : new Organisasjon(model);
+        }).subscribeOn(Schedulers.boundedElastic())
+                .flatMap(org -> org == null ? Mono.empty() : Mono.just(org));
     }
 }

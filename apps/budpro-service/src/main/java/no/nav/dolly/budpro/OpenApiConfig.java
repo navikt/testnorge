@@ -6,15 +6,15 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.Arrays;
 
 @Configuration
-class OpenApiConfig {
+class OpenApiConfig implements WebFilter {
 
     @Bean
     OpenAPI openAPI() {
@@ -34,12 +34,17 @@ class OpenApiConfig {
                                                 .bearerFormat("JWT")));
     }
 
-    @Bean
-    RouterFunction<ServerResponse> swaggerRedirect() {
-        return RouterFunctions
-                .route()
-                .GET("/swagger", request -> ServerResponse.temporaryRedirect(URI.create("/swagger-ui.html")).build())
-                .build();
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
+            return chain
+                    .filter(exchange.mutate()
+                            .request(exchange.getRequest()
+                                    .mutate().path("/swagger-ui.html").build())
+                            .build());
+        }
+
+        return chain.filter(exchange);
     }
 
 }

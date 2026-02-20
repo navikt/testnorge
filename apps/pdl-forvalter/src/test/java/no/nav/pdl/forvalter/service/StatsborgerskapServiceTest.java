@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -98,7 +99,7 @@ class StatsborgerskapServiceTest {
     @Test
     void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeDNR_thenGeografiskeKodeverkConsumerIsCalled() {
 
-        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("CHL");
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("CHL"));
 
         var target = statsborgerskapService.convert(PersonDTO.builder()
                         .statsborgerskap(List.of(StatsborgerskapDTO.builder()

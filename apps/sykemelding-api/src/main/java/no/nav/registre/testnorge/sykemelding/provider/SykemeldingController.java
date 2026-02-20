@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @RestController
 @RequestMapping("/api/v1/sykemeldinger")
@@ -24,11 +25,12 @@ public class SykemeldingController {
     private final ApplicationInfo applicationInfo;
 
     @PostMapping
-    public SykemeldingResponseDTO create(@RequestBody SykemeldingDTO dto) {
+    public Mono<SykemeldingResponseDTO> create(@RequestBody SykemeldingDTO dto) {
 
         log.info("Mottatt sykemelding: {}", dto);
 
-        return sykemeldingService.send(new Sykemelding(dto, applicationInfo));
+        return Mono.fromCallable(() -> sykemeldingService.send(new Sykemelding(dto, applicationInfo)))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @PostMapping(value = "/validate")

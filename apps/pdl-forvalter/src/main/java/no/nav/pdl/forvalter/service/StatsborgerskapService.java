@@ -67,7 +67,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
             } else if (FNR.equals(IdenttypeUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
-                statsborgerskap.setLandkode(kodeverkConsumer.getTilfeldigLand());
+                statsborgerskap.setLandkode(kodeverkConsumer.getTilfeldigLand().block());
             }
         }
 
