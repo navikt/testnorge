@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.adresseservice.controller;
 
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
@@ -100,7 +99,7 @@ public class AdresseController {
 
         log.info("Adressesøk ferdig tok: {} ms, resultat {}", System.currentTimeMillis() - millis,
                 resultat.stream()
-                .map(Json::pretty)
+                .map(T::toString)
                 .collect(Collectors.joining()));
     }
 }
