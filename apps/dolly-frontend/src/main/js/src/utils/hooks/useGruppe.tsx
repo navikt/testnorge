@@ -109,7 +109,6 @@ export const useGruppeIdenter = (gruppeId) => {
 }
 
 export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
-	console.log('pageSize: ', pageSize) //TODO - SLETT MEG
 	const { data, isLoading, error } = useSWR<PaginertGruppe, Error>(
 		getGrupperUrl(pageNo, pageSize, brukerId),
 		fetcher,

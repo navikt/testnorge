@@ -52,10 +52,9 @@ export const DollyPagination = ({
 		dispatch(setSidetall(0))
 		setCurrentPage(0)
 		setCurrentPageSize(event.value)
-		localStorage.setItem(
-			manualLocalStorageKey ?? sideStoerrelseLocalStorageKey,
-			event.value?.toString(),
-		)
+		if (manualLocalStorageKey) {
+			localStorage.setItem(manualLocalStorageKey, event.value?.toString())
+		}
 	}
 
 	const calculatePageCount = () => {

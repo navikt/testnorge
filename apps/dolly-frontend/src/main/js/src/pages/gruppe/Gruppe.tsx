@@ -20,7 +20,7 @@ import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
 import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
 import Navigering from '@/pages/gruppeOversikt/Navigering'
 import GruppeHeader from '@/pages/gruppe/GruppeHeader/GruppeHeader'
-import { sideStoerrelseLocalStorageKey } from '@/pages/gruppeOversikt/GruppeOversikt'
+import { useSideStoerrelse } from '@/utils/hooks/useSideStoerrelse'
 
 export type GruppeProps = {
 	sidetall: number
@@ -41,8 +41,7 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const visning = useSelector((state: any) => state.finnPerson.visning)
-
-	const sideStoerrelse = localStorage.getItem(sideStoerrelseLocalStorageKey) ?? 10
+	const { sideStoerrelse } = useSideStoerrelse()
 
 	useEffect(() => {
 		dispatch(setGruppeNavigerTil(null))

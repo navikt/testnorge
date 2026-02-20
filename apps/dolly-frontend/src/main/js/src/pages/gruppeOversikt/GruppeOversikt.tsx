@@ -14,6 +14,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import Navigering from '@/pages/gruppeOversikt/Navigering'
 import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 import { PersonGroupIcon, SilhouetteIcon, StarIcon } from '@navikt/aksel-icons'
+import { useSideStoerrelse } from '@/utils/hooks/useSideStoerrelse'
 
 type RootState = {
 	search: any
@@ -46,13 +47,7 @@ export const sideStoerrelseLocalStorageKey = 'sideStoerrelse'
 const GruppeOversikt: React.FC = () => {
 	const searchActive = useSelector((state: RootState) => Boolean(state.search))
 	const sidetall = useSelector((state: RootState) => state.finnPerson.sidetall)
-	const stateSideStoerrelse = useSelector((state: RootState) => state.finnPerson.sideStoerrelse)
-
-	const [sideStoerrelse, setSideStoerrelse] = useState(
-		localStorage.getItem(sideStoerrelseLocalStorageKey) || stateSideStoerrelse || 10,
-	)
-	console.log('stateSideStoerrelse: ', stateSideStoerrelse) //TODO - SLETT MEG
-	console.log('localstorage sidestoerrelse', localStorage.getItem(sideStoerrelseLocalStorageKey)) //TODO - SLETT MEG
+	const { sideStoerrelse } = useSideStoerrelse()
 
 	const dispatch = useDispatch()
 	const { currentBruker } = useCurrentBruker()
@@ -67,12 +62,6 @@ const GruppeOversikt: React.FC = () => {
 		sideStoerrelse,
 		visningType === VisningType.ALLE ? null : (teamId ?? brukerId),
 	)
-
-	useEffect(() => {
-		if (stateSideStoerrelse) {
-			setSideStoerrelse(stateSideStoerrelse)
-		}
-	}, [stateSideStoerrelse])
 
 	useEffect(() => {
 		dispatch(setVisning('personer'))

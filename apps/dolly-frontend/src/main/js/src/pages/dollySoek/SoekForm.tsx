@@ -20,7 +20,7 @@ import {
 } from '@/pages/dollySoek/paths'
 import { DollyApi } from '@/service/Api'
 import {
-	dollySoekInitialValues,
+	getDollySoekInitialValues,
 	dollySoekSideStoerrelseLocalStorageKey,
 } from '@/pages/dollySoek/dollySoekInitialValues'
 import { Fagsystemer } from '@/pages/dollySoek/soekFormPartials/Fagsystemer'
@@ -83,7 +83,7 @@ export const SoekForm = ({
 	}
 
 	const handleChangeAntall = (antall: { value: number }) => {
-		localStorage.setItem(dollySoekSideStoerrelseLocalStorageKey, antall.value)
+		localStorage.setItem(dollySoekSideStoerrelseLocalStorageKey, antall.value.toString())
 		const updatedRequest = { ...values, antall: antall.value, side: 0, seed: result?.seed }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
@@ -92,12 +92,13 @@ export const SoekForm = ({
 	const emptyCategory = (paths: string[]) => {
 		const requestClone = { ...values }
 		const lagreSoekRequestClone = { ...lagreSoekRequest }
+		const initialValues = getDollySoekInitialValues()
 		paths.forEach((path) => {
 			if (path === 'personRequest.alderFom') {
 				setValue(path, undefined)
 				reset()
 			}
-			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
+			_.set(requestClone, path, _.get(initialValues, path))
 			delete lagreSoekRequestClone[path]
 			if (path === 'personRequest.harSkjerming') {
 				_.set(
@@ -121,8 +122,9 @@ export const SoekForm = ({
 	}
 
 	const emptySearch = () => {
-		reset(dollySoekInitialValues)
-		setRequest(dollySoekInitialValues)
+		const initialValues = getDollySoekInitialValues()
+		reset(initialValues)
+		setRequest(initialValues)
 		setLagreSoekRequest({})
 	}
 
@@ -273,7 +275,7 @@ export const SoekForm = ({
 				resultat={result}
 				loading={soekPaagaar}
 				soekError={soekError}
-				visAntall={localStorage.getItem(dollySoekSideStoerrelseLocalStorageKey) ?? 10}
+				visAntall={values.antall}
 				handleChangeSide={handleChangeSide}
 				handleChangeAntall={handleChangeAntall}
 			/>

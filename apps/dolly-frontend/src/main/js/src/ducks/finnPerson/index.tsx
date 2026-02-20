@@ -52,7 +52,12 @@ export default handleActions(
 	{
 		[locationChange]: (state, action) => {
 			const gruppePathRegex = /^\/gruppe\/\d+$/
-			return gruppePathRegex.test(action.payload.location.pathname) ? state : initialState
+			return gruppePathRegex.test(action.payload.location.pathname)
+				? state
+				: {
+						...initialState,
+						sideStoerrelse: state.sideStoerrelse,
+					}
 		},
 		[onFailure(navigerTilPerson)]: (state, action) => {
 			state.feilmelding = action.payload.data?.message || 'Ukjent feil'
