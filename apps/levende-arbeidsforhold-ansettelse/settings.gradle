@@ -8,7 +8,7 @@ includeBuild "../../libs/data-transfer-objects"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/reactive-security"
 includeBuild "../../libs/security-core"
-includeBuild "../../libs/reactive-standalone-security"
+includeBuild "../../libs/servlet-insecure-security"
 includeBuild "../../libs/testing"
 
 develocity {

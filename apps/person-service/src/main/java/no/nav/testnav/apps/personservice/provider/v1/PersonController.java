@@ -34,20 +34,19 @@ public class PersonController {
     private final PersonService personService;
 
     @PostMapping
-    public Mono<ResponseEntity<Object>> createPerson(
+    public ResponseEntity<Object> createPerson(
             @RequestBody PersonDTO personDTO,
             @RequestHeader(required = false) String kilde
     ) {
         var person = new Person(personDTO);
         var pdlKilde = StringUtils.isBlank(kilde) ? "DOLLY" : kilde;
-        return personService.ordrePerson(person, pdlKilde)
-                .map(ident -> {
-                    var uri = UriComponentsBuilder
-                            .fromPath("/api/v1/personer/{ident}")
-                            .buildAndExpand(ident)
-                            .toUri();
-                    return ResponseEntity.created(uri).build();
-                });
+        var ident = personService.ordrePerson(person, pdlKilde);
+
+        var uri = UriComponentsBuilder
+                .fromPath("/api/v1/personer/{ident}")
+                .buildAndExpand(ident)
+                .toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping("/{ident}")

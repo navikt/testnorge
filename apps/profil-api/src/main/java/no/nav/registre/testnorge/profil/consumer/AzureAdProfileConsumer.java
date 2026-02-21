@@ -4,25 +4,27 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
 import no.nav.registre.testnorge.profil.domain.Profil;
-import no.nav.registre.testnorge.profil.service.AzureOnBehalfOfTokenService;
+import no.nav.registre.testnorge.profil.service.AzureAdTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class AzureAdProfileConsumer {
 
     private final WebClient webClient;
-    private final AzureOnBehalfOfTokenService azureAdTokenService;
+    private final AzureAdTokenService azureAdTokenService;
 
     private final String url;
 
     public AzureAdProfileConsumer(
             @Value("${api.azuread.url}") String url,
-            AzureOnBehalfOfTokenService azureAdTokenService,
+            AzureAdTokenService azureAdTokenService,
             WebClient webClient
     ) {
         this.url = url;
@@ -44,13 +46,15 @@ public class AzureAdProfileConsumer {
                 .map(Profil::new);
     }
 
-    public Mono<byte[]> getProfilImage() {
-        return azureAdTokenService.exchange(url + "/.default")
-                .flatMap(accessToken -> new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call())
-                .onErrorResume(e -> {
-                    log.warn("Finner ikke profilbilde", e);
-                    return Mono.empty();
-                });
+    public Optional<byte[]> getProfilImage() {
+        try {
+            return Optional.ofNullable(azureAdTokenService.exchange(url + "/.default")
+                    .flatMap(accessToken -> new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call())
+                    .block());
+        } catch (IllegalStateException e) {
+            log.warn("Finner ikke profilbilde", e);
+            return Optional.empty();
+        }
     }
 
 }

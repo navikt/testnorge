@@ -1,7 +1,4 @@
 spring:
-  test:
-    webtestclient:
-      timeout: 30s
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver

@@ -10,6 +10,7 @@ import no.nav.brregstub.exception.NotFoundException;
 import no.nav.brregstub.service.RolleoversiktService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 @Validated
 @Slf4j
@@ -30,23 +30,23 @@ public class RolleoversiktController {
     private final RolleoversiktService service;
 
     @PostMapping
-    public Mono<ResponseEntity<RsRolleoversikt>> lagreEllerOppdaterRolleoversikt(@Valid @RequestBody RsRolleoversikt rolleoversikt) {
-        return service.opprettRolleoversiktV2(rolleoversikt)
-                .map(result -> result
-                        .map(data -> ResponseEntity.status(HttpStatus.CREATED).body(data))
-                        .orElseThrow(() -> new CouldNotCreateStubException("Kunne ikke opprette rolleoversikt")));
+    @Transactional
+    public ResponseEntity<RsRolleoversikt> lagreEllerOppdaterRolleoversikt(@Valid @RequestBody RsRolleoversikt rolleoversikt) {
+        var grunndata = service.opprettRolleoversiktV2(rolleoversikt)
+                .orElseThrow(() -> new CouldNotCreateStubException("Kunne ikke opprette rolleoversikt"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(grunndata);
     }
 
     @GetMapping
-    public Mono<ResponseEntity<RsRolleoversikt>> hentRolleoversikt(@NotNull @RequestHeader(name = "Nav-Personident") String ident) {
-        return service.hentRolleoversiktV2(ident)
-                .map(result -> result
-                        .map(data -> ResponseEntity.status(HttpStatus.OK).body(data))
-                        .orElseThrow(() -> new NotFoundException("Kunne ikke finne person med fnr:%s".formatted(ident))));
+    public ResponseEntity<RsRolleoversikt> hentRolleoversikt(@NotNull @RequestHeader(name = "Nav-Personident") String ident) {
+        var grunndata = service.hentRolleoversiktV2(ident)
+                .orElseThrow(() -> new NotFoundException("Kunne ikke finne person med fnr:%s".formatted(ident)));
+        return ResponseEntity.status(HttpStatus.OK).body(grunndata);
     }
 
     @DeleteMapping
-    public Mono<Void> slettRolleoversikt(@NotNull @RequestHeader(name = "Nav-Personident") String ident) {
-        return service.slettRolleoversikt(ident);
+    @Transactional
+    public void slettRolleoversikt(@NotNull @RequestHeader(name = "Nav-Personident") String ident) {
+        service.slettRolleoversikt(ident);
     }
 }

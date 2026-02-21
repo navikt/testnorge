@@ -203,7 +203,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             } else{
                 return mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
                         .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
-                        .build(), null).block(), KontaktinformasjonForDoedsboAdresse.class);
+                        .build(), null), KontaktinformasjonForDoedsboAdresse.class);
             }
         }
     }
@@ -211,7 +211,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     private void setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
             organisasjonDto) {
 
-        var organisasjon = organisasjonForvalterConsumer.get(organisasjonDto.getOrganisasjonsnummer()).block()
+        var organisasjon = organisasjonForvalterConsumer.get(organisasjonDto.getOrganisasjonsnummer())
                 .entrySet().stream()
                 .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
@@ -243,12 +243,12 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
                 (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()))) {
 
-            var nyttNavn = genererNavnServiceConsumer.getNavn(1).block();
-            if (nonNull(nyttNavn)) {
-                navn.setFornavn(blankCheck(navn.getFornavn(), nyttNavn.getAdjektiv()));
-                navn.setEtternavn(blankCheck(navn.getEtternavn(), nyttNavn.getSubstantiv()));
+            var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+            if (nyttNavn.isPresent()) {
+                navn.setFornavn(blankCheck(navn.getFornavn(), nyttNavn.get().getAdjektiv()));
+                navn.setEtternavn(blankCheck(navn.getEtternavn(), nyttNavn.get().getSubstantiv()));
                 navn.setMellomnavn(blankCheck(navn.getMellomnavn(),
-                        isTrue(navn.getHasMellomnavn()) ? nyttNavn.getAdverb() : null));
+                        isTrue(navn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
             }
         }
 
@@ -281,7 +281,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                         .adjektiv(navn.getFornavn())
                         .adverb(navn.getMellomnavn())
                         .substantiv(navn.getEtternavn())
-                        .build()).block();
+                        .build());
     }
 
     private boolean isValidOrganisasjonName(KontaktinformasjonForDoedsboDTO kontakt) {
@@ -304,7 +304,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         if (isBlank(pdlOrganisasjon.getOrganisasjonsnummer())) {
             return false;
         }
-        var organisasjoner = organisasjonForvalterConsumer.get(pdlOrganisasjon.getOrganisasjonsnummer()).block();
+        var organisasjoner = organisasjonForvalterConsumer.get(pdlOrganisasjon.getOrganisasjonsnummer());
         if (organisasjoner.isEmpty() || !organisasjoner.containsKey("q1") && !organisasjoner.containsKey("q2")) {
             return false;
         }

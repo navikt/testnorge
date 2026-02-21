@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.config.Consumers;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TestmiljoerServiceCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -32,9 +31,10 @@ public class TestmiljoerServiceConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<List<String>> getMiljoer() {
+    public List<String> getMiljoer() {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new TestmiljoerServiceCommand(webClient, token.getTokenValue()).call());
+                .flatMap(token -> new TestmiljoerServiceCommand(webClient, token.getTokenValue()).call())
+                .block();
     }
 }

@@ -13,16 +13,17 @@ dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
-    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:testing"
 
     implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:$versions.navFellesregister"
     implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:$versions.navFellesregister"
     implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:$versions.navFellesregister"
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.boot:spring-boot-starter-web"
 
     implementation "com.fasterxml.jackson.core:jackson-annotations"
     implementation "com.fasterxml.jackson.core:jackson-databind"
@@ -36,7 +37,5 @@ dependencies {
     implementation "org.aspectj:aspectjweaver:$versions.jweaver"
     implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
-
-    testImplementation "org.springframework.security:spring-security-test"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 }

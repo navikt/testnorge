@@ -2,8 +2,6 @@ spring:
   application:
     name: testnav-organisasjon-service
     description: "Testnorge organisasjoner API"
-  main:
-    web-application-type: reactive
   config:
     import: "dolly-application.yml"
   security:

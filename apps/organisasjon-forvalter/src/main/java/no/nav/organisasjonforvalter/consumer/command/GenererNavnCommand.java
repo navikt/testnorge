@@ -6,8 +6,8 @@ import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
@@ -32,7 +32,7 @@ public class GenererNavnCommand implements Callable<Flux<NavnDTO>> {
                 .bodyToFlux(NavnDTO.class)
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(WebClientResponseException.NotFound.class, throwable -> Flux.empty());
+                .onErrorResume(throwable -> Mono.empty());
     }
 
 }

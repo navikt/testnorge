@@ -106,7 +106,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
                         .adjektiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn())
                         .adverb(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn())
                         .substantiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn())
-                        .build()).block())) {
+                        .build()))) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_NAVN_ERROR);
         }
 
@@ -163,18 +163,18 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         }
 
         if (isNavnUpdateRequired(identitet.getRettIdentitetVedOpplysninger().getPersonnavn())) {
-            var nyttNavn = genererNavnServiceConsumer.getNavn(1).block();
-            if (nonNull(nyttNavn)) {
+            var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+            if (nyttNavn.isPresent()) {
                 identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setFornavn(
                         blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn(),
-                                nyttNavn.getAdjektiv()));
+                                nyttNavn.get().getAdjektiv()));
                 identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setEtternavn(
                         blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn(),
-                                nyttNavn.getSubstantiv()));
+                                nyttNavn.get().getSubstantiv()));
                 identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setMellomnavn(
                         blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn(),
                                 isTrue(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getHasMellomnavn()) ?
-                                        nyttNavn.getAdverb() : null));
+                                        nyttNavn.get().getAdverb() : null));
             }
         }
         identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setHasMellomnavn(null);
@@ -192,7 +192,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         }
         if (identitet.getRettIdentitetVedOpplysninger().getStatsborgerskap().isEmpty()) {
             identitet.getRettIdentitetVedOpplysninger().setStatsborgerskap(
-                    List.of(kodeverkConsumer.getTilfeldigLand().block(), "NOR"));
+                    List.of(kodeverkConsumer.getTilfeldigLand(), "NOR"));
         }
     }
 

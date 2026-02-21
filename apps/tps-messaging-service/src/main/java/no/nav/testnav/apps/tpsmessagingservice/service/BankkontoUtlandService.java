@@ -11,8 +11,6 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoUtlandResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -48,42 +46,40 @@ public class BankkontoUtlandService {
         this.responseContext = JAXBContext.newInstance(BankkontoUtlandResponse.class);
     }
 
-    public Mono<Map<String, TpsMeldingResponse>> sendBankkontonrUtland(String ident, BankkontonrUtlandDTO bankkontonr, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> sendBankkontonrUtland(String ident, BankkontonrUtlandDTO bankkontonr, List<String> miljoer) {
 
         return oppdaterBankkontonrUtland(ident, bankkontonr, miljoer);
     }
 
-    public Mono<Map<String, TpsMeldingResponse>> opphoerBankkontonrUtland(String ident, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opphoerBankkontonrUtland(String ident, List<String> miljoer) {
 
         return oppdaterBankkontonrUtland(ident, null, miljoer);
     }
 
-    private Mono<Map<String, TpsMeldingResponse>> oppdaterBankkontonrUtland(String ident, BankkontonrUtlandDTO bankkontonr, List<String> miljoer) {
+    private Map<String, TpsMeldingResponse> oppdaterBankkontonrUtland(String ident, BankkontonrUtlandDTO bankkontonr, List<String> miljoer) {
 
-        Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
+        miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", ident);
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", ident);
 
-            var request = mapperFacade.map(nonNull(bankkontonr) ? bankkontonr : new BankkontonrUtlandDTO(),
-                    BankkontoUtlandRequest.class, context);
+        var request = mapperFacade.map(nonNull(bankkontonr) ? bankkontonr : new BankkontonrUtlandDTO(),
+                BankkontoUtlandRequest.class, context);
 
-            var requestXml = marshallToXML(requestContext, request);
-            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, resolvedMiljoer);
+        var requestXml = marshallToXML(requestContext, request);
+        var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
-            return miljoerResponse.entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+        return miljoerResponse.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 
-                        try {
-                            return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
-                                    (BankkontoUtlandResponse) unmarshallFromXml(responseContext, entry.getValue()));
+                    try {
+                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                (BankkontoUtlandResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
-                        } catch (JAXBException e) {
-                            log.error(e.getMessage(), e);
-                            return getErrorStatus(e);
-                        }
-                    }));
-        }).subscribeOn(Schedulers.boundedElastic()));
+                    } catch (JAXBException e) {
+                        log.error(e.getMessage(), e);
+                        return getErrorStatus(e);
+                    }
+                }));
     }
 }

@@ -1,0 +1,16 @@
+plugins {
+    id "com.gradle.develocity" version "4.3.1"
+}
+
+rootProject.name = 'servlet-security'
+
+includeBuild "../../plugins/java"
+
+includeBuild '../security-core'
+
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+    }
+}

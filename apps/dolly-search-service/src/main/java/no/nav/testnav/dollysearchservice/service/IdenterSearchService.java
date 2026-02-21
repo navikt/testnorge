@@ -1,6 +1,7 @@
 package no.nav.testnav.dollysearchservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.IdentSearch;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
@@ -25,16 +26,15 @@ public class IdenterSearchService {
     private final OpenSearchQueryService personQueryService;
     private final MapperFacade mapperFacade;
 
+    @SneakyThrows
     public Flux<IdentdataDTO> getIdenter(String fragment) {
 
-        return bestillingQueryService.execTestnorgeIdenterQuery()
-                .flatMapMany(identer -> {
-                    var query = buildTestnorgeIdentSearchQuery(getSearchCriteria(fragment, identer));
+        var identer = bestillingQueryService.execTestnorgeIdenterQuery();
+        var query = buildTestnorgeIdentSearchQuery(getSearchCriteria(fragment, identer));
 
-                    return personQueryService.execQuery(new SearchRequest(), query)
-                            .map(this::formatResponse)
-                            .flatMapMany(Flux::fromIterable);
-                });
+        return personQueryService.execQuery(new SearchRequest(), query)
+                .map(this::formatResponse)
+                .flatMapMany(Flux::fromIterable);
     }
 
     private IdentSearch getSearchCriteria(String query, Set<String> identer) {

@@ -7,8 +7,9 @@ rootProject.name = "kodeverk-service"
 includeBuild "../../plugins/java"
 
 includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/servlet-core"
 includeBuild "../../libs/reactive-core"
-includeBuild "../../libs/reactive-standalone-security"
+includeBuild "../../libs/servlet-insecure-security"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/testing"
 

@@ -2,8 +2,6 @@ spring:
   application:
     name: testnav-kodeverk-service
     description: Tjeneste for å hente fra felles kodeverk.
-  main:
-    web-application-type: reactive
   config:
     import: "classpath:dolly-application.yml"
   security:

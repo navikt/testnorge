@@ -77,7 +77,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
             } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
                 foedsel.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
             } else {
-                foedsel.setFoedeland(kodeverkConsumer.getTilfeldigLand().block());
+                foedsel.setFoedeland(kodeverkConsumer.getTilfeldigLand());
             }
         }
     }
@@ -93,10 +93,10 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                         isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune())) {
                     foedsel.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
                 } else {
-                    foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune().block());
+                    foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
                 }
             } else {
-                foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune().block());
+                foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
             }
         }
     }

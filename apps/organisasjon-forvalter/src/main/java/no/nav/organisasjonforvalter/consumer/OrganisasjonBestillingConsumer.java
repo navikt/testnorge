@@ -7,10 +7,10 @@ import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingStatu
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @Service
@@ -33,19 +33,19 @@ public class OrganisasjonBestillingConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<BestillingStatus> getBestillingStatus(Status status) {
+    public Flux<BestillingStatus> getBestillingStatus(Status status) {
 
-        return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new OrganisasjonBestillingStatusCommand(webClient, status,
-                        token.getTokenValue()).call())
+        return Flux.from(tokenExchange.exchange(serverProperties)
+                        .flatMap(token -> new OrganisasjonBestillingStatusCommand(webClient, status,
+                                token.getTokenValue()).call()))
                 .doOnNext(response ->
                         log.info("Mottatt response fra Organisasjon-Bestilling-Service: {}", response));
     }
 
-    public Mono<Status> getBestillingId(Status status) {
+    public Flux<Status> getBestillingId(Status status) {
 
-        return tokenExchange.exchange(serverProperties)
+        return Flux.from(tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new OrganisasjonBestillingIdsCommand(webClient, status,
-                        token.getTokenValue()).call());
+                        token.getTokenValue()).call()));
     }
 }
