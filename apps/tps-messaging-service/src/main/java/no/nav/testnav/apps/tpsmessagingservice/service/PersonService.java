@@ -161,7 +161,7 @@ public class PersonService {
 
         Map<String, PersonDTO> familie = tpsFamilie.parallelStream()
                 .map(person -> mapperFacade.map(person, PersonDTO.class))
-                .collect(Collectors.toMap(PersonDTO::getIdent, person -> person, (existing, replacement) -> existing));
+                .collect(Collectors.toMap(PersonDTO::getIdent, person -> person));
 
         if (nonNull(personRelasjon.getHovedperson().getBruker().getRelasjoner())) {
             familie.get(personRelasjon.getHovedperson().getFodselsnummer()).setRelasjoner(personRelasjon.getHovedperson()
