@@ -15,6 +15,13 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
+consumers:
+  pdl-services:
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-dolly-proxy
+
 opensearch:
   index:
     adresser: pdl-adresse
