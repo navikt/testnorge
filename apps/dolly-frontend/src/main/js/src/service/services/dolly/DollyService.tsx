@@ -97,11 +97,6 @@ export default {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
-	//* Gruppe
-	getGrupperFragment(fragment) {
-		return Request.get(Endpoints.grupperFragment(fragment))
-	},
-
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
