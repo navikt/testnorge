@@ -8,5 +8,5 @@
         <include resource="logback-spring-console.xml"/>
     </springProfile>
 
-    <logger level="INFO" name="no.nav.testnav.libs.reactivecore.logging" />
+    <logger level="INFO" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
 </configuration>

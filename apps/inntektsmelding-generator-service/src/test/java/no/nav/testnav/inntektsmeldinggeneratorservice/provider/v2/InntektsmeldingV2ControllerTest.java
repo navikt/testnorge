@@ -1,19 +1,22 @@
 package no.nav.testnav.inntektsmeldinggeneratorservice.provider.v2;
 
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.testnav.inntektsmeldinggeneratorservice.SecurityTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DollySpringBootTest
-@Import(SecurityTestConfig.class)
+@AutoConfigureMockMvc(addFilters = false)
 class InntektsmeldingV2ControllerTest {
 
     @Autowired
-    private WebTestClient webTestClient;
+    private MockMvc mockMvc;
 
     @Test
     void testCreate() {
@@ -32,11 +35,11 @@ class InntektsmeldingV2ControllerTest {
                 + "\"pleiepengerPerioder\":[]"
                 + "}";
 
-        webTestClient.post()
-                .uri("/api/v2/inntektsmelding/2018/12/11")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(requestBody)
-                .exchange()
-                .expectStatus().isOk();
+        assertDoesNotThrow(() -> {
+            mockMvc.perform(MockMvcRequestBuilders.post("/api/v2/inntektsmelding/2018/12/11")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+        }, "Forventer at ingen JAXBException blir kastet under konvertering til xml");
     }
 }

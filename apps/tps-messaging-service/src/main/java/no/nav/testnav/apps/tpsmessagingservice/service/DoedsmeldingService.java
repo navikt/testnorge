@@ -11,8 +11,6 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.DoedsmeldingRequest;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.DoedsmeldingResponse;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.Map;
@@ -27,38 +25,38 @@ public class DoedsmeldingService {
     private final DoedsmeldingAnnulleringBuilderService doedsmeldingAnnulleringBuilderService;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
 
-    public Mono<DoedsmeldingResponse> sendDoedsmelding(DoedsmeldingRequest request, List<String> miljoer) {
+    public DoedsmeldingResponse sendDoedsmelding(DoedsmeldingRequest request, List<String> miljoer) {
 
-        Mono<List<String>> miljoerMono = miljoer.isEmpty() ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
+        if (miljoer.isEmpty()) {
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
+        }
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
-            var skdMelding = doedsmeldingBuilderService.build(request);
+        var skdMelding = doedsmeldingBuilderService.build(request);
 
-            var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), resolvedMiljoer);
-            prepareStatus(miljoerStatus);
+        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), miljoer);
+        prepareStatus(miljoerStatus);
 
-            return DoedsmeldingResponse.builder()
-                    .ident(request.getIdent())
-                    .miljoStatus(miljoerStatus)
-                    .build();
-        }).subscribeOn(Schedulers.boundedElastic()));
+        return DoedsmeldingResponse.builder()
+                .ident(request.getIdent())
+                .miljoStatus(miljoerStatus)
+                .build();
     }
 
-    public Mono<DoedsmeldingResponse> annulerDoedsmelding(PersonDTO person, List<String> miljoer) {
+    public DoedsmeldingResponse annulerDoedsmelding(PersonDTO person, List<String> miljoer) {
 
-        Mono<List<String>> miljoerMono = miljoer.isEmpty() ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
+        if (miljoer.isEmpty()) {
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
+        }
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
-            var skdMelding = doedsmeldingAnnulleringBuilderService.execute(person);
+        var skdMelding = doedsmeldingAnnulleringBuilderService.execute(person);
 
-            var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), resolvedMiljoer);
-            prepareStatus(miljoerStatus);
+        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), miljoer);
+        prepareStatus(miljoerStatus);
 
-            return DoedsmeldingResponse.builder()
-                    .ident(person.getIdent())
-                    .miljoStatus(miljoerStatus)
-                    .build();
-        }).subscribeOn(Schedulers.boundedElastic()));
+        return DoedsmeldingResponse.builder()
+                .ident(person.getIdent())
+                .miljoStatus(miljoerStatus)
+                .build();
     }
 
     private void prepareStatus(Map<String, String> sentStatus) {

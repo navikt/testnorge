@@ -8,14 +8,14 @@ import no.nav.registre.testnav.inntektsmeldingservice.domain.FilLaster;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
 import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -38,7 +38,7 @@ public class DokmotConsumer {
                 .build();
     }
 
-    public Mono<List<ProsessertInntektDokument>> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumenter, String navCallId) {
+    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumenter, String navCallId) {
         log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er).\nNav-Call-Id: {}", inntektDokumenter.size(), miljoe, navCallId);
         var pdf = FilLaster.instans().hentDummyPDF();
 
@@ -58,9 +58,10 @@ public class DokmotConsumer {
                                                     );
                                                     return new ProsessertInntektDokument(inntektDokument, response);
                                                 })
-                                        ).toList()
+                                        ).collect(Collectors.toList())
                         )
                 )
-                .collectList();
+                .collectList()
+                .block();
     }
 }

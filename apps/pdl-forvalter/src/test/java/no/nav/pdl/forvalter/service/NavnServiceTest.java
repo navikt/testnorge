@@ -9,9 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -44,7 +44,7 @@ class NavnServiceTest {
                 .isNew(true)
                 .build();
 
-        when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(Mono.just(false));
+        when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(false);
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 navnService.validate(request, new PersonDTO()));
@@ -82,7 +82,7 @@ class NavnServiceTest {
                         .build()))
                 .build();
 
-        when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Mono.just(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
+        when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Optional.of(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
                 .adjektiv("Full")
                 .adverb("Sjanglende")
                 .substantiv("Sjømann")
@@ -106,7 +106,7 @@ class NavnServiceTest {
                         .build()))
                 .build();
 
-        when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Mono.just(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
+        when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Optional.of(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
                 .adjektiv("Full")
                 .adverb("Sjanglende")
                 .substantiv("Sjømann")

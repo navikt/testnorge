@@ -17,8 +17,6 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -47,7 +45,7 @@ public class BestillingQueryService {
 
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
 
-        return execQueryBlocking(queryBuilder);
+        return execQuery(queryBuilder);
     }
 
     public Set<String> execRegisterNoCacheQuery(SearchRequest request) {
@@ -55,22 +53,21 @@ public class BestillingQueryService {
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
         addIdentQuery(queryBuilder, request.getPersonRequest());
 
-        return execQueryBlocking(queryBuilder);
+        return execQuery(queryBuilder);
     }
 
-    public Mono<Set<String>> execTestnorgeIdenterQuery() {
+    public Set<String> execTestnorgeIdenterQuery() {
 
         var queryBuilder = QueryBuilders.bool();
 
         queryBuilder.must(q -> q.regexp(regexpQuery("identer", TESTNORGE_FORMAT)));
 
-        return Mono.fromCallable(() -> execQueryBlocking(queryBuilder).stream()
-                        .filter(ident -> ident.matches(TESTNORGE_FORMAT))
-                        .collect(Collectors.toSet()))
-                .subscribeOn(Schedulers.boundedElastic());
+        return execQuery(queryBuilder).stream()
+                .filter(ident -> ident.matches(TESTNORGE_FORMAT))
+                .collect(Collectors.toSet());
     }
 
-    private Set<String> execQueryBlocking(BoolQuery.Builder queryBuilder) {
+    private Set<String> execQuery(BoolQuery.Builder queryBuilder) {
 
         var now = System.currentTimeMillis();
 
@@ -82,17 +79,17 @@ public class BestillingQueryService {
 
         try {
             var searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
-                    .index(bestillingIndex)
-                    .query(query)
-                    .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
-                    .size(QUERY_SIZE)
-                    .timeout("3s")
-                    .build(), BestillingIdenter.class);
+                .index(bestillingIndex)
+                .query(query)
+                .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
+                .size(QUERY_SIZE)
+                .timeout("3s")
+                .build(), BestillingIdenter.class);
 
             while (hasHits(searchResponse)) {
 
                 identer.addAll(getIdenter(searchResponse));
-
+                
                 var lastHit = searchResponse.hits().hits().getLast();
                 if (lastHit == null || lastHit.sort() == null) {
                     break;
@@ -135,8 +132,8 @@ public class BestillingQueryService {
     }
 
     private static boolean hasHits(SearchResponse<BestillingIdenter> response) {
-        return response.hits() != null
-                && response.hits().hits() != null
+        return response.hits() != null 
+                && response.hits().hits() != null 
                 && !response.hits().hits().isEmpty();
     }
 

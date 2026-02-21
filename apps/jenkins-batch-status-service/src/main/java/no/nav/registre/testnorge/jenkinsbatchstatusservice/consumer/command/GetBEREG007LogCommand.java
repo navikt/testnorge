@@ -4,19 +4,18 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class GetBEREG007LogCommand implements Callable<Mono<String>> {
+public class GetBEREG007LogCommand implements Callable<String> {
 
     private final WebClient webClient;
     private final String token;
     private final Long jobNumber;
 
     @Override
-    public Mono<String> call() {
+    public String call() {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("/view/All/job/Start_BEREG007/{jobNumber}/logText/progressiveText")
@@ -26,7 +25,8 @@ public class GetBEREG007LogCommand implements Callable<Mono<String>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(WebClientError.is5xxException());
+                .retryWhen(WebClientError.is5xxException())
+                .block();
     }
 
 }

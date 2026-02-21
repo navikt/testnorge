@@ -4,7 +4,7 @@ import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

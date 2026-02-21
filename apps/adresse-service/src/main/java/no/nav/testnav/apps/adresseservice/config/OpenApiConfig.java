@@ -7,23 +7,18 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
-import reactor.core.publisher.Mono;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
 @Configuration
-@Import(ApplicationProperties.class)
-public class OpenApiConfig implements WebFilter {
+public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
-    public OpenAPI openApi(ApplicationProperties applicationProperties) {
+    public OpenAPI openApi() {
 
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
@@ -36,9 +31,9 @@ public class OpenApiConfig implements WebFilter {
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
                 .info(new Info()
-                        .title(applicationProperties.getName())
-                        .version(applicationProperties.getVersion())
-                        .description(applicationProperties.getDescription())
+                        .title("Adresse Service API")
+                        .version("Versjon 1")
+                        .description("Adresseservice har operasjoner for uthenting av tilfeldige adresser fra PDL.")
                         .termsOfService("https://nav.no")
                         .contact(new Contact()
                                 .url("https://nav-it.slack.com/archives/CA3P9NGA2")
@@ -52,15 +47,7 @@ public class OpenApiConfig implements WebFilter {
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
-            return chain
-                    .filter(exchange.mutate()
-                            .request(exchange.getRequest()
-                                    .mutate().path("/swagger-ui.html").build())
-                            .build());
-        }
-
-        return chain.filter(exchange);
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }

@@ -6,7 +6,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.inntekts
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.inntektstub.PostInntekterCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.inntektstub.Inntektsinformasjon;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

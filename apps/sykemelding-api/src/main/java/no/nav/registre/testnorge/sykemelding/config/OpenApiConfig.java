@@ -8,23 +8,17 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
-import reactor.core.publisher.Mono;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.net.URI;
 import java.util.Arrays;
 
 
 @Configuration
-public class OpenApiConfig implements WebFilter {
+public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -68,14 +62,7 @@ public class OpenApiConfig implements WebFilter {
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-        if (request.getURI().getPath().equals("/swagger")) {
-            ServerHttpResponse response = exchange.getResponse();
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
-            response.getHeaders().setLocation(URI.create("/swagger-ui.html"));
-            return response.setComplete();
-        }
-        return chain.filter(exchange);
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }

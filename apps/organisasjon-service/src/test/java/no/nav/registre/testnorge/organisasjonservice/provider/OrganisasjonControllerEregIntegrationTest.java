@@ -11,20 +11,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureWebTestClient
+@AutoConfigureMockMvc(addFilters = false)
 class OrganisasjonControllerEregIntegrationTest {
 
     @Autowired
-    private WebTestClient webTestClient;
+    private MockMvc mvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -58,12 +59,9 @@ class OrganisasjonControllerEregIntegrationTest {
                 .stubGet();
 
 
-        webTestClient
-                .mutateWith(mockJwt())
-                .get()
-                .uri("/api/v1/organisasjoner/" + ORGNUMMER)
-                .header("miljo", MILJO)
-                .exchange();
+        mvc.perform(get("/api/v1/organisasjoner/" + ORGNUMMER)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("miljo", MILJO));
 
         JsonWiremockHelper
                 .builder(objectMapper)

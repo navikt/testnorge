@@ -1,6 +1,6 @@
 package no.nav.registre.varslingerservice.controller;
 
-import no.nav.registre.varslingerservice.SecurityTestConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.varslingerservice.repository.VarslingRepository;
 import no.nav.registre.varslingerservice.repository.model.VarslingModel;
 import no.nav.dolly.libs.test.DollySpringBootTest;
@@ -8,18 +8,26 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DollySpringBootTest
-@Import(SecurityTestConfig.class)
+@AutoConfigureMockMvc(addFilters = false)
 class VarslingerControllerTest {
 
     @Autowired
-    private WebTestClient webTestClient;
+    private MockMvc mvc;
 
     @Autowired
     private VarslingRepository varslingRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void beforeEach() {
@@ -32,82 +40,86 @@ class VarslingerControllerTest {
     }
 
     @Test
-    void testNoWarningsInRepository() {
-        webTestClient.get().uri("/api/v1/varslinger")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody().json("[]");
+    void testNoWarningsInRepository()
+            throws Exception {
+        mvc.perform(get("/api/v1/varslinger"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
     }
 
     @Test
-    void testThreeWarningsInRepository() {
+    void testThreeWarningsInRepository()
+            throws Exception {
         var v1 = varslingRepository.save(VarslingModel.builder().varslingId("1").build());
         var v2 = varslingRepository.save(VarslingModel.builder().varslingId("2").build());
         var v3 = varslingRepository.save(VarslingModel.builder().varslingId("3").build());
 
-        webTestClient.get().uri("/api/v1/varslinger")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.length()").isEqualTo(3)
-                .jsonPath("$[0].varslingId").isEqualTo(v1.getVarslingId())
-                .jsonPath("$[1].varslingId").isEqualTo(v2.getVarslingId())
-                .jsonPath("$[2].varslingId").isEqualTo(v3.getVarslingId());
+        mvc.perform(get("/api/v1/varslinger"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].varslingId").value(v1.getVarslingId()))
+                .andExpect(jsonPath("$[1].varslingId").value(v2.getVarslingId()))
+                .andExpect(jsonPath("$[2].varslingId").value(v3.getVarslingId()));
     }
 
     @Test
-    void testPutWarning() {
-        varslingRepository.save(VarslingModel.builder().varslingId("1").build());
+    void testPutWarning()
+            throws Exception {
+        var sent = varslingRepository.save(VarslingModel.builder().varslingId("1").build());
 
-        webTestClient.put().uri("/api/v1/varslinger")
-                .bodyValue("{\"varslingId\":\"1\"}")
-                .header("Content-Type", "application/json")
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().valueEquals("Location", "/api/v1/varslinger/1");
+        mvc.perform(put("/api/v1/varslinger")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(sent)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/api/v1/varslinger/1"));
 
-        var saved = varslingRepository.findById("1").orElseThrow();
-        org.assertj.core.api.Assertions.assertThat(saved.getVarslingId()).isEqualTo("1");
+        var saved = varslingRepository
+                .findById("1")
+                .orElseThrow();
+        assertThat(saved.getVarslingId()).isEqualTo(sent.getVarslingId());
     }
 
     @Test
-    void deleteNonexistingWarning() {
-        webTestClient.delete().uri("/api/v1/varslinger/{id}", "some-nonexisting-id")
-                .exchange()
-                .expectStatus().isOk();
+    void deleteNonexistingWarning()
+            throws Exception {
+        mvc.perform(delete("/api/v1/varslinger/{id}", "some-nonexisting-id"))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void deleteExistingWarning() {
+    void deleteExistingWarning()
+            throws Exception {
         var v1 = varslingRepository.save(VarslingModel.builder().varslingId("1").build());
         var v2 = varslingRepository.save(VarslingModel.builder().varslingId("2").build());
 
-        webTestClient.delete().uri("/api/v1/varslinger/{id}", v1.getVarslingId())
-                .exchange()
-                .expectStatus().isOk();
+        mvc.perform(delete("/api/v1/varslinger/{id}", v1.getVarslingId()))
+                .andExpect(status().isOk());
 
-        org.assertj.core.api.Assertions.assertThat(varslingRepository.findById(v1.getVarslingId()))
+        assertThat(varslingRepository.findById(v1.getVarslingId()))
                 .isEmpty();
-        org.assertj.core.api.Assertions.assertThat(varslingRepository.findById(v2.getVarslingId()))
+        assertThat(varslingRepository.findById(v2.getVarslingId()))
                 .isNotEmpty();
     }
 
     @Test
-    void getNonexistingWarning() {
-        webTestClient.get().uri("/api/v1/varslinger/{id}", "some-nonexisting-id")
-                .exchange()
-                .expectStatus().isNotFound();
+    void getNonexistingWarning()
+            throws Exception {
+        mvc.perform(get("/api/v1/varslinger/{id}", "some-nonexisting-id"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void getSpecificWarning() {
+    void getSpecificWarning()
+            throws Exception {
         var v1 = varslingRepository.save(VarslingModel.builder().varslingId("1").build());
 
-        webTestClient.get().uri("/api/v1/varslinger/{id}", v1.getVarslingId())
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.varslingId").isEqualTo(v1.getVarslingId());
+        mvc.perform(get("/api/v1/varslinger/{id}", v1.getVarslingId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.varslingId").value(v1.getVarslingId()));
     }
 
 }

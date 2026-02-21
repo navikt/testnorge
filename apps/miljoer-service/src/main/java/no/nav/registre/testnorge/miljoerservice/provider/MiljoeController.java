@@ -6,7 +6,6 @@ import no.nav.registre.testnorge.miljoerservice.service.MiljoerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -19,8 +18,8 @@ public class MiljoeController {
 
     @GetMapping
     @Operation(description = "Hent liste over aktive miljøer i test og preprod (manuell oppdatering)")
-    public Mono<List<String>> hentAktiveMiljoer() {
+    public List<String> hentAktiveMiljoer() {
 
-        return Mono.just(miljoerService.getMiljoer());
+        return miljoerService.getMiljoer();
     }
 }

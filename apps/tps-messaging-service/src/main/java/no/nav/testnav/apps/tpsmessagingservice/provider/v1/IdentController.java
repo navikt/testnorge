@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -19,9 +18,9 @@ public class IdentController {
     private final IdentService identService;
 
     @GetMapping
-    public Mono<List<TpsIdentStatusDTO>> getIdenter(@RequestParam List<String> identer,
-                                                    @RequestParam(required = false) List<String> miljoer,
-                                                    @RequestParam(required = false) Boolean includeProd) {
+    public List<TpsIdentStatusDTO> getIdenter(@RequestParam List<String> identer,
+                                              @RequestParam(required = false) List<String> miljoer,
+                                              @RequestParam(required = false) Boolean includeProd) {
 
         return identService.getIdenter(identer, miljoer, includeProd);
     }

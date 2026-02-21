@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,53 +39,45 @@ public class StaticDataControllerV1 {
 
     @GetMapping("/aareg")
     @Operation(description = "Henter AAREG-data fra tabell AAREG.")
-    public Mono<AaregListe> getAareg(@RequestParam(name = "gruppe", required = false) String gruppe) {
-        return Mono.fromCallable(() -> aaregAdapter.fetchBy(gruppe))
-                .subscribeOn(Schedulers.boundedElastic());
+    public AaregListe getAareg(@RequestParam(name = "gruppe", required = false) String gruppe) {
+        return aaregAdapter.fetchBy(gruppe);
     }
 
     @PostMapping("/aareg")
     @Operation(description = "Lagrer AAREG-data i tabell AAREG.")
-    public Mono<AaregListe> createAareg(@RequestBody AaregListe liste) {
-        return Mono.fromCallable(() -> aaregAdapter.save(liste))
-                .subscribeOn(Schedulers.boundedElastic());
+    public AaregListe createAareg(@RequestBody AaregListe liste) {
+        return aaregAdapter.save(liste);
     }
 
     @GetMapping("/krr")
     @Operation(description = "Henter KRR-data fra tabell KRR.")
-    public Mono<KrrListe> getKrr(@RequestParam(name = "gruppe", required = false) String gruppe) {
-        return Mono.fromCallable(() -> krrAdapter.fetchBy(gruppe))
-                .subscribeOn(Schedulers.boundedElastic());
+    public KrrListe getKrr(@RequestParam(name = "gruppe", required = false) String gruppe) {
+        return krrAdapter.fetchBy(gruppe);
     }
 
     @PostMapping("/krr")
     @Operation(description = "Lagrer KRR-data i tabell KRR.")
-    public Mono<KrrListe> createKrr(@RequestBody KrrListe liste) {
-        return Mono.fromCallable(() -> krrAdapter.save(liste))
-                .subscribeOn(Schedulers.boundedElastic());
+    public KrrListe createKrr(@RequestBody KrrListe liste) {
+        return krrAdapter.save(liste);
     }
 
     @GetMapping("/ereg")
     @Operation(description = "Henter fra tabell EREG.")
-    public Mono<ResponseEntity<EregListe>> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
-        return Mono.fromCallable(() -> {
-                    var cacheControl = CacheControl
-                            .maxAge(CACHE_HOURS, TimeUnit.HOURS)
-                            .noTransform()
-                            .mustRevalidate();
-                    return ResponseEntity
-                            .ok()
-                            .cacheControl(cacheControl)
-                            .body(eregAdapter.fetchBy(gruppe));
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public ResponseEntity<EregListe> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
+        var cacheControl = CacheControl
+                .maxAge(CACHE_HOURS, TimeUnit.HOURS)
+                .noTransform()
+                .mustRevalidate();
+        return ResponseEntity
+                .ok()
+                .cacheControl(cacheControl)
+                .body(eregAdapter.fetchBy(gruppe));
     }
 
     @PostMapping("/ereg")
     @Operation(description = "Lagrer i tabell EREG.")
-    public Mono<EregListe> createEregStaticData(@RequestBody EregListe eregs) {
-        return Mono.fromCallable(() -> eregAdapter.save(eregs))
-                .subscribeOn(Schedulers.boundedElastic());
+    public EregListe createEregStaticData(@RequestBody EregListe eregs) {
+        return eregAdapter.save(eregs);
     }
 
 }

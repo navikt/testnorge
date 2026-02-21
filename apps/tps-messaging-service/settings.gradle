@@ -9,7 +9,8 @@ includeBuild "../../plugins/java"
 includeBuild "../../libs/data-transfer-objects"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/security-core"
-includeBuild "../../libs/reactive-security"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/servlet-security"
 includeBuild "../../libs/testing"
 
 develocity {

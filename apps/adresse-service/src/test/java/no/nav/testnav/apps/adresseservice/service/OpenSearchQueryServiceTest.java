@@ -8,6 +8,7 @@ import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO;
 import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseRequest;
 import no.nav.testnav.apps.adresseservice.dto.VegadresseDTO;
 import no.nav.testnav.apps.adresseservice.dto.VegadresseRequest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +20,6 @@ import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.opensearch.client.opensearch.core.search.HitsMetadata;
-import reactor.test.StepVerifier;
 
 import java.io.IOException;
 
@@ -61,9 +61,9 @@ class OpenSearchQueryServiceTest {
         when(openSearchClient.search(any(SearchRequest.class), eq(JsonNode.class)))
                 .thenReturn(sokeresultat);
 
-        StepVerifier.create(openSearchQueryService.execQuery(vegadresseRequest, 1L))
-                .assertNext(target -> assertThat(target, is(empty())))
-                .verifyComplete();
+        val target = openSearchQueryService.execQuery(vegadresseRequest, 1L);
+
+        assertThat(target, is(empty()));
     }
 
     @Test
@@ -88,9 +88,9 @@ class OpenSearchQueryServiceTest {
                         .adressenavn("Testveg 1")
                         .build());
 
-        StepVerifier.create(openSearchQueryService.execQuery(vegadresseRequest, 1L))
-                .assertNext(target -> assertThat(target.getFirst().getAdressenavn(), is(equalTo("Testveg 1"))))
-                .verifyComplete();
+        val target = openSearchQueryService.execQuery(vegadresseRequest, 1L);
+
+        assertThat(target.getFirst().getAdressenavn(), is(equalTo("Testveg 1")));
     }
 
     @Test
@@ -101,9 +101,11 @@ class OpenSearchQueryServiceTest {
         when(openSearchClient.search(any(SearchRequest.class), eq(JsonNode.class)))
                 .thenThrow(new IOException("Feil ved kall til OpenSearch"));
 
-        StepVerifier.create(openSearchQueryService.execQuery(vegadresseRequest, 1L))
-                .expectError(IOException.class)
-                .verify();
+        Assertions.assertThrows(
+                InternalError.class,
+                () -> openSearchQueryService.execQuery(vegadresseRequest, 1L),
+                    "Feil ved adressesøk i OpenSearch"
+                );
     }
 
     @Test
@@ -124,9 +126,9 @@ class OpenSearchQueryServiceTest {
         when(objectMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
                 .thenThrow(new IllegalArgumentException("Feil ved mapping av matrikkeladresse"));
 
-        StepVerifier.create(openSearchQueryService.execQuery(matrikkadresseRequest, 1L))
-                .assertNext(target -> assertThat(target, is(empty())))
-                .verifyComplete();
+        val target = openSearchQueryService.execQuery(matrikkadresseRequest, 1L);
+
+        assertThat(target, is(empty()));
     }
 
     @Test
@@ -150,9 +152,9 @@ class OpenSearchQueryServiceTest {
         when(mapperFacade.map(any(MatrikkeladresseDTO.class), eq(no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO.class)))
                 .thenThrow(new NullPointerException());
 
-        StepVerifier.create(openSearchQueryService.execQuery(matrikkadresseRequest, 1L))
-                .assertNext(target -> assertThat(target, is(empty())))
-                .verifyComplete();
+        val target = openSearchQueryService.execQuery(matrikkadresseRequest, 1L);
+
+        assertThat(target, is(empty()));
     }
 
     @Test
@@ -178,8 +180,8 @@ class OpenSearchQueryServiceTest {
                         .tilleggsnavn("Testveg 1")
                         .build());
 
-        StepVerifier.create(openSearchQueryService.execQuery(matrikkadresseRequest, 1L))
-                .assertNext(target -> assertThat(target.getFirst().getTilleggsnavn(), is(equalTo("Testveg 1"))))
-                .verifyComplete();
+        val target = openSearchQueryService.execQuery(matrikkadresseRequest, 1L);
+
+        assertThat(target.getFirst().getTilleggsnavn(), is(equalTo("Testveg 1")));
     }
 }

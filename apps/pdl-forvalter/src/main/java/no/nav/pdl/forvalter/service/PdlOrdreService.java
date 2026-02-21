@@ -39,7 +39,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -103,7 +102,6 @@ public class PdlOrdreService {
     private final MapperFacade mapperFacade;
     private final HendelseIdService hendelseIdService;
 
-    @Transactional
     public OrdreResponseDTO send(String ident, Boolean ekskluderEksterenePersoner) {
 
         var timestamp = System.currentTimeMillis();

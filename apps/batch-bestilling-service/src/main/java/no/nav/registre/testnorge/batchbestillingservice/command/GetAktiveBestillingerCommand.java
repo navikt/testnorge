@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.batchbestillingservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.batchbestillingservice.response.AktivBestillingResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,16 +9,18 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.Callable;
+
 @Slf4j
 @RequiredArgsConstructor
-public class GetAktiveBestillingerCommand implements ReactiveFluxCommand<AktivBestillingResponse> {
+public class GetAktiveBestillingerCommand implements Callable<Flux<Object>> {
 
     private final WebClient webClient;
     private final String token;
     private final Long gruppeId;
 
     @Override
-    public Flux<AktivBestillingResponse> execute() {
+    public Flux<Object> call() {
         log.info("Henter aktive bestillinger for gruppe {}.", gruppeId);
         return webClient
                 .get()
@@ -29,8 +30,8 @@ public class GetAktiveBestillingerCommand implements ReactiveFluxCommand<AktivBe
                 )
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
-                .bodyToFlux(AktivBestillingResponse.class)
-                .onErrorResume(WebClientResponseException.NotFound.class::isInstance,
+                .bodyToFlux(Object.class)
+                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> {
                             log.warn("Fant ikke gruppe {}.", gruppeId);
                             return Mono.empty();

@@ -10,7 +10,8 @@ on:
       - libs/kafka-config/**
       - libs/reactive-core/**
       - libs/security-core/**
-      - libs/reactive-standalone-security/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
       - libs/testing/**
       - plugins/**
 

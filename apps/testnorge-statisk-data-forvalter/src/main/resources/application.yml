@@ -1,14 +1,15 @@
 spring:
-  main:
-    web-application-type: reactive
   application:
     version: application.version.todo
     name: testnorge-statisk-data-forvalter
     description: Api forvalting av de faste testdataene.
   config:
     import: "dolly-application.yml"
-  codec:
-    max-in-memory-size: 10MB
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
   security:
     oauth2:
       resourceserver:
