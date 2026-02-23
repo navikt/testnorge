@@ -5,8 +5,6 @@ spring:
     import: "classpath:dolly-application.yml"
   codec:
     max-in-memory-size: 10MB
-  main:
-    web-application-type: reactive
   security:
     oauth2:
       resourceserver:

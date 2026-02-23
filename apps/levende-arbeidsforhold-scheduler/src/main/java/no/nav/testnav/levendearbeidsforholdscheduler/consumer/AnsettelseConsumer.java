@@ -3,7 +3,7 @@ package no.nav.testnav.levendearbeidsforholdscheduler.consumer;
 import no.nav.testnav.levendearbeidsforholdscheduler.config.Consumers;
 import no.nav.testnav.levendearbeidsforholdscheduler.consumer.command.AnsettelsesCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

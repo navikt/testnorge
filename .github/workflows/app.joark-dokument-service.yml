@@ -6,8 +6,9 @@ on:
       - .github/workflows/app.joark-dokument-service.yml
       - apps/joark-dokument-service/**
       - libs/reactive-core/**
-      - libs/reactive-security/**
       - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
       - libs/testing/**
       - plugins/**
 

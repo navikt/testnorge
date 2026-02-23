@@ -6,8 +6,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
@@ -45,6 +45,6 @@ public class PensjonHentVedtakCommand implements Callable<Flux<PensjonVedtakResp
                 .bodyToFlux(PensjonVedtakResponse.class)
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(WebClientResponseException.NotFound.class, error -> Flux.empty());
+                .onErrorResume(Exception.class, error -> Mono.empty());
     }
 }

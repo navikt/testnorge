@@ -6,7 +6,7 @@ import no.nav.testnav.identpool.consumers.command.TpsMessagingGetCommand;
 import no.nav.testnav.identpool.consumers.command.TpsValidation;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -21,8 +21,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 public class TpsMessagingConsumer {
 
-    public static final int PAGESIZE = 80;
     private static final String NO_ENV = "pp";
+    public static final int PAGESIZE = 80;
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;

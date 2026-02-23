@@ -5,7 +5,7 @@ import no.nav.registre.testnorge.organisasjonmottak.config.Consumers;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterBestillingCommand;
 import no.nav.testnav.libs.dto.organisajonbestilling.v2.OrderDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

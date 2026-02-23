@@ -1,6 +1,4 @@
 spring:
-  main:
-    web-application-type: reactive
   application:
     name: testnav-varslinger-service
     description: Applikasjon for å registrere varslinger

@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -112,7 +111,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdressatUtenIdnumberHasInvalidPersonnavn_thenThrowExecption() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
+        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
@@ -132,7 +131,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdressatAdvokatSomKontaktHasInvalidPersonnavn_thenThrowExecption() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
+        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
@@ -151,7 +150,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenOrganisasjonSomAddressatHasInvalidPersonnavn_thenThrowExecption() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
+        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
@@ -188,8 +187,8 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdvokatSomAddressatHasNonExistingOrgNumber_thenThrowExecption() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(true));
-        when(organisasjonForvalterConsumer.get(anyString())).thenReturn(Mono.just(new HashMap<>()));
+        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(true);
+        when(organisasjonForvalterConsumer.get(anyString())).thenReturn(new HashMap<>());
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
@@ -210,9 +209,9 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdvokatSomAddressatHasNonExistingOrgNavn_thenThrowExecption() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(true));
-        when(organisasjonForvalterConsumer.get(anyString())).thenReturn(Mono.just(Map.of("q1",
-                Map.of("organisasjonsnavn", "Toys"))));
+        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(true);
+        when(organisasjonForvalterConsumer.get(anyString())).thenReturn(Map.of("q1",
+                Map.of("organisasjonsnavn", "Toys")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)

@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Slf4j
 @RestController
@@ -32,84 +30,56 @@ public class OrkestreringController {
     @Operation(
             description = "Orkestrerer testdata i KRR, AAREG, EREG."
     )
-    public Mono<Void> initializeInEnvironment(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        return Mono.<Void>fromCallable(() -> {
-                    environmentInitializationService.initializeEnvironmentWithStaticData(miljoe, gruppe != null ? gruppe.name() : null);
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public void initializeInEnvironment(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
+        environmentInitializationService.initializeEnvironmentWithStaticData(miljoe, gruppe != null ? gruppe.name() : null);
     }
 
     @PostMapping(value = "/aareg/{miljoe}")
     @Operation(
             description = "Oppretter arbeidsforhold i AAREG basert på angitt gruppe."
     )
-    public Mono<Void> initializeAareg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        return Mono.<Void>fromCallable(() -> {
-                    environmentInitializationService.initializeAareg(miljoe, gruppe != null ? gruppe.name() : null);
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public void initializeAareg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
+        environmentInitializationService.initializeAareg(miljoe, gruppe != null ? gruppe.name() : null);
     }
 
     @PostMapping(value = "/krr")
     @Operation(
             description = "Oppretter kontaktinformasjon i KRR basert på angitt gruppe."
     )
-    public Mono<Void> initializeKrr(@RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        return Mono.<Void>fromCallable(() -> {
-                    environmentInitializationService.initializeKrr(gruppe != null ? gruppe.name() : null);
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public void initializeKrr(@RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
+        environmentInitializationService.initializeKrr(gruppe != null ? gruppe.name() : null);
     }
 
     @PostMapping(value = "/ereg/{miljoe}")
     @Operation(
             description = "Oppretter organisasjoner i EREG basert på angitt gruppe."
     )
-    public Mono<Void> initializeEreg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        return Mono.<Void>fromCallable(() -> {
-                    environmentInitializationService.initializeEreg(miljoe, gruppe != null ? gruppe.name() : null);
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public void initializeEreg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
+        environmentInitializationService.initializeEreg(miljoe, gruppe != null ? gruppe.name() : null);
     }
 
     @PostMapping(value = "/ereg/{miljoe}/update/{regnr}")
     @Operation(
             description = "Oppdaterer organisasjon i EREG basert på angitt organisasjonsnummer."
     )
-    public Mono<Void> updateEreg(@PathVariable String miljoe, @PathVariable("regnr") String regnr) {
-        return Mono.<Void>fromCallable(() -> {
-                    environmentInitializationService.updateEregByOrgnr(miljoe, regnr);
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public void updateEreg(@PathVariable String miljoe, @PathVariable("regnr") String regnr) {
+        environmentInitializationService.updateEregByOrgnr(miljoe, regnr);
     }
 
     @PostMapping(value = "/ereg/{miljoe}/update")
     @Operation(
             description = "Oppdaterer organisasjoner i EREG basert på angitt gruppe."
     )
-    public Mono<Void> updateEregByGruppe(@PathVariable String miljoe, @RequestParam(name = "gruppe") Gruppe gruppe) {
-        return Mono.<Void>fromCallable(() -> {
-                    environmentInitializationService.updateEregByGruppe(miljoe, gruppe != null ? gruppe.name() : null);
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public void updateEregByGruppe(@PathVariable String miljoe, @RequestParam(name = "gruppe") Gruppe gruppe) {
+        environmentInitializationService.updateEregByGruppe(miljoe, gruppe != null ? gruppe.name() : null);
     }
 
     @PostMapping(value = "/organisasjoner")
     @Operation(
             description = "Oppretter organisasjoner i EREG basert på angitt liste med organisasjonsnummer."
     )
-    public Mono<Void> saveBy(@RequestParam String miljoe, @RequestBody Orgnummer orgnummer) {
-        return Mono.<Void>fromCallable(() -> {
-                    environmentInitializationService.opprett(miljoe, orgnummer.getListe());
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+    public void saveBy(@RequestParam String miljoe, @RequestBody Orgnummer orgnummer) {
+        environmentInitializationService.opprett(miljoe, orgnummer.getListe());
     }
 
 }

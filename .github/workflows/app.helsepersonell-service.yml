@@ -6,8 +6,9 @@ on:
       - plugins/**
       - libs/data-transfer-objects/**
       - libs/reactive-core/**
-      - libs/reactive-security/**
       - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
       - libs/testing/**
       - apps/helsepersonell-service/**
       - .github/workflows/app.helsepersonell-service.yml

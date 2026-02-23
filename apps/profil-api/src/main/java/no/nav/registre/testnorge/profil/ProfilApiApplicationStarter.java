@@ -1,17 +1,15 @@
 package no.nav.registre.testnorge.profil;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+@EnableWebSecurity
 @SpringBootApplication
-@Import({
-        CoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
-})
+@Import({ ApplicationCoreConfig.class })
 public class ProfilApiApplicationStarter {
     public static void main(String[] args) {
         new SpringApplicationBuilder(ProfilApiApplicationStarter.class)

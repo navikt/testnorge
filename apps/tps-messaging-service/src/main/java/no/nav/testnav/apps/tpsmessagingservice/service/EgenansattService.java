@@ -11,8 +11,6 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -61,42 +59,40 @@ public class EgenansattService {
         return request;
     }
 
-    public Mono<Map<String, TpsMeldingResponse>> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
 
         return endreEgenansatt(true, ident, fraOgMed, miljoer);
     }
 
-    public Mono<Map<String, TpsMeldingResponse>> opphoerEgenansatt(String ident, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opphoerEgenansatt(String ident, List<String> miljoer) {
 
         return endreEgenansatt(false, ident, null, miljoer);
     }
 
-    private Mono<Map<String, TpsMeldingResponse>> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
+    private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
 
-        Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
+        miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", ident);
-            context.setProperty("fraOgMed", fraOgMed);
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", ident);
+        context.setProperty("fraOgMed", fraOgMed);
 
-            var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
+        var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
 
-            var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
-            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, resolvedMiljoer);
+        var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
+        var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
-            return miljoerResponse.entrySet().stream()
-                    .collect(Collectors.toMap(Entry::getKey, entry -> {
+        return miljoerResponse.entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, entry -> {
 
-                        try {
-                            return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
-                                    (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue()));
+                    try {
+                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
-                        } catch (JAXBException e) {
-                            log.error(e.getMessage(), e);
-                            return getErrorStatus(e);
-                        }
-                    }));
-        }).subscribeOn(Schedulers.boundedElastic()));
+                    } catch (JAXBException e) {
+                        log.error(e.getMessage(), e);
+                        return getErrorStatus(e);
+                    }
+                }));
     }
 }

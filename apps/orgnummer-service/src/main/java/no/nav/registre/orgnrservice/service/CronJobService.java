@@ -7,7 +7,8 @@ import no.nav.registre.orgnrservice.consumer.OrganisasjonConsumer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
+
+import java.util.Objects;
 
 @Slf4j
 @EnableScheduling
@@ -22,28 +23,22 @@ public class CronJobService {
 
     @Scheduled(cron = "0 0 20 * * *")
     public void execute() {
-        var antallLedige = orgnummerAdapter.hentAlleLedige().block();
+        var antallLedige = orgnummerAdapter.hentAlleLedige().size();
 
-        int manglende = OENSKET_ANTALL - (antallLedige == null ? 0 : antallLedige.size());
+        int manglende = OENSKET_ANTALL - antallLedige;
         if (manglende > 0) {
             log.info("Genererer {} nye orgnummer til databasen", manglende);
-            orgnummerService.genererOrgnrsTilDb(manglende, true)
-                    .collectList()
-                    .block();
+            orgnummerService.genererOrgnrsTilDb(manglende, true);
         }
     }
 
     @Scheduled(cron = "0 0 22 * * *")
     public void checkMiljoe() {
-        var alle = orgnummerAdapter.hentAlleLedige().block();
-        if (alle == null) {
-            return;
-        }
-        Flux.fromIterable(alle)
-                .flatMap(org -> organisasjonConsumer.finnesOrgnrIEreg(org.getOrgnummer())
-                        .filter(Boolean::booleanValue)
-                        .flatMap(found -> orgnummerAdapter.deleteByOrgnummer(org.getOrgnummer())))
-                .collectList()
-                .block();
+        var alle = orgnummerAdapter.hentAlleLedige();
+        alle.stream()
+                .map(org -> organisasjonConsumer.finnesOrgnrIEreg(org.getOrgnummer()) ? org.getOrgnummer() : null)
+                .filter(Objects::nonNull)
+                .toList()
+                .forEach(orgnummerAdapter::deleteByOrgnummer);
     }
 }

@@ -8,11 +8,10 @@ import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.dto.JournalpostDTO;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import static java.util.Objects.nonNull;
 
@@ -42,7 +41,7 @@ public class SafConsumer {
                 .build();
     }
 
-    public Mono<JournalpostDTO> getJournalpost(String journalpostId, String miljo) {
+    public JournalpostDTO getJournalpost(String journalpostId, String miljo) {
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMap(accessToken -> new GetDokumentInfoCommand(
@@ -57,10 +56,11 @@ public class SafConsumer {
                         response.getErrors().forEach(error -> log.error("Feilet under henting av Journalpost: {}", error.getMessage()));
                     }
                     return response.getData().getJournalpost();
-                });
+                })
+                .block();
     }
 
-    public Mono<String> getDokument(String journalpostId, String dokumentInfoId, DokumentType dokumentType, String miljo) {
+    public String getDokument(String journalpostId, String dokumentInfoId, DokumentType dokumentType, String miljo) {
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMap(accessToken -> new GetDokumentCommand(
@@ -71,10 +71,10 @@ public class SafConsumer {
                                 miljo,
                                 dokumentType
                         ).call()
-                );
+                ).block();
     }
 
-    public Mono<byte[]> getPDF(String journalpostId, String dokumentInfoId, String miljo) {
+    public byte[] getPDF(String journalpostId, String dokumentInfoId, String miljo) {
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMap(accessToken -> new GetPDFCommand(
@@ -84,6 +84,6 @@ public class SafConsumer {
                                 dokumentInfoId,
                                 miljo
                         ).call()
-                );
+                ).block();
     }
 }

@@ -3,23 +3,18 @@ package no.nav.testnav.apps.personservice.consumer.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.config.Consumers;
-import no.nav.testnav.apps.personservice.consumer.v1.command.OpprettFoedselsdatoCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.OpprettPersonCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.PostAdresseCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.PostNavnCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.PostTagsCommand;
+import no.nav.testnav.apps.personservice.consumer.v1.command.*;
 import no.nav.testnav.apps.personservice.consumer.v1.exception.PdlCreatePersonException;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -82,18 +77,19 @@ public class PdlTestdataConsumer {
         }
     }
 
-    public Mono<String> ordrePerson(Person person, String kilde) {
+    public String ordrePerson(Person person, String kilde) {
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
-        return tokenExchange.exchange(serverProperties)
-                .flatMap(accessToken -> {
-                    opprettPerson(person, kilde, accessToken);
-                    opprettNavn(person, kilde, accessToken);
-                    opprettAdresse(person, kilde, accessToken);
-                    opprettFoedsel(person, kilde, accessToken);
-                    opprettTags(person, accessToken);
-                    return Mono.just(person.getIdent());
-                })
-                .onErrorMap(Exception.class, e -> new PdlCreatePersonException("Feil ved opprettelse person i PDL testdata", e));
+        try {
+            var accessToken = tokenExchange.exchange(serverProperties).block();
+            opprettPerson(person, kilde, accessToken);
+            opprettNavn(person, kilde, accessToken);
+            opprettAdresse(person, kilde, accessToken);
+            opprettFoedsel(person, kilde, accessToken);
+            opprettTags(person, accessToken);
+        } catch (Exception e) {
+            throw new PdlCreatePersonException("Feil ved opprettelse person i PDL testdata", e);
+        }
+        return person.getIdent();
     }
 }

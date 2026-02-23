@@ -6,11 +6,11 @@ import no.nav.testnav.levendearbeidsforholdservice.consumers.command.EndreArbeid
 import no.nav.testnav.levendearbeidsforholdservice.consumers.command.HentArbeidsforholdCommand;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -33,17 +33,19 @@ public class AaregConsumer {
                 .build();
     }
 
-    public Flux<Arbeidsforhold> hentArbeidsforhold(String ident) {
+    public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call());
+                .flatMapMany(token -> new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call())
+                .collectList()
+                .block();
     }
 
-    public Mono<Void> endreArbeidsforhold(Arbeidsforhold requests) {
+    public void endreArbeidsforhold(Arbeidsforhold requests) {
 
-        return tokenExchange.exchange(serverProperties)
+        tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue()).call())
                 .doOnNext(status -> log.info("Status fra endre arbeidsforhold: {}", status))
-                .then();
+                .block();
     }
 }

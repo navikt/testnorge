@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -29,7 +28,7 @@ public class MiljoerServiceCommand implements Callable<Mono<String[]>> {
                 .bodyToMono(String[].class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(WebClientResponseException.NotFound.class, throwable -> Mono.just(new String[0]));
+                .onErrorResume(throwable -> Mono.empty());
     }
 
 }

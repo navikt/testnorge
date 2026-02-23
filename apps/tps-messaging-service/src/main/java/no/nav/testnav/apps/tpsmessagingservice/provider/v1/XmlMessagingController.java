@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -23,18 +21,16 @@ public class XmlMessagingController {
 
     @PostMapping
     @Operation(description = "Send xml-melding til en kø")
-    public Mono<String> sendXml(@RequestParam String queue,
-                                @RequestBody String xml) {
+    public String sendXml(@RequestParam String queue,
+                          @RequestBody String xml) {
 
-        return Mono.fromCallable(() -> xmlService.sendXml(xml, queue))
-                .subscribeOn(Schedulers.boundedElastic());
+        return xmlService.sendXml(xml, queue);
     }
 
     @GetMapping
     @Operation(description = "Henter relevante kø-navn")
-    public Mono<List<String>> getQueues() {
+    public List<String> getQueues() {
 
-        return Mono.fromCallable(() -> xmlService.getQueues())
-                .subscribeOn(Schedulers.boundedElastic());
+        return xmlService.getQueues();
     }
 }
