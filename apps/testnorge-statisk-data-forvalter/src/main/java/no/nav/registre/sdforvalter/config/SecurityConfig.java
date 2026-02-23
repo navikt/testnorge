@@ -13,7 +13,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Slf4j
 @Configuration
 @EnableWebFluxSecurity
-@Profile({"prod", "local"})
+@Profile("!test")
 class SecurityConfig {
 
     @Bean
