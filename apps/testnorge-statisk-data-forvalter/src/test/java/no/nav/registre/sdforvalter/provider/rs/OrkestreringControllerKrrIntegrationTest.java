@@ -1,35 +1,35 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.consumer.rs.krr.request.KrrRequest;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
 import no.nav.registre.sdforvalter.domain.Krr;
-import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.MockMvc;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureWebTestClient
+@AutoConfigureMockMvc(addFilters = false)
 @DirtiesContext
-@Import(JwtDecoderConfig.class)
 class OrkestreringControllerKrrIntegrationTest {
 
     @Autowired
-    private WebTestClient webTestClient;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,7 +44,8 @@ class OrkestreringControllerKrrIntegrationTest {
     }
 
     @Test
-    void shouldInitiateKrrFromDatabase() throws Exception {
+    void shouldInitiateKrrFromDatabase()
+            throws Exception {
 
         var model = new KrrModel();
         model.setFnr("01010112365");
@@ -55,10 +56,11 @@ class OrkestreringControllerKrrIntegrationTest {
                 .withUrlPathMatching("(.*)/v1/kontaktinformasjon")
                 .stubPost(HttpStatus.CREATED);
 
-        webTestClient.post()
-                .uri("/api/v1/orkestrering/krr")
-                .exchange()
-                .expectStatus().isOk();
+        mockMvc.perform(
+                        post("/api/v1/orkestrering/krr")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
 
         var request = new KrrRequest(new Krr(model));
         JsonWiremockHelper

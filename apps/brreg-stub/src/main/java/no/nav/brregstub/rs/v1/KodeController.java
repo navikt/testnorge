@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.api.common.UnderstatusKode;
 import no.nav.brregstub.service.HentRolleService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -24,18 +25,18 @@ public class KodeController {
     private final HentRolleService service;
 
     @GetMapping("/roller")
-    public Mono<EnumMap<RolleKode, String>> hentRollekoder() {
+    public ResponseEntity<EnumMap<RolleKode, String>> hentRollekoder() {
         var returValue = new EnumMap<RolleKode, String>(RolleKode.class);
         for (RolleKode rolleKode : RolleKode.values()) {
             returValue.put(rolleKode, rolleKode.getBeskrivelse());
         }
 
-        return Mono.just(returValue);
+        return ResponseEntity.status(HttpStatus.OK).body(returValue);
     }
 
     @GetMapping("/understatus")
-    public Mono<Map<Integer, String>> hentUnderstatuskoder() {
-        return Mono.just(UnderstatusKode.understatusKoder);
+    public ResponseEntity<Map<Integer, String>> hentUnderstatuskoder() {
+        return ResponseEntity.status(HttpStatus.OK).body(UnderstatusKode.understatusKoder);
     }
 
 }

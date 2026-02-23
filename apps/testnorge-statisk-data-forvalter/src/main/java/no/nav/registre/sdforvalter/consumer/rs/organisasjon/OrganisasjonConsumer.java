@@ -5,7 +5,7 @@ import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

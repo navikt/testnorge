@@ -1,29 +1,30 @@
 package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.DokmotConsumer;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.GenererInntektsmeldingConsumer;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DollySpringBootTest
-@AutoConfigureWebTestClient
+@AutoConfigureMockMvc(addFilters = false)
 @Slf4j
 class InntektsmeldingControllerTest {
 
@@ -80,7 +81,7 @@ class InntektsmeldingControllerTest {
     private static final String NAV_CALL_ID = "navCallId";
 
     @Autowired
-    private WebTestClient webTestClient;
+    private MockMvc mockMvc;
 
     @MockitoBean
     private GenererInntektsmeldingConsumer genererInntektsmeldingConsumer;
@@ -90,29 +91,30 @@ class InntektsmeldingControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        when(genererInntektsmeldingConsumer.getInntektsmeldingXml201812(any())).thenReturn(Mono.just("xml"));
-        when(dokmotConsumer.opprettJournalpost(any(), any(), any())).thenReturn(Mono.just(Collections.emptyList()));
+        when(genererInntektsmeldingConsumer.getInntektsmeldingXml201812(any())).thenReturn("xml");
+        when(dokmotConsumer.opprettJournalpost(any(), any(), any())).thenReturn(Collections.emptyList());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"q1", "q2"})
-    void genererMeldingForIdentTest(String env) {
+    void genererMeldingForIdentTest(String env)
+            throws Exception {
 
         var json = JSON.replace("%ENV%", env);
-        webTestClient
-                .mutateWith(SecurityMockServerConfigurers.mockJwt())
-                .post()
-                .uri("/api/v1/inntektsmelding")
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(json)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .json(RESULT);
-
+        var result = mockMvc
+                .perform(
+                        post("/api/v1/inntektsmelding")
+                                .header("Nav-Call-Id", NAV_CALL_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
         verify(genererInntektsmeldingConsumer).getInntektsmeldingXml201812(any());
         verify(dokmotConsumer).opprettJournalpost(eq(env), any(), eq(NAV_CALL_ID));
+        assertThat(result).isEqualToIgnoringWhitespace(RESULT);
+
     }
 
 }

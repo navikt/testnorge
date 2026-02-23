@@ -1,0 +1,15 @@
+name: servlet-core
+
+on:
+  push:
+    paths:
+      - plugins/**
+      - libs/servlet-core/**
+      - .github/workflows/lib.servlet-core.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.libs.backend.yml
+    with:
+      working-directory: 'libs/servlet-core'
+    secrets: inherit

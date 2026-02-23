@@ -3,9 +3,9 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.Duration;
@@ -37,49 +37,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         this.genererNavnServiceConsumer = genererNavnServiceConsumer;
     }
 
-    private static String blankCheck(String value, String defaultValue) {
-        return isNotBlank(value) ? value : defaultValue;
-    }
-
-    protected static void validateBruksenhet(String bruksenhet) {
-        if (!bruksenhet.matches("[HULK]\\d{4}")) {
-            throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
-        }
-    }
-
-    protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
-
-        if ((isNotBlank(navn.getFornavn()) ||
-                isNotBlank(navn.getMellomnavn()) ||
-                isNotBlank(navn.getEtternavn())) &&
-                isFalse(genererNavnServiceConsumer.verifyNavn(NavnDTO.builder()
-                        .adjektiv(navn.getFornavn())
-                        .adverb(navn.getMellomnavn())
-                        .substantiv(navn.getEtternavn())
-                        .build()).block())) {
-            throw new InvalidRequestException(NAVN_INVALID_ERROR);
-        }
-    }
-
-    protected String genererCoNavn(AdresseDTO.CoNavnDTO coNavn) {
-
-        if (nonNull(coNavn)) {
-            if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
-                    (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
-
-                var nyttNavn = genererNavnServiceConsumer.getNavn(1).block();
-                if (nonNull(nyttNavn)) {
-                    coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.getAdjektiv()));
-                    coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.getSubstantiv()));
-                    coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
-                            isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.getAdverb() : null));
-                }
-            }
-            return buildNavn(coNavn);
-        }
-        return null;
-    }
-
     private String buildNavn(AdresseDTO.CoNavnDTO coNavn) {
 
         return new StringBuilder()
@@ -92,19 +49,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                 .toString();
     }
 
-
-    protected void oppdaterAdressedatoer(List<? extends AdresseDTO> adresser, PersonDTO person) {
-
-        if (!adresser.isEmpty()) {
-
-            if (isNull(adresser.getLast().getGyldigFraOgMed())) {
-                adresser.getLast().setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
-            }
-
-            setPendingFromDato(adresser);
-            var startIndex = adresser.size() - 1;
-            setGyldigFromDato(adresser, startIndex);
-        }
+    private static String blankCheck(String value, String defaultValue) {
+        return isNotBlank(value) ? value : defaultValue;
     }
 
     private static void setPendingFromDato(List<? extends AdresseDTO> adresser) {
@@ -129,7 +75,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         setGyldigFromDato(adresser, lowWaterMark);
     }
 
-
     private static long getWeightedDaysInterval(List<? extends
             AdresseDTO> adresser, int index1, int index2) {
 
@@ -149,6 +94,59 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
             }
         }
         return OUT_OF_BOUND;
+    }
+
+    protected static void validateBruksenhet(String bruksenhet) {
+        if (!bruksenhet.matches("[HULK]\\d{4}")) {
+            throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
+        }
+    }
+
+    protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
+
+        if ((isNotBlank(navn.getFornavn()) ||
+                isNotBlank(navn.getMellomnavn()) ||
+                isNotBlank(navn.getEtternavn())) &&
+                isFalse(genererNavnServiceConsumer.verifyNavn(NavnDTO.builder()
+                        .adjektiv(navn.getFornavn())
+                        .adverb(navn.getMellomnavn())
+                        .substantiv(navn.getEtternavn())
+                        .build()))) {
+            throw new InvalidRequestException(NAVN_INVALID_ERROR);
+        }
+    }
+
+    protected String genererCoNavn(AdresseDTO.CoNavnDTO coNavn) {
+
+        if (nonNull(coNavn)) {
+            if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
+                    (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
+
+                var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+                if (nyttNavn.isPresent()) {
+                    coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.get().getAdjektiv()));
+                    coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.get().getSubstantiv()));
+                    coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
+                            isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
+                }
+            }
+            return buildNavn(coNavn);
+        }
+        return null;
+    }
+
+    protected void oppdaterAdressedatoer(List<? extends AdresseDTO> adresser, PersonDTO person) {
+
+        if (!adresser.isEmpty()) {
+
+            if (isNull(adresser.getLast().getGyldigFraOgMed())) {
+                adresser.getLast().setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
+            }
+
+            setPendingFromDato(adresser);
+            var startIndex = adresser.size() - 1;
+            setGyldigFromDato(adresser, startIndex);
+        }
     }
 
     protected String getMatrikkelId(AdresseDTO adresse, String ident, String matrikkelId) {

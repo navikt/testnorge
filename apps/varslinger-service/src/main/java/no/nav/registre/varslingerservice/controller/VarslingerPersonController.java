@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/varslinger/person/ids")
@@ -24,34 +24,31 @@ public class VarslingerPersonController {
     private final PersonVarslingAdapter personVarslingAdapter;
 
     @GetMapping
-    public Mono<List<String>> getVarslingerIds() {
+    public List<String> getVarslingerIds() {
         return personVarslingAdapter.getAll();
     }
 
     // TODO: Vi sjekker ikke om varslingId eksisterer; kan fort ryke på en NPE i PersonVarslingAdapter#save hvis så er tilfelle.
     @PutMapping("/{varslingId}")
-    public Mono<ResponseEntity<HttpStatus>> updatePersonVarslingerId(@PathVariable("varslingId") String varslingId) {
-        return personVarslingAdapter.save(varslingId)
-                .map(saved -> {
-                    var uri = UriComponentsBuilder
-                            .fromPath("/api/v1/varslinger/person/ids/{varslingId}")
-                            .buildAndExpand(saved)
-                            .toUri();
-                    return ResponseEntity.created(uri).build();
-                });
+    public ResponseEntity<HttpStatus> updatePersonVarslingerId(@PathVariable("varslingId") String varslingId) {
+        String saved = personVarslingAdapter.save(varslingId);
+        var uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .buildAndExpand(saved)
+                .toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping("/{varslingId}")
-    public Mono<String> getPersonVarslingerId(@PathVariable("varslingId") String varslingId) {
-        return personVarslingAdapter.get(varslingId)
-                .flatMap(opt -> opt
-                        .map(Mono::just)
-                        .orElseGet(() -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND))));
+    public String getPersonVarslingerId(@PathVariable("varslingId") String varslingId) {
+        return Optional
+                .ofNullable(personVarslingAdapter.get(varslingId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{varslingId}")
-    public Mono<Void> deletePersonVarslingerId(@PathVariable("varslingId") String varslingId) {
-        return personVarslingAdapter.delete(varslingId);
+    public void deletePersonVarslingerId(@PathVariable("varslingId") String varslingId) {
+        personVarslingAdapter.delete(varslingId);
     }
 
 }

@@ -2,19 +2,18 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
-import reactor.core.publisher.Mono;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -91,7 +90,7 @@ class ForeldreansvarServiceTest {
                 .substantiv(ETTERNAVN)
                 .build();
 
-        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(Mono.just(false));
+        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(false);
 
         var request = ForeldreansvarDTO.builder()
                 .ansvar(Ansvar.ANDRE)
@@ -117,7 +116,7 @@ class ForeldreansvarServiceTest {
                 .substantiv(ETTERNAVN)
                 .build();
 
-        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(Mono.just(false));
+        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(false);
 
         var request = ForeldreansvarDTO.builder()
                 .ansvar(Ansvar.ANDRE)

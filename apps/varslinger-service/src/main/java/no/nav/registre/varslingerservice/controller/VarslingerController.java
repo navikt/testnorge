@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/varslinger")
@@ -28,45 +27,35 @@ public class VarslingerController {
     private final VarslingerAdapter varslingerAdapter;
 
     @GetMapping
-    public Mono<List<VarslingDTO>> getVarslinger() {
-        return Mono.fromCallable(() -> varslingerAdapter
-                        .getAll()
-                        .stream()
-                        .map(Varsling::toDTO)
-                        .toList())
-                .subscribeOn(Schedulers.boundedElastic());
+    public List<VarslingDTO> getVarslinger() {
+        return varslingerAdapter
+                .getAll()
+                .stream()
+                .map(Varsling::toDTO)
+                .toList();
     }
 
     @PutMapping
-    public Mono<ResponseEntity<Object>> oppdaterVarslinger(@RequestBody VarslingDTO dto) {
-        return Mono.fromCallable(() -> varslingerAdapter.save(new Varsling(dto)))
-                .subscribeOn(Schedulers.boundedElastic())
-                .map(varslingId -> {
-                    var uri = UriComponentsBuilder.fromPath("/api/v1/varslinger")
-                            .path("/{varslingId}")
-                            .buildAndExpand(varslingId)
-                            .toUri();
-                    return ResponseEntity.created(uri).build();
-                });
+    public ResponseEntity<Object> oppdaterVarslinger(@RequestBody VarslingDTO dto) {
+        var varslingId = varslingerAdapter.save(new Varsling(dto));
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{varslingId}")
+                .buildAndExpand(varslingId)
+                .toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping("/{varslingId}")
-    public Mono<Void> deleteVarslinger(@PathVariable("varslingId") String varslingId) {
+    public void deleteVarslinger(@PathVariable("varslingId") String varslingId) {
         // TODO: Returnerer alltid 200, selv om varslingId ikke finnes. Burde det returneres 404?
-        return Mono.fromCallable(() -> {
-                    varslingerAdapter.delete(varslingId);
-                    return null;
-                })
-                .subscribeOn(Schedulers.boundedElastic())
-                .then();
+        varslingerAdapter.delete(varslingId);
     }
 
     @GetMapping("/{varslingId}")
-    public Mono<VarslingDTO> getVarslinger(@PathVariable("varslingId") String varslingId) {
-        return Mono.defer(() -> Mono.justOrEmpty(varslingerAdapter.get(varslingId)))
-                .subscribeOn(Schedulers.boundedElastic())
+    public VarslingDTO getVarslinger(@PathVariable("varslingId") String varslingId) {
+        return Optional.ofNullable(varslingerAdapter.get(varslingId))
                 .map(Varsling::toDTO)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
 }

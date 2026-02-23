@@ -19,30 +19,40 @@ public class StatusController {
     private final WebClient webClient;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<Map<String, TestnavStatusResponse>> getStatus() {
-        return checkConsumerStatus(
+    public Map<String, TestnavStatusResponse> getStatus() {
+        var status = checkConsumerStatus(
                 "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/health/liveness",
-                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/health/readiness")
-                .map(status -> Map.of("testnav-inntektsmelding-generator-service", status));
+                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/health/readiness",
+                webClient);
+        return Map.of(
+                "testnav-inntektsmelding-generator-service", status
+        );
     }
 
-    private Mono<TestnavStatusResponse> checkConsumerStatus(String aliveUrl, String readyUrl) {
-        return Mono.zip(
-                checkStatus(aliveUrl),
-                checkStatus(readyUrl)
-        ).map(tuple -> TestnavStatusResponse.builder()
-                .team(TEAM)
-                .alive(tuple.getT1())
-                .ready(tuple.getT2())
-                .build());
+    public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        var dollyStatus = TestnavStatusResponse.builder().team(TEAM).build();
+
+        Thread blockingThread = new Thread(() -> {
+            dollyStatus.setAlive(checkStatus(webClient, aliveUrl).block());
+            dollyStatus.setReady(checkStatus(webClient, readyUrl).block());
+        });
+        blockingThread.start();
+        try {
+            blockingThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return dollyStatus;
     }
 
-    private Mono<String> checkStatus(String url) {
+    private Mono<String> checkStatus(WebClient webClient, String url) {
         return webClient.get().uri(url)
                 .retrieve()
                 .bodyToMono(String.class)
                 .defaultIfEmpty("OK")
                 .onErrorResume(Exception.class, error -> Mono.just("Error: " + error.getMessage()))
+                .doOnSuccess(result -> Mono.just("OK"))
                 .map(result -> result.startsWith("Error:") ? result : "OK");
     }
 }

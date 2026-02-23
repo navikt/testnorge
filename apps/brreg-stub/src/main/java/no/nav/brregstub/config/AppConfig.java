@@ -1,6 +1,6 @@
 package no.nav.brregstub.config;
 
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "no.nav.brregstub.database.repository")
 @Import({
-        CoreConfig.class
+        ApplicationCoreConfig.class
 })
 public class AppConfig {
 }

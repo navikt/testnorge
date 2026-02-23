@@ -5,9 +5,9 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
-import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
@@ -49,19 +49,6 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private final RelasjonService relasjonService;
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
-
-    protected static <T> int count(T artifact) {
-        return nonNull(artifact) ? 1 : 0;
-    }
-
-    private static String blankCheck(String value, String defaultValue) {
-        return isNotBlank(value) ? value : defaultValue;
-    }
-
-    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.FalsktNavnDTO navn) {
-        return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
-                (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
-    }
 
     public List<FalskIdentitetDTO> convert(PersonDTO person) {
 
@@ -106,7 +93,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
                         .adjektiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn())
                         .adverb(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn())
                         .substantiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn())
-                        .build()).block())) {
+                        .build()))) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_NAVN_ERROR);
         }
 
@@ -163,18 +150,18 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         }
 
         if (isNavnUpdateRequired(identitet.getRettIdentitetVedOpplysninger().getPersonnavn())) {
-            var nyttNavn = genererNavnServiceConsumer.getNavn(1).block();
-            if (nonNull(nyttNavn)) {
+            var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+            if (nyttNavn.isPresent()) {
                 identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setFornavn(
                         blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn(),
-                                nyttNavn.getAdjektiv()));
+                                nyttNavn.get().getAdjektiv()));
                 identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setEtternavn(
                         blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn(),
-                                nyttNavn.getSubstantiv()));
+                                nyttNavn.get().getSubstantiv()));
                 identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setMellomnavn(
                         blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn(),
                                 isTrue(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getHasMellomnavn()) ?
-                                        nyttNavn.getAdverb() : null));
+                                        nyttNavn.get().getAdverb() : null));
             }
         }
         identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setHasMellomnavn(null);
@@ -192,7 +179,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         }
         if (identitet.getRettIdentitetVedOpplysninger().getStatsborgerskap().isEmpty()) {
             identitet.getRettIdentitetVedOpplysninger().setStatsborgerskap(
-                    List.of(kodeverkConsumer.getTilfeldigLand().block(), "NOR"));
+                    List.of(kodeverkConsumer.getTilfeldigLand(), "NOR"));
         }
     }
 
@@ -217,5 +204,18 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         relasjonService.setRelasjoner(person.getIdent(), RelasjonType.FALSK_IDENTITET,
                 identitet.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.RIKTIG_IDENTITET);
         identitet.setNyFalskIdentitetPerson(null);
+    }
+
+    private static String blankCheck(String value, String defaultValue) {
+        return isNotBlank(value) ? value : defaultValue;
+    }
+
+    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.FalsktNavnDTO navn) {
+        return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
+                (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
+    }
+
+    protected static <T> int count(T artifact) {
+        return nonNull(artifact) ? 1 : 0;
     }
 }

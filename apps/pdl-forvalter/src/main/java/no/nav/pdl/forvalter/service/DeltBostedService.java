@@ -232,14 +232,14 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         if (nonNull(deltBosted.getVegadresse())) {
 
             var vegadresse =
-                    adresseServiceConsumer.getVegadresse(deltBosted.getVegadresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen()).block();
+                    adresseServiceConsumer.getVegadresse(deltBosted.getVegadresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen());
             deltBosted.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, deltBosted.getVegadresse());
 
         } else if (nonNull(deltBosted.getMatrikkeladresse())) {
 
             var matrikkeladresse =
-                    adresseServiceConsumer.getMatrikkeladresse(deltBosted.getMatrikkeladresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen()).block();
+                    adresseServiceConsumer.getMatrikkeladresse(deltBosted.getMatrikkeladresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen());
             deltBosted.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
             mapperFacade.map(matrikkeladresse, deltBosted.getMatrikkeladresse());
         }
