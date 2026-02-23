@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer.Bruker;
@@ -17,6 +18,7 @@ import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.pdl.forvalter.utils.RelasjonerAlderUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
@@ -34,12 +36,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -77,7 +82,6 @@ public class PersonService {
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
     private final UnhookEksternePersonerService unhookEksternePersonerService;
-    private final RelasjonerAlderService relasjonerAlderService;
     private final HendelseIdService hendelseIdService;
 
     @Transactional
@@ -152,133 +156,140 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public List<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
+    public Flux<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
 
         if (nonNull(identer) && !identer.isEmpty()) {
-            var query = new HashSet<>(identer);
-            var aliaser = aliasRepository.findByTidligereIdentIn(identer);
-            query.addAll(aliaser.stream()
-                    .map(DbAlias::getPerson)
-                    .map(DbPerson::getIdent)
-                    .collect(Collectors.toSet()));
-            query.removeAll(aliaser.stream()
-                    .map(DbAlias::getTidligereIdent)
-                    .collect(Collectors.toSet()));
 
-            return mapperFacade.mapAsList(personRepository.findByIdentIn(query,
+            return Mono.zip(aliasRepository.findByTidligereIdentIn(identer)
+                                    .map(DbAlias::getPerson)
+                                    .map(DbPerson::getIdent)
+                                    .collect(HashSet<String>::new, Set::add),
+                            aliasRepository.findByTidligereIdentIn(identer)
+                                    .map(DbAlias::getTidligereIdent)
+                                    .collect(HashSet<String>::new, Set::add))
+                    .map(tilleggOgFjerning -> {
+                        val query = new HashSet<>(identer);
+                        query.addAll(tilleggOgFjerning.getT1());
+                        query.removeAll(tilleggOgFjerning.getT2());
+                        return query;
+                    })
+                    .flatMapMany(query -> personRepository.findByIdentIn(query,
                             PageRequest.of(paginering.getSidenummer(),
                                     paginering.getSidestoerrelse(),
-                                    Sort.by(SORT_BY_FIELD).descending())),
-                    FullPersonDTO.class);
+                                    Sort.by(SORT_BY_FIELD).descending())))
+                    .map(person ->
+                            mapperFacade.map(person, FullPersonDTO.class));
 
-        } else {
+        } else
 
-            return mapperFacade.mapAsList(personRepository.findAll(
+            return personRepository.findAll(
                             PageRequest.of(paginering.getSidenummer(),
                                     paginering.getSidestoerrelse(),
-                                    Sort.by(SORT_BY_FIELD).descending())),
-                    FullPersonDTO.class);
-        }
+                                    Sort.by(SORT_BY_FIELD).descending()))
+                    .map(person -> mapperFacade.map(person, FullPersonDTO.class));
     }
 
-    public String createPerson(BestillingRequestDTO request) {
+public String createPerson(BestillingRequestDTO request) {
 
-        if (isNull(request.getPerson())) {
-            request.setPerson(new PersonDTO());
-        }
-        relasjonerAlderService.fixRelasjonerAlder(request);
+    if (isNull(request.getPerson())) {
+        request.setPerson(new PersonDTO());
+    }
+    RelasjonerAlderUtility.fixRelasjonerAlder(request);
 
-        IdentDTO identifier = null;
-        if (isBlank(request.getOpprettFraIdent())) {
-            identifier = identPoolConsumer.acquireIdents(
-                    mapperFacade.map(request, HentIdenterRequest.class)).block();
-            Objects.requireNonNull(identifier, "Personident fra identpool kan ikke være null");
-            request.getPerson().setIdent(identifier.getIdent());
+    return Mono.just(request)
+            .flatMap(req -> {
+    IdentDTO identifier = null;
+    if (isBlank(request.getOpprettFraIdent())) {
+        return identPoolConsumer.acquireIdent(
+                mapperFacade.map(request, HentIdenterRequest.class))
+                        .map(ident ->
+        Objects.requireNonNull(identifier, "Personident fra identpool kan ikke være null");
+        request.getPerson().setIdent(identifier.getIdent());
 
-        } else {
-            if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
-                throw new InvalidRequestException(format(IDENT_ALREADY_EXISTS, request.getOpprettFraIdent()));
-            }
-            identPoolConsumer.allokerIdent(request.getOpprettFraIdent()).block();
-            request.getPerson().setIdent(request.getOpprettFraIdent());
+    } else {
+        if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
+            throw new InvalidRequestException(format(IDENT_ALREADY_EXISTS, request.getOpprettFraIdent()));
         }
-
-        if (request.getPerson().getKjoenn().isEmpty()) {
-            request.getPerson().getKjoenn().add(new KjoennDTO());
-        }
-        if (request.getPerson().getFoedselsdato().isEmpty()) {
-            request.getPerson().getFoedselsdato().add(FoedselsdatoDTO.builder()
-                    .foedselsdato(nonNull(identifier) && nonNull(identifier.getFoedselsdato()) ?
-                            identifier.getFoedselsdato().atStartOfDay() : null)
-                    .build());
-        }
-        if (request.getPerson().getFoedested().isEmpty()) {
-            request.getPerson().getFoedested().add(new FoedestedDTO());
-        }
-        if (request.getPerson().getNavn().isEmpty()) {
-            request.getPerson().getNavn().add(new NavnDTO());
-        }
-        if (request.getPerson().getBostedsadresse().isEmpty()) {
-            request.getPerson().getBostedsadresse().add(new BostedadresseDTO());
-        }
-        if (request.getPerson().getStatsborgerskap().isEmpty()) {
-            request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
-        }
-        if (request.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isUgift)) {
-            request.getPerson().getSivilstand().addFirst(new SivilstandDTO());
-        }
-        if (Identtype.NPID == getIdenttype(request.getPerson().getIdent())) {
-            request.getPerson().getNavPersonIdentifikator().add(new NavPersonIdentifikatorDTO());
-        }
-
-        return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
-                .person(request.getPerson())
-                .build(), null, null);
+        identPoolConsumer.allokerIdent(request.getOpprettFraIdent()).block();
+        request.getPerson().setIdent(request.getOpprettFraIdent());
     }
 
-    private void checkAlias(String ident) {
-
-        var alias = aliasRepository.findByTidligereIdent(ident);
-        if (alias.isPresent()) {
-            throw new InvalidRequestException(
-                    format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
-        }
+    if (request.getPerson().getKjoenn().isEmpty()) {
+        request.getPerson().getKjoenn().add(new KjoennDTO());
+    }
+    if (request.getPerson().getFoedselsdato().isEmpty()) {
+        request.getPerson().getFoedselsdato().add(FoedselsdatoDTO.builder()
+                .foedselsdato(nonNull(identifier) && nonNull(identifier.getFoedselsdato()) ?
+                        identifier.getFoedselsdato().atStartOfDay() : null)
+                .build());
+    }
+    if (request.getPerson().getFoedested().isEmpty()) {
+        request.getPerson().getFoedested().add(new FoedestedDTO());
+    }
+    if (request.getPerson().getNavn().isEmpty()) {
+        request.getPerson().getNavn().add(new NavnDTO());
+    }
+    if (request.getPerson().getBostedsadresse().isEmpty()) {
+        request.getPerson().getBostedsadresse().add(new BostedadresseDTO());
+    }
+    if (request.getPerson().getStatsborgerskap().isEmpty()) {
+        request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
+    }
+    if (request.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isUgift)) {
+        request.getPerson().getSivilstand().addFirst(new SivilstandDTO());
+    }
+    if (Identtype.NPID == getIdenttype(request.getPerson().getIdent())) {
+        request.getPerson().getNavPersonIdentifikator().add(new NavPersonIdentifikatorDTO());
     }
 
-    private DbPerson getDbPerson(String ident, Boolean overwrite) {
+    return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
+            .person(request.getPerson())
+            .build(), null, null);
+}
 
-        if (isTrue(overwrite)) {
-            personRepository.deleteByIdent(ident);
-        }
-        return personRepository.findByIdent(ident)
-                .orElseGet(() -> personRepository.save(DbPerson.builder()
-                        .ident(ident)
-                        .person(PersonDTO.builder()
-                                .ident(ident)
-                                .build())
-                        .sistOppdatert(now())
-                        .build()));
+private void checkAlias(String ident) {
+
+    var alias = aliasRepository.findByTidligereIdent(ident);
+    if (alias.isPresent()) {
+        throw new InvalidRequestException(
+                format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
     }
+}
 
-    @Transactional
-    public void deleteMasterPdlArtifacter(String ident) {
+private DbPerson getDbPerson(String ident, Boolean overwrite) {
 
-        personRepository.findByIdent(ident)
-                .ifPresentOrElse(person -> {
-                            hendelseIdService.deletePdlHendelser(person);
-                            unhookEksternePersonerService.unhook(person);
-
-                            relasjonRepository.deleteByPersonIdentIn(
-                                    person.getRelasjoner().stream()
-                                            .map(DbRelasjon::getRelatertPerson)
-                                            .filter(Objects::nonNull)
-                                            .map(DbPerson::getIdent)
-                                            .toList());
-
-                            personRepository.deleteByIdent(ident);
-                        },
-                        () -> {
-                            throw new NotFoundException(format("Ident %s ble ikke funnet", ident));
-                        });
+    if (isTrue(overwrite)) {
+        personRepository.deleteByIdent(ident);
     }
+    return personRepository.findByIdent(ident)
+            .orElseGet(() -> personRepository.save(DbPerson.builder()
+                    .ident(ident)
+                    .person(PersonDTO.builder()
+                            .ident(ident)
+                            .build())
+                    .sistOppdatert(now())
+                    .build()));
+}
+
+@Transactional
+public void deleteMasterPdlArtifacter(String ident) {
+
+    personRepository.findByIdent(ident)
+            .ifPresentOrElse(person -> {
+                        hendelseIdService.deletePdlHendelser(person);
+                        unhookEksternePersonerService.unhook(person);
+
+                        relasjonRepository.deleteByPersonIdentIn(
+                                person.getRelasjoner().stream()
+                                        .map(DbRelasjon::getRelatertPerson)
+                                        .filter(Objects::nonNull)
+                                        .map(DbPerson::getIdent)
+                                        .toList());
+
+                        personRepository.deleteByIdent(ident);
+                    },
+                    () -> {
+                        throw new NotFoundException(format("Ident %s ble ikke funnet", ident));
+                    });
+}
 }

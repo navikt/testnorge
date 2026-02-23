@@ -95,7 +95,7 @@ public class CreatePersonService {
 
         var startTime = currentTimeMillis();
 
-        IdentDTO identifikator = identPoolConsumer.acquireIdents(
+        IdentDTO identifikator = identPoolConsumer.acquireIdent(
                         mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
                 .block();
         Objects.requireNonNull(identifikator, "Kunne ikke hente ident fra identpool");

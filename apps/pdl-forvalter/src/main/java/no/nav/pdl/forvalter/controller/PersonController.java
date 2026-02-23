@@ -52,6 +52,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -73,7 +75,7 @@ public class PersonController {
 
     @GetMapping
     @Operation(description = "Hent person(er) med angitt(e) ident(er) eller alle")
-    public List<FullPersonDTO> getPerson(@Parameter(description = "Ident(er) på personer som skal hentes")
+    public Flux<FullPersonDTO> getPerson(@Parameter(description = "Ident(er) på personer som skal hentes")
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
                                          @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
@@ -96,7 +98,7 @@ public class PersonController {
 
     @PostMapping
     @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
-    public String createPerson(@RequestBody BestillingRequestDTO request) {
+    public Mono<String> createPerson(@RequestBody BestillingRequestDTO request) {
 
         return personService.createPerson(request);
     }
