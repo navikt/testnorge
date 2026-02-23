@@ -76,6 +76,9 @@ public class AdresseServiceConsumer {
                     }
                     return adresse;
                 })
+                .map(adresse -> isNotBlank(adresse.getAdressenavn()) ?
+                        adresse :
+                        VegadresseServiceCommand.defaultAdresse())
                 .block();
     }
 
