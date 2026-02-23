@@ -57,8 +57,6 @@ public class OpenSearchQueryService {
     private <S,T> Mono<List<T>> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
 
         return Mono.fromCallable(() -> {
-                    var now = System.currentTimeMillis();
-
                     val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
                             .index(adresseIndex)
                             .query(new Query.Builder()
@@ -68,7 +66,7 @@ public class OpenSearchQueryService {
                             .timeout("3s")
                             .build(), JsonNode.class);
 
-                    log.info("Adressesøk tok: {} ms", System.currentTimeMillis() - now);
+                    
 
                     return formatResponse(adresseSoekResponse, kilde, destinasjon);
                 })
