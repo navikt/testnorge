@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -54,21 +55,25 @@ public class OpenSearchQueryService {
         return execQuery(queryBuilder, new no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO(), new MatrikkeladresseDTO(), antall);
     }
 
-    private <S,T> Mono<List<T>> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
+    private <S, T> Mono<List<T>> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
 
         return Mono.fromCallable(() -> {
-                    val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
-                            .index(adresseIndex)
-                            .query(new Query.Builder()
-                                    .bool(queryBuilder.build())
-                                    .build())
-                            .size(antall.intValue())
-                            .timeout("3s")
-                            .build(), JsonNode.class);
+                    try {
+                        val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
+                                .index(adresseIndex)
+                                .query(new Query.Builder()
+                                        .bool(queryBuilder.build())
+                                        .build())
+                                .size(antall.intValue())
+                                .timeout("3s")
+                                .build(), JsonNode.class);
 
-                    
+                        return formatResponse(adresseSoekResponse, kilde, destinasjon);
 
-                    return formatResponse(adresseSoekResponse, kilde, destinasjon);
+                    } catch (IOException e) {
+                        log.error("Feil ved adressesøk i OpenSearch", e);
+                        throw new InternalError("Feil ved adressesøk i OpenSearch", e);
+                    }
                 })
                 .subscribeOn(Schedulers.boundedElastic());
     }
