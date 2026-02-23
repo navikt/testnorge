@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.aareg;
 
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.ApplicationConfig;
@@ -75,7 +76,7 @@ class AaregClientTest {
         statusCaptor = ArgumentCaptor.forClass(String.class);
     }
 
-    private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
+    private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer, String arbeidsforholdId) {
 
         return ArbeidsforholdRespons.builder()
                 .arbeidsforhold(Arbeidsforhold.builder()
@@ -99,7 +100,7 @@ class AaregClientTest {
                                         .arbeidstidsordning("nada")
                                         .build()))
                                 .type("ordinaert")
-                                .arbeidsforholdId("1")
+                                .arbeidsforholdId(arbeidsforholdId)
                                 .isOppdatering(true)
                                 .build()))
                 .build();
@@ -108,9 +109,10 @@ class AaregClientTest {
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
 
-        var request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsAareg.builder().build()));
-        request.setEnvironments(singleton(ENV));
+        val request = RsDollyBestillingRequest.builder()
+                .aareg(singletonList(RsAareg.builder().build()))
+                .environments(singleton(ENV))
+                .build();
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)
@@ -120,30 +122,63 @@ class AaregClientTest {
     }
 
     @Test
-    void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerPerson_returnsOK() {
+    void gjenopprettArbeidsforhold_rbeidsforholdMedUUIDFinnes_OK() {
 
         when(applicationConfig.getClientTimeout()).thenReturn(30L);
-        var request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsAareg.builder()
-                .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
-                .arbeidsforholdId("1")
-                .build()));
-        request.setEnvironments(singleton(ENV));
+        val request = RsDollyBestillingRequest.builder()
+                .aareg(singletonList(RsAareg.builder()
+                        .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
+                        .build()))
+                .environments(singleton(ENV))
+                .build();
 
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
                 .thenReturn(Mono.just(
-                        buildArbeidsforhold(false)));
-        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
-                .thenReturn(Flux.just(buildArbeidsforhold(true)));
+                        buildArbeidsforhold(false, "de64eff1-0b7b-4998-8130-b1bec53a445f")));
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
-                .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold().getFirst());
+                .thenReturn(buildArbeidsforhold(false, ("1")).getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
         when(transactionHelperService.persister(any(), any(RsDollyUtvidetBestilling.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(aaregClient.gjenopprett(request,
-                                DollyPerson.builder().ident(IDENT)
-                                        .bruker(bruker)
-                                        .build(), bestillingProgress, false))
+                        DollyPerson.builder().ident(IDENT)
+                                .bruker(bruker)
+                                .build(), bestillingProgress, false))
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), is(equalTo("q2:Info= Oppretting startet mot AAREG ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), is(equalTo("q2: arbforhold=1$OK")));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerPerson_returnsOK() {
+
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
+        val request = RsDollyBestillingRequest.builder()
+                .aareg(singletonList(RsAareg.builder()
+                        .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
+                        .arbeidsforholdId("1")
+                        .build()))
+                .environments(singleton(ENV))
+                .build();
+
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
+                .thenReturn(Mono.just(
+                        buildArbeidsforhold(false, "1")));
+        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
+                .thenReturn(Flux.just(buildArbeidsforhold(true, "1")));
+        when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
+                .thenReturn(buildArbeidsforhold(false, ("1")).getEksisterendeArbeidsforhold().getFirst());
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
+        when(transactionHelperService.persister(any(), any(RsDollyUtvidetBestilling.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(aaregClient.gjenopprett(request,
+                        DollyPerson.builder().ident(IDENT)
+                                .bruker(bruker)
+                                .build(), bestillingProgress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -155,28 +190,30 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerOrganisasjon_returnsOK() {
+
         when(applicationConfig.getClientTimeout()).thenReturn(30L);
-        var request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsAareg.builder()
-                .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
-                .arbeidsforholdId("1")
-                .isOppdatering(true)
-                .build()));
-        request.setEnvironments(singleton(ENV));
+        val request = RsDollyBestillingRequest.builder()
+                .aareg(singletonList(RsAareg.builder()
+                        .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
+                        .arbeidsforholdId("1")
+                        .isOppdatering(true)
+                        .build()))
+                .environments(singleton(ENV))
+                .build();
 
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
-                .thenReturn(Mono.just(buildArbeidsforhold(true)));
+                .thenReturn(Mono.just(buildArbeidsforhold(true, "1")));
         when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
-                .thenReturn(Flux.just(buildArbeidsforhold(true)));
+                .thenReturn(Flux.just(buildArbeidsforhold(true, "1")));
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
-                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold().getFirst());
+                .thenReturn(buildArbeidsforhold(true, "1").getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
         when(transactionHelperService.persister(any(), any(RsDollyUtvidetBestilling.class))).thenReturn(Mono.empty());
 
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                                .bruker(bruker)
-                                .build(), bestillingProgress, false))
+                        .bruker(bruker)
+                        .build(), bestillingProgress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
