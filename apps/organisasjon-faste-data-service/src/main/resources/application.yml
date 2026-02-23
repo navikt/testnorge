@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: testnav-organisasjon-faste-data-service
     description: Tjeneste for å bestille og holde kontroll på faste data

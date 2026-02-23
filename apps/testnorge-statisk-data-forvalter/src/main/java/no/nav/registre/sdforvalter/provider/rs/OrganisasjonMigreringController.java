@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @RestController
 @RequestMapping("/api/v1/organisasjon/migrering")
@@ -27,8 +29,12 @@ public class OrganisasjonMigreringController {
     @Operation(
             description = "Migrerer organisasjoner som er definert i databasetabell EREG til tjenesten testnav-organisasjon-faste-data-service."
     )
-    public void opprett(@RequestParam(required = false) Gruppe gruppe) {
-        var eregListe = gruppe == null ? eregAdapter.fetchAll() : eregAdapter.fetchBy(gruppe.name());
-        fasteDataConsumer.opprett(eregListe);
+    public Mono<Void> opprett(@RequestParam(required = false) Gruppe gruppe) {
+        return Mono.<Void>fromCallable(() -> {
+                    var eregListe = gruppe == null ? eregAdapter.fetchAll() : eregAdapter.fetchBy(gruppe.name());
+                    fasteDataConsumer.opprett(eregListe);
+                    return null;
+                })
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }

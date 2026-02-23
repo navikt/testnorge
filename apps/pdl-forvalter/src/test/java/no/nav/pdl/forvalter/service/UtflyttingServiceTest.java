@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ class UtflyttingServiceTest {
     @Test
     void whenEmptyLandkode_thenProvideCountryFromGeografiskeKodeverkConsumer() {
 
-        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("TGW");
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("TGW"));
 
         var request = PersonDTO.builder()
                 .ident(FNR_IDENT)

@@ -57,7 +57,7 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO> {
                         .adjektiv(navn.getFornavn())
                         .adverb(navn.getMellomnavn())
                         .substantiv(navn.getEtternavn())
-                        .build()))) {
+                        .build()).block())) {
 
             throw new InvalidRequestException(NAVN_INVALID_ERROR);
         }
@@ -68,12 +68,12 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO> {
         if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
                 (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()))) {
 
-            var nyttNavn = genererNavnServiceConsumer.getNavn(1);
-            if (nyttNavn.isPresent()) {
-                navn.setFornavn(blankCheck(navn.getFornavn(), nyttNavn.get().getAdjektiv()));
-                navn.setEtternavn(blankCheck(navn.getEtternavn(), nyttNavn.get().getSubstantiv()));
+            var nyttNavn = genererNavnServiceConsumer.getNavn(1).block();
+            if (nonNull(nyttNavn)) {
+                navn.setFornavn(blankCheck(navn.getFornavn(), nyttNavn.getAdjektiv()));
+                navn.setEtternavn(blankCheck(navn.getEtternavn(), nyttNavn.getSubstantiv()));
                 navn.setMellomnavn(blankCheck(navn.getMellomnavn(),
-                        isTrue(navn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
+                        isTrue(navn.getHasMellomnavn()) ? nyttNavn.getAdverb() : null));
             }
             navn.setHasMellomnavn(null);
         }

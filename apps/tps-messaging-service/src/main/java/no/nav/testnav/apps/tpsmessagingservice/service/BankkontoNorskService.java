@@ -11,6 +11,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoNorskResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -46,39 +48,42 @@ public class BankkontoNorskService {
         this.responseContext = JAXBContext.newInstance(BankkontoNorskResponse.class);
     }
 
-    public Map<String, TpsMeldingResponse> sendBankkontonrNorsk(String ident, BankkontonrNorskDTO bankkontonr, List<String> miljoer) {
+    public Mono<Map<String, TpsMeldingResponse>> sendBankkontonrNorsk(String ident, BankkontonrNorskDTO bankkontonr, List<String> miljoer) {
 
         return oppdaterBankkontor(ident, bankkontonr, miljoer);
     }
 
-    public Map<String, TpsMeldingResponse> opphoerBankkontonrNorsk(String ident, List<String> miljoer) {
+    public Mono<Map<String, TpsMeldingResponse>> opphoerBankkontonrNorsk(String ident, List<String> miljoer) {
 
         return oppdaterBankkontor(ident, null, miljoer);
     }
 
-    private Map<String, TpsMeldingResponse> oppdaterBankkontor(String ident, BankkontonrNorskDTO bankkontonr, List<String> miljoer) {
-        miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
+    private Mono<Map<String, TpsMeldingResponse>> oppdaterBankkontor(String ident, BankkontonrNorskDTO bankkontonr, List<String> miljoer) {
 
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty("ident", ident);
+        Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        var request = mapperFacade.map(nonNull(bankkontonr) ? bankkontonr : new BankkontonrNorskDTO(),
-                BankkontoNorskRequest.class, context);
+        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("ident", ident);
 
-        var requestXml = marshallToXML(requestContext, request);
-        var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
+            var request = mapperFacade.map(nonNull(bankkontonr) ? bankkontonr : new BankkontonrNorskDTO(),
+                    BankkontoNorskRequest.class, context);
 
-        return miljoerResponse.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+            var requestXml = marshallToXML(requestContext, request);
+            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, resolvedMiljoer);
 
-                    try {
-                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
-                                (BankkontoNorskResponse) unmarshallFromXml(responseContext, entry.getValue()));
+            return miljoerResponse.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 
-                    } catch (JAXBException e) {
-                        log.error(e.getMessage(), e);
-                        return getErrorStatus(e);
-                    }
-                }));
+                        try {
+                            return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                    (BankkontoNorskResponse) unmarshallFromXml(responseContext, entry.getValue()));
+
+                        } catch (JAXBException e) {
+                            log.error(e.getMessage(), e);
+                            return getErrorStatus(e);
+                        }
+                    }));
+        }).subscribeOn(Schedulers.boundedElastic()));
     }
 }

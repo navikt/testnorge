@@ -18,6 +18,9 @@ import no.nav.organisasjonforvalter.util.CurrentAuthentication;
 import no.nav.organisasjonforvalter.util.UtenlandskAdresseUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,38 +41,46 @@ public class BestillingService {
     private final OrganisasjonRepository organisasjonRepository;
     private final MapperFacade mapperFacade;
 
-    public BestillingResponse execute(BestillingRequest request) {
+    public Mono<BestillingResponse> execute(BestillingRequest request) {
 
-        val orgnumre = request.getOrganisasjoner().stream()
-                .map(org -> {
-                    Organisasjon parent = processOrganisasjon(org, null);
-                    return parent.getOrganisasjonsnummer();
-                })
-                .collect(Collectors.toSet());
-
-        return BestillingResponse.builder().orgnummer(orgnumre).build();
+        return Flux.fromIterable(request.getOrganisasjoner())
+                .flatMap(org -> processOrganisasjon(org, null))
+                .map(Organisasjon::getOrganisasjonsnummer)
+                .collect(Collectors.toSet())
+                .map(orgnumre -> BestillingResponse.builder().orgnummer(orgnumre).build());
     }
 
-    private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {
+    private Mono<Organisasjon> processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {
 
-        setAdresse(orgRequest.getAdresser());
+        return setAdresse(orgRequest.getAdresser())
+                .then(Mono.defer(() -> {
+                    Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
+                    organisasjon.setUnderenheter(mapperFacade.mapAsList(organisasjon.getUnderenheter(), Organisasjon.class));
+                    organisasjon.setParent(parent);
 
-        Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
-        organisasjon.setOrganisasjonsnummer(organisasjonOrgnummerServiceConsumer.getOrgnummer());
-        organisasjon.setOrganisasjonsnavn(genererNavnServiceConsumer.getOrgName());
-        organisasjon.setUnderenheter(mapperFacade.mapAsList(organisasjon.getUnderenheter(), Organisasjon.class));
-        organisasjon.setParent(parent);
-        organisasjon.setBrukerId(CurrentAuthentication.getUserId());
+                    return Mono.zip(
+                                    organisasjonOrgnummerServiceConsumer.getOrgnummer(),
+                                    genererNavnServiceConsumer.getOrgName(),
+                                    CurrentAuthentication.getUserId()
+                            )
+                            .flatMap(tuple -> {
+                                organisasjon.setOrganisasjonsnummer(tuple.getT1());
+                                organisasjon.setOrganisasjonsnavn(tuple.getT2());
+                                organisasjon.setBrukerId(tuple.getT3());
 
-        if (orgRequest.getUnderenheter().isEmpty()) {
-            organisasjonRepository.save(organisasjon);
-        } else {
-            orgRequest.getUnderenheter().forEach(underenhet -> processOrganisasjon(underenhet, organisasjon));
-        }
-        return organisasjon;
+                                if (orgRequest.getUnderenheter().isEmpty()) {
+                                    return Mono.fromCallable(() -> organisasjonRepository.save(organisasjon))
+                                            .subscribeOn(Schedulers.boundedElastic());
+                                } else {
+                                    return Flux.fromIterable(orgRequest.getUnderenheter())
+                                            .flatMap(underenhet -> processOrganisasjon(underenhet, organisasjon))
+                                            .then(Mono.just(organisasjon));
+                                }
+                            });
+                }));
     }
 
-    private void setAdresse(List<AdresseRequest> adresseRequest) {
+    private Mono<Void> setAdresse(List<AdresseRequest> adresseRequest) {
 
         if (adresseRequest.isEmpty()) {
             adresseRequest.add(AdresseRequest.builder()
@@ -77,18 +88,20 @@ public class BestillingService {
                     .build());
         }
 
-        adresseRequest.forEach(adresse -> {
-
-            if (isBlank(adresse.getLandkode()) || NORGE.equals(adresse.getLandkode())) {
-
-                val query = adresseQuery(adresse);
-                adresseServiceConsumer.getAdresser(query).stream().findFirst()
-                        .ifPresent(adressedetaljer ->
-                                mapperFacade.map(adressedetaljer, adresse));
-            } else {
-                UtenlandskAdresseUtil.prepareUtenlandskAdresse(adresse);
-            }
-        });
+        return Flux.fromIterable(adresseRequest)
+                .flatMap(adresse -> {
+                    if (isBlank(adresse.getLandkode()) || NORGE.equals(adresse.getLandkode())) {
+                        val query = adresseQuery(adresse);
+                        return adresseServiceConsumer.getAdresser(query)
+                                .doOnNext(adresser -> adresser.stream().findFirst()
+                                        .ifPresent(adressedetaljer ->
+                                                mapperFacade.map(adressedetaljer, adresse)));
+                    } else {
+                        UtenlandskAdresseUtil.prepareUtenlandskAdresse(adresse);
+                        return Mono.empty();
+                    }
+                })
+                .then();
     }
 
     private static String adresseQuery(AdresseRequest adresse) {
