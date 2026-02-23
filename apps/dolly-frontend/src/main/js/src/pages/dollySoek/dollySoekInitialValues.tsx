@@ -1,4 +1,4 @@
-export const dollySoekSideStoerrelseLocalStorageKey = 'dollySoekSideStoerrelse'
+import { dollySoekSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 const getInitialAntall = () =>
 	Number(localStorage.getItem(dollySoekSideStoerrelseLocalStorageKey)) || 10

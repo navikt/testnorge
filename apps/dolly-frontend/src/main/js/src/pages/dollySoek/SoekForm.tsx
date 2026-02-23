@@ -19,10 +19,8 @@ import {
 	PersoniformasjonPaths,
 } from '@/pages/dollySoek/paths'
 import { DollyApi } from '@/service/Api'
-import {
-	getDollySoekInitialValues,
-	dollySoekSideStoerrelseLocalStorageKey,
-} from '@/pages/dollySoek/dollySoekInitialValues'
+import { getDollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
+import { dollySoekSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 import { Fagsystemer } from '@/pages/dollySoek/soekFormPartials/Fagsystemer'
 import { Personinformasjon } from '@/pages/dollySoek/soekFormPartials/Personinformasjon'
 import { Adresser } from '@/pages/dollySoek/soekFormPartials/Adresser'

@@ -6,10 +6,8 @@ import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as _ from 'lodash-es'
-import {
-	getDollySoekInitialValues,
-	dollySoekSideStoerrelseLocalStorageKey,
-} from '@/pages/dollySoek/dollySoekInitialValues'
+import { getDollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
+import { dollySoekSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 import { DollyApi } from '@/service/Api'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
 

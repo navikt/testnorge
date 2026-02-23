@@ -5,7 +5,7 @@ import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { VisningType } from '@/pages/gruppe/Gruppe'
 import * as _ from 'lodash-es'
 import { ERROR_NAVIGATE_IDENT } from '../errors/ErrorMessages'
-import { sideStoerrelseLocalStorageKey } from '@/pages/gruppeOversikt/GruppeOversikt'
+import { sideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 export const {
 	navigerTilPerson,

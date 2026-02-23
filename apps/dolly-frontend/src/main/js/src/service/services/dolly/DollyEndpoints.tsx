@@ -1,4 +1,5 @@
 import { arrayToString } from '@/utils/DataFormatter'
+import { sideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 const uri = `/dolly-backend/api/v1`
 const kodeverkUri = `/testnav-kodeverk-service/api/v1`
@@ -15,7 +16,7 @@ const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
 const teamBase = `${uri}/team`
 
-const getPageSize = () => localStorage.getItem('sideStoerrelse')
+const getPageSize = () => localStorage.getItem(sideStoerrelseLocalStorageKey)
 
 export default class DollyEndpoints {
 	static gruppe() {

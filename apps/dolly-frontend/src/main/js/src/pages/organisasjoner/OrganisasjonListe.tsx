@@ -13,6 +13,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useReduxSelector } from '@/utils/hooks/useRedux'
+import { organisasjonerSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 type OrganisasjonListeProps = {
 	bestillinger: Array<EnhetBestilling>
@@ -26,8 +27,6 @@ const ikonTypeMap = {
 	Feilet: 'report-problem-triangle',
 	Stoppet: 'report-problem-triangle',
 }
-
-export const organisasjonerSideStoerrelseLocalStorageKey = 'organisasjonerSideStoerrelse'
 
 export default function OrganisasjonListe({
 	bestillinger,

@@ -42,8 +42,6 @@ const StyledDiv = styled.div`
 	}
 `
 
-export const sideStoerrelseLocalStorageKey = 'sideStoerrelse'
-
 const GruppeOversikt: React.FC = () => {
 	const searchActive = useSelector((state: RootState) => Boolean(state.search))
 	const sidetall = useSelector((state: RootState) => state.finnPerson.sidetall)

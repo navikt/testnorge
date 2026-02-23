@@ -6,13 +6,14 @@ import { setSideStoerrelse, setSidetall } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router'
 import { Pagination } from '@navikt/ds-react'
-import { sideStoerrelseLocalStorageKey } from '@/pages/gruppeOversikt/GruppeOversikt'
+import { sideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 type PaginationProps = {
 	visSide?: number
 	gruppeDetaljer?: { pageSize: number; antallPages: number; antallElementer: number }
 	items: any[]
 	render: (arg0: any) => boolean | React.ReactChild
+	manualLocalStorageKey?: string | null
 }
 
 const ITEM_PER_PAGE = 10
