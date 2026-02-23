@@ -6,7 +6,6 @@ import lombok.val;
 import no.nav.dolly.domain.resultset.aareg.RsAareg.Identifikasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
-import no.nav.testnav.libs.dto.aareg.v1.PermisjonPermittering;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,18 +37,6 @@ public class AaregUtility {
                 .map(Arbeidsforhold::getArbeidsforholdId)
                 .filter(StringUtils::isNotBlank)
                 .filter(id -> id.chars().allMatch(Character::isDigit))
-                .map(Integer::parseInt)
-                .max(Integer::compareTo)
-                .orElse(0);
-    }
-
-    public static int getMaxPermisjonPermitteringId(Collection<Arbeidsforhold> arbeidsforholdList) {
-
-        return arbeidsforholdList.stream()
-                .map(Arbeidsforhold::getPermisjonPermitteringer)
-                .flatMap(Collection::stream)
-                .map(PermisjonPermittering::getPermisjonPermitteringId)
-                .filter(StringUtils::isNotBlank)
                 .map(Integer::parseInt)
                 .max(Integer::compareTo)
                 .orElse(0);
