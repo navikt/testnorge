@@ -55,8 +55,6 @@ public class OpenSearchQueryService {
 
     private <S,T> List<T> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
 
-        var now = System.currentTimeMillis();
-
         try {
             val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
                     .index(adresseIndex)
@@ -66,8 +64,6 @@ public class OpenSearchQueryService {
                     .size(antall.intValue())
                     .timeout("3s")
                     .build(), JsonNode.class);
-
-            log.info("Adressesøk tok: {} ms", System.currentTimeMillis() - now);
 
             return formatResponse(adresseSoekResponse, kilde, destinasjon);
 
