@@ -37,6 +37,7 @@ public class AaregUtility {
         return arbeidsforholdList.stream()
                 .map(Arbeidsforhold::getArbeidsforholdId)
                 .filter(StringUtils::isNotBlank)
+                .filter(id -> id.chars().allMatch(Character::isDigit))
                 .map(Integer::parseInt)
                 .max(Integer::compareTo)
                 .orElse(0);
