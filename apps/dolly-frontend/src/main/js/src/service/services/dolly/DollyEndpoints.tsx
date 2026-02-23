@@ -92,6 +92,10 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/soekBestilling?fragment=${fragment}`
 	}
 
+	static grupperFragment(fragment) {
+		return `${groupBase}/soekGruppe?fragment=${fragment}`
+	}
+
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
 	}
