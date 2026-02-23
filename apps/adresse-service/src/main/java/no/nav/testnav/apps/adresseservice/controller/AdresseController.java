@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.adresseservice.controller;
 
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class AdresseController {
                 .fritekst(fritekst)
                 .build();
 
-        log.info("Adressesøk startet med parametre: {}", request);
+        log.info("Adressesøk startet med parametre: {}", Json.pretty(request));
 
         return openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1)
                 .doOnNext(resultat -> log(resultat, millis));
@@ -91,6 +92,8 @@ public class AdresseController {
                 .tilleggsnavn(tilleggsnavn)
                 .build();
 
+        log.info("Adressesøk startet med parametre: {}", Json.pretty(request));
+
         return openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1)
                 .doOnNext(resultat -> log(resultat, millis));
     }
@@ -99,7 +102,7 @@ public class AdresseController {
 
         log.info("Adressesøk ferdig tok: {} ms, resultat {}", System.currentTimeMillis() - millis,
                 resultat.stream()
-                .map(T::toString)
-                .collect(Collectors.joining()));
+                .map(Json::pretty)
+                .collect(Collectors.joining(", ")));
     }
 }
