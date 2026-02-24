@@ -58,7 +58,6 @@ spec:
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:

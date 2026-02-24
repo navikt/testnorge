@@ -18,6 +18,7 @@ public class Dokarkiv {
 
     private static final String CLUSTER = "dev-fss";
     private static final String NAMESPACE = "teamdokumenthandtering";
+    private static final String NAME = "dokarkiv%s"; // Note replacement pattern.
 
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;

@@ -31,6 +31,7 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
+        - application: testnav-dolly-proxy
         - application: testnav-inntektsmelding-generator-service
         - application: logging
           namespace: nais-system
