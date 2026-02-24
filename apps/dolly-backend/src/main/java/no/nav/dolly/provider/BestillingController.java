@@ -154,7 +154,6 @@ public class BestillingController {
                     }
 
                     var updates = bestillingEventPublisher.subscribe(bestillingId)
-                            .sample(Duration.ofSeconds(1))
                             .concatMap(id -> bestillingService.fetchBestillingById(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .onErrorResume(e -> {

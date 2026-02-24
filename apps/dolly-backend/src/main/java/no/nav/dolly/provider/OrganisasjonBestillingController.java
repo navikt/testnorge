@@ -143,7 +143,6 @@ public class OrganisasjonBestillingController {
                     }
 
                     var updates = bestillingEventPublisher.subscribeOrg(bestillingId)
-                            .sample(Duration.ofSeconds(1))
                             .concatMap(id -> bestillingService.fetchBestillingSnapshot(bestillingId)
                                     .onErrorResume(e -> {
                                         log.warn("Feil ved henting av org-bestilling-status for {}: {}", bestillingId, e.getMessage());
