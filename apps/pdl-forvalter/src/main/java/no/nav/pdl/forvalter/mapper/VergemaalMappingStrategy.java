@@ -104,10 +104,13 @@ public class VergemaalMappingStrategy implements MappingStrategy {
         return Optional.ofNullable(tjenesteomraadeListe)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(dto -> Tjenesteomraade.builder()
-                        .tjenesteoppgave(String.join(",", Optional.ofNullable(dto.getTjenesteoppgave()).orElse(Collections.emptyList())))
-                        .tjenestevirksomhet(dto.getTjenestevirksomhet())
-                        .build())
+                .flatMap(dto -> Optional.ofNullable(dto.getTjenesteoppgave())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .map(oppgave -> Tjenesteomraade.builder()
+                                .tjenesteoppgave(oppgave)
+                                .tjenestevirksomhet(dto.getTjenestevirksomhet())
+                                .build()))
                 .toList();
     }
 }

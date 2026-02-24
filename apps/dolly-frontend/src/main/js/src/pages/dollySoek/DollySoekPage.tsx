@@ -6,7 +6,8 @@ import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as _ from 'lodash-es'
-import { dollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
+import { getDollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
+import { dollySoekSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 import { DollyApi } from '@/service/Api'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
 
@@ -29,7 +30,15 @@ export default () => {
 	}, [])
 
 	const localStorageValue = localStorage.getItem(dollySoekLocalStorageKey)
-	const initialValues = localStorageValue ? JSON.parse(localStorageValue) : dollySoekInitialValues
+	const storedPageSize = localStorage.getItem(dollySoekSideStoerrelseLocalStorageKey)
+	const parsedStoredValue = localStorageValue ? JSON.parse(localStorageValue) : null
+
+	const initialValues = parsedStoredValue
+		? {
+				...parsedStoredValue,
+				antall: storedPageSize ? Number(storedPageSize) : parsedStoredValue.antall,
+			}
+		: getDollySoekInitialValues()
 
 	const initialValuesClone = _.cloneDeep(initialValues)
 	const formMethods = useForm({
