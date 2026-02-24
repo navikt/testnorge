@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.consumer.command;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
@@ -29,7 +30,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
 
     @Override
     public Flux<OrdreResponseDTO.HendelseDTO> call() {
-        log.info("Sending PDL artifact to {} for ident {}: {}", url, ident, body);
+        log.info("Sending PDL artifact to {} for ident {}: {}", url, ident, Json.pretty(body));
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).build())
