@@ -156,7 +156,8 @@ public class OrganisasjonBestillingController {
                                     .build());
 
                     return Flux.merge(Flux.concat(Flux.just(toOrgSse(initial)), updates), heartbeat)
-                            .takeUntil(sse -> "completed".equals(sse.event()));
+                            .takeUntil(sse -> "completed".equals(sse.event()))
+                            .take(Duration.ofMinutes(30));
                 });
     }
 

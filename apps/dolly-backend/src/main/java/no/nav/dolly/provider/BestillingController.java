@@ -168,7 +168,8 @@ public class BestillingController {
                                     .build());
 
                     return Flux.merge(Flux.concat(Flux.just(initialSse), updates), heartbeat)
-                            .takeUntil(sse -> "completed".equals(sse.event()));
+                            .takeUntil(sse -> "completed".equals(sse.event()))
+                            .take(Duration.ofMinutes(30));
                 });
     }
 

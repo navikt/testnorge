@@ -61,10 +61,10 @@ public class TransactionHelperService {
                                     setter.accept(progress, status);
                                     return bestillingProgressRepository.save(progress);
                                 })
-                                .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()))
                                 .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
-                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
+                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
+                .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()));
     }
 
     public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
@@ -89,10 +89,10 @@ public class TransactionHelperService {
                                     setter.accept(progress, result);
                                 })
                                 .flatMap(bestillingProgressRepository::save)
-                                .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()))
                                 .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
-                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
+                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
+                .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()));
     }
 
     private String applyChanges(String value, String status, String separator) {
@@ -149,11 +149,11 @@ public class TransactionHelperService {
                         bestilling.setFeil(feil);
                         return bestillingService.cleanBestilling(bestilling)
                                 .flatMap(bestillingRepository::save)
-                                .doOnNext(saved -> bestillingEventPublisher.publish(saved.getId()))
                                 .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
                     })
                     .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))
                     .collectList()
-                    .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
+                    .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
+                    .doOnNext(saved -> bestillingEventPublisher.publish(saved.getId()));
     }
 }
