@@ -14,6 +14,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import Navigering from '@/pages/gruppeOversikt/Navigering'
 import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 import { PersonGroupIcon, SilhouetteIcon, StarIcon } from '@navikt/aksel-icons'
+import { useSideStoerrelse } from '@/utils/hooks/useSideStoerrelse'
 
 type RootState = {
 	search: any
@@ -44,7 +45,7 @@ const StyledDiv = styled.div`
 const GruppeOversikt: React.FC = () => {
 	const searchActive = useSelector((state: RootState) => Boolean(state.search))
 	const sidetall = useSelector((state: RootState) => state.finnPerson.sidetall)
-	const sideStoerrelse = useSelector((state: RootState) => state.finnPerson.sideStoerrelse)
+	const { sideStoerrelse } = useSideStoerrelse()
 
 	const dispatch = useDispatch()
 	const { currentBruker } = useCurrentBruker()
