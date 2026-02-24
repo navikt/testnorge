@@ -33,13 +33,11 @@ class VergemaalMappingStrategyTest {
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto));
 
-        assertThat(result).hasSize(3);
-        assertThat(result.get(0).getTjenesteoppgave()).isEqualTo("hjelpemidler");
-        assertThat(result.get(0).getTjenestevirksomhet()).isEqualTo("nav");
-        assertThat(result.get(1).getTjenesteoppgave()).isEqualTo("pensjon");
-        assertThat(result.get(1).getTjenestevirksomhet()).isEqualTo("nav");
-        assertThat(result.get(2).getTjenesteoppgave()).isEqualTo("arbeid");
-        assertThat(result.get(2).getTjenestevirksomhet()).isEqualTo("nav");
+        assertThat(result).containsExactlyInAnyOrder(
+                Tjenesteomraade.builder().tjenesteoppgave("hjelpemidler").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("pensjon").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("arbeid").tjenestevirksomhet("nav").build()
+        );
     }
 
     @Test
@@ -50,9 +48,9 @@ class VergemaalMappingStrategyTest {
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto));
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getTjenesteoppgave()).isEqualTo("hjelpemidler");
-        assertThat(result.getFirst().getTjenestevirksomhet()).isEqualTo("nav");
+        assertThat(result).containsExactly(
+                Tjenesteomraade.builder().tjenesteoppgave("hjelpemidler").tjenestevirksomhet("nav").build()
+        );
     }
 
     @Test
@@ -89,12 +87,10 @@ class VergemaalMappingStrategyTest {
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto1, dto2));
 
-        assertThat(result).hasSize(3);
-        assertThat(result.get(0).getTjenesteoppgave()).isEqualTo("hjelpemidler");
-        assertThat(result.get(0).getTjenestevirksomhet()).isEqualTo("nav");
-        assertThat(result.get(1).getTjenesteoppgave()).isEqualTo("pensjon");
-        assertThat(result.get(1).getTjenestevirksomhet()).isEqualTo("nav");
-        assertThat(result.get(2).getTjenesteoppgave()).isEqualTo("arbeid");
-        assertThat(result.get(2).getTjenestevirksomhet()).isEqualTo("annen");
+        assertThat(result).containsExactlyInAnyOrder(
+                Tjenesteomraade.builder().tjenesteoppgave("hjelpemidler").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("pensjon").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("arbeid").tjenestevirksomhet("annen").build()
+        );
     }
 }
