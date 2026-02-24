@@ -162,12 +162,13 @@ public class BestillingController {
                                     }))
                             .map(this::toBestillingSse);
 
-                    var heartbeat = Flux.interval(Duration.ofSeconds(15))
-                            .map(tick -> ServerSentEvent.<RsBestillingStatus>builder()
-                                    .comment("heartbeat")
-                                    .build());
+                    var fallbackCheck = Flux.interval(Duration.ofSeconds(15))
+                            .concatMap(tick -> bestillingService.fetchBestillingById(bestillingId)
+                                    .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
+                                    .onErrorResume(e -> Mono.empty()))
+                            .map(this::toBestillingSse);
 
-                    return Flux.merge(Flux.concat(Flux.just(initialSse), updates), heartbeat)
+                    return Flux.merge(Flux.concat(Flux.just(initialSse), updates), fallbackCheck)
                             .takeUntil(sse -> "completed".equals(sse.event()))
                             .take(Duration.ofMinutes(30));
                 });

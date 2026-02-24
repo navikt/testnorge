@@ -150,12 +150,12 @@ public class OrganisasjonBestillingController {
                                     }))
                             .map(this::toOrgSse);
 
-                    var heartbeat = Flux.interval(Duration.ofSeconds(15))
-                            .map(tick -> ServerSentEvent.<RsOrganisasjonBestillingStatus>builder()
-                                    .comment("heartbeat")
-                                    .build());
+                    var fallbackCheck = Flux.interval(Duration.ofSeconds(15))
+                            .concatMap(tick -> bestillingService.fetchBestillingSnapshot(bestillingId)
+                                    .onErrorResume(e -> Mono.empty()))
+                            .map(this::toOrgSse);
 
-                    return Flux.merge(Flux.concat(Flux.just(toOrgSse(initial)), updates), heartbeat)
+                    return Flux.merge(Flux.concat(Flux.just(toOrgSse(initial)), updates), fallbackCheck)
                             .takeUntil(sse -> "completed".equals(sse.event()))
                             .take(Duration.ofMinutes(30));
                 });
