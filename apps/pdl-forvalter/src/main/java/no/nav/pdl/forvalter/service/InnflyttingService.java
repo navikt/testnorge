@@ -9,10 +9,12 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -32,17 +34,18 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
     private final KodeverkConsumer kodeverkConsumer;
     private final BostedAdresseService bostedAdresseService;
 
-    public List<InnflyttingDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getInnflytting()) {
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person);
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-        return person.getInnflytting();
+        return Flux.fromIterable(person.getInnflytting())
+                    .filter(type -> isTrue(type.getIsNew()))
+                    .flatMap(type -> handle(type, person))
+                    .doOnNext(type -> {
+                        type.setKilde(getKilde(type));
+                        type.setMaster(getMaster(type, person));
+                    })
+                    .collectList()
+                    .doOnNext(innflytting -> person.setInnflytting(new ArrayList<>(innflytting)))
+                    .then();
     }
 
     @Override
@@ -53,9 +56,11 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
         }
     }
 
-    protected void handle(InnflyttingDTO innflytting, PersonDTO person) {
+    protected Mono<InnflyttingDTO> handle(InnflyttingDTO innflytting, PersonDTO person) {
 
         if (isBlank(innflytting.getFraflyttingsland())) {
+            return kodeverkConsumer.getTilfeldigLand()
+                            .doOnNext(
             innflytting.setFraflyttingsland(kodeverkConsumer.getTilfeldigLand());
         }
 

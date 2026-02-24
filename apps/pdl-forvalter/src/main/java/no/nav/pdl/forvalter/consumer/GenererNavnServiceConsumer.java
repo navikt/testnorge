@@ -9,6 +9,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -37,7 +38,7 @@ public class GenererNavnServiceConsumer {
                 .build();
     }
 
-    public Optional<NavnDTO> getNavn(Integer antall) {
+    public Mono<NavnDTO> getNavn(Integer antall) {
 
         return Arrays.stream(tokenExchange.exchange(serverProperties)
                         .flatMap(token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())

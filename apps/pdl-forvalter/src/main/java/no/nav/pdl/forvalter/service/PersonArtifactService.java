@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -39,17 +40,17 @@ public class PersonArtifactService {
     private final UtflyttingService utflyttingService;
     private final VergemaalService vergemaalService;
 
-    public PersonDTO buildPerson(PersonDTO person, Boolean relaxed) {
+    public Mono<PersonDTO> buildPerson(PersonDTO person, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
-        person.setFoedsel(foedselService.convert(person));
-        person.setFoedselsdato(foedselsdatoService.convert(person));
-        person.setKjoenn(kjoennService.convert(person));
-        person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
-        person.setInnflytting(innflyttingService.convert(person));
-        person.setFoedested(foedestedService.convert(person));
-        person.setStatsborgerskap(statsborgerskapService.convert(person));
-        person.setNavn(navnService.convert(person));
+        return foedselService.convert(person)
+                .then(foedselsdatoService.convert(person))
+                .then(kjoennService.convert(person))
+                .then(bostedAdresseService.convert(person, relaxed))
+                .then(innflyttingService.convert(person))
+                .then(foedestedService.convert(person))
+                .then(statsborgerskapService.convert(person))
+                .then(navnService.convert(person))
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
         person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
         person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));

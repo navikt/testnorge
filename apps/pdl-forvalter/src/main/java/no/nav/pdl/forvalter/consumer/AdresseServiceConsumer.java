@@ -49,7 +49,7 @@ public class AdresseServiceConsumer {
         this.kodeverkConsumer = kodeverkConsumer;
     }
 
-    public no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
+    public Mono<no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO> getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
         var vegadresseDTO = mapperFacade.map(vegadresse, VegadresseDTO.class);
@@ -75,11 +75,10 @@ public class AdresseServiceConsumer {
                         adresse.setKommunenummer(vegadresse.getKommunenummer());
                     }
                     return adresse;
-                })
-                .block();
+                });
     }
 
-    public no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
+    public Mono<no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO> getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
 
@@ -107,7 +106,6 @@ public class AdresseServiceConsumer {
                     }
                     return adresseDTO;
                 })
-                .block();
     }
 
     private String sjekkHistorisk(String kommunenummer) {

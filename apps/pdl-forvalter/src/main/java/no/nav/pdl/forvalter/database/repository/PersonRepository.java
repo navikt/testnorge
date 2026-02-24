@@ -19,6 +19,8 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
 
     Mono<DbPerson> findByIdent(String ident);
 
+    Mono<DbPerson> save(DbPerson person);
+
     @Query("""
             select * from person p
             join relasjon r on r.person_id = p.id

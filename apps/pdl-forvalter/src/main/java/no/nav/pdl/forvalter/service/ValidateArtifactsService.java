@@ -5,6 +5,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -43,7 +44,7 @@ public class ValidateArtifactsService {
     private final VergemaalService vergemaalService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
 
-    public void validate(PersonDTO person) {
+    public Mono<Void> validate(PersonDTO person) {
 
         Stream.of(
                         validate(kjoennService, person.getKjoenn(), person),
@@ -75,8 +76,7 @@ public class ValidateArtifactsService {
                         validate(identtypeService, person.getNyident())
                 )
                 .reduce(Flux.empty(), Flux::concat)
-                .collectList()
-                .block();
+                .collectList();
     }
 
     private <T extends DbVersjonDTO> Flux<Void> validate(Validation<T> validation, List<T> artifact) {

@@ -10,7 +10,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -32,18 +35,18 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public List<StatsborgerskapDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getStatsborgerskap()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-                handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
-            }
-        }
-        return person.getStatsborgerskap();
+        return Flux.fromIterable(person.getStatsborgerskap())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(statsborgerskap -> person.setStatsborgerskap(new ArrayList<>(statsborgerskap)))
+                .then();
     }
 
     @Override
@@ -54,27 +57,38 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
         }
 
         if (nonNull(statsborgerskap.getGyldigFraOgMed()) && nonNull(statsborgerskap.getGyldigTilOgMed()) &&
-                !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
+            !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR);
         }
     }
 
-    private void handle(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
+    private Mono<StatsborgerskapDTO> handle(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
+
+        return setLandkode(statsborgerskap, person, innflytting)
+                .doOnNext(type -> {
+                    if (isNull(type.getGyldigFraOgMed()) &&
+                        isNull(type.getBekreftelsesdato()) &&
+                        type.getMaster() == DbVersjonDTO.Master.PDL) {
+                        type.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
+                    }
+                });
+    }
+
+    private Mono<StatsborgerskapDTO> setLandkode(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
 
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {
                 statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
+                return Mono.just(statsborgerskap);
             } else if (FNR.equals(IdenttypeUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);
+                return Mono.just(statsborgerskap);
             } else {
-                statsborgerskap.setLandkode(kodeverkConsumer.getTilfeldigLand());
+                return kodeverkConsumer.getTilfeldigLand()
+                        .doOnNext(statsborgerskap::setLandkode)
+                        .thenReturn(statsborgerskap);
             }
         }
-
-        if (isNull(statsborgerskap.getGyldigFraOgMed()) &&
-                isNull(statsborgerskap.getBekreftelsesdato()) &&
-                statsborgerskap.getMaster() == DbVersjonDTO.Master.PDL) {
-            statsborgerskap.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
-        }
+        return Mono.just(statsborgerskap);
     }
 }
