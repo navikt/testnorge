@@ -29,6 +29,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
 
     @Override
     public Flux<OrdreResponseDTO.HendelseDTO> call() {
+        log.info("Sending PDL artifact to {} for ident {}: {}", url, ident, body);
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).build())
