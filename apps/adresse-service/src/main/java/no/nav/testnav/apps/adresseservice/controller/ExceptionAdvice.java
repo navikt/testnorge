@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.adresseservice.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +13,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UrlPathHelper;
 
 import java.time.LocalDateTime;
 
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionAdvice {
+
+    private final HttpServletRequest httpServletRequest;
+    private final UrlPathHelper urlPathHelper;
 
     @Data
     @Builder
@@ -36,13 +40,12 @@ public class ExceptionAdvice {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    ExceptionInformation clientErrorException(NotFoundException exception, ServerWebExchange exchange) {
-        String path = exchange.getRequest().getURI().getPath();
+    ExceptionInformation clientErrorException(NotFoundException exception) {
         return ExceptionInformation.builder()
                 .error(exception.getStatusText())
                 .status(exception.getStatusCode().value())
                 .message(exception.getMessage())
-                .path(path)
+                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -50,13 +53,12 @@ public class ExceptionAdvice {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
-    ExceptionInformation clientErrorException(BadRequestException exception, ServerWebExchange exchange) {
-        String path = exchange.getRequest().getURI().getPath();
+    ExceptionInformation clientErrorException(BadRequestException exception) {
         return ExceptionInformation.builder()
                 .error(exception.getStatusText())
                 .status(exception.getStatusCode().value())
                 .message(exception.getMessage())
-                .path(path)
+                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                 .timestamp(LocalDateTime.now())
                 .build();
     }

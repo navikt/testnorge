@@ -56,7 +56,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                         .adjektiv(navn.getFornavn())
                         .adverb(navn.getMellomnavn())
                         .substantiv(navn.getEtternavn())
-                        .build()).block())) {
+                        .build()))) {
             throw new InvalidRequestException(NAVN_INVALID_ERROR);
         }
     }
@@ -67,12 +67,12 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
             if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
                     (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
 
-                var nyttNavn = genererNavnServiceConsumer.getNavn(1).block();
-                if (nonNull(nyttNavn)) {
-                    coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.getAdjektiv()));
-                    coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.getSubstantiv()));
+                var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+                if (nyttNavn.isPresent()) {
+                    coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.get().getAdjektiv()));
+                    coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.get().getSubstantiv()));
                     coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
-                            isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.getAdverb() : null));
+                            isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
                 }
             }
             return buildNavn(coNavn);

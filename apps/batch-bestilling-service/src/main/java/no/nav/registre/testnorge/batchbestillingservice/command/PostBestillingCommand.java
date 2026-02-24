@@ -7,11 +7,14 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+
+import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostBestillingCommand implements ReactiveCommand<Void> {
+public class PostBestillingCommand implements Callable<Disposable> {
 
     private final WebClient webClient;
     private final String token;
@@ -19,7 +22,7 @@ public class PostBestillingCommand implements ReactiveCommand<Void> {
     private final RsDollyBestillingRequest request;
 
     @Override
-    public Mono<Void> execute() {
+    public Disposable call() {
         log.info("Sender batch bestilling til Dolly backend for gruppe {}.", gruppeId);
         return webClient.post()
                 .uri(builder -> builder
@@ -30,12 +33,12 @@ public class PostBestillingCommand implements ReactiveCommand<Void> {
                 .toBodilessEntity()
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(throwable -> log.error(throwable.getMessage()))
-                .onErrorResume(WebClientResponseException.NotFound.class::isInstance,
+                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> {
                             log.warn("Fant ikke gruppe {}.", gruppeId);
                             return Mono.empty();
                         })
-                .then();
+                .subscribe();
     }
 
 }

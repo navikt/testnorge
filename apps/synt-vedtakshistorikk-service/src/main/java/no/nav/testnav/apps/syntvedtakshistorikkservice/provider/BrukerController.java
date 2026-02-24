@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,38 +33,32 @@ public class BrukerController {
     private final ArenaDagpengerService arenaDagpengerService;
 
     @PostMapping("/oppfoelging")
-    public Mono<Map<String, NyeBrukereResponse>> registrerBrukereIArenaForvalterMedOppfoelging(
+    public Map<String, NyeBrukereResponse> registrerBrukereIArenaForvalterMedOppfoelging(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         validateMiljoe(syntetiserArenaRequest.getMiljoe());
 
-        return Mono.fromCallable(() -> {
-            var personer = identService.getUtvalgteIdenterIAldersgruppe(
-                    syntetiserArenaRequest.getAntallNyeIdenter(),
-                    MINIMUM_ALDER,
-                    MAKSIMUM_ALDER,
-                    false
-            );
+        var personer = identService.getUtvalgteIdenterIAldersgruppe(
+                        syntetiserArenaRequest.getAntallNyeIdenter(),
+                        MINIMUM_ALDER,
+                        MAKSIMUM_ALDER,
+                        false
+                );
 
-            if (tagsService.opprettetTagsPaaIdenterOgPartner(personer)) {
-                return arenaForvalterService.opprettArbeidssoekereUtenVedtak(
-                        personer.stream().map(PersonDTO::getIdent).toList(),
-                        syntetiserArenaRequest.getMiljoe());
-            } else {
-                return Collections.<String, NyeBrukereResponse>emptyMap();
-            }
-        }).subscribeOn(Schedulers.boundedElastic());
+        if (tagsService.opprettetTagsPaaIdenterOgPartner(personer)) {
+            return arenaForvalterService.opprettArbeidssoekereUtenVedtak(
+                    personer.stream().map(PersonDTO::getIdent).toList(),
+                    syntetiserArenaRequest.getMiljoe());
+        } else {
+            return Collections.emptyMap();
+        }
     }
 
     @PostMapping("/dagpenger")
-    public Mono<Map<String, List<DagpengerResponseDTO>>> registrerBrukereIArenaMedDagpenger(
+    public Map<String, List<DagpengerResponseDTO>> registrerBrukereIArenaMedDagpenger(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return Mono.fromCallable(() -> arenaDagpengerService.registrerArenaBrukereMedDagpenger(
-                        syntetiserArenaRequest.getAntallNyeIdenter(),
-                        syntetiserArenaRequest.getMiljoe(),
-                        true))
-                .subscribeOn(Schedulers.boundedElastic());
+        return arenaDagpengerService.registrerArenaBrukereMedDagpenger(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getMiljoe(), true);
     }
 
 }

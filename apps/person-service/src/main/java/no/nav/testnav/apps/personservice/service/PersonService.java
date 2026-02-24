@@ -18,7 +18,7 @@ public class PersonService {
     private final PdlApiConsumer pdlApiConsumer;
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public Mono<String> ordrePerson(Person person, String kilde) {
+    public String ordrePerson(Person person, String kilde) {
 
         return pdlTestdataConsumer.ordrePerson(person, kilde);
     }

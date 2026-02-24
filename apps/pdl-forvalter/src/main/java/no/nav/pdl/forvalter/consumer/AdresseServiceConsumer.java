@@ -8,7 +8,7 @@ import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -49,7 +49,7 @@ public class AdresseServiceConsumer {
         this.kodeverkConsumer = kodeverkConsumer;
     }
 
-    public Mono<no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO> getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
+    public no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
         var vegadresseDTO = mapperFacade.map(vegadresse, VegadresseDTO.class);
@@ -75,10 +75,14 @@ public class AdresseServiceConsumer {
                         adresse.setKommunenummer(vegadresse.getKommunenummer());
                     }
                     return adresse;
-                });
+                })
+                .map(adresse -> isNotBlank(adresse.getAdressenavn()) ?
+                        adresse :
+                        VegadresseServiceCommand.defaultAdresse())
+                .block();
     }
 
-    public Mono<no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO> getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
+    public no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
 
@@ -105,14 +109,15 @@ public class AdresseServiceConsumer {
                         adresseDTO.setKommunenummer(adresse.getKommunenummer());
                     }
                     return adresseDTO;
-                });
+                })
+                .block();
     }
 
     private String sjekkHistorisk(String kommunenummer) {
 
         if (isNotBlank(kommunenummer)) {
-            var historiske = kodeverkConsumer.getKommunerMedHistoriske().block();
-            var kommunenavn = historiske != null ? historiske.get(kommunenummer) : null;
+            var historiske = kodeverkConsumer.getKommunerMedHistoriske();
+            var kommunenavn = historiske.get(kommunenummer);
             if (isNotBlank(kommunenavn) && kommunenavn.endsWith(HISTORISK)) {
                 var gjeldendeKommunenavn = historiskeKommunerMedNyttNavn(remove(kommunenavn, HISTORISK).trim());
                 return historiske.entrySet().stream()

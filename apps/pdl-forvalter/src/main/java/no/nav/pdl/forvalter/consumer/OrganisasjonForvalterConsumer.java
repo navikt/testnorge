@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.OrganisasjonForvalterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
@@ -34,10 +33,11 @@ public class OrganisasjonForvalterConsumer {
                 .build();
     }
 
-    public Mono<Map<String, Map<String, Object>>> get(String orgNummer) {
+    public Map<String, Map<String, Object>> get(String orgNummer) {
 
         return tokenExchange.exchange(serverProperties).flatMap(
-                token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
-                        String.format("orgnummer=%s", orgNummer), token.getTokenValue()).call());
+                        token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
+                                String.format("orgnummer=%s", orgNummer), token.getTokenValue()).call())
+                .block();
     }
 }

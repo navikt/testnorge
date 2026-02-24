@@ -18,8 +18,9 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import StatusListeConnector from '@/components/bestilling/statusListe/StatusListeConnector'
 import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
 import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
-import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
+import Navigering from '@/pages/gruppeOversikt/Navigering'
 import GruppeHeader from '@/pages/gruppe/GruppeHeader/GruppeHeader'
+import { useSideStoerrelse } from '@/utils/hooks/useSideStoerrelse'
 
 export type GruppeProps = {
 	sidetall: number
@@ -33,13 +34,14 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
+export default ({ sidetall, sorting, update }: GruppeProps) => {
 	const { gruppeId } = useParams<{ gruppeId: number }>()
 	const { currentBruker, loading: loadingBruker } = useCurrentBruker()
 	const location = useLocation()
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const visning = useSelector((state: any) => state.finnPerson.visning)
+	const { sideStoerrelse } = useSideStoerrelse()
 
 	useEffect(() => {
 		dispatch(setGruppeNavigerTil(null))
@@ -136,7 +138,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 						Importer personer
 					</NavButton>
 					<div style={{ flexGrow: '2' }}></div>
-					{!bankIdBruker && <FinnPersonBestilling />}
+					{!bankIdBruker && <Navigering />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<GruppeToggle

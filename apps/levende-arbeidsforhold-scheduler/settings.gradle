@@ -7,7 +7,9 @@ rootProject.name = "levende-arbeidsforhold-scheduler"
 includeBuild "../../libs/data-transfer-objects"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/security-core"
-includeBuild "../../libs/reactive-standalone-security"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/servlet-insecure-security"
+includeBuild "../../libs/servlet-security"
 includeBuild "../../libs/testing"
 
 develocity {

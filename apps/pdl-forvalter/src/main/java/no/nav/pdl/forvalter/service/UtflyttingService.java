@@ -57,7 +57,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     protected void handle(UtflyttingDTO utflytting, PersonDTO person) {
 
         if (isBlank(utflytting.getTilflyttingsland())) {
-            utflytting.setTilflyttingsland(kodeverkConsumer.getTilfeldigLand().block());
+            utflytting.setTilflyttingsland(kodeverkConsumer.getTilfeldigLand());
         }
 
         if (isNull(utflytting.getUtflyttingsdato())) {

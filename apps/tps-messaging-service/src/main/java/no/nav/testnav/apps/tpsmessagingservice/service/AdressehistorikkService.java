@@ -20,8 +20,6 @@ import no.nav.tps.xjc.ctg.domain.s018.S018PersonType;
 import no.nav.tps.xjc.ctg.domain.s018.SRnavnType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -53,31 +51,31 @@ public class AdressehistorikkService {
         this.objectMapper = objectMapper;
     }
 
-    public Mono<List<AdressehistorikkDTO>> hentHistorikk(AdressehistorikkRequest request, List<String> miljoer) {
+    public List<AdressehistorikkDTO> hentHistorikk(AdressehistorikkRequest request, List<String> miljoer) {
 
-        Mono<List<String>> miljoerMono = miljoer.isEmpty() ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
+        if (miljoer.isEmpty()) {
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
+        }
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
-            var tpsPersoner = readFromTps(request.getIdent(),
-                    nonNull(request.getAksjonsdato()) ? request.getAksjonsdato() : LocalDate.now(),
-                    resolvedMiljoer);
+        var tpsPersoner = readFromTps(request.getIdent(),
+                nonNull(request.getAksjonsdato()) ? request.getAksjonsdato() : LocalDate.now(),
+                miljoer);
 
-            return tpsPersoner.entrySet().stream()
-                    .map(entry -> {
-                        var status = ResponseStatus.decodeStatus(nonNull(entry.getValue()) &&
-                                nonNull(entry.getValue().getTpsPersonData()) ?
-                                entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus() : null);
-                        return AdressehistorikkDTO.builder()
-                                .miljoe(entry.getKey())
-                                .status(mapperFacade.map(status, AdressehistorikkDTO.TpsMeldingResponse.class))
-                                .persondata("OK".equals(status.getReturStatus()) ?
-                                        mapAdressehistorikk(request.getIdent(),
-                                                entry.getValue().getTpsPersonData().getTpsSvar().getPersonDataS018()) :
-                                        null)
-                                .build();
-                    })
-                    .toList();
-        }).subscribeOn(Schedulers.boundedElastic()));
+        return tpsPersoner.entrySet().stream()
+                .map(entry -> {
+                    var status = ResponseStatus.decodeStatus(nonNull(entry.getValue()) &&
+                            nonNull(entry.getValue().getTpsPersonData()) ?
+                            entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus() : null);
+                    return AdressehistorikkDTO.builder()
+                            .miljoe(entry.getKey())
+                            .status(mapperFacade.map(status, AdressehistorikkDTO.TpsMeldingResponse.class))
+                            .persondata("OK".equals(status.getReturStatus()) ?
+                                    mapAdressehistorikk(request.getIdent(),
+                                            entry.getValue().getTpsPersonData().getTpsSvar().getPersonDataS018()) :
+                                    null)
+                            .build();
+                })
+                .toList();
     }
 
     private AdressehistorikkDTO.PersonData mapAdressehistorikk(String ident, S018PersonType persondataS18) {

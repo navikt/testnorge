@@ -7,7 +7,6 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,29 +15,32 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetOrdreCommand implements Callable<Mono<List<ItemDTO>>> {
+public class GetOrdreCommand implements Callable<List<ItemDTO>> {
     private final WebClient webClient;
     private final String token;
     private final String ordreId;
 
     @Override
-    public Mono<List<ItemDTO>> call() {
+    public List<ItemDTO> call() {
         log.info("Henter ordre med ordreId {}.", ordreId);
-        return webClient
-                .get()
-                .uri(builder -> builder
-                        .path("/api/v1/order/{ordreId}/items")
-                        .build(ordreId))
-                .headers(WebClientHeader.bearer(token))
-                .retrieve()
-                .bodyToMono(ItemDTO[].class)
-                .retryWhen(WebClientError.is5xxException())
-                .map(response -> Optional.ofNullable(response)
-                        .map(Arrays::asList)
-                        .orElse(List.of()))
-                .onErrorResume(WebClientResponseException.NotFound.class, e -> {
-                    log.warn("Fant ikke ordre med ordreId {}.", ordreId);
-                    return Mono.just(List.of());
-                });
+        try {
+            var response = webClient
+                    .get()
+                    .uri(builder -> builder
+                            .path("/api/v1/order/{ordreId}/items")
+                            .build(ordreId))
+                    .headers(WebClientHeader.bearer(token))
+                    .retrieve()
+                    .bodyToMono(ItemDTO[].class)
+                    .retryWhen(WebClientError.is5xxException())
+                    .block();
+            return Optional
+                    .ofNullable(response)
+                    .map(Arrays::asList)
+                    .orElse(List.of());
+        } catch (WebClientResponseException.NotFound e) {
+            log.warn("Fant ikke ordre med ordreId {}.", ordreId);
+            return null;
+        }
     }
 }

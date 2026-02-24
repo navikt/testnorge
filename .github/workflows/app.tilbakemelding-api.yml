@@ -8,7 +8,8 @@ on:
       - libs/data-transfer-objects/**
       - libs/reactive-core/**
       - libs/security-core/**
-      - libs/reactive-security/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
       - libs/slack/**
       - libs/testing/**
       - plugins/**

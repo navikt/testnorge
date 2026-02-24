@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import static no.nav.registre.testnorge.helsepersonellservice.config.CachingConfig.CACHE_HELSEPERSONELL;
 
@@ -21,9 +20,8 @@ public class HelsepersonellController {
 
     @Cacheable(CACHE_HELSEPERSONELL)
     @GetMapping
-    public Mono<HelsepersonellListeDTO> getHelsepersonell() {
+    public HelsepersonellListeDTO getHelsepersonell() {
 
-        return helsepersonellService.getHelsepersonell()
-                .map(HelsepersonellListeDTO::new);
+        return new HelsepersonellListeDTO(helsepersonellService.getHelsepersonell());
     }
 }

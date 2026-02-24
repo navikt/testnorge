@@ -45,7 +45,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                             destinasjon.setAdresselinje1(format("%s %s", kilde.getVegadresse().getAdressenavn(),
                                     kilde.getVegadresse().getHusnummer()));
                             destinasjon.setPostnummer(kilde.getVegadresse().getPostnummer());
-                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getVegadresse().getPostnummer()).block());
+                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getVegadresse().getPostnummer()));
                             destinasjon.setLandkode(LANDKODE_NORGE);
 
                         } else if (nonNull(kilde.getUtenlandskAdresse())) {
@@ -62,7 +62,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                                     kilde.getMatrikkeladresse().getGaardsnummer(),
                                     kilde.getMatrikkeladresse().getBruksnummer()));
                             destinasjon.setPostnummer(kilde.getMatrikkeladresse().getPostnummer());
-                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getMatrikkeladresse().getPostnummer()).block());
+                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getMatrikkeladresse().getPostnummer()));
                             destinasjon.setLandkode(LANDKODE_NORGE);
 
                         } else {
@@ -98,7 +98,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                         destinasjon.setAdresselinje2(adresselinjer.size() > 1 ? adresselinjer.get(1) : null);
                         destinasjon.setPostnummer((String) kilde.get("postnr"));
 
-                        destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()).block());
+                        destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()));
                         destinasjon.setLandkode(mapCountryCode((String) kilde.get("landkode")));
                     }
                 })

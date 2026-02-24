@@ -1,8 +1,6 @@
 spring:
   config:
     import: "dolly-application.yml"
-  main:
-    web-application-type: reactive
   jpa:
     properties:
       hibernate:
