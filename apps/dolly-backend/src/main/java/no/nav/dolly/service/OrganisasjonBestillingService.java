@@ -298,7 +298,7 @@ public class OrganisasjonBestillingService {
 
     private String forvalterStatusDetails(OrgStatus orgStatus) {
         if (isNull(orgStatus) || isNull(orgStatus.getStatus())) {
-            return "OK";
+            return "Deployer";
         }
         return switch (orgStatus.getStatus()) {
             case COMPLETED -> "OK";
