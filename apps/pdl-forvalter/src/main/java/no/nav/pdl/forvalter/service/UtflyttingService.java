@@ -38,15 +38,15 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     public Mono<Void> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getUtflytting())
-                        .filter(type -> isTrue(type.getIsNew()))
-                        .flatMap(type -> handle(type, person))
-                        .doOnNext(type -> {
-                            type.setKilde(getKilde(type));
-                            type.setMaster(getMaster(type, person));
-                        })
-                        .collectList()
-                        .doOnNext(utflytting -> person.setUtflytting(new ArrayList<>(utflytting)))
-                        .then();
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, person))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(utflytting -> person.setUtflytting(new ArrayList<>(utflytting)))
+                .then();
     }
 
     @Override
@@ -55,69 +55,84 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
         if (isNotBlank(utflytting.getTilflyttingsland()) && !hasLandkode(utflytting.getTilflyttingsland())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
-        return  Mono.empty();
+        return Mono.empty();
     }
 
     protected Mono<UtflyttingDTO> handle(UtflyttingDTO utflytting, PersonDTO person) {
 
-        if (isBlank(utflytting.getTilflyttingsland())) {
-            utflytting.setTilflyttingsland(kodeverkConsumer.getTilfeldigLand());
-        }
+        return getUtflytting(utflytting, person)
+                .doOnNext(utflytting1 -> {
+                    if (person.getFolkeregisterPersonstatus().stream()
+                            .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getStatus()) ||
+                                                                 UTFLYTTET == folkeregisterPersonstatus.getStatus())
+                            .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getGyldigFraOgMed()) ||
+                                                                 folkeregisterPersonstatus.getGyldigFraOgMed().equals(utflytting.getUtflyttingsdato()))
+                            .findFirst()
+                            .isEmpty()) {
 
-        if (isNull(utflytting.getUtflyttingsdato())) {
-            utflytting.setUtflyttingsdato(LocalDateTime.now());
-        }
+                        person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
+                                .isNew(true)
+                                .id(person.getFolkeregisterPersonstatus().stream()
+                                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
+                                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
+                                            .getId() + 1)
+                                .build());
+                    }
+                });
+    }
 
-        person.getBostedsadresse()
-                .removeIf(bostedsadresse -> bostedsadresse.isAdresseNorge() &&
-                        bostedsadresse.getGyldigFraOgMed().isAfter(utflytting.getUtflyttingsdato()));
+    private Mono<UtflyttingDTO> getUtflytting(UtflyttingDTO utflytting, PersonDTO person) {
 
-        if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().getFirst().isAdresseNorge()) {
-            person.getBostedsadresse().getFirst().setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
-        }
 
-        if (utflytting.isVelkjentLand() && person.getBostedsadresse().stream()
-                .filter(BostedadresseDTO::isAdresseUtland)
-                .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
-                        adresse.getGyldigTilOgMed().isAfter(utflytting.getUtflyttingsdato()))
-                .findFirst()
-                .isEmpty() && person.getKontaktadresse().stream()
-                .filter(KontaktadresseDTO::isAdresseUtland)
-                .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
-                        adresse.getGyldigTilOgMed().isAfter(utflytting.getUtflyttingsdato()))
-                .findFirst()
-                .isEmpty()) {
+        return Mono.just(utflytting)
+                .flatMap(utflytting1 ->
+                        isBlank(utflytting1.getTilflyttingsland()) ?
+                                kodeverkConsumer.getTilfeldigLand()
+                                        .doOnNext(utflytting1::setTilflyttingsland)
+                                        .thenReturn(utflytting1) :
+                                Mono.just(utflytting1))
+                .flatMap(utflytting2 -> {
 
-            person.getKontaktadresse().addFirst(KontaktadresseDTO.builder()
-                    .utenlandskAdresse(UtenlandskAdresseDTO.builder()
-                            .landkode(utflytting.getTilflyttingsland())
-                            .build())
-                    .gyldigFraOgMed(utflytting.getUtflyttingsdato())
-                    .isNew(true)
-                    .id(person.getKontaktadresse().stream()
-                            .max(Comparator.comparing(KontaktadresseDTO::getId))
-                            .orElse(KontaktadresseDTO.builder().id(0).build())
-                            .getId() + 1)
-                    .build()
-            );
-            kontaktAdresseService.convert(person, false);
-        }
+                    if (isNull(utflytting2.getUtflyttingsdato())) {
+                        utflytting2.setUtflyttingsdato(LocalDateTime.now());
+                    }
 
-        if (person.getFolkeregisterPersonstatus().stream()
-                .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getStatus()) ||
-                        UTFLYTTET == folkeregisterPersonstatus.getStatus())
-                .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getGyldigFraOgMed()) ||
-                        folkeregisterPersonstatus.getGyldigFraOgMed().equals(utflytting.getUtflyttingsdato()))
-                .findFirst()
-                .isEmpty()) {
+                    person.getBostedsadresse()
+                            .removeIf(bostedsadresse -> bostedsadresse.isAdresseNorge() &&
+                                                        bostedsadresse.getGyldigFraOgMed().isAfter(utflytting2.getUtflyttingsdato()));
 
-            person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
-                    .isNew(true)
-                    .id(person.getFolkeregisterPersonstatus().stream()
-                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
-                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
-                            .getId() + 1)
-                    .build());
-        }
+                    if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().getFirst().isAdresseNorge()) {
+                        person.getBostedsadresse().getFirst().setGyldigTilOgMed(utflytting2.getUtflyttingsdato().minusDays(1));
+                    }
+
+                    if (utflytting2.isVelkjentLand() && person.getBostedsadresse().stream()
+                            .filter(BostedadresseDTO::isAdresseUtland)
+                            .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
+                                               adresse.getGyldigTilOgMed().isAfter(utflytting2.getUtflyttingsdato()))
+                            .findFirst()
+                            .isEmpty() && person.getKontaktadresse().stream()
+                                .filter(KontaktadresseDTO::isAdresseUtland)
+                                .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
+                                                   adresse.getGyldigTilOgMed().isAfter(utflytting2.getUtflyttingsdato()))
+                                .findFirst()
+                                .isEmpty()) {
+
+                        person.getKontaktadresse().addFirst(KontaktadresseDTO.builder()
+                                .utenlandskAdresse(UtenlandskAdresseDTO.builder()
+                                        .landkode(utflytting2.getTilflyttingsland())
+                                        .build())
+                                .gyldigFraOgMed(utflytting2.getUtflyttingsdato())
+                                .isNew(true)
+                                .id(person.getKontaktadresse().stream()
+                                            .max(Comparator.comparing(KontaktadresseDTO::getId))
+                                            .orElse(KontaktadresseDTO.builder().id(0).build())
+                                            .getId() + 1)
+                                .build());
+
+                        return kontaktAdresseService.convert(person, false)
+                                .thenReturn(utflytting2);
+                    }
+                    return Mono.just(utflytting2);
+                });
     }
 }
