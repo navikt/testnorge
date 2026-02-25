@@ -53,6 +53,7 @@ import {
 	harDokarkivBestilling,
 	harHistarkBestilling,
 	harInntektsmeldingBestilling,
+	harInntektstubBestilling,
 	harInstBestilling,
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
@@ -348,8 +349,12 @@ export default (props: PersonVisningProps) => {
 	const manglerFagsystemdata = (): boolean => {
 		const checks: Array<{ condition: boolean; reason: string }> = [
 			{
-				condition: [inntektstub, krrstub].some((fs) => Array.isArray(fs) && fs.length === 0),
-				reason: 'Tomt inntektstub eller krrstub',
+				condition: Array.isArray(krrstub) && krrstub.length === 0,
+				reason: 'Krrstub mangler data',
+			},
+			{
+				condition: !inntektstub && harInntektstubBestilling(bestillingerFagsystemer),
+				reason: 'Inntektstub mangler data',
 			},
 			{
 				condition: !!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
@@ -609,7 +614,11 @@ export default (props: PersonVisningProps) => {
 					data={sigrunstubSummertSkattegrunnlag}
 					loading={loadingSigrunstubSummertSkattegrunnlag}
 				/>
-				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
+				<InntektstubVisning
+					liste={inntektstub}
+					loading={loading.inntektstub}
+					harInntektstubBestilling={harInntektstubBestilling(bestillingerFagsystemer)}
+				/>
 				<InntektsmeldingVisning
 					liste={inntektsmeldingData as any}
 					ident={ident.ident}
