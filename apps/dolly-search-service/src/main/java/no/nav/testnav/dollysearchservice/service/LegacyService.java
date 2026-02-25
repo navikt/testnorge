@@ -5,11 +5,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
-import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonSearch;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +23,7 @@ public class LegacyService {
     private final OpenSearchQueryService openSearchQueryService;
     private final MapperFacade mapperFacade;
 
-    public Flux<PersonDTO> searchPersoner(PersonSearch personSearch) {
+    public List<PersonDTO> searchPersoner(PersonSearch personSearch) {
 
         var personRequest = SearchRequest.builder()
                 .seed(personSearch.getRandomSeed())
@@ -37,9 +36,8 @@ public class LegacyService {
         query.mustNot(q -> q.terms(termsQuery("tags", Set.of("DOLLY", "ARENASYNT"))));
         query.must(q -> q.match(matchQuery("tags", "TESTNORGE")));
 
-        return openSearchQueryService.execQuery(personRequest, query)
-                .map(this::formatResponse)
-                .flatMapMany(Flux::fromIterable);
+        var response = openSearchQueryService.execQuery(personRequest, query);
+        return formatResponse(response);
     }
 
     private List<PersonDTO> formatResponse(SearchInternalResponse response) {

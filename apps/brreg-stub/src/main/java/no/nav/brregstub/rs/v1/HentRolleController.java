@@ -4,6 +4,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brregstub.api.common.RsOrganisasjon;
+import no.nav.brregstub.exception.CouldNotCreateStubException;
+import no.nav.brregstub.exception.NotFoundException;
+import no.nav.brregstub.service.HentRolleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,11 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-
-import no.nav.brregstub.api.common.RsOrganisasjon;
-import no.nav.brregstub.exception.CouldNotCreateStubException;
-import no.nav.brregstub.exception.NotFoundException;
-import no.nav.brregstub.service.HentRolleService;
 
 @Validated
 @Slf4j

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,7 +21,7 @@ public class JournalpostController {
     private final DokumentService service;
 
     @GetMapping
-    public JournalpostDTO hentJournalpost(
+    public Mono<JournalpostDTO> hentJournalpost(
             @RequestHeader("miljo") String miljo,
             @PathVariable("journalpostId") String journalpostId) {
 
@@ -28,33 +29,25 @@ public class JournalpostController {
     }
 
     @GetMapping("/dokumenter/{dokumentInfoId}")
-    public ResponseEntity<String> hentDokument(
+    public Mono<ResponseEntity<String>> hentDokument(
             @RequestHeader("miljo") String miljo,
             @PathVariable("dokumentInfoId") String dokumentInfoId,
             @PathVariable("journalpostId") String journalpostId,
             @RequestParam DokumentType dokumentType
     ) {
-        var dokument = service.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo);
-
-        if (dokument == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(dokument);
+        return service.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/dokumenter/{dokumentInfoId}/pdf")
-    public ResponseEntity<byte[]> hentPDF(
+    public Mono<ResponseEntity<byte[]>> hentPDF(
             @RequestHeader("miljo") String miljo,
             @PathVariable("dokumentInfoId") String dokumentInfoId,
             @PathVariable("journalpostId") String journalpostId
     ) {
-        var dokument = service.getPDF(journalpostId, dokumentInfoId, miljo);
-
-        if (dokument == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(dokument);
+        return service.getPDF(journalpostId, dokumentInfoId, miljo)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 }

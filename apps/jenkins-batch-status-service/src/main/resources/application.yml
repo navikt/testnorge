@@ -3,6 +3,8 @@ spring:
     name: jenkins-batch-status-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Tjeneste for å hente ut batch status fra EREG.
+  main:
+    web-application-type: reactive
   config:
     import: "dolly-application.yml"
   security:

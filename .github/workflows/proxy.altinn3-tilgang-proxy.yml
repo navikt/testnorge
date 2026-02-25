@@ -7,7 +7,7 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/security-core/**
-      - libs/servlet-insecure-security/**
+      - libs/reactive-standalone-security/**
       - libs/testing/**
       - plugins/**
       - proxies/altinn3-tilgang-proxy/**

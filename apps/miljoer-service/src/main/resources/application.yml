@@ -2,6 +2,8 @@ config:
   miljoer: q1, q2, q4, qx
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: miljoer-service
     description: App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
