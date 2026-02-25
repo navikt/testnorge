@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import * as _ from 'lodash-es'
 import { dollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
 import { DollyApi } from '@/service/Api'
-import { codeToNorskLabel } from '@/utils/DataFormatter'
+import { getLabel } from '@/components/ui/soekForm/utils'
 
 export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
@@ -74,11 +74,12 @@ export default () => {
 		const updatedRequest = { ...values, [path]: list, side: 0, seed: null }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
+
 		if (value?.length > 0) {
 			const request = value.map((i) => ({
 				path: path,
 				value: i.value ?? i,
-				label: label?.includes(':') ? label : `${label}: ${i.label ?? codeToNorskLabel(i)}`,
+				label: getLabel(i.value ?? i, lagreSoekRequest, path, label),
 			}))
 			setLagreSoekRequest({
 				...lagreSoekRequest,
