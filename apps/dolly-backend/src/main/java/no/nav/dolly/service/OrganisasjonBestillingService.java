@@ -309,12 +309,17 @@ public class OrganisasjonBestillingService {
 
     private Mono<List<OrgStatus>> getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
+        var bestilteMiljoer = Set.of(bestilling.getMiljoer().split(","));
+
         return organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()))
                 .doOnNext(status ->
                         log.info("Status for org deploy på org: {} - {}", bestillingProgress.getOrganisasjonsnummer(), status))
                 .switchIfEmpty(Mono.empty())
                 .flatMap(organisasjonDeployStatus -> Mono.just(organisasjonDeployStatus.getOrgStatus()
-                        .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList())))
+                        .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList())
+                        .stream()
+                        .filter(orgStatus -> bestilteMiljoer.contains(orgStatus.getEnvironment()))
+                        .toList()))
                 .flatMap(orgStatus -> updateBestilling(bestilling, orgStatus)
                         .thenReturn(orgStatus))
                 .flatMap(organisasjonDeployStatus -> {
