@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.bestilling.skattekort.domain.SokosSkattekortRequest;
+import no.nav.dolly.bestilling.skattekort.domain.SkattekortRequest;
 import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
@@ -93,7 +93,7 @@ public class BestillingDokument implements Persistable<Long> {
     
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     
-    private SokosSkattekortRequest skattekort;
+    private SkattekortRequest skattekort;
     
     private List<YrkesskadeRequest> yrkesskader;
     

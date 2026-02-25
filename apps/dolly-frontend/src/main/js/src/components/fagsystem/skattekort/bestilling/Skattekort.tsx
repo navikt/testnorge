@@ -20,7 +20,7 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 	return (
 		<div className="bestilling-visning">
 			<ErrorBoundary>
-				<BestillingTitle>Skattekort (SOKOS)</BestillingTitle>
+				<BestillingTitle>Nav skattekort</BestillingTitle>
 				<DollyFieldArray header="Skattekort" data={skattekort?.arbeidsgiverSkatt}>
 					{(arbeidsgiver: ArbeidsgiverSkatt, idx: number) => {
 						const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
@@ -38,24 +38,11 @@ export const Skattekort = ({ skattekort }: SkattekortTypes) => {
 									title="Utstedt dato"
 									value={formatDate(arbeidstaker?.skattekort?.utstedtDato)}
 								/>
-								<TitleValue
-									title="Skattekortidentifikator"
-									value={arbeidstaker?.skattekort?.skattekortidentifikator}
-								/>
 								<KodeverkTitleValue
 									kodeverkstype="TILLEGGSOPPLYSNING"
 									value={arbeidstaker?.tilleggsopplysning}
 									label="Tilleggsopplysning"
 								/>
-								<TitleValue
-									title="Arbeidsgiver (org.nr.)"
-									value={arbeidsgiver?.arbeidsgiveridentifikator?.organisasjonsnummer}
-								/>
-								<TitleValue
-									title="Arbeidsgiver (ident)"
-									value={arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator}
-								/>
-
 								<DollyFieldArray header="Forskuddstrekk" data={trekkListe} nested>
 									{(trekk: Forskuddstrekk, idx: number) => {
 										const forskuddstrekkType = Object.keys(trekk)?.filter((key) => trekk[key])?.[0]

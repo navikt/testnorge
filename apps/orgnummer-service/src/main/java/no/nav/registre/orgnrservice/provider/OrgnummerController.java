@@ -1,6 +1,7 @@
 package no.nav.registre.orgnrservice.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.orgnrservice.domain.Organisasjon;
 import no.nav.registre.orgnrservice.service.OrgnummerService;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.constraints.Pattern;
 import java.util.List;
 
 @RestController

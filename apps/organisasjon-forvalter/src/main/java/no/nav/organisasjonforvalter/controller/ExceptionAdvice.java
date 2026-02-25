@@ -1,5 +1,6 @@
 package no.nav.organisasjonforvalter.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UrlPathHelper;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -22,19 +22,6 @@ public class ExceptionAdvice {
 
         private final HttpServletRequest httpServletRequest;
         private final UrlPathHelper urlPathHelper;
-
-        @ResponseBody
-        @ExceptionHandler(HttpClientErrorException.class)
-        @ResponseStatus(value = HttpStatus.GONE)
-        ExceptionInformation clientErrorException(HttpClientErrorException exception) {
-            return ExceptionInformation.builder()
-                    .error(exception.getStatusText())
-                    .status(exception.getStatusCode().value())
-                    .message(exception.getMessage())
-                    .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
-                    .timestamp(LocalDateTime.now())
-                    .build();
-        }
 
         @Data
         @Builder
@@ -47,5 +34,18 @@ public class ExceptionAdvice {
             private String path;
             private Integer status;
             private LocalDateTime timestamp;
+        }
+
+        @ResponseBody
+        @ExceptionHandler(HttpClientErrorException.class)
+        @ResponseStatus(value = HttpStatus.GONE)
+        ExceptionInformation clientErrorException(HttpClientErrorException exception) {
+            return ExceptionInformation.builder()
+                    .error(exception.getStatusText())
+                    .status(exception.getStatusCode().value())
+                    .message(exception.getMessage())
+                    .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
+                    .timestamp(LocalDateTime.now())
+                    .build();
         }
 }

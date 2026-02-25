@@ -9,6 +9,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -19,7 +20,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -63,10 +63,6 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final OrganisasjonForvalterConsumer organisasjonForvalterConsumer;
     private final EnkelAdresseService enkelAdresseService;
-
-    private static String blankCheck(String value, String defaultValue) {
-        return isNotBlank(value) ? value : defaultValue;
-    }
 
     public List<KontaktinformasjonForDoedsboDTO> convert(PersonDTO person) {
 
@@ -332,5 +328,9 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         kontakt.setIdentifikasjonsnummer(
                 createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());
+    }
+
+    private static String blankCheck(String value, String defaultValue) {
+        return isNotBlank(value) ? value : defaultValue;
     }
 }

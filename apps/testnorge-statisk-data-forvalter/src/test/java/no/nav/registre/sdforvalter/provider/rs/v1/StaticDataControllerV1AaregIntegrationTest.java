@@ -2,12 +2,12 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.registre.sdforvalter.domain.AaregListe;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

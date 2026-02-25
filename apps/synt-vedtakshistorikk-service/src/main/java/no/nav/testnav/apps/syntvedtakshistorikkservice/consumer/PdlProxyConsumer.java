@@ -11,7 +11,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.Pdl
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.FilLaster;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -30,12 +30,11 @@ import static java.util.Objects.nonNull;
 @Service
 public class PdlProxyConsumer {
 
+    private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
+    private static final String BOLK_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
-
-    private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
-    private static final String BOLK_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
 
     public PdlProxyConsumer(
             Consumers consumers,
@@ -83,16 +82,6 @@ public class PdlProxyConsumer {
 
     }
 
-    private static String getQueryFromFile(String file) {
-        try (var reader = new BufferedReader(new InputStreamReader(FilLaster.instans().lastRessurs(file), StandardCharsets.UTF_8))) {
-            return reader.lines().collect(Collectors.joining("\n"));
-
-        } catch (IOException e) {
-            log.error("Lesing av query ressurs {} feilet", SINGLE_PERSON_QUERY, e);
-            return null;
-        }
-    }
-
     public boolean createTags(List<String> identer, List<Tags> tags) {
         try {
             if (isNull(identer) || identer.isEmpty()) return false;
@@ -127,6 +116,16 @@ public class PdlProxyConsumer {
         } catch (Exception e) {
             log.error("Feil i sletting av tag(s) på ident(er).", e);
             return false;
+        }
+    }
+
+    private static String getQueryFromFile(String file) {
+        try (var reader = new BufferedReader(new InputStreamReader(FilLaster.instans().lastRessurs(file), StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+
+        } catch (IOException e) {
+            log.error("Lesing av query ressurs {} feilet", SINGLE_PERSON_QUERY, e);
+            return null;
         }
     }
 }

@@ -18,7 +18,6 @@ import static java.util.Objects.isNull;
 public class Skattekort {
 
     private LocalDate utstedtDato;
-    private Long skattekortidentifikator;
     private List<Forskuddstrekk> forskuddstrekk;
 
     public List<Forskuddstrekk> getForskuddstrekk() {

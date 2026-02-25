@@ -13,6 +13,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useReduxSelector } from '@/utils/hooks/useRedux'
+import { organisasjonerSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 type OrganisasjonListeProps = {
 	bestillinger: Array<EnhetBestilling>
@@ -185,6 +186,7 @@ export default function OrganisasjonListe({
 				columns={columns}
 				visSide={sidetall}
 				pagination
+				manualLocalStorageKey={organisasjonerSideStoerrelseLocalStorageKey}
 				iconItem={<OrganisasjonItem />}
 				onExpand={(organisasjon: EnhetData) => (
 					<OrganisasjonVisning data={organisasjon} bestillinger={bestillinger} />

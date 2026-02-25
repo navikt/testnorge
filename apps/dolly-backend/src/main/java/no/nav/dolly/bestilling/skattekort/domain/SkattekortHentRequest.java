@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdentifikatorForEnhetEllerPerson {
+public class SkattekortHentRequest {
 
-    private String organisasjonsnummer;
-    private String personidentifikator;
-
+    private String fnr;
+    private Integer inntektsaar;
 }

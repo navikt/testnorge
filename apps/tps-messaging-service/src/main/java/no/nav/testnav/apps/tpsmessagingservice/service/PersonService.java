@@ -26,6 +26,7 @@ import no.nav.tps.ctg.s610.domain.RelasjonType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
@@ -88,14 +89,13 @@ public class PersonService {
         }
     }
 
-    public List<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
+    public Mono<List<PersonMiljoeDTO>> getPerson(String ident, List<String> miljoer) {
 
-            if (miljoer.isEmpty()) {
-                miljoer = testmiljoerServiceConsumer.getMiljoer()
-                        .stream()
-                        .filter(miljoe -> !miljoe.contains("q1") && !miljoe.contains("q2"))
-                        .toList();
-            }
+        return resolveMiljoer(miljoer, true)
+                .flatMap(resolvedMiljoer -> Mono.just(getPersonInternal(ident, resolvedMiljoer)));
+    }
+
+    private List<PersonMiljoeDTO> getPersonInternal(String ident, List<String> miljoer) {
 
         try {
             var tpsPersoner = readFromTps(ident, miljoer);
@@ -239,6 +239,20 @@ public class PersonService {
     private static boolean isStatusOK(TpsMeldingResponse response) {
 
         return STATUS_OK.equals(response.getReturStatus());
+    }
+
+    private Mono<List<String>> resolveMiljoer(List<String> miljoer, boolean filterQ1Q2) {
+
+        if (nonNull(miljoer) && !miljoer.isEmpty()) {
+            return Mono.just(miljoer);
+        }
+        var mono = testmiljoerServiceConsumer.getMiljoer();
+        if (filterQ1Q2) {
+            mono = mono.map(list -> list.stream()
+                    .filter(miljoe -> !miljoe.contains("q1") && !miljoe.contains("q2"))
+                    .toList());
+        }
+        return mono;
     }
 
     @Data

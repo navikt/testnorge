@@ -19,7 +19,7 @@ spec:
       rules:
         - application: dolly-frontend
         - application: dolly-idporten
-        - application: histark-core-api
+        - application: histark-proxy-dolly
           namespace: histark
           cluster: dev-fss
         - application: etterlatte-testdata

@@ -107,9 +107,10 @@ public class TestpersonController {
     @Operation(description = "Naviger til ønsket testperson")
     @Transactional
     @GetMapping("/naviger/{ident}")
-    public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
+    public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident,
+                                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
 
-        return navigasjonService.navigerTilIdent(ident);
+        return navigasjonService.navigerTilIdent(ident, pageSize);
     }
 
     @Operation(description = "Sjekk om ønsket testperson finnes i Dolly")

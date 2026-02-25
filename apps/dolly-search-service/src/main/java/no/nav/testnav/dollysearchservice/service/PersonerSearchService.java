@@ -10,7 +10,6 @@ import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchResponse;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,14 +34,14 @@ public class PersonerSearchService {
     private final MapperFacade mapperFacade;
     private final OpenSearchQueryService openSearchQueryService;
 
-    public Mono<SearchResponse> search(SearchRequest searchRequest, List<ElasticTyper> registreRequest) {
+    public SearchResponse search(SearchRequest searchRequest, List<ElasticTyper> registreRequest) {
 
         log.info("Mottok søkeforespørsel: searchRequest={}, registreRequest={}",
                 searchRequest, registreRequest);
 
         if (isNull(searchRequest)) {
             log.warn("SearchRequest er null, returnerer tom respons");
-            return Mono.just(new SearchResponse());
+            return new SearchResponse();
         }
 
         var safeRegistreRequest = isNull(registreRequest) ? Collections.<ElasticTyper>emptyList() : registreRequest;
@@ -62,7 +61,6 @@ public class PersonerSearchService {
             identer = bestillingQueryService.execRegisterNoCacheQuery(request).stream()
                     .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
                     .collect(Collectors.toSet());
-
         } else {
 
             log.debug("Utfører registersøk med cache");
@@ -76,9 +74,8 @@ public class PersonerSearchService {
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
         addIdenterQuery(query, request.getIdenter());
 
-        return openSearchQueryService.execQuery(request, query)
-                .map(response -> mapperFacade.map(response, SearchResponse.class))
-                .doOnError(error -> log.error("Feil ved søk i OpenSearch: {}", error.getMessage(), error));
+        var response = openSearchQueryService.execQuery(request, query);
+        return mapperFacade.map(response, SearchResponse.class);
     }
 
     public List<Kategori> getTyper() {

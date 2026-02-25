@@ -25,25 +25,25 @@ type ForskuddstrekkProps = {
 
 const initialFrikort = {
 	frikort: {
-		trekkode: '',
-		frikortbeloep: null,
+		trekkode: 'LOENN_FRA_NAV',
+		frikortbeloep: 50000,
 	},
 }
 
 export const initialTrekktabell = {
 	trekktabell: {
-		trekkode: '',
-		tabellnummer: '',
-		prosentsats: null,
-		antallMaanederForTrekk: null,
+		trekkode: 'LOENN_FRA_NAV',
+		tabellnummer: '8020',
+		prosentsats: 35.3,
+		antallMaanederForTrekk: 10.5,
 	},
 }
 
 const initialTrekkprosent = {
 	trekkprosent: {
-		trekkode: '',
-		prosentsats: null,
-		antallMaanederForTrekk: null,
+		trekkode: 'LOENN_FRA_NAV',
+		prosentsats: 50,
+		antallMaanederForTrekk: 12,
 	},
 }
 

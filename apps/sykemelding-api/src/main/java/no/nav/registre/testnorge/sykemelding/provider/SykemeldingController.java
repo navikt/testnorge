@@ -24,11 +24,11 @@ public class SykemeldingController {
     private final ApplicationInfo applicationInfo;
 
     @PostMapping
-    public SykemeldingResponseDTO create(@RequestBody SykemeldingDTO dto) {
+    public Mono<SykemeldingResponseDTO> create(@RequestBody SykemeldingDTO dto) {
 
         log.info("Mottatt sykemelding: {}", dto);
 
-        return sykemeldingService.send(new Sykemelding(dto, applicationInfo));
+        return Mono.just(sykemeldingService.send(new Sykemelding(dto, applicationInfo)));
     }
 
     @PostMapping(value = "/validate")
