@@ -1,6 +1,7 @@
 import React from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
 
 // @ts-ignore
 export const BankinformasjonPanel = ({ stateModifier, formValues }) => {
@@ -26,6 +27,10 @@ export const BankinformasjonPanel = ({ stateModifier, formValues }) => {
 			}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'bankkonto'}
+			startOpen={harValgtAttributt(formValues, [
+				'bankkonto.utenlandskBankkonto',
+				'bankkonto.norskBankkonto',
+			])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt
