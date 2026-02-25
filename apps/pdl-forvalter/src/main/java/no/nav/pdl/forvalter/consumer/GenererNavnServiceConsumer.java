@@ -42,14 +42,12 @@ public class GenererNavnServiceConsumer {
 
         return Arrays.stream(tokenExchange.exchange(serverProperties)
                         .flatMap(token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
-                        .block())
-                .findFirst();
+                .next());
     }
 
-    public Boolean verifyNavn(NavnDTO navn) {
+    public Mono<Boolean> verifyNavn(NavnDTO navn) {
 
         return tokenExchange.exchange(serverProperties).flatMap(
-                        token -> new VerifiserNavnServiceCommand(webClient, NAVN_CHECK_URL, navn, token.getTokenValue()).call())
-                .block();
+                        token -> new VerifiserNavnServiceCommand(webClient, NAVN_CHECK_URL, navn, token.getTokenValue()).call());
     }
 }
