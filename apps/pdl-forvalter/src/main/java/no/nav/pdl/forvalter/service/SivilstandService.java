@@ -5,10 +5,11 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.ArtifactUtils;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
-import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -17,6 +18,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,10 +34,10 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -51,39 +54,39 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
 
-    public List<SivilstandDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getSivilstand()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-
-                handle(type, person);
-            }
-        }
-
-        var oppdatertSivilstand = enforceIntegrity(person);
-        renumberId(oppdatertSivilstand);
-
-        return oppdatertSivilstand;
+        return Flux.fromIterable(person.getSivilstand())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, person))
+                .filter(Objects::nonNull)
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(sivilstand -> person.setSivilstand(new ArrayList<>(sivilstand)))
+                .map(sivilstand -> enforceIntegrity(person))
+                .doOnNext(ArtifactUtils::renumberId)
+                .then();
     }
 
     @Override
-    public void validate(SivilstandDTO sivilstand, PersonDTO person) {
+    public Mono<Void> validate(SivilstandDTO sivilstand, PersonDTO person) {
 
         if (!isTestnorgeIdent(person.getIdent()) && (sivilstand.isGift() ||
-                sivilstand.isSeparert() ||
-                sivilstand.getType() == SAMBOER) &&
-                isNotBlank(sivilstand.getRelatertVedSivilstand()) &&
-                !personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand())) {
-
-            throw new InvalidRequestException(INVALID_RELATERT_VED_SIVILSTAND);
+                                                     sivilstand.isSeparert() ||
+                                                     sivilstand.getType() == SAMBOER) &&
+            isNotBlank(sivilstand.getRelatertVedSivilstand())) {
+            return personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand())
+                    .flatMap(isRelatert -> isFalse(isRelatert) ?
+                            Mono.error(new InvalidRequestException(INVALID_RELATERT_VED_SIVILSTAND)) :
+                            Mono.empty());
         }
+        return Mono.empty();
     }
 
-    private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private Mono<SivilstandDTO> handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
         if (isNull(sivilstand.getType())) {
 
@@ -99,8 +102,8 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                     sivilstand.setNyRelatertPerson(new PersonRequestDTO());
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
-                        isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
-                        isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
+                    isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
+                    isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
                     var foedselsdato = FoedselsdatoUtility.getFoedselsdato(hovedperson);
                     sivilstand.getNyRelatertPerson().setFoedtFoer(foedselsdato.plusYears(2));
                     sivilstand.getNyRelatertPerson().setFoedtEtter(foedselsdato.minusYears(2));
@@ -131,8 +134,8 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                     fellesAdresse.setGyldigFraOgMed(adressedato);
                     fellesAdresse.setAngittFlyttedato(adressedato);
                     fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
-                            .map(BostedadresseDTO::getId).findFirst()
-                            .orElse(0) + 1);
+                                                .map(BostedadresseDTO::getId).findFirst()
+                                                .orElse(0) + 1);
                     relatertPerson.getBostedsadresse().addFirst(fellesAdresse);
                 }
 
@@ -166,9 +169,9 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
         var relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
         relatertSivilstand.setRelatertVedSivilstand(hovedperson);
         relatertSivilstand.setId(relatertPerson.get().getPerson().getSivilstand().stream()
-                .max(Comparator.comparing(SivilstandDTO::getId))
-                .map(SivilstandDTO::getId)
-                .orElse(0) + 1);
+                                         .max(Comparator.comparing(SivilstandDTO::getId))
+                                         .map(SivilstandDTO::getId)
+                                         .orElse(0) + 1);
 
         relatertPerson.get().getPerson().getSivilstand().addFirst(relatertSivilstand);
 
@@ -187,7 +190,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
         person.getSivilstand().forEach(stand -> {
             if (stand.isUgift() && isNull(stand.getSivilstandsdato())) {
                 stand.setSivilstandsdato(tidligsteSivilstandDato.isPresent() &&
-                        tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
+                                         tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
                         tidligsteSivilstandDato.get().minusMonths(3) :
                         FoedselsdatoUtility.getFoedselsdato(person));
             }

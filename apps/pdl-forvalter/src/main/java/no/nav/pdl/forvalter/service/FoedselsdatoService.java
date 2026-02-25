@@ -56,8 +56,9 @@ public class FoedselsdatoService implements BiValidation<FoedselsdatoDTO, Person
     }
 
     @Override
-    public void validate(FoedselsdatoDTO artifact, PersonDTO personDTO) {
+    public Mono<Void> validate(FoedselsdatoDTO artifact, PersonDTO personDTO) {
 
         // Ingen validering
+        return Mono.empty();
     }
 }

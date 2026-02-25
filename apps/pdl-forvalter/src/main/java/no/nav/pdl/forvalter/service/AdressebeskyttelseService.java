@@ -6,8 +6,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -26,21 +28,22 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
     private static final String VALIDATION_INVALID_BESKYTTELSE = "Adressebeskyttelse: Gradering " +
             "FORTROLIG kan kun settes på personer med fødselsnummer";
 
-    public List<AdressebeskyttelseDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getAdressebeskyttelse()) {
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person);
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-        return person.getAdressebeskyttelse();
+        return Flux.fromIterable(person.getAdressebeskyttelse())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, person))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(adressebeskyttelse -> person.setAdressebeskyttelse(new ArrayList<>(adressebeskyttelse)))
+                .then();
     }
 
     @Override
-    public void validate(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
+    public Mono<Void> validate(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
 
         if (FNR != IdenttypeUtility.getIdenttype(person.getIdent()) &&
                 FORTROLIG == adressebeskyttelse.getGradering()) {
@@ -50,9 +53,10 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
                 Master.FREG == adressebeskyttelse.getMaster()) {
             throw new InvalidRequestException(VALIDATION_UTLAND_MASTER_ERROR);
         }
+        return Mono.empty();
     }
 
-    private void handle(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
+    private Mono<AdressebeskyttelseDTO> handle(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
 
         if (STRENGT_FORTROLIG_UTLAND == adressebeskyttelse.getGradering()) {
             adressebeskyttelse.setMaster(Master.PDL);
@@ -64,5 +68,6 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
             person.setKontaktadresse(null);
             person.getKontaktadresse().add(getStrengtFortroligKontaktadresse());
         }
+        return Mono.just(adressebeskyttelse);
     }
 }

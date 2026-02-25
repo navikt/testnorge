@@ -3,10 +3,11 @@ package no.nav.pdl.forvalter.service;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavPersonIdentifikatorDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import static java.time.LocalDate.now;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -14,24 +15,28 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class NavPersonIdentifikatorService implements Validation<NavPersonIdentifikatorDTO> {
 
-    public List<NavPersonIdentifikatorDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getNavPersonIdentifikator()) {
-            if (isTrue(type.getIsNew())) {
+        return Flux.fromIterable(person.getNavPersonIdentifikator())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(this::handle)
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(identifikator -> person.setNavPersonIdentifikator(new ArrayList<>(identifikator)))
+                .then();
+    }
 
-                type.setIdentifikator(person.getIdent());
-                type.setGyldigFraOgMed(now().minusWeeks(1));
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-
-        return person.getNavPersonIdentifikator();
+    protected Mono<NavPersonIdentifikatorDTO> handle(NavPersonIdentifikatorDTO type) {
+        return Mono.just(type);
     }
 
     @Override
-    public void validate(NavPersonIdentifikatorDTO artifact) {
+    public Mono<Void> validate(NavPersonIdentifikatorDTO artifact) {
 
         // No validation
+        return Mono.empty();
     }
 }

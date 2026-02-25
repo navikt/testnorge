@@ -10,10 +10,12 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -33,28 +35,30 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     private final KodeverkConsumer kodeverkConsumer;
     private final KontaktAdresseService kontaktAdresseService;
 
-    public List<UtflyttingDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getUtflytting()) {
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person);
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-        return person.getUtflytting();
+        return Flux.fromIterable(person.getUtflytting())
+                        .filter(type -> isTrue(type.getIsNew()))
+                        .flatMap(type -> handle(type, person))
+                        .doOnNext(type -> {
+                            type.setKilde(getKilde(type));
+                            type.setMaster(getMaster(type, person));
+                        })
+                        .collectList()
+                        .doOnNext(utflytting -> person.setUtflytting(new ArrayList<>(utflytting)))
+                        .then();
     }
 
     @Override
-    public void validate(UtflyttingDTO utflytting) {
+    public Mono<Void> validate(UtflyttingDTO utflytting) {
 
         if (isNotBlank(utflytting.getTilflyttingsland()) && !hasLandkode(utflytting.getTilflyttingsland())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
+        return  Mono.empty();
     }
 
-    protected void handle(UtflyttingDTO utflytting, PersonDTO person) {
+    protected Mono<UtflyttingDTO> handle(UtflyttingDTO utflytting, PersonDTO person) {
 
         if (isBlank(utflytting.getTilflyttingsland())) {
             utflytting.setTilflyttingsland(kodeverkConsumer.getTilfeldigLand());

@@ -23,6 +23,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     private final MapperFacade mapperFacade;
     private final DeltBostedService deltBostedService;
 
-    public List<ForelderBarnRelasjonDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
         var nyeRelasjoner = new ArrayList<ForelderBarnRelasjonDTO>();
         for (var type : person.getForelderBarnRelasjon()) {
@@ -85,7 +86,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     }
 
     @Override
-    public void validate(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
+    public Mono<Void> validate(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
         if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) &&
                 (nonNull(relasjon.getRelatertPerson()) || nonNull(relasjon.getNyRelatertPerson()))) {
@@ -118,7 +119,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         }
     }
 
-    private List<ForelderBarnRelasjonDTO> handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
+    private Mono<ForelderBarnRelasjonDTO> handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
         var request = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         setRelatertPerson(relasjon, hovedperson);

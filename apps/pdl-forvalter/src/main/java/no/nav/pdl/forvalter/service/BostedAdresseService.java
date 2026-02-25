@@ -72,7 +72,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     }
 
     @Override
-    public void validate(BostedadresseDTO adresse, PersonDTO person) {
+    public Mono<Void> validate(BostedadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
@@ -93,6 +93,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
             validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
         }
+        return Mono.empty();
     }
 
     private Mono<BostedadresseDTO> handle(BostedadresseDTO bostedadresse, PersonDTO person) {

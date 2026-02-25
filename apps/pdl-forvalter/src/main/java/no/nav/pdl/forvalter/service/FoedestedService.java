@@ -12,7 +12,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -103,8 +102,9 @@ public class FoedestedService implements BiValidation<FoedestedDTO, PersonDTO> {
     }
 
     @Override
-    public void validate(FoedestedDTO artifact, PersonDTO person) {
+    public Mono<Void> validate(FoedestedDTO artifact, PersonDTO person) {
 
         // Ingen validering
+        return  Mono.empty();
     }
 }

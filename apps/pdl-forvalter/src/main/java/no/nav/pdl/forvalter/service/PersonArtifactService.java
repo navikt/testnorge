@@ -51,27 +51,27 @@ public class PersonArtifactService {
                 .then(foedestedService.convert(person))
                 .then(statsborgerskapService.convert(person))
                 .then(navnService.convert(person))
-        person.setOppholdsadresse(oppholdsadresseService.convert(person));
-        person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
-        person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
-        person.setUtflytting(utflyttingService.convert(person));
-        person.setOpphold(oppholdService.convert(person.getOpphold()));
-        person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
-        person.setSivilstand(sivilstandService.convert(person));
-        person.setDoedsfall(doedsfallService.convert(person));
-        person.setFullmakt(fullmaktService.convert(person));
-        person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
-        person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService.convert(person));
-        person.setVergemaal(vergemaalService.convert(person));
-        person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));
-        person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
-        person.setForeldreansvar(foreldreansvarService.convert(person));
-        person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
-        person.setDeltBosted(deltBostedService.convert(person));
-        person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
-        person.setNavPersonIdentifikator(navPersonIdentifikatorService.convert(person));
+                .then(oppholdsadresseService.convert(person))
+                .then(adressebeskyttelseService.convert(person))
+                .then(telefonnummerService.convert(person)
+                .then(utflyttingService.convert(person))
+                .then(oppholdService.convert(person))
+                .then(tilrettelagtKommunikasjonService.convert(person))
+                .then(sivilstandService.convert(person))
+                .then(doedsfallService.convert(person))
+                .then(fullmaktService.convert(person))
+                .then(kontaktAdresseService.convert(person, relaxed))
+                .then(utenlandsidentifikasjonsnummerService.convert(person))
+                .then(vergemaalService.convert(person))
+                .then(kontaktinformasjonForDoedsboService.convert(person))
+                .then(forelderBarnRelasjonService.convert(person))
+                .then(foreldreansvarService.convert(person))
+                .then(doedfoedtBarnService.convert(person))
+                .then(deltBostedService.convert(person))
+                .then(sikkerhetstiltakService.convert(person))
+                .then(navPersonIdentifikatorService.convert(person))
 
-        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
+                        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
 
         person = identtypeService.convert(person);
 

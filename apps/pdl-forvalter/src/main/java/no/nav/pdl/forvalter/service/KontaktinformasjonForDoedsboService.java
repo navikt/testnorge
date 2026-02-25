@@ -21,8 +21,11 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -68,22 +72,23 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public List<KontaktinformasjonForDoedsboDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getKontaktinformasjonForDoedsbo()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person.getIdent());
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-        return person.getKontaktinformasjonForDoedsbo();
+        return Flux.fromIterable(person.getKontaktinformasjonForDoedsbo())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, person.getIdent()))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(kontaktinformasjonForDoedsbo ->
+                        person.setKontaktinformasjonForDoedsbo(new ArrayList<>(kontaktinformasjonForDoedsbo)))
+                .then();
     }
 
     @Override
-    public void validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+    public Mono<Void> validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
         if (isNull(kontaktinfo.getSkifteform())) {
             throw new InvalidRequestException(VALIDATION_SKIFTEFORM_MISSING);
@@ -96,13 +101,6 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         if (kontaktinfo.countKontakter() > 1) {
             throw new InvalidRequestException(VALIDATION_ADRESSAT_AMBIGOUS);
-        }
-
-        if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
-                isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()) &&
-                !personRepository.existsByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
-            throw new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
-                    kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
         }
 
         if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
@@ -126,9 +124,21 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                         !isValidOrganisasjonIMiljoe(kontaktinfo.getOrganisasjonSomKontakt())) {
             throw new InvalidRequestException(VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID);
         }
+
+        if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
+            isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+
+            return personRepository.existsByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())
+                    .flatMap(exists -> isFalse(exists) ?
+                            Mono.error(new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
+                                    kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()))) :
+                            Mono.empty());
+        }
+
+        return Mono.empty();
     }
 
-    private void handle(KontaktinformasjonForDoedsboDTO kontaktinfo, String hovedperson) {
+    private Mono<KontaktinformasjonForDoedsboDTO> handle(KontaktinformasjonForDoedsboDTO kontaktinfo, String hovedperson) {
 
         var kontaktinfoOriginal = mapperFacade.map(kontaktinfo, KontaktinformasjonForDoedsboDTO.class);
 

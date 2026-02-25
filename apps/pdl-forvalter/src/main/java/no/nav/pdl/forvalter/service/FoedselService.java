@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -112,8 +111,9 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
     }
 
     @Override
-    public void validate(FoedselDTO artifact, PersonDTO personDTO) {
+    public Mono<Void> validate(FoedselDTO artifact, PersonDTO personDTO) {
 
         // Ingen validering
+        return Mono.empty();
     }
 }
