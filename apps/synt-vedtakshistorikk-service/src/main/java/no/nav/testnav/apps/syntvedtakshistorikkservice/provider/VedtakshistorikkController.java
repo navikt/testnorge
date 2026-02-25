@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,12 @@ public class VedtakshistorikkController {
     private final VedtakshistorikkService vedtakshistorikkService;
 
     @PostMapping("/vedtakshistorikk")
-    public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
+    public Mono<Map<String, List<NyttVedtakResponse>>> genererVedtakshistorikk(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         validateMiljoe(syntetiserArenaRequest.getMiljoe());
-        return vedtakshistorikkService.genererVedtakshistorikk(
+        return Mono.just(vedtakshistorikkService.genererVedtakshistorikk(
                         syntetiserArenaRequest.getMiljoe(),
-                        syntetiserArenaRequest.getAntallNyeIdenter());
+                        syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 }

@@ -14,9 +14,10 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -82,7 +83,7 @@ public class OrganisasjonConsumer {
                         .bodyToMono(OrganisasjonDeployStatus.class)
                         .doOnError(WebClientError.logTo(log))
                         .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> Mono.empty())
+                .onErrorResume(WebClientResponseException.NotFound.class, throwable -> Mono.empty())
                 );
     }
 

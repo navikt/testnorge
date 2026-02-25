@@ -1,19 +1,19 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
 
 import lombok.RequiredArgsConstructor;
-
+import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaDagpengerService;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaDagpengerService;
-import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,32 +33,35 @@ public class BrukerController {
     private final ArenaDagpengerService arenaDagpengerService;
 
     @PostMapping("/oppfoelging")
-    public Map<String, NyeBrukereResponse> registrerBrukereIArenaForvalterMedOppfoelging(
+    public Mono<Map<String, NyeBrukereResponse>> registrerBrukereIArenaForvalterMedOppfoelging(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         validateMiljoe(syntetiserArenaRequest.getMiljoe());
 
         var personer = identService.getUtvalgteIdenterIAldersgruppe(
-                        syntetiserArenaRequest.getAntallNyeIdenter(),
-                        MINIMUM_ALDER,
-                        MAKSIMUM_ALDER,
-                        false
-                );
+                syntetiserArenaRequest.getAntallNyeIdenter(),
+                MINIMUM_ALDER,
+                MAKSIMUM_ALDER,
+                false
+        );
 
         if (tagsService.opprettetTagsPaaIdenterOgPartner(personer)) {
-            return arenaForvalterService.opprettArbeidssoekereUtenVedtak(
+            return Mono.just(arenaForvalterService.opprettArbeidssoekereUtenVedtak(
                     personer.stream().map(PersonDTO::getIdent).toList(),
-                    syntetiserArenaRequest.getMiljoe());
+                    syntetiserArenaRequest.getMiljoe()));
         } else {
-            return Collections.emptyMap();
+            return Mono.just(Collections.emptyMap());
         }
     }
 
     @PostMapping("/dagpenger")
-    public Map<String, List<DagpengerResponseDTO>> registrerBrukereIArenaMedDagpenger(
+    public Mono<Map<String, List<DagpengerResponseDTO>>> registrerBrukereIArenaMedDagpenger(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return arenaDagpengerService.registrerArenaBrukereMedDagpenger(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getMiljoe(), true);
+        return Mono.just(arenaDagpengerService.registrerArenaBrukereMedDagpenger(
+                        syntetiserArenaRequest.getAntallNyeIdenter(),
+                        syntetiserArenaRequest.getMiljoe(),
+                        true));
     }
 
 }

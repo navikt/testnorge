@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdservice.consumers.AaregConsumer;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 
@@ -22,21 +22,15 @@ public class ArbeidsforholdService {
 
     private final AaregConsumer aaregConsumer;
 
-    public void arbeidsforholdService(String aktoerId) {
+    public Mono<Void> arbeidsforholdService(String aktoerId) {
 
-        hentArbeidsforhold(aktoerId)
-                .forEach(arbeidsforhold -> {
-                    if (isNull(arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom())) {
-                        endreArbeidsforhold(arbeidsforhold);
-                    }
-                });
+        return aaregConsumer.hentArbeidsforhold(aktoerId)
+                .filter(arbeidsforhold -> isNull(arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom()))
+                .flatMap(this::endreArbeidsforhold)
+                .then();
     }
 
-    public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
-        return aaregConsumer.hentArbeidsforhold(ident);
-    }
-
-    public void endreArbeidsforhold(Arbeidsforhold arbeidsforhold) {
+    private Mono<Void> endreArbeidsforhold(Arbeidsforhold arbeidsforhold) {
 
         arbeidsforhold.getAnsettelsesperiode().getPeriode().setTom(LocalDate.now());
         arbeidsforhold.getAnsettelsesperiode().setSluttaarsak(sluttAarsaksKode);
@@ -44,6 +38,6 @@ public class ArbeidsforholdService {
         arbeidsforhold.getArbeidsavtaler().forEach(
                 arbeidsavtale -> arbeidsavtale.setStillingsprosent(null));
 
-        aaregConsumer.endreArbeidsforhold(arbeidsforhold);
+        return aaregConsumer.endreArbeidsforhold(arbeidsforhold);
     }
 }

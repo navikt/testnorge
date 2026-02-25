@@ -5,13 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MiljoerResponse {
+public class AktivBestillingResponse {
 
-    private List<String> environments;
+    private Long id;
+    private Integer antallIdenter;
+    private Integer antallLevert;
+    private boolean ferdig;
+    private long gruppeId;
+    private boolean stoppet;
 }
+
