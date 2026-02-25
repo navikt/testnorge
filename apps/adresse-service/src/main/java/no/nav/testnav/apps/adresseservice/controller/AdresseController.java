@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ public class AdresseController {
 
     @GetMapping(value = "/vegadresse")
     @Operation(description = "Henter tilfeldige vegadresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig vegadresse")
-    public Mono<List<VegadresseDTO>> getVegadresse(@RequestParam(required = false) String matrikkelId,
+    public Flux<VegadresseDTO> getVegadresse(@RequestParam(required = false) String matrikkelId,
                                                    @RequestParam(required = false) String adressenavn,
                                                    @RequestParam(required = false) String husnummer,
                                                    @RequestParam(required = false) String husbokstav,
@@ -66,13 +66,14 @@ public class AdresseController {
 
         log.info("Adressesøk startet med parametre: {}", Json.pretty(request));
 
-        return Mono.just(openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1))
-                .doOnNext(resultat -> log(resultat, millis));
+        return openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1)
+                .doOnNext(resultat -> log(resultat, millis))
+                .flatMapMany(Flux::fromIterable);
     }
 
     @GetMapping(value = "/matrikkeladresse")
     @Operation(description = "Henter tilfeldige matrikkeladresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig matrikkeladresse")
-    public Mono<List<MatrikkeladresseDTO>> getMatrikkeladresse(@RequestParam(required = false) String matrikkelId,
+    public Flux<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) String matrikkelId,
                                                                @RequestParam(required = false) String kommunenummer,
                                                                @RequestParam(required = false) String gaardsnummer,
                                                                @RequestParam(required = false) String bruksnummer,
@@ -94,8 +95,9 @@ public class AdresseController {
 
         log.info("Adressesøk startet med parametre: {}", Json.pretty(request));
 
-        return Mono.just(openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1))
-                .doOnNext(resultat -> log(resultat, millis));
+        return openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1)
+                .doOnNext(resultat -> log(resultat, millis))
+                .flatMapMany(Flux::fromIterable);
     }
 
     private static <T> void log(List<T> resultat, long millis) {

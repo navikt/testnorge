@@ -20,6 +20,6 @@ public class IdenterSearchController {
     @Operation(description = "Henter testnorge-identer som matcher søk i request")
     public Flux<IdentdataDTO> getIdenter(String fragment) {
 
-        return identerSearchService.getIdenter(fragment);
+        return Flux.fromIterable(identerSearchService.getIdenter(fragment));
     }
 }

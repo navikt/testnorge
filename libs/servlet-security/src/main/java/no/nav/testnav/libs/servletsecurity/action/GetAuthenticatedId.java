@@ -1,12 +1,11 @@
 package no.nav.testnav.libs.servletsecurity.action;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.securitycore.domain.UserInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.securitycore.domain.UserInfo;
 
 @Component
 @RequiredArgsConstructor

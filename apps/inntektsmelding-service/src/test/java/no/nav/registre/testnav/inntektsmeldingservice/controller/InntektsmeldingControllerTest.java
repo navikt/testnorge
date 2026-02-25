@@ -1,9 +1,9 @@
 package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.DokmotConsumer;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.GenererInntektsmeldingConsumer;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

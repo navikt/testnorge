@@ -1,5 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
@@ -11,9 +13,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,45 @@ public class EgenansattService {
         this.responseContext = JAXBContext.newInstance(EgenansattResponse.class);
     }
 
+    public Mono<Map<String, TpsMeldingResponse>> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
+
+        return endreEgenansatt(true, ident, fraOgMed, miljoer);
+    }
+
+    public Mono<Map<String, TpsMeldingResponse>> opphoerEgenansatt(String ident, List<String> miljoer) {
+
+        return endreEgenansatt(false, ident, null, miljoer);
+    }
+
+    private Mono<Map<String, TpsMeldingResponse>> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
+
+        Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
+
+        return miljoerMono.map(resolvedMiljoer -> {
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("ident", ident);
+            context.setProperty("fraOgMed", fraOgMed);
+
+            var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
+
+            var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
+            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, resolvedMiljoer);
+
+            return miljoerResponse.entrySet().stream()
+                    .collect(Collectors.toMap(Entry::getKey, entry -> {
+
+                        try {
+                            return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                    (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue()));
+
+                        } catch (JAXBException e) {
+                            log.error(e.getMessage(), e);
+                            return getErrorStatus(e);
+                        }
+                    }));
+        });
+    }
+
     private static EgenansattRequest updateRequest(EgenansattRequest request, boolean isOpprett) {
 
         if (isOpprett) {
@@ -57,42 +97,5 @@ public class EgenansattService {
         }
 
         return request;
-    }
-
-    public Map<String, TpsMeldingResponse> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
-
-        return endreEgenansatt(true, ident, fraOgMed, miljoer);
-    }
-
-    public Map<String, TpsMeldingResponse> opphoerEgenansatt(String ident, List<String> miljoer) {
-
-        return endreEgenansatt(false, ident, null, miljoer);
-    }
-
-    private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
-
-        miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
-
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty("ident", ident);
-        context.setProperty("fraOgMed", fraOgMed);
-
-        var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
-
-        var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
-        var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
-
-        return miljoerResponse.entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, entry -> {
-
-                    try {
-                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
-                                (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue()));
-
-                    } catch (JAXBException e) {
-                        log.error(e.getMessage(), e);
-                        return getErrorStatus(e);
-                    }
-                }));
     }
 }

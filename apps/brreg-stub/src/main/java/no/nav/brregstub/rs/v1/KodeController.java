@@ -2,6 +2,9 @@ package no.nav.brregstub.rs.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brregstub.api.common.RolleKode;
+import no.nav.brregstub.api.common.UnderstatusKode;
+import no.nav.brregstub.service.HentRolleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -11,10 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.EnumMap;
 import java.util.Map;
-
-import no.nav.brregstub.api.common.RolleKode;
-import no.nav.brregstub.api.common.UnderstatusKode;
-import no.nav.brregstub.service.HentRolleService;
 
 @Validated
 @Slf4j

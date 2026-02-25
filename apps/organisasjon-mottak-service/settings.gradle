@@ -13,8 +13,7 @@ includeBuild "../../libs/kafka-config"
 includeBuild "../../libs/kafka-producers"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/security-core"
-includeBuild "../../libs/servlet-core"
-includeBuild "../../libs/servlet-insecure-security"
+includeBuild "../../libs/reactive-standalone-security"
 includeBuild "../../libs/testing"
 
 develocity {

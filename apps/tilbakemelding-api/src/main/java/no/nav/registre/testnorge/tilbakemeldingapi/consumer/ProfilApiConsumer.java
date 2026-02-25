@@ -7,9 +7,10 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -32,7 +33,7 @@ public class ProfilApiConsumer {
                 .build();
     }
 
-    public ProfilDTO getBruker() {
+    public Mono<ProfilDTO> getBruker() {
         log.info("Henter bruker fra Azure.");
         return tokenExchange
                 .exchange(serverProperties)
@@ -43,8 +44,7 @@ public class ProfilApiConsumer {
                         .headers(WebClientHeader.bearer(token))
                         .retrieve()
                         .bodyToMono(ProfilDTO.class)
-                        .retryWhen(WebClientError.is5xxException()))
-                .block();
+                        .retryWhen(WebClientError.is5xxException()));
     }
 
 }

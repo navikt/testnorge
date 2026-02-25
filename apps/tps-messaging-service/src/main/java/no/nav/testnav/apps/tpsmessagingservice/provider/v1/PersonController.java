@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -53,6 +55,111 @@ public class PersonController {
     private final FoedselsmeldingService foedselsmeldingService;
     private final DoedsmeldingService doedsmeldingService;
 
+    @GetMapping("/{ident}")
+    public Flux<PersonMiljoeDTO> getPerson(@PathVariable String ident,
+                                           @RequestParam(required = false) List<String> miljoer) {
+
+        return personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList())
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @Operation(description = "Hent persondata uten å eksponere ident")
+    @PostMapping("/ident")
+    public Flux<PersonMiljoeDTO> getPerson(@RequestBody PersonRequestDTO request,
+                                           @RequestParam(required = false) List<String> miljoer) {
+
+        return personService.getPerson(request.getIdent(), nonNull(miljoer) ? miljoer : emptyList())
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @PostMapping("/{ident}/egenansatt")
+    public Flux<TpsMeldingResponseDTO> opprettEgenansatt(@PathVariable String ident,
+                                                         @RequestParam
+                                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                         LocalDate fraOgMed,
+                                                         @RequestParam(required = false) List<String> miljoer) {
+
+        return egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @DeleteMapping("/{ident}/egenansatt")
+    public Flux<TpsMeldingResponseDTO> opphoerEgenansatt(@PathVariable String ident,
+                                                         @RequestParam(required = false) List<String> miljoer) {
+
+        return egenansattService.opphoerEgenansatt(ident, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @PostMapping("/{ident}/bankkonto-norsk")
+    public Flux<TpsMeldingResponseDTO> endreNorskBankkonto(@PathVariable String ident,
+                                                           @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
+                                                           @RequestParam(required = false) List<String> miljoer) {
+
+        return bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @DeleteMapping("/{ident}/bankkonto-norsk")
+    public Flux<TpsMeldingResponseDTO> opphoerNorskBankkonto(@PathVariable String ident,
+                                                             @RequestParam(required = false) List<String> miljoer) {
+
+        return bankkontoNorskService.opphoerBankkontonrNorsk(ident, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @PostMapping("/{ident}/bankkonto-utenlandsk")
+    public Flux<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
+                                                                @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
+                                                                @RequestParam(required = false) List<String> miljoer) {
+
+        return bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @DeleteMapping("/{ident}/bankkonto-utenlandsk")
+    public Flux<TpsMeldingResponseDTO> opphoerBankkontonrUtland(@PathVariable String ident,
+                                                                @RequestParam(required = false) List<String> miljoer) {
+
+        return bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @PostMapping("/adressehistorikk")
+    public Flux<AdressehistorikkDTO> personhistorikk(@RequestBody AdressehistorikkRequest request,
+                                                     @RequestParam(required = false) List<String> miljoer) {
+
+        return adressehistorikkService.hentHistorikk(request, isNull(miljoer) ? emptyList() : miljoer)
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    @PostMapping("/foedselsmelding")
+    public Mono<FoedselsmeldingResponse> sendFoedselsmelding(@RequestParam(required = false) List<String> miljoer,
+                                                             @RequestBody FoedselsmeldingRequest persondata) {
+
+        return foedselsmeldingService.sendFoedselsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
+    }
+
+    @PostMapping("/doedsmelding")
+    public Mono<DoedsmeldingResponse> sendDoedsmelding(@RequestBody DoedsmeldingRequest request,
+                                                       @RequestParam(required = false) List<String> miljoer) {
+
+        return doedsmeldingService.sendDoedsmelding(request, isNull(miljoer) ? emptyList() : miljoer);
+    }
+
+    @DeleteMapping("/doedsmelding")
+    public Mono<DoedsmeldingResponse> annulerDoedsmelding(@RequestParam(required = false) List<String> miljoer,
+                                                          @RequestBody PersonDTO persondata) {
+
+        return doedsmeldingService.annulerDoedsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
+    }
+
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
 
         return tpsMeldingDTO.entrySet().stream()
@@ -64,95 +171,4 @@ public class PersonController {
                         .build())
                 .toList();
     }
-
-    @GetMapping("/{ident}")
-    public List<PersonMiljoeDTO> getPerson(@PathVariable String ident,
-                                           @RequestParam(required = false) List<String> miljoer) {
-
-        return personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList());
-    }
-
-    @Operation(description = "Hent persondata uten å eksponere ident")
-    @PostMapping("/ident")
-    public List<PersonMiljoeDTO> getPerson(@RequestBody PersonRequestDTO request,
-                                           @RequestParam(required = false) List<String> miljoer) {
-
-        return personService.getPerson(request.getIdent(), nonNull(miljoer) ? miljoer : emptyList());
-    }
-
-    @PostMapping("/{ident}/egenansatt")
-    public List<TpsMeldingResponseDTO> opprettEgenansatt(@PathVariable String ident,
-                                                         @RequestParam
-                                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                         LocalDate fraOgMed,
-                                                         @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer));
-    }
-
-    @DeleteMapping("/{ident}/egenansatt")
-    public List<TpsMeldingResponseDTO> opphoerEgenansatt(@PathVariable String ident,
-                                                         @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(egenansattService.opphoerEgenansatt(ident, miljoer));
-    }
-
-    @PostMapping("/{ident}/bankkonto-norsk")
-    public List<TpsMeldingResponseDTO> endreNorskBankkonto(@PathVariable String ident,
-                                                           @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
-                                                           @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer));
-    }
-
-    @DeleteMapping("/{ident}/bankkonto-norsk")
-    public List<TpsMeldingResponseDTO> opphoerNorskBankkonto(@PathVariable String ident,
-                                                             @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(bankkontoNorskService.opphoerBankkontonrNorsk(ident, miljoer));
-    }
-
-    @PostMapping("/{ident}/bankkonto-utenlandsk")
-    public List<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
-                                                                @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
-                                                                @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer));
-    }
-
-    @DeleteMapping("/{ident}/bankkonto-utenlandsk")
-    public List<TpsMeldingResponseDTO> opphoerBankkontonrUtland(@PathVariable String ident,
-                                                                @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer));
-    }
-
-    @PostMapping("/adressehistorikk")
-    public List<AdressehistorikkDTO> personhistorikk(@RequestBody AdressehistorikkRequest request,
-                                                     @RequestParam(required = false) List<String> miljoer) {
-
-        return adressehistorikkService.hentHistorikk(request, isNull(miljoer) ? emptyList() : miljoer);
-    }
-
-    @PostMapping("/foedselsmelding")
-    public FoedselsmeldingResponse sendFoedselsmelding(@RequestParam(required = false) List<String> miljoer,
-                                                       @RequestBody FoedselsmeldingRequest persondata) {
-
-        return foedselsmeldingService.sendFoedselsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
-    }
-
-    @PostMapping("/doedsmelding")
-    public DoedsmeldingResponse sendDoedsmelding(@RequestBody DoedsmeldingRequest request,
-                                                 @RequestParam(required = false) List<String> miljoer) {
-
-        return doedsmeldingService.sendDoedsmelding(request, isNull(miljoer) ? emptyList() : miljoer);
-    }
-
-    @DeleteMapping("/doedsmelding")
-    public DoedsmeldingResponse annulerDoedsmelding(@RequestParam(required = false) List<String> miljoer,
-                                                    @RequestBody PersonDTO persondata) {
-
-        return doedsmeldingService.annulerDoedsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
-    }
 }
-
