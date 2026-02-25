@@ -45,9 +45,12 @@ export const BestillingStatus = ({
 		feil: 'report-problem-triangle',
 	}
 
-	const iconType = (statuser: Status[], feil: string) => {
+	const iconType = (statuser: Status[], feil: string, ferdig: boolean) => {
 		if (feil) {
 			return IconTypes.feil
+		}
+		if (!statuser?.length || (erOrganisasjon && !ferdig)) {
+			return IconTypes.oppretter
 		}
 		// Alle statuser er OK
 		if (statuser.every((status) => status.melding === 'OK')) {
@@ -57,7 +60,9 @@ export const BestillingStatus = ({
 				(status) =>
 					status?.melding?.includes('RUNNING') ||
 					status?.melding?.includes('PENDING_COMPLETE') ||
-					status?.melding?.includes('ADDING_TO_QUEUE'),
+					status?.melding?.includes('ADDING_TO_QUEUE') ||
+					status?.melding?.includes('Deployer') ||
+					status?.melding?.includes('Pågående'),
 			)
 		) {
 			return IconTypes.oppretter
@@ -79,15 +84,20 @@ export const BestillingStatus = ({
 	return (
 		<div style={{ marginTop: '15px' }}>
 			{bestilling?.status?.map((fagsystem, idx) => {
-				const oppretter = fagsystem?.statuser?.some((status) => {
-					return (
-						status?.melding?.includes('Info') ||
-						// Ereg statuser for oppretting
-						status?.melding?.includes('ADDING_TO_QUEUE') ||
-						status?.melding?.includes('RUNNING') ||
-						status?.melding?.includes('PENDING_COMPLETE')
-					)
-				})
+				const oppretter =
+					(erOrganisasjon && !bestilling.ferdig) ||
+					!fagsystem?.statuser?.length ||
+					fagsystem?.statuser?.some((status) => {
+						return (
+							status?.melding?.includes('Info') ||
+							// Ereg statuser for oppretting
+							status?.melding?.includes('ADDING_TO_QUEUE') ||
+							status?.melding?.includes('RUNNING') ||
+							status?.melding?.includes('PENDING_COMPLETE') ||
+							status?.melding?.includes('Deployer') ||
+							status?.melding?.includes('Pågående')
+						)
+					})
 
 				const infoString = ['Info', 'INFO', 'info']
 				const infoListe = fagsystem?.statuser?.filter((s) =>
@@ -137,7 +147,7 @@ export const BestillingStatus = ({
 							{oppretter ? (
 								<Spinner size={23} margin="0px" />
 							) : (
-								<Icon kind={iconType(fagsystem.statuser, bestilling.feil)} />
+								<Icon kind={iconType(fagsystem.statuser, bestilling.feil, bestilling.ferdig)} />
 							)}
 						</StatusIcon>
 						<div style={{ width: '96%', marginBottom: marginBottom }}>

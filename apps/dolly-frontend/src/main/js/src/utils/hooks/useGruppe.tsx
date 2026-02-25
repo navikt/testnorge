@@ -28,7 +28,7 @@ const getPaginertGruppeUrl = (
 	return `/dolly-backend/api/v1/gruppe/${gruppeId}/page/${pageNo}?pageSize=${pageSize}${sorting}`
 }
 
-const getHelGruppeUrl = (gruppeId: string) => `/dolly-backend/api/v1/gruppe/${gruppeId}`
+const getGruppeIdenterUrl = (gruppeId: string) => `/dolly-backend/api/v1/gruppe/${gruppeId}/identer`
 
 export type PaginertGruppe = {
 	antallElementer: number
@@ -90,19 +90,19 @@ export const useGruppeById = (
 	}
 }
 
-export const useGruppeIdenter = (gruppeId) => {
-	const { data, isLoading, error } = useSWR<Gruppe, Error>(
-		gruppeId ? getHelGruppeUrl(gruppeId) : null,
+export type IdentMaster = {
+	ident: string
+	master: string
+}
+
+export const useGruppeIdenter = (gruppeId: string) => {
+	const { data, isLoading, error } = useSWR<IdentMaster[], Error>(
+		gruppeId ? getGruppeIdenterUrl(gruppeId) : null,
 		fetcher,
 	)
 
 	return {
-		identer: data?.identer?.map((person) => {
-			return {
-				ident: person.ident,
-				master: person.master,
-			}
-		}),
+		identer: data,
 		loading: !gruppeId ? false : isLoading,
 		error: !gruppeId ? 'GruppeId mangler!' : error,
 	}

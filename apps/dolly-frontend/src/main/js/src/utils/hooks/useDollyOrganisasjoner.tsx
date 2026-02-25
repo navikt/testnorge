@@ -221,7 +221,7 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 	}
 }
 
-export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false) => {
+export const useOrganisasjonBestilling = (brukerId: string) => {
 	if (!brukerId) {
 		return {
 			loading: false,
@@ -231,10 +231,6 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
-		{
-			refreshInterval: autoRefresh ? 4000 : 0,
-			dedupingInterval: autoRefresh ? 4000 : 0,
-		},
 	)
 
 	const bestillingerSorted = data
