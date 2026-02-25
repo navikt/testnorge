@@ -10,8 +10,6 @@ import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchResponse;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,14 +34,14 @@ public class PersonerSearchService {
     private final MapperFacade mapperFacade;
     private final OpenSearchQueryService openSearchQueryService;
 
-    public Mono<SearchResponse> search(SearchRequest searchRequest, List<ElasticTyper> registreRequest) {
+    public SearchResponse search(SearchRequest searchRequest, List<ElasticTyper> registreRequest) {
 
         log.info("Mottok søkeforespørsel: searchRequest={}, registreRequest={}",
                 searchRequest, registreRequest);
 
         if (isNull(searchRequest)) {
             log.warn("SearchRequest er null, returnerer tom respons");
-            return Mono.just(new SearchResponse());
+            return new SearchResponse();
         }
 
         var safeRegistreRequest = isNull(registreRequest) ? Collections.<ElasticTyper>emptyList() : registreRequest;
@@ -56,32 +54,28 @@ public class PersonerSearchService {
 
         log.debug("Mappet request: {}", request);
 
-        return Mono.fromCallable(() -> {
-                    if (nonNull(request.getPersonRequest()) && isNotBlank(request.getPersonRequest().getIdent())) {
+        Set<String> identer;
+        if (nonNull(request.getPersonRequest()) && isNotBlank(request.getPersonRequest().getIdent())) {
 
-                        log.debug("Utfører registersøk uten cache for ident: {}", request.getPersonRequest().getIdent());
-                        return bestillingQueryService.execRegisterNoCacheQuery(request).stream()
-                                .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
-                                .collect(Collectors.toSet());
-                    } else {
+            log.debug("Utfører registersøk uten cache for ident: {}", request.getPersonRequest().getIdent());
+            identer = bestillingQueryService.execRegisterNoCacheQuery(request).stream()
+                    .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
+                    .collect(Collectors.toSet());
+        } else {
 
-                        log.debug("Utfører registersøk med cache");
-                        return bestillingQueryService.execRegisterCacheQuery(request);
-                    }
-                })
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(identer -> {
-                    log.debug("Fant {} identer fra bestillingsquery", identer.size());
+            log.debug("Utfører registersøk med cache");
+            identer = bestillingQueryService.execRegisterCacheQuery(request);
+        }
 
-                    request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
+        log.debug("Fant {} identer fra bestillingsquery", identer.size());
 
-                    var query = OpenSearchQueryBuilder.buildSearchQuery(request);
-                    addIdenterQuery(query, request.getIdenter());
+        request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
-                    return openSearchQueryService.execQuery(request, query)
-                            .map(response -> mapperFacade.map(response, SearchResponse.class))
-                            .doOnError(error -> log.error("Feil ved søk i OpenSearch: {}", error.getMessage(), error));
-                });
+        var query = OpenSearchQueryBuilder.buildSearchQuery(request);
+        addIdenterQuery(query, request.getIdenter());
+
+        var response = openSearchQueryService.execQuery(request, query);
+        return mapperFacade.map(response, SearchResponse.class);
     }
 
     public List<Kategori> getTyper() {

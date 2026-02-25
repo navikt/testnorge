@@ -8,7 +8,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,17 +25,18 @@ public class ApiOversiktService {
 
     public Mono<JsonNode> getDokumeter() {
 
-        return Mono.fromCallable(() -> {
-                    var resource = new ClassPathResource(PATH_RESOURCE);
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
-                        var yaml = reader.lines().collect(Collectors.joining("\n"));
+        try {
+            var resource = new ClassPathResource(PATH_RESOURCE);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
+                var yaml = reader.lines().collect(Collectors.joining("\n"));
 
-                        var maps = new Yaml().load(yaml);
-                        var jsonString = objectMapper.writeValueAsString(maps);
-                        return objectMapper.readTree(jsonString);
-                    }
-                })
-                .subscribeOn(Schedulers.boundedElastic())
-                .doOnError(e -> log.error("Lesing av query ressurs {} feilet", PATH_RESOURCE, e));
+                var maps = new Yaml().load(yaml);
+                var jsonString = objectMapper.writeValueAsString(maps);
+                return Mono.just(objectMapper.readTree(jsonString));
+            }
+        } catch (Exception e) {
+            log.error("Lesing av query ressurs {} feilet", PATH_RESOURCE, e);
+            return Mono.error(e);
+        }
     }
 }

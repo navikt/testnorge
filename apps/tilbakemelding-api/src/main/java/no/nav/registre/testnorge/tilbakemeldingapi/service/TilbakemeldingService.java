@@ -2,11 +2,11 @@ package no.nav.registre.testnorge.tilbakemeldingapi.service;
 
 import no.nav.registre.testnorge.tilbakemeldingapi.consumer.ProfilApiConsumer;
 import no.nav.registre.testnorge.tilbakemeldingapi.domain.Tilbakemelding;
+import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
@@ -28,10 +28,10 @@ public class TilbakemeldingService {
 
     public Mono<Void> publish(Tilbakemelding tilbakemelding) {
         return utledVisningsNavn(tilbakemelding)
-                .flatMap(visningsNavn -> Mono.fromCallable(() -> {
+                .map(visningsNavn -> {
                     slackConsumer.publish(tilbakemelding.toSlackMessage(channel, visningsNavn));
                     return visningsNavn;
-                }).subscribeOn(Schedulers.boundedElastic()))
+                })
                 .then();
     }
 
@@ -44,7 +44,7 @@ public class TilbakemeldingService {
                     isNoneBlank(tilbakemelding.getTilknyttetOrganisasjon()) ? tilbakemelding.getTilknyttetOrganisasjon() : "Ukjent organisasjon"));
         }
         return profilApiConsumer.getBruker()
-                .map(profil -> profil.getVisningsNavn());
+                .map(ProfilDTO::getVisningsNavn);
     }
 
 }

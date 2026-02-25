@@ -17,8 +17,6 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -47,7 +45,7 @@ public class BestillingQueryService {
 
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
 
-        return execQueryBlocking(queryBuilder);
+        return execQuery(queryBuilder);
     }
 
     public Set<String> execRegisterNoCacheQuery(SearchRequest request) {
@@ -55,22 +53,21 @@ public class BestillingQueryService {
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
         addIdentQuery(queryBuilder, request.getPersonRequest());
 
-        return execQueryBlocking(queryBuilder);
+        return execQuery(queryBuilder);
     }
 
-    public Mono<Set<String>> execTestnorgeIdenterQuery() {
+    public Set<String> execTestnorgeIdenterQuery() {
 
         var queryBuilder = QueryBuilders.bool();
 
         queryBuilder.must(q -> q.regexp(regexpQuery("identer", TESTNORGE_FORMAT)));
 
-        return Mono.fromCallable(() -> execQueryBlocking(queryBuilder).stream()
-                        .filter(ident -> ident.matches(TESTNORGE_FORMAT))
-                        .collect(Collectors.toSet()))
-                .subscribeOn(Schedulers.boundedElastic());
+        return execQuery(queryBuilder).stream()
+                .filter(ident -> ident.matches(TESTNORGE_FORMAT))
+                .collect(Collectors.toSet());
     }
 
-    private Set<String> execQueryBlocking(BoolQuery.Builder queryBuilder) {
+    private Set<String> execQuery(BoolQuery.Builder queryBuilder) {
 
         var now = System.currentTimeMillis();
 

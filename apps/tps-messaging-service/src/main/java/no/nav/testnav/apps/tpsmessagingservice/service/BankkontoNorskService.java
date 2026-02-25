@@ -1,5 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
@@ -12,10 +14,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class BankkontoNorskService {
 
         Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
+        return miljoerMono.map(resolvedMiljoer -> {
             var context = new MappingContext.Factory().getContext();
             context.setProperty("ident", ident);
 
@@ -84,6 +83,6 @@ public class BankkontoNorskService {
                             return getErrorStatus(e);
                         }
                     }));
-        }).subscribeOn(Schedulers.boundedElastic()));
+        });
     }
 }

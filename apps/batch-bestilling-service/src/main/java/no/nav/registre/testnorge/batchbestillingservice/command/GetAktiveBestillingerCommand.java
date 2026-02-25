@@ -10,16 +10,18 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.Callable;
+
 @Slf4j
 @RequiredArgsConstructor
-public class GetAktiveBestillingerCommand implements ReactiveFluxCommand<AktivBestillingResponse> {
+public class GetAktiveBestillingerCommand implements Callable<Flux<AktivBestillingResponse>> {
 
     private final WebClient webClient;
     private final String token;
     private final Long gruppeId;
 
     @Override
-    public Flux<AktivBestillingResponse> execute() {
+    public Flux<AktivBestillingResponse> call() throws Exception {
         log.info("Henter aktive bestillinger for gruppe {}.", gruppeId);
         return webClient
                 .get()
@@ -37,5 +39,4 @@ public class GetAktiveBestillingerCommand implements ReactiveFluxCommand<AktivBe
                         })
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }

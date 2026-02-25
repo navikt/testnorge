@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.Map;
@@ -28,9 +27,8 @@ public class VedtakshistorikkController {
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         validateMiljoe(syntetiserArenaRequest.getMiljoe());
-        return Mono.fromCallable(() -> vedtakshistorikkService.genererVedtakshistorikk(
+        return Mono.just(vedtakshistorikkService.genererVedtakshistorikk(
                         syntetiserArenaRequest.getMiljoe(),
-                        syntetiserArenaRequest.getAntallNyeIdenter()))
-                .subscribeOn(Schedulers.boundedElastic());
+                        syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 }

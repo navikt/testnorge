@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 
 @Slf4j
@@ -31,24 +30,22 @@ public class InntektsmeldingV2Controller {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     public Mono<ResponseEntity<String>> create(@RequestBody RsInntektsmelding request) {
 
-        return Mono.fromCallable(() -> {
-            log.info("Mottok inntektsmelding: {}", Json.pretty(request));
+        log.info("Mottok inntektsmelding: {}", Json.pretty(request));
 
-            var inntektsmelding = mapperFacade.map(request, InntektsmeldingDTO.class);
+        var inntektsmelding = mapperFacade.map(request, InntektsmeldingDTO.class);
 
-            JAXBElement<InntektsmeldingM> melding = inntektsmelding.toMelding();
-            log.info("Konverterer inntektsmelding til : {}", melding);
-            String xml = XmlConverter.toXml(melding, InntektsmeldingM.class);
+        JAXBElement<InntektsmeldingM> melding = inntektsmelding.toMelding();
+        log.info("Konverterer inntektsmelding til : {}", melding);
+        String xml = XmlConverter.toXml(melding, InntektsmeldingM.class);
 
-            if (!XmlConverter.validate(xml)) {
-                log.warn("Validering av opprett xml feilet");
-                return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Validering av opprett xml feilet");
-            }
-            log.info("Genererte XML for inntektsmelding: {}", xml);
+        if (!XmlConverter.validate(xml)) {
+            log.warn("Validering av opprett xml feilet");
+            return Mono.just(ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Validering av opprett xml feilet"));
+        }
+        log.info("Genererte XML for inntektsmelding: {}", xml);
 
-            return ResponseEntity.ok(xml);
-        }).subscribeOn(Schedulers.boundedElastic());
+        return Mono.just(ResponseEntity.ok(xml));
     }
 }

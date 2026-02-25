@@ -27,7 +27,6 @@ import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.Collection;
 import java.util.List;
@@ -93,8 +92,7 @@ public class PersonService {
     public Mono<List<PersonMiljoeDTO>> getPerson(String ident, List<String> miljoer) {
 
         return resolveMiljoer(miljoer, true)
-                .flatMap(resolvedMiljoer -> Mono.fromCallable(() -> getPersonInternal(ident, resolvedMiljoer))
-                        .subscribeOn(Schedulers.boundedElastic()));
+                .flatMap(resolvedMiljoer -> Mono.just(getPersonInternal(ident, resolvedMiljoer)));
     }
 
     private List<PersonMiljoeDTO> getPersonInternal(String ident, List<String> miljoer) {

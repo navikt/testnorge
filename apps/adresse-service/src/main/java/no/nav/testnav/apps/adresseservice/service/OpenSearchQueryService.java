@@ -20,7 +20,6 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -57,25 +56,22 @@ public class OpenSearchQueryService {
 
     private <S, T> Mono<List<T>> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
 
-        return Mono.fromCallable(() -> {
-                    try {
-                        val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
-                                .index(adresseIndex)
-                                .query(new Query.Builder()
-                                        .bool(queryBuilder.build())
-                                        .build())
-                                .size(antall.intValue())
-                                .timeout("3s")
-                                .build(), JsonNode.class);
+        try {
+            val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
+                    .index(adresseIndex)
+                    .query(new Query.Builder()
+                            .bool(queryBuilder.build())
+                            .build())
+                    .size(antall.intValue())
+                    .timeout("3s")
+                    .build(), JsonNode.class);
 
-                        return formatResponse(adresseSoekResponse, kilde, destinasjon);
+            return Mono.just(formatResponse(adresseSoekResponse, kilde, destinasjon));
 
-                    } catch (IOException e) {
-                        log.error("Feil ved adressesøk i OpenSearch", e);
-                        throw new InternalError("Feil ved adressesøk i OpenSearch", e);
-                    }
-                })
-                .subscribeOn(Schedulers.boundedElastic());
+        } catch (IOException e) {
+            log.error("Feil ved adressesøk i OpenSearch", e);
+            return Mono.error(e);
+        }
     }
 
 

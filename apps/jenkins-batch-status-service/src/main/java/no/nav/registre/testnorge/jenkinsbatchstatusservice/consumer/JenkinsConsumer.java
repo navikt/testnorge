@@ -12,7 +12,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Slf4j
 @Component
@@ -51,8 +50,7 @@ public class JenkinsConsumer {
     }
 
     private Mono<JenkinsCrumb> getCrumb(String token) {
-        return Mono.fromCallable(() -> new GetCrumbCommand(webClient, token).call())
-                .subscribeOn(Schedulers.boundedElastic());
+        return Mono.just(new GetCrumbCommand(webClient, token).call());
     }
 
 }

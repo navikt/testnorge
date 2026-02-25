@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -54,85 +55,88 @@ public class PersonController {
     private final FoedselsmeldingService foedselsmeldingService;
     private final DoedsmeldingService doedsmeldingService;
 
-    private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
-
-        return tpsMeldingDTO.entrySet().stream()
-                .map(entry -> TpsMeldingResponseDTO.builder()
-                        .miljoe(entry.getKey())
-                        .status(entry.getValue().getReturStatus())
-                        .melding(entry.getValue().getReturMelding())
-                        .utfyllendeMelding(entry.getValue().getUtfyllendeMelding())
-                        .build())
-                .toList();
-    }
-
     @GetMapping("/{ident}")
-    public Mono<List<PersonMiljoeDTO>> getPerson(@PathVariable String ident,
-                                                 @RequestParam(required = false) List<String> miljoer) {
+    public Flux<PersonMiljoeDTO> getPerson(@PathVariable String ident,
+                                           @RequestParam(required = false) List<String> miljoer) {
 
-        return personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList());
+        return personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList())
+                .flatMapMany(Flux::fromIterable);
     }
 
     @Operation(description = "Hent persondata uten å eksponere ident")
     @PostMapping("/ident")
-    public Mono<List<PersonMiljoeDTO>> getPerson(@RequestBody PersonRequestDTO request,
-                                                 @RequestParam(required = false) List<String> miljoer) {
+    public Flux<PersonMiljoeDTO> getPerson(@RequestBody PersonRequestDTO request,
+                                           @RequestParam(required = false) List<String> miljoer) {
 
-        return personService.getPerson(request.getIdent(), nonNull(miljoer) ? miljoer : emptyList());
+        return personService.getPerson(request.getIdent(), nonNull(miljoer) ? miljoer : emptyList())
+                .flatMapMany(Flux::fromIterable);
     }
 
     @PostMapping("/{ident}/egenansatt")
-    public Mono<List<TpsMeldingResponseDTO>> opprettEgenansatt(@PathVariable String ident,
-                                                               @RequestParam
-                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                               LocalDate fraOgMed,
-                                                               @RequestParam(required = false) List<String> miljoer) {
+    public Flux<TpsMeldingResponseDTO> opprettEgenansatt(@PathVariable String ident,
+                                                         @RequestParam
+                                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                         LocalDate fraOgMed,
+                                                         @RequestParam(required = false) List<String> miljoer) {
 
-        return egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer).map(PersonController::convert);
+        return egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @DeleteMapping("/{ident}/egenansatt")
-    public Mono<List<TpsMeldingResponseDTO>> opphoerEgenansatt(@PathVariable String ident,
-                                                               @RequestParam(required = false) List<String> miljoer) {
+    public Flux<TpsMeldingResponseDTO> opphoerEgenansatt(@PathVariable String ident,
+                                                         @RequestParam(required = false) List<String> miljoer) {
 
-        return egenansattService.opphoerEgenansatt(ident, miljoer).map(PersonController::convert);
+        return egenansattService.opphoerEgenansatt(ident, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @PostMapping("/{ident}/bankkonto-norsk")
-    public Mono<List<TpsMeldingResponseDTO>> endreNorskBankkonto(@PathVariable String ident,
-                                                                 @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
-                                                                 @RequestParam(required = false) List<String> miljoer) {
+    public Flux<TpsMeldingResponseDTO> endreNorskBankkonto(@PathVariable String ident,
+                                                           @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
+                                                           @RequestParam(required = false) List<String> miljoer) {
 
-        return bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer).map(PersonController::convert);
+        return bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @DeleteMapping("/{ident}/bankkonto-norsk")
-    public Mono<List<TpsMeldingResponseDTO>> opphoerNorskBankkonto(@PathVariable String ident,
-                                                                   @RequestParam(required = false) List<String> miljoer) {
+    public Flux<TpsMeldingResponseDTO> opphoerNorskBankkonto(@PathVariable String ident,
+                                                             @RequestParam(required = false) List<String> miljoer) {
 
-        return bankkontoNorskService.opphoerBankkontonrNorsk(ident, miljoer).map(PersonController::convert);
+        return bankkontoNorskService.opphoerBankkontonrNorsk(ident, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @PostMapping("/{ident}/bankkonto-utenlandsk")
-    public Mono<List<TpsMeldingResponseDTO>> endreUtenlandskBankkonto(@PathVariable String ident,
-                                                                      @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
-                                                                      @RequestParam(required = false) List<String> miljoer) {
+    public Flux<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
+                                                                @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
+                                                                @RequestParam(required = false) List<String> miljoer) {
 
-        return bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer).map(PersonController::convert);
+        return bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @DeleteMapping("/{ident}/bankkonto-utenlandsk")
-    public Mono<List<TpsMeldingResponseDTO>> opphoerBankkontonrUtland(@PathVariable String ident,
-                                                                      @RequestParam(required = false) List<String> miljoer) {
+    public Flux<TpsMeldingResponseDTO> opphoerBankkontonrUtland(@PathVariable String ident,
+                                                                @RequestParam(required = false) List<String> miljoer) {
 
-        return bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer).map(PersonController::convert);
+        return bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer)
+                .map(PersonController::convert)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @PostMapping("/adressehistorikk")
-    public Mono<List<AdressehistorikkDTO>> personhistorikk(@RequestBody AdressehistorikkRequest request,
-                                                           @RequestParam(required = false) List<String> miljoer) {
+    public Flux<AdressehistorikkDTO> personhistorikk(@RequestBody AdressehistorikkRequest request,
+                                                     @RequestParam(required = false) List<String> miljoer) {
 
-        return adressehistorikkService.hentHistorikk(request, isNull(miljoer) ? emptyList() : miljoer);
+        return adressehistorikkService.hentHistorikk(request, isNull(miljoer) ? emptyList() : miljoer)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @PostMapping("/foedselsmelding")
@@ -155,5 +159,16 @@ public class PersonController {
 
         return doedsmeldingService.annulerDoedsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
     }
-}
 
+    private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
+
+        return tpsMeldingDTO.entrySet().stream()
+                .map(entry -> TpsMeldingResponseDTO.builder()
+                        .miljoe(entry.getKey())
+                        .status(entry.getValue().getReturStatus())
+                        .melding(entry.getValue().getReturMelding())
+                        .utfyllendeMelding(entry.getValue().getUtfyllendeMelding())
+                        .build())
+                .toList();
+    }
+}

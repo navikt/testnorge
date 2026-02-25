@@ -12,7 +12,6 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.DoedsmeldingResponse;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class DoedsmeldingService {
 
         Mono<List<String>> miljoerMono = miljoer.isEmpty() ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
+        return miljoerMono.map(resolvedMiljoer -> {
             var skdMelding = doedsmeldingBuilderService.build(request);
 
             var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), resolvedMiljoer);
@@ -41,14 +40,14 @@ public class DoedsmeldingService {
                     .ident(request.getIdent())
                     .miljoStatus(miljoerStatus)
                     .build();
-        }).subscribeOn(Schedulers.boundedElastic()));
+        });
     }
 
     public Mono<DoedsmeldingResponse> annulerDoedsmelding(PersonDTO person, List<String> miljoer) {
 
         Mono<List<String>> miljoerMono = miljoer.isEmpty() ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
+        return miljoerMono.map(resolvedMiljoer -> {
             var skdMelding = doedsmeldingAnnulleringBuilderService.execute(person);
 
             var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), resolvedMiljoer);
@@ -58,7 +57,7 @@ public class DoedsmeldingService {
                     .ident(person.getIdent())
                     .miljoStatus(miljoerStatus)
                     .build();
-        }).subscribeOn(Schedulers.boundedElastic()));
+        });
     }
 
     private void prepareStatus(Map<String, String> sentStatus) {

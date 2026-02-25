@@ -1,5 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
@@ -12,10 +14,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -49,18 +48,6 @@ public class EgenansattService {
         this.responseContext = JAXBContext.newInstance(EgenansattResponse.class);
     }
 
-    private static EgenansattRequest updateRequest(EgenansattRequest request, boolean isOpprett) {
-
-        if (isOpprett) {
-            request.getSfeAjourforing().setOpphorEgenAnsatt(null);
-
-        } else {
-            request.getSfeAjourforing().setEndreEgenAnsatt(null);
-        }
-
-        return request;
-    }
-
     public Mono<Map<String, TpsMeldingResponse>> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
 
         return endreEgenansatt(true, ident, fraOgMed, miljoer);
@@ -75,7 +62,7 @@ public class EgenansattService {
 
         Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        return miljoerMono.flatMap(resolvedMiljoer -> Mono.fromCallable(() -> {
+        return miljoerMono.map(resolvedMiljoer -> {
             var context = new MappingContext.Factory().getContext();
             context.setProperty("ident", ident);
             context.setProperty("fraOgMed", fraOgMed);
@@ -97,6 +84,18 @@ public class EgenansattService {
                             return getErrorStatus(e);
                         }
                     }));
-        }).subscribeOn(Schedulers.boundedElastic()));
+        });
+    }
+
+    private static EgenansattRequest updateRequest(EgenansattRequest request, boolean isOpprett) {
+
+        if (isOpprett) {
+            request.getSfeAjourforing().setOpphorEgenAnsatt(null);
+
+        } else {
+            request.getSfeAjourforing().setEndreEgenAnsatt(null);
+        }
+
+        return request;
     }
 }

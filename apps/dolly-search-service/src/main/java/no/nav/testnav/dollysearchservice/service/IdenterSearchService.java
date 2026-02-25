@@ -8,7 +8,6 @@ import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.IdentdataDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Set;
@@ -25,16 +24,13 @@ public class IdenterSearchService {
     private final OpenSearchQueryService personQueryService;
     private final MapperFacade mapperFacade;
 
-    public Flux<IdentdataDTO> getIdenter(String fragment) {
+    public List<IdentdataDTO> getIdenter(String fragment) {
 
-        return bestillingQueryService.execTestnorgeIdenterQuery()
-                .flatMapMany(identer -> {
-                    var query = buildTestnorgeIdentSearchQuery(getSearchCriteria(fragment, identer));
+        var identer = bestillingQueryService.execTestnorgeIdenterQuery();
+        var query = buildTestnorgeIdentSearchQuery(getSearchCriteria(fragment, identer));
 
-                    return personQueryService.execQuery(new SearchRequest(), query)
-                            .map(this::formatResponse)
-                            .flatMapMany(Flux::fromIterable);
-                });
+        var response = personQueryService.execQuery(new SearchRequest(), query);
+        return formatResponse(response);
     }
 
     private IdentSearch getSearchCriteria(String query, Set<String> identer) {

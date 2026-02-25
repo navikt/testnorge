@@ -48,7 +48,13 @@ public class DollyBackendConsumer {
     public Flux<AktivBestillingResponse> getAktiveBestillinger(Long gruppeId) {
         return tokenExchange
                 .exchange(serverProperties)
-                .flatMapMany(token -> new GetAktiveBestillingerCommand(webClient, token.getTokenValue(), gruppeId).execute())
+                .flatMapMany(token -> {
+                    try {
+                        return new GetAktiveBestillingerCommand(webClient, token.getTokenValue(), gruppeId).call();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .doOnError(error -> log.error("Henting av aktive bestillinger feilet for gruppe {}", gruppeId, error))
                 .onErrorResume(WebClientResponseException.NotFound.class, throwable -> Flux.empty());
     }
