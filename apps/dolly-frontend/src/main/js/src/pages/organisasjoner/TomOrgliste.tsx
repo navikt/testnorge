@@ -2,7 +2,7 @@ import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 
 type Props = {
-	startBestilling: (bestillingstype: string) => void
+	startBestilling: (values: any, bestillingstype: string) => void
 	values: any
 	bestillingstype: string
 }

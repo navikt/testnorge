@@ -353,7 +353,9 @@ export default (props: PersonVisningProps) => {
 				reason: 'Krrstub mangler data',
 			},
 			{
-				condition: !inntektstub && harInntektstubBestilling(bestillingerFagsystemer),
+				condition:
+					harInntektstubBestilling(bestillingerFagsystemer) &&
+					(!inntektstub || (Array.isArray(inntektstub) && inntektstub.length === 0)),
 				reason: 'Inntektstub mangler data',
 			},
 			{
