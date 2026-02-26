@@ -76,7 +76,7 @@ export const Personinformasjon = ({
 					)
 				}
 			/>
-			<div style={{ marginLeft: '-30px', marginTop: '3px' }}>
+			<div style={{ margin: '5px 20px 0 -20px' }}>
 				<Hjelpetekst>
 					Minimum antall statsborgerskap. Eks: "2" gir treff på personer med to eller flere
 					statsborgerskap.

@@ -65,9 +65,9 @@ export default () => {
 
 	const antallBest = bestillinger?.length
 
-	const startBestilling = (values) => {
+	const startBestilling = (values, type = null) => {
 		navigate('/organisasjoner/bestilling', {
-			state: { opprettOrganisasjon: BestillingType.NY, ...values },
+			state: { opprettOrganisasjon: type ?? BestillingType.NY, ...values },
 		})
 	}
 
@@ -137,7 +137,8 @@ export default () => {
 						<OrganisasjonListe bestillinger={bestillinger} setAntallOrg={setAntallOrg} />
 					) : (
 						<TomOrgListe
-							startBestilling={() => startBestilling}
+							startBestilling={startBestilling}
+							values={formMethods.getValues()}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}
@@ -152,7 +153,8 @@ export default () => {
 						/>
 					) : (
 						<TomOrgListe
-							startBestilling={() => startBestilling}
+							startBestilling={startBestilling}
+							values={formMethods.getValues()}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}

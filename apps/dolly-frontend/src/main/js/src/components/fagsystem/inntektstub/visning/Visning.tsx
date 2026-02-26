@@ -15,6 +15,7 @@ import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>
 	loading?: boolean
+	harInntektstubBestilling?: boolean
 }
 
 type InfoProps = {
@@ -108,23 +109,27 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 	)
 }
 
-export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
+export const InntektstubVisning = ({
+	liste,
+	loading,
+	harInntektstubBestilling,
+}: InntekstubVisning) => {
 	if (loading) {
 		return <Loading label="Laster Inntektstub-data" />
 	}
-	if (!liste) {
+	if ((!liste || liste.length < 1) && !harInntektstubBestilling) {
 		return null
 	}
 
-	const foersteAar = liste[0]?.aarMaaned?.substring(0, 4)
+	const foersteAar = liste?.[0]?.aarMaaned?.substring(0, 4)
 
-	const sortedData = liste.slice().reverse()
+	const sortedData = liste?.slice().reverse()
 	const numInntekter = sortedData?.length
 
-	const sisteAar = sortedData[0]?.aarMaaned?.substring(0, 4)
+	const sisteAar = sortedData?.[0]?.aarMaaned?.substring(0, 4)
 	const inntektsperiode = foersteAar === sisteAar ? foersteAar : `${foersteAar} - ${sisteAar}`
 
-	const manglerFagsystemdata = sortedData?.length < 1
+	const manglerFagsystemdata = harInntektstubBestilling && (!sortedData || sortedData?.length < 1)
 
 	return (
 		<div>
