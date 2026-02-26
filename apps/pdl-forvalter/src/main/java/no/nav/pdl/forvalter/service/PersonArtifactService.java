@@ -70,8 +70,7 @@ public class PersonArtifactService {
                 .then(deltBostedService.convert(person))
                 .then(sikkerhetstiltakService.convert(person))
                 .then(navPersonIdentifikatorService.convert(person))
-
-                        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
+                        .then(folkeregisterPersonstatusService.convert(person));
 
         person = identtypeService.convert(person);
 

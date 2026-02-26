@@ -19,6 +19,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -46,7 +47,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
 
-    public List<DeltBostedDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
         for (var type : person.getDeltBosted()) {
 
@@ -65,7 +66,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         return person.getDeltBosted();
     }
 
-    public void handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
+    public Mono<DeltBostedDTO> handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
 
         if (isNull(deltBosted.getStartdatoForKontrakt())) {
             deltBosted.setStartdatoForKontrakt(LocalDateTime.now());
@@ -175,7 +176,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                 nonNull(adresse1.getUkjentBosted()) && adresse1.getUkjentBosted().equals(adresse2.getUkjentBosted());
     }
 
-    public void handle(DeltBostedDTO deltBostedBestilling, PersonDTO hovedperson, String barnIdent) {
+    public Mono<Void> handle(DeltBostedDTO deltBostedBestilling, PersonDTO hovedperson, String barnIdent) {
 
         var deltBosted = mapperFacade.map(deltBostedBestilling, DeltBostedDTO.class);
 
@@ -258,7 +259,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     }
 
     @Override
-    public void validate(DeltBostedDTO artifact, PersonDTO person) {
+    public Mono<Void> validate(DeltBostedDTO artifact, PersonDTO person) {
 
         List<String> foreldre;
         if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
