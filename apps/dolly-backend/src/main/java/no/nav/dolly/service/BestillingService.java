@@ -350,7 +350,7 @@ public class BestillingService {
                             .sistOppdatert(now())
                             .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer(), tuple.getT3()))
                             .opprettetFraId(bestillingId)
-                            .bestKriterier("{}")
+                            .bestKriterier(tuple.getT1().getBestKriterier())
                             .bruker(tuple.getT2())
                             .brukerId(tuple.getT2().getId())
                             .build());
