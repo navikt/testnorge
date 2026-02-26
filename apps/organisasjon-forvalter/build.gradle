@@ -35,7 +35,7 @@ dependencies {
     implementation "org.flywaydb:flyway-database-postgresql"
     implementation "org.postgresql:postgresql"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 

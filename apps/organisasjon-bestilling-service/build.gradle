@@ -30,7 +30,7 @@ dependencies {
     implementation "org.postgresql:postgresql"
 
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
-    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }
