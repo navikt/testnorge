@@ -28,7 +28,7 @@ dependencies {
     implementation "com.h2database:h2"
     implementation "com.zaxxer:HikariCP"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation "org.postgresql:postgresql"
