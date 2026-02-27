@@ -115,7 +115,7 @@ export const useBestilteMiljoer = (
 	)
 
 	return {
-		bestilteMiljoer: data,
+		bestilteMiljoer: data ?? [],
 		loading: isLoading,
 		error: shouldFetch ? error : 'Bestilling-id mangler!',
 	}
@@ -130,7 +130,7 @@ export const useBestilteMiljoerAlleFagsystemer = (bestillingIdListe: Array<strin
 	)
 
 	return {
-		bestilteMiljoer: data,
+		bestilteMiljoer: data ?? [],
 		loading: isLoading,
 		error: shouldFetch ? error : 'Bestilling-id mangler!',
 	}

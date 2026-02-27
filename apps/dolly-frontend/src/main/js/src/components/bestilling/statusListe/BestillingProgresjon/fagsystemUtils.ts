@@ -73,11 +73,20 @@ export const getExpectedFagsystemer = (bestillingRequest: any) => {
 	return expected
 }
 
+const PINNED_IDS = new Set(['PDLIMPORT', 'PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
+
+const sortFagsystemer = (list: any[]) => {
+	const pinned = list.filter((s) => PINNED_IDS.has(s.id))
+	const rest = list.filter((s) => !PINNED_IDS.has(s.id))
+	rest.sort((a, b) => (a.navn || '').localeCompare(b.navn || '', 'nb'))
+	return [...pinned, ...rest]
+}
+
 export const mergeStatusWithExpected = (
 	actualStatus: any[],
 	expectedFagsystemer: { id: string; navn: string }[],
 ) => {
-	if (expectedFagsystemer.length === 0) return actualStatus
+	if (expectedFagsystemer.length === 0) return sortFagsystemer(actualStatus)
 
 	const actualIds = new Set(actualStatus.map((s) => s.id))
 
@@ -85,7 +94,7 @@ export const mergeStatusWithExpected = (
 		.filter((fs) => !actualIds.has(fs.id))
 		.map((fs) => ({ id: fs.id, navn: fs.navn, statuser: [] }))
 
-	return [...actualStatus, ...pendingEntries]
+	return sortFagsystemer([...actualStatus, ...pendingEntries])
 }
 
 export const calculateProgress = ({

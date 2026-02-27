@@ -109,8 +109,8 @@ export const BestillingProgresjon = ({
 	}
 
 	const expectedFagsystemer = useMemo(
-		() => (!erOrganisasjon && antallIdenter === 1 ? getExpectedFagsystemer(data?.bestilling) : []),
-		[data?.bestilling, erOrganisasjon, antallIdenter],
+		() => (!erOrganisasjon ? getExpectedFagsystemer(data?.bestilling) : []),
+		[data?.bestilling, erOrganisasjon],
 	)
 
 	const mergedStatus = useMemo(
