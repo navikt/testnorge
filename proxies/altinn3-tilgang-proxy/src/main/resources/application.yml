@@ -1,4 +1,8 @@
+
 spring:
+  http:
+    codecs:
+      max-in-memory-size: 10MB
   application:
     name: testnav-altinn3-tilgang-proxy
     description: Proxy for altinn3-tilgang som legger på Entra ID token sikkerhet

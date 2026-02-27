@@ -1,6 +1,9 @@
 ALTINN_URL: https://platform.altinn.no
 
 spring:
+  http:
+    codecs:
+      max-in-memory-size: 10MB
   flyway:
     locations: classpath:db/migration
     url: ${NAIS_DATABASE_TESTNAV_ALTINN3_TILGANG_TESTNAV_ALTINN3_TILGANG_JDBC_URL}
