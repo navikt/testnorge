@@ -216,7 +216,7 @@ public class ArtifactUpdateService {
         person.getPerson().setDeltBosted(
                 updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted"));
 
-        deltBostedService.update(oppdatertDeltBosted);
+        deltBostedService.prepAdresser(oppdatertDeltBosted);
     }
 
     public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {

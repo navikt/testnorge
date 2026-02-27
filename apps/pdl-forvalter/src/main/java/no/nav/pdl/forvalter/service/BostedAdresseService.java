@@ -57,15 +57,14 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         return Flux.fromIterable(person.getBostedsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
-                .flatMap(adresse -> handle(adresse, person))
-                .filter(Objects::nonNull)
+                .flatMap(adresse -> handle(adresse, person).thenReturn(adresse))
                 .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
                     adresse.setMaster(getMaster(adresse, person));
                 })
                 .collectList()
                 .doOnNext(adresser -> {
-                    person.setBostedsadresse(new ArrayList<>(adresser));
+                    oppdaterAdressedatoer(person.getBostedsadresse(), person);
                     setAngittFlyttedato(person.getBostedsadresse());
                 })
                 .then();
@@ -96,16 +95,11 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         return Mono.empty();
     }
 
-    private Mono<BostedadresseDTO> handle(BostedadresseDTO bostedadresse, PersonDTO person) {
+    private Mono<Void> handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
         if (FNR == getIdenttype(person.getIdent())) {
 
-            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
-
-                return Mono.empty();
-
-            } else if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
+            if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
                        person.getInnflytting().stream()
                                .noneMatch(innflytting -> person.getUtflytting().stream()
                                        .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
@@ -151,7 +145,8 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                     if (isNull(bostedadresse.getAngittFlyttedato())) {
                         bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
                     }
-                });
+                })
+                .then();
     }
 
     private Mono<BostedadresseDTO> buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
@@ -23,6 +24,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -42,6 +44,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -52,14 +55,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRelasjonDTO, PersonDTO> {
 
     private static final String INVALID_PERSON_ID_EXCEPTION = "ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
-            "ikke begge deler";
+                                                              "ikke begge deler";
     private static final String INVALID_EMPTY_MIN_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle for person må oppgis";
     private static final String INVALID_EMPTY_RELATERT_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: relatert persons rolle må oppgis";
     private static final String AMBIGUOUS_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle og relatert persons " +
-            "rolle må være av type barn -- forelder, eller forelder -- barn";
+                                                                   "rolle må være av type barn -- forelder, eller forelder -- barn";
     private static final String INVALID_RELATERT_PERSON_EXCEPTION = "ForelderBarnRelasjon: Relatert person %s finnes ikke";
     private static final String INVALID_AMBIGUOUS_ADRESSE = "Delt bosted: kun én adresse skal være satt (vegadresse, " +
-            "ukjentBosted, matrikkeladresse)";
+                                                            "ukjentBosted, matrikkeladresse)";
 
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
@@ -89,7 +92,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     public Mono<Void> validate(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
         if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) &&
-                (nonNull(relasjon.getRelatertPerson()) || nonNull(relasjon.getNyRelatertPerson()))) {
+            (nonNull(relasjon.getRelatertPerson()) || nonNull(relasjon.getNyRelatertPerson()))) {
             throw new InvalidRequestException(INVALID_PERSON_ID_EXCEPTION);
         }
 
@@ -102,24 +105,27 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         }
 
         if ((relasjon.getMinRolleForPerson() == Rolle.BARN && relasjon.getRelatertPersonsRolle() == Rolle.BARN) ||
-                (relasjon.getMinRolleForPerson() != Rolle.BARN && relasjon.getRelatertPersonsRolle() != Rolle.BARN)) {
+            (relasjon.getMinRolleForPerson() != Rolle.BARN && relasjon.getRelatertPersonsRolle() != Rolle.BARN)) {
             throw new InvalidRequestException(AMBIGUOUS_PERSON_ROLLE_EXCEPTION);
-        }
-
-        if (!isTestnorgeIdent(person.getIdent()) && isNotBlank(relasjon.getRelatertPerson()) &&
-                !personRepository.existsByIdent(relasjon.getRelatertPerson())) {
-
-            throw new InvalidRequestException(String.format(INVALID_RELATERT_PERSON_EXCEPTION,
-                    relasjon.getRelatertPerson()));
         }
 
         if (nonNull(relasjon.getDeltBosted()) && relasjon.getDeltBosted().countAdresser() > 1) {
 
             throw new InvalidRequestException(INVALID_AMBIGUOUS_ADRESSE);
         }
+
+        if (!isTestnorgeIdent(person.getIdent()) && isNotBlank(relasjon.getRelatertPerson())) {
+
+            return personRepository.existsByIdent(relasjon.getRelatertPerson())
+                    .flatMap(exists -> isFalse(exists) ?
+                            Mono.error(new InvalidRequestException(INVALID_RELATERT_PERSON_EXCEPTION.formatted(
+                                    relasjon.getRelatertPerson()))) :
+                            Mono.empty());
+        }
+        return Mono.empty();
     }
 
-    private Mono<ForelderBarnRelasjonDTO> handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
+    private Flux<ForelderBarnRelasjonDTO> handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
         var request = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         setRelatertPerson(relasjon, hovedperson);
@@ -130,8 +136,8 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         }
 
         if (request.getRelatertPersonsRolle() == Rolle.BARN &&
-                isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
-                .anyMatch(sivilstand -> isNotBlank(sivilstand.getRelatertVedSivilstand()))) {
+            isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
+                    .anyMatch(sivilstand -> isNotBlank(sivilstand.getRelatertVedSivilstand()))) {
 
             request.setRelatertPerson(relasjon.getRelatertPerson());
             request.setRelatertPersonUtenFolkeregisteridentifikator(relasjon.getRelatertPersonUtenFolkeregisteridentifikator());
@@ -176,9 +182,9 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
             setRelatertPerson(forelderRelasjon, hovedperson);
             addForelderBarnRelasjon(forelderRelasjon, hovedperson);
             forelderRelasjon.setId(hovedperson.getForelderBarnRelasjon().stream()
-                    .map(ForelderBarnRelasjonDTO::getId)
-                    .findFirst()
-                    .orElse(0) + 1);
+                                           .map(ForelderBarnRelasjonDTO::getId)
+                                           .findFirst()
+                                           .orElse(0) + 1);
             return List.of(forelderRelasjon);
         }
         return emptyList();
@@ -233,8 +239,8 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                 relasjon.setNyRelatertPerson(new PersonRequestDTO());
             }
             if (isNull(relasjon.getNyRelatertPerson().getAlder()) &&
-                    isNull(relasjon.getNyRelatertPerson().getFoedtEtter()) &&
-                    isNull(relasjon.getNyRelatertPerson().getFoedtFoer())) {
+                isNull(relasjon.getNyRelatertPerson().getFoedtEtter()) &&
+                isNull(relasjon.getNyRelatertPerson().getFoedtFoer())) {
 
                 relasjon.getNyRelatertPerson().setFoedtFoer(LocalDateTime.now().minusYears(
                         relasjon.getRelatertPersonsRolle() == Rolle.BARN ? 0 : 70));
@@ -269,19 +275,21 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         return relasjon.getRelatertPerson();
     }
 
-    private void setRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
+    private Mono<Void> setRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
         if (Rolle.FORELDER == relasjon.getMinRolleForPerson()) {
             relasjon.setMinRolleForPerson(KjoennFraIdentUtility.getKjoenn(person) == MANN ? Rolle.FAR : Rolle.MOR);
 
         } else if (Rolle.FORELDER == relasjon.getRelatertPersonsRolle()) {
 
-            personRepository.findByIdent(relasjon.getRelatertPerson())
-                    .map(DbPerson::getPerson)
-                    .ifPresent(relatertPerson ->
+            return personRepository.findByIdent(relasjon.getRelatertPerson())
+                    .doOnNext(relatertPerson ->
                             relasjon.setRelatertPersonsRolle(KjoennFraIdentUtility
-                                    .getKjoenn(relatertPerson) == MANN ? Rolle.FAR : Rolle.MOR));
+                                                                     .getKjoenn(relatertPerson.getPerson()) == MANN ? Rolle.FAR : Rolle.MOR))
+                    .flatMap(personRepository::save)
+                    .then();
         }
+        return Mono.empty();
     }
 
     private LocalDateTime getMaxDato(LocalDateTime dato1, LocalDateTime dato2) {
@@ -297,27 +305,31 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                 .orElse(FoedselsdatoUtility.getFoedselsdato(person));
     }
 
-    private void createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {
+    private Mono<Void> createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {
 
-        var relatertPerson = new AtomicReference<DbPerson>();
-        personRepository.findByIdent(relasjon.getRelatertPerson())
-                .ifPresentOrElse(relatertPerson::set,
-                        () -> relatertPerson.set(personRepository.save(DbPerson.builder()
+        return personRepository.findByIdent(relasjon.getRelatertPerson())
+                .switchIfEmpty(Mono.just(DbPerson.builder()
                                 .ident(relasjon.getRelatertPerson())
                                 .person(PersonDTO.builder()
                                         .ident(relasjon.getRelatertPerson())
                                         .build())
                                 .sistOppdatert(LocalDateTime.now())
-                                .build()))
-                );
-        var relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
-        relatertFamilierelasjon.setRelatertPerson(hovedperson);
-        swapRoller(relatertFamilierelasjon);
-        relatertFamilierelasjon.setId(relatertPerson.get().getPerson().getForelderBarnRelasjon().stream().findFirst()
-                .map(ForelderBarnRelasjonDTO::getId)
-                .orElse(0) + 1);
+                                .build())
+                        .flatMap(personRepository::save))
 
-        relatertPerson.get().getPerson().getForelderBarnRelasjon().addFirst(relatertFamilierelasjon);
+                .doOnNext(relatertPerson -> {
+
+                    val relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
+                    relatertFamilierelasjon.setRelatertPerson(hovedperson);
+                    swapRoller(relatertFamilierelasjon);
+                    relatertFamilierelasjon.setId(relatertPerson.getPerson().getForelderBarnRelasjon().stream().findFirst()
+                                                          .map(ForelderBarnRelasjonDTO::getId)
+                                                          .orElse(0) + 1);
+
+                    relatertPerson.getPerson().getForelderBarnRelasjon().addFirst(relatertFamilierelasjon);
+                })
+                .flatMap(personRepository::save)
+                .then();
     }
 
     private KjoennDTO.Kjoenn getKjoenn(Rolle rolle) {
@@ -329,7 +341,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         };
     }
 
-    private ForelderBarnRelasjonDTO swapRoller(ForelderBarnRelasjonDTO relasjon) {
+    private static ForelderBarnRelasjonDTO swapRoller(ForelderBarnRelasjonDTO relasjon) {
 
         Rolle rolle = relasjon.getMinRolleForPerson();
         relasjon.setMinRolleForPerson(relasjon.getRelatertPersonsRolle());

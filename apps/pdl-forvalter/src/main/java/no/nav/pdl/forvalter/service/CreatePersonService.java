@@ -90,7 +90,7 @@ public class CreatePersonService {
                 .build();
     }
 
-    public Mono<PersonDTO> execute(PersonRequestDTO request) {
+    public Mono<DbPerson> execute(PersonRequestDTO request) {
 
         var startTime = currentTimeMillis();
 
@@ -127,7 +127,6 @@ public class CreatePersonService {
                         .sistOppdatert(now())
                         .build())
                 .flatMap(personRepository::save)
-                .map(DbPerson::getPerson)
                 .doOnNext(person -> log.info("Oppretting av ident {} tok {} ms", person.getIdent(), currentTimeMillis() - startTime));
     }
 }

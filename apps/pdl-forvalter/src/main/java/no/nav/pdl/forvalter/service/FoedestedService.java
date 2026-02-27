@@ -41,7 +41,6 @@ public class FoedestedService implements BiValidation<FoedestedDTO, PersonDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(foedested -> person.setFoedested(new ArrayList<>(foedested)))
                 .then();
     }
 

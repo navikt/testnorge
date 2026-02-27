@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
@@ -38,7 +36,6 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(adressebeskyttelse -> person.setAdressebeskyttelse(new ArrayList<>(adressebeskyttelse)))
                 .then();
     }
 
@@ -68,6 +65,6 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
             person.setKontaktadresse(null);
             person.getKontaktadresse().add(getStrengtFortroligKontaktadresse());
         }
-        return Mono.just(adressebeskyttelse);
+        return Mono.empty();
     }
 }

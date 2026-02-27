@@ -29,8 +29,6 @@ public class DoedfoedtBarnService implements Validation<DoedfoedtBarnDTO> {
                     dfb.setMaster(getMaster(dfb, person));
                 })
                 .collectList()
-                .doOnNext(doedfoedteBarn ->
-                        person.setDoedfoedtBarn(new ArrayList<>(doedfoedteBarn)))
                 .then();
     }
 

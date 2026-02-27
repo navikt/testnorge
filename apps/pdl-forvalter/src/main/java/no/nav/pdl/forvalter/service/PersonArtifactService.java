@@ -43,7 +43,10 @@ public class PersonArtifactService {
     public Mono<PersonDTO> buildPerson(PersonDTO person, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
-        return foedselService.convert(person)
+
+        return (falskIdentitetService.convert(person)
+                .then(adressebeskyttelseService.convert(person))
+                .then(foedselService.convert(person))
                 .then(foedselsdatoService.convert(person))
                 .then(kjoennService.convert(person))
                 .then(bostedAdresseService.convert(person, relaxed))
@@ -52,8 +55,7 @@ public class PersonArtifactService {
                 .then(statsborgerskapService.convert(person))
                 .then(navnService.convert(person))
                 .then(oppholdsadresseService.convert(person))
-                .then(adressebeskyttelseService.convert(person))
-                .then(telefonnummerService.convert(person)
+                .then(telefonnummerService.convert(person))
                 .then(utflyttingService.convert(person))
                 .then(oppholdService.convert(person))
                 .then(tilrettelagtKommunikasjonService.convert(person))
@@ -70,12 +72,11 @@ public class PersonArtifactService {
                 .then(deltBostedService.convert(person))
                 .then(sikkerhetstiltakService.convert(person))
                 .then(navPersonIdentifikatorService.convert(person))
-                        .then(folkeregisterPersonstatusService.convert(person));
+                .then(folkeregisterPersonstatusService.convert(person));
 
         person = identtypeService.convert(person);
 
         person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
-        person.setFalskIdentitet(falskIdentitetService.convert(person));
 
         return person;
     }

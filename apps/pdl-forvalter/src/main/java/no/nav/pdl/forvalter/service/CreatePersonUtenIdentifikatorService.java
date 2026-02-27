@@ -11,10 +11,12 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.BARN;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -30,7 +32,7 @@ public class CreatePersonUtenIdentifikatorService {
     private final NavnService navnService;
     private final SecureRandom secureRandom = new SecureRandom();
 
-    public RelatertBiPersonDTO execute(PersonUtenIdentifikatorRequest request) {
+    public Mono<RelatertBiPersonDTO> execute(PersonUtenIdentifikatorRequest request) {
 
         var relatertPerson = mapperFacade.map(request, RelatertBiPersonDTO.class);
 
@@ -40,31 +42,39 @@ public class CreatePersonUtenIdentifikatorService {
             request.setNavn(new PersonnavnDTO());
         }
 
-        if (isBlank(request.getNavn().getEtternavn()) || isBlank(request.getNavn().getFornavn())) {
+        return Mono.just(TRUE)
+                .flatMap(type -> {
+                    if (isBlank(request.getNavn().getEtternavn()) || isBlank(request.getNavn().getFornavn())) {
 
-            var navn = mapperFacade.map(request.getNavn(), NavnDTO.class);
-            navnService.handle(navn);
-            relatertPerson.setNavn(mapperFacade.map(navn, PersonnavnDTO.class));
-        }
+                        var navn = mapperFacade.map(request.getNavn(), NavnDTO.class);
+                        return navnService.handle(navn)
+                                .doOnNext(navn1 ->
+                                        relatertPerson.setNavn(mapperFacade.map(navn1, PersonnavnDTO.class)))
+                                .thenReturn(relatertPerson);
+                    }
+                    return Mono.just(relatertPerson);
+                })
+                .flatMap(type -> {
 
-        if (isBlank(request.getStatsborgerskap())) {
+                    if (isBlank(request.getStatsborgerskap())) {
+                        return (isNotBlank(request.getRelatertStatsborgerskap()) ?
+                                Mono.just(request.getRelatertStatsborgerskap()) :
+                                kodeverkConsumer.getTilfeldigLand())
+                                .doOnNext(relatertPerson::setStatsborgerskap)
+                                .thenReturn(relatertPerson);
+                    }
+                    return Mono.just(relatertPerson);
+                })
+                .doOnNext(type -> {
 
-            relatertPerson.setStatsborgerskap(isNotBlank(request.getRelatertStatsborgerskap()) ?
-                    request.getRelatertStatsborgerskap() :
-                    kodeverkConsumer.getTilfeldigLand());
-        }
+                    if (isNull(request.getKjoenn())) {
+                        relatertPerson.setKjoenn(KjoennUtility.getKjoenn());
+                    }
 
-        if (isNull(request.getKjoenn())) {
-
-            relatertPerson.setKjoenn(KjoennUtility.getKjoenn());
-        }
-
-        if (isNull(request.getFoedselsdato())) {
-
-            relatertPerson.setFoedselsdato(getFoedselsdato(request.getMinRolle()));
-        }
-
-        return relatertPerson;
+                    if (isNull(request.getFoedselsdato())) {
+                        relatertPerson.setFoedselsdato(getFoedselsdato(request.getMinRolle()));
+                    }
+                });
     }
 
     private LocalDateTime getFoedselsdato(ForelderBarnRelasjonDTO.Rolle minRolle) {

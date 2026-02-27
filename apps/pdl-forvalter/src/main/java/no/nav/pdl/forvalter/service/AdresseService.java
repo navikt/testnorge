@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -116,13 +117,19 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
     }
 
-    protected String genererCoNavn(AdresseDTO.CoNavnDTO coNavn) {
+    protected Mono<String> genererCoNavn(AdresseDTO.CoNavnDTO coNavn) {
 
         if (nonNull(coNavn)) {
             if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
                     (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
 
-                var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+                genererNavnServiceConsumer.getNavn(1)
+                        .map(navn -> NavnDTO.builder()
+                                .adjektiv(coNavn.getFornavn())
+                                .adverb(coNavn.getMellomnavn())
+                                .substantiv(coNavn.getEtternavn())
+                                .build())
+                        .block(Duration.ofSeconds(5));
                 if (nyttNavn.isPresent()) {
                     coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.get().getAdjektiv()));
                     coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.get().getSubstantiv()));
