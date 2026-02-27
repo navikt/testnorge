@@ -4,6 +4,7 @@ import Spinner from '@/components/ui/loading/Spinner'
 import * as React from 'react'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import styled from 'styled-components'
+import { sortFagsystemer } from '@/components/bestilling/statusListe/BestillingProgresjon/fagsystemUtils'
 
 const FagsystemStatus = styled.div`
 	display: flex;
@@ -11,8 +12,13 @@ const FagsystemStatus = styled.div`
 `
 
 const StatusIcon = styled.div`
+	width: 24px;
+	height: 24px;
 	min-width: 24px;
 	margin-right: 7px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `
 
 const FagsystemText = styled.div`
@@ -83,7 +89,7 @@ export const BestillingStatus = ({
 
 	return (
 		<div style={{ marginTop: '15px' }}>
-			{bestilling?.status?.map((fagsystem, idx) => {
+			{sortFagsystemer(bestilling?.status || []).map((fagsystem, idx) => {
 				const oppretter =
 					(erOrganisasjon && !bestilling.ferdig) ||
 					!fagsystem?.statuser?.length ||
@@ -145,7 +151,7 @@ export const BestillingStatus = ({
 					<FagsystemStatus key={idx} style={{ alignItems: 'flex-start' }}>
 						<StatusIcon>
 							{oppretter ? (
-								<Spinner size={23} margin="0px" />
+								<Spinner size={24} margin="0px" />
 							) : (
 								<Icon kind={iconType(fagsystem.statuser, bestilling.feil, bestilling.ferdig)} />
 							)}
