@@ -116,7 +116,11 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 						<Pagination
 							page={page}
 							onPageChange={setPage}
-							count={Math.ceil(filteredData?.length / rowsPerPage)}
+							count={
+								filteredData?.length >= rowsPerPage
+									? Math.ceil(filteredData?.length / rowsPerPage)
+									: 1
+							}
 							size="small"
 						/>
 					</VStack>
