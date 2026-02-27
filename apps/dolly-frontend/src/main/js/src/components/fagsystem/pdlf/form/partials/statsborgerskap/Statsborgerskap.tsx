@@ -9,22 +9,53 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { useBoolean } from 'react-use'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import styled from 'styled-components'
 
 type StatsborgerskapTypes = {
 	path: string
 	kanVelgeMaster?: boolean
+	formMethods?: UseFormReturn
 }
 
-export const StatsborgerskapForm = ({ path, kanVelgeMaster }: StatsborgerskapTypes) => {
+const LandVelger = styled.div`
+	display: flex;
+	margin-right: 25px;
+`
+
+export const StatsborgerskapForm = ({
+	path,
+	kanVelgeMaster,
+	formMethods,
+}: StatsborgerskapTypes) => {
+	const [ukjentIsChecked, setUkjentIsChecked] = useBoolean(false)
+
+	const handleUkjentLandChange = (isChecked: boolean) => {
+		setUkjentIsChecked(isChecked)
+		formMethods?.setValue(`${path}.landkode`, isChecked ? 'XUK' : null)
+	}
+
 	return (
 		<>
-			<FormSelect
-				name={`${path}.landkode`}
-				label="Statsborgerskap"
-				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				size="large"
-				isClearable={false}
-			/>
+			<LandVelger>
+				<FormSelect
+					name={`${path}.landkode`}
+					label="Statsborgerskap"
+					kodeverk={AdresseKodeverk.StatsborgerskapLand}
+					size="large"
+					isClearable={false}
+					isDisabled={ukjentIsChecked}
+				/>
+				<FormCheckbox
+					name={`${path}.ukjentLand`}
+					label="Ukjent land"
+					checkboxMargin
+					wrapperSize="tight"
+					afterChange={(val: boolean) => handleUkjentLandChange(val)}
+				/>
+			</LandVelger>
 			<FormDatepicker
 				name={`${path}.gyldigFraOgMed`}
 				label="Statsborgerskap fra"
@@ -36,7 +67,7 @@ export const StatsborgerskapForm = ({ path, kanVelgeMaster }: StatsborgerskapTyp
 	)
 }
 
-export const Statsborgerskap = () => {
+export const Statsborgerskap = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
@@ -53,6 +84,7 @@ export const Statsborgerskap = () => {
 					<StatsborgerskapForm
 						path={path}
 						kanVelgeMaster={opts?.identMaster !== 'PDL' && opts?.identtype !== 'NPID'}
+						formMethods={formMethods}
 					/>
 				)}
 			</FormDollyFieldArray>
