@@ -105,7 +105,7 @@ public class PersonController {
 
     @PutMapping(value = "/{ident}")
     @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
-    public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
+    public Mono<String> updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
                                @PathVariable String ident,
                                @RequestBody PersonUpdateRequestDTO request,
                                @Parameter(description = "Angir om tidligere historie skal skrives over")
@@ -131,580 +131,580 @@ public class PersonController {
 
     @DeleteMapping(value = "/{ident}")
     @Operation(description = "Slett person")
-    public void deletePerson(@Parameter(description = "Slett angitt testperson med relasjoner")
+    public Mono<Void> deletePerson(@Parameter(description = "Slett angitt testperson med relasjoner")
                              @PathVariable String ident) {
 
         if (!isTestnorgeIdent(ident)) {
-            personService.deletePerson(ident);
+            return personService.deletePerson(ident);
 
         } else {
-            personService.deleteMasterPdlArtifacter(ident);
+            return personService.deleteMasterPdlArtifacter(ident);
         }
     }
 
     @DeleteMapping(value = "/{ident}/foedsel/{id}")
     @Operation(description = "Slett angitt foedsel for person")
-    public void deleteFoedsel(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteFoedsel(@Parameter(description = "Ident for testperson")
                               @PathVariable String ident,
                               @Parameter(description = "id som identifiserer foedsel")
                               @PathVariable Integer id) {
 
-        artifactDeleteService.deleteFoedsel(ident, id);
+        return artifactDeleteService.deleteFoedsel(ident, id);
     }
 
     @DeleteMapping(value = "/{ident}/foedested/{id}")
     @Operation(description = "Slett angitt foedested for person")
-    public void deleteFoedested(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteFoedested(@Parameter(description = "Ident for testperson")
                                 @PathVariable String ident,
                                 @Parameter(description = "id som identifiserer foedested")
                                 @PathVariable Integer id) {
 
-        artifactDeleteService.deleteFoedested(ident, id);
+        return artifactDeleteService.deleteFoedested(ident, id);
     }
 
     @DeleteMapping(value = "/{ident}/foedselsdato/{id}")
     @Operation(description = "Slett angitt foedselsdato for person")
-    public void deleteFoedselsdato(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteFoedselsdato(@Parameter(description = "Ident for testperson")
                                    @PathVariable String ident,
                                    @Parameter(description = "id som identifiserer foedselsdato")
                                    @PathVariable Integer id) {
 
-        artifactDeleteService.deleteFoedselsdato(ident, id);
+        return artifactDeleteService.deleteFoedselsdato(ident, id);
     }
 
     @PutMapping(value = "/{ident}/foedsel/{id}")
     @Operation(description = "Oppdatere angitt foedsel for person")
-    public void updateFoedsel(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateFoedsel(@Parameter(description = "Ident for testperson")
                               @PathVariable String ident,
                               @Parameter(description = "id som identifiserer foedsel")
                               @PathVariable Integer id,
                               @RequestBody FoedselDTO foedsel) {
 
-        artifactUpdateService.updateFoedsel(ident, id, foedsel);
+        return artifactUpdateService.updateFoedsel(ident, id, foedsel);
     }
 
     @PutMapping(value = "/{ident}/foedested/{id}")
     @Operation(description = "Oppdatere angitt foedested for person")
-    public void updateFoedested(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateFoedested(@Parameter(description = "Ident for testperson")
                                 @PathVariable String ident,
                                 @Parameter(description = "id som identifiserer foedested")
                                 @PathVariable Integer id,
                                 @RequestBody FoedestedDTO foedested) {
 
-        artifactUpdateService.updateFoedested(ident, id, foedested);
+        return artifactUpdateService.updateFoedested(ident, id, foedested);
     }
 
     @PutMapping(value = "/{ident}/foedselsdato/{id}")
     @Operation(description = "Oppdatere angitt foedseldato for person")
-    public void updateFoedselsdato(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateFoedselsdato(@Parameter(description = "Ident for testperson")
                                    @PathVariable String ident,
                                    @Parameter(description = "id som identifiserer foedselsdato")
                                    @PathVariable Integer id,
                                    @RequestBody FoedselsdatoDTO foedselsdato) {
 
-        artifactUpdateService.updateFoedselsdato(ident, id, foedselsdato);
+        return artifactUpdateService.updateFoedselsdato(ident, id, foedselsdato);
     }
 
     @DeleteMapping(value = "/{ident}/navn/{id}")
     @Operation(description = "Slett angitt navn for person")
-    public void deletePersonNavn(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deletePersonNavn(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer navn")
                                  @PathVariable Integer id) {
 
-        artifactDeleteService.deleteNavn(ident, id);
+        return artifactDeleteService.deleteNavn(ident, id);
     }
 
     @PutMapping(value = "/{ident}/navn/{id}")
     @Operation(description = "Oppdatere angitt navn for person")
-    public void updatePersonNavn(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updatePersonNavn(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer navn")
                                  @PathVariable Integer id,
                                  @RequestBody NavnDTO navn) {
 
-        artifactUpdateService.updateNavn(ident, id, navn);
+        return artifactUpdateService.updateNavn(ident, id, navn);
     }
 
     @DeleteMapping(value = "/{ident}/kjoenn/{id}")
     @Operation(description = "Slett angitt kjoenn for person")
-    public void deletePersonKjoenn(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deletePersonKjoenn(@Parameter(description = "Ident for testperson")
                                    @PathVariable String ident,
                                    @Parameter(description = "id som identifiserer kjoenn")
                                    @PathVariable Integer id) {
 
-        artifactDeleteService.deleteKjoenn(ident, id);
+        return artifactDeleteService.deleteKjoenn(ident, id);
     }
 
     @PutMapping(value = "/{ident}/kjoenn/{id}")
     @Operation(description = "oppdatere angitt kjoenn for person")
-    public void updatePersonKjoenn(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updatePersonKjoenn(@Parameter(description = "Ident for testperson")
                                    @PathVariable String ident,
                                    @Parameter(description = "id som identifiserer kjoenn")
                                    @PathVariable Integer id,
                                    @RequestBody KjoennDTO kjoenn) {
 
-        artifactUpdateService.updateKjoenn(ident, id, kjoenn);
+        return artifactUpdateService.updateKjoenn(ident, id, kjoenn);
     }
 
     @DeleteMapping(value = "/{ident}/bostedsadresse/{id}")
     @Operation(description = "Slett angitt bostedsadresse for person")
-    public void deleteBostedsadresse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteBostedsadresse(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer bostedsadresse")
                                      @PathVariable Integer id) {
 
-        artifactDeleteService.deleteBostedsadresse(ident, id);
+        return artifactDeleteService.deleteBostedsadresse(ident, id);
     }
 
     @PutMapping(value = "/{ident}/bostedsadresse/{id}")
     @Operation(description = "Oppdater angitt bostedsadresse for person")
-    public void updateBostedsadresse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateBostedsadresse(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer bostedsadresse")
                                      @PathVariable Integer id,
                                      @RequestBody BostedadresseDTO bostedadresse) {
 
-        artifactUpdateService.updateBostedsadresse(ident, id, bostedadresse);
+        return artifactUpdateService.updateBostedsadresse(ident, id, bostedadresse);
     }
 
     @DeleteMapping(value = "/{ident}/kontaktadresse/{id}")
     @Operation(description = "Slett angitt kontaktadresse for person")
-    public void deleteKontaktadresse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteKontaktadresse(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer kontaktadresse")
                                      @PathVariable Integer id) {
 
-        artifactDeleteService.deleteKontaktadresse(ident, id);
+        return artifactDeleteService.deleteKontaktadresse(ident, id);
     }
 
     @PutMapping(value = "/{ident}/kontaktadresse/{id}")
     @Operation(description = "Oppdater angitt kontaktadresse for person")
-    public void updateKontaktadresse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateKontaktadresse(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer kontaktadresse")
                                      @PathVariable Integer id,
                                      @RequestBody KontaktadresseDTO kontaktadresse) {
 
-        artifactUpdateService.updateKontaktadresse(ident, id, kontaktadresse);
+        return artifactUpdateService.updateKontaktadresse(ident, id, kontaktadresse);
     }
 
     @DeleteMapping(value = "/{ident}/oppholdsadresse/{id}")
     @Operation(description = "Slett angitt oppholdsadresse for person")
-    public void deleteOppholdsadresse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteOppholdsadresse(@Parameter(description = "Ident for testperson")
                                       @PathVariable String ident,
                                       @Parameter(description = "id som identifiserer oppholdsadresse")
                                       @PathVariable Integer id) {
 
-        artifactDeleteService.deleteOppholdsadresse(ident, id);
+        return artifactDeleteService.deleteOppholdsadresse(ident, id);
     }
 
     @PutMapping(value = "/{ident}/oppholdsadresse/{id}")
     @Operation(description = "Oppdater angitt oppholdsadresse for person")
-    public void updateOppholdsadresse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateOppholdsadresse(@Parameter(description = "Ident for testperson")
                                       @PathVariable String ident,
                                       @Parameter(description = "id som identifiserer oppholdsadresse")
                                       @PathVariable Integer id,
                                       @RequestBody OppholdsadresseDTO oppholdsadresse) {
 
-        artifactUpdateService.updateOppholdsadresse(ident, id, oppholdsadresse);
+        return artifactUpdateService.updateOppholdsadresse(ident, id, oppholdsadresse);
     }
 
     @DeleteMapping(value = "/{ident}/innflytting/{id}")
     @Operation(description = "Slett angitt innflytting for person")
-    public void deleteInnflytting(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteInnflytting(@Parameter(description = "Ident for testperson")
                                   @PathVariable String ident,
                                   @Parameter(description = "id som identifiserer innflytting")
                                   @PathVariable Integer id) {
 
-        artifactDeleteService.deleteInnflytting(ident, id);
+        return artifactDeleteService.deleteInnflytting(ident, id);
     }
 
     @PutMapping(value = "/{ident}/innflytting/{id}")
     @Operation(description = "Oppdater angitt innflytting for person")
-    public void updateInnflytting(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateInnflytting(@Parameter(description = "Ident for testperson")
                                   @PathVariable String ident,
                                   @Parameter(description = "id som identifiserer innflytting")
                                   @PathVariable Integer id,
                                   @RequestBody InnflyttingDTO innflytting) {
 
-        artifactUpdateService.updateInnflytting(ident, id, innflytting);
+        return artifactUpdateService.updateInnflytting(ident, id, innflytting);
     }
 
     @DeleteMapping(value = "/{ident}/utflytting/{id}")
     @Operation(description = "Slett angitt utflytting for person")
-    public void deleteUtflytting(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteUtflytting(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer utflytting")
                                  @PathVariable Integer id) {
 
-        artifactDeleteService.deleteUtflytting(ident, id);
+        return artifactDeleteService.deleteUtflytting(ident, id);
     }
 
     @PutMapping(value = "/{ident}/utflytting/{id}")
     @Operation(description = "Oppdater angitt utflytting for person")
-    public void updateUtflytting(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateUtflytting(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer utflytting")
                                  @PathVariable Integer id,
                                  @RequestBody UtflyttingDTO utflytting) {
 
-        artifactUpdateService.updateUtflytting(ident, id, utflytting);
+        return artifactUpdateService.updateUtflytting(ident, id, utflytting);
     }
 
     @DeleteMapping(value = "/{ident}/deltbosted/{id}")
     @Operation(description = "Slett angitt deltbosted for person")
-    public void deleteDeltBosted(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteDeltBosted(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer deltbosted")
                                  @PathVariable Integer id) {
 
-        artifactDeleteService.deleteDeltBosted(ident, id);
+        return artifactDeleteService.deleteDeltBosted(ident, id);
     }
 
     @PutMapping(value = "/{ident}/deltbosted/{id}")
     @Operation(description = "Oppdater angitt deltbosted for person")
-    public void updateDeltBosted(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateDeltBosted(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer deltbosted")
                                  @PathVariable Integer id,
                                  @RequestBody DeltBostedDTO deltBosted) {
 
-        artifactUpdateService.updateDeltBosted(ident, id, deltBosted);
+        return artifactUpdateService.updateDeltBosted(ident, id, deltBosted);
     }
 
     @DeleteMapping(value = "/{ident}/forelderbarnrelasjon/{id}")
     @Operation(description = "Slett angitt forelderbarnrelasjon for person")
-    public void deleteForelderBarnRelasjon(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteForelderBarnRelasjon(@Parameter(description = "Ident for testperson")
                                            @PathVariable String ident,
                                            @Parameter(description = "id som identifiserer forelderbarnrelasjon")
                                            @PathVariable Integer id) {
 
-        artifactDeleteService.deleteForelderBarnRelasjon(ident, id);
+        return artifactDeleteService.deleteForelderBarnRelasjon(ident, id);
     }
 
     @PutMapping(value = "/{ident}/forelderbarnrelasjon/{id}")
     @Operation(description = "Oppdater angitt forelderbarnrelasjon for person")
-    public void updateForelderBarnRelasjon(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateForelderBarnRelasjon(@Parameter(description = "Ident for testperson")
                                            @PathVariable String ident,
                                            @Parameter(description = "id som identifiserer forelderbarnrelasjon")
                                            @PathVariable Integer id,
                                            @RequestBody ForelderBarnRelasjonDTO forelderBarnRelasjon) {
 
-        artifactUpdateService.updateForelderBarnRelasjon(ident, id, forelderBarnRelasjon);
+        return artifactUpdateService.updateForelderBarnRelasjon(ident, id, forelderBarnRelasjon);
     }
 
     @DeleteMapping(value = "/{ident}/foreldreansvar/{id}")
     @Operation(description = "Slett angitt foreldreansvar for person (barn)")
-    public void deleteForeldreansvar(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteForeldreansvar(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer foreldreansvar")
                                      @PathVariable Integer id) {
 
-        artifactDeleteService.deleteForeldreansvar(ident, id);
+        return artifactDeleteService.deleteForeldreansvar(ident, id);
     }
 
     @PutMapping(value = "/{ident}/foreldreansvar/{id}")
     @Operation(description = "Oppdater angitt foreldreansvar for person (barn)")
-    public void updateForeldreansvar(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateForeldreansvar(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer foreldreansvar")
                                      @PathVariable Integer id,
                                      @RequestBody ForeldreansvarDTO foreldreansvar) {
 
-        artifactUpdateService.updateForeldreansvar(ident, id, foreldreansvar);
+        return artifactUpdateService.updateForeldreansvar(ident, id, foreldreansvar);
     }
 
     @DeleteMapping(value = "/{ident}/kontaktinformasjonfordoedsbo/{id}")
     @Operation(description = "Slett angitt kontaktinformasjonfordoedsbo på person")
-    public void deleteKontaktinformasjonForDoedsbo(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteKontaktinformasjonForDoedsbo(@Parameter(description = "Ident for testperson")
                                                    @PathVariable String ident,
                                                    @Parameter(description = "id som identifiserer kontaktinformasjonfordoedsbo")
                                                    @PathVariable Integer id) {
 
-        artifactDeleteService.deleteKontaktinformasjonForDoedsbo(ident, id);
+        return artifactDeleteService.deleteKontaktinformasjonForDoedsbo(ident, id);
     }
 
     @PutMapping(value = "/{ident}/kontaktinformasjonfordoedsbo/{id}")
     @Operation(description = "Oppdater angitt kontaktinformasjonfordoedsbo på person")
-    public void updateKontaktinformasjonForDoedsbo(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateKontaktinformasjonForDoedsbo(@Parameter(description = "Ident for testperson")
                                                    @PathVariable String ident,
                                                    @Parameter(description = "id som identifiserer kontaktinformasjonfordoedsbo")
                                                    @PathVariable Integer id,
                                                    @RequestBody KontaktinformasjonForDoedsboDTO kontaktinformasjonForDoedsbo) {
 
-        artifactUpdateService.updateKontaktinformasjonForDoedsbo(ident, id, kontaktinformasjonForDoedsbo);
+        return artifactUpdateService.updateKontaktinformasjonForDoedsbo(ident, id, kontaktinformasjonForDoedsbo);
     }
 
     @DeleteMapping(value = "/{ident}/utenlandskidentifikasjonsnummer/{id}")
     @Operation(description = "Slett angitt utenlandskidentifikasjonsnummer for person")
-    public void deleteUtenlandskIdentifikasjonsnummer(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteUtenlandskIdentifikasjonsnummer(@Parameter(description = "Ident for testperson")
                                                       @PathVariable String ident,
                                                       @Parameter(description = "id som identifiserer utenlandskidentifikasjonsnummer")
                                                       @PathVariable Integer id) {
 
-        artifactDeleteService.deleteUtenlandskIdentifikasjonsnummer(ident, id);
+        return artifactDeleteService.deleteUtenlandskIdentifikasjonsnummer(ident, id);
     }
 
     @PutMapping(value = "/{ident}/utenlandskidentifikasjonsnummer/{id}")
     @Operation(description = "Oppdater angitt utenlandskidentifikasjonsnummer for person")
-    public void updateUtenlandskIdentifikasjonsnummer(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateUtenlandskIdentifikasjonsnummer(@Parameter(description = "Ident for testperson")
                                                       @PathVariable String ident,
                                                       @Parameter(description = "id som identifiserer utenlandskidentifikasjonsnummer")
                                                       @PathVariable Integer id,
                                                       @RequestBody UtenlandskIdentifikasjonsnummerDTO utenlandskIdentifikasjonsnummer) {
 
-        artifactUpdateService.updateUtenlandskIdentifikasjonsnummer(ident, id, utenlandskIdentifikasjonsnummer);
+        return artifactUpdateService.updateUtenlandskIdentifikasjonsnummer(ident, id, utenlandskIdentifikasjonsnummer);
     }
 
     @DeleteMapping(value = "/{ident}/falskidentitet/{id}")
     @Operation(description = "Slett angitt falskidentitet for person")
-    public void deleteFalskIdentitet(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteFalskIdentitet(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer falskidentitet")
                                      @PathVariable Integer id) {
 
-        artifactDeleteService.deleteFalskIdentitet(ident, id);
+        return artifactDeleteService.deleteFalskIdentitet(ident, id);
     }
 
     @PutMapping(value = "/{ident}/falskidentitet/{id}")
     @Operation(description = "Oppdater angitt falskidentitet for person")
-    public void updateFalskIdentitet(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateFalskIdentitet(@Parameter(description = "Ident for testperson")
                                      @PathVariable String ident,
                                      @Parameter(description = "id som identifiserer falskidentitet")
                                      @PathVariable Integer id,
                                      @RequestBody FalskIdentitetDTO falskIdentitet) {
 
-        artifactUpdateService.updateFalskIdentitet(ident, id, falskIdentitet);
+        return artifactUpdateService.updateFalskIdentitet(ident, id, falskIdentitet);
     }
 
     @DeleteMapping(value = "/{ident}/adressebeskyttelse/{id}")
     @Operation(description = "Slett angitt adressebeskyttelse for person")
-    public void deleteAdressebeskyttelse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteAdressebeskyttelse(@Parameter(description = "Ident for testperson")
                                          @PathVariable String ident,
                                          @Parameter(description = "id som identifiserer adressebeskyttelse")
                                          @PathVariable Integer id) {
 
-        artifactDeleteService.deleteAdressebeskyttelse(ident, id);
+        return artifactDeleteService.deleteAdressebeskyttelse(ident, id);
     }
 
     @PutMapping(value = "/{ident}/adressebeskyttelse/{id}")
     @Operation(description = "Oppdater angitt adressebeskyttelse for person")
-    public void updateAdressebeskyttelse(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateAdressebeskyttelse(@Parameter(description = "Ident for testperson")
                                          @PathVariable String ident,
                                          @Parameter(description = "id som identifiserer adressebeskyttelse")
                                          @PathVariable Integer id,
                                          @RequestBody AdressebeskyttelseDTO adressebeskyttelse) {
 
-        artifactUpdateService.updateAdressebeskyttelse(ident, id, adressebeskyttelse);
+        return artifactUpdateService.updateAdressebeskyttelse(ident, id, adressebeskyttelse);
     }
 
     @DeleteMapping(value = "/{ident}/doedsfall/{id}")
     @Operation(description = "Slett angitt doedsfall for person")
-    public void deleteDoedsfall(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteDoedsfall(@Parameter(description = "Ident for testperson")
                                 @PathVariable String ident,
                                 @Parameter(description = "id som identifiserer doedsfall")
                                 @PathVariable Integer id) {
 
-        artifactDeleteService.deleteDoedsfall(ident, id);
+        return artifactDeleteService.deleteDoedsfall(ident, id);
     }
 
     @PutMapping(value = "/{ident}/doedsfall/{id}")
     @Operation(description = "Oppdater angitt doedsfall for person")
-    public void updateDoedsfall(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateDoedsfall(@Parameter(description = "Ident for testperson")
                                 @PathVariable String ident,
                                 @Parameter(description = "id som identifiserer doedsfall")
                                 @PathVariable Integer id,
                                 @RequestBody DoedsfallDTO doedsfall) {
 
-        artifactUpdateService.updateDoedsfall(ident, id, doedsfall);
+        return artifactUpdateService.updateDoedsfall(ident, id, doedsfall);
     }
 
     @DeleteMapping(value = "/{ident}/folkeregisterpersonstatus/{id}")
     @Operation(description = "Slett angitt folkeregisterpersonstatus for person")
-    public void deleteFolkeregisterPersonstatus(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteFolkeregisterPersonstatus(@Parameter(description = "Ident for testperson")
                                                 @PathVariable String ident,
                                                 @Parameter(description = "id som identifiserer folkeregisterpersonstatus")
                                                 @PathVariable Integer id) {
 
-        artifactDeleteService.deleteFolkeregisterPersonstatus(ident, id);
+        return artifactDeleteService.deleteFolkeregisterPersonstatus(ident, id);
     }
 
     @PutMapping(value = "/{ident}/folkeregisterpersonstatus/{id}")
     @Operation(description = "Oppdater angitt folkeregisterpersonstatus for person")
-    public void updateFolkeregisterPersonstatus(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateFolkeregisterPersonstatus(@Parameter(description = "Ident for testperson")
                                                 @PathVariable String ident,
                                                 @Parameter(description = "id som identifiserer folkeregisterpersonstatus")
                                                 @PathVariable Integer id,
                                                 @RequestBody FolkeregisterPersonstatusDTO folkeregisterPersonstatus) {
 
-        artifactUpdateService.updateFolkeregisterPersonstatus(ident, id, folkeregisterPersonstatus);
+        return artifactUpdateService.updateFolkeregisterPersonstatus(ident, id, folkeregisterPersonstatus);
     }
 
     @DeleteMapping(value = "/{ident}/tilrettelagtkommunikasjon/{id}")
     @Operation(description = "Slett angitt tilrettelagtkommunikasjon for person")
-    public void deleteTilrettelagtKommunikasjon(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteTilrettelagtKommunikasjon(@Parameter(description = "Ident for testperson")
                                                 @PathVariable String ident,
                                                 @Parameter(description = "id som identifiserer tilrettelagtkommunikasjon")
                                                 @PathVariable Integer id) {
 
-        artifactDeleteService.deleteTilrettelagtKommunikasjon(ident, id);
+        return artifactDeleteService.deleteTilrettelagtKommunikasjon(ident, id);
     }
 
     @PutMapping(value = "/{ident}/tilrettelagtkommunikasjon/{id}")
     @Operation(description = "Oppdater angitt tilrettelagtkommunikasjon for person")
-    public void updateTilrettelagtKommunikasjon(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateTilrettelagtKommunikasjon(@Parameter(description = "Ident for testperson")
                                                 @PathVariable String ident,
                                                 @Parameter(description = "id som identifiserer tilrettelagtkommunikasjon")
                                                 @PathVariable Integer id,
                                                 @RequestBody TilrettelagtKommunikasjonDTO tilrettelagtKommunikasjon) {
 
-        artifactUpdateService.updateTilrettelagtKommunikasjon(ident, id, tilrettelagtKommunikasjon);
+        return artifactUpdateService.updateTilrettelagtKommunikasjon(ident, id, tilrettelagtKommunikasjon);
     }
 
     @DeleteMapping(value = "/{ident}/statsborgerskap/{id}")
     @Operation(description = "Slett angitt statsborgerskap for person")
-    public void deleteStatsborgerskap(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteStatsborgerskap(@Parameter(description = "Ident for testperson")
                                       @PathVariable String ident,
                                       @Parameter(description = "id som identifiserer statsborgerskap")
                                       @PathVariable Integer id) {
 
-        artifactDeleteService.deleteStatsborgerskap(ident, id);
+        return artifactDeleteService.deleteStatsborgerskap(ident, id);
     }
 
     @PutMapping(value = "/{ident}/statsborgerskap/{id}")
     @Operation(description = "Oppdater angitt statsborgerskap for person")
-    public void updateStatsborgerskap(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateStatsborgerskap(@Parameter(description = "Ident for testperson")
                                       @PathVariable String ident,
                                       @Parameter(description = "id som identifiserer statsborgerskap")
                                       @PathVariable Integer id,
                                       @RequestBody StatsborgerskapDTO statsborgerskap) {
 
-        artifactUpdateService.updateStatsborgerskap(ident, id, statsborgerskap);
+        return artifactUpdateService.updateStatsborgerskap(ident, id, statsborgerskap);
     }
 
     @DeleteMapping(value = "/{ident}/opphold/{id}")
     @Operation(description = "Slett angitt opphold for person")
-    public void deleteOpphold(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteOpphold(@Parameter(description = "Ident for testperson")
                               @PathVariable String ident,
                               @Parameter(description = "id som identifiserer opphold")
                               @PathVariable Integer id) {
 
-        artifactDeleteService.deleteOpphold(ident, id);
+        return artifactDeleteService.deleteOpphold(ident, id);
     }
 
     @PutMapping(value = "/{ident}/opphold/{id}")
     @Operation(description = "Oppdater angitt opphold for person")
-    public void deleteOpphold(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteOpphold(@Parameter(description = "Ident for testperson")
                               @PathVariable String ident,
                               @Parameter(description = "id som identifiserer opphold")
                               @PathVariable Integer id,
                               @RequestBody OppholdDTO opphold) {
 
-        artifactUpdateService.updateOpphold(ident, id, opphold);
+        return artifactUpdateService.updateOpphold(ident, id, opphold);
     }
 
     @DeleteMapping(value = "/{ident}/sivilstand/{id}")
     @Operation(description = "Slett angitt sivilstand for person")
-    public void deleteSivilstand(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteSivilstand(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer sivilstand")
                                  @PathVariable Integer id) {
 
-        artifactDeleteService.deleteSivilstand(ident, id);
+        return artifactDeleteService.deleteSivilstand(ident, id);
     }
 
     @PutMapping(value = "/{ident}/sivilstand/{id}")
     @Operation(description = "Oppdater angitt sivilstand for person")
-    public void updateSivilstand(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateSivilstand(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
                                  @Parameter(description = "id som identifiserer sivilstand")
                                  @PathVariable Integer id,
                                  @RequestBody SivilstandDTO sivilstand) {
 
-        artifactUpdateService.updateSivilstand(ident, id, sivilstand);
+        return artifactUpdateService.updateSivilstand(ident, id, sivilstand);
     }
 
     @DeleteMapping(value = "/{ident}/telefonnummer/{id}")
     @Operation(description = "Slett angitt telefonnummer for person")
-    public void deleteTelefonnummer(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteTelefonnummer(@Parameter(description = "Ident for testperson")
                                     @PathVariable String ident,
                                     @Parameter(description = "id som identifiserer telefonnummer")
                                     @PathVariable Integer id) {
 
-        artifactDeleteService.deleteTelefonnummer(ident, id);
+        return artifactDeleteService.deleteTelefonnummer(ident, id);
     }
 
     @PutMapping(value = "/{ident}/telefonnummer")
     @Operation(description = "Oppdater telefonnumre for person")
-    public void updateTelefonnumre(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateTelefonnumre(@Parameter(description = "Ident for testperson")
                                    @PathVariable String ident,
                                    @Parameter(description = "id som identifiserer telefonnummer")
                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
-        artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
+        return artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
     }
 
     @DeleteMapping(value = "/{ident}/vergemaal/{id}")
     @Operation(description = "Slett angitt vergemaal for person")
-    public void deleteVergemaal(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteVergemaal(@Parameter(description = "Ident for testperson")
                                 @PathVariable String ident,
                                 @Parameter(description = "id som identifiserer vergemaal")
                                 @PathVariable Integer id) {
 
-        artifactDeleteService.deleteVergemaal(ident, id);
+        return artifactDeleteService.deleteVergemaal(ident, id);
     }
 
     @PutMapping(value = "/{ident}/vergemaal/{id}")
     @Operation(description = "Oppdater angitt vergemaal for person")
-    public void updateVergemaal(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateVergemaal(@Parameter(description = "Ident for testperson")
                                 @PathVariable String ident,
                                 @Parameter(description = "id som identifiserer vergemaal")
                                 @PathVariable Integer id,
                                 @RequestBody VergemaalDTO vergemaal) {
 
-        artifactUpdateService.updateVergemaal(ident, id, vergemaal);
+        return artifactUpdateService.updateVergemaal(ident, id, vergemaal);
     }
 
     @DeleteMapping(value = "/{ident}/sikkerhetstiltak/{id}")
     @Operation(description = "Slett angitt sikkerhetstiltak for person")
-    public void deleteSikkerhetstiltak(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteSikkerhetstiltak(@Parameter(description = "Ident for testperson")
                                        @PathVariable String ident,
                                        @Parameter(description = "id som identifiserer sikkerhetstiltak")
                                        @PathVariable Integer id) {
 
-        artifactDeleteService.deleteSikkerhetstiltak(ident, id);
+        return artifactDeleteService.deleteSikkerhetstiltak(ident, id);
     }
 
     @PutMapping(value = "/{ident}/sikkerhetstiltak/{id}")
     @Operation(description = "Oppdater angitt sikkerhetstiltak for person")
-    public void updateSikkerhetstiltak(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateSikkerhetstiltak(@Parameter(description = "Ident for testperson")
                                        @PathVariable String ident,
                                        @Parameter(description = "id som identifiserer sikkerhetstiltak")
                                        @PathVariable Integer id,
                                        @RequestBody SikkerhetstiltakDTO sikkerhetstiltak) {
 
-        artifactUpdateService.updateSikkerhetstiltak(ident, id, sikkerhetstiltak);
+        return artifactUpdateService.updateSikkerhetstiltak(ident, id, sikkerhetstiltak);
     }
 
     @DeleteMapping(value = "/{ident}/doedfoedtbarn/{id}")
     @Operation(description = "Slett angitt doedfoedtbarn for person")
-    public void deleteDoedfoedtBarn(@Parameter(description = "Ident for testperson")
+    public Mono<Void> deleteDoedfoedtBarn(@Parameter(description = "Ident for testperson")
                                     @PathVariable String ident,
                                     @Parameter(description = "id som identifiserer doedfoedtbarn")
                                     @PathVariable Integer id) {
 
-        artifactDeleteService.deleteDoedfoedtBarn(ident, id);
+        return artifactDeleteService.deleteDoedfoedtBarn(ident, id);
     }
 
     @PutMapping(value = "/{ident}/doedfoedtbarn/{id}")
     @Operation(description = "Oppdater angitt doedfoedtbarn for person")
-    public void updateDoedfoedtBarn(@Parameter(description = "Ident for testperson")
+    public Mono<Void> updateDoedfoedtBarn(@Parameter(description = "Ident for testperson")
                                     @PathVariable String ident,
                                     @Parameter(description = "id som identifiserer doedfoedtbarn")
                                     @PathVariable Integer id,
                                     @RequestBody DoedfoedtBarnDTO doedfoedtBarn) {
 
-        artifactUpdateService.updateDoedfoedtBarn(ident, id, doedfoedtBarn);
+        return artifactUpdateService.updateDoedfoedtBarn(ident, id, doedfoedtBarn);
     }
 }

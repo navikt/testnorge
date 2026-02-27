@@ -65,7 +65,6 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(sivilstand -> person.setSivilstand(new ArrayList<>(sivilstand)))
                 .map(sivilstand -> enforceIntegrity(person))
                 .doOnNext(ArtifactUtils::renumberId)
                 .then();
@@ -118,7 +117,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
             if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
                 isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
                 isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
-                var foedselsdato = FoedselsdatoUtility.getFoedselsdato(hovedperson);
+                val foedselsdato = FoedselsdatoUtility.getFoedselsdato(hovedperson);
                 sivilstand.getNyRelatertPerson().setFoedtFoer(foedselsdato.plusYears(2));
                 sivilstand.getNyRelatertPerson().setFoedtEtter(foedselsdato.minusYears(2));
             }
@@ -135,7 +134,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
             return createPersonService.execute(sivilstand.getNyRelatertPerson())
                     .flatMap(relatertPerson -> {
                         if (isNotTrue(sivilstand.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
-                            var fellesAdresse = mapperFacade.map(hovedperson.getBostedsadresse().stream()
+                            val fellesAdresse = mapperFacade.map(hovedperson.getBostedsadresse().stream()
                                     .map(adresse -> mapperFacade.map(adresse, BostedadresseDTO.class))
                                     .findFirst()
                                     .orElse(BostedadresseDTO.builder()
@@ -195,12 +194,12 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
 
     protected List<SivilstandDTO> enforceIntegrity(PersonDTO person) {
 
-        var tidligsteSivilstandDato = person.getSivilstand().stream()
+        val tidligsteSivilstandDato = person.getSivilstand().stream()
                 .map(SivilstandDTO::getSivilstandsdato)
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo);
 
-        var myndighetsdato = FoedselsdatoUtility.getMyndighetsdato(person);
+        val myndighetsdato = FoedselsdatoUtility.getMyndighetsdato(person);
 
         person.getSivilstand().forEach(stand -> {
             if (stand.isUgift() && isNull(stand.getSivilstandsdato())) {

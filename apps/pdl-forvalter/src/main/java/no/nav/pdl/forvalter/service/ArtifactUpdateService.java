@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -36,6 +37,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -141,81 +143,91 @@ public class ArtifactUpdateService {
 
     public Mono<Void> updateKjoenn(String ident, Integer id, KjoennDTO oppdatertKjoenn) {
 
-        return getPerson(ident);
-
-        person.getPerson().setKjoenn(
-                updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, id, "Kjoenn"));
-
-        kjoennService.validate(oppdatertKjoenn, person.getPerson());
-        kjoennService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setKjoenn(
+                        updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, id, "Kjoenn")))
+                .flatMap(person -> kjoennService.validate(oppdatertKjoenn, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> kjoennService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateBostedsadresse(String ident, Integer id, BostedadresseDTO oppdatertAdresse) {
 
-        return getPerson(ident);
-
-        person.getPerson().setBostedsadresse(
-                updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, id, "Bostedsadresse"));
-
-        bostedAdresseService.validate(oppdatertAdresse, person.getPerson());
-        bostedAdresseService.convert(person.getPerson(), false);
-        folkeregisterPersonstatusService.update(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setBostedsadresse(
+                        updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, id, "Bostedsadresse")))
+                .flatMap(person -> bostedAdresseService.validate(oppdatertAdresse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> bostedAdresseService.convert(person.getPerson(), false)
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateKontaktadresse(String ident, Integer id, KontaktadresseDTO oppdatertAdresse) {
 
-        return getPerson(ident);
-
-        person.getPerson().setKontaktadresse(
-                updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, id, "Kontaktadresse"));
-
-        kontaktAdresseService.validate(oppdatertAdresse, person.getPerson());
-        kontaktAdresseService.convert(person.getPerson(), false);
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setKontaktadresse(
+                        updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, id, "Kontaktadresse")))
+                .flatMap(person -> kontaktAdresseService.validate(oppdatertAdresse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> kontaktAdresseService.convert(person.getPerson(), false)
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateOppholdsadresse(String ident, Integer id, OppholdsadresseDTO oppdatertAdresse) {
 
-        return getPerson(ident);
-
-        person.getPerson().setOppholdsadresse(
-                updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, id, "Oppholdsadresse"));
-
-        oppholdsadresseService.validate(oppdatertAdresse, person.getPerson());
-        oppholdsadresseService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setOppholdsadresse(
+                        updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, id, "Oppholdsadresse")))
+                .flatMap(person -> oppholdsadresseService.validate(oppdatertAdresse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> oppholdsadresseService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateInnflytting(String ident, Integer id, InnflyttingDTO oppdatertInnflytting) {
 
-        return getPerson(ident);
-
-        person.getPerson().setInnflytting(
-                updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting"));
-
-        innflyttingService.validate(oppdatertInnflytting);
-        innflyttingService.convert(person.getPerson());
-        folkeregisterPersonstatusService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setInnflytting(
+                        updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting")))
+                .flatMap(person -> innflyttingService.validate(oppdatertInnflytting)
+                        .thenReturn(person))
+                .flatMap(person -> innflyttingService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateUtflytting(String ident, Integer id, UtflyttingDTO oppdatertUtflytting) {
 
-        return getPerson(ident);
-
-        person.getPerson().setUtflytting(
-                updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting"));
-
-        utflyttingService.validate(oppdatertUtflytting);
-        utflyttingService.convert(person.getPerson());
-        folkeregisterPersonstatusService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setUtflytting(
+                        updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting")))
+                .flatMap(person -> utflyttingService.validate(oppdatertUtflytting)
+                        .thenReturn(person))
+                .flatMap(person -> utflyttingService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
 
-        return getPerson(ident);
-
-        person.getPerson().setDeltBosted(
-                updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted"));
-
-        deltBostedService.prepAdresser(oppdatertDeltBosted);
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setDeltBosted(
+                                updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted")))
+                .flatMap(person -> deltBostedService.prepAdresser(oppdatertDeltBosted)
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
@@ -349,13 +361,15 @@ public class ArtifactUpdateService {
 
     public Mono<Void> updateUtenlandskIdentifikasjonsnummer(String ident, Integer id, UtenlandskIdentifikasjonsnummerDTO oppdatertIdentifikasjon) {
 
-        return getPerson(ident);
-
-        person.getPerson().setUtenlandskIdentifikasjonsnummer(
-                updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer"));
-
-        utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon);
-        utenlandsidentifikasjonsnummerService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setUtenlandskIdentifikasjonsnummer(
+                                updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer")))
+                .flatMap(person -> utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon)
+                        .thenReturn(person))
+                .flatMap(person -> utenlandsidentifikasjonsnummerService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateFalskIdentitet(String ident, Integer id, FalskIdentitetDTO oppdatertIdentitet) {
@@ -397,72 +411,80 @@ public class ArtifactUpdateService {
 
     public Mono<Void> updateAdressebeskyttelse(String ident, Integer id, AdressebeskyttelseDTO oppdatertBeskyttelse) {
 
-        return getPerson(ident);
-
-        person.getPerson().setAdressebeskyttelse(
-                updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, id, "Adressebeskyttelse"));
-
-        adressebeskyttelseService.validate(oppdatertBeskyttelse, person.getPerson());
-        adressebeskyttelseService.convert(person.getPerson());
-
-        folkeregisterPersonstatusService.update(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setAdressebeskyttelse(
+                                updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, id, "Adressebeskyttelse")))
+                .flatMap(person -> adressebeskyttelseService.validate(oppdatertBeskyttelse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> adressebeskyttelseService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateDoedsfall(String ident, Integer id, DoedsfallDTO oppdatertDoedsfall) {
 
-        return getPerson(ident);
-
-        person.getPerson().setDoedsfall(
-                updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall"));
-
-        doedsfallService.validate(oppdatertDoedsfall);
-        doedsfallService.convert(person.getPerson());
-
-        folkeregisterPersonstatusService.update(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setDoedsfall(
+                        updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall")))
+                .flatMap(person -> doedsfallService.validate(oppdatertDoedsfall)
+                        .thenReturn(person))
+                .flatMap(person -> doedsfallService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateFolkeregisterPersonstatus(String ident, Integer id, FolkeregisterPersonstatusDTO oppdatertStatus) {
 
-        return getPerson(ident);
-
-        person.getPerson().setFolkeregisterPersonstatus(
-                updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, id, "FolkeregisterPersonstatus"));
-
-        folkeregisterPersonstatusService.validate(oppdatertStatus, person.getPerson());
-        folkeregisterPersonstatusService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setFolkeregisterPersonstatus(
+                                updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, id, "FolkeregisterPersonstatus")))
+                .flatMap(person -> folkeregisterPersonstatusService.validate(oppdatertStatus, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateTilrettelagtKommunikasjon(String ident, Integer id, TilrettelagtKommunikasjonDTO oppdatertKommunikasjon) {
 
-        return getPerson(ident);
-
-        person.getPerson().setTilrettelagtKommunikasjon(
-                updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, id, "TilrettelagtKommunikasjon"));
-
-        tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon);
-        tilrettelagtKommunikasjonService.convert(person.getPerson().getTilrettelagtKommunikasjon());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setTilrettelagtKommunikasjon(
+                        updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, id, "TilrettelagtKommunikasjon")))
+                .flatMap(person -> tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon)
+                        .thenReturn(person))
+                .flatMap(person -> tilrettelagtKommunikasjonService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateStatsborgerskap(String ident, Integer id, StatsborgerskapDTO oppdatertStatsborgerskap) {
 
-        return getPerson(ident);
-
-        person.getPerson().setStatsborgerskap(
-                updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, id, "Statsborgerskap"));
-
-        statsborgerskapService.validate(oppdatertStatsborgerskap);
-        statsborgerskapService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setStatsborgerskap(
+                        updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, id, "Statsborgerskap")))
+                .flatMap(person -> statsborgerskapService.validate(oppdatertStatsborgerskap)
+                        .thenReturn(person))
+                .flatMap(person -> statsborgerskapService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateOpphold(String ident, Integer id, OppholdDTO oppdatertOpphold) {
 
-        return getPerson(ident);
-
-        person.getPerson().setOpphold(
-                updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, id, "Opphold"));
-
-        oppholdService.validate(oppdatertOpphold);
-        oppholdService.convert(person.getPerson().getOpphold());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setOpphold(
+                        updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, id, "Opphold")))
+                .flatMap(person -> oppholdService.validate(oppdatertOpphold)
+                        .thenReturn(person))
+                .flatMap(person -> oppholdService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
@@ -518,61 +540,66 @@ public class ArtifactUpdateService {
 
     public Mono<Void> updateVergemaal(String ident, Integer id, VergemaalDTO oppdatertVergemaal) {
 
-        vergemaalService.validate(oppdatertVergemaal);
+        return vergemaalService.validate(oppdatertVergemaal)
+                .then(getPerson(ident))
+                .flatMap(person -> Flux.fromIterable(person.getPerson().getVergemaal())
+                        .filter(vergemaal -> vergemaal.getId().equals(id))
+                        .next()
+                        .flatMap(vergemaal -> {
 
-        return getPerson(ident);
-        var vergemaalRelasjon = person.getPerson().getVergemaal().stream()
-                .filter(vergemaal -> vergemaal.getId().equals(id))
-                .findFirst();
+                            val endretRelasjon = nonNull(vergemaal.getVergeIdent()) &&
+                                                 (isNotBlank(oppdatertVergemaal.getVergeIdent()) ||
+                                                  !vergemaal.getVergeIdent().equals(oppdatertVergemaal.getVergeIdent()));
 
-        vergemaalRelasjon.ifPresent(vergemaal -> {
+                            if (endretRelasjon) {
 
-            var endretRelasjon = nonNull(vergemaal.getVergeIdent()) &&
-                                 (isNotBlank(oppdatertVergemaal.getVergeIdent()) ||
-                                  !vergemaal.getVergeIdent().equals(oppdatertVergemaal.getVergeIdent()));
+                                return getPerson(vergemaal.getVergeIdent())
+                                        .flatMap(slettePerson -> DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, VERGE)
+                                                .thenReturn(slettePerson))
+                                        .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
+                                                .thenReturn(vergemaal))
+                                                .doOnNext(type -> {
 
-            if (endretRelasjon) {
+                                oppdatertVergemaal.setId(id);
+                                person.getPerson().getVergemaal().add(oppdatertVergemaal);
+                                person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
+                            });
+                            }
+                            return Mono.just(vergemaal);
+                        })
+                        .flatMap(vergemaalRelasjon -> {
+                            person.getPerson().setVergemaal(
+                                    updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"));
 
-                var slettePerson = getPerson(vergemaal.getVergeIdent());
-                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, VERGE);
-
-                deletePerson(slettePerson, vergemaal.isEksisterendePerson());
-
-                oppdatertVergemaal.setId(id);
-                person.getPerson().getVergemaal().add(oppdatertVergemaal);
-                person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setVergemaal(
-                updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"));
-
-        if (id == 0 || vergemaalRelasjon.isPresent()) {
-
-            vergemaalService.convert(person.getPerson());
-        }
+                            if (id == 0) {
+                                return vergemaalService.convert(person.getPerson());
+                            }
+                            return Mono.empty();
+                        }));
     }
 
     public Mono<Void> updateSikkerhetstiltak(String ident, Integer id, SikkerhetstiltakDTO oppdatertSikkerhetstiltak) {
 
-        return getPerson(ident);
-
-        person.getPerson().setSikkerhetstiltak(
-                updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, id, "Sikkerhetstiltak"));
-
-        sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak);
-        sikkerhetstiltakService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setSikkerhetstiltak(
+                        updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, id, "Sikkerhetstiltak")))
+                .flatMap(person -> sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak)
+                        .thenReturn(person))
+                .flatMap(person -> sikkerhetstiltakService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     public Mono<Void> updateDoedfoedtBarn(String ident, Integer id, DoedfoedtBarnDTO oppdatertDoedfoedt) {
 
-        return getPerson(ident);
-
-        person.getPerson().setDoedfoedtBarn(
-                updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, id, "DoedfoedtBarn"));
-
-        doedfoedtBarnService.validate(oppdatertDoedfoedt);
-        doedfoedtBarnService.convert(person.getPerson().getDoedfoedtBarn());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setDoedfoedtBarn(
+                        updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, id, "DoedfoedtBarn")))
+                .flatMap(person -> doedfoedtBarnService.validate(oppdatertDoedfoedt)
+                        .thenReturn(person))
+                .flatMap(person -> doedfoedtBarnService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,

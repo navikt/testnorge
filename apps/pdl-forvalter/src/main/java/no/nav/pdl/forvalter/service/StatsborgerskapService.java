@@ -45,12 +45,11 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(statsborgerskap -> person.setStatsborgerskap(new ArrayList<>(statsborgerskap)))
                 .then();
     }
 
     @Override
-    public void validate(StatsborgerskapDTO statsborgerskap) {
+    public Mono<Void> validate(StatsborgerskapDTO statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !hasLandkode(statsborgerskap.getLandkode())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
@@ -60,6 +59,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
             !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR);
         }
+        return  Mono.empty();
     }
 
     private Mono<StatsborgerskapDTO> handle(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {

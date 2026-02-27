@@ -44,7 +44,6 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
                         type.setMaster(getMaster(type, person));
                     })
                     .collectList()
-                    .doOnNext(innflytting -> person.setInnflytting(new ArrayList<>(innflytting)))
                     .then();
     }
 
