@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsIdentMaster;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
@@ -136,6 +137,14 @@ public class TestgruppeController {
     public Mono<RsTestgruppeMedBestillingId> getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
 
         return testgruppeService.fetchPaginertTestgruppeById(gruppeId, 0, 2000, null, null);
+    }
+
+    @GetMapping("/{gruppeId}/identer")
+    @Operation(description = "Hent kun ident og master for alle identer i en gruppe")
+    public Flux<RsIdentMaster> getGruppeIdenter(@PathVariable("gruppeId") Long gruppeId) {
+
+        return testgruppeService.getIdenterLightweight(gruppeId)
+                .map(ident -> new RsIdentMaster(ident.getIdent(), ident.getMaster()));
     }
 
     @Cacheable(CACHE_GRUPPE)

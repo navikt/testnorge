@@ -2090,6 +2090,15 @@ export const eksisterendeGruppeMock = {
 	tags: [],
 }
 
+export const gruppeIdenterMock = [
+	{
+		ident: '12345678912',
+		master: 'PDLF',
+	},
+]
+
+export const bestillingMiljoerMock = ['q1', 'q2']
+
 export const laastGruppeMock = {
 	...eksisterendeGruppeMock,
 	erLaast: true,

@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import { Line } from 'rc-progress'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Icon from '@/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
-import { useOrganisasjonBestillingStatus } from '@/utils/hooks/useDollyOrganisasjoner'
-import { useBestillingById } from '@/utils/hooks/useBestilling'
-import {
-	REGEX_BACKEND_BESTILLINGER,
-	REGEX_BACKEND_GRUPPER,
-	REGEX_BACKEND_ORGANISASJONER,
-	useMatchMutate,
-} from '@/utils/hooks/useMutate'
+import { useBestillingStream } from '@/utils/hooks/useBestillingStream'
+import { useOrgBestillingStream } from '@/utils/hooks/useOrgBestillingStream'
+import { REGEX_BACKEND_ORGANISASJONER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import {
+	calculateProgress,
+	getExpectedFagsystemer,
+	mergeStatusWithExpected,
+} from '@/components/bestilling/statusListe/BestillingProgresjon/fagsystemUtils'
 
 type ProgresjonProps = {
 	bestillingID: string | number
@@ -23,125 +23,129 @@ type ProgresjonProps = {
 	onFinishBestilling?: Function
 }
 
+const SECONDS_BEFORE_WARNING = 120
+const SECONDS_BEFORE_WARNING_ORG = 200
+
 export const BestillingProgresjon = ({
 	bestillingID,
 	erOrganisasjon = false,
 	cancelBestilling,
 	onFinishBestilling,
 }: ProgresjonProps) => {
-	const setDetaljertOrgStatus = (status: any) => {
-		const detaljertStatus = status?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
-		if (orgStatus !== detaljertStatus) {
-			setOrgStatus(detaljertStatus)
+	const [timedOut, setTimedOut] = useState(false)
+	const [orgStatus, setOrgStatus] = useState<string | null>(null)
+	const [hasFinished, setHasFinished] = useState(false)
+	const mutate = useMatchMutate()
+
+	const { bestilling, loading: regularLoading } = useBestillingStream(
+		bestillingID,
+		erOrganisasjon,
+		true,
+	)
+	const { bestillingStatus, loading: orgLoading } = useOrgBestillingStream(
+		bestillingID,
+		erOrganisasjon,
+		true,
+	)
+
+	const data = bestilling || bestillingStatus
+
+	const isFerdig = data?.ferdig
+	const sistOppdatert = data?.sistOppdatert
+	const loading = erOrganisasjon ? orgLoading : regularLoading
+
+	const antallLevert = erOrganisasjon
+		? bestillingStatus?.antallLevert || 0
+		: bestilling?.antallLevert || 0
+
+	const antallIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter || 0
+
+	const erSykemelding =
+		!erOrganisasjon &&
+		bestilling?.bestilling?.sykemelding != null &&
+		bestilling?.bestilling?.sykemelding?.syntSykemelding != null
+
+	useEffect(() => {
+		if (erOrganisasjon && bestillingStatus) {
+			const detaljertStatus =
+				bestillingStatus?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
+			if (detaljertStatus && orgStatus !== detaljertStatus) {
+				setOrgStatus(detaljertStatus)
+			}
 		}
-	}
-	const harBestillingFeilet = (sistOppdatertState: Date) => {
-		const liveTimeStamp = new Date().getTime()
-		const oldTimeStamp = new Date(sistOppdatertState).getTime()
+	}, [bestillingStatus])
 
-		const antallSekunderBrukt = (liveTimeStamp - oldTimeStamp) / 1000
-		const tidsbegrensning = erOrganisasjon
-			? SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON
-			: SECONDS_BEFORE_WARNING_MESSAGE
-
-		if (antallSekunderBrukt > tidsbegrensning) {
+	useEffect(() => {
+		if (!sistOppdatert) return
+		const elapsed = (Date.now() - new Date(sistOppdatert).getTime()) / 1000
+		const grense = erOrganisasjon ? SECONDS_BEFORE_WARNING_ORG : SECONDS_BEFORE_WARNING
+		if (elapsed > grense) {
 			setTimedOut(true)
 		}
-	}
+	}, [sistOppdatert, erOrganisasjon])
 
-	const getBestillingStatusText = (erSykemelding: boolean) => {
-		if (erSykemelding) {
-			return 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
-		} else {
-			return erOrganisasjon
-				? `AKTIV BESTILLING (${
-						orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'
-					})`
-				: 'AKTIV BESTILLING'
+	useEffect(() => {
+		if (isFerdig && !hasFinished) {
+			setHasFinished(true)
+			onFinishBestilling?.(data)
+			if (erOrganisasjon) {
+				mutate(REGEX_BACKEND_ORGANISASJONER)
+			} else {
+				const gruppeId = bestilling?.gruppeId
+				if (gruppeId) {
+					mutate(new RegExp(`^/dolly-backend/api/v1/gruppe/${gruppeId}`))
+					mutate(new RegExp(`^/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`))
+				}
+			}
 		}
-	}
-
-	const ferdigstillBestilling = () => {
-		onFinishBestilling?.(bestilling || bestillingStatus)
-		if (erOrganisasjon) {
-			mutate(REGEX_BACKEND_ORGANISASJONER)
-		} else {
-			mutate(REGEX_BACKEND_GRUPPER)
-			mutate(REGEX_BACKEND_BESTILLINGER)
-		}
-	}
-
-	const calculateStatus = () => {
-		const total = erOrganisasjon ? 1 : bestilling?.antallIdenter || 0
-		const sykemelding =
-			!erOrganisasjon &&
-			bestilling?.bestilling?.sykemelding != null &&
-			bestilling?.bestilling?.sykemelding?.syntSykemelding != null
-		const antallLevert = erOrganisasjon
-			? bestillingStatus?.antallLevert || 0
-			: bestilling?.antallLevert || 0
-
-		let percent = total > 0 ? (100 / total) * antallLevert : 0
-		let text = `Oppretter ${antallLevert || 0} av ${total}`
-
-		// Indikerer progress hvis ingenting har skjedd enda
-		if (percent === 0) {
-			percent += 10
-		}
-
-		if (bestilling?.ferdig || bestillingStatus?.ferdig) {
-			text = `Ferdigstiller bestilling`
-			ferdigstillBestilling()
-		}
-		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
-
-		const title = bestilling?.ferdig ? 'FERDIG' : aktivBestillingStatusText
-
-		return {
-			percentFinished: percent,
-			tittel: title,
-			description: text,
-		}
-	}
+	}, [isFerdig])
 
 	const handleCancelBtn = () => {
 		cancelBestilling(bestillingID, erOrganisasjon)
-		ferdigstillBestilling()
+		if (!hasFinished) {
+			setHasFinished(true)
+			onFinishBestilling?.(data)
+		}
 	}
 
-	const SECONDS_BEFORE_WARNING_MESSAGE = 120
-	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 200
+	const expectedFagsystemer = useMemo(
+		() => (!erOrganisasjon ? getExpectedFagsystemer(data?.bestilling) : []),
+		[data?.bestilling, erOrganisasjon],
+	)
 
-	const { bestilling, loading } = useBestillingById(bestillingID, erOrganisasjon, true)
-	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestillingID, erOrganisasjon, true)
+	const mergedStatus = useMemo(
+		() => mergeStatusWithExpected(data?.status || [], expectedFagsystemer),
+		[data?.status, expectedFagsystemer],
+	)
 
-	const [timedOut, setTimedOut] = useState(false)
-	const [orgStatus, setOrgStatus] = useState(null)
-	const mutate = useMatchMutate()
+	const progress = useMemo(() => {
+		const { percent, text } = calculateProgress({
+			antallIdenter,
+			antallLevert,
+			erOrganisasjon,
+			statusList: mergedStatus,
+			expectedTotal: expectedFagsystemer.length,
+		})
 
-	const sistOppdatert = bestilling?.sistOppdatert || bestillingStatus?.sistOppdatert || new Date()
-
-	useEffect(() => {
-		if (erOrganisasjon) {
-			setDetaljertOrgStatus(bestillingStatus)
+		let title: string
+		if (isFerdig) {
+			title = 'FERDIG'
+		} else if (erSykemelding) {
+			title =
+				'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
+		} else if (erOrganisasjon) {
+			title = `AKTIV BESTILLING (${orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'})`
+		} else {
+			title = 'AKTIV BESTILLING'
 		}
-		harBestillingFeilet(sistOppdatert)
-	}, [bestillingStatus, bestilling])
+
+		return { percent, title, text }
+	}, [antallLevert, antallIdenter, isFerdig, erSykemelding, erOrganisasjon, orgStatus, mergedStatus, expectedFagsystemer])
 
 	if (loading) {
 		return <Loading label={'Henter bestilling ...'} />
 	}
-	if (!bestilling && !bestillingStatus) {
-		return null
-	}
-
-	const { percentFinished, tittel, description } = calculateStatus()
-
-	if (
-		percentFinished === 100 &&
-		(bestilling?.ferdig === true || bestillingStatus?.ferdig === true)
-	) {
-		onFinishBestilling?.(bestilling || bestillingStatus)
+	if (!data || hasFinished || isFerdig) {
 		return null
 	}
 
@@ -149,30 +153,26 @@ export const BestillingProgresjon = ({
 		<div className="bestilling-status">
 			<div className="bestilling-resultat">
 				<div className="status-header">
-					<p>Bestilling #{bestilling?.id || bestillingStatus?.id}</p>
+					<p>Bestilling #{data.id}</p>
 					<h3>Bestillingsstatus</h3>
 					<div className="status-header_button-wrap" />
 				</div>
 				<hr />
 			</div>
 			<div>
-				{!erOrganisasjon && bestilling && (
-					<BestillingStatus
-						bestilling={{ ...bestilling, systeminfo: bestilling?.systeminfo || '' }}
-					/>
-				)}
-				{erOrganisasjon && bestillingStatus && (
-					<BestillingStatus bestilling={bestillingStatus} erOrganisasjon />
-				)}
+				<BestillingStatus
+					bestilling={{ ...data, status: mergedStatus }}
+					erOrganisasjon={erOrganisasjon}
+				/>
 			</div>
 			<div className="flexbox--space">
 				<h5>
-					<Loading onlySpinner /> {tittel}
+					<Loading onlySpinner /> {progress.title}
 				</h5>
-				<span>{description}</span>
+				<span>{isFerdig ? 'Ferdigstiller bestilling' : progress.text}</span>
 			</div>
 			<div>
-				<Line percent={percentFinished} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
+				<Line percent={progress.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 			</div>
 			<div className="cancel-container">
 				{timedOut && !erOrganisasjon && (
