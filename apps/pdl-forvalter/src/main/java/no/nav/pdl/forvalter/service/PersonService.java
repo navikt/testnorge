@@ -117,7 +117,7 @@ public class PersonService {
     }
 
     @Transactional
-    public void deletePerson(String ident) {
+    public Mono<Void> deletePerson(String ident) {
 
         var startTime = currentTimeMillis();
 
