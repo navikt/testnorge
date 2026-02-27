@@ -30,6 +30,7 @@ public class GetAuthorizedPartiesCommand implements Callable<Mono<AuthorizedPart
         return webClient
                 .post()
                 .uri(builder -> builder.path(ALTINN_URL)
+                        .queryParam("orgCode", "nav")
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
