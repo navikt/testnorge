@@ -250,6 +250,7 @@ export const VisningRedigerbar = ({
 					<StatsborgerskapForm
 						path={path}
 						kanVelgeMaster={identMaster !== 'PDL' && identtype !== 'NPID'}
+						formMethods={formMethods}
 					/>
 				)
 			case Attributt.Innvandring:
