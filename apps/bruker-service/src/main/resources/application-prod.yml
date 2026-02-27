@@ -1,4 +1,7 @@
 spring:
+  http:
+    codecs:
+      max-in-memory-size: 10MB
   security:
     oauth2:
       resourceserver:
