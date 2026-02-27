@@ -162,7 +162,7 @@ public class BestillingController {
                                     }))
                             .map(this::toBestillingSse);
 
-                    var fallbackCheck = Flux.interval(Duration.ofSeconds(15))
+                    var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
                             .concatMap(tick -> bestillingService.fetchBestillingById(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .onErrorResume(e -> Mono.empty()))

@@ -150,7 +150,7 @@ public class OrganisasjonBestillingController {
                                     }))
                             .map(this::toOrgSse);
 
-                    var fallbackCheck = Flux.interval(Duration.ofSeconds(15))
+                    var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
                             .concatMap(tick -> bestillingService.fetchBestillingSnapshot(bestillingId)
                                     .onErrorResume(e -> Mono.empty()))
                             .map(this::toOrgSse);
