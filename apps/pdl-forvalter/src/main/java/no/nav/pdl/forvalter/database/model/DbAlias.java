@@ -1,28 +1,23 @@
 package no.nav.pdl.forvalter.database.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "alias")
+@Table("alias")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,21 +26,18 @@ public class DbAlias {
     private static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
 
     @Id
-    @GeneratedValue(generator = "aliasIdGenerator")
-    @GenericGenerator(name = "aliasIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "alias_sequence"),
-            @Parameter(name = "increment_size", value = "1"),
-    })
     private Long id;
 
-    @UpdateTimestamp
-    @Column(name = "sist_oppdatert")
+    @Column
     private LocalDateTime sistOppdatert;
 
-    @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false, updatable = false)
+    @Transient
     private DbPerson person;
 
+    @Column
+    private Long personId;
+
+    @Column
     private String tidligereIdent;
 
     @Version
@@ -54,24 +46,15 @@ public class DbAlias {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        DbAlias dbAlias = (DbAlias) o;
+        if (!(o instanceof DbAlias dbAlias)) return false;
 
-        if (getId() != null ? !getId().equals(dbAlias.getId()) : dbAlias.getId() != null) return false;
-        if (getSistOppdatert() != null ? !getSistOppdatert().equals(dbAlias.getSistOppdatert()) : dbAlias.getSistOppdatert() != null)
-            return false;
-        if (getPerson() != null ? !getPerson().equals(dbAlias.getPerson()) : dbAlias.getPerson() != null) return false;
-        return getTidligereIdent() != null ? getTidligereIdent().equals(dbAlias.getTidligereIdent()) : dbAlias.getTidligereIdent() == null;
+        return new EqualsBuilder().append(id, dbAlias.id).append(personId, dbAlias.personId).append(tidligereIdent, dbAlias.tidligereIdent).isEquals();
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getSistOppdatert() != null ? getSistOppdatert().hashCode() : 0);
-        result = 31 * result + (getPerson() != null ? getPerson().hashCode() : 0);
-        result = 31 * result + (getTidligereIdent() != null ? getTidligereIdent().hashCode() : 0);
-        return result;
+        return new HashCodeBuilder(17, 37).append(id).append(personId).append(tidligereIdent).toHashCode();
     }
 
     @Override
@@ -80,7 +63,9 @@ public class DbAlias {
                 "id=" + id +
                 ", sistOppdatert=" + sistOppdatert +
                 ", person=" + person +
+                ", personId=" + personId +
                 ", tidligereIdent='" + tidligereIdent + '\'' +
+                ", versjon=" + versjon +
                 '}';
     }
 }

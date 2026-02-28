@@ -1,31 +1,24 @@
 package no.nav.pdl.forvalter.database.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "relasjon")
+@Table("relasjon")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,26 +27,24 @@ public class DbRelasjon {
     private static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
 
     @Id
-    @GeneratedValue(generator = "relasjonIdGenerator")
-    @GenericGenerator(name = "relasjonIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "relasjon_sequence"),
-            @Parameter(name = "increment_size", value = "1"),
-    })
     private Long id;
 
-    @UpdateTimestamp
-    @Column(name = "sist_oppdatert")
+    @Column
     private LocalDateTime sistOppdatert;
 
-    @Enumerated(EnumType.STRING)
+    @Column
     private RelasjonType relasjonType;
 
-    @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false, updatable = false)
+    @Column
+    private Long personId;
+
+    @Column
+    private Long relatertPersonId;
+
+    @Transient
     private DbPerson person;
 
-    @ManyToOne
-    @JoinColumn(name = "relatert_person_id", nullable = false, updatable = false)
+    @Transient
     private DbPerson relatertPerson;
 
     @Version
@@ -66,26 +57,15 @@ public class DbRelasjon {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        DbRelasjon that = (DbRelasjon) o;
+        if (!(o instanceof DbRelasjon that)) return false;
 
-        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        if (getSistOppdatert() != null ? !getSistOppdatert().equals(that.getSistOppdatert()) : that.getSistOppdatert() != null)
-            return false;
-        if (getRelasjonType() != that.getRelasjonType()) return false;
-        if (getPerson() != null ? !getPerson().equals(that.getPerson()) : that.getPerson() != null) return false;
-        return getRelatertPerson() != null ? getRelatertPerson().equals(that.getRelatertPerson()) : that.getRelatertPerson() == null;
+        return new EqualsBuilder().append(id, that.id).append(relasjonType, that.relasjonType).append(personId, that.personId).append(relatertPersonId, that.relatertPersonId).isEquals();
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getSistOppdatert() != null ? getSistOppdatert().hashCode() : 0);
-        result = 31 * result + (getRelasjonType() != null ? getRelasjonType().hashCode() : 0);
-        result = 31 * result + (getPerson() != null ? getPerson().hashCode() : 0);
-        result = 31 * result + (getRelatertPerson() != null ? getRelatertPerson().hashCode() : 0);
-        return result;
+        return new HashCodeBuilder(17, 37).append(id).append(relasjonType).append(personId).append(relatertPersonId).toHashCode();
     }
 
     @Override
@@ -94,8 +74,11 @@ public class DbRelasjon {
                 "id=" + id +
                 ", sistOppdatert=" + sistOppdatert +
                 ", relasjonType=" + relasjonType +
+                ", personId=" + personId +
+                ", relatertPersonId=" + relatertPersonId +
                 ", person=" + person +
                 ", relatertPerson=" + relatertPerson +
+                ", versjon=" + versjon +
                 '}';
     }
 }

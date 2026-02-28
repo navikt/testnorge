@@ -14,8 +14,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -32,9 +34,9 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, PersonDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Oppholdsadresse: kun én adresse skal være satt (vegadresse, " +
-            "matrikkeladresse, utenlandskAdresse)";
+                                                             "matrikkeladresse, utenlandskAdresse)";
     private static final String VALIDATION_PROTECTED_ADDRESS = "Oppholdsadresse: Personer med adressebeskyttelse == " +
-            "STRENGT_FORTROLIG skal ikke ha oppholdsadresse";
+                                                               "STRENGT_FORTROLIG skal ikke ha oppholdsadresse";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
@@ -49,31 +51,35 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public List<OppholdsadresseDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        person.getOppholdsadresse().stream()
+        return Flux.fromIterable(person.getOppholdsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()))
-                .forEach(adresse -> {
-                    handle(adresse, person);
+                .flatMap(adresse -> handle(adresse, person))
+                .filter(Objects::nonNull)
+                .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
                     adresse.setMaster(getMaster(adresse, person));
-                });
-
-        oppdaterAdressedatoer(person.getBostedsadresse(), person);
-        return person.getOppholdsadresse();
+                })
+                .collectList()
+                .doOnNext(adresser -> {
+                    oppdaterAdressedatoer(adresser, person);
+                    person.setOppholdsadresse(new ArrayList<>(adresser));
+                })
+                .then();
     }
 
     @Override
-    public void validate(OppholdsadresseDTO adresse, PersonDTO person) {
+    public Mono<Void> validate(OppholdsadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
 
         }
         if (FNR == IdenttypeUtility.getIdenttype(person.getIdent()) &&
-                STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
-                adresse.countAdresser() > 0) {
+            STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
+            adresse.countAdresser() > 0) {
             throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
         }
 
@@ -84,22 +90,33 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             validateBruksenhet(adresse.getMatrikkeladresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getGyldigFraOgMed()) && nonNull(adresse.getGyldigTilOgMed()) &&
-                !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
+            !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
             validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
         }
+        return Mono.empty();
     }
 
-    protected void handle(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
+    protected Mono<OppholdsadresseDTO> handle(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
+
+        return getOppholdsadresse(oppholdsadresse, person)
+                .doOnNext(adresse -> {
+
+                    oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));
+                    oppholdsadresse.setOpprettCoAdresseNavn(null);
+                });
+    }
+
+    private Mono<OppholdsadresseDTO> getOppholdsadresse(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
 
         if (FNR == IdenttypeUtility.getIdenttype(person.getIdent())) {
 
             if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
 
-                return;
+                return Mono.empty();
 
             } else if (oppholdsadresse.countAdresser() == 0) {
                 oppholdsadresse.setVegadresse(new VegadresseDTO());
@@ -110,27 +127,30 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         }
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
-            var vegadresse =
-                    adresseServiceConsumer.getVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
-            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(),
-                    vegadresse.getMatrikkelId()));
-            mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
+            return adresseServiceConsumer.getVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen())
+                    .map(vegadresse -> {
+                        oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(),
+                                vegadresse.getMatrikkelId()));
+                        mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
+                        return oppholdsadresse;
+                    });
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
-            var matrikkeladresse =
-                    adresseServiceConsumer.getMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
-            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
-            mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
+            return adresseServiceConsumer.getMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen())
+                    .map(matrikkeladresse -> {
+                        oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
+                        mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
+                        return oppholdsadresse;
+                    });
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
-
             oppholdsadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(
                     oppholdsadresse.getUtenlandskAdresse(), getLandkode(person), oppholdsadresse.getMaster()));
         }
 
-        oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));
-        oppholdsadresse.setOpprettCoAdresseNavn(null);
+        return Mono.just(oppholdsadresse);
     }
+
 
     private String getLandkode(PersonDTO person) {
 

@@ -27,6 +27,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -84,7 +85,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public List<ForeldreansvarDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
         var alleForeldreansvar = mapperFacade.mapAsList(person.getForeldreansvar(), ForeldreansvarDTO.class);
 
@@ -107,7 +108,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     }
 
     @Override
-    public void validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
+    public Mono<Void> validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
 
         validateForeldreansvar(foreldreansvar);
 
@@ -135,6 +136,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
             validateBarn(foreldreansvar, hovedperson);
         }
+        return Mono.empty();
     }
 
     private List<? extends FoedselsdatoDTO> getFoedselsdato(PersonDTO person) {
@@ -150,7 +152,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
     }
 
-    private void validateForeldreansvar(ForeldreansvarDTO foreldreansvar) {
+    private Mono<Void> validateForeldreansvar(ForeldreansvarDTO foreldreansvar) {
 
         if (isNull(foreldreansvar.getAnsvar())) {
             throw new InvalidRequestException(INVALID_EMPTY_ANSVAR_EXCEPTION);
@@ -186,7 +188,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
     }
 
-    private void validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private Mono<Void> validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
         if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
                 isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
@@ -205,6 +207,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 !isRelasjonForeldreFraBarn(barn)) {
             throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
         }
+        return Mono.empty();
     }
 
     private static boolean isRelasjonForeldreFraBarn(PersonDTO barn) {

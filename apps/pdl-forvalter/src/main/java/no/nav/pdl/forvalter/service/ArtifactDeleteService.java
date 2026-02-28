@@ -9,6 +9,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class ArtifactDeleteService {
         }
     }
 
-    public void deleteFoedsel(String ident, Integer id) {
+    public Mono<Void> deleteFoedsel(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -80,7 +81,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteFoedested(String ident, Integer id) {
+    public Mono<Void> deleteFoedested(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -92,7 +93,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteFoedselsdato(String ident, Integer id) {
+    public Mono<Void> deleteFoedselsdato(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -104,7 +105,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteNavn(String ident, Integer id) {
+    public Mono<Void> deleteNavn(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -116,7 +117,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteKjoenn(String ident, Integer id) {
+    public Mono<Void> deleteKjoenn(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -128,7 +129,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteBostedsadresse(String ident, Integer id) {
+    public Mono<Void> deleteBostedsadresse(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -142,7 +143,7 @@ public class ArtifactDeleteService {
         folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
-    public void deleteKontaktadresse(String ident, Integer id) {
+    public Mono<Void> deleteKontaktadresse(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -154,7 +155,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteOppholdsadresse(String ident, Integer id) {
+    public Mono<Void> deleteOppholdsadresse(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -166,7 +167,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteInnflytting(String ident, Integer id) {
+    public Mono<Void> deleteInnflytting(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -180,7 +181,7 @@ public class ArtifactDeleteService {
         folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
-    public void deleteUtflytting(String ident, Integer id) {
+    public Mono<Void> deleteUtflytting(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -194,7 +195,7 @@ public class ArtifactDeleteService {
         folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
-    public void deleteDeltBosted(String ident, Integer id) {
+    public Mono<Void> deleteDeltBosted(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -206,7 +207,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteForelderBarnRelasjon(String ident, Integer id) {
+    public Mono<Void> deleteForelderBarnRelasjon(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -229,7 +230,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteForeldreansvar(String ident, Integer id) {
+    public Mono<Void> deleteForeldreansvar(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -253,7 +254,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteKontaktinformasjonForDoedsbo(String ident, Integer id) {
+    public Mono<Void> deleteKontaktinformasjonForDoedsbo(String ident, Integer id) {
 
         var hovedPerson = getPerson(ident);
 
@@ -278,7 +279,7 @@ public class ArtifactDeleteService {
                         .toList());
     }
 
-    public void deleteUtenlandskIdentifikasjonsnummer(String ident, Integer id) {
+    public Mono<Void> deleteUtenlandskIdentifikasjonsnummer(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -290,7 +291,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteFalskIdentitet(String ident, Integer id) {
+    public Mono<Void> deleteFalskIdentitet(String ident, Integer id) {
 
         var person = getPerson(ident);
 
@@ -315,7 +316,7 @@ public class ArtifactDeleteService {
         folkeregisterPersonstatusService.update(person.getPerson());
     }
 
-    public void deleteAdressebeskyttelse(String ident, Integer id) {
+    public Mono<Void> deleteAdressebeskyttelse(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -327,7 +328,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteDoedsfall(String ident, Integer id) {
+    public Mono<Void> deleteDoedsfall(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -341,7 +342,7 @@ public class ArtifactDeleteService {
         folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
-    public void deleteFolkeregisterPersonstatus(String ident, Integer id) {
+    public Mono<Void> deleteFolkeregisterPersonstatus(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -355,7 +356,7 @@ public class ArtifactDeleteService {
         FolkeregisterPersonstatusService.setGyldigTilOgMed(dbPerson.getPerson());
     }
 
-    public void deleteSikkerhetstiltak(String ident, Integer id) {
+    public Mono<Void> deleteSikkerhetstiltak(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -367,7 +368,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteTilrettelagtKommunikasjon(String ident, Integer id) {
+    public Mono<Void> deleteTilrettelagtKommunikasjon(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -379,7 +380,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteStatsborgerskap(String ident, Integer id) {
+    public Mono<Void> deleteStatsborgerskap(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -391,7 +392,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteOpphold(String ident, Integer id) {
+    public Mono<Void> deleteOpphold(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -403,7 +404,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteSivilstand(String ident, Integer id) {
+    public Mono<Void> deleteSivilstand(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -426,7 +427,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteTelefonnummer(String ident, Integer id) {
+    public Mono<Void> deleteTelefonnummer(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -438,7 +439,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteVergemaal(String ident, Integer id) {
+    public Mono<Void> deleteVergemaal(String ident, Integer id) {
 
         var hovedPerson = getPerson(ident);
 
@@ -460,7 +461,7 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    public void deleteDoedfoedtBarn(String ident, Integer id) {
+    public Mono<Void> deleteDoedfoedtBarn(String ident, Integer id) {
 
         var dbPerson = getPerson(ident);
 
@@ -478,11 +479,11 @@ public class ArtifactDeleteService {
                 .orElseThrow(() -> new NotFoundException(format(IDENT_NOT_FOUND, ident)));
     }
 
-    private void deletePerson(DbPerson person, boolean isEksisterendePerson) {
+    private Mono<Void> deletePerson(DbPerson person, boolean isEksisterendePerson) {
 
         if (person.getRelasjoner().isEmpty() && !isEksisterendePerson) {
 
-            personService.deletePerson(person.getIdent());
+            return personService.deletePerson(person.getIdent());
         }
     }
 }

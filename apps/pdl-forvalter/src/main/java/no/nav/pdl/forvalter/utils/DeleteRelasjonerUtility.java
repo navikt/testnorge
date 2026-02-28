@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +34,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKE
 @UtilityClass
 public class DeleteRelasjonerUtility {
 
-    public static void deleteRelasjoner(DbPerson person, DbPerson relatertPerson, RelasjonType type) {
+    public static Mono<Void> deleteRelasjoner(DbPerson person, DbPerson relatertPerson, RelasjonType type) {
 
         var it = person.getRelasjoner().iterator();
         while (it.hasNext()) {
@@ -49,20 +50,14 @@ public class DeleteRelasjonerUtility {
                 it.remove();
             }
         }
+        return Mono.empty();
     }
 
     private static void deleteRelasjon(DbPerson person, String tidligereRelatert, RelasjonType... typer) {
 
-        Iterator<DbRelasjon> it = person.getRelasjoner().iterator();
-        while (it.hasNext()) {
-            var relasjon = it.next();
-            if (isType(relasjon.getRelasjonType(), typer) &&
-                    relasjon.getPerson().getIdent().equals(person.getIdent()) &&
-                    relasjon.getRelatertPerson().getIdent().equals(tidligereRelatert)) {
-
-                it.remove();
-            }
-        }
+        person.getRelasjoner().removeIf(relasjon -> isType(relasjon.getRelasjonType(), typer) &&
+                                                    relasjon.getPerson().getIdent().equals(person.getIdent()) &&
+                                                    relasjon.getRelatertPerson().getIdent().equals(tidligereRelatert));
     }
 
     private static void deleteOpplysningstype(DbPerson person, String relatertIdent, RelasjonType type) {

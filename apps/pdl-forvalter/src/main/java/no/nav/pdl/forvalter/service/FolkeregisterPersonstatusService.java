@@ -12,6 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.Folk
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,7 +38,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterPersonstatusDTO, PersonDTO> {
 
-    public List<FolkeregisterPersonstatusDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
         var touched = new AtomicBoolean(false);
 
