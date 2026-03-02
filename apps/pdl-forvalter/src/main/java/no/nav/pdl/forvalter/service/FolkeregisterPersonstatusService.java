@@ -43,7 +43,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         var touched = new AtomicBoolean(false);
 
         if (person.isNotChanged() || isTestnorgeIdent(person.getIdent()) || person.getIdenttype() == NPID) {
-            return person.getFolkeregisterPersonstatus();
+            return Mono.empty();
         }
 
         person.getFolkeregisterPersonstatus()
@@ -73,10 +73,10 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         }
 
         setGyldigTilOgMed(person);
-        return person.getFolkeregisterPersonstatus();
+        return Mono.empty();
     }
 
-    public List<FolkeregisterPersonstatusDTO> update(PersonDTO person) {
+    public Mono<Void> update(PersonDTO person) {
 
         person.setIsChanged(true);
         return convert(person);
@@ -169,9 +169,10 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     }
 
     @Override
-    public void validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
+    public Mono<Void> validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
 
-        // Ingen validering
+        // Ingen valalidering
+        return Mono.empty();
     }
 
     private static LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {
