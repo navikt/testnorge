@@ -80,6 +80,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             EgenskaperFraHovedperson.kopierData(ident, fullmakt.getNyFullmektig());
 
             return createPersonService.execute(fullmakt.getNyFullmektig())
+                    .map(DbPerson::getPerson)
                     .map(PersonDTO::getIdent)
                     .doOnNext(fullmakt::setMotpartsPersonident)
                     .thenReturn(fullmakt);

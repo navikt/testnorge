@@ -48,7 +48,6 @@ public class VergemaalService implements Validation<VergemaalDTO> {
                     vergemaal.setMaster(getMaster(vergemaal, person));
                 })
                 .collectList()
-                .doOnNext(vergemaal -> person.setVergemaal(new ArrayList<>(vergemaal)))
                 .then();
     }
 
