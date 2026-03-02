@@ -17,6 +17,7 @@ type LandVelgerTypes = {
 	label: string
 	kodeverk: string
 	disabled?: boolean
+	size?: 'small' | 'medium' | 'large'
 	handleChangeSelect?: Function
 	handleChangeCheckbox?: Function
 }
@@ -29,6 +30,7 @@ export const LandVelger = ({
 	label,
 	kodeverk,
 	disabled = false,
+	size = 'large',
 	handleChangeSelect,
 	handleChangeCheckbox,
 }: LandVelgerTypes) => {
@@ -45,7 +47,7 @@ export const LandVelger = ({
 				name={path}
 				label={label}
 				kodeverk={kodeverk}
-				size="large"
+				size={size}
 				isDisabled={disabled || ukjentIsChecked}
 				onChange={handleChangeSelect}
 			/>
