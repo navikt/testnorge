@@ -55,6 +55,16 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
+    public boolean isEndretSivilstand() {
+
+        return isGift() ||
+               Sivilstand.ENKE_ELLER_ENKEMANN == type ||
+               Sivilstand.SKILT == type ||
+               Sivilstand.SKILT_PARTNER == type ||
+               Sivilstand.GJENLEVENDE_PARTNER == type;
+    }
+
+    @JsonIgnore
     public boolean isGiftOrSamboer() {
 
         return isGift() || isSamboer();

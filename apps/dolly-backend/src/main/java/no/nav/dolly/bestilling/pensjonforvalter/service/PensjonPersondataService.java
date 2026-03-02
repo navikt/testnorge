@@ -115,7 +115,8 @@ public class PensjonPersondataService {
                                                                       boolean isUpdateEndre) {
 
         if (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getPerson()) ||
-                bestilling.getPdldata().getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isGift)) {
+                bestilling.getPdldata().getPerson().getSivilstand().stream()
+                        .noneMatch(SivilstandDTO::isEndretSivilstand)) {
             return Flux.empty();
         }
 
