@@ -1,4 +1,3 @@
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
@@ -28,6 +27,7 @@ export const StatsborgerskapForm = ({
 			<LandVelger
 				formMethods={formMethods}
 				path={`${path}.landkode`}
+				checkboxName={`${path}.ukjentLand`}
 				ukjentLandKode="XUK"
 				label="Statsborgerskap"
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
