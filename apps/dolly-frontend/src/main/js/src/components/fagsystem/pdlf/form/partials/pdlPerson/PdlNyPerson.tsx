@@ -11,6 +11,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { LandVelger } from '@/components/landVelger/LandVelger'
 
 interface PdlNyPersonValues {
 	nyPersonPath: string
@@ -94,12 +95,14 @@ export const PdlNyPerson = ({
 				maxDate={new Date()}
 			/>
 			{!erNyIdent && (
-				<FormSelect
-					name={`${nyPersonPath}.statsborgerskapLandkode`}
+				<LandVelger
+					formMethods={formMethods}
+					path={`${nyPersonPath}.statsborgerskapLandkode`}
+					checkboxName={`${nyPersonPath}.ukjentLand`}
+					ukjentLandKode="XUK"
 					label="Statsborgerskap"
 					kodeverk={AdresseKodeverk.StatsborgerskapLand}
-					size="large"
-					isDisabled={hasEksisterendePerson}
+					disabled={hasEksisterendePerson}
 				/>
 			)}
 			{!erNyIdent && (

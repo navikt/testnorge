@@ -16,6 +16,7 @@ type LandVelgerTypes = {
 	ukjentLandKode: string
 	label: string
 	kodeverk: string
+	disabled?: boolean
 	handleChangeSelect?: Function
 	handleChangeCheckbox?: Function
 }
@@ -27,10 +28,11 @@ export const LandVelger = ({
 	ukjentLandKode,
 	label,
 	kodeverk,
+	disabled = false,
 	handleChangeSelect,
 	handleChangeCheckbox,
 }: LandVelgerTypes) => {
-	const [ukjentIsChecked, setUkjentIsChecked] = useBoolean(false)
+	const [ukjentIsChecked, setUkjentIsChecked] = useBoolean(formMethods.getValues(checkboxName))
 
 	const handleUkjentLandChange = (isChecked: boolean) => {
 		setUkjentIsChecked(isChecked)
@@ -44,7 +46,7 @@ export const LandVelger = ({
 				label={label}
 				kodeverk={kodeverk}
 				size="large"
-				isDisabled={ukjentIsChecked}
+				isDisabled={disabled || ukjentIsChecked}
 				onChange={handleChangeSelect}
 			/>
 			<FormCheckbox
@@ -58,6 +60,7 @@ export const LandVelger = ({
 						handleChangeCheckbox()
 					}
 				}}
+				disabled={disabled}
 			/>
 		</SelectWithCheckbox>
 	)
