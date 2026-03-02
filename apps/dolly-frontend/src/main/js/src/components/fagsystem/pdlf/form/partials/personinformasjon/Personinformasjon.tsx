@@ -102,11 +102,11 @@ export const Personinformasjon = ({ formMethods }) => {
 					</Vis>
 
 					<Kategori title="Innvandring" vis={innvandringPath}>
-						<Innvandring />
+						<Innvandring formMethods={formMethods} />
 					</Kategori>
 
 					<Kategori title="Utvandring" vis={utvandringPath}>
-						<Utvandring />
+						<Utvandring formMethods={formMethods} />
 					</Kategori>
 				</Kategori>
 

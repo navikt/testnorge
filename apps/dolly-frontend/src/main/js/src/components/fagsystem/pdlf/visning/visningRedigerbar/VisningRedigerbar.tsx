@@ -254,9 +254,9 @@ export const VisningRedigerbar = ({
 					/>
 				)
 			case Attributt.Innvandring:
-				return <InnvandringForm path={path} />
+				return <InnvandringForm path={path} formMethods={formMethods} />
 			case Attributt.Utvandring:
-				return <UtvandringForm path={path} />
+				return <UtvandringForm path={path} formMethods={formMethods} />
 			case Attributt.Vergemaal:
 				return (
 					<VergemaalForm
