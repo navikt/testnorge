@@ -175,18 +175,16 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                         .then(leggTilPersonadresse(kontaktinfo))
                         .then(Mono.fromRunnable(() -> kontaktinfo.getPersonSomKontakt().setNavn(null)));
             }
-
-            processing = processing.then(Mono.fromRunnable(() ->
-                    relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
-                            kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO)));
         }
 
         if (nonNull(kontaktinfoOriginal.getAdresse()) &&
             (isNotBlank(kontaktinfoOriginal.getAdresse().getLandkode()) ||
              isNotBlank(kontaktinfoOriginal.getAdresse().getAdresselinje1()))) {
 
-            processing = processing.then(Mono.fromRunnable(() ->
-                    kontaktinfo.setAdresse(getAdresse(kontaktinfoOriginal))));
+            processing = processing
+                    .then(getAdresse(kontaktinfoOriginal)
+                            .doOnNext(kontaktinfo::setAdresse)
+                            .then());
         }
 
         return processing.thenReturn(kontaktinfo);
@@ -340,7 +338,15 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         if (isBlank(pdlOrganisasjon.getOrganisasjonsnummer())) {
             return false;
         }
-        var organisasjoner = organisasjonForvalterConsumer.getOrganisasjoner(pdlOrganisasjon.getOrganisasjonsnummer());
+
+        return organisasjonForvalterConsumer.getOrganisasjoner(pdlOrganisasjon.getOrganisasjonsnummer())
+                .map(Map::entrySet)
+                .flatMapMany(Flux::fromIterable)
+                .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .next()
+                .map(organisasjon -> isValidOrganisasjonIMiljoe(pdlOrganisasjon, (Map) organisasjon))
+                .defaultIfEmpty(false);
         if (organisasjoner.isEmpty() || !organisasjoner.containsKey("q1") && !organisasjoner.containsKey("q2")) {
             return false;
         }
@@ -369,15 +375,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         return createPersonService.execute(kontakt.getNyKontaktperson())
                 .doOnNext(createdPerson ->
                         kontakt.setIdentifikasjonsnummer(createdPerson.getIdent()))
-                        .flatMap(createdPerson ->
-                            relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
-                                    createdPerson.getIdent(), RelasjonType.KONTAKT_FOR_DOEDSBO))
-        kontakt.setIdentifikasjonsnummer(
-                createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());
-
-
-        processing = processing.then(Mono.fromRunnable(() ->
-                relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
-                        kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO)));
+                .flatMap(createdPerson ->
+                        relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                                createdPerson.getIdent(), RelasjonType.KONTAKT_FOR_DOEDSBO));
     }
 }
