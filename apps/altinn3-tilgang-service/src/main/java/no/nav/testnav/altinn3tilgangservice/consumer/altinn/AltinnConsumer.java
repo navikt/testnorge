@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -71,6 +72,8 @@ public class AltinnConsumer {
                 .mutate()
                 .baseUrl(altinnConfig.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
+                    clientDefaultCodecsConfigurer.defaultCodecs()
+                            .maxInMemorySize(maxPages * 10 * 1024 * 1024);
                     clientDefaultCodecsConfigurer
                             .defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
@@ -151,7 +154,8 @@ public class AltinnConsumer {
                         new AltinnAuthorizedPartiesRequestDTO(ident),
                         exchangeToken).call())
                 .map(Arrays::asList)
-                .flatMapIterable(list -> list);
+                .flatMapIterable(list -> list)
+                .doOnNext(authorizedPartyDTO -> log.info("Authorized organisasjon: {}", authorizedPartyDTO.getName()));
     }
 
     private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers() {
