@@ -474,11 +474,23 @@ export default (props: PersonVisningProps) => {
 					id: person.ansvarlig,
 				})
 			})
+		data.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt
+			?.filter((vergemaal: any) => vergemaal?.vergeEllerFullmektig?.motpartsPersonident)
+			?.forEach((person: any) => {
+				relatertePersoner.push({
+					type: 'VERGE',
+					id: person.vergeEllerFullmektig?.motpartsPersonident,
+				})
+			})
 		return relatertePersoner
 	}
 
+	console.log('data.pdl?.hentPerson: ', data.pdl?.hentPerson) //TODO - SLETT MEG
+
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
+
+	console.log('relatertePersoner: ', relatertePersoner) //TODO - SLETT MEG
 
 	const isLoadingFagsystemer =
 		loadingNom ||
