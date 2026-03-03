@@ -1,13 +1,14 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialUtenlandsopphold } from '../initialValues'
+import { LandVelger } from '@/components/landVelger/LandVelger'
+import React from 'react'
 
 const infotekst =
 	'Start- og sluttdato må både være innenfor samme kalendermåned i samme år og perioden til arbeidsforholdet'
 
-export const UtenlandsoppholdForm = ({ path }) => {
+export const UtenlandsoppholdForm = ({ path, formMethods }) => {
 	return (
 		<FormDollyFieldArray
 			name={path}
@@ -18,12 +19,14 @@ export const UtenlandsoppholdForm = ({ path }) => {
 		>
 			{(partialPath, idx) => (
 				<div key={idx} className="flexbox">
-					<FormSelect
-						name={`${partialPath}.land`}
+					<LandVelger
+						formMethods={formMethods}
+						path={`${partialPath}.land`}
+						checkboxName={`${partialPath}.ukjentLand`}
+						ukjentLandKode="???"
 						label="Land"
 						kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-						isClearable={false}
-						size="large"
+						size="medium"
 					/>
 					<FormDatepicker name={`${partialPath}.periode.fom`} label="Opphold fra" />
 					<FormDatepicker name={`${partialPath}.periode.tom`} label="Opphold til" />

@@ -145,7 +145,10 @@ export const KontaktadresseForm = ({
 				<PostadresseIFrittFormat path={`${path}.postadresseIFrittFormat`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT' && (
-				<UtenlandskAdresseIFrittFormat path={`${path}.utenlandskAdresseIFrittFormat`} />
+				<UtenlandskAdresseIFrittFormat
+					path={`${path}.utenlandskAdresseIFrittFormat`}
+					formMethods={formMethods}
+				/>
 			)}
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
