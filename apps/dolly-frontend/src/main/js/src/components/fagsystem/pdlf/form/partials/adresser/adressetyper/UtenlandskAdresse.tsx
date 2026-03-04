@@ -1,8 +1,8 @@
 import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { GtKodeverk } from '@/config/kodeverk'
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { LandVelger } from '@/components/landVelger/LandVelger'
 
 interface UtenlandskAdresseForm {
 	formMethods: UseFormReturn
@@ -45,12 +45,13 @@ export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdres
 			/>
 			<FormTextInput name={`${path}.postkode`} label="Postkode" />
 			<FormTextInput name={`${path}.bySted`} label="By eller sted" />
-			<FormSelect
-				name={`${path}.landkode`}
+			<LandVelger
+				formMethods={formMethods}
+				path={`${path}.landkode`}
+				checkboxName={`${path}.ukjentLand`}
+				ukjentLandKode="XUK"
 				label="Land"
 				kodeverk={GtKodeverk.LAND}
-				isClearable={false}
-				size="large"
 			/>
 			{master === 'PDL' ? (
 				<>

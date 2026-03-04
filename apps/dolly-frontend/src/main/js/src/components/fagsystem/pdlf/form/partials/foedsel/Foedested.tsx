@@ -11,6 +11,7 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { LandVelger } from '@/components/landVelger/LandVelger'
 
 type FoedestedTypes = {
 	formMethods: UseFormReturn
@@ -20,12 +21,16 @@ type FoedestedTypes = {
 export const FoedestedForm = ({ formMethods, path }: FoedestedTypes) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
-	const handleLandChange = (selected: SelectedValue, foededtedPath: string) => {
-		formMethods.setValue(`${foededtedPath}.foedeland`, selected?.value || null)
+	const handleLandChange = (selected: SelectedValue, foedestedPath: string) => {
+		formMethods.setValue(`${foedestedPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
-			formMethods.setValue(`${foededtedPath}.foedekommune`, null)
+			formMethods.setValue(`${foedestedPath}.foedekommune`, null)
 		}
 		formMethods.trigger(path)
+	}
+
+	const handleUkjentLandChange = (foedestedPath: string) => {
+		formMethods.setValue(`${foedestedPath}.foedekommune`, null)
 	}
 
 	return (
@@ -41,12 +46,15 @@ export const FoedestedForm = ({ formMethods, path }: FoedestedTypes) => {
 					formMethods.watch(`${path}.foedeland`) !== null
 				}
 			/>
-			<FormSelect
-				name={`${path}.foedeland`}
+			<LandVelger
+				formMethods={formMethods}
+				path={`${path}.foedeland`}
+				checkboxName={`${path}.ukjentLand`}
+				ukjentLandKode="XUK"
 				label="Fødeland"
-				onChange={(selected: SelectedValue) => handleLandChange(selected, path)}
 				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-				size="large"
+				handleChangeSelect={(selected: SelectedValue) => handleLandChange(selected, path)}
+				handleChangeCheckbox={() => handleUkjentLandChange(path)}
 			/>
 			<AvansertForm
 				path={path}

@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -71,15 +70,13 @@ public class AltinnConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(altinnConfig.getUrl())
-                .codecs(clientDefaultCodecsConfigurer -> {
-                    clientDefaultCodecsConfigurer.defaultCodecs()
-                            .maxInMemorySize(maxPages * 10 * 1024 * 1024);
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
+                .codecs(config -> {
+                    config.defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
+                    config.defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
+                    config.defaultCodecs()
+                            .maxInMemorySize(10 * 1024 * 1024);
                 })
                 .build();
         this.brregConsumer = brregConsumer;
@@ -154,8 +151,7 @@ public class AltinnConsumer {
                         new AltinnAuthorizedPartiesRequestDTO(ident),
                         exchangeToken).call())
                 .map(Arrays::asList)
-                .flatMapIterable(list -> list)
-                .doOnNext(authorizedPartyDTO -> log.info("Authorized organisasjon: {}", authorizedPartyDTO.getName()));
+                .flatMapIterable(list -> list);
     }
 
     private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers() {
@@ -176,7 +172,7 @@ public class AltinnConsumer {
                 .expand(response -> {
 
                     if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext()) &&
-                            counter.getAndIncrement() < maxPages) {
+                        counter.getAndIncrement() < maxPages) {
 
                         String continueToken;
                         try {

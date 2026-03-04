@@ -3,6 +3,8 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
+import { LandVelger } from '@/components/landVelger/LandVelger'
+import React from 'react'
 
 export const Adresse = ({ formMethods, path }) => {
 	const [visAdresse, setVisAdresse, setSkjulAdresse] = useBoolean(false)
@@ -23,11 +25,13 @@ export const Adresse = ({ formMethods, path }) => {
 			)}
 			{visAdresse && (
 				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-					<FormSelect
-						name={`${path}.landkode`}
+					<LandVelger
+						formMethods={formMethods}
+						path={`${path}.landkode`}
+						checkboxName={`${path}.ukjentLand`}
+						ukjentLandKode="XUK"
 						label="Land"
 						kodeverk={AdresseKodeverk.PostadresseLand}
-						size="large"
 					/>
 					<FormTextInput name={`${path}.adresselinje1`} label="Adresselinje 1" />
 					<FormTextInput name={`${path}.adresselinje2`} label="Adresselinje 2" />

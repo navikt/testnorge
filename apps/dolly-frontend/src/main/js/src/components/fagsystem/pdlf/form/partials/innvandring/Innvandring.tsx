@@ -1,26 +1,29 @@
 import React from 'react'
 // @ts-ignore
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
+import { LandVelger } from '@/components/landVelger/LandVelger'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type InnvandringTypes = {
 	path: string
+	formMethods: UseFormReturn
 	minDate?: Date
 	maxDate?: Date
 }
 
-export const InnvandringForm = ({ path }: InnvandringTypes) => {
+export const InnvandringForm = ({ path, formMethods }: InnvandringTypes) => {
 	return (
 		<>
-			<FormSelect
-				name={`${path}.fraflyttingsland`}
+			<LandVelger
+				formMethods={formMethods}
+				path={`${path}.fraflyttingsland`}
+				checkboxName={`${path}.ukjentLand`}
+				ukjentLandKode="XUK"
 				label="Innvandret fra"
 				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-				size="large"
-				isClearable={false}
 			/>
 			<FormTextInput name={`${path}.fraflyttingsstedIUtlandet`} label="Fraflyttingssted" />
 			<FormDatepicker
@@ -33,10 +36,10 @@ export const InnvandringForm = ({ path }: InnvandringTypes) => {
 	)
 }
 
-export const Innvandring = () => {
+export const Innvandring = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	return (
 		<div className="person-visning_content">
-			<InnvandringForm path={'pdldata.person.innflytting[0]'} />
+			<InnvandringForm path={'pdldata.person.innflytting[0]'} formMethods={formMethods} />
 		</div>
 	)
 }
