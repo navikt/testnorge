@@ -476,16 +476,25 @@ export default (props: PersonVisningProps) => {
 			})
 		data.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt
 			?.filter((vergemaal: any) => vergemaal?.vergeEllerFullmektig?.motpartsPersonident)
-			?.forEach((person: any) => {
+			?.forEach((vergemaal: any) => {
 				relatertePersoner.push({
 					type: 'VERGE',
-					id: person.vergeEllerFullmektig?.motpartsPersonident,
+					id: vergemaal.vergeEllerFullmektig?.motpartsPersonident,
+				})
+			})
+		data.pdlforvalter?.person?.fullmakt
+			?.filter((fullmakt: any) => fullmakt?.motpartsPersonident)
+			?.forEach((fullmakt: any) => {
+				relatertePersoner.push({
+					type: 'FULLMEKTIG',
+					id: fullmakt.motpartsPersonident,
 				})
 			})
 		return relatertePersoner
 	}
 
 	console.log('data.pdl?.hentPerson: ', data.pdl?.hentPerson) //TODO - SLETT MEG
+	console.log('data.pdlforvalter?.person: ', data.pdlforvalter?.person) //TODO - SLETT MEG
 
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
