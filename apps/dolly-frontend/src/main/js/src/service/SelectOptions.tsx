@@ -178,7 +178,7 @@ const selectOptions = {
 		{ value: 'POSTADRESSE_I_FRITT_FORMAT', label: 'Postadresse i fritt format (historisk)' },
 		{
 			value: 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT',
-			label: 'Utenlandsk adresse i fritt format( historisk)',
+			label: 'Utenlandsk adresse i fritt format (historisk)',
 		},
 	],
 

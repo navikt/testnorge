@@ -10,8 +10,8 @@ import { useForm } from 'react-hook-form'
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { DollyApi } from '@/service/Api'
-import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from './constants'
+import { getLabel } from '@/components/ui/soekForm/utils'
 
 export { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey }
 
@@ -208,11 +208,12 @@ export default () => {
 		setRequest({ ...request })
 		setMarkertePersoner([])
 		mutate()
+
 		if (value?.length > 0) {
 			const request = value.map((i) => ({
 				path: path,
 				value: i,
-				label: label.includes(':') ? label : `${label}: ${codeToNorskLabel(i)}`,
+				label: getLabel(i, lagreSoekRequest, path, label),
 			}))
 			setLagreSoekRequest({
 				...lagreSoekRequest,

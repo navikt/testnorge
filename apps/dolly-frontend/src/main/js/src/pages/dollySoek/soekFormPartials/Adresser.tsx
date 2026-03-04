@@ -104,7 +104,7 @@ export const Adresser = ({ handleChange }: any) => {
 							)
 						}
 					/>
-					<div style={{ marginLeft: '-30px', marginTop: '3px' }}>
+					<div style={{ marginLeft: '-20px', marginTop: '5px' }}>
 						<Hjelpetekst>
 							I disse tre feltene velges minimum antall historiske adresser (pluss gjeldende). Eks:
 							"2" bostedsadresser gir treff på personer med tre eller flere adresser.

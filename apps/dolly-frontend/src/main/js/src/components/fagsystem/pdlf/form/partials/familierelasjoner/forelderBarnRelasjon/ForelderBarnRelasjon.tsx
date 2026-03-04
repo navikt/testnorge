@@ -181,6 +181,7 @@ export const ForelderBarnRelasjonForm = ({
 								id={`${path}.borIkkeSammen`}
 								label="Bor ikke sammen"
 								checkboxMargin
+								wrapperSize="shrink"
 							/>
 						)}
 					</>

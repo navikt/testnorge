@@ -38,7 +38,7 @@ export const Familierelasjoner = ({ handleChange }: any) => {
 							)
 						}
 					/>
-					<div style={{ marginLeft: '-30px', marginTop: '3px' }}>
+					<div style={{ marginLeft: '-20px', marginTop: '5px' }}>
 						<Hjelpetekst>
 							Minimum antall relasjoner knyttet til personen. Eks: "2" gir treff på personer med to
 							eller flere foreldre/barn-relasjoner.
