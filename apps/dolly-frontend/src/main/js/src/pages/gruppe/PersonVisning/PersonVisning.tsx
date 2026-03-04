@@ -490,14 +490,6 @@ export default (props: PersonVisningProps) => {
 					id: fullmakt.motpartsPersonident,
 				})
 			})
-		// data.pdlforvalter?.relasjoner
-		// 	?.filter((relasjon: any) => relasjon?.relasjonType === 'GAMMEL_IDENTITET')
-		// 	?.forEach((relasjon: any) => {
-		// 		relatertePersoner.push({
-		// 			type: 'GAMMEL IDENT',
-		// 			id: relasjon.relatertPerson.ident,
-		// 		})
-		// 	})
 		data.pdl.hentPerson?.kontaktinformasjonForDoedsbo
 			?.filter((kontaktinfo: any) => kontaktinfo?.personSomKontakt?.identifikasjonsnummer)
 			?.forEach((kontaktinfo: any) => {
@@ -510,20 +502,8 @@ export default (props: PersonVisningProps) => {
 		return relatertePersoner
 	}
 
-	// const pdlRelatertPerson = () => {
-	// 	return data.pdlforvalter?.relasjoner?.map((relasjon: any) => ({
-	// 		type: relasjon.relasjonType,
-	// 		id: relasjon.relatertPerson.ident,
-	// 	}))
-	// }
-
-	console.log('data.pdl: ', data.pdl) //TODO - SLETT MEG
-	console.log('data.pdlforvalter: ', data.pdlforvalter) //TODO - SLETT MEG
-
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
-
-	console.log('relatertePersoner: ', relatertePersoner) //TODO - SLETT MEG
 
 	const isLoadingFagsystemer =
 		loadingNom ||
