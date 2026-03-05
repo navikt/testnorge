@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -41,11 +40,11 @@ public class DbRelasjon {
     @Column
     private Long relatertPersonId;
 
-    @Transient
-    private DbPerson person;
-
-    @Transient
-    private DbPerson relatertPerson;
+//    @Transient
+//    private DbPerson person;
+//
+//    @Transient
+//    private DbPerson relatertPerson;
 
     @Version
     private Integer versjon;
@@ -76,8 +75,6 @@ public class DbRelasjon {
                 ", relasjonType=" + relasjonType +
                 ", personId=" + personId +
                 ", relatertPersonId=" + relatertPersonId +
-                ", person=" + person +
-                ", relatertPerson=" + relatertPerson +
                 ", versjon=" + versjon +
                 '}';
     }

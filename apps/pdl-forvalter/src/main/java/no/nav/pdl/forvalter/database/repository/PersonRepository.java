@@ -22,23 +22,12 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
     Mono<DbPerson> save(DbPerson person);
     Flux<DbPerson> saveAll(Collection<DbPerson> persons);
 
-    @Query("""
-            select * from person p
-            join relasjon r on r.person_id = p.id
-            and p.ident in (:identer)
-            order by p.id desc
-            """)
     Flux<DbPerson> findByIdentIn(Collection<String> identer, Pageable pageable);
 
-    @Query("""
-            select * from person p
-            join relasjon r on r.person_id = p.id
-            and p.ident in (:identer)
-            order by p.id desc
-            """)
     Flux<DbPerson> findAll(Pageable pageable);
 
     Flux<DbPerson> findByIdIn(List<Long> identer);
+    Mono<DbPerson> findById(Long id);
 
     @Modifying
     Mono<Void> deleteByIdentIn(Set<String> ident);

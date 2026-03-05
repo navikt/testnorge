@@ -26,4 +26,21 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
     Flux<DbRelasjon> saveAll(Collection<DbRelasjon> relasjoner);
 
     Flux<DbRelasjon> findByPersonId(Long id);
+
+    @Query("""
+            select r from DbRelasjon r
+            where (r.personId = :personId or r.relatertPersonId = :personId)
+            and r.relasjonType = :relasjonType
+            """)
+    Flux<DbRelasjon> findByPersonIdOrRelatertPersonIdAndRelasjonType(Long personId, RelasjonType relasjonType);
+
+    @Modifying
+    Mono<Void> deleteByPersonIdAndRelatertPersonId(Long personId, Long relatertPersonId);
+
+    @Modifying
+    @Query("""
+            delete from DbRelasjon r
+            where r.personId = :personId or r.relatertPersonId = :personId
+            """)
+    Mono<Void> deleteByPersonIdOrRelatertPersonId(Long personId);
 }

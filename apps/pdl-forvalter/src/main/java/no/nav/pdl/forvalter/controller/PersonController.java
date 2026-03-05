@@ -138,7 +138,7 @@ public class PersonController {
             return personService.deletePerson(ident);
 
         } else {
-            return personService.deleteMasterPdlArtifacter(ident);
+            return personService.deletePdlArtifacter(ident);
         }
     }
 

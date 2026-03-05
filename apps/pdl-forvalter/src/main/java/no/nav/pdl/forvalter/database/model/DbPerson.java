@@ -54,11 +54,11 @@ public class DbPerson {
     @Version
     private Integer versjon;
 
-    @Transient
-    private List<DbRelasjon> relasjoner;
-
-    @Transient
-    private List<DbAlias> alias;
+//    @Transient
+//    private List<DbRelasjon> relasjoner;
+//
+//    @Transient
+//    private List<DbAlias> alias;
 
     @Override
     public boolean equals(Object o) {
@@ -85,8 +85,6 @@ public class DbPerson {
                 ", etternavn='" + etternavn + '\'' +
                 ", person=" + person +
                 ", versjon=" + versjon +
-                ", relasjoner=" + relasjoner +
-                ", alias=" + alias +
                 '}';
     }
 }

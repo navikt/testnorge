@@ -126,12 +126,12 @@ public class PersonService {
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
                 .filter(dbPerson ->
 
-        // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
-                        aliasRepository.findByTidligereIdent(ident)
-        var utgaatteIdenter = dbPerson.getAlias().stream()
-                .sorted(Comparator.comparing(DbAlias::getSistOppdatert))
-                .map(DbAlias::getTidligereIdent)
-                .toList();
+                                // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
+                                aliasRepository.findByTidligereIdent(ident)
+                        var utgaatteIdenter = dbPerson.getAlias().stream()
+                                .sorted(Comparator.comparing(DbAlias::getSistOppdatert))
+                                .map(DbAlias::getTidligereIdent)
+                                .toList();
 
         var identerSomIkkeSkalSlettesFraIdentpool = new HashSet<String>();
         for (var i = 0; i < utgaatteIdenter.size(); i++) {
@@ -285,18 +285,13 @@ public class PersonService {
     }
 
     @Transactional
-    public Mono<Void> deleteMasterPdlArtifacter(String ident) {
+    public Mono<Void> deletePdlArtifacter(String ident) {
 
         return personRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
                 .flatMap(person -> hendelseIdService.deletePdlHendelser(person)
                         .then(unhookEksternePersonerService.unhook(person)
-                                .then(relasjonRepository.deleteByPersonIdentIn(
-                                                person.getRelasjoner().stream()
-                                                        .map(DbRelasjon::getRelatertPerson)
-                                                        .filter(Objects::nonNull)
-                                                        .map(DbPerson::getIdent)
-                                                        .toList())
+                                .then(relasjonRepository.deleteByPersonIdOrRelatertPersonId(person.getId())
                                         .thenReturn(person))))
                 .then(personRepository.deleteByIdent(ident));
     }

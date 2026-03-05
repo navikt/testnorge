@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -31,8 +30,8 @@ public class DbAlias {
     @Column
     private LocalDateTime sistOppdatert;
 
-    @Transient
-    private DbPerson person;
+//    @Transient
+//    private DbPerson person;
 
     @Column
     private Long personId;
@@ -62,7 +61,6 @@ public class DbAlias {
         return "DbAlias{" +
                 "id=" + id +
                 ", sistOppdatert=" + sistOppdatert +
-                ", person=" + person +
                 ", personId=" + personId +
                 ", tidligereIdent='" + tidligereIdent + '\'' +
                 ", versjon=" + versjon +
