@@ -11,7 +11,6 @@ import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
@@ -29,7 +28,7 @@ public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    public Flux<OrdreResponseDTO.HendelseDTO> call() {
+    public Mono<OrdreResponseDTO.HendelseDTO> call() {
         return webClient
                 .delete()
                 .uri(builder -> builder.path(url)

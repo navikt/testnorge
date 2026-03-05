@@ -35,10 +35,10 @@ public class GenererNavnServiceConsumer {
                 .build();
     }
 
-    public Mono<NavnDTO> getNavn(Integer antall) {
+    public Mono<NavnDTO> getNavn() {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call()
+                .flatMap(token -> new GenererNavnServiceCommand(webClient, NAVN_URL, 1, token.getTokenValue()).call()
                         .next());
     }
 

@@ -72,17 +72,17 @@ public class PersonService {
 
     private static final String SORT_BY_FIELD = "sistOppdatert";
 
+    private final AliasRepository aliasRepository;
+    private final HendelseIdService hendelseIdService;
+    private final IdentPoolConsumer identPoolConsumer;
+    private final MapperFacade mapperFacade;
+    private final MergeService mergeService;
+    private final PdlTestdataConsumer pdlTestdataConsumer;
+    private final PersonArtifactService personArtifactService;
     private final PersonRepository personRepository;
     private final RelasjonRepository relasjonRepository;
-    private final MergeService mergeService;
-    private final PersonArtifactService personArtifactService;
-    private final MapperFacade mapperFacade;
-    private final IdentPoolConsumer identPoolConsumer;
-    private final PdlTestdataConsumer pdlTestdataConsumer;
-    private final AliasRepository aliasRepository;
-    private final ValidateArtifactsService validateArtifactsService;
     private final UnhookEksternePersonerService unhookEksternePersonerService;
-    private final HendelseIdService hendelseIdService;
+    private final ValidateArtifactsService validateArtifactsService;
 
     @Transactional
     public Mono<String> updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -123,13 +123,11 @@ public class PersonService {
 
         return checkAlias(ident)
                 .then(personRepository.findByIdent(ident))
-                        .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
-        .flatMap(dbPerson -> Mono.just(dbPerson)
-                .doOnNext(this::deleteMasterPdlArtifacter)
-                .doOnNext(this::deleteRelasjonerOgHendelser)
-                .doOnNext(this::releaseIdents))
+                .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
+                .filter(dbPerson ->
 
         // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
+                        aliasRepository.findByTidligereIdent(ident)
         var utgaatteIdenter = dbPerson.getAlias().stream()
                 .sorted(Comparator.comparing(DbAlias::getSistOppdatert))
                 .map(DbAlias::getTidligereIdent)
@@ -164,16 +162,6 @@ public class PersonService {
         personRepository.deleteByIdentIn(identer);
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
     }
-
-    private Mono<List> getUtgaatteIdenter(DbPerson dbPerson) {
-
-        return aliasRepository.findByTidligereIdentIn(dbPerson.getAlias().stream()
-                        .map(DbAlias::getTidligereIdent)
-                        .toList())
-                .map(DbAlias::getTidligereIdent)
-                .collectList();
-    }
-
 
     @Transactional(readOnly = true)
     public Flux<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
@@ -297,24 +285,19 @@ public class PersonService {
     }
 
     @Transactional
-    public void deleteMasterPdlArtifacter(String ident) {
+    public Mono<Void> deleteMasterPdlArtifacter(String ident) {
 
-        personRepository.findByIdent(ident)
-                .ifPresentOrElse(person -> {
-                            hendelseIdService.deletePdlHendelser(person);
-                            unhookEksternePersonerService.unhook(person);
-
-                            relasjonRepository.deleteByPersonIdentIn(
-                                    person.getRelasjoner().stream()
-                                            .map(DbRelasjon::getRelatertPerson)
-                                            .filter(Objects::nonNull)
-                                            .map(DbPerson::getIdent)
-                                            .toList());
-
-                            personRepository.deleteByIdent(ident);
-                        },
-                        () -> {
-                            throw new NotFoundException(format("Ident %s ble ikke funnet", ident));
-                        });
+        return personRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
+                .flatMap(person -> hendelseIdService.deletePdlHendelser(person)
+                        .then(unhookEksternePersonerService.unhook(person)
+                                .then(relasjonRepository.deleteByPersonIdentIn(
+                                                person.getRelasjoner().stream()
+                                                        .map(DbRelasjon::getRelatertPerson)
+                                                        .filter(Objects::nonNull)
+                                                        .map(DbPerson::getIdent)
+                                                        .toList())
+                                        .thenReturn(person))))
+                .then(personRepository.deleteByIdent(ident));
     }
 }

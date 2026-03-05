@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
@@ -11,6 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +33,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class UnhookEksternePersonerService {
 
     private final PersonRepository personRepository;
+    private final RelasjonRepository relasjonRepository;
 
-    public void unhook(DbPerson hovedperson) {
+    public Mono<Void> unhook(DbPerson hovedperson) {
 
         deleteSivilstandArtifact(hovedperson);
         deleteForeldreansvarRelasjoner(hovedperson);
@@ -43,18 +46,18 @@ public class UnhookEksternePersonerService {
         deleteKontaktinformasjonForDoedsboeAndreRelasjoner(hovedperson);
     }
 
-    private void deleteSivilstandArtifact(DbPerson hovedperson) {
+    private Mono<Void> deleteSivilstandArtifact(DbPerson hovedperson) {
 
-        var partnere = personRepository.findByIdentIn(hovedperson.getPerson().getSivilstand().stream()
+        return personRepository.findByIdentIn(hovedperson.getPerson().getSivilstand().stream()
                 .map(SivilstandDTO::getRelatertVedSivilstand)
-                .toList(), Pageable.unpaged());
-
-        partnere.stream()
+                .toList(), Pageable.unpaged())
                 .map(DbPerson::getPerson)
-                .forEach(person -> person.setSivilstand(person.getSivilstand().stream()
+                .doOnNext(person -> person.setSivilstand(person.getSivilstand().stream()
                         .filter(sivilstand -> isBlank(sivilstand.getRelatertVedSivilstand()) ||
-                                !sivilstand.getRelatertVedSivilstand().equals(hovedperson.getIdent()))
-                        .toList()));
+                                              !sivilstand.getRelatertVedSivilstand().equals(hovedperson.getIdent()))
+                        .toList()))
+
+
 
         if (hovedperson.getPerson().isStandalone() ||
                 hovedperson.getPerson().getSivilstand().stream().anyMatch(SivilstandDTO::isEksisterendePerson) ||
@@ -187,7 +190,7 @@ public class UnhookEksternePersonerService {
         });
     }
 
-    private void deleteRelasjon(DbPerson person, String relasjonIdent) {
+    private Mono<Void> deleteRelasjon(DbPerson person, String relasjonIdent) {
 
         person.getRelasjoner()
                 .removeIf(thisRelasjon -> thisRelasjon.getRelatertPerson().getIdent().equals(relasjonIdent));

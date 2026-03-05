@@ -20,6 +20,7 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
     Mono<DbPerson> findByIdent(String ident);
 
     Mono<DbPerson> save(DbPerson person);
+    Flux<DbPerson> saveAll(Collection<DbPerson> persons);
 
     @Query("""
             select * from person p

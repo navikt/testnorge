@@ -113,11 +113,17 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             throw new InvalidRequestException(VALIDATION_ORGANISASJON_NAVN_INVALID);
         }
 
-        if (nonNull(kontaktinfo.getAdvokatSomKontakt())
-            && !isValidOrganisasjonIMiljoe(kontaktinfo.getAdvokatSomKontakt()) ||
-            nonNull(kontaktinfo.getOrganisasjonSomKontakt()) &&
-            !isValidOrganisasjonIMiljoe(kontaktinfo.getOrganisasjonSomKontakt())) {
-            throw new InvalidRequestException(VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID);
+        if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
+            return isValidOrganisasjonIMiljoe(kontaktinfo.getAdvokatSomKontakt())
+                    .flatMap(valid -> isFalse(valid) ?
+                            Mono.error(new InvalidRequestException(VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID)) :
+                            Mono.empty());
+        }
+        if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
+            return isValidOrganisasjonIMiljoe(kontaktinfo.getOrganisasjonSomKontakt())
+                    .flatMap(valid -> isFalse(valid) ?
+                            Mono.error(new InvalidRequestException(VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID)) :
+                            Mono.empty());
         }
 
         if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
@@ -242,7 +248,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
                     if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
                         kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
-                                mapperFacade.map(((List<Map>) organisasjon.get("adresser")).getFirst(), KontaktinformasjonForDoedsboAdresse.class) :
+                                mapperFacade.map(((List<Map>) organisasjon.get("adresser")).getFirst(),
+                                        KontaktinformasjonForDoedsboAdresse.class) :
                                 null);
                     }
                 })
@@ -333,10 +340,10 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         return advokat && organisasjon;
     }
 
-    private boolean isValidOrganisasjonIMiljoe(OrganisasjonDTO pdlOrganisasjon) {
+    private Mono<Boolean> isValidOrganisasjonIMiljoe(OrganisasjonDTO pdlOrganisasjon) {
 
         if (isBlank(pdlOrganisasjon.getOrganisasjonsnummer())) {
-            return false;
+            return Mono.just(false);
         }
 
         return organisasjonForvalterConsumer.getOrganisasjoner(pdlOrganisasjon.getOrganisasjonsnummer())
@@ -344,16 +351,9 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 .flatMapMany(Flux::fromIterable)
                 .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
-                .next()
-                .map(organisasjon -> isValidOrganisasjonIMiljoe(pdlOrganisasjon, (Map) organisasjon))
-                .defaultIfEmpty(false);
-        if (organisasjoner.isEmpty() || !organisasjoner.containsKey("q1") && !organisasjoner.containsKey("q2")) {
-            return false;
-        }
-        return isBlank(pdlOrganisasjon.getOrganisasjonsnavn()) ||
-               organisasjoner.values().stream()
-                       .anyMatch(organisasjon -> pdlOrganisasjon.getOrganisasjonsnavn()
-                               .equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")));
+                .filter(organisasjon -> isNull(pdlOrganisasjon.getOrganisasjonsnavn()) ||
+                        pdlOrganisasjon.getOrganisasjonsnavn().equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")))
+                .hasElements();
     }
 
     private Mono<Void> leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
