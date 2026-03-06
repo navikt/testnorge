@@ -474,6 +474,31 @@ export default (props: PersonVisningProps) => {
 					id: person.ansvarlig,
 				})
 			})
+		data.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt
+			?.filter((vergemaal: any) => vergemaal?.vergeEllerFullmektig?.motpartsPersonident)
+			?.forEach((vergemaal: any) => {
+				relatertePersoner.push({
+					type: 'VERGE',
+					id: vergemaal.vergeEllerFullmektig?.motpartsPersonident,
+				})
+			})
+		data.pdlforvalter?.person?.fullmakt
+			?.filter((fullmakt: any) => fullmakt?.motpartsPersonident)
+			?.forEach((fullmakt: any) => {
+				relatertePersoner.push({
+					type: 'FULLMEKTIG',
+					id: fullmakt.motpartsPersonident,
+				})
+			})
+		data.pdl?.hentPerson?.kontaktinformasjonForDoedsbo
+			?.filter((kontaktinfo: any) => kontaktinfo?.personSomKontakt?.identifikasjonsnummer)
+			?.forEach((kontaktinfo: any) => {
+				relatertePersoner.push({
+					type: 'KONTAKTPERSON DØDSBO',
+					id: kontaktinfo.personSomKontakt.identifikasjonsnummer,
+				})
+			})
+
 		return relatertePersoner
 	}
 
