@@ -108,12 +108,10 @@ public class PersonController {
     public Mono<String> updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
                                @PathVariable String ident,
                                @RequestBody PersonUpdateRequestDTO request,
-                               @Parameter(description = "Angir om tidligere historie skal skrives over")
-                               @RequestHeader(required = false) Boolean overwrite,
                                @Parameter(description = "Angir om validering skal sløyfes for navn, adresse m.fl.")
                                @RequestHeader(required = false) Boolean relaxed) {
 
-        return personService.updatePerson(ident, request, overwrite, relaxed);
+        return personService.updatePerson(ident, request, relaxed);
     }
 
     @Transactional

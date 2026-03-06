@@ -39,15 +39,10 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -55,7 +50,6 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
-import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -85,12 +79,12 @@ public class PersonService {
     private final ValidateArtifactsService validateArtifactsService;
 
     @Transactional
-    public Mono<String> updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
+    public Mono<String> updatePerson(String ident, PersonUpdateRequestDTO request, Boolean relaxed) {
 
-        return updatePersonInternal(ident, request, overwrite, relaxed);
+        return updatePersonInternal(ident, request, relaxed);
     }
 
-    private Mono<String> updatePersonInternal(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
+    private Mono<String> updatePersonInternal(String ident, PersonUpdateRequestDTO request, Boolean relaxed) {
 
         if (!isNumeric(ident) || ident.length() != 11) {
 
@@ -98,7 +92,7 @@ public class PersonService {
         }
 
         return checkAlias(ident)
-                .then(getDbPerson(ident, overwrite))
+                .then(getDbPerson(ident))
                 .flatMap(dbPerson -> mergeService.merge(request.getPerson(), dbPerson.getPerson())
                         .flatMap(mergedPerson -> isNotTrue(relaxed) ?
                                 validateArtifactsService.validate(mergedPerson)
@@ -124,43 +118,32 @@ public class PersonService {
         return checkAlias(ident)
                 .then(personRepository.findByIdent(ident))
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
-                .filter(dbPerson ->
-
+                .flatMap(dbPerson -> unhookEksternePersonerService.unhook(dbPerson)
+                        .thenReturn(dbPerson))
+                .flatMapMany(dbPerson -> Flux.concat(
+                                Flux.just(dbPerson.getId()),
+                                relasjonRepository.findByPersonId(dbPerson.getId())
+                                        .map(DbRelasjon::getRelatertPersonId))
+                        .flatMap(relatertPersonId -> personRepository.findById(relatertPersonId)
                                 // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
-                                aliasRepository.findByTidligereIdent(ident)
-                        var utgaatteIdenter = dbPerson.getAlias().stream()
-                                .sorted(Comparator.comparing(DbAlias::getSistOppdatert))
-                                .map(DbAlias::getTidligereIdent)
-                                .toList();
-
-        var identerSomIkkeSkalSlettesFraIdentpool = new HashSet<String>();
-        for (var i = 0; i < utgaatteIdenter.size(); i++) {
-
-            if (isNpidIdent(utgaatteIdenter.get(i))) {
-                identerSomIkkeSkalSlettesFraIdentpool.add(utgaatteIdenter.get(i));
-                identerSomIkkeSkalSlettesFraIdentpool.add(i < utgaatteIdenter.size() - 1 ? utgaatteIdenter.get(i + 1) : dbPerson.getIdent());
-            }
-        }
-
-        unhookEksternePersonerService.unhook(dbPerson);
-
-        var identer = Stream.of(dbPerson.getRelasjoner().stream(),
-                        dbPerson.getRelasjoner().stream()
-                                .map(DbRelasjon::getRelatertPerson)
-                                .map(DbPerson::getRelasjoner)
-                                .flatMap(Collection::stream))
-                .flatMap(Function.identity())
-                .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toSet());
-
-        pdlTestdataConsumer.delete(identer).block();
-        identPoolConsumer.releaseIdents(identer.stream()
-                .filter(id -> !identerSomIkkeSkalSlettesFraIdentpool.contains(id))
-                .collect(Collectors.toSet()), Bruker.PDLF).block();
-
-        personRepository.deleteByIdentIn(identer);
-        log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
+                                .flatMap(relatertPerson -> aliasRepository.existsByTidligereIdent(relatertPerson.getIdent())
+                                        .zipWith(Mono.just(relatertPerson))))
+                        .filter(tuple -> isNotTrue(tuple.getT1())))
+                .reduce(new HashSet<String>(), (set, tuple) -> {
+                    set.add(tuple.getT2().getIdent());
+                    return set;
+                })
+                .flatMap(identerSomSkalSlettesHosPdl -> pdlTestdataConsumer.delete(identerSomSkalSlettesHosPdl)
+                        .thenReturn(identerSomSkalSlettesHosPdl))
+                .flatMap(identerSomSkalFriMarkeresIIdentpool ->
+                        identPoolConsumer.releaseIdents(identerSomSkalFriMarkeresIIdentpool, Bruker.PDLF)
+                                .thenReturn(identerSomSkalFriMarkeresIIdentpool))
+                .flatMap(identerSomSkalSlettesIRelasjoner -> relasjonRepository.deleteByPersonIdentIn(identerSomSkalSlettesIRelasjoner)
+                        .thenReturn(identerSomSkalSlettesIRelasjoner))
+                .flatMap(identerSomSkalSlettesIPdlForvalter -> personRepository.deleteByIdentIn(identerSomSkalSlettesIPdlForvalter)
+                        .thenReturn(identerSomSkalSlettesIPdlForvalter))
+                .doOnNext(identer -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
+                .then();
     }
 
     @Transactional(readOnly = true)
@@ -239,7 +222,7 @@ public class PersonService {
                 })
                 .flatMap(identifier -> updatePersonInternal(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
                         .person(request.getPerson())
-                        .build(), null, null));
+                        .build(), null));
     }
 
     private Mono<IdentDTO> acquireIdentifier(BestillingRequestDTO request) {
@@ -269,19 +252,16 @@ public class PersonService {
                 .then();
     }
 
-    private Mono<DbPerson> getDbPerson(String ident, Boolean overwrite) {
+    private Mono<DbPerson> getDbPerson(String ident) {
 
-        return Mono.just(overwrite)
-                .flatMap(ow -> isTrue(ow) ?
-                        personRepository.deleteByIdent(ident) : Mono.empty())
-                .then(personRepository.findByIdent(ident)
-                        .switchIfEmpty(personRepository.save(DbPerson.builder()
+        return personRepository.findByIdent(ident)
+                .switchIfEmpty(personRepository.save(DbPerson.builder()
+                        .ident(ident)
+                        .person(PersonDTO.builder()
                                 .ident(ident)
-                                .person(PersonDTO.builder()
-                                        .ident(ident)
-                                        .build())
-                                .sistOppdatert(now())
-                                .build())));
+                                .build())
+                        .sistOppdatert(now())
+                        .build()));
     }
 
     @Transactional

@@ -20,12 +20,18 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
     @Modifying
     @Query("delete from DbRelasjon r " +
            "where r.person.id in (select p.id from DbPerson p where p.ident in (:identer))")
-    Mono<Void> deleteByPersonIdentIn(List<String> identer);
+    Mono<Void> deleteByPersonIdentIn(Collection<String> identer);
 
     @Modifying
     Flux<DbRelasjon> saveAll(Collection<DbRelasjon> relasjoner);
 
     Flux<DbRelasjon> findByPersonId(Long id);
+
+    @Query("""
+            select exists (select 1 from DbRelasjon r
+            where r.personId = :id or r.relatertPersonId = :id)
+    """)
+    Mono<Boolean> existsByPersonIdOrRelatertPersonId(Long id);
 
     @Query("""
             select r from DbRelasjon r
@@ -43,4 +49,7 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
             where r.personId = :personId or r.relatertPersonId = :personId
             """)
     Mono<Void> deleteByPersonIdOrRelatertPersonId(Long personId);
+
+    @Modifying
+    Mono<Void> deleteByPersonIdAndRelatertPersonIdAndRelasjonType(Long personId, Long relatertPersonId, RelasjonType relasjonType);
 }

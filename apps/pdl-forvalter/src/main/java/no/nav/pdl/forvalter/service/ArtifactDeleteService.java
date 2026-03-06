@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.DeleteRelasjonerUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
@@ -48,6 +48,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FALSK_IDENTIT
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -62,6 +63,8 @@ public class ArtifactDeleteService {
     private final PersonService personService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final HendelseIdService hendelseIdService;
+    private final DeleteRelasjonerService deleteRelasjonerService;
+    private final RelasjonRepository relasjonRepository;
 
     private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
 
@@ -262,69 +265,74 @@ public class ArtifactDeleteService {
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FORELDRE_BARN_RELASJON.getDescription(), id)
                                 .thenReturn(dbPerson))
-                .flatMap(dbPerson ->
+                .flatMapMany(dbPerson ->
                         Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                                 .filter(type -> id.equals(type.getId()) &&
                                                 isNotBlank(type.getRelatertPerson()))
-                                .flatMap(type -> getPerson(type.getRelatertPerson());
-
-                                    DeleteRelasjonerUtility.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_FORELDER);
-
-                                    deletePerson(slettePerson, type.isEksisterendePerson());
-                                });
-
-        dbPerson.getPerson().setForelderBarnRelasjon(dbPerson.getPerson().getForelderBarnRelasjon().stream()
-                .filter(type -> !id.equals(type.getId()))
-                .toList());
+                                .flatMap(type -> getPerson(type.getRelatertPerson())
+                                        .flatMap(slettePerson ->
+                                                deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_FORELDER)
+                                                        .thenReturn(slettePerson))
+                                        .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
+                                                .thenReturn(dbPerson))))
+                .doOnNext(dbPerson -> dbPerson.getPerson().setForelderBarnRelasjon(dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                        .filter(type -> !id.equals(type.getId()))
+                        .toList()))
+                .flatMap(personRepository::save)
+                .then();
     }
 
     public Mono<Void> deleteForeldreansvar(String ident, Integer id) {
 
-        var dbPerson = getPerson(ident);
-
-        checkExists(dbPerson.getPerson().getForeldreansvar(), id, PDL_FORELDREANSVAR.getDescription());
-        hendelseIdService.deletePdlHendelse(ident, PDL_FORELDREANSVAR.getDescription(), id);
-
-        dbPerson.getPerson().getForeldreansvar().stream()
-                .filter(type -> id.equals(type.getId()) &&
-                                (isNotBlank(type.getAnsvarlig()) || isNotBlank(type.getAnsvarssubjekt())))
-                .forEach(type -> {
-                    var slettePerson = getPerson(isNotBlank(type.getAnsvarlig()) ?
-                            type.getAnsvarlig() : type.getAnsvarssubjekt());
-
-                    DeleteRelasjonerUtility.deleteRelasjoner(dbPerson, slettePerson, FORELDREANSVAR_FORELDER);
-
-                    deletePerson(slettePerson, type.isEksisterendePerson());
-                });
-
-        dbPerson.getPerson().setForeldreansvar(dbPerson.getPerson().getForeldreansvar().stream()
-                .filter(type -> !id.equals(type.getId()))
-                .toList());
+        return getPerson(ident)
+                .doOnNext(dbPerson ->
+                        checkExists(dbPerson.getPerson().getForeldreansvar(), id, PDL_FORELDREANSVAR.getDescription()))
+                .flatMap(dbPerson ->
+                        hendelseIdService.deletePdlHendelse(ident, PDL_FORELDREANSVAR.getDescription(), id)
+                                .thenReturn(dbPerson))
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
+                        .filter(type -> id.equals(type.getId()) &&
+                                        (isNotBlank(type.getAnsvarlig()) || isNotBlank(type.getAnsvarssubjekt())))
+                        .flatMap(type -> getPerson(isNotBlank(type.getAnsvarlig()) ?
+                                type.getAnsvarlig() : type.getAnsvarssubjekt())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FORELDREANSVAR_FORELDER)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
+                                        .thenReturn(dbPerson))))
+                .doOnNext(dbPerson ->
+                        dbPerson.getPerson().setForeldreansvar(dbPerson.getPerson().getForeldreansvar().stream()
+                                .filter(type -> !id.equals(type.getId()))
+                                .toList()))
+                .flatMap(personRepository::save)
+                .then();
     }
 
     public Mono<Void> deleteKontaktinformasjonForDoedsbo(String ident, Integer id) {
 
-        var hovedPerson = getPerson(ident);
-
-        checkExists(hovedPerson.getPerson().getKontaktinformasjonForDoedsbo(), id, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription());
-        hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription(), id);
-
-        hovedPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                .filter(doedsbo -> id.equals(doedsbo.getId()) &&
-                                   nonNull(doedsbo.getPersonSomKontakt()) &&
-                                   isNotBlank(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer()))
-                .forEach(doedsbo -> {
-                    var slettePerson = getPerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer());
-
-                    DeleteRelasjonerUtility.deleteRelasjoner(hovedPerson, slettePerson, KONTAKT_FOR_DOEDSBO);
-
-                    deletePerson(slettePerson, doedsbo.getPersonSomKontakt().isEksisterendePerson());
-                });
-
-        hovedPerson.getPerson().setKontaktinformasjonForDoedsbo(
-                hovedPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                        .filter(type -> !id.equals(type.getId()))
-                        .toList());
+        return getPerson(ident)
+                .doOnNext(dbPerson ->
+                        checkExists(dbPerson.getPerson().getKontaktinformasjonForDoedsbo(), id, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription()))
+                .flatMap(dbPerson ->
+                        hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription(), id)
+                                .thenReturn(dbPerson))
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
+                        .filter(doedsbo -> id.equals(doedsbo.getId()) &&
+                                           nonNull(doedsbo.getPersonSomKontakt()) &&
+                                           isNotBlank(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer()))
+                        .flatMap(doedsbo -> getPerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, KONTAKT_FOR_DOEDSBO)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, doedsbo.getPersonSomKontakt().isEksisterendePerson())
+                                        .thenReturn(dbPerson))))
+                .doOnNext(dbPerson ->
+                        dbPerson.getPerson().setKontaktinformasjonForDoedsbo(
+                                dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                        .filter(type -> !id.equals(type.getId()))
+                                        .toList()))
+                .flatMap(personRepository::save)
+                .then();
     }
 
     public Mono<Void> deleteUtenlandskIdentifikasjonsnummer(String ident, Integer id) {
@@ -345,27 +353,28 @@ public class ArtifactDeleteService {
 
     public Mono<Void> deleteFalskIdentitet(String ident, Integer id) {
 
-        var person = getPerson(ident);
-
-        checkExists(person.getPerson().getFalskIdentitet(), id, PDL_FALSK_IDENTITET.getDescription());
-        hendelseIdService.deletePdlHendelse(ident, PDL_FALSK_IDENTITET.getDescription(), id);
-
-        person.getPerson().getFalskIdentitet().stream()
-                .filter(falskId -> id.equals(falskId.getId()) &&
-                                   isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()))
-                .forEach(falskId -> {
-                    var slettePerson = getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer());
-
-                    DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FALSK_IDENTITET);
-
-                    deletePerson(slettePerson, falskId.isEksisterendePerson());
-                });
-
-        person.getPerson().setFalskIdentitet(person.getPerson().getFalskIdentitet().stream()
-                .filter(type -> !id.equals(type.getId()))
-                .toList());
-
-        folkeregisterPersonstatusService.update(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(dbPerson ->
+                        checkExists(dbPerson.getPerson().getFalskIdentitet(), id, PDL_FALSK_IDENTITET.getDescription()))
+                .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_FALSK_IDENTITET.getDescription(), id)
+                        .thenReturn(dbPerson))
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getFalskIdentitet())
+                        .filter(falskId -> id.equals(falskId.getId()) &&
+                                           isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()))
+                        .flatMap(falskId -> getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FALSK_IDENTITET)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, falskId.isEksisterendePerson())
+                                        .thenReturn(dbPerson))))
+                .doOnNext(dbPerson ->
+                        dbPerson.getPerson().setFalskIdentitet(dbPerson.getPerson().getFalskIdentitet().stream()
+                                .filter(type -> !id.equals(type.getId()))
+                                .toList()))
+                .flatMap(dbPerson -> folkeregisterPersonstatusService.update(dbPerson.getPerson())
+                        .thenReturn(dbPerson))
+                .flatMap(personRepository::save)
+                .then();
     }
 
     public Mono<Void> deleteAdressebeskyttelse(String ident, Integer id) {
@@ -486,25 +495,25 @@ public class ArtifactDeleteService {
 
     public Mono<Void> deleteSivilstand(String ident, Integer id) {
 
-        var dbPerson = getPerson(ident);
-
-        checkExists(dbPerson.getPerson().getSivilstand(), id, PDL_SIVILSTAND.getDescription());
-        hendelseIdService.deletePdlHendelse(ident, PDL_SIVILSTAND.getDescription(), id);
-
-        dbPerson.getPerson().getSivilstand().stream()
-                .filter(type -> id.equals(type.getId()) &&
-                                isNotBlank(type.getRelatertVedSivilstand()))
-                .forEach(type -> {
-                    var slettePerson = getPerson(type.getRelatertVedSivilstand());
-
-                    DeleteRelasjonerUtility.deleteRelasjoner(dbPerson, slettePerson, EKTEFELLE_PARTNER);
-
-                    deletePerson(slettePerson, type.isEksisterendePerson());
-                });
-
-        dbPerson.getPerson().setSivilstand(dbPerson.getPerson().getSivilstand().stream()
-                .filter(type -> !id.equals(type.getId()))
-                .toList());
+        return getPerson(ident)
+                .doOnNext(dbPerson ->
+                        checkExists(dbPerson.getPerson().getSivilstand(), id, PDL_SIVILSTAND.getDescription()))
+                .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_SIVILSTAND.getDescription(), id)
+                        .thenReturn(dbPerson))
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getSivilstand())
+                        .filter(type -> id.equals(type.getId()) && isNotBlank(type.getRelatertVedSivilstand()))
+                        .flatMap(type -> getPerson(type.getRelatertVedSivilstand())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, EKTEFELLE_PARTNER)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
+                                        .thenReturn(dbPerson))))
+                .doOnNext(dbPerson ->
+                        dbPerson.getPerson().setSivilstand(dbPerson.getPerson().getSivilstand().stream()
+                                .filter(type -> !id.equals(type.getId()))
+                                .toList()))
+                .flatMap(personRepository::save)
+                .then();
     }
 
     public Mono<Void> deleteTelefonnummer(String ident, Integer id) {
@@ -525,24 +534,26 @@ public class ArtifactDeleteService {
 
     public Mono<Void> deleteVergemaal(String ident, Integer id) {
 
-        var hovedPerson = getPerson(ident);
-
-        checkExists(hovedPerson.getPerson().getVergemaal(), id, PDL_VERGEMAAL.getDescription());
-        hendelseIdService.deletePdlHendelse(ident, PDL_VERGEMAAL.getDescription(), id);
-
-        hovedPerson.getPerson().getVergemaal().stream()
-                .filter(type -> id.equals(type.getId()))
-                .forEach(vergemaal -> {
-                    var slettePerson = getPerson(vergemaal.getVergeIdent());
-
-                    DeleteRelasjonerUtility.deleteRelasjoner(hovedPerson, slettePerson, RelasjonType.VERGE_MOTTAKER);
-
-                    deletePerson(slettePerson, vergemaal.isEksisterendePerson());
-                });
-
-        hovedPerson.getPerson().setVergemaal(hovedPerson.getPerson().getVergemaal().stream()
-                .filter(type -> !id.equals(type.getId()))
-                .toList());
+        return getPerson(ident)
+                .doOnNext(dbPerson ->
+                        checkExists(dbPerson.getPerson().getVergemaal(), id, PDL_VERGEMAAL.getDescription()))
+                .flatMap(dbPerson ->
+                        hendelseIdService.deletePdlHendelse(ident, PDL_VERGEMAAL.getDescription(), id)
+                                .thenReturn(dbPerson))
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getVergemaal())
+                        .filter(type -> id.equals(type.getId()) &&
+                                        isNotBlank(type.getVergeIdent()))
+                        .flatMap(type -> getPerson(type.getVergeIdent())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, RelasjonType.VERGE_MOTTAKER)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
+                                        .thenReturn(dbPerson))))
+                .doOnNext(dbPerson -> dbPerson.getPerson().setVergemaal(dbPerson.getPerson().getVergemaal().stream()
+                        .filter(type -> !id.equals(type.getId()))
+                        .toList()))
+                .flatMap(personRepository::save)
+                .then();
     }
 
     public Mono<Void> deleteDoedfoedtBarn(String ident, Integer id) {
@@ -567,12 +578,14 @@ public class ArtifactDeleteService {
                 .switchIfEmpty(Mono.error(new NotFoundException(format(IDENT_NOT_FOUND, ident))));
     }
 
-    private Mono<Void> deletePerson(DbPerson person, boolean isEksisterendePerson) {
+    private Mono<Void> deletePerson(DbPerson person, boolean isStandalonePerson) {
 
-        if (person.getRelasjoner().isEmpty() && !isEksisterendePerson) {
-
-            return personService.deletePerson(person.getIdent());
-        }
-        return Mono.empty();
+        return relasjonRepository.existsByPersonIdOrRelatertPersonId(person.getId())
+                .flatMap(exists -> {
+                    if (isFalse(exists) && !isStandalonePerson) {
+                        return personService.deletePerson(person.getIdent());
+                    }
+                    return Mono.empty();
+                });
     }
 }
