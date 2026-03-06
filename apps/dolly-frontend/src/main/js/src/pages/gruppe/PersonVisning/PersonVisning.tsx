@@ -490,7 +490,7 @@ export default (props: PersonVisningProps) => {
 					id: fullmakt.motpartsPersonident,
 				})
 			})
-		data.pdl.hentPerson?.kontaktinformasjonForDoedsbo
+		data.pdl?.hentPerson?.kontaktinformasjonForDoedsbo
 			?.filter((kontaktinfo: any) => kontaktinfo?.personSomKontakt?.identifikasjonsnummer)
 			?.forEach((kontaktinfo: any) => {
 				relatertePersoner.push({

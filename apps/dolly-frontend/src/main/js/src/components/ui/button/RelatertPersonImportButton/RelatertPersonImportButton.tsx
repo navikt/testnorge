@@ -24,7 +24,7 @@ type IdentFormProps = {
 	relatertPersonIdenter: Array<RelatertPersonProps>
 	gruppeIdenter: string[]
 	closeModal: () => void
-	handleImport: (identer: string[]) => void
+	handleImport: (identer: string[]) => Promise<void>
 }
 
 type Props = {
@@ -70,8 +70,8 @@ const IdentForm = ({
 			<ModalActionKnapper
 				submitknapp="Importer"
 				onSubmit={() => {
-					closeModal()
 					handleImport(formMethods.getValues()?.identer)
+					closeModal()
 				}}
 				onAvbryt={closeModal}
 				center
@@ -88,10 +88,10 @@ export const RelatertPersonImportButton = ({
 }: Props) => {
 	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [feilmelding, setFeilmelding] = useState(null)
+	const [feilmelding, setFeilmelding] = useState<string | null>(null)
 	const [fullfoert, setFullfoert] = useState(false)
 	const mutate = useMatchMutate()
-	const formMethods = useForm({ mode: 'onBlur', defaultValues: { identer: [] } })
+	const formMethods = useForm({ mode: 'onBlur', defaultValues: { identer: [] as string[] } })
 
 	if (!relatertPersonIdenter) {
 		return null
@@ -105,22 +105,26 @@ export const RelatertPersonImportButton = ({
 	const handleImport = async (identer = null as unknown as string[]) => {
 		setLoading(true)
 		setFeilmelding(null)
-
-		await Promise.allSettled(
-			identer.map((ident) => {
-				DollyApi.importerRelatertPerson(gruppeId, ident, master)
-					.then((_response) => {
-						setLoading(false)
-						setFullfoert(true)
-						mutate(REGEX_BACKEND_GRUPPER)
-					})
-					.catch((_error) => {
-						setFeilmelding('Noe gikk galt')
-						setFullfoert(false)
-						setLoading(false)
-					})
-			}),
+		const results = await Promise.allSettled(
+			identer.map(
+				(ident) => DollyApi.importerRelatertPerson(gruppeId, ident, master), // return the promise
+			),
 		)
+		const hasFailure = results.some((r) => r.status === 'rejected')
+		if (hasFailure) {
+			setFeilmelding('Noe gikk galt')
+			setFullfoert(false)
+		} else {
+			setFullfoert(true)
+			mutate(REGEX_BACKEND_GRUPPER)
+		}
+		setLoading(false)
+	}
+
+	const handleCloseModal = () => {
+		closeModal()
+		setFeilmelding(null)
+		formMethods.reset()
 	}
 
 	if (loading) {
@@ -155,7 +159,7 @@ export const RelatertPersonImportButton = ({
 						{feilmelding}
 					</div>
 				)}
-				<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+				<DollyModal isOpen={modalIsOpen} closeModal={handleCloseModal} width="40%" overflow="auto">
 					<div className="modal">
 						{relatertPersonIdenter.length > 1 ? (
 							<>
@@ -163,7 +167,7 @@ export const RelatertPersonImportButton = ({
 								<IdentForm
 									formMethods={formMethods}
 									gruppeIdenter={gruppeIdenter}
-									closeModal={closeModal}
+									closeModal={handleCloseModal}
 									relatertPersonIdenter={relatertPersonIdenter}
 									handleImport={handleImport}
 								/>
@@ -179,10 +183,10 @@ export const RelatertPersonImportButton = ({
 								<ModalActionKnapper
 									submitknapp="Ja"
 									onSubmit={() => {
-										closeModal()
 										handleImport([relatertPersonIdenter[0]?.id])
+										handleCloseModal()
 									}}
-									onAvbryt={closeModal}
+									onAvbryt={handleCloseModal}
 									center
 								/>
 							</>
