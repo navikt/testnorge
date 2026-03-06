@@ -11,6 +11,7 @@ import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
+import no.nav.dolly.service.BestillingEventPublisher;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class OrganisasjonClient {
     private final OrganisasjonProgressService organisasjonProgressService;
     private final OrganisasjonBestillingProgressRepository organisasjonBestillingProgressRepository;
     private final OrganisasjonBestillingService organisasjonBestillingService;
+    private final BestillingEventPublisher bestillingEventPublisher;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
 
@@ -61,6 +63,7 @@ public class OrganisasjonClient {
                                                     .collect(Collectors.joining(",")));
 
                                     return organisasjonBestillingProgressRepository.save(organisasjonBestillingProgress)
+                                            .doOnNext(saved -> bestillingEventPublisher.publishOrg(bestilling.getId()))
                                             .thenReturn(orgnummer);
                                 }))
                         .collectList()
@@ -82,6 +85,7 @@ public class OrganisasjonClient {
                         .organisasjonsnummer(request.getOrgnumre().iterator().next())
                         .organisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")))
                         .build())
+                .doOnNext(saved -> bestillingEventPublisher.publishOrg(bestilling.getId()))
                 .then(deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer));
     }
 
@@ -131,6 +135,7 @@ public class OrganisasjonClient {
 
                                             return organisasjonBestillingProgressRepository.save(organisasjonBestillingProgress);
                                         })
+                                        .doOnNext(saved -> bestillingEventPublisher.publishOrg(bestilling.getId()))
                                         .collectList())))
                 .flatMap(Flux::fromIterable)
                 .collectList()
