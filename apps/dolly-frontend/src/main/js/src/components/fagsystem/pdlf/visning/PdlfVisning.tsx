@@ -86,7 +86,7 @@ export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => 
 			<div>
 				<Persondetaljer
 					data={data?.person}
-					tmpPersoner={{ pdlforvalter: tmpPdlforvalter }}
+					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					tpsMessaging={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}
