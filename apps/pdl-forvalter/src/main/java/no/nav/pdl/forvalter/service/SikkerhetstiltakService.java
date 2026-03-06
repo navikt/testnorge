@@ -6,10 +6,11 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -31,25 +32,24 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
     private static final String VALIDATION_PERSONIDENT_ERROR = "Sikkerhetstiltak: NAV personident må angis";
     private static final String VALIDATION_ENHET_ERROR = "Sikkerhetstiltak: Enhet må angis";
 
-    public List<SikkerhetstiltakDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getSikkerhetstiltak()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                type.setKilde(getKilde(type));
-                type.setMaster(Master.PDL);
-            }
-        }
-
-        person.setSikkerhetstiltak(new ArrayList<>(person.getSikkerhetstiltak()));
-        person.getSikkerhetstiltak().sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
-        renumberId(person.getSikkerhetstiltak());
-
-        return person.getSikkerhetstiltak();
+        return Flux.fromIterable(person.getSikkerhetstiltak())
+                .filter(type -> isTrue(type.getIsNew()))
+                .doOnNext(type -> {
+                     type.setKilde(getKilde(type));
+                     type.setMaster(Master.PDL);
+                })
+                .collectList()
+                .doOnNext(sikkerhetstiltak -> {
+                    sikkerhetstiltak.sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
+                    person.setSikkerhetstiltak(new ArrayList<>(sikkerhetstiltak));
+                    renumberId(person.getSikkerhetstiltak());
+                })
+                .then();
     }
 
-    public void validate(SikkerhetstiltakDTO sikkerhetstiltak) {
+    public Mono<Void> validate(SikkerhetstiltakDTO sikkerhetstiltak) {
 
         if (isNull(sikkerhetstiltak.getTiltakstype())) {
             throw new InvalidRequestException(VALIDATION_TILTAKSTYPE_ERROR);
@@ -82,5 +82,6 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
         if (nonNull(sikkerhetstiltak.getKontaktperson()) && isBlank(sikkerhetstiltak.getKontaktperson().getEnhet())) {
             throw new InvalidRequestException(VALIDATION_ENHET_ERROR);
         }
+        return Mono.empty();
     }
 }

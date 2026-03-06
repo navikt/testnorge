@@ -8,6 +8,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,7 +42,7 @@ public class MergeService {
         }
     }
 
-    public PersonDTO merge(PersonDTO request, PersonDTO dbPerson) {
+    public Mono<PersonDTO> merge(PersonDTO request, PersonDTO dbPerson) {
 
         if (!request.getTelefonnummer().isEmpty()) {
             dbPerson.setTelefonnummer(null);
@@ -64,7 +65,7 @@ public class MergeService {
             }
         });
 
-        return dbPerson;
+        return Mono.just(dbPerson);
     }
 
     private void mergeElements(java.lang.reflect.Field field, List<DbVersjonDTO> infoElementDbPerson, AtomicInteger dbId, DbVersjonDTO requestElement) {

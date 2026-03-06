@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.utils;
 
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
+import no.nav.pdl.forvalter.service.DeleteRelasjonerService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
@@ -20,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 @ExtendWith(MockitoExtension.class)
-class DeleteRelasjonerUtilityTest {
+class DeleteRelasjonerServiceTest {
 
     private static final String IDENT_MOR = "11111111111";
     private static final String IDENT_FAR = "22222222222";
@@ -73,7 +74,7 @@ class DeleteRelasjonerUtilityTest {
     @Test
     void slettefamilieRelasjonMorBarn() {
 
-        DeleteRelasjonerUtility.deleteRelasjoner(mor, barn, RelasjonType.FAMILIERELASJON_BARN);
+        DeleteRelasjonerService.deleteRelasjoner(mor, barn, RelasjonType.FAMILIERELASJON_BARN);
 
         assertThat(mor.getRelasjoner(), hasSize(0));
         assertThat(mor.getPerson().getForelderBarnRelasjon(), hasSize(0));
@@ -88,7 +89,7 @@ class DeleteRelasjonerUtilityTest {
     @Test
     void sletteforeldreansvarFarBarn() {
 
-        DeleteRelasjonerUtility.deleteRelasjoner(far, barn, RelasjonType.FORELDREANSVAR_BARN);
+        DeleteRelasjonerService.deleteRelasjoner(far, barn, RelasjonType.FORELDREANSVAR_BARN);
 
         assertThat(mor.getRelasjoner(), hasSize(1));
         assertThat(mor.getPerson().getForelderBarnRelasjon(), hasSize(1));

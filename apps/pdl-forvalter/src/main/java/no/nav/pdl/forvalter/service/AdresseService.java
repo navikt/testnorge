@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public abstract class AdresseService<T extends AdresseDTO, R> implements BiValidation<T, R> {
 
     public static final String VALIDATION_BRUKSENHET_ERROR = "Bruksenhetsnummer identifiserer en boligenhet innenfor et " +
-            "bygg eller en bygningsdel. Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre";
+                                                             "bygg eller en bygningsdel. Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre";
     public static final String VALIDATION_POSTBOKS_ERROR = "Alfanumerisk identifikator av postboks. Kan ikke være tom";
     public static final String VALIDATION_POSTNUMMER_ERROR = "Postnummer består av fire sifre";
     protected static final String VALIDATION_ADRESSE_OVELAP_ERROR = "Adresse: Overlappende adressedatoer er ikke lov";
@@ -39,14 +40,12 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     private String buildNavn(AdresseDTO.CoNavnDTO coNavn) {
 
-        return new StringBuilder()
-                .append("c/o ")
-                .append(coNavn.getFornavn())
-                .append(' ')
-                .append(isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() : "")
-                .append(isNotBlank(coNavn.getMellomnavn()) ? ' ' : "")
-                .append(coNavn.getEtternavn())
-                .toString();
+        return "c/o " +
+               coNavn.getFornavn() +
+               ' ' +
+               (isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() : "") +
+               (isNotBlank(coNavn.getMellomnavn()) ? ' ' : "") +
+               coNavn.getEtternavn();
     }
 
     private static String blankCheck(String value, String defaultValue) {
@@ -102,37 +101,41 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
     }
 
-    protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
+    protected Mono<Void> validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
 
-        if ((isNotBlank(navn.getFornavn()) ||
-                isNotBlank(navn.getMellomnavn()) ||
-                isNotBlank(navn.getEtternavn())) &&
-                isFalse(genererNavnServiceConsumer.verifyNavn(NavnDTO.builder()
-                        .adjektiv(navn.getFornavn())
-                        .adverb(navn.getMellomnavn())
-                        .substantiv(navn.getEtternavn())
-                        .build()))) {
-            throw new InvalidRequestException(NAVN_INVALID_ERROR);
+        if (isNotBlank(navn.getFornavn()) ||
+            isNotBlank(navn.getMellomnavn()) ||
+            isNotBlank(navn.getEtternavn())) {
+            return genererNavnServiceConsumer.verifyNavn(NavnDTO.builder()
+                            .adjektiv(navn.getFornavn())
+                            .adverb(navn.getMellomnavn())
+                            .substantiv(navn.getEtternavn())
+                            .build())
+                    .flatMap(isValid -> isFalse(isValid) ?
+                            Mono.error(new InvalidRequestException(NAVN_INVALID_ERROR)) :
+                            Mono.empty());
         }
+        return Mono.empty();
     }
 
-    protected String genererCoNavn(AdresseDTO.CoNavnDTO coNavn) {
+    protected Mono<String> genererCoNavn(AdresseDTO.CoNavnDTO coNavn) {
 
         if (nonNull(coNavn)) {
             if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
-                    (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
+                (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
 
-                var nyttNavn = genererNavnServiceConsumer.getNavn(1);
-                if (nyttNavn.isPresent()) {
-                    coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.get().getAdjektiv()));
-                    coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.get().getSubstantiv()));
-                    coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
-                            isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
-                }
+                return genererNavnServiceConsumer.getNavn(1)
+                        .doOnNext(nyttNavn -> {
+                            coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.getAdjektiv()));
+                            coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.getSubstantiv()));
+                            coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
+                                    isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.getAdverb() : null));
+                        })
+                        .map(nyttNavn -> buildNavn(coNavn));
             }
-            return buildNavn(coNavn);
+            return Mono.just(buildNavn(coNavn));
         }
-        return null;
+        return Mono.empty();
     }
 
     protected void oppdaterAdressedatoer(List<? extends AdresseDTO> adresser, PersonDTO person) {

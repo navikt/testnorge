@@ -9,10 +9,12 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -32,72 +34,87 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
     private final KodeverkConsumer kodeverkConsumer;
     private final BostedAdresseService bostedAdresseService;
 
-    public List<InnflyttingDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getInnflytting()) {
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person);
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-        return person.getInnflytting();
+        return Flux.fromIterable(person.getInnflytting())
+                    .filter(type -> isTrue(type.getIsNew()))
+                    .flatMap(type -> handle(type, person))
+                    .doOnNext(type -> {
+                        type.setKilde(getKilde(type));
+                        type.setMaster(getMaster(type, person));
+                    })
+                    .collectList()
+                    .then();
     }
 
     @Override
-    public void validate(InnflyttingDTO innflytting) {
+    public Mono<Void> validate(InnflyttingDTO innflytting) {
 
         if (isNotBlank(innflytting.getFraflyttingsland()) && !hasLandkode(innflytting.getFraflyttingsland())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
+        return Mono.empty();
     }
 
-    protected void handle(InnflyttingDTO innflytting, PersonDTO person) {
+    protected Mono<InnflyttingDTO> handle(InnflyttingDTO innflytting, PersonDTO person) {
 
-        if (isBlank(innflytting.getFraflyttingsland())) {
-            innflytting.setFraflyttingsland(kodeverkConsumer.getTilfeldigLand());
-        }
+        return getInnflyttingDTO(innflytting, person)
+                .doOnNext(innflytting1 -> {
 
-        if (isNull(innflytting.getInnflyttingsdato())) {
-            innflytting.setInnflyttingsdato(LocalDateTime.now());
-        }
+                    if (person.getFolkeregisterPersonstatus().stream()
+                            .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getStatus()) ||
+                                                                 BOSATT == folkeregisterPersonstatus.getStatus())
+                            .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getGyldigFraOgMed()) ||
+                                                                 folkeregisterPersonstatus.getGyldigFraOgMed().equals(innflytting1.getInnflyttingsdato()))
+                            .findFirst()
+                            .isEmpty()) {
 
-        if (person.getBostedsadresse().stream()
-                .filter(BostedadresseDTO::isAdresseNorge)
-                .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
-                        adresse.getGyldigTilOgMed().isAfter(innflytting.getInnflyttingsdato()))
-                .findFirst()
-                .isEmpty()) {
+                        person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
+                                .isNew(true)
+                                .id(person.getFolkeregisterPersonstatus().stream()
+                                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
+                                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
+                                            .getId() + 1)
+                                .build());
+                    }
+                });
+    }
 
-            person.getBostedsadresse().addFirst(BostedadresseDTO.builder()
-                    .vegadresse(new VegadresseDTO())
-                    .gyldigFraOgMed(innflytting.getInnflyttingsdato())
-                    .isNew(true)
-                    .id(person.getBostedsadresse().stream()
-                            .max(Comparator.comparing(BostedadresseDTO::getId))
-                            .orElse(BostedadresseDTO.builder().id(0).build())
-                            .getId() + 1)
-                    .build()
-            );
-            bostedAdresseService.convert(person, false);
-        }
+    private Mono<InnflyttingDTO> getInnflyttingDTO(InnflyttingDTO innflytting, PersonDTO person) {
 
-        if (person.getFolkeregisterPersonstatus().stream()
-                .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getStatus()) ||
-                        BOSATT == folkeregisterPersonstatus.getStatus())
-                .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getGyldigFraOgMed()) ||
-                        folkeregisterPersonstatus.getGyldigFraOgMed().equals(innflytting.getInnflyttingsdato()))
-                .findFirst()
-                .isEmpty()) {
+        return Mono.just(innflytting)
+                .flatMap(innflytting1 ->
+                        isBlank(innflytting1.getFraflyttingsland()) ?
+                                kodeverkConsumer.getTilfeldigLand()
+                                        .doOnNext(innflytting1::setFraflyttingsland)
+                                        .thenReturn(innflytting1) : Mono.just(innflytting1))
+                .flatMap(innflytting2 -> {
 
-            person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
-                    .isNew(true)
-                    .id(person.getFolkeregisterPersonstatus().stream()
-                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
-                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
-                            .getId() + 1)
-                    .build());
-        }
+                    if (isNull(innflytting2.getInnflyttingsdato())) {
+                        innflytting2.setInnflyttingsdato(LocalDateTime.now());
+                    }
+
+                    if (person.getBostedsadresse().stream()
+                            .filter(BostedadresseDTO::isAdresseNorge)
+                            .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
+                                               adresse.getGyldigTilOgMed().isAfter(innflytting2.getInnflyttingsdato()))
+                            .findFirst()
+                            .isEmpty()) {
+
+                        person.getBostedsadresse().addFirst(BostedadresseDTO.builder()
+                                .vegadresse(new VegadresseDTO())
+                                .gyldigFraOgMed(innflytting2.getInnflyttingsdato())
+                                .isNew(true)
+                                .id(person.getBostedsadresse().stream()
+                                            .max(Comparator.comparing(BostedadresseDTO::getId))
+                                            .orElse(BostedadresseDTO.builder().id(0).build())
+                                            .getId() + 1)
+                                .build()
+                        );
+                        return bostedAdresseService.convert(person, false)
+                                .thenReturn(innflytting2);
+                    }
+                    return Mono.just(innflytting);
+                });
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
@@ -19,6 +20,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -32,6 +35,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static org.apache.commons.lang3.BooleanUtils.TRUE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
@@ -40,114 +44,125 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
 
     private static final String VALIDATION_TO_FORELDRE_ERROR = "DeltBosted: må ha to foreldre for å kunne opprette delt bosted";
     private static final String VALIDATION_ADRESSER_ERROR = "DeltBosted: Foreldre må ha ulike adresser, evt angis kun én adressetype: vegadresse, " +
-            "matrikkeladresse, ukjentbosted for oppretting.";
+                                                            "matrikkeladresse, ukjentbosted for oppretting.";
 
     private final PersonRepository personRepository;
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
 
-    public List<DeltBostedDTO> convert(PersonDTO person) {
+    public Mono<Void> convert(PersonDTO person) {
 
-        for (var type : person.getDeltBosted()) {
+        return Flux.fromIterable(person.getDeltBosted())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, person).thenReturn(type))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(deltBosted -> {
 
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person);
-
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-
-        if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
-            person.setDeltBosted(null);
-        }
-        return person.getDeltBosted();
+                    if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
+                        person.setDeltBosted(null);
+                    }
+                })
+                .then();
     }
 
-    public void handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
+    public Mono<Void> handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
 
         if (isNull(deltBosted.getStartdatoForKontrakt())) {
             deltBosted.setStartdatoForKontrakt(LocalDateTime.now());
         }
 
-        if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(hovedperson))) {
+        return Mono.just(TRUE)
+                .flatMap(type -> {
+                    if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(hovedperson))) {
 
-            // DeltBosted for forelder, settes på barnet
-            var foreldre = getForeldre(hovedperson);
+                        // DeltBosted for forelder, settes på barnet
+                        return getForeldre(hovedperson)
+                                .flatMap(forelder -> {
 
-            if (deltBosted.countAdresser() > 0) {
-                prepAdresser(deltBosted);
-            } else {
-                foreldre.stream()
-                        .map(PersonDTO::getBostedsadresse)
-                        .map(adresser -> !adresser.isEmpty() ? adresser.getFirst() : null)
-                        .filter(Objects::nonNull)
-                        .forEach(boadresse -> {
-                            if (!hovedperson.getBostedsadresse().isEmpty() &&
-                                    !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse)) {
+                                    if (deltBosted.countAdresser() > 0) {
+                                        return prepAdresser(deltBosted)
+                                                .thenReturn(forelder);
+                                    } else {
+                                        if (!forelder.getIdent().equals(hovedperson.getIdent())) {
+                                            return Flux.fromIterable(forelder.getBostedsadresse())
+                                                    .filter(boadresse -> !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse))
+                                                    .doOnNext(boadresse -> setAdresse(deltBosted, boadresse))
+                                                    .then().thenReturn(forelder);
+                                        }
+                                        return Mono.just(forelder);
+                                    }
+                                })
+                                .collectList()
+                                .flatMap(foreldre -> Flux.fromIterable(foreldre)
+                                        .map(PersonDTO::getForelderBarnRelasjon)
+                                        .flatMap(Flux::fromIterable)
+                                        .filter(ForelderBarnRelasjonDTO::isForeldre)
+                                        .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
+                                        .collect(Collectors.toSet())
+                                        .flatMapMany(barna ->
+                                                personRepository.findByIdentIn(barna, Pageable.unpaged())
+                                                        .map(DbPerson::getPerson)
+                                                        .filter(person -> person.getForelderBarnRelasjon().stream()
+                                                                .anyMatch(forelder ->
+                                                                        forelder.getIdentForRelasjon().equals(foreldre.getFirst().getIdent()) ||
+                                                                        forelder.getIdentForRelasjon().equals(foreldre.get(1).getIdent())))
+                                                        .doOnNext(person -> {
+                                                            deltBosted.setId(person.getDeltBosted().size() + 1);
+                                                            person.getDeltBosted()
+                                                                    .addFirst(mapperFacade.map(deltBosted, DeltBostedDTO.class));
+                                                        })
+                                        )
+                                        .collectList()
+                                        .then()
+                                );
 
-                                setAdresse(deltBosted, boadresse);
-                            }
-                        });
-            }
+                    } else {
+                        // DeltBosted for barn, settes på barnet
+                        return Mono.just(TRUE)
+                                .flatMap(type1 -> {
 
-            var barna = foreldre.stream()
-                    .map(PersonDTO::getForelderBarnRelasjon)
-                    .flatMap(Collection::stream)
-                    .filter(ForelderBarnRelasjonDTO::isForeldre)
-                    .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
-                    .collect(Collectors.toSet());
+                                    if (deltBosted.countAdresser() > 0) {
+                                        return prepAdresser(deltBosted)
+                                                .then();
 
-           personRepository.findByIdentIn(barna, Pageable.unpaged()).stream()
-                   .map(DbPerson::getPerson)
-                   .filter(person -> person.getForelderBarnRelasjon().stream()
-                           .anyMatch(forelder ->
-                                   forelder.getIdentForRelasjon().equals(foreldre.getFirst().getIdent()) ||
-                                   forelder.getIdentForRelasjon().equals(foreldre.get(1).getIdent())))
-                   .forEach(person -> {
-                       deltBosted.setId(person.getDeltBosted().size() + 1);
-                       person.getDeltBosted()
-                           .addFirst(mapperFacade.map(deltBosted, DeltBostedDTO.class));
-                   });
+                                    } else {
+                                        return personRepository.findByIdentIn(hovedperson.getForelderBarnRelasjon().stream()
+                                                        .filter(ForelderBarnRelasjonDTO::isBarn)
+                                                        .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
+                                                        .toList(), Pageable.unpaged())
+                                                .map(DbPerson::getPerson)
+                                                .map(PersonDTO::getBostedsadresse)
+                                                .flatMap(Flux::fromIterable)
+                                                .collectList()
+                                                .flatMapMany(Flux::fromIterable)
+                                                .doOnNext(boadresse -> {
+                                                    if (!hovedperson.getBostedsadresse().isEmpty() &&
+                                                        !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse)) {
 
-        } else {
-            // DeltBosted for barn, settes på barnet
-            if (deltBosted.countAdresser() > 0) {
-                prepAdresser(deltBosted);
-
-            } else {
-                var boadresser = personRepository.findByIdentIn(hovedperson.getForelderBarnRelasjon().stream()
-                                .filter(ForelderBarnRelasjonDTO::isBarn)
-                                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
-                                .toList(), Pageable.unpaged()).stream()
-                        .map(DbPerson::getPerson)
-                        .map(PersonDTO::getBostedsadresse)
-                        .map(adresser -> !adresser.isEmpty() ? adresser.getFirst() : null)
-                        .filter(Objects::nonNull)
-                        .toList();
-
-                boadresser.forEach(boadresse -> {
-                    if (!hovedperson.getBostedsadresse().isEmpty() &&
-                            !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse)) {
-
-                        setAdresse(deltBosted, boadresse);
+                                                        setAdresse(deltBosted, boadresse);
+                                                    }
+                                                })
+                                                .collectList()
+                                                .then();
+                                    }
+                                });
                     }
                 });
-            }
-        }
     }
 
-    private List<PersonDTO> getForeldre(PersonDTO person) {
+    private Flux<PersonDTO> getForeldre(PersonDTO person) {
 
-            return personRepository.findByIdentIn(
-                    Stream.of(Stream.of(person.getIdent()), person.getSivilstand().stream()
-                            .filter(SivilstandDTO::isGiftOrSamboer)
-                            .map(SivilstandDTO::getRelatertVedSivilstand))
-                    .flatMap(Function.identity())
-                    .toList(), Pageable.unpaged()).stream()
-                    .map(DbPerson::getPerson)
-                    .toList();
+        return personRepository.findByIdentIn(
+                        Stream.of(Stream.of(person.getIdent()), person.getSivilstand().stream()
+                                        .filter(SivilstandDTO::isGiftOrSamboer)
+                                        .map(SivilstandDTO::getRelatertVedSivilstand))
+                                .flatMap(Function.identity())
+                                .toList(), Pageable.unpaged())
+                .map(DbPerson::getPerson);
     }
 
     private void setAdresse(DeltBostedDTO deltBosted, BostedadresseDTO boadresse) {
@@ -170,87 +185,96 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     private static boolean isEqualAdresse(BostedadresseDTO adresse1, BostedadresseDTO adresse2) {
 
         return nonNull(adresse1.getVegadresse()) && adresse1.getVegadresse().equals(adresse2.getVegadresse()) ||
-                nonNull(adresse1.getMatrikkeladresse()) && adresse1.getMatrikkeladresse().equals(adresse2.getMatrikkeladresse()) ||
-                nonNull(adresse1.getUtenlandskAdresse()) && adresse1.getUtenlandskAdresse().equals(adresse2.getUtenlandskAdresse()) ||
-                nonNull(adresse1.getUkjentBosted()) && adresse1.getUkjentBosted().equals(adresse2.getUkjentBosted());
+               nonNull(adresse1.getMatrikkeladresse()) && adresse1.getMatrikkeladresse().equals(adresse2.getMatrikkeladresse()) ||
+               nonNull(adresse1.getUtenlandskAdresse()) && adresse1.getUtenlandskAdresse().equals(adresse2.getUtenlandskAdresse()) ||
+               nonNull(adresse1.getUkjentBosted()) && adresse1.getUkjentBosted().equals(adresse2.getUkjentBosted());
     }
 
-    public void handle(DeltBostedDTO deltBostedBestilling, PersonDTO hovedperson, String barnIdent) {
+    public Mono<Void> handle(DeltBostedDTO deltBostedBestilling, PersonDTO hovedperson, String barnIdent) {
 
         var deltBosted = mapperFacade.map(deltBostedBestilling, DeltBostedDTO.class);
 
-        prepAdresser(deltBosted);
+        return prepAdresser(deltBosted).thenReturn(deltBosted)
+                .flatMap(type -> {
 
-        if (deltBosted.countAdresser() == 0 &&
-                hovedperson.getSivilstand().stream().anyMatch(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())) {
+                    if (deltBosted.countAdresser() == 0 &&
+                        hovedperson.getSivilstand().stream()
+                                .anyMatch(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())) {
 
-            var sivilstandGift = hovedperson.getSivilstand().stream()
-                    .filter(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())
-                    .findFirst();
+                        val sivilstandGift = hovedperson.getSivilstand().stream()
+                                .filter(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())
+                                .findFirst();
 
-            if (sivilstandGift.isPresent()) {
-                var partner = personRepository.findByIdent(
-                        sivilstandGift.get().getRelatertVedSivilstand());
+                        if (sivilstandGift.isPresent()) {
+                            return personRepository.findByIdent(
+                                            sivilstandGift.get().getRelatertVedSivilstand())
+                                    .doOnNext(partner -> {
 
-                if (partner.isPresent()) {
-                    var partneradresse = partner.get().getPerson()
-                            .getBostedsadresse().stream().findFirst();
+                                        val partneradresse = partner.getPerson()
+                                                .getBostedsadresse().stream().findFirst();
 
-                    var hovedpersonadresse = hovedperson.getBostedsadresse().stream().findFirst();
+                                        val hovedpersonadresse = hovedperson.getBostedsadresse().stream().findFirst();
 
-                    if (partneradresse.isPresent() && hovedpersonadresse.isPresent() &&
-                            !isEqualAdresse(partneradresse.get(), hovedpersonadresse.get())) {
+                                        if (partneradresse.isPresent() && hovedpersonadresse.isPresent() &&
+                                            !isEqualAdresse(partneradresse.get(), hovedpersonadresse.get())) {
 
-                        deltBosted.setVegadresse(partneradresse.get().getVegadresse());
-                        deltBosted.setMatrikkeladresse(partneradresse.get().getMatrikkeladresse());
-                        deltBosted.setUkjentBosted(nonNull(partneradresse.get().getUkjentBosted()) ?
-                                mapperFacade.map(partneradresse.get().getUkjentBosted(), UkjentBostedDTO.class) : null);
-                    }
-                }
-            }
-        }
-
-        if (deltBosted.countAdresser() > 0) {
-            personRepository.findByIdent(barnIdent)
-                    .ifPresent(dbPerson -> {
-                        if (isNull(deltBosted.getStartdatoForKontrakt())) {
-                            deltBosted.setStartdatoForKontrakt(
-                                    FoedselsdatoUtility.getFoedselsdato(dbPerson.getPerson()));
+                                            deltBosted.setVegadresse(partneradresse.get().getVegadresse());
+                                            deltBosted.setMatrikkeladresse(partneradresse.get().getMatrikkeladresse());
+                                            deltBosted.setUkjentBosted(nonNull(partneradresse.get().getUkjentBosted()) ?
+                                                    mapperFacade.map(partneradresse.get().getUkjentBosted(), UkjentBostedDTO.class) : null);
+                                        }
+                                    })
+                                    .then();
                         }
-                        setDeltBosted(dbPerson.getPerson(), deltBosted);
-                    });
-        }
+                    }
+                    return Mono.empty();
+                })
+                .thenReturn(deltBosted)
+                .flatMap(type -> {
+                    if (deltBosted.countAdresser() > 0) {
+                        return personRepository.findByIdent(barnIdent)
+                                .doOnNext(dbPerson -> {
+                                    if (isNull(deltBosted.getStartdatoForKontrakt())) {
+                                        deltBosted.setStartdatoForKontrakt(
+                                                FoedselsdatoUtility.getFoedselsdato(dbPerson.getPerson()));
+                                    }
+                                    setDeltBosted(dbPerson.getPerson(), deltBosted);
+                                })
+                                .then();
+                    }
+                    return Mono.empty();
+                });
     }
 
-    public void update(DeltBostedDTO deltBosted) {
-
-        prepAdresser(deltBosted);
-    }
-
-    private void prepAdresser(DeltBostedDTO deltBosted) {
+    public Mono<Void> prepAdresser(DeltBostedDTO deltBosted) {
 
         if (nonNull(deltBosted.getVegadresse())) {
 
-            var vegadresse =
-                    adresseServiceConsumer.getVegadresse(deltBosted.getVegadresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen());
-            deltBosted.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
-            mapperFacade.map(vegadresse, deltBosted.getVegadresse());
+            return adresseServiceConsumer.getVegadresse(deltBosted.getVegadresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen())
+                    .doOnNext(vegadresse -> {
+                        deltBosted.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
+                        mapperFacade.map(vegadresse, deltBosted.getVegadresse());
+                    })
+                    .then();
 
         } else if (nonNull(deltBosted.getMatrikkeladresse())) {
 
-            var matrikkeladresse =
-                    adresseServiceConsumer.getMatrikkeladresse(deltBosted.getMatrikkeladresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen());
-            deltBosted.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
-            mapperFacade.map(matrikkeladresse, deltBosted.getMatrikkeladresse());
+            return adresseServiceConsumer.getMatrikkeladresse(deltBosted.getMatrikkeladresse(), deltBosted.getAdresseIdentifikatorFraMatrikkelen())
+                    .doOnNext(matrikkeladresse -> {
+                        deltBosted.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
+                        mapperFacade.map(matrikkeladresse, deltBosted.getMatrikkeladresse());
+                    })
+                    .then();
         }
+        return Mono.empty();
     }
 
     private void setDeltBosted(PersonDTO barn, DeltBostedDTO deltBosted) {
 
         deltBosted.setId(barn.getDeltBosted().stream()
-                .findFirst()
-                .map(DeltBostedDTO::getId)
-                .orElse(0) + 1);
+                                 .findFirst()
+                                 .map(DeltBostedDTO::getId)
+                                 .orElse(0) + 1);
 
         deltBosted.setKilde(getKilde(deltBosted));
         deltBosted.setMaster(getMaster(deltBosted, IdenttypeUtility.getIdenttype(barn.getIdent())));
@@ -258,7 +282,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     }
 
     @Override
-    public void validate(DeltBostedDTO artifact, PersonDTO person) {
+    public Mono<Void> validate(DeltBostedDTO artifact, PersonDTO person) {
 
         List<String> foreldre;
         if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
@@ -280,16 +304,15 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
             throw new InvalidRequestException(VALIDATION_TO_FORELDRE_ERROR);
         }
 
-        var adresser = personRepository.findByIdentIn(foreldre, Pageable.unpaged()).stream()
+        return personRepository.findByIdentIn(foreldre, Pageable.unpaged())
                 .map(DbPerson::getPerson)
                 .map(PersonDTO::getBostedsadresse)
-                .map(adresse -> !adresse.isEmpty() ? adresse.getFirst() : null)
-                .filter(Objects::nonNull)
-                .toList();
-
-        if (artifact.countAdresser() > 1 ||
-                (adresser.size() == 2 && isEqualAdresse(adresser.get(0), adresser.get(1)))) {
-            throw new InvalidRequestException(VALIDATION_ADRESSER_ERROR);
-        }
+                .doOnNext(adresser -> {
+                    if (artifact.countAdresser() > 1 ||
+                        (adresser.size() == 2 && isEqualAdresse(adresser.get(0), adresser.get(1)))) {
+                        throw new InvalidRequestException(VALIDATION_ADRESSER_ERROR);
+                    }
+                })
+                .then();
     }
 }

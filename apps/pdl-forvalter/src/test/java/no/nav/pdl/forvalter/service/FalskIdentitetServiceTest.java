@@ -52,8 +52,8 @@ class FalskIdentitetServiceTest {
 
         var request = FalskIdentitetDTO.builder()
                         .erFalsk(true)
-                        .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
-                        .gyldigTilOgMed(LocalDate.of(2012, 04, 04).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2012, 4, 5).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2012, 4, 4).atStartOfDay())
                         .isNew(true)
                         .build();
 

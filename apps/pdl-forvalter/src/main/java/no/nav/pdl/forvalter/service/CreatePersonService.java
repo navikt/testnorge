@@ -21,11 +21,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
@@ -91,47 +90,35 @@ public class CreatePersonService {
                 .build();
     }
 
-    public PersonDTO execute(PersonRequestDTO request) {
+    public Mono<DbPerson> execute(PersonRequestDTO request) {
 
         var startTime = currentTimeMillis();
 
-        IdentDTO identifikator = identPoolConsumer.acquireIdents(
+        return identPoolConsumer.acquireIdent(
                         mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
-                .block();
-        Objects.requireNonNull(identifikator, "Kunne ikke hente ident fra identpool");
-
-        var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO(),
-                identifikator), new PersonDTO());
-
-        mergedPerson.setIdent(Objects.requireNonNull(identifikator.getIdent()));
-
-        Stream.of(
-                        Flux.just(foedselsdatoService.convert(mergedPerson)),
-                        Flux.just(navnService.convert(mergedPerson)),
-                        Flux.just(bostedAdresseService.convert(mergedPerson, null)),
-                        Flux.just(foedestedService.convert(mergedPerson)),
-                        Flux.just(kjoennService.convert(mergedPerson)),
-                        Flux.just(statsborgerskapService.convert(mergedPerson)),
-                        Flux.just(adressebeskyttelseService.convert(mergedPerson)),
-                        Flux.just(navsPersonIdentifikatorService.convert(mergedPerson)),
-                        Flux.just(folkeregisterPersonstatusService.convert(mergedPerson))
-                )
-                .reduce(Flux.empty(), Flux::merge)
-                .collectList()
-                .block();
-
-        mergedPerson.getSivilstand().add(SivilstandDTO.builder()
-                .type(SivilstandDTO.Sivilstand.UGIFT)
-                .isNew(true)
-                .id(1)
-                .master(request.getIdenttype() != NPID ? FREG : PDL)
-                .kilde("Dolly")
-                .bekreftelsesdato(request.getIdenttype() != NPID ? null : now())
-                .build());
-
-        log.info("Oppretting av ident {} tok {} ms", mergedPerson.getIdent(), currentTimeMillis() - startTime);
-
-        return personRepository.save(DbPerson.builder()
+                .doOnNext(identifikator -> Objects.requireNonNull(identifikator, "Kunne ikke hente ident fra identpool"))
+                .flatMap(identifikator -> mergeService.merge(
+                                buildPerson(nonNull(request) ? request : new PersonRequestDTO(), identifikator), new PersonDTO())
+                        .doOnNext(mergedPerson -> mergedPerson.setIdent(identifikator.getIdent())))
+                .flatMap(mergedPerson -> foedselsdatoService.convert(mergedPerson).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> navnService.convert(mergedPerson).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> bostedAdresseService.convert(mergedPerson, null).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> foedestedService.convert(mergedPerson).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> kjoennService.convert(mergedPerson).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> statsborgerskapService.convert(mergedPerson).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> adressebeskyttelseService.convert(mergedPerson).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> navsPersonIdentifikatorService.convert(mergedPerson).thenReturn(mergedPerson))
+                .flatMap(mergedPerson -> folkeregisterPersonstatusService.convert(mergedPerson).thenReturn(mergedPerson))
+                .doOnNext(mergedPerson ->
+                        mergedPerson.getSivilstand().add(SivilstandDTO.builder()
+                                .type(SivilstandDTO.Sivilstand.UGIFT)
+                                .isNew(true)
+                                .id(1)
+                                .master(request.getIdenttype() != NPID ? FREG : PDL)
+                                .kilde("Dolly")
+                                .bekreftelsesdato(request.getIdenttype() != NPID ? null : now())
+                                .build()))
+                .map(mergedPerson -> DbPerson.builder()
                         .person(mergedPerson)
                         .ident(mergedPerson.getIdent())
                         .fornavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn())
@@ -139,6 +126,7 @@ public class CreatePersonService {
                         .etternavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn())
                         .sistOppdatert(now())
                         .build())
-                .getPerson();
+                .flatMap(personRepository::save)
+                .doOnNext(person -> log.info("Oppretting av ident {} tok {} ms", person.getIdent(), currentTimeMillis() - startTime));
     }
 }

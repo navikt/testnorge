@@ -3,8 +3,9 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.DeleteRelasjonerUtility;
+import no.nav.pdl.forvalter.utils.ArtifactUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
@@ -36,12 +37,14 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FALSK_IDENTITET;
@@ -49,6 +52,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJ
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -61,6 +65,7 @@ public class ArtifactUpdateService {
 
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
+    private final DeleteRelasjonerService deleteRelasjonerService;
     private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final DoedsfallService doedsfallService;
@@ -80,6 +85,7 @@ public class ArtifactUpdateService {
     private final OppholdsadresseService oppholdsadresseService;
     private final PersonRepository personRepository;
     private final PersonService personService;
+    private final RelasjonRepository relasjonRepository;
     private final SikkerhetstiltakService sikkerhetstiltakService;
     private final SivilstandService sivilstandService;
     private final StatsborgerskapService statsborgerskapService;
@@ -89,491 +95,447 @@ public class ArtifactUpdateService {
     private final UtflyttingService utflyttingService;
     private final VergemaalService vergemaalService;
 
-    public void updateFoedsel(String ident, Integer id, FoedselDTO oppdatertFoedsel) {
+    public Mono<Void> updateFoedsel(String ident, Integer id, FoedselDTO oppdatertFoedsel) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setFoedsel(
-                updateArtifact(person.getPerson().getFoedsel(), oppdatertFoedsel, id, "Foedsel"));
-
-        foedselService.validate(oppdatertFoedsel, person.getPerson());
-        foedselService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setFoedsel(
+                                updateArtifact(person.getPerson().getFoedsel(), oppdatertFoedsel, id, "Foedsel")))
+                .flatMap(person -> foedselService.validate(oppdatertFoedsel, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> foedselService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateFoedested(String ident, Integer id, FoedestedDTO oppdatertFoedested) {
+    public Mono<Void> updateFoedested(String ident, Integer id, FoedestedDTO oppdatertFoedested) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setFoedested(
-                updateArtifact(person.getPerson().getFoedested(), oppdatertFoedested, id, "Foedested"));
-
-        foedestedService.validate(oppdatertFoedested, person.getPerson());
-        foedestedService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setFoedested(
+                        updateArtifact(person.getPerson().getFoedested(), oppdatertFoedested, id, "Foedested")))
+                .flatMap(person -> foedestedService.validate(oppdatertFoedested, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> foedestedService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateFoedselsdato(String ident, Integer id, FoedselsdatoDTO oppdatertFoedselsdato) {
+    public Mono<Void> updateFoedselsdato(String ident, Integer id, FoedselsdatoDTO oppdatertFoedselsdato) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setFoedselsdato(
-                updateArtifact(person.getPerson().getFoedselsdato(), oppdatertFoedselsdato, id, "Foedselsdato"));
-
-        foedselsdatoService.validate(oppdatertFoedselsdato, person.getPerson());
-        foedselsdatoService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setFoedselsdato(
+                        updateArtifact(person.getPerson().getFoedselsdato(), oppdatertFoedselsdato, id, "Foedselsdato")))
+                .flatMap(person -> foedselsdatoService.validate(oppdatertFoedselsdato, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> foedselsdatoService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateNavn(String ident, Integer id, NavnDTO oppdatertNavn) {
+    public Mono<Void> updateNavn(String ident, Integer id, NavnDTO oppdatertNavn) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setNavn(
-                updateArtifact(person.getPerson().getNavn(), oppdatertNavn, id, "Navn"));
-
-        navnService.validate(oppdatertNavn, person.getPerson());
-        navnService.convert(person.getPerson());
-
-        person.getPerson().getNavn().stream().findFirst()
-                .ifPresent(navn -> {
-                    person.setFornavn(navn.getFornavn());
-                    person.setMellomnavn(navn.getMellomnavn());
-                    person.setEtternavn(navn.getEtternavn());
-                });
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setNavn(
+                        updateArtifact(person.getPerson().getNavn(), oppdatertNavn, id, "Navn")))
+                .flatMap(person -> navnService.validate(oppdatertNavn, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> navnService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateKjoenn(String ident, Integer id, KjoennDTO oppdatertKjoenn) {
+    public Mono<Void> updateKjoenn(String ident, Integer id, KjoennDTO oppdatertKjoenn) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setKjoenn(
-                updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, id, "Kjoenn"));
-
-        kjoennService.validate(oppdatertKjoenn, person.getPerson());
-        kjoennService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setKjoenn(
+                        updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, id, "Kjoenn")))
+                .flatMap(person -> kjoennService.validate(oppdatertKjoenn, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> kjoennService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateBostedsadresse(String ident, Integer id, BostedadresseDTO oppdatertAdresse) {
+    public Mono<Void> updateBostedsadresse(String ident, Integer id, BostedadresseDTO oppdatertAdresse) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setBostedsadresse(
-                updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, id, "Bostedsadresse"));
-
-        bostedAdresseService.validate(oppdatertAdresse, person.getPerson());
-        bostedAdresseService.convert(person.getPerson(), false);
-        folkeregisterPersonstatusService.update(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setBostedsadresse(
+                        updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, id, "Bostedsadresse")))
+                .flatMap(person -> bostedAdresseService.validate(oppdatertAdresse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> bostedAdresseService.convert(person.getPerson(), false)
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateKontaktadresse(String ident, Integer id, KontaktadresseDTO oppdatertAdresse) {
+    public Mono<Void> updateKontaktadresse(String ident, Integer id, KontaktadresseDTO oppdatertAdresse) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setKontaktadresse(
-                updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, id, "Kontaktadresse"));
-
-        kontaktAdresseService.validate(oppdatertAdresse, person.getPerson());
-        kontaktAdresseService.convert(person.getPerson(), false);
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setKontaktadresse(
+                        updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, id, "Kontaktadresse")))
+                .flatMap(person -> kontaktAdresseService.validate(oppdatertAdresse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> kontaktAdresseService.convert(person.getPerson(), false)
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateOppholdsadresse(String ident, Integer id, OppholdsadresseDTO oppdatertAdresse) {
+    public Mono<Void> updateOppholdsadresse(String ident, Integer id, OppholdsadresseDTO oppdatertAdresse) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setOppholdsadresse(
-                updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, id, "Oppholdsadresse"));
-
-        oppholdsadresseService.validate(oppdatertAdresse, person.getPerson());
-        oppholdsadresseService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setOppholdsadresse(
+                        updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, id, "Oppholdsadresse")))
+                .flatMap(person -> oppholdsadresseService.validate(oppdatertAdresse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> oppholdsadresseService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateInnflytting(String ident, Integer id, InnflyttingDTO oppdatertInnflytting) {
+    public Mono<Void> updateInnflytting(String ident, Integer id, InnflyttingDTO oppdatertInnflytting) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setInnflytting(
-                updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting"));
-
-        innflyttingService.validate(oppdatertInnflytting);
-        innflyttingService.convert(person.getPerson());
-        folkeregisterPersonstatusService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setInnflytting(
+                        updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting")))
+                .flatMap(person -> innflyttingService.validate(oppdatertInnflytting)
+                        .thenReturn(person))
+                .flatMap(person -> innflyttingService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateUtflytting(String ident, Integer id, UtflyttingDTO oppdatertUtflytting) {
+    public Mono<Void> updateUtflytting(String ident, Integer id, UtflyttingDTO oppdatertUtflytting) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setUtflytting(
-                updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting"));
-
-        utflyttingService.validate(oppdatertUtflytting);
-        utflyttingService.convert(person.getPerson());
-        folkeregisterPersonstatusService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setUtflytting(
+                        updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting")))
+                .flatMap(person -> utflyttingService.validate(oppdatertUtflytting)
+                        .thenReturn(person))
+                .flatMap(person -> utflyttingService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
+    public Mono<Void> updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setDeltBosted(
-                updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted"));
-
-        deltBostedService.update(oppdatertDeltBosted);
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setDeltBosted(
+                                updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted")))
+                .flatMap(person -> deltBostedService.prepAdresser(oppdatertDeltBosted)
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
+    public Mono<Void> updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
-        var person = getPerson(ident);
-        forelderBarnRelasjonService.validate(oppdatertRelasjon, person.getPerson());
-
-        var foreldrebarnRelasjon = person.getPerson().getForelderBarnRelasjon().stream()
-                .filter(relasjon -> relasjon.getId().equals(id))
-                .findFirst();
-
-        foreldrebarnRelasjon.ifPresent(relasjon -> {
-
-            var endretRelasjon = isEndretRolle(relasjon, oppdatertRelasjon) ||
-                    relasjon.isRelatertMedIdentifikator() &&
-                            !relasjon.getRelatertPerson().equals(oppdatertRelasjon.getRelatertPerson());
-
-            if (endretRelasjon && relasjon.isRelatertMedIdentifikator()) {
-
-                var slettePerson = getPerson(relasjon.getIdentForRelasjon());
-                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FAMILIERELASJON_BARN);
-
-                deletePerson(slettePerson, relasjon.isEksisterendePerson());
-
-                oppdatertRelasjon.setId(id);
-                person.getPerson().getForelderBarnRelasjon().add(oppdatertRelasjon);
-                person.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setForelderBarnRelasjon(
-                updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"));
-
-        if (id == 0 || foreldrebarnRelasjon.isPresent()) {
-
-            forelderBarnRelasjonService.convert(person.getPerson());
-        }
+        return getPerson(ident)
+                .flatMap(person -> forelderBarnRelasjonService.validate(oppdatertRelasjon, person.getPerson())
+                        .thenReturn(person))
+                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getForelderBarnRelasjon())
+                        .filter(relasjon -> relasjon.getId().equals(id))
+                        .filter(relasjon ->
+                                isEndretRolle(relasjon, oppdatertRelasjon) ||
+                                relasjon.isRelatertMedIdentifikator() &&
+                                !Objects.equals(relasjon.getRelatertPerson(), oppdatertRelasjon.getRelatertPerson()))
+                        .flatMap(relasjon -> getPerson(relasjon.getIdentForRelasjon())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FAMILIERELASJON_BARN)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, relasjon.isEksisterendePerson())
+                                        .thenReturn(person))))
+                .doOnNext(person -> {
+                    oppdatertRelasjon.setId(id);
+                    person.getPerson().getForelderBarnRelasjon().add(oppdatertRelasjon);
+                    person.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
+                    person.getPerson().setForelderBarnRelasjon(
+                            updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"));
+                })
+                .flatMap(person -> forelderBarnRelasjonService.convert(person.getPerson()))
+                .then();
     }
 
-    public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
+    public Mono<Void> updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
 
-        var person = getPerson(ident);
-        foreldreansvarService.validate(oppdatertAnsvar, person.getPerson());
+        return getPerson(ident)
+                .flatMap(person -> foreldreansvarService.validate(oppdatertAnsvar, person.getPerson())
+                        .thenReturn(person))
+                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getForeldreansvar())
+                        .filter(relasjon -> relasjon.getId().equals(id))
+                        .filter(ansvar -> oppdatertAnsvar.getAnsvar() != ansvar.getAnsvar() ||
+                                          ansvar.isAnsvarligMedIdentifikator() &&
+                                          !Objects.equals(ansvar.getAnsvarlig(), oppdatertAnsvar.getAnsvarlig()))
+                        .flatMap(ansvar -> getPerson(ansvar.getAnsvarlig())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, ansvar.isEksisterendePerson())
+                                        .thenReturn(person))
+                                .flatMapMany(type -> Flux.fromIterable(person.getPerson().getForeldreansvar())
+                                        .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
+                                        .filter(ForeldreansvarDTO::isAnsvarligMedIdentifikator)
+                                        .filter(ansvar1 -> !ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
+                                        .flatMap(ansvar1 -> getPerson(ansvar1.getAnsvarlig())
+                                                .flatMap(slettePerson ->
+                                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER)
+                                                                .thenReturn(person))))))
+                .doOnNext(person -> {
+                    oppdatertAnsvar.setId(id);
+                    person.getPerson().getForeldreansvar().add(oppdatertAnsvar);
+                    person.getPerson().getForeldreansvar().sort(Comparator.comparing(ForeldreansvarDTO::getId).reversed());
+                    person.getPerson().setForeldreansvar(
+                            updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, id, "Foreldreansvar"));
 
-        var foreldreansvar = person.getPerson().getForeldreansvar().stream()
-                .filter(relasjon -> relasjon.getId().equals(id))
-                .findFirst();
-
-        foreldreansvar.ifPresent(ansvar -> {
-            var endretAnsvar = oppdatertAnsvar.getAnsvar() != ansvar.getAnsvar() ||
-                    ansvar.isAnsvarligMedIdentifikator() &&
-                            !ansvar.getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig());
-
-            if (endretAnsvar && ansvar.isAnsvarligMedIdentifikator() &&
-                    !ansvar.getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig())) {
-
-                var slettePerson = getPerson(ansvar.getAnsvarlig());
-                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER);
-
-                person.getPerson().getForeldreansvar().stream()
-                        .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
-                        .filter(ForeldreansvarDTO::isAnsvarligMedIdentifikator)
-                        .filter(ansvar1 -> !ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
-                        .findFirst()
-                        .ifPresent(ansvar1 ->
-                                DeleteRelasjonerUtility.deleteRelasjoner(person, getPerson(ansvar1.getAnsvarlig()), FORELDREANSVAR_FORELDER));
-
-                deletePerson(slettePerson, ansvar.isEksisterendePerson());
-
-                oppdatertAnsvar.setId(id);
-                person.getPerson().getForeldreansvar().add(oppdatertAnsvar);
-                person.getPerson().getForeldreansvar().sort(Comparator.comparing(ForeldreansvarDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setForeldreansvar(
-                updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, id, "Foreldreansvar"));
-
-        if (id == 0 || foreldreansvar.isPresent()) {
-
-            foreldreansvarService.handle(oppdatertAnsvar, person.getPerson());
-        }
-
-        person.getPerson().getForeldreansvar().stream()
-                .max(Comparator.comparing(ForeldreansvarDTO::getId))
-                .ifPresent(max -> {
-                    if (max.getId() > person.getPerson().getForeldreansvar().size()) {
-                        person.getPerson().getForeldreansvar()
-                                .forEach(ansvar -> ansvar.setId(ansvar.getId() - 1));
-                    }
-                });
+                })
+                .flatMap(person -> foreldreansvarService.handle(oppdatertAnsvar, person.getPerson())
+                        .thenReturn(person))
+                .doOnNext(person -> ArtifactUtils.renumberId(person.getPerson().getForeldreansvar()))
+                .then();
     }
 
-    public void updateKontaktinformasjonForDoedsbo(String ident, Integer id, KontaktinformasjonForDoedsboDTO oppdatertInformasjon) {
+    public Mono<Void> updateKontaktinformasjonForDoedsbo(String ident, Integer id, KontaktinformasjonForDoedsboDTO oppdatertInformasjon) {
 
-        kontaktinformasjonForDoedsboService.validate(oppdatertInformasjon);
-
-        var person = getPerson(ident);
-        var kontaktinformasjonRelasjon = person.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                .filter(relasjon -> relasjon.getId().equals(id))
-                .findFirst();
-
-        kontaktinformasjonRelasjon.ifPresent(kontakt -> {
-
-            var endretRelasjon = nonNull(kontakt.getPersonSomKontakt()) &&
-                    (isNull(oppdatertInformasjon.getPersonSomKontakt()) ||
-                            !kontakt.getPersonSomKontakt().getIdentifikasjonsnummer().equals(
-                                    oppdatertInformasjon.getPersonSomKontakt().getIdentifikasjonsnummer()));
-
-            if (endretRelasjon) {
-
-                var slettePerson = getPerson(kontakt.getPersonSomKontakt().getIdentifikasjonsnummer());
-                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, KONTAKT_FOR_DOEDSBO);
-
-                deletePerson(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson());
-
-                oppdatertInformasjon.setId(id);
-                person.getPerson().getKontaktinformasjonForDoedsbo().add(oppdatertInformasjon);
-                person.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setKontaktinformasjonForDoedsbo(
-                updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo"));
-
-        if (id == 0 || kontaktinformasjonRelasjon.isPresent()) {
-
-            kontaktinformasjonForDoedsboService.convert(person.getPerson());
-        }
+        return kontaktinformasjonForDoedsboService.validate(oppdatertInformasjon)
+                .then(getPerson(ident))
+                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getKontaktinformasjonForDoedsbo())
+                        .filter(relasjon -> relasjon.getId().equals(id))
+                        .filter(kontakt -> isNotBlank(kontakt.getIdentForRelasjon()) &&
+                                           !Objects.equals(kontakt.getIdentForRelasjon(), oppdatertInformasjon.getIdentForRelasjon()))
+                        .flatMap(kontakt -> getPerson(kontakt.getIdentForRelasjon())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, KONTAKT_FOR_DOEDSBO)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson())
+                                        .thenReturn(person))))
+                .doOnNext(person -> {
+                    oppdatertInformasjon.setId(id);
+                    person.getPerson().getKontaktinformasjonForDoedsbo().add(oppdatertInformasjon);
+                    person.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed());
+                    person.getPerson().setKontaktinformasjonForDoedsbo(
+                            updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo"));
+                })
+                .flatMap(person -> kontaktinformasjonForDoedsboService.convert(person.getPerson()))
+                .then();
     }
 
-    public void updateUtenlandskIdentifikasjonsnummer(String ident, Integer id, UtenlandskIdentifikasjonsnummerDTO oppdatertIdentifikasjon) {
+    public Mono<Void> updateUtenlandskIdentifikasjonsnummer(String ident, Integer id, UtenlandskIdentifikasjonsnummerDTO oppdatertIdentifikasjon) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setUtenlandskIdentifikasjonsnummer(
-                updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer"));
-
-        utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon);
-        utenlandsidentifikasjonsnummerService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setUtenlandskIdentifikasjonsnummer(
+                                updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer")))
+                .flatMap(person -> utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon)
+                        .thenReturn(person))
+                .flatMap(person -> utenlandsidentifikasjonsnummerService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateFalskIdentitet(String ident, Integer id, FalskIdentitetDTO oppdatertIdentitet) {
+    public Mono<Void> updateFalskIdentitet(String ident, Integer id, FalskIdentitetDTO oppdatertIdentitet) {
 
-        falskIdentitetService.validate(oppdatertIdentitet);
-
-        var person = getPerson(ident);
-        var relatertFalskIdentitet = person.getPerson().getFalskIdentitet().stream()
-                .filter(falskIdentitet -> falskIdentitet.getId().equals(id))
-                .findFirst();
-
-        relatertFalskIdentitet.ifPresent(falskId -> {
-
-            var relasjonEndret = isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()) &&
-                    falskId.getRettIdentitetVedIdentifikasjonsnummer().equals(
-                            oppdatertIdentitet.getRettIdentitetVedIdentifikasjonsnummer());
-
-            if (relasjonEndret) {
-                var slettePerson = getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer());
-                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FALSK_IDENTITET);
-
-                deletePerson(slettePerson, falskId.isEksisterendePerson());
-
-                oppdatertIdentitet.setId(id);
-                person.getPerson().getFalskIdentitet().add(oppdatertIdentitet);
-                person.getPerson().getFalskIdentitet().sort(Comparator.comparing(FalskIdentitetDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setFalskIdentitet(
-                updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, id, "FalskIdentitet"));
-
-        if (id == 0 || relatertFalskIdentitet.isPresent()) {
-
-            falskIdentitetService.convert(person.getPerson());
-            folkeregisterPersonstatusService.update(person.getPerson());
-        }
+        return falskIdentitetService.validate(oppdatertIdentitet)
+                .then(getPerson(ident))
+                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getFalskIdentitet())
+                        .filter(falskIdentitet -> falskIdentitet.getId().equals(id))
+                        .filter(falskId -> isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()) &&
+                                           !Objects.equals(falskId.getRettIdentitetVedIdentifikasjonsnummer(),
+                                                   oppdatertIdentitet.getRettIdentitetVedIdentifikasjonsnummer()))
+                        .flatMap(falskId -> getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FALSK_IDENTITET)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, falskId.isEksisterendePerson())
+                                        .thenReturn(person))))
+                .doOnNext(person -> {
+                    oppdatertIdentitet.setId(id);
+                    person.getPerson().getFalskIdentitet().add(oppdatertIdentitet);
+                    person.getPerson().getFalskIdentitet().sort(Comparator.comparing(FalskIdentitetDTO::getId).reversed());
+                    person.getPerson().setFalskIdentitet(
+                            updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, id, "FalskIdentitet"));
+                })
+                .flatMap(person -> falskIdentitetService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson()))
+                .then();
     }
 
-    public void updateAdressebeskyttelse(String ident, Integer id, AdressebeskyttelseDTO oppdatertBeskyttelse) {
+    public Mono<Void> updateAdressebeskyttelse(String ident, Integer id, AdressebeskyttelseDTO oppdatertBeskyttelse) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setAdressebeskyttelse(
-                updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, id, "Adressebeskyttelse"));
-
-        adressebeskyttelseService.validate(oppdatertBeskyttelse, person.getPerson());
-        adressebeskyttelseService.convert(person.getPerson());
-
-        folkeregisterPersonstatusService.update(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setAdressebeskyttelse(
+                                updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, id, "Adressebeskyttelse")))
+                .flatMap(person -> adressebeskyttelseService.validate(oppdatertBeskyttelse, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> adressebeskyttelseService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateDoedsfall(String ident, Integer id, DoedsfallDTO oppdatertDoedsfall) {
+    public Mono<Void> updateDoedsfall(String ident, Integer id, DoedsfallDTO oppdatertDoedsfall) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setDoedsfall(
-                updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall"));
-
-        doedsfallService.validate(oppdatertDoedsfall);
-        doedsfallService.convert(person.getPerson());
-
-        folkeregisterPersonstatusService.update(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setDoedsfall(
+                        updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall")))
+                .flatMap(person -> doedsfallService.validate(oppdatertDoedsfall)
+                        .thenReturn(person))
+                .flatMap(person -> doedsfallService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateFolkeregisterPersonstatus(String ident, Integer id, FolkeregisterPersonstatusDTO oppdatertStatus) {
+    public Mono<Void> updateFolkeregisterPersonstatus(String ident, Integer id, FolkeregisterPersonstatusDTO oppdatertStatus) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setFolkeregisterPersonstatus(
-                updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, id, "FolkeregisterPersonstatus"));
-
-        folkeregisterPersonstatusService.validate(oppdatertStatus, person.getPerson());
-        folkeregisterPersonstatusService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person ->
+                        person.getPerson().setFolkeregisterPersonstatus(
+                                updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, id, "FolkeregisterPersonstatus")))
+                .flatMap(person -> folkeregisterPersonstatusService.validate(oppdatertStatus, person.getPerson())
+                        .thenReturn(person))
+                .flatMap(person -> folkeregisterPersonstatusService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateTilrettelagtKommunikasjon(String ident, Integer id, TilrettelagtKommunikasjonDTO oppdatertKommunikasjon) {
+    public Mono<Void> updateTilrettelagtKommunikasjon(String ident, Integer id, TilrettelagtKommunikasjonDTO oppdatertKommunikasjon) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setTilrettelagtKommunikasjon(
-                updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, id, "TilrettelagtKommunikasjon"));
-
-        tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon);
-        tilrettelagtKommunikasjonService.convert(person.getPerson().getTilrettelagtKommunikasjon());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setTilrettelagtKommunikasjon(
+                        updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, id, "TilrettelagtKommunikasjon")))
+                .flatMap(person -> tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon)
+                        .thenReturn(person))
+                .flatMap(person -> tilrettelagtKommunikasjonService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateStatsborgerskap(String ident, Integer id, StatsborgerskapDTO oppdatertStatsborgerskap) {
+    public Mono<Void> updateStatsborgerskap(String ident, Integer id, StatsborgerskapDTO oppdatertStatsborgerskap) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setStatsborgerskap(
-                updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, id, "Statsborgerskap"));
-
-        statsborgerskapService.validate(oppdatertStatsborgerskap);
-        statsborgerskapService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setStatsborgerskap(
+                        updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, id, "Statsborgerskap")))
+                .flatMap(person -> statsborgerskapService.validate(oppdatertStatsborgerskap)
+                        .thenReturn(person))
+                .flatMap(person -> statsborgerskapService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateOpphold(String ident, Integer id, OppholdDTO oppdatertOpphold) {
+    public Mono<Void> updateOpphold(String ident, Integer id, OppholdDTO oppdatertOpphold) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setOpphold(
-                updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, id, "Opphold"));
-
-        oppholdService.validate(oppdatertOpphold);
-        oppholdService.convert(person.getPerson().getOpphold());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setOpphold(
+                        updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, id, "Opphold")))
+                .flatMap(person -> oppholdService.validate(oppdatertOpphold)
+                        .thenReturn(person))
+                .flatMap(person -> oppholdService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
+    public Mono<Void> updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
 
-        var person = getPerson(ident);
-        sivilstandService.validate(oppdatertSivilstand, person.getPerson());
-
-        var sivilstandRelasjon = person.getPerson().getSivilstand().stream()
-                .filter(sivilstand -> sivilstand.getId().equals(id))
-                .findFirst();
-
-        sivilstandRelasjon.ifPresent(eksisterendeSivilstand -> {
-
-            var endretRelasjon = eksisterendeSivilstand.hasRelatertVedSivilstand() &&
-                    !eksisterendeSivilstand.getRelatertVedSivilstand().equals(oppdatertSivilstand.getRelatertVedSivilstand());
-
-            if (endretRelasjon) {
-
-                var slettePerson = getPerson(eksisterendeSivilstand.getRelatertVedSivilstand());
-                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, EKTEFELLE_PARTNER);
-
-                deletePerson(slettePerson, eksisterendeSivilstand.isEksisterendePerson());
-
-                oppdatertSivilstand.setId(id);
-                person.getPerson().getSivilstand().add(oppdatertSivilstand);
-                person.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setSivilstand(
-                updateArtifact(person.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand"));
-
-        if (id == 0 || sivilstandRelasjon.isPresent()) {
-
-            sivilstandService.convert(person.getPerson());
-        }
+        return getPerson(ident)
+                .flatMap(person -> sivilstandService.validate(oppdatertSivilstand, person.getPerson())
+                        .thenReturn(person))
+                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getSivilstand())
+                        .filter(sivilstand -> sivilstand.getId().equals(id))
+                        .filter(sivilstand -> sivilstand.hasRelatertVedSivilstand() &&
+                                              !Objects.equals(sivilstand.getRelatertVedSivilstand(), oppdatertSivilstand.getRelatertVedSivilstand()))
+                        .flatMap(sivilstand -> getPerson(sivilstand.getRelatertVedSivilstand())
+                                .flatMap(slettePerson ->
+                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, EKTEFELLE_PARTNER)
+                                                .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, sivilstand.isEksisterendePerson())
+                                        .thenReturn(person))))
+                .doOnNext(person -> {
+                    oppdatertSivilstand.setId(id);
+                    person.getPerson().getSivilstand().add(oppdatertSivilstand);
+                    person.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
+                    person.getPerson().setSivilstand(
+                            updateArtifact(person.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand"));
+                })
+                .flatMap(person -> sivilstandService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson)
+                .then();
     }
 
-    public void updateTelefonnummer(String ident, List<TelefonnummerDTO> oppdaterteTelefonnumre) {
+    public Mono<Void> updateTelefonnummer(String ident, List<TelefonnummerDTO> oppdaterteTelefonnumre) {
 
-        var person = getPerson(ident);
-
-        oppdaterteTelefonnumre
-                .forEach(telefonnummer -> {
-                    telefonnummerService.validate(telefonnummer);
-                    telefonnummer.setIsNew(true);
-                    telefonnummer.setId(telefonnummer.getPrioritet());
-                });
-
-        person.getPerson().setTelefonnummer(oppdaterteTelefonnumre);
-        telefonnummerService.convert(person.getPerson().getTelefonnummer());
+        return getPerson(ident)
+                .flatMap(person -> Flux.fromIterable(oppdaterteTelefonnumre)
+                        .flatMap(telefonnummer -> telefonnummerService.validate(telefonnummer)
+                                .thenReturn(telefonnummer))
+                        .doOnNext(telefonnummer -> {
+                            telefonnummer.setIsNew(true);
+                            telefonnummer.setId(telefonnummer.getPrioritet());
+                        })
+                        .collectList()
+                        .doOnNext(telefonnumre ->
+                                person.getPerson().setTelefonnummer(telefonnumre))
+                        .then(telefonnummerService.convert(person.getPerson())));
     }
 
-    public void updateVergemaal(String ident, Integer id, VergemaalDTO oppdatertVergemaal) {
+    public Mono<Void> updateVergemaal(String ident, Integer id, VergemaalDTO oppdatertVergemaal) {
 
-        vergemaalService.validate(oppdatertVergemaal);
+        return vergemaalService.validate(oppdatertVergemaal)
+                .then(getPerson(ident))
+                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getVergemaal())
+                        .filter(vergemaal -> vergemaal.getId().equals(id))
+                        .filter(vergemaal -> nonNull(vergemaal.getVergeIdent()) &&
+                                             (isNotBlank(oppdatertVergemaal.getVergeIdent()) ||
+                                              !Objects.equals(vergemaal.getVergeIdent(),oppdatertVergemaal.getVergeIdent())))
+                        .flatMap(vergemaal -> getPerson(vergemaal.getVergeIdent())
+                                .flatMap(slettePerson -> deleteRelasjonerService.deleteRelasjoner(person, slettePerson, VERGE)
+                                        .thenReturn(slettePerson))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
+                                        .thenReturn(vergemaal))
+                                .doOnNext(type -> {
 
-        var person = getPerson(ident);
-        var vergemaalRelasjon = person.getPerson().getVergemaal().stream()
-                .filter(vergemaal -> vergemaal.getId().equals(id))
-                .findFirst();
-
-        vergemaalRelasjon.ifPresent(vergemaal -> {
-
-            var endretRelasjon = nonNull(vergemaal.getVergeIdent()) &&
-                    (isNotBlank(oppdatertVergemaal.getVergeIdent()) ||
-                            !vergemaal.getVergeIdent().equals(oppdatertVergemaal.getVergeIdent()));
-
-            if (endretRelasjon) {
-
-                var slettePerson = getPerson(vergemaal.getVergeIdent());
-                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, VERGE);
-
-                deletePerson(slettePerson, vergemaal.isEksisterendePerson());
-
-                oppdatertVergemaal.setId(id);
-                person.getPerson().getVergemaal().add(oppdatertVergemaal);
-                person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setVergemaal(
-                updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"));
-
-        if (id == 0 || vergemaalRelasjon.isPresent()) {
-
-            vergemaalService.convert(person.getPerson());
-        }
+                                    oppdatertVergemaal.setId(id);
+                                    person.getPerson().getVergemaal().add(oppdatertVergemaal);
+                                    person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
+                                    person.getPerson().setVergemaal(
+                                            updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"));
+                                }))
+                        .flatMap(vergemaal -> vergemaalService.convert(person.getPerson())
+                                .thenReturn(vergemaal)))
+                .then();
     }
 
-    public void updateSikkerhetstiltak(String ident, Integer id, SikkerhetstiltakDTO oppdatertSikkerhetstiltak) {
+    public Mono<Void> updateSikkerhetstiltak(String ident, Integer id, SikkerhetstiltakDTO oppdatertSikkerhetstiltak) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setSikkerhetstiltak(
-                updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, id, "Sikkerhetstiltak"));
-
-        sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak);
-        sikkerhetstiltakService.convert(person.getPerson());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setSikkerhetstiltak(
+                        updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, id, "Sikkerhetstiltak")))
+                .flatMap(person -> sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak)
+                        .thenReturn(person))
+                .flatMap(person -> sikkerhetstiltakService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
-    public void updateDoedfoedtBarn(String ident, Integer id, DoedfoedtBarnDTO oppdatertDoedfoedt) {
+    public Mono<Void> updateDoedfoedtBarn(String ident, Integer id, DoedfoedtBarnDTO oppdatertDoedfoedt) {
 
-        var person = getPerson(ident);
-
-        person.getPerson().setDoedfoedtBarn(
-                updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, id, "DoedfoedtBarn"));
-
-        doedfoedtBarnService.validate(oppdatertDoedfoedt);
-        doedfoedtBarnService.convert(person.getPerson().getDoedfoedtBarn());
+        return getPerson(ident)
+                .doOnNext(person -> person.getPerson().setDoedfoedtBarn(
+                        updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, id, "DoedfoedtBarn")))
+                .flatMap(person -> doedfoedtBarnService.validate(oppdatertDoedfoedt)
+                        .thenReturn(person))
+                .flatMap(person -> doedfoedtBarnService.convert(person.getPerson())
+                        .thenReturn(person))
+                .flatMap(this::savePerson);
     }
 
     private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,
@@ -601,18 +563,27 @@ public class ArtifactUpdateService {
         }
     }
 
-    private DbPerson getPerson(String ident) {
+    private Mono<DbPerson> getPerson(String ident) {
 
         return personRepository.findByIdent(ident.trim())
-                .orElseThrow(() -> new NotFoundException(String.format(IDENT_NOT_FOUND, ident)));
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format(IDENT_NOT_FOUND, ident))));
     }
 
-    private void deletePerson(DbPerson person, boolean isEksisterendePerson) {
+    private Mono<Void> savePerson(DbPerson person) {
 
-        if (person.getRelasjoner().isEmpty() && !isEksisterendePerson) {
+        return personRepository.save(person)
+                .then();
+    }
 
-            personService.deletePerson(person.getIdent());
-        }
+    private Mono<Void> deletePerson(DbPerson person, boolean isStandalonePerson) {
+
+        return relasjonRepository.existsByPersonIdOrRelatertPersonId(person.getId())
+                .flatMap(exists -> {
+                    if (isFalse(exists) && !isStandalonePerson) {
+                        return personService.deletePerson(person.getIdent());
+                    }
+                    return Mono.empty();
+                });
     }
 
     private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
@@ -625,14 +596,14 @@ public class ArtifactUpdateService {
     private static <T extends DbVersjonDTO> T initOpprett(List<T> artifacter, T oppretting) {
 
         oppretting.setId(artifacter.stream()
-                .mapToInt(DbVersjonDTO::getId)
-                .max().orElse(0) + 1);
+                                 .mapToInt(DbVersjonDTO::getId)
+                                 .max().orElse(0) + 1);
         return oppretting;
     }
 
     private static boolean isEndretRolle(ForelderBarnRelasjonDTO relasjon, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
         return oppdatertRelasjon.getMinRolleForPerson() != relasjon.getMinRolleForPerson() &&
-                oppdatertRelasjon.getRelatertPersonsRolle() != relasjon.getRelatertPersonsRolle();
+               oppdatertRelasjon.getRelatertPersonsRolle() != relasjon.getRelatertPersonsRolle();
     }
 }

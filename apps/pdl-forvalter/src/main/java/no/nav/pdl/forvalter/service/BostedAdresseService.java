@@ -14,6 +14,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class BostedAdresseService extends AdresseService<BostedadresseDTO, PersonDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Bostedsadresse: kun én adresse skal være satt (vegadresse, " +
-            "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
+                                                             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
     private static final String VALIDATION_MASTER_PDL_ERROR = "Bostedsadresse: utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
@@ -51,24 +53,25 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public List<BostedadresseDTO> convert(PersonDTO person, Boolean relaxed) {
+    public Mono<Void> convert(PersonDTO person, Boolean relaxed) {
 
-        person.getBostedsadresse().stream()
+        return Flux.fromIterable(person.getBostedsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
-                .forEach(adresse -> {
-                    handle(adresse, person);
+                .flatMap(adresse -> handle(adresse, person).thenReturn(adresse))
+                .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
                     adresse.setMaster(getMaster(adresse, person));
-                });
-
-        oppdaterAdressedatoer(person.getBostedsadresse(), person);
-        setAngittFlyttedato(person.getBostedsadresse());
-
-        return person.getBostedsadresse();
+                })
+                .collectList()
+                .doOnNext(adresser -> {
+                    oppdaterAdressedatoer(person.getBostedsadresse(), person);
+                    setAngittFlyttedato(person.getBostedsadresse());
+                })
+                .then();
     }
 
     @Override
-    public void validate(BostedadresseDTO adresse, PersonDTO person) {
+    public Mono<Void> validate(BostedadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
@@ -83,29 +86,24 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
             validateBruksenhet(adresse.getMatrikkeladresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getGyldigFraOgMed()) && nonNull(adresse.getGyldigTilOgMed()) &&
-                !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
+            !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
             validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
         }
+        return Mono.empty();
     }
 
-    private void handle(BostedadresseDTO bostedadresse, PersonDTO person) {
+    private Mono<Void> handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
         if (FNR == getIdenttype(person.getIdent())) {
 
-            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
-
-                person.setBostedsadresse(null);
-                return;
-
-            } else if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
-                    person.getInnflytting().stream()
-                            .noneMatch(innflytting -> person.getUtflytting().stream()
-                                    .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
-                                            .isAfter(utflytting.getUtflyttingsdato())))) {
+            if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
+                       person.getInnflytting().stream()
+                               .noneMatch(innflytting -> person.getUtflytting().stream()
+                                       .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
+                                               .isAfter(utflytting.getUtflyttingsdato())))) {
 
                 if (person.getUtflytting().getFirst().isVelkjentLand()) {
                     if (isNull(bostedadresse.getUtenlandskAdresse())) {
@@ -113,10 +111,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                     }
 
                 } else {
-                    person.setBostedsadresse(new ArrayList<>(person.getBostedsadresse().stream()
-                            .filter(adresse -> isNotTrue(adresse.getIsNew()))
-                            .toList()));
-                    return;
+                    return Mono.empty();
                 }
 
             } else if (bostedadresse.countAdresser() == 0) {
@@ -132,33 +127,47 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         } else if (bostedadresse.countAdresser() == 0) {
 
             if (person.getOppholdsadresse().isEmpty() &&
-                    person.getKontaktadresse().isEmpty()) {
+                person.getKontaktadresse().isEmpty()) {
 
                 bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
             } else {
-                person.setBostedsadresse(null);
-                return;
+
+                return Mono.empty();
             }
         }
 
-        buildBoadresse(bostedadresse, person);
+        return buildBoadresse(bostedadresse, person)
+                .doOnNext(boadresse -> {
+
+                    bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));
+                    bostedadresse.setOpprettCoAdresseNavn(null);
+
+                    if (isNull(bostedadresse.getAngittFlyttedato())) {
+                        bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
+                    }
+                })
+                .then();
     }
 
-    private void buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {
+    private Mono<BostedadresseDTO> buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {
 
         if (nonNull(bostedadresse.getVegadresse())) {
 
-            var vegadresse =
-                    adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), vegadresse.getMatrikkelId()));
-            mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
+            return adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen())
+                    .flatMap(vegadresse -> {
+                        bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), vegadresse.getMatrikkelId()));
+                        mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
+                        return Mono.just(bostedadresse);
+                    });
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
 
-            var matrikkeladresse =
-                    adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
-            mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
+            return adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen())
+                    .flatMap(matrikkeladresse -> {
+                        bostedadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(bostedadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
+                        mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
+                        return Mono.just(bostedadresse);
+                    });
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
 
@@ -168,12 +177,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                     bostedadresse.getMaster()));
         }
 
-        bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));
-        bostedadresse.setOpprettCoAdresseNavn(null);
-
-        if (isNull(bostedadresse.getAngittFlyttedato())) {
-            bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
-        }
+        return Mono.just(bostedadresse);
     }
 
     private String getLandkode(PersonDTO person) {
