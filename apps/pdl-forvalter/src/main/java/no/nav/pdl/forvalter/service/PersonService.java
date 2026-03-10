@@ -42,7 +42,6 @@ import reactor.core.publisher.Mono;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -151,25 +150,25 @@ public class PersonService {
 
         if (nonNull(identer) && !identer.isEmpty()) {
 
-            return Mono.zip(aliasRepository.findByTidligereIdentIn(identer)
-                                    .map(DbAlias::getPerson)
-                                    .map(DbPerson::getIdent)
-                                    .collect(HashSet<String>::new, Set::add),
-                            aliasRepository.findByTidligereIdentIn(identer)
-                                    .map(DbAlias::getTidligereIdent)
-                                    .collect(HashSet<String>::new, Set::add))
-                    .map(tilleggOgFjerning -> {
-                        val query = new HashSet<>(identer);
-                        query.addAll(tilleggOgFjerning.getT1());
-                        query.removeAll(tilleggOgFjerning.getT2());
-                        return query;
+            return aliasRepository.findByTidligereIdentIn(identer)
+                                    .map(DbAlias::getPersonId)
+                    .flatMap(personRepository::findById)
+                    .map(DbPerson::getIdent)
+                    .reduce(new HashSet<String>(), (set, ident) -> {
+                        set.add(ident);
+                        return set;
+                    })
+                    .map(identerFraAlias -> {
+                        val identerSet = new HashSet<>(identer);
+                        identerSet.removeAll(identerFraAlias);
+                        return identerSet;
                     })
                     .flatMapMany(query -> personRepository.findByIdentIn(query,
                             PageRequest.of(paginering.getSidenummer(),
                                     paginering.getSidestoerrelse(),
                                     Sort.by(SORT_BY_FIELD).descending())))
                     .map(person ->
-                            mapperFacade.map(person, FullPersonDTO.class));
+                            mapperFacade.map(person, FullPersonDTO.class)); // TBD
 
         } else
 
@@ -177,7 +176,7 @@ public class PersonService {
                             PageRequest.of(paginering.getSidenummer(),
                                     paginering.getSidestoerrelse(),
                                     Sort.by(SORT_BY_FIELD).descending()))
-                    .map(person -> mapperFacade.map(person, FullPersonDTO.class));
+                    .map(person -> mapperFacade.map(person, FullPersonDTO.class)); //TBD
     }
 
     @Transactional

@@ -124,7 +124,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
             if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
                 (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
 
-                return genererNavnServiceConsumer.getNavn(1)
+                return genererNavnServiceConsumer.getNavn()
                         .doOnNext(nyttNavn -> {
                             coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.getAdjektiv()));
                             coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.getSubstantiv()));

@@ -1,14 +1,18 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.mapper.MappingContextUtils;
 import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -19,7 +23,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -67,6 +70,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final OrganisasjonForvalterConsumer organisasjonForvalterConsumer;
     private final EnkelAdresseService enkelAdresseService;
+    private final KodeverkConsumer kodeverkConsumer;
 
     private static String blankCheck(String value, String defaultValue) {
         return isNotBlank(value) ? value : defaultValue;
@@ -144,56 +148,65 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private Mono<KontaktinformasjonForDoedsboDTO> handle(KontaktinformasjonForDoedsboDTO kontaktinfo, String hovedperson) {
 
-        var kontaktinfoOriginal = mapperFacade.map(kontaktinfo, KontaktinformasjonForDoedsboDTO.class);
+        return kodeverkConsumer.getPoststedNavn()
+                .map(poststedsnavn -> {
 
-        if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
-            kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
-        }
+                            val context = MappingContextUtils.getMappingContext();
+                            context.setProperty("poststedsnavn", poststedsnavn);
+                            val kontaktinfoOriginal = mapperFacade.map(kontaktinfo, KontaktinformasjonForDoedsboDTO.class);
 
-        Mono<Void> processing = Mono.empty();
+                            if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
+                                kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
+                            }
+                            return kontaktinfoOriginal;
+                        })
+                       .flatMap(kontaktinfoOriginal -> {
 
-        if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
-            nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato())) {
+                           Mono<Void> processing = Mono.empty();
 
-            processing = leggTilPersonnavn(kontaktinfo.getPersonSomKontakt())
-                    .then(getAdresse(kontaktinfo)
-                            .doOnNext(kontaktinfo::setAdresse))
-                    .then();
+                           if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
+                               nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato())) {
 
-        } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
+                               processing = leggTilPersonnavn(kontaktinfo.getPersonSomKontakt())
+                                       .then(getAdresse(kontaktinfo)
+                                               .doOnNext(kontaktinfo::setAdresse))
+                                       .then();
 
-            processing = setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getAdvokatSomKontakt())
-                    .then(leggTilPersonnavn(kontaktinfo.getAdvokatSomKontakt()));
+                           } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
 
-        } else if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
+                               processing = setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getAdvokatSomKontakt())
+                                       .then(leggTilPersonnavn(kontaktinfo.getAdvokatSomKontakt()));
 
-            processing = setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getOrganisasjonSomKontakt())
-                    .then(leggTilPersonnavn(kontaktinfo.getOrganisasjonSomKontakt()));
+                           } else if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
 
-        } else if (nonNull(kontaktinfo.getPersonSomKontakt())) {
+                               processing = setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getOrganisasjonSomKontakt())
+                                       .then(leggTilPersonnavn(kontaktinfo.getOrganisasjonSomKontakt()));
 
-            kontaktinfo.getPersonSomKontakt().setEksisterendePerson(
-                    isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
+                           } else if (nonNull(kontaktinfo.getPersonSomKontakt())) {
 
-            if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+                               kontaktinfo.getPersonSomKontakt().setEksisterendePerson(
+                                       isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
 
-                processing = leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson)
-                        .then(leggTilPersonadresse(kontaktinfo))
-                        .then(Mono.fromRunnable(() -> kontaktinfo.getPersonSomKontakt().setNavn(null)));
-            }
-        }
+                               if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-        if (nonNull(kontaktinfoOriginal.getAdresse()) &&
-            (isNotBlank(kontaktinfoOriginal.getAdresse().getLandkode()) ||
-             isNotBlank(kontaktinfoOriginal.getAdresse().getAdresselinje1()))) {
+                                   processing = leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson)
+                                           .then(leggTilPersonadresse(kontaktinfo))
+                                           .then(Mono.fromRunnable(() -> kontaktinfo.getPersonSomKontakt().setNavn(null)));
+                               }
+                           }
 
-            processing = processing
-                    .then(getAdresse(kontaktinfoOriginal)
-                            .doOnNext(kontaktinfo::setAdresse)
-                            .then());
-        }
+                           if (nonNull(kontaktinfoOriginal.getAdresse()) &&
+                               (isNotBlank(kontaktinfoOriginal.getAdresse().getLandkode()) ||
+                                isNotBlank(kontaktinfoOriginal.getAdresse().getAdresselinje1()))) {
 
-        return processing.thenReturn(kontaktinfo);
+                               processing = processing
+                                       .then(getAdresse(kontaktinfoOriginal)
+                                               .doOnNext(kontaktinfo::setAdresse)
+                                               .then());
+                           }
+
+                           return processing.thenReturn(kontaktinfo);
+                       });
     }
 
     private Mono<Void> leggTilPersonadresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
@@ -272,11 +285,11 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private Mono<PersonNavnDTO> hentPersonnavn(PersonNavnDTO personnavn) {
 
-        var navn = isNull(personnavn) ? new PersonNavnDTO() : personnavn;
+        val navn = isNull(personnavn) ? new PersonNavnDTO() : personnavn;
         if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
             (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()))) {
 
-            return genererNavnServiceConsumer.getNavn(1)
+            return genererNavnServiceConsumer.getNavn()
                     .doOnNext(nyttNavn -> {
                         navn.setFornavn(blankCheck(navn.getFornavn(), nyttNavn.getAdjektiv()));
                         navn.setEtternavn(blankCheck(navn.getEtternavn(), nyttNavn.getSubstantiv()));
@@ -327,12 +340,12 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private boolean isValidOrganisasjonName(KontaktinformasjonForDoedsboDTO kontakt) {
 
-        var advokat = isNull(kontakt.getAdvokatSomKontakt()) ||
+        val advokat = isNull(kontakt.getAdvokatSomKontakt()) ||
                       isNotBlank(kontakt.getAdvokatSomKontakt().getOrganisasjonsnummer()) ||
                       isBlank(kontakt.getAdvokatSomKontakt().getOrganisasjonsnummer()) &&
                       isBlank(kontakt.getAdvokatSomKontakt().getOrganisasjonsnavn());
 
-        var organisasjon = isNull(kontakt.getOrganisasjonSomKontakt()) ||
+        val organisasjon = isNull(kontakt.getOrganisasjonSomKontakt()) ||
                            isNotBlank(kontakt.getOrganisasjonSomKontakt().getOrganisasjonsnummer()) ||
                            isBlank(kontakt.getOrganisasjonSomKontakt().getOrganisasjonsnummer()) &&
                            isBlank(kontakt.getOrganisasjonSomKontakt().getOrganisasjonsnavn());

@@ -117,14 +117,13 @@ public class PersonController {
     @Transactional
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
-    public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
+    public Mono<OrdreResponseDTO> sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
                                              @PathVariable String ident,
                                              @Parameter(description = "Angir om 3. personer (egne hovedpersoner i Dolly) skal ekskluderes")
                                              @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 
-        metadataTidspunkterService.updateMetadata(ident);
-
-        return pdlOrdreService.send(ident, ekskluderEksternePersoner);
+        return metadataTidspunkterService.updateMetadata(ident)
+                .then(pdlOrdreService.send(ident, ekskluderEksternePersoner));
     }
 
     @DeleteMapping(value = "/{ident}")

@@ -60,7 +60,7 @@ public class HendelseIdService {
                 .then();
     }
 
-    public Flux<DbVersjonDTO> getPdlOpplysninger(String ident) {
+    public Flux<DbVersjonDTO> getPdlHendelser(String ident) {
 
         return personRepository.findByIdent(ident)
                 .map(DbPerson::getPerson)
@@ -87,7 +87,7 @@ public class HendelseIdService {
         if (isTestnorgeIdent(person.getIdent())) {
 
             return Flux.concat(
-                            getPdlOpplysninger(person.getIdent())
+                            getPdlHendelser(person.getIdent())
                                     .flatMap(opplysning -> buildHendelseRequest(person.getIdent(), opplysning)),
                             relasjonRepository.findByPersonId(person.getId())
                                     .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))

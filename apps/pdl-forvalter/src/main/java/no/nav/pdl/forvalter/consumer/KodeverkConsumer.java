@@ -58,24 +58,19 @@ public class KodeverkConsumer {
                 .map(list -> list.get(random.nextInt(list.size())));
     }
 
-    public String getPoststedNavn(String postnummer) {
+    public Mono<Map<String,String>> getPoststedNavn() {
 
-        return hentKodeverk(POSTNUMMER)
-                .map(postnumre -> postnumre.get(postnummer))
-                .block();
+        return hentKodeverk(POSTNUMMER);
     }
 
-    public String getEmbeteNavn(String embete) {
+    public Mono<Map<String, String>> getFylkesmannsembeter() {
 
-        return hentKodeverk(EMBETER)
-                .map(embeter -> embeter.get(embete))
-                .block();
+        return hentKodeverk(EMBETER);
     }
 
-    public Map<String, String> getKommunerMedHistoriske() {
+    public Mono<Map<String, String>> getKommunerMedHistoriske() {
 
-        return hentKodeverk(KOMMUNER_MED_HISTORISKE)
-                .block();
+        return hentKodeverk(KOMMUNER_MED_HISTORISKE);
     }
 
     private Mono<Map<String, String>> hentKodeverkInner(String kodeverk) {

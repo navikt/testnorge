@@ -24,9 +24,9 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public List<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
+    public Flux<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
 
-        return setOpprettet(artifacter).stream()
+        return setOpprettet(artifacter)
                 .map(element -> ArtifactValue.builder()
                         .artifact(type)
                         .ident(ident)
@@ -40,8 +40,7 @@ public class DeployService {
                                         .ident(ident)
                                         .infoElement(type)
                                         .hendelser(hendelser)
-                                        .build()))
-                .toList();
+                                        .build()));
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordres) {
@@ -49,19 +48,15 @@ public class DeployService {
         return pdlTestdataConsumer.send(ordres);
     }
 
-    private List<? extends DbVersjonDTO> setOpprettet(List<? extends DbVersjonDTO> artifacter) {
+    private Flux<? extends DbVersjonDTO> setOpprettet(List<? extends DbVersjonDTO> artifacter) {
 
-        var max = artifacter.stream()
+        return Flux.fromIterable(artifacter)
                 .filter(artifact -> nonNull(artifact.getId()))
-                .mapToInt(DbVersjonDTO::getId)
-                .max()
-                .orElse(1);
-
-        artifacter.stream()
-                .filter(artifact -> nonNull(artifact.getId()))
-                .forEach(artifact -> artifact.setOpprettet(
-                        Instant.now().minusSeconds((max - artifact.getId()) * 10L)));
-
-        return artifacter;
+                .map(DbVersjonDTO::getId)
+                .reduce(Integer::max)
+                .flatMapMany(max -> Flux.fromIterable(artifacter)
+                        .filter(artifact -> nonNull(artifact.getId()))
+                        .doOnNext(artifact -> artifact.setOpprettet(
+                                Instant.now().minusSeconds((max - artifact.getId()) * 10L))));
     }
 }

@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
@@ -26,6 +27,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,22 +45,28 @@ import static java.util.Objects.nonNull;
 public class MetadataTidspunkterService {
 
     private final PersonRepository personRepository;
+    private final RelasjonRepository relasjonRepository;
     private final MapperFacade mapperFacade;
 
-    public void updateMetadata(String ident) {
+    public Mono<Void> updateMetadata(String ident) {
 
-        fixPerson(ident);
-        personRepository.findByIdent(ident)
-                .ifPresent(dbPerson -> dbPerson.getRelasjoner().stream()
-                        .map(DbRelasjon::getRelatertPerson)
+        return fixPerson(ident)
+                .flatMap(dbPerson -> relasjonRepository.findByPersonId(dbPerson.getId())
+                        .collectList()
+                        .flatMapMany(Flux::fromIterable)
+                        .map(DbRelasjon::getRelatertPersonId)
+                        .collectList()
+                        .flatMapMany(personRepository::findByIdIn)
                         .map(DbPerson::getIdent)
-                        .forEach(this::fixPerson));
+                        .flatMap(this::fixPerson)
+                        .collectList())
+                .then();
     }
 
-    private void fixPerson(String ident) {
+    private Mono<DbPerson> fixPerson(String ident) {
 
-        personRepository.findByIdent(ident)
-                .ifPresent(dbPerson -> {
+        return personRepository.findByIdent(ident)
+                .map(dbPerson -> {
                     var person = dbPerson.getPerson();
 
                     person.getAdressebeskyttelse()
@@ -120,7 +129,9 @@ public class MetadataTidspunkterService {
                     fixOpphoert(person.getUtflytting());
                     person.getVergemaal()
                             .forEach(MetadataTidspunkterService::fixVersioning);
-                });
+                    return dbPerson;
+                })
+                .flatMap(personRepository::save);
     }
 
     private static void fixAddrOpphoert(List<? extends AdresseDTO> adresseopplysning) {
@@ -133,8 +144,8 @@ public class MetadataTidspunkterService {
 
         for (var i = opplysningstype.size() - 1; i > 0; i--) {
             opplysningstype.get(i).getFolkeregistermetadata().setOpphoerstidspunkt(
-                    opplysningstype.get(i).getFolkeregistermetadata().getGyldighetstidspunkt().isAfter(opplysningstype.get(i-1).getFolkeregistermetadata().getGyldighetstidspunkt()) ?
-                    subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()) :
+                    opplysningstype.get(i).getFolkeregistermetadata().getGyldighetstidspunkt().isAfter(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()) ?
+                            subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()) :
                             null);
         }
     }

@@ -4,7 +4,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,7 +27,6 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -90,7 +87,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
             throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
-            validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
+            return validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
         }
         return Mono.empty();
     }
@@ -100,10 +97,10 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         if (FNR == getIdenttype(person.getIdent())) {
 
             if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
-                       person.getInnflytting().stream()
-                               .noneMatch(innflytting -> person.getUtflytting().stream()
-                                       .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
-                                               .isAfter(utflytting.getUtflyttingsdato())))) {
+                person.getInnflytting().stream()
+                        .noneMatch(innflytting -> person.getUtflytting().stream()
+                                .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
+                                        .isAfter(utflytting.getUtflyttingsdato())))) {
 
                 if (person.getUtflytting().getFirst().isVelkjentLand()) {
                     if (isNull(bostedadresse.getUtenlandskAdresse())) {
@@ -137,9 +134,10 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         }
 
         return buildBoadresse(bostedadresse, person)
-                .doOnNext(boadresse -> {
+                .flatMap(boadresse -> genererCoNavn(boadresse.getOpprettCoAdresseNavn()))
+                .doOnNext(adressseNavn -> {
 
-                    bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));
+                    bostedadresse.setCoAdressenavn(adressseNavn);
                     bostedadresse.setOpprettCoAdresseNavn(null);
 
                     if (isNull(bostedadresse.getAngittFlyttedato())) {
