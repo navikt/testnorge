@@ -107,8 +107,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                   genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn())
                             .doOnNext(oppholdsadresse::setCoAdressenavn)
                             .doOnNext(navn -> oppholdsadresse.setOpprettCoAdresseNavn(null))
-                            .thenReturn(oppholdsadresse);
-                );
+                            .thenReturn(oppholdsadresse));
     }
 
     private Mono<OppholdsadresseDTO> getOppholdsadresse(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {

@@ -172,11 +172,12 @@ public class PersonService {
 
         } else
 
-            return personRepository.findAll(
-                            PageRequest.of(paginering.getSidenummer(),
-                                    paginering.getSidestoerrelse(),
-                                    Sort.by(SORT_BY_FIELD).descending()))
-                    .map(person -> mapperFacade.map(person, FullPersonDTO.class)); //TBD
+            return  Flux.empty();
+//            return personRepository.findAll(
+//                            PageRequest.of(paginering.getSidenummer(),
+//                                    paginering.getSidestoerrelse(),
+//                                    Sort.by(SORT_BY_FIELD).descending()))
+//                    .map(person -> mapperFacade.map(person, FullPersonDTO.class)); //TBD
     }
 
     @Transactional

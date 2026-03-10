@@ -57,8 +57,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 
 @Slf4j
@@ -80,15 +78,7 @@ public class PersonController {
                                          @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
                                          @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
                                          @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først, default 10")
-                                         @RequestParam(required = false) Integer sidestorrelse) {
-
-        if (isNull(sidestorrelse)) {
-            if (nonNull(identer)) {
-                sidestorrelse = 200;
-            } else {
-                sidestorrelse = 10;
-            }
-        }
+                                         @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
 
         return personService.getPerson(identer, Paginering.builder()
                 .sidenummer(sidenummer)

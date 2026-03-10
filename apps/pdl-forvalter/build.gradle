@@ -30,6 +30,9 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
+    runtimeOnly "io.r2dbc:r2dbc-pool"
+
     implementation "org.postgresql:postgresql"
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
