@@ -1,23 +1,19 @@
 package no.nav.pdl.forvalter.database.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.pdl.forvalter.database.JSONUserType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -48,17 +44,10 @@ public class DbPerson {
     private String etternavn;
 
     @Column
-    @JsonSubTypes.Type(JSONUserType.class)
     private PersonDTO person;
 
     @Version
     private Integer versjon;
-
-//    @Transient
-//    private List<DbRelasjon> relasjoner;
-//
-//    @Transient
-//    private List<DbAlias> alias;
 
     @Override
     public boolean equals(Object o) {
