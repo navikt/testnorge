@@ -585,7 +585,11 @@ export default (props: PersonVisningProps) => {
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-					<GjenopprettPerson ident={ident} />
+					<GjenopprettPerson
+						ident={ident}
+						gruppeId={gruppeId}
+						onGjenopprettDone={() => fetchDataFraFagsystemer(bestillinger)}
+					/>
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
