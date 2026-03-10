@@ -95,7 +95,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
             validatePostBoksAdresse(adresse.getPostboksadresse());
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
-            validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
+            return validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
         }
         return Mono.empty();
     }
@@ -103,14 +103,16 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
     private Mono<KontaktadresseDTO> handle(KontaktadresseDTO kontaktadresse, PersonDTO person) {
 
         return getKontaktadresse(kontaktadresse, person)
-                .doOnNext(kontaktadresser -> {
+                .flatMap(kontaktadresser -> {
                     if (Master.PDL == kontaktadresse.getMaster()) {
                         kontaktadresse.setGyldigFraOgMed(nonNull(kontaktadresse.getGyldigFraOgMed()) ? kontaktadresse.getGyldigFraOgMed() : now());
                         kontaktadresse.setGyldigTilOgMed(nonNull(kontaktadresse.getGyldigTilOgMed()) ? kontaktadresse.getGyldigTilOgMed() :
                                 kontaktadresse.getGyldigFraOgMed().plusYears(1));
                     }
-                    kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
-                    kontaktadresse.setOpprettCoAdresseNavn(null);
+                    return genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn())
+                            .doOnNext(kontaktadresse::setCoAdressenavn)
+                            .doOnNext(navn -> kontaktadresse.setOpprettCoAdresseNavn(null))
+                            .thenReturn(kontaktadresse);
                 });
     }
 
@@ -141,11 +143,15 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
-            kontaktadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster()));
+            return enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster())
+                    .doOnNext(kontaktadresse::setUtenlandskAdresse)
+                    .thenReturn(kontaktadresse);
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresseIFrittFormat())) {
 
-            kontaktadresse.setUtenlandskAdresseIFrittFormat(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresseIFrittFormat(), getLandkode(person)));
+            return enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresseIFrittFormat(), getLandkode(person))
+                            .doOnNext(kontaktadresse::setUtenlandskAdresseIFrittFormat)
+                            .thenReturn(kontaktadresse);
 
         } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat()) && kontaktadresse.getPostadresseIFrittFormat().isEmpty()) {
 

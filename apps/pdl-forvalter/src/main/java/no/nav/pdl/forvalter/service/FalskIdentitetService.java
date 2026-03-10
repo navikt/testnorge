@@ -9,7 +9,6 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
@@ -22,11 +21,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -195,7 +192,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private Mono<Void> setNavn(FalskIdentitetDTO identitet) {
 
         if (isNavnUpdateRequired(identitet.getRettIdentitetVedOpplysninger().getPersonnavn())) {
-            return genererNavnServiceConsumer.getNavn(1)
+            return genererNavnServiceConsumer.getNavn()
                     .doOnNext(nyttNavn -> {
 
                         identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setFornavn(

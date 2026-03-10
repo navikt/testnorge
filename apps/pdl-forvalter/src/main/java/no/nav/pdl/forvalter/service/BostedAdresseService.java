@@ -171,8 +171,10 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
             bostedadresse.setMaster(Master.PDL);
 
-            bostedadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(bostedadresse.getUtenlandskAdresse(), getLandkode(person),
-                    bostedadresse.getMaster()));
+            return enkelAdresseService.getUtenlandskAdresse(bostedadresse.getUtenlandskAdresse(), getLandkode(person),
+                            bostedadresse.getMaster())
+                    .doOnNext(bostedadresse::setUtenlandskAdresse)
+                    .thenReturn(bostedadresse);
         }
 
         return Mono.just(bostedadresse);

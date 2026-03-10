@@ -54,28 +54,31 @@ public class AdresseServiceConsumer {
         var startTime = currentTimeMillis();
         var vegadresseDTO = mapperFacade.map(vegadresse, VegadresseDTO.class);
 
-        if (UOPPGITT.equals(vegadresse.getKommunenummer())) {
-            vegadresseDTO.setKommunenummer(null);
-        } else {
-            vegadresseDTO.setKommunenummer(sjekkHistorisk(vegadresse.getKommunenummer()));
-        }
-
-        return tokenExchange.exchange(serverProperties)
-                .flatMap(token ->
-                        new VegadresseServiceCommand(webClient, vegadresseDTO, matrikkelId, token.getTokenValue()).call())
-                .flatMapMany(Flux::fromArray)
-                .next()
-                .switchIfEmpty(Mono.defer(() -> Mono.just(VegadresseServiceCommand.defaultAdresse())))
-                .doOnNext(adresse -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
-                .map(adresse -> {
-                    if (isNotBlank(vegadresseDTO.getKommunenummer()) &&
-                            isNotBlank(vegadresse.getKommunenummer()) &&
-                            !UOPPGITT.equals(vegadresse.getKommunenummer()) &&
-                            !"FYRSTIKKALLÉEN".equals(adresse.getAdressenavn())) {
-                        adresse.setKommunenummer(vegadresse.getKommunenummer());
+        return Mono.defer(() -> {
+                    if (UOPPGITT.equals(vegadresse.getKommunenummer())) {
+                        vegadresseDTO.setKommunenummer(null);
+                        return Mono.empty();
+                    } else {
+                        return sjekkHistorisk(vegadresse.getKommunenummer())
+                                .doOnNext(kommunenummer -> vegadresseDTO.setKommunenummer(isNotBlank(kommunenummer) ? kommunenummer : null));
                     }
-                    return adresse;
-                });
+                })
+                .then(tokenExchange.exchange(serverProperties)
+                        .flatMap(token ->
+                                new VegadresseServiceCommand(webClient, vegadresseDTO, matrikkelId, token.getTokenValue()).call())
+                        .flatMapMany(Flux::fromArray)
+                        .next()
+                        .switchIfEmpty(Mono.defer(() -> Mono.just(VegadresseServiceCommand.defaultAdresse())))
+                        .doOnNext(adresse -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
+                        .map(adresse -> {
+                            if (isNotBlank(vegadresseDTO.getKommunenummer()) &&
+                                isNotBlank(vegadresse.getKommunenummer()) &&
+                                !UOPPGITT.equals(vegadresse.getKommunenummer()) &&
+                                !"FYRSTIKKALLÉEN".equals(adresse.getAdressenavn())) {
+                                adresse.setKommunenummer(vegadresse.getKommunenummer());
+                            }
+                            return adresse;
+                        }));
     }
 
     public Mono<no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO> getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
@@ -84,45 +87,51 @@ public class AdresseServiceConsumer {
 
         var matrikkeladresseDTO = mapperFacade.map(adresse, MatrikkeladresseDTO.class);
 
-        if (UOPPGITT.equals(matrikkeladresseDTO.getKommunenummer())) {
-            matrikkeladresseDTO.setKommunenummer(null);
-        } else {
-            matrikkeladresseDTO.setKommunenummer(sjekkHistorisk(matrikkeladresseDTO.getKommunenummer()));
-        }
-
-        return tokenExchange.exchange(serverProperties)
-                .flatMap(token ->
-                        new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
-                .flatMapMany(Flux::fromArray)
-                .next()
-                .switchIfEmpty(Mono.defer(() -> Mono.just(MatrikkeladresseServiceCommand.defaultAdresse())))
-                .doOnNext(adresseDTO -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
-                .map(adresseDTO -> {
-                    if (isNotBlank(matrikkeladresseDTO.getKommunenummer()) &&
-                            isNotBlank(adresse.getKommunenummer()) &&
-                            !UOPPGITT.equals(adresse.getKommunenummer()) &&
-                            !"VALEN".equals(adresseDTO.getTilleggsnavn())) {
-                        adresseDTO.setKommunenummer(adresse.getKommunenummer());
+        return Mono.defer(() -> {
+                    if (UOPPGITT.equals(matrikkeladresseDTO.getKommunenummer())) {
+                        matrikkeladresseDTO.setKommunenummer(null);
+                        return Mono.empty();
+                    } else {
+                        return sjekkHistorisk(matrikkeladresseDTO.getKommunenummer())
+                                .doOnNext(kommunenummer ->
+                                        matrikkeladresseDTO.setKommunenummer(isNotBlank(kommunenummer) ? kommunenummer : null));
                     }
-                    return adresseDTO;
-                });
+                })
+                .then(tokenExchange.exchange(serverProperties)
+                        .flatMap(token ->
+                                new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
+                        .flatMapMany(Flux::fromArray)
+                        .next()
+                        .switchIfEmpty(Mono.defer(() -> Mono.just(MatrikkeladresseServiceCommand.defaultAdresse())))
+                        .doOnNext(adresseDTO -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
+                        .map(adresseDTO -> {
+                            if (isNotBlank(matrikkeladresseDTO.getKommunenummer()) &&
+                                isNotBlank(adresse.getKommunenummer()) &&
+                                !UOPPGITT.equals(adresse.getKommunenummer()) &&
+                                !"VALEN".equals(adresseDTO.getTilleggsnavn())) {
+                                adresseDTO.setKommunenummer(adresse.getKommunenummer());
+                            }
+                            return adresseDTO;
+                        }));
     }
 
-    private String sjekkHistorisk(String kommunenummer) {
+    private Mono<String> sjekkHistorisk(String kommunenummer) {
 
         if (isNotBlank(kommunenummer)) {
-            var historiske = kodeverkConsumer.getKommunerMedHistoriske();
-            var kommunenavn = historiske.get(kommunenummer);
-            if (isNotBlank(kommunenavn) && kommunenavn.endsWith(HISTORISK)) {
-                var gjeldendeKommunenavn = historiskeKommunerMedNyttNavn(remove(kommunenavn, HISTORISK).trim());
-                return historiske.entrySet().stream()
-                        .filter(kommune -> kommune.getValue().equals(gjeldendeKommunenavn))
-                        .map(Map.Entry::getKey)
-                        .findFirst()
-                        .orElse(null);
-            }
+            return kodeverkConsumer.getKommunerMedHistoriske()
+                    .flatMap(historiske -> Mono.just(historiske.get(kommunenummer))
+                            .filter(kommunenavn -> isNotBlank(kommunenavn) && kommunenavn.endsWith(HISTORISK))
+                            .map(kommunenavn -> remove(kommunenavn, HISTORISK).trim())
+                            .map(this::historiskeKommunerMedNyttNavn)
+                            .zipWith(Mono.just(historiske)))
+                    .flatMap(tuple -> Mono.just(tuple.getT2())
+                            .map(Map::entrySet)
+                            .flatMapMany(Flux::fromIterable)
+                            .filter(kommune -> kommune.getValue().equals(tuple.getT1()))
+                            .map(Map.Entry::getKey)
+                            .next());
         }
-        return kommunenummer;
+        return Mono.just("");
     }
 
     private String historiskeKommunerMedNyttNavn(String kommunenavn) {

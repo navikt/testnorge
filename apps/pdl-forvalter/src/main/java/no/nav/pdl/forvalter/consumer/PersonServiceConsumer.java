@@ -8,7 +8,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
@@ -39,23 +39,23 @@ public class PersonServiceConsumer {
     }
 
     @SneakyThrows
-    public Flux<Boolean> syncIdent(String ident) {
+    public Mono<Boolean> syncIdent(String ident) {
 
         return getPersonService(ident, new AtomicLong(0), false);
     }
 
-    private Flux<Boolean> getPersonService(String ident, AtomicLong counter, Boolean response) {
+    private Mono<Boolean> getPersonService(String ident, AtomicLong counter, Boolean response) {
 
         if (isTrue(response) || counter.get() == MAX_REPETITIONS) {
             log.info("Synkronisering av ident {} tok {} repetisjoner", ident, counter.get());
-            return Flux.just(response);
+            return Mono.just(response);
 
         } else {
             counter.incrementAndGet();
-            return Flux.just(1)
-                    .delayElements(Duration.ofMillis(DELAY))
+            return Mono.just(true)
+                    .delayElement(Duration.ofMillis(DELAY))
                     .flatMap(delayed -> tokenExchange.exchange(serverProperties)
-                            .flatMapMany(token -> new PersonExistsGetCommand(webClient, ident, token.getTokenValue()).call())
+                            .flatMap(token -> new PersonExistsGetCommand(webClient, ident, token.getTokenValue()).call())
                             .flatMap(resultat -> getPersonService(ident, counter, resultat)));
         }
     }

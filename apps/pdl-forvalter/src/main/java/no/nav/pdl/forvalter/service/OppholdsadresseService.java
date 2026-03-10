@@ -94,7 +94,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
-            validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
+            return validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
         }
         return Mono.empty();
     }
@@ -102,11 +102,13 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
     protected Mono<OppholdsadresseDTO> handle(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
 
         return getOppholdsadresse(oppholdsadresse, person)
-                .doOnNext(adresse -> {
+                .flatMap(adresse ->
 
-                    oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));
-                    oppholdsadresse.setOpprettCoAdresseNavn(null);
-                });
+                  genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn())
+                            .doOnNext(oppholdsadresse::setCoAdressenavn)
+                            .doOnNext(navn -> oppholdsadresse.setOpprettCoAdresseNavn(null))
+                            .thenReturn(oppholdsadresse);
+                );
     }
 
     private Mono<OppholdsadresseDTO> getOppholdsadresse(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
@@ -127,6 +129,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         }
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
+
             return adresseServiceConsumer.getVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen())
                     .map(vegadresse -> {
                         oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(),
@@ -136,6 +139,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                     });
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
+
             return adresseServiceConsumer.getMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen())
                     .map(matrikkeladresse -> {
                         oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(oppholdsadresse, person.getIdent(), matrikkeladresse.getMatrikkelId()));
@@ -144,8 +148,11 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                     });
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
-            oppholdsadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(
-                    oppholdsadresse.getUtenlandskAdresse(), getLandkode(person), oppholdsadresse.getMaster()));
+
+            return enkelAdresseService.getUtenlandskAdresse(
+                            oppholdsadresse.getUtenlandskAdresse(), getLandkode(person), oppholdsadresse.getMaster())
+                    .doOnNext(oppholdsadresse::setUtenlandskAdresse)
+                    .thenReturn(oppholdsadresse);
         }
 
         return Mono.just(oppholdsadresse);

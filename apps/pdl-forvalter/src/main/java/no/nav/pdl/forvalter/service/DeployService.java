@@ -32,14 +32,13 @@ public class DeployService {
                         .ident(ident)
                         .body(element)
                         .build())
-                .map(value -> (Ordre) accessToken ->
+                .map(value -> accessToken ->
                         pdlTestdataConsumer.send(value, accessToken)
-                                .collectList()
-                                .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
+                                .map(hendelse -> OrdreResponseDTO.PdlStatusDTO
                                         .builder()
                                         .ident(ident)
                                         .infoElement(type)
-                                        .hendelser(hendelser)
+                                        .hendelser(List.of(hendelse))
                                         .build()));
     }
 

@@ -8,7 +8,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -46,7 +45,7 @@ public class ValidateArtifactsService {
 
     public Mono<Void> validate(PersonDTO person) {
 
-        Stream.of(
+        return Flux.merge(
                         validate(kjoennService, person.getKjoenn(), person),
                         validate(innflyttingService, person.getInnflytting()),
                         validate(bostedAdresseService, person.getBostedsadresse(), person),
@@ -75,8 +74,7 @@ public class ValidateArtifactsService {
                         validate(doedfoedtBarnService, person.getDoedfoedtBarn()),
                         validate(identtypeService, person.getNyident())
                 )
-                .reduce(Flux.empty(), Flux::concat)
-                .collectList();
+                .then();
     }
 
     private <T extends DbVersjonDTO> Flux<Void> validate(Validation<T> validation, List<T> artifact) {
@@ -90,10 +88,8 @@ public class ValidateArtifactsService {
 
     private <T extends DbVersjonDTO, R> Flux<Void> validate(BiValidation<T, R> validation, List<T> artifact, R person) {
 
-        artifact.stream()
+        return Flux.fromIterable(artifact)
                 .filter(type -> isTrue(type.getIsNew()))
-                .forEach(type -> validation.validate(type, person));
-
-        return Flux.empty();
+                .flatMap(type -> validation.validate(type, person));
     }
 }

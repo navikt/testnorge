@@ -92,9 +92,9 @@ public class PersonService {
 
         return checkAlias(ident)
                 .then(getDbPerson(ident))
-                .flatMap(dbPerson -> mergeService.merge(request.getPerson(), dbPerson.getPerson())
+                .flatMap(dbPerson -> mergeService.merge(request.getPerson(), dbPerson)
                         .flatMap(mergedPerson -> isNotTrue(relaxed) ?
-                                validateArtifactsService.validate(mergedPerson)
+                                validateArtifactsService.validate(mergedPerson.getPerson())
                                         .then(Mono.just(mergedPerson)) : Mono.just(mergedPerson))
                         .flatMap(mergedPerson -> personArtifactService.buildPerson(mergedPerson, relaxed))
                         .map(extendedArtifacts -> {

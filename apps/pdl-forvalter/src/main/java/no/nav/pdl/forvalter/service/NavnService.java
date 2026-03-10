@@ -76,7 +76,7 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO> {
         if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
             (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()))) {
 
-            return genererNavnServiceConsumer.getNavn(1)
+            return genererNavnServiceConsumer.getNavn()
                     .doOnNext(nyttNavn -> {
                         navn.setFornavn(blankCheck(navn.getFornavn(), nyttNavn.getAdjektiv()));
                         navn.setEtternavn(blankCheck(navn.getEtternavn(), nyttNavn.getSubstantiv()));

@@ -40,7 +40,7 @@ public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .header("hendelseId", hendelseId)
                 .retrieve()
-                .bodyToFlux(PdlBestillingResponse.class)
+                .bodyToMono(PdlBestillingResponse.class)
                 .timeout(TIMEOUT)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                         .status(PdlStatus.OK)

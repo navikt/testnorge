@@ -2,7 +2,9 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
@@ -42,10 +44,13 @@ public class MergeService {
         }
     }
 
-    public Mono<PersonDTO> merge(PersonDTO request, PersonDTO dbPerson) {
+    public Mono<DbPerson> merge(PersonDTO request, DbPerson dbPerson) {
+
+        val person = nonNull(dbPerson.getPerson()) ? dbPerson.getPerson() : new PersonDTO();
+        dbPerson.setPerson(person);
 
         if (!request.getTelefonnummer().isEmpty()) {
-            dbPerson.setTelefonnummer(null);
+            person.setTelefonnummer(null);
         }
         Stream.of(request.getClass().getDeclaredFields())
                 .filter(field ->
@@ -56,7 +61,7 @@ public class MergeService {
             if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {
 
                 var infoElementRequest = (List<DbVersjonDTO>) getValue(request, field.getName());
-                var infoElementDbPerson = (List<DbVersjonDTO>) getValue(dbPerson, field.getName());
+                var infoElementDbPerson = (List<DbVersjonDTO>) getValue(person, field.getName());
                 var dbId = new AtomicInteger(infoElementDbPerson.stream()
                         .mapToInt(DbVersjonDTO::getId)
                         .max().orElse(0));

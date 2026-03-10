@@ -115,7 +115,7 @@ public class PdlTestdataConsumer {
                 .map(List::getFirst);
     }
 
-    public Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
+    public Mono<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
 
         String body;
         try {
@@ -125,7 +125,7 @@ public class PdlTestdataConsumer {
             }
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
-            return Flux.just(
+            return Mono.just(
                     OrdreResponseDTO.HendelseDTO.builder()
                             .id(value.getBody().getId())
                             .status(PdlStatus.FEIL)
@@ -180,7 +180,7 @@ public class PdlTestdataConsumer {
                             accessToken.getTokenValue(),
                             value.getBody().getId()
                     ).call() :
-                    Flux.empty();
+                    Mono.empty();
         };
     }
 
