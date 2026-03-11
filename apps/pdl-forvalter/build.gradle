@@ -39,5 +39,6 @@ dependencies {
 
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
 
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
     testImplementation "org.springframework.security:spring-security-test"
 }

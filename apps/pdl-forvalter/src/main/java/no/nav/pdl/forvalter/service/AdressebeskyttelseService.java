@@ -44,11 +44,11 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
 
         if (FNR != IdenttypeUtility.getIdenttype(person.getIdent()) &&
                 FORTROLIG == adressebeskyttelse.getGradering()) {
-            throw new InvalidRequestException(VALIDATION_INVALID_BESKYTTELSE);
+            return Mono.error(new InvalidRequestException(VALIDATION_INVALID_BESKYTTELSE));
         }
         if (STRENGT_FORTROLIG_UTLAND == adressebeskyttelse.getGradering() &&
                 Master.FREG == adressebeskyttelse.getMaster()) {
-            throw new InvalidRequestException(VALIDATION_UTLAND_MASTER_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_UTLAND_MASTER_ERROR));
         }
         return Mono.empty();
     }

@@ -54,16 +54,16 @@ public class VergemaalService implements Validation<VergemaalDTO> {
     public Mono<Void> validate(VergemaalDTO vergemaal) {
 
         if (isNull(vergemaal.getVergemaalEmbete())) {
-            throw new InvalidRequestException(VALIDATION_EMBETE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_EMBETE_ERROR));
         }
 
         if (nonNull(vergemaal.getGyldigFraOgMed()) && nonNull(vergemaal.getGyldigTilOgMed()) &&
             !vergemaal.getGyldigFraOgMed().isBefore(vergemaal.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR));
         }
 
         if (isNull(vergemaal.getSakType())) {
-            throw new InvalidRequestException(VALIDATION_TYPE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_TYPE_ERROR));
         }
 
         if (isNotBlank(vergemaal.getVergeIdent())) {

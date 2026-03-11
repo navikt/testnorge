@@ -73,25 +73,25 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
     public Mono<Void> validate(OppholdsadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
-            throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR));
 
         }
         if (FNR == IdenttypeUtility.getIdenttype(person.getIdent()) &&
             STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
             adresse.countAdresser() > 0) {
-            throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
+            return Mono.error(new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS));
         }
 
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
-            validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
+            return validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getMatrikkeladresse()) && isNotBlank(adresse.getMatrikkeladresse().getBruksenhetsnummer())) {
-            validateBruksenhet(adresse.getMatrikkeladresse().getBruksenhetsnummer());
+            return validateBruksenhet(adresse.getMatrikkeladresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getGyldigFraOgMed()) && nonNull(adresse.getGyldigTilOgMed()) &&
             !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR));
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
             return validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());

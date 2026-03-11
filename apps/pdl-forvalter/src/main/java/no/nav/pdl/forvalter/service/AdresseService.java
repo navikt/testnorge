@@ -95,10 +95,11 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         return OUT_OF_BOUND;
     }
 
-    protected static void validateBruksenhet(String bruksenhet) {
+    protected static Mono<Void> validateBruksenhet(String bruksenhet) {
         if (!bruksenhet.matches("[HULK]\\d{4}")) {
-            throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR));
         }
+        return Mono.empty();
     }
 
     protected Mono<Void> validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {

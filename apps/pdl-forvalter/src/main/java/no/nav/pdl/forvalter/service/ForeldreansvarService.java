@@ -114,19 +114,19 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                         if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
                             isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
                             !isRelasjonMor(hovedperson)) {
-                            throw new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION);
+                            return Mono.error(new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION));
                         }
 
                         if ((foreldreansvar.getAnsvar() == Ansvar.FAR) &&
                             isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
                             !isRelasjonFar(hovedperson)) {
-                            throw new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION);
+                            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION));
                         }
 
                         if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
                             isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
                             !isRelasjonForeldre(hovedperson)) {
-                            throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
+                            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION));
                         }
                     } else {
 
@@ -152,13 +152,13 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private Mono<Void> validateForeldreansvar(ForeldreansvarDTO foreldreansvar) {
 
         if (isNull(foreldreansvar.getAnsvar())) {
-            throw new InvalidRequestException(INVALID_EMPTY_ANSVAR_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_EMPTY_ANSVAR_EXCEPTION));
         }
 
         if (nonNull(foreldreansvar.getAnsvarlig()) &&
             nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-            throw new InvalidRequestException(INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION));
         }
 
         return Mono.defer(() -> {
@@ -193,25 +193,26 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 }));
     }
 
-    private void validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private Mono<Void> validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
         if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
             isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
             !isRelasjonFraBarn(barn, MOR, MEDMOR)) {
-            throw new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION));
         }
 
         if ((foreldreansvar.getAnsvar() == Ansvar.FAR) &&
             isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
             !isRelasjonFraBarn(barn, FAR)) {
-            throw new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION));
         }
 
         if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
             isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
             !isRelasjonForeldreFraBarn(barn)) {
-            throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION));
         }
+        return Mono.empty();
     }
 
     private static boolean isRelasjonForeldreFraBarn(PersonDTO barn) {

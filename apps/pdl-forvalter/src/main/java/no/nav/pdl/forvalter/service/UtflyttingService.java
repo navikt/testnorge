@@ -45,7 +45,6 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(utflytting -> person.setUtflytting(new ArrayList<>(utflytting)))
                 .then();
     }
 
@@ -53,7 +52,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     public Mono<Void> validate(UtflyttingDTO utflytting) {
 
         if (isNotBlank(utflytting.getTilflyttingsland()) && !hasLandkode(utflytting.getTilflyttingsland())) {
-            throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_LANDKODE_ERROR));
         }
         return Mono.empty();
     }

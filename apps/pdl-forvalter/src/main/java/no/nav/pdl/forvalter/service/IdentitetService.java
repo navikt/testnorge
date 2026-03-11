@@ -49,7 +49,7 @@ public class IdentitetService {
     public Flux<PersonIDDTO> getfragment(String fragment, Paginering paginering) {
 
         if (isBlank(fragment)) {
-            throw new InvalidRequestException(FRAGMENT_INVALID);
+            return Flux.error(new InvalidRequestException(FRAGMENT_INVALID));
         }
 
         return searchPerson(fragment, paginering)

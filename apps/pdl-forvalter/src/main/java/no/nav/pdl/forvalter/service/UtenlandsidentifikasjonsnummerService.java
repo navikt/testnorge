@@ -37,19 +37,19 @@ public class UtenlandsidentifikasjonsnummerService implements Validation<Utenlan
     public Mono<Void> validate(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
 
         if (isBlank(identifikasjon.getIdentifikasjonsnummer())) {
-            throw new InvalidRequestException(VALIDATION_ID_NUMMER_MISSING);
+            return Mono.error(new InvalidRequestException(VALIDATION_ID_NUMMER_MISSING));
         }
 
         if (isNull(identifikasjon.getOpphoert())) {
-            throw new InvalidRequestException(VALIDATION_OPPHOERT_MISSING);
+            return Mono.error(new InvalidRequestException(VALIDATION_OPPHOERT_MISSING));
         }
 
         if (isNull(identifikasjon.getUtstederland())) {
-            throw new InvalidRequestException(VALIDATION_UTSTEDER_LAND_MISSING);
+            return Mono.error(new InvalidRequestException(VALIDATION_UTSTEDER_LAND_MISSING));
         }
 
         if (!identifikasjon.getUtstederland().matches("[A-Z]{3}")) {
-            throw new InvalidRequestException(VALIDATION_LANDKODE_ILLEGAL_FORMAT);
+            return Mono.error(new InvalidRequestException(VALIDATION_LANDKODE_ILLEGAL_FORMAT));
         }
         return Mono.empty();
     }

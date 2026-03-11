@@ -51,7 +51,7 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
     public Mono<Void> validate(InnflyttingDTO innflytting) {
 
         if (isNotBlank(innflytting.getFraflyttingsland()) && !hasLandkode(innflytting.getFraflyttingsland())) {
-            throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_LANDKODE_ERROR));
         }
         return Mono.empty();
     }

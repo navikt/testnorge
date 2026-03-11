@@ -40,18 +40,8 @@ public class DbRelasjon {
     @Column
     private Long relatertPersonId;
 
-//    @Transient
-//    private DbPerson person;
-//
-//    @Transient
-//    private DbPerson relatertPerson;
-
     @Version
     private Integer versjon;
-
-    public boolean hasGammelIdentitet() {
-        return relasjonType == RelasjonType.GAMMEL_IDENTITET;
-    }
 
     @Override
     public boolean equals(Object o) {

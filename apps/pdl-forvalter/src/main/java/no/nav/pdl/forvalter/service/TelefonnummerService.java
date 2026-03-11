@@ -45,23 +45,23 @@ public class TelefonnummerService implements Validation<TelefonnummerDTO> {
     public Mono<Void> validate(TelefonnummerDTO telefonnummer) {
 
         if (isNull(telefonnummer.getNummer())) {
-            throw new InvalidRequestException(VALIDATION_NUMMER_REQUIRED);
+            return Mono.error(new InvalidRequestException(VALIDATION_NUMMER_REQUIRED));
         } else if (!telefonnummer.getNummer().matches("\\d*")) {
-            throw new InvalidRequestException(VALIDATION_NUMMER_INVALID_FORMAT);
+            return Mono.error(new InvalidRequestException(VALIDATION_NUMMER_INVALID_FORMAT));
         } else if (!telefonnummer.getNummer().matches("\\d{3,16}")) {
-            throw new InvalidRequestException(VALIDATION_NUMMER_INVALID_LENGTH);
+            return Mono.error(new InvalidRequestException(VALIDATION_NUMMER_INVALID_LENGTH));
         }
 
         if (isNull(telefonnummer.getLandskode())) {
-            throw new InvalidRequestException(VALIDATION_LANDSKODE_REQUIRED);
+            return Mono.error(new InvalidRequestException(VALIDATION_LANDSKODE_REQUIRED));
         } else if (!telefonnummer.getLandskode().matches("\\+\\d{1,5}")) {
-            throw new InvalidRequestException(VALIDATION_LANDKODE_INVALID_FORMAT);
+            return Mono.error(new InvalidRequestException(VALIDATION_LANDKODE_INVALID_FORMAT));
         }
 
         if (isNull(telefonnummer.getPrioritet())) {
-            throw new InvalidRequestException(VALIDATION_PRIORITET_REQUIRED);
+            return Mono.error(new InvalidRequestException(VALIDATION_PRIORITET_REQUIRED));
         } else if (telefonnummer.getPrioritet() < 1 || telefonnummer.getPrioritet() > 2) {
-            throw new InvalidRequestException(VALIDATION_PRIORITET_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_PRIORITET_ERROR));
         }
         return Mono.empty();
     }

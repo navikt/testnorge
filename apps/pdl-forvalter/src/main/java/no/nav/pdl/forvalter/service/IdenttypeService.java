@@ -83,26 +83,26 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
         if (nonNull(request.getIdenttype()) && FNR != request.getIdenttype() &&
             DNR != request.getIdenttype() && NPID != request.getIdenttype()) {
-            throw new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID);
+            return Mono.error(new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID));
         }
 
         if (nonNull(request.getFoedtEtter()) && (START_OF_ERA.isAfter(request.getFoedtEtter()) ||
                                                  LocalDateTime.now().isBefore(request.getFoedtEtter()))) {
-            throw new InvalidRequestException(VALIDATION_DATO_INVALID);
+            return Mono.error(new InvalidRequestException(VALIDATION_DATO_INVALID));
         }
 
         if (nonNull(request.getFoedtFoer()) && (START_OF_ERA.isAfter(request.getFoedtFoer()) ||
                                                 LocalDateTime.now().isBefore(request.getFoedtFoer()))) {
-            throw new InvalidRequestException(VALIDATION_DATO_INVALID);
+            return Mono.error(new InvalidRequestException(VALIDATION_DATO_INVALID));
         }
 
         if (nonNull(request.getFoedtEtter()) && nonNull(request.getFoedtFoer()) &&
             request.getFoedtEtter().isAfter(request.getFoedtFoer())) {
-            throw new InvalidRequestException(VALIDATION_DATO_INTERVAL_INVALID);
+            return Mono.error(new InvalidRequestException(VALIDATION_DATO_INTERVAL_INVALID));
         }
 
         if (nonNull(request.getAlder()) && (request.getAlder() < 0 || request.getAlder() > 120)) {
-            throw new InvalidRequestException(VALIDATION_ALDER_NOT_ALLOWED);
+            return Mono.error(new InvalidRequestException(VALIDATION_ALDER_NOT_ALLOWED));
         }
         return Mono.empty();
     }

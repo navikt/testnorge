@@ -71,20 +71,20 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     public Mono<Void> validate(BostedadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
-            throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR));
         }
         if (Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
-            throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR));
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
-            validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
+            return validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getMatrikkeladresse()) && isNotBlank(adresse.getMatrikkeladresse().getBruksenhetsnummer())) {
-            validateBruksenhet(adresse.getMatrikkeladresse().getBruksenhetsnummer());
+            return validateBruksenhet(adresse.getMatrikkeladresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getGyldigFraOgMed()) && nonNull(adresse.getGyldigTilOgMed()) &&
             !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR));
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
             return validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());

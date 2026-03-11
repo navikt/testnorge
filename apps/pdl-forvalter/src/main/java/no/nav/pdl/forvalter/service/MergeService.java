@@ -73,7 +73,7 @@ public class MergeService {
         return Mono.just(dbPerson);
     }
 
-    private void mergeElements(java.lang.reflect.Field field, List<DbVersjonDTO> infoElementDbPerson, AtomicInteger dbId, DbVersjonDTO requestElement) {
+    private Mono<Void> mergeElements(java.lang.reflect.Field field, List<DbVersjonDTO> infoElementDbPerson, AtomicInteger dbId, DbVersjonDTO requestElement) {
 
         if (infoElementDbPerson.stream()
                 .anyMatch(dbElement -> nonNull(requestElement.getId()) && requestElement.getId().equals(dbElement.getId()))) {
@@ -83,8 +83,8 @@ public class MergeService {
                 }
             }
         } else if (nonNull(requestElement.getId()) && requestElement.getId() > dbId.get()) {
-            throw new InvalidRequestException(
-                    format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
+            return Mono.error(new InvalidRequestException(
+                    "Merge-error: id:%s ikke funnet for element:'%s'".formatted(requestElement.getId(), field.getName())));
         } else {
             requestElement.setId(dbId.incrementAndGet());
             requestElement.setIsNew(true);
@@ -93,5 +93,6 @@ public class MergeService {
             }
             infoElementDbPerson.addFirst(mapperFacade.map(requestElement, requestElement.getClass()));
         }
+        return Mono.empty();
     }
 }

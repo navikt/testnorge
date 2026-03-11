@@ -301,17 +301,18 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         }
 
         if (foreldre.size() != 2) {
-            throw new InvalidRequestException(VALIDATION_TO_FORELDRE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_TO_FORELDRE_ERROR));
         }
 
         return personRepository.findByIdentIn(foreldre, Pageable.unpaged())
                 .map(DbPerson::getPerson)
                 .map(PersonDTO::getBostedsadresse)
-                .doOnNext(adresser -> {
+                .flatMap(adresser -> {
                     if (artifact.countAdresser() > 1 ||
                         (adresser.size() == 2 && isEqualAdresse(adresser.get(0), adresser.get(1)))) {
-                        throw new InvalidRequestException(VALIDATION_ADRESSER_ERROR);
+                        return Mono.error(new InvalidRequestException(VALIDATION_ADRESSER_ERROR));
                     }
+                    return Mono.empty();
                 })
                 .then();
     }

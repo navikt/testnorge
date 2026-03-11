@@ -52,35 +52,35 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
     public Mono<Void> validate(SikkerhetstiltakDTO sikkerhetstiltak) {
 
         if (isNull(sikkerhetstiltak.getTiltakstype())) {
-            throw new InvalidRequestException(VALIDATION_TILTAKSTYPE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_TILTAKSTYPE_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getBeskrivelse())) {
-            throw new InvalidRequestException(VALIDATION_BESKRIVELSE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_BESKRIVELSE_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getGyldigFraOgMed())) {
-            throw new InvalidRequestException(VALIDATION_GYLDIGFOM_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_GYLDIGFOM_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_GYLDIGTOM_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_GYLDIGTOM_ERROR));
         }
 
         if (sikkerhetstiltak.getGyldigFraOgMed().isAfter(sikkerhetstiltak.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getKontaktperson())) {
-            throw new InvalidRequestException(VALIDATION_KONTAKTPERSON_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_KONTAKTPERSON_ERROR));
         }
 
         if (isBlank(sikkerhetstiltak.getKontaktperson().getPersonident())) {
-            throw new InvalidRequestException(VALIDATION_PERSONIDENT_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_PERSONIDENT_ERROR));
         }
 
         if (nonNull(sikkerhetstiltak.getKontaktperson()) && isBlank(sikkerhetstiltak.getKontaktperson().getEnhet())) {
-            throw new InvalidRequestException(VALIDATION_ENHET_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_ENHET_ERROR));
         }
         return Mono.empty();
     }

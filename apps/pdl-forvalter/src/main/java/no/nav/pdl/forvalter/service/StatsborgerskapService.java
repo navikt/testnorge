@@ -52,12 +52,12 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
     public Mono<Void> validate(StatsborgerskapDTO statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !hasLandkode(statsborgerskap.getLandkode())) {
-            throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_LANDKODE_ERROR));
         }
 
         if (nonNull(statsborgerskap.getGyldigFraOgMed()) && nonNull(statsborgerskap.getGyldigTilOgMed()) &&
             !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR));
         }
         return  Mono.empty();
     }

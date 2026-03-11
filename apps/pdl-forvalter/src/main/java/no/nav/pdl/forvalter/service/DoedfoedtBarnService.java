@@ -37,7 +37,7 @@ public class DoedfoedtBarnService implements Validation<DoedfoedtBarnDTO> {
 
         if (isNull(type.getDato())) {
 
-            throw new InvalidRequestException(INVALID_DATO_MISSING);
+            return Mono.error(new InvalidRequestException(INVALID_DATO_MISSING));
         }
         return Mono.empty();
     }

@@ -42,17 +42,17 @@ public class TilrettelagtKommunikasjonService implements Validation<Tilrettelagt
 
         if (isBlank(tilrettelagtKommunikasjon.getSpraakForTaletolk()) &&
                 isBlank(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk())) {
-            throw new InvalidRequestException(VALIDATION_NO_SPRAAK_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_NO_SPRAAK_ERROR));
         }
 
         if (isNotBlank(tilrettelagtKommunikasjon.getSpraakForTaletolk()) &&
                 (!hasSpraak(tilrettelagtKommunikasjon.getSpraakForTaletolk()))) {
-            throw new InvalidRequestException(VALIDATION_TOLKESPRAAK_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_TOLKESPRAAK_ERROR));
         }
 
         if (isNotBlank(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk()) &&
                 !hasSpraak(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk())) {
-            throw new InvalidRequestException(VALIDATION_TEGNSPRAAK_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_TEGNSPRAAK_ERROR));
         }
         return Mono.empty();
     }

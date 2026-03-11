@@ -81,24 +81,24 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
         if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) &&
             (nonNull(relasjon.getRelatertPerson()) || nonNull(relasjon.getNyRelatertPerson()))) {
-            throw new InvalidRequestException(INVALID_PERSON_ID_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_PERSON_ID_EXCEPTION));
         }
 
         if (isNull(relasjon.getMinRolleForPerson())) {
-            throw new InvalidRequestException(INVALID_EMPTY_MIN_ROLLE_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_EMPTY_MIN_ROLLE_EXCEPTION));
         }
 
         if (isNull(relasjon.getRelatertPersonsRolle())) {
-            throw new InvalidRequestException(INVALID_EMPTY_RELATERT_PERSON_ROLLE_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_EMPTY_RELATERT_PERSON_ROLLE_EXCEPTION));
         }
 
         if ((relasjon.getMinRolleForPerson() == Rolle.BARN && relasjon.getRelatertPersonsRolle() == Rolle.BARN) ||
             (relasjon.getMinRolleForPerson() != Rolle.BARN && relasjon.getRelatertPersonsRolle() != Rolle.BARN)) {
-            throw new InvalidRequestException(AMBIGUOUS_PERSON_ROLLE_EXCEPTION);
+            return Mono.error(new InvalidRequestException(AMBIGUOUS_PERSON_ROLLE_EXCEPTION));
         }
 
         if (nonNull(relasjon.getDeltBosted()) && relasjon.getDeltBosted().countAdresser() > 1) {
-            throw new InvalidRequestException(INVALID_AMBIGUOUS_ADRESSE);
+            return Mono.error(new InvalidRequestException(INVALID_AMBIGUOUS_ADRESSE));
         }
 
         if (!isTestnorgeIdent(person.getIdent()) && isNotBlank(relasjon.getRelatertPerson())) {

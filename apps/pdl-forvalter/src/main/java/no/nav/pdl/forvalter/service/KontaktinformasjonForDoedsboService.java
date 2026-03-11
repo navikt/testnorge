@@ -95,26 +95,26 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     public Mono<Void> validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
         if (isNull(kontaktinfo.getSkifteform())) {
-            throw new InvalidRequestException(VALIDATION_SKIFTEFORM_MISSING);
+            return Mono.error(new InvalidRequestException(VALIDATION_SKIFTEFORM_MISSING));
         }
 
         if (kontaktinfo.countKontakter() == 0) {
-            throw new InvalidRequestException(VALIDATION_KONTAKT_MISSING);
+            return Mono.error(new InvalidRequestException(VALIDATION_KONTAKT_MISSING));
         }
 
         if (kontaktinfo.countKontakter() > 1) {
-            throw new InvalidRequestException(VALIDATION_ADRESSAT_AMBIGOUS);
+            return Mono.error(new InvalidRequestException(VALIDATION_ADRESSAT_AMBIGOUS));
         }
 
         if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
             nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato()) &&
             isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-            throw new InvalidRequestException(VALIDATION_AMBIGUOUS_PERSON);
+            return Mono.error(new InvalidRequestException(VALIDATION_AMBIGUOUS_PERSON));
         }
 
         if (!isValidOrganisasjonName(kontaktinfo)) {
-            throw new InvalidRequestException(VALIDATION_ORGANISASJON_NAVN_INVALID);
+            return Mono.error(new InvalidRequestException(VALIDATION_ORGANISASJON_NAVN_INVALID));
         }
 
         if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {

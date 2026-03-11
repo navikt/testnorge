@@ -87,7 +87,7 @@ public class PersonService {
 
         if (!isNumeric(ident) || ident.length() != 11) {
 
-            throw new InvalidRequestException(INVALID_IDENT);
+            return Mono.error(new InvalidRequestException(INVALID_IDENT));
         }
 
         return checkAlias(ident)

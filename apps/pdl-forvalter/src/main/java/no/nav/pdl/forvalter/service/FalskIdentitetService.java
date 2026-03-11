@@ -69,22 +69,22 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     public Mono<Void> validate(FalskIdentitetDTO identitet) {
 
         if (isNull(identitet.getErFalsk())) {
-            throw new InvalidRequestException(VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING);
+            return Mono.error(new InvalidRequestException(VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING));
         }
 
         if (nonNull(identitet.getGyldigFraOgMed()) && nonNull(identitet.getGyldigTilOgMed()) &&
             !identitet.getGyldigFraOgMed().isBefore(identitet.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR));
         }
 
         if (count(identitet.getRettIdentitetErUkjent()) + count(identitet.getRettIdentitetVedIdentifikasjonsnummer()) +
             count(identitet.getRettIdentitetVedOpplysninger()) + count(identitet.getNyFalskIdentitetPerson()) > 1) {
-            throw new InvalidRequestException(VALIDATION_TOO_MANY_RETT_IDENTIT);
+            return Mono.error(new InvalidRequestException(VALIDATION_TOO_MANY_RETT_IDENTIT));
         }
 
         if (nonNull(identitet.getRettIdentitetVedOpplysninger()) &&
             isNull(identitet.getRettIdentitetVedOpplysninger().getStatsborgerskap())) {
-            throw new InvalidRequestException(VALIDATION_STATSBORGERSKAP_MISSING);
+            return Mono.error(new InvalidRequestException(VALIDATION_STATSBORGERSKAP_MISSING));
         }
 
         if (isNotBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {

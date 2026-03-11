@@ -73,7 +73,7 @@ public class DoedsfallService implements Validation<DoedsfallDTO> {
 
         if (isNull(type.getDoedsdato())) {
 
-            throw new InvalidRequestException(INVALID_DATO_MISSING);
+            return Mono.error(new InvalidRequestException(INVALID_DATO_MISSING));
         }
         return Mono.empty();
     }

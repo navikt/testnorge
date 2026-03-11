@@ -66,18 +66,20 @@ public class ArtifactDeleteService {
     private final DeleteRelasjonerService deleteRelasjonerService;
     private final RelasjonRepository relasjonRepository;
 
-    private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
+    private static <T extends DbVersjonDTO> Mono<Void> checkExists(List<T> artifacter, Integer id, String navn) {
 
         if (artifacter.stream().noneMatch(type -> id.equals(type.getId()))) {
-            throw new NotFoundException(format(INFO_NOT_FOUND, navn, id));
+            return Mono.error(new NotFoundException(format(INFO_NOT_FOUND, navn, id)));
         }
+        return Mono.empty();
     }
 
     public Mono<Void> deleteFoedsel(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getFoedsel(), id, PDL_FOEDSEL.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getFoedsel(), id, PDL_FOEDSEL.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_FOEDSEL.getDescription(), id)
                         .thenReturn(dbPerson))
                 .doOnNext(dbPerson ->
@@ -91,8 +93,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteFoedested(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getFoedested(), id, PDL_FOEDESTED.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getFoedested(), id, PDL_FOEDESTED.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FOEDESTED.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -107,8 +110,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteFoedselsdato(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getFoedselsdato(), id, PDL_FOEDSELSDATO.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getFoedselsdato(), id, PDL_FOEDSELSDATO.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FOEDSELSDATO.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -123,8 +127,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteNavn(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getNavn(), id, PDL_NAVN.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getNavn(), id, PDL_NAVN.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_NAVN.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -139,8 +144,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteKjoenn(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getKjoenn(), id, PDL_KJOENN.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getKjoenn(), id, PDL_KJOENN.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_KJOENN.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -155,8 +161,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteBostedsadresse(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getBostedsadresse(), id, PDL_BOSTEDADRESSE.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getBostedsadresse(), id, PDL_BOSTEDADRESSE.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_BOSTEDADRESSE.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -174,8 +181,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteKontaktadresse(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getKontaktadresse(), id, PDL_KONTAKTADRESSE.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getKontaktadresse(), id, PDL_KONTAKTADRESSE.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTADRESSE.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -190,8 +198,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteOppholdsadresse(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getOppholdsadresse(), id, PDL_OPPHOLDSADRESSE.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getOppholdsadresse(), id, PDL_OPPHOLDSADRESSE.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_OPPHOLDSADRESSE.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -206,8 +215,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteInnflytting(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getInnflytting(), id, PDL_INNFLYTTING.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getInnflytting(), id, PDL_INNFLYTTING.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_INNFLYTTING.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -225,8 +235,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteUtflytting(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getUtflytting(), id, PDL_UTFLYTTING.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getUtflytting(), id, PDL_UTFLYTTING.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_UTFLYTTING.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -244,8 +255,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteDeltBosted(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getDeltBosted(), id, PDL_DELTBOSTED.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getDeltBosted(), id, PDL_DELTBOSTED.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_DELTBOSTED.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -260,8 +272,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteForelderBarnRelasjon(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getForelderBarnRelasjon(), id, PDL_FORELDRE_BARN_RELASJON.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getForelderBarnRelasjon(), id, PDL_FORELDRE_BARN_RELASJON.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FORELDRE_BARN_RELASJON.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -285,8 +298,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteForeldreansvar(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getForeldreansvar(), id, PDL_FORELDREANSVAR.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getForeldreansvar(), id, PDL_FORELDREANSVAR.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FORELDREANSVAR.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -311,8 +325,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteKontaktinformasjonForDoedsbo(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getKontaktinformasjonForDoedsbo(), id, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getKontaktinformasjonForDoedsbo(), id, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -338,8 +353,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteUtenlandskIdentifikasjonsnummer(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer(), id, PDL_UTENLANDS_IDENTIFIKASJON_NUMMER.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer(), id, PDL_UTENLANDS_IDENTIFIKASJON_NUMMER.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_UTENLANDS_IDENTIFIKASJON_NUMMER.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -354,8 +370,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteFalskIdentitet(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getFalskIdentitet(), id, PDL_FALSK_IDENTITET.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getFalskIdentitet(), id, PDL_FALSK_IDENTITET.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_FALSK_IDENTITET.getDescription(), id)
                         .thenReturn(dbPerson))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getFalskIdentitet())
@@ -380,8 +397,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteAdressebeskyttelse(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getAdressebeskyttelse(), id, PDL_ADRESSEBESKYTTELSE.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getAdressebeskyttelse(), id, PDL_ADRESSEBESKYTTELSE.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_ADRESSEBESKYTTELSE.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -396,8 +414,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteDoedsfall(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getDoedsfall(), id, PDL_DOEDSFALL.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getDoedsfall(), id, PDL_DOEDSFALL.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_DOEDSFALL.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -414,8 +433,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteFolkeregisterPersonstatus(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getFolkeregisterPersonstatus(), id, PDL_FOLKEREGISTER_PERSONSTATUS.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getFolkeregisterPersonstatus(), id, PDL_FOLKEREGISTER_PERSONSTATUS.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FOLKEREGISTER_PERSONSTATUS.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -432,8 +452,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteSikkerhetstiltak(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getSikkerhetstiltak(), id, PDL_SIKKERHETSTILTAK.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getSikkerhetstiltak(), id, PDL_SIKKERHETSTILTAK.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_SIKKERHETSTILTAK.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -448,8 +469,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteTilrettelagtKommunikasjon(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getTilrettelagtKommunikasjon(), id, PDL_TILRETTELAGT_KOMMUNIKASJON.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getTilrettelagtKommunikasjon(), id, PDL_TILRETTELAGT_KOMMUNIKASJON.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_TILRETTELAGT_KOMMUNIKASJON.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -464,8 +486,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteStatsborgerskap(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getStatsborgerskap(), id, PDL_STATSBORGERSKAP.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getStatsborgerskap(), id, PDL_STATSBORGERSKAP.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_STATSBORGERSKAP.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -480,8 +503,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteOpphold(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getOpphold(), id, PDL_OPPHOLD.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getOpphold(), id, PDL_OPPHOLD.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_OPPHOLD.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -496,8 +520,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteSivilstand(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getSivilstand(), id, PDL_SIVILSTAND.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getSivilstand(), id, PDL_SIVILSTAND.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_SIVILSTAND.getDescription(), id)
                         .thenReturn(dbPerson))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getSivilstand())
@@ -519,8 +544,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteTelefonnummer(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getTelefonnummer(), id, PDL_TELEFONUMMER.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getTelefonnummer(), id, PDL_TELEFONUMMER.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_TELEFONUMMER.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -535,8 +561,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteVergemaal(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getVergemaal(), id, PDL_VERGEMAAL.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getVergemaal(), id, PDL_VERGEMAAL.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_VERGEMAAL.getDescription(), id)
                                 .thenReturn(dbPerson))
@@ -559,8 +586,9 @@ public class ArtifactDeleteService {
     public Mono<Void> deleteDoedfoedtBarn(String ident, Integer id) {
 
         return getPerson(ident)
-                .doOnNext(dbPerson ->
-                        checkExists(dbPerson.getPerson().getDoedfoedtBarn(), id, PDL_DOEDFOEDT_BARN.getDescription()))
+                .flatMap(dbPerson ->
+                        checkExists(dbPerson.getPerson().getDoedfoedtBarn(), id, PDL_DOEDFOEDT_BARN.getDescription())
+                                .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_DOEDFOEDT_BARN.getDescription(), id)
                                 .thenReturn(dbPerson))

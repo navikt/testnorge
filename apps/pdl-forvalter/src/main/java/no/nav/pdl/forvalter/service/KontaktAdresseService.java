@@ -71,28 +71,29 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
                 .then();
     }
 
-    private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
+    private static Mono<Void> validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
 
         if (isBlank(postboksadresse.getPostboks())) {
-            throw new InvalidRequestException(VALIDATION_POSTBOKS_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_POSTBOKS_ERROR));
         }
         if (isBlank(postboksadresse.getPostnummer()) ||
             !postboksadresse.getPostnummer().matches("\\d{4}")) {
-            throw new InvalidRequestException(VALIDATION_POSTNUMMER_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_POSTNUMMER_ERROR));
         }
+        return Mono.empty();
     }
 
     @Override
     public Mono<Void> validate(KontaktadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
-            throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR));
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
-            validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
+            return validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getPostboksadresse())) {
-            validatePostBoksAdresse(adresse.getPostboksadresse());
+            return validatePostBoksAdresse(adresse.getPostboksadresse());
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
             return validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());

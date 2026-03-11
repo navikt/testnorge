@@ -42,11 +42,11 @@ public class OppholdService implements Validation<OppholdDTO> {
     public Mono<Void> validate(OppholdDTO opphold) {
 
         if (isNull(opphold.getType())) {
-            throw new InvalidRequestException(VALIDATION_TYPE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_TYPE_ERROR));
         }
 
         if (nonNull(opphold.getOppholdFra()) && nonNull(opphold.getOppholdTil()) && !opphold.getOppholdFra().isBefore(opphold.getOppholdTil())) {
-            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR));
         }
         return Mono.empty();
     }
@@ -65,7 +65,7 @@ public class OppholdService implements Validation<OppholdDTO> {
                         !opphold.get(i).getOppholdFra().isAfter(opphold.get(i + 1).getOppholdFra().plusDays(1)) ||
                         (nonNull(opphold.get(i + 1).getOppholdTil()) &&
                                 !opphold.get(i).getOppholdFra().isAfter(opphold.get(i + 1).getOppholdTil()))) {
-                    throw new InvalidRequestException(VALIDATION_OPPHOLD_OVELAP_ERROR);
+                    return Mono.error(new InvalidRequestException(VALIDATION_OPPHOLD_OVELAP_ERROR));
                 }
                 if (isNull(opphold.get(i + 1).getOppholdTil())) {
                     opphold.get(i + 1).setOppholdTil(opphold.get(i).getOppholdFra().minusDays(1));

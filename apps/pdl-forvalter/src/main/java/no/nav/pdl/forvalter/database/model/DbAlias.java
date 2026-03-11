@@ -30,9 +30,6 @@ public class DbAlias {
     @Column
     private LocalDateTime sistOppdatert;
 
-//    @Transient
-//    private DbPerson person;
-
     @Column
     private Long personId;
 
