@@ -4,6 +4,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
+	REGEX_BACKEND_TRANSAKSJONID,
 	REGEX_TESTNAV,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
@@ -16,6 +17,7 @@ import {
 } from '@/utils/hooks/useBestilling'
 import { useEffect, useRef } from 'react'
 import { useSideStoerrelse } from '@/utils/hooks/useSideStoerrelse'
+import { useReduxSelector } from '@/utils/hooks/useRedux'
 
 type GjenopprettProps = {
 	ident: {
@@ -35,12 +37,13 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 	const bestillinger = ident?.bestillingId?.map((id) => id?.toString())
 	const { bestilteMiljoer } = useBestilteMiljoerAlleFagsystemer(bestillinger)
 	const { sideStoerrelse } = useSideStoerrelse()
+	const sidetall = useReduxSelector((state) => state?.finnPerson?.sidetall) || 0
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
 		gruppeId,
 		'personer',
-		0, //TODO Get sidetall form state
+		sidetall,
 		sideStoerrelse,
 	)
 
@@ -54,6 +57,7 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 			mutate(REGEX_BACKEND_GRUPPER)
 			mutate(REGEX_BACKEND_BESTILLINGER)
 			mutate(REGEX_TESTNAV)
+			mutate(REGEX_BACKEND_TRANSAKSJONID)
 			onGjenopprettDone?.()
 		}
 		prevCountRef.current = ikkeFerdigCount
