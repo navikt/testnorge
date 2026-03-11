@@ -7,6 +7,7 @@ export const DollyTable = ({
 	pagination,
 	gruppeDetaljer = {},
 	manualLocalStorageKey,
+	visSide,
 	...props
 }) => {
 	const sidetall = useReduxSelector((state) => state?.finnPerson?.sidetall) || 0
@@ -14,7 +15,7 @@ export const DollyTable = ({
 
 	return (
 		<DollyPagination
-			visSide={sidetall}
+			visSide={visSide ?? sidetall}
 			manualLocalStorageKey={manualLocalStorageKey}
 			items={data}
 			gruppeDetaljer={gruppeDetaljer}
