@@ -77,7 +77,7 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 			}
 		})
 
-		await DollyService.gjenopprettPerson(ident.ident, miljoerString).then((res) => {
+		await DollyService.gjenopprettPerson(ident.ident, miljoerString).then(() => {
 			mutate(REGEX_BACKEND_BESTILLINGER)
 			closeGjenoprettModal()
 		})
