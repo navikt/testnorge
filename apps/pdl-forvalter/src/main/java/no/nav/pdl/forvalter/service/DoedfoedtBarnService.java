@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
@@ -19,7 +17,7 @@ public class DoedfoedtBarnService implements Validation<DoedfoedtBarnDTO> {
 
     private static final String INVALID_DATO_MISSING = "DødfødtBarn: dato må oppgis";
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getDoedfoedtBarn())
                 .filter(doedfoedtBarn -> isTrue(doedfoedtBarn.getIsNew()))
@@ -29,7 +27,7 @@ public class DoedfoedtBarnService implements Validation<DoedfoedtBarnDTO> {
                     dfb.setMaster(getMaster(dfb, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     @Override

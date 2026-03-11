@@ -1,28 +1,26 @@
 package no.nav.pdl.forvalter.service;
 
+import lombok.val;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +40,7 @@ class UtflyttingServiceTest {
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 
-        var request = UtflyttingDTO.builder()
+        val request = UtflyttingDTO.builder()
                 .tilflyttingsland("Mali")
                 .isNew(true)
                 .build();
@@ -57,20 +55,14 @@ class UtflyttingServiceTest {
     @Test
     void whenEmptyLandkode_thenProvideCountryFromGeografiskeKodeverkConsumer() {
 
-        var request = PersonDTO.builder()
+        val request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
                 .build();
 
         when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("TGW"));
-        when(kontaktAdresseService.convert(person, false)
-                .thenReturn(utflytting2);
-
-        var request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
-                .build();
-
+        when(kontaktAdresseService.convert(any(PersonDTO.class), anyBoolean())).thenReturn(Mono.just(request));
+        
         StepVerifier.create(utflyttingService.convert(request))
                         .verifyComplete();
 

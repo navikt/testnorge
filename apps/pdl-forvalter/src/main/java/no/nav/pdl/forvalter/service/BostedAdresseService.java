@@ -4,6 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -27,6 +28,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -50,11 +52,11 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public Mono<Void> convert(PersonDTO person, Boolean relaxed) {
+    public Mono<PersonDTO> convert(PersonDTO person, Boolean relaxed) {
 
         return Flux.fromIterable(person.getBostedsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
-                .flatMap(adresse -> handle(adresse, person).thenReturn(adresse))
+                .flatMap(adresse -> handle(adresse, person))
                 .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
                     adresse.setMaster(getMaster(adresse, person));
@@ -64,7 +66,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                     oppdaterAdressedatoer(person.getBostedsadresse(), person);
                     setAngittFlyttedato(person.getBostedsadresse());
                 })
-                .then();
+                .thenReturn(person);
     }
 
     @Override
@@ -92,48 +94,46 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         return Mono.empty();
     }
 
-    private Mono<Void> handle(BostedadresseDTO bostedadresse, PersonDTO person) {
+    private Mono<BostedadresseDTO> handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
-        if (FNR == getIdenttype(person.getIdent())) {
+        return Mono.defer(() -> {
+                    if (FNR == getIdenttype(person.getIdent())) {
 
-            if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
-                person.getInnflytting().stream()
-                        .noneMatch(innflytting -> person.getUtflytting().stream()
-                                .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
-                                        .isAfter(utflytting.getUtflyttingsdato())))) {
+                        if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                                .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
 
-                if (person.getUtflytting().getFirst().isVelkjentLand()) {
-                    if (isNull(bostedadresse.getUtenlandskAdresse())) {
+                            person.setBostedsadresse(null);
+                            return Mono.empty();
+
+                        } else if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
+                            person.getInnflytting().stream()
+                                    .noneMatch(innflytting -> person.getUtflytting().stream()
+                                            .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
+                                                    .isAfter(utflytting.getUtflyttingsdato())))) {
+
+                            if (person.getUtflytting().getFirst().isVelkjentLand() && isNull(bostedadresse.getUtenlandskAdresse())) {
+                                bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+                            }
+
+                        } else if (bostedadresse.countAdresser() == 0) {
+
+                            if (isTestnorgeIdent(person.getIdent())) {
+                                bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+
+                            } else {
+                                bostedadresse.setVegadresse(new VegadresseDTO());
+                            }
+                        }
+
+                    } else if (bostedadresse.countAdresser() == 0 &&
+                               person.getOppholdsadresse().isEmpty() &&
+                               person.getKontaktadresse().isEmpty()) {
+
                         bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
                     }
-
-                } else {
-                    return Mono.empty();
-                }
-
-            } else if (bostedadresse.countAdresser() == 0) {
-
-                if (isTestnorgeIdent(person.getIdent())) {
-                    bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
-
-                } else {
-                    bostedadresse.setVegadresse(new VegadresseDTO());
-                }
-            }
-
-        } else if (bostedadresse.countAdresser() == 0) {
-
-            if (person.getOppholdsadresse().isEmpty() &&
-                person.getKontaktadresse().isEmpty()) {
-
-                bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
-            } else {
-
-                return Mono.empty();
-            }
-        }
-
-        return buildBoadresse(bostedadresse, person)
+                    return Mono.just(bostedadresse);
+                })
+                .flatMap(bostedadresse1 -> buildBoadresse(bostedadresse1, person))
                 .flatMap(boadresse -> genererCoNavn(boadresse.getOpprettCoAdresseNavn()))
                 .doOnNext(adressseNavn -> {
 
@@ -144,7 +144,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                         bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
                     }
                 })
-                .then();
+                .thenReturn(bostedadresse);
     }
 
     private Mono<BostedadresseDTO> buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {

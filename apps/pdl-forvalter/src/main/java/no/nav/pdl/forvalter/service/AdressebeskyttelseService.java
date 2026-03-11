@@ -26,7 +26,7 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
     private static final String VALIDATION_INVALID_BESKYTTELSE = "Adressebeskyttelse: Gradering " +
             "FORTROLIG kan kun settes på personer med fødselsnummer";
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getAdressebeskyttelse())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -36,7 +36,7 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     @Override
@@ -65,6 +65,6 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
             person.setKontaktadresse(null);
             person.getKontaktadresse().add(getStrengtFortroligKontaktadresse());
         }
-        return Mono.empty();
+        return Mono.just(adressebeskyttelse);
     }
 }

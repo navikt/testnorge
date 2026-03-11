@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -10,6 +11,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,13 +27,10 @@ import java.util.List;
 
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
@@ -56,88 +56,87 @@ class BostedAdresseServiceTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
-        var request = BostedadresseDTO.builder()
+        val request = BostedadresseDTO.builder()
                 .vegadresse(new VegadresseDTO())
                 .matrikkeladresse(new MatrikkeladresseDTO())
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString("én adresse skal være satt (vegadresse, " +
-                "matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
+        StepVerifier.create(bostedAdresseService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable).isInstanceOf(HttpClientErrorException.class)
+                                .hasMessageContaining("én adresse skal være satt (vegadresse, matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
     }
 
     @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
-        var request = BostedadresseDTO.builder()
+        val request = BostedadresseDTO.builder()
                 .utenlandskAdresse(new UtenlandskAdresseDTO())
                 .master(Master.FREG)
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request, PersonDTO.builder()
+        StepVerifier.create(bostedAdresseService.validate(request, PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("utenlandsk adresse krever at master er PDL"));
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable).isInstanceOf(HttpClientErrorException.class)
+                                .hasMessageContaining("utenlandsk adresse krever at master er PDL"));
     }
 
     @Test
     void whenVegadresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = BostedadresseDTO.builder()
+        val request = BostedadresseDTO.builder()
                 .vegadresse(VegadresseDTO.builder()
                         .bruksenhetsnummer("HK25419")
                         .build())
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request, PersonDTO.builder()
+        StepVerifier.create(bostedAdresseService.validate(request, PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable).isInstanceOf(HttpClientErrorException.class)
+                                .hasMessageContaining("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
 
     @Test
     void whenMatrikkeladresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = BostedadresseDTO.builder()
+        val request = BostedadresseDTO.builder()
                 .matrikkeladresse(MatrikkeladresseDTO.builder()
                         .bruksenhetsnummer("F8021")
                         .build())
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request, PersonDTO.builder()
+        StepVerifier.create(bostedAdresseService.validate(request, PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable).isInstanceOf(HttpClientErrorException.class)
+                                .hasMessageContaining("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
 
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = BostedadresseDTO.builder()
+        val request = BostedadresseDTO.builder()
                 .vegadresse(new VegadresseDTO())
                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request, PersonDTO.builder()
+        StepVerifier.create(bostedAdresseService.validate(request, PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable).isInstanceOf(HttpClientErrorException.class)
+                                .hasMessageContaining("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
     @Test
@@ -146,7 +145,10 @@ class BostedAdresseServiceTest {
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
                 .thenReturn(Mono.just(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO()));
 
-        var request = PersonDTO.builder()
+        when(enkelAdresseService.getUtenlandskAdresse(any(UtenlandskAdresseDTO.class), isNull(), any(Master.class)))
+                .thenReturn(Mono.just(new UtenlandskAdresseDTO()));
+
+        val request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .bostedsadresse(new ArrayList<>(List.of(
                         BostedadresseDTO.builder()
@@ -161,15 +163,17 @@ class BostedAdresseServiceTest {
                                 .build())))
                 .build();
 
-        var response = bostedAdresseService.convert(request, null);
-
-//        assertThat(response.get(1).getGyldigTilOgMed(), is(nullValue()));
+        StepVerifier.create(bostedAdresseService.convert(request, null))
+                .assertNext(response ->
+                        assertThat(response.getBostedsadresse().getFirst().getGyldigTilOgMed(),
+                                is(equalTo(LocalDate.of(2021, 2, 1).atStartOfDay()))))
+                .verifyComplete();
     }
 
     @Test
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
-        var request = PersonDTO.builder()
+        val request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
@@ -178,17 +182,23 @@ class BostedAdresseServiceTest {
                         .build())))
                 .build();
 
-//        var target = bostedAdresseService.convert(request, null).getFirst();
-//
-//        assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay())));
+        StepVerifier.create(bostedAdresseService.convert(request, null))
+                .assertNext(target ->
+                        assertThat(target.getBostedsadresse().getFirst().getGyldigFraOgMed(),
+                                is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay()))))
+                .verifyComplete();
     }
 
     @Test
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(Mono.just(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO()));
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
+                .thenReturn(Mono.just(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO()));
 
-        var request = PersonDTO.builder()
+        when(enkelAdresseService.getUtenlandskAdresse(any(UtenlandskAdresseDTO.class), isNull(), any(Master.class)))
+                .thenReturn(Mono.just(new UtenlandskAdresseDTO()));
+
+        val request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
@@ -202,15 +212,17 @@ class BostedAdresseServiceTest {
                                 .build())))
                 .build();
 
-        var target = bostedAdresseService.convert(request, null);
-
-//        assertThat(target.get(1).getGyldigTilOgMed(), is(nullValue()));
+        StepVerifier.create(bostedAdresseService.convert(request, null))
+                .assertNext(target ->
+                        assertThat(target.getBostedsadresse().getFirst().getGyldigTilOgMed(),
+                                is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay()))))
+                .verifyComplete();
     }
 
     @Test
     void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
 
-        var request = PersonDTO.builder()
+        val request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
                         .isNew(true)
@@ -220,45 +232,54 @@ class BostedAdresseServiceTest {
                         .build()))
                 .build();
 
-        var target = bostedAdresseService.convert(request, null);
-
-//        assertThat(target, is(empty()));
+        StepVerifier.create(bostedAdresseService.convert(request, null))
+                .assertNext(target -> assertThat(target.getBostedsadresse(), is(empty())))
+                .verifyComplete();
     }
 
     @Test
     void whenIdenttypeFnrAndNoAdresseBeskyttelse_thenMakeAdress() {
 
-        var request = PersonDTO.builder()
+        val request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
                         .isNew(true)
                         .build())))
                 .build();
 
-//        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
-//                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
-//
-//        var target = bostedAdresseService.convert(request, null).getFirst();
-//
-//        assertThat(target.countAdresser(), is(1));
-//        assertThat(target.getVegadresse(), is(notNullValue()));
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
+                .thenReturn(Mono.just(no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
+                        .matrikkelId("123456789")
+                        .build()));
+
+        StepVerifier.create(bostedAdresseService.convert(request, null))
+                .assertNext(target -> {
+
+                    assertThat(target.getBostedsadresse().getFirst().countAdresser(), is(1));
+                    assertThat(target.getBostedsadresse().getFirst().getVegadresse(), is(notNullValue()));
+                    assertThat(target.getBostedsadresse().getFirst().getAdresseIdentifikatorFraMatrikkelen(), is(equalTo("123456789")));
+                })
+                .verifyComplete();
     }
 
     @Test
     void whenIdenttypeDNr_thenMakeUtenlandskAdresse() {
 
-        var request = PersonDTO.builder()
+        val request = PersonDTO.builder()
                 .ident(DNR_IDENT)
                 .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
                         .isNew(true)
                         .build())))
                 .build();
 
-//        when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(new UtenlandskAdresseDTO());
-//
-//        var target = bostedAdresseService.convert(request, null).getFirst();
-//
-//        assertThat(target.countAdresser(), is(1));
-//        assertThat(target.getUtenlandskAdresse(), is(notNullValue()));
+        when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(Mono.just(new UtenlandskAdresseDTO()));
+
+        StepVerifier.create(bostedAdresseService.convert(request, null))
+                .assertNext(target -> {
+
+                    assertThat(target.getBostedsadresse().getFirst().countAdresser(), is(1));
+                    assertThat(target.getBostedsadresse().getFirst().getUtenlandskAdresse(), is(notNullValue()));
+                })
+                .verifyComplete();
     }
 }

@@ -32,7 +32,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getFoedsel())
                 .filter(foedsel -> isTrue(foedsel.getIsNew()))
@@ -52,14 +52,13 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
                     renumberId(person.getFoedsel());
                 })
-                .then();
+                .thenReturn(person);
     }
 
     private Mono<FoedselDTO> handle(FoedselDTO foedsel, String ident, BostedadresseDTO
             bostedadresse, InnflyttingDTO innflytting) {
 
-        return Mono.zip(kodeverkConsumer.getTilfeldigLand(), kodeverkConsumer.getTilfeldigKommune())
-                .doOnNext(tuple -> {
+        return Mono.defer(() -> {
                     if (isNull(foedsel.getFoedselsaar())) {
                         if (isNull(foedsel.getFoedselsdato())) {
                             foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
@@ -68,14 +67,14 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                         foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
                     }
 
-                    setFoedeland(foedsel, ident, bostedadresse, innflytting, tuple.getT1());
-                    setFoedekommune(foedsel, bostedadresse, tuple.getT2());
+                    return setFoedeland(foedsel, ident, bostedadresse, innflytting)
+                            .then(setFoedekommune(foedsel, bostedadresse))
+                            .thenReturn(foedsel);
                 })
                 .thenReturn(foedsel);
     }
 
-    private void setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO
-            innflytting, String tilfeldigLand) {
+    private Mono<FoedselDTO> setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
 
         if (isNull(foedsel.getFoedeland())) {
             if (FNR.equals(IdenttypeUtility.getIdenttype(ident))) {
@@ -85,12 +84,15 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
             } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
                 foedsel.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
             } else {
-                foedsel.setFoedeland(tilfeldigLand);
+                return kodeverkConsumer.getTilfeldigLand()
+                        .doOnNext(foedsel::setFoedeland)
+                        .thenReturn(foedsel);
             }
         }
+        return Mono.just(foedsel);
     }
 
-    private void setFoedekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse, String tilfeldigKommune) {
+    private Mono<FoedselDTO> setFoedekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
 
         if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFoedekommune())) {
             if (nonNull(bostedadresse)) {
@@ -102,12 +104,17 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                            isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune())) {
                     foedsel.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
                 } else {
-                    foedsel.setFoedekommune(tilfeldigKommune);
+                    return kodeverkConsumer.getTilfeldigKommune()
+                            .doOnNext(foedsel::setFoedekommune)
+                            .thenReturn(foedsel);
                 }
             } else {
-                foedsel.setFoedekommune(tilfeldigKommune);
+                return kodeverkConsumer.getTilfeldigKommune()
+                        .doOnNext(foedsel::setFoedekommune)
+                        .thenReturn(foedsel);
             }
         }
+        return Mono.just(foedsel);
     }
 
     @Override

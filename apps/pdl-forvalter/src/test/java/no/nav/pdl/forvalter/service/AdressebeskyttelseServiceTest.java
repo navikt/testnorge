@@ -6,11 +6,13 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -18,11 +20,9 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.Adre
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class AdressebeskyttelseServiceTest {
@@ -41,12 +41,12 @@ class AdressebeskyttelseServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                adressebeskyttelseService.validate(request, PersonDTO.builder()
+        StepVerifier.create(adressebeskyttelseService.validate(request, PersonDTO.builder()
                         .ident(DNR_IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL"));
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable).isInstanceOf(HttpClientErrorException.class)
+                                .hasMessageContaining("Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL"));
     }
 
     @Test
@@ -57,13 +57,12 @@ class AdressebeskyttelseServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                adressebeskyttelseService.validate(request, PersonDTO.builder()
+        StepVerifier.create(adressebeskyttelseService.validate(request, PersonDTO.builder()
                         .ident(DNR_IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("Adressebeskyttelse: Gradering " +
-                "FORTROLIG kan kun settes på personer med fødselsnummer"));
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable).isInstanceOf(HttpClientErrorException.class)
+                                .hasMessageContaining("Gradering FORTROLIG kan kun settes på personer med fødselsnummer"));
     }
 
     @Test
@@ -77,9 +76,10 @@ class AdressebeskyttelseServiceTest {
                         .build()))
                 .build();
 
-//        var target = adressebeskyttelseService.convert(request).getFirst();
-
-//        assertThat(target.getMaster(), is(equalTo(Master.PDL)));
+        StepVerifier.create(adressebeskyttelseService.convert(request))
+                .assertNext(person ->
+                        assertThat(person.getAdressebeskyttelse().getFirst().getMaster(), is(equalTo(Master.PDL))))
+                .verifyComplete();
     }
 
     @Test
@@ -96,13 +96,16 @@ class AdressebeskyttelseServiceTest {
                 .kontaktadresse(List.of(new KontaktadresseDTO()))
                 .build();
 
-//        var target = adressebeskyttelseService.convert(request).getFirst();
+        StepVerifier.create(adressebeskyttelseService.convert(request))
+                .assertNext(target -> {
 
-//        assertThat(target.getMaster(), is(equalTo(Master.FREG)));
-        assertThat(request.getBostedsadresse(), is(empty()));
-        assertThat(request.getOppholdsadresse(), is(empty()));
-        assertThat(request.getKontaktadresse().getFirst().getPostboksadresse().getPostboks(), is("2094"));
-        assertThat(request.getKontaktadresse().getFirst().getPostboksadresse().getPostbokseier(), is("SOT6 Vika"));
-        assertThat(request.getKontaktadresse().getFirst().getPostboksadresse().getPostnummer(), is("0125"));
+                    assertThat(target.getAdressebeskyttelse().getFirst().getMaster(), is(equalTo(Master.FREG)));
+                    assertThat(target.getBostedsadresse(), is(empty()));
+                    assertThat(target.getOppholdsadresse(), is(empty()));
+                    assertThat(target.getKontaktadresse().getFirst().getPostboksadresse().getPostboks(), is("2094"));
+                    assertThat(target.getKontaktadresse().getFirst().getPostboksadresse().getPostbokseier(), is("SOT6 Vika"));
+                    assertThat(target.getKontaktadresse().getFirst().getPostboksadresse().getPostnummer(), is("0125"));
+                })
+                .verifyComplete();
     }
 }

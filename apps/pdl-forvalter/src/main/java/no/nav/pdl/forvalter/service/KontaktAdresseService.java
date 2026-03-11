@@ -53,7 +53,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public Mono<Void> convert(PersonDTO person, Boolean relaxed) {
+    public Mono<PersonDTO> convert(PersonDTO person, Boolean relaxed) {
 
         return Flux.fromIterable(person.getKontaktadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
@@ -68,7 +68,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
                     person.setKontaktadresse(new ArrayList<>(kontaktadresser));
                     oppdaterAdressedatoer(person.getKontaktadresse(), person);
                 })
-                .then();
+                .thenReturn(person);
     }
 
     private static Mono<Void> validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {

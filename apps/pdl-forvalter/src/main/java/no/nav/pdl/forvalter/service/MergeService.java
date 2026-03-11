@@ -10,6 +10,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +18,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -52,25 +52,23 @@ public class MergeService {
         if (!request.getTelefonnummer().isEmpty()) {
             person.setTelefonnummer(null);
         }
-        Stream.of(request.getClass().getDeclaredFields())
+
+        return Flux.fromArray(request.getClass().getDeclaredFields())
                 .filter(field ->
                         !Modifier.isStatic(field.getModifiers()) &&
                         !Modifier.isFinal(field.getModifiers()))
-                .forEach(field -> {
-
-            if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {
-
-                var infoElementRequest = (List<DbVersjonDTO>) getValue(request, field.getName());
-                var infoElementDbPerson = (List<DbVersjonDTO>) getValue(person, field.getName());
-                var dbId = new AtomicInteger(infoElementDbPerson.stream()
-                        .mapToInt(DbVersjonDTO::getId)
-                        .max().orElse(0));
-
-                infoElementRequest.forEach(requestElement -> mergeElements(field, infoElementDbPerson, dbId, requestElement));
-            }
-        });
-
-        return Mono.just(dbPerson);
+                .filter(field -> List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty())
+                .flatMap(field -> {
+                    val infoElementRequest = (List<DbVersjonDTO>) getValue(request, field.getName());
+                    val infoElementDbPerson = (List<DbVersjonDTO>) getValue(person, field.getName());
+                    val dbId = new AtomicInteger(infoElementDbPerson.stream()
+                            .mapToInt(DbVersjonDTO::getId)
+                            .max().orElse(0));
+                    return Mono.zip(Mono.just(field), Mono.just(infoElementRequest), Mono.just(infoElementDbPerson), Mono.just(dbId));
+                })
+                .flatMap(tuple -> Flux.fromIterable(tuple.getT2())
+                        .flatMap(requestElement -> mergeElements(tuple.getT1(), tuple.getT3(), tuple.getT4(), requestElement)))
+                .then(Mono.just(dbPerson));
     }
 
     private Mono<Void> mergeElements(java.lang.reflect.Field field, List<DbVersjonDTO> infoElementDbPerson, AtomicInteger dbId, DbVersjonDTO requestElement) {
