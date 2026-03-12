@@ -31,7 +31,6 @@ const loadingSelector = createSelector(
 const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
 	data: selectDataForIdent(state, ownProps.personId),
-	tmpPersoner: state.redigertePersoner,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

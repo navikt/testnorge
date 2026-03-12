@@ -16,7 +16,6 @@ const mapStateToProps = (state) => ({
 	visPerson: state.finnPerson.visPerson,
 	hovedperson: state.finnPerson.hovedperson,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
-	tmpPersoner: state.redigertePersoner,
 	sorting: state.finnPerson.sorting,
 })
 
