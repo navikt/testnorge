@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -24,7 +24,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoeds
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PersonNavnDTO;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -53,10 +52,9 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: Skifteform må angis"));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: Skifteform må angis")));
     }
 
     @Test
@@ -67,11 +65,11 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: kontakt må oppgis, enten advokatSomKontakt, personSomKontakt eller organisasjonSomKontakt"));
-    }
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(),
+                                containsString("KontaktinformasjonForDoedsbo: kontakt må oppgis, enten advokatSomKontakt, " +
+                                               "personSomKontakt eller organisasjonSomKontakt")));}
 
     @Test
     void whenMultipleAdressatExist_thenThrowExecption() {
@@ -83,11 +81,11 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: kun en av disse kontakter skal oppgis: advokatSomKontakt, personSomKontakt eller organisasjonSomKontakt"));
-    }
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: kun en av disse kontakter skal oppgis: " +
+                                                                          "advokatSomKontakt, personSomKontakt eller organisasjonSomKontakt")));
+        }
 
     @Test
     void whenAdressatMedIdnumberDoesNotExist_thenThrowExecption() {
@@ -102,11 +100,10 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString(format("KontaktinformasjonForDoedsbo: personSomKontakt med identifikasjonsnummer %s " +
-                "ikke funnet i database", IDENT)));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString(format("KontaktinformasjonForDoedsbo: personSomKontakt med identifikasjonsnummer %s " +
+                                "ikke funnet i database", IDENT))));
     }
 
     @Test
@@ -115,56 +112,57 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .personSomKontakt(KontaktpersonDTO.builder()
-                                .foedselsdato(LocalDate.of(1984, 1, 1).atStartOfDay())
-                                .navn(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                .build())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .personSomKontakt(KontaktpersonDTO.builder()
+                        .foedselsdato(LocalDate.of(1984, 1, 1).atStartOfDay())
+                        .navn(PersonNavnDTO.builder().etternavn("Blæh").build())
+                        .build())
+                .isNew(true)
+                .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn"));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn")));
     }
 
     @Test
     void whenAdressatAdvokatSomKontaktHasInvalidPersonnavn_thenThrowExecption() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1",Map.of("123456789", "Toys"))));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .advokatSomKontakt(OrganisasjonDTO.builder()
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                .build())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .advokatSomKontakt(OrganisasjonDTO.builder()
+                        .organisasjonsnummer("123456789")
+                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                        .build())
+                .isNew(true)
+                .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn"));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn")));
     }
 
     @Test
     void whenOrganisasjonSomAddressatHasInvalidPersonnavn_thenThrowExecption() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1",Map.of("123456789", "Toys"))));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
                         .organisasjonSomKontakt(OrganisasjonDTO.builder()
+                                .organisasjonsnummer("123456789")
                                 .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
                                 .build())
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn"));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn")));
     }
 
     @Test
@@ -178,11 +176,10 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnavn kan " +
-                "ikke oppgis uten at organisasjonsnummer finnes"));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnavn kan " +
+                                "ikke oppgis uten at organisasjonsnummer finnes")));
     }
 
     @Test
@@ -200,11 +197,10 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
-                "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]"));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
+                                "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]")));
     }
 
     @Test
@@ -224,10 +220,9 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .isNew(true)
                         .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
-                "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]"));
+        StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
+                                "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]")));
     }
 }

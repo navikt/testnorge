@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -51,7 +50,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getOppholdsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()))
@@ -62,11 +61,9 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                     adresse.setMaster(getMaster(adresse, person));
                 })
                 .collectList()
-                .doOnNext(adresser -> {
-                    oppdaterAdressedatoer(adresser, person);
-                    person.setOppholdsadresse(new ArrayList<>(adresser));
-                })
-                .then();
+                .doOnNext(adresser ->
+                        oppdaterAdressedatoer(adresser, person))
+                .thenReturn(person);
     }
 
     @Override
@@ -104,10 +101,10 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         return getOppholdsadresse(oppholdsadresse, person)
                 .flatMap(adresse ->
 
-                  genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn())
-                            .doOnNext(oppholdsadresse::setCoAdressenavn)
-                            .doOnNext(navn -> oppholdsadresse.setOpprettCoAdresseNavn(null))
-                            .thenReturn(oppholdsadresse));
+                        genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn())
+                                .doOnNext(oppholdsadresse::setCoAdressenavn)
+                                .doOnNext(navn -> oppholdsadresse.setOpprettCoAdresseNavn(null))
+                                .thenReturn(oppholdsadresse));
     }
 
     private Mono<OppholdsadresseDTO> getOppholdsadresse(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
@@ -117,6 +114,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
 
+                person.setOppholdsadresse(null);
                 return Mono.empty();
 
             } else if (oppholdsadresse.countAdresser() == 0) {

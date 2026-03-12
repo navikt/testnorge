@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class KjoennService implements BiValidation<KjoennDTO, PersonDTO> {
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getKjoenn())
                 .filter(kjoenn -> isTrue(kjoenn.getIsNew()))
@@ -25,7 +25,7 @@ public class KjoennService implements BiValidation<KjoennDTO, PersonDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     private Mono<KjoennDTO> handle(KjoennDTO kjoenn, String ident) {

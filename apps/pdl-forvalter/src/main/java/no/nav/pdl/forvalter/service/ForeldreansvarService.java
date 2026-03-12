@@ -83,7 +83,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         var alleForeldreansvar = mapperFacade.mapAsList(person.getForeldreansvar(), ForeldreansvarDTO.class);
 
@@ -99,7 +99,8 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                             }
                             return Mono.empty();
                         }))
-                .then();
+                .then()
+                .thenReturn(person);
     }
 
     @Override
@@ -292,7 +293,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                                         .build())));
     }
 
-    public Mono<Void> handle(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
+    public Mono<ForeldreansvarDTO> handle(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
 
         if (getFoedselsdato(person).stream()
                 .anyMatch(alder -> alder.getFoedselsaar() <= LocalDateTime.now().minusYears(MYNDIG_ALDER).getYear())) {
@@ -383,8 +384,10 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                                             .doOnNext(barnRelasjon -> slettForeldreansvar(person, foreldreansvar.getId()))
                                             .then());
                         }
-                        return Mono.empty();
-                    }));
+                        return Mono.empty()
+                                .then();
+                    }))
+                    .thenReturn(foreldreansvar);
 
         } else {
             // hovedperson er barn
@@ -419,7 +422,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                         .build());
     }
 
-    private Mono<Void> handleBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private Mono<ForeldreansvarDTO> handleBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
         return Mono.defer(() -> {
                     if (isNotBlank(foreldreansvar.getAnsvarlig())) {

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +34,7 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO> {
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getNavn())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -45,12 +44,8 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .map(navn -> {
-                    person.setNavn(new ArrayList<>(navn));
-                    return person;
-                })
                 .map(pers -> fixGyldigFraOgMed(person))
-                .then();
+                .thenReturn(person);
     }
 
     @Override

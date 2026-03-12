@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -64,10 +63,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
                     adresse.setMaster(getMaster(adresse, person));
                 })
                 .collectList()
-                .doOnNext(kontaktadresser -> {
-                    person.setKontaktadresse(new ArrayList<>(kontaktadresser));
-                    oppdaterAdressedatoer(person.getKontaktadresse(), person);
-                })
+                .doOnNext(kontaktadresser ->
+                    oppdaterAdressedatoer(person.getKontaktadresse(), person))
                 .thenReturn(person);
     }
 

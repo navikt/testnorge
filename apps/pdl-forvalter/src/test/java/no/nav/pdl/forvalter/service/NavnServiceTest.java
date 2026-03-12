@@ -8,19 +8,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -48,10 +45,9 @@ class NavnServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(Mono.just(false));
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                navnService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString("Navn er ikke i liste over gyldige verdier"));
+        StepVerifier.create(navnService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Navn er ikke i liste over gyldige verdier")));
     }
 
     @Test
@@ -68,11 +64,13 @@ class NavnServiceTest {
                 .build();
 
         StepVerifier.create(navnService.convert(request))
-                        .verifyComplete();
+                .assertNext(target -> {
+                    assertThat(target.getNavn().getFirst().getFornavn(), is(equalTo("Gyldig")));
+                    assertThat(target.getNavn().getFirst().getMellomnavn(), is(equalTo("Sjanglende")));
+                    assertThat(target.getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
+                })
+                .verifyComplete();
 
-//        assertThat(target.getFornavn(), is(equalTo("Gyldig")));
-//        assertThat(target.getMellomnavn(), is(equalTo("Sjanglende")));
-//        assertThat(target.getEtternavn(), is(equalTo("Sjømann")));
     }
 
     @Test
@@ -85,17 +83,20 @@ class NavnServiceTest {
                         .build()))
                 .build();
 
-//        when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Optional.of(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
-//                .adjektiv("Full")
-//                .adverb("Sjanglende")
-//                .substantiv("Sjømann")
-//                .build()));
+        when(genererNavnServiceConsumer.getNavn()).thenReturn(Mono.just(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
+                .adjektiv("Full")
+                .adverb("Sjanglende")
+                .substantiv("Sjømann")
+                .build()));
 
-//        var target = navnService.convert(request).getFirst();
-//
-//        assertThat(target.getFornavn(), is(equalTo("Full")));
-//        assertThat(target.getMellomnavn(), nullValue());
-//        assertThat(target.getEtternavn(), is(equalTo("Sjømann")));
+        StepVerifier.create(navnService.convert(request))
+                .assertNext(target -> {
+
+                    assertThat(target.getNavn().getFirst().getFornavn(), is(equalTo("Full")));
+                    assertThat(target.getNavn().getFirst().getMellomnavn(), nullValue());
+                    assertThat(target.getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -109,16 +110,19 @@ class NavnServiceTest {
                         .build()))
                 .build();
 
-//        when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Optional.of(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
-//                .adjektiv("Full")
-//                .adverb("Sjanglende")
-//                .substantiv("Sjømann")
-//                .build()));
-//
-//        var target = navnService.convert(request).getFirst();
-//
-//        assertThat(target.getFornavn(), is(equalTo("Full")));
-//        assertThat(target.getMellomnavn(), is(equalTo("Sjanglende")));
-//        assertThat(target.getEtternavn(), is(equalTo("Sjømann")));
+        when(genererNavnServiceConsumer.getNavn()).thenReturn(Mono.just(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
+                .adjektiv("Full")
+                .adverb("Sjanglende")
+                .substantiv("Sjømann")
+                .build()));
+
+        StepVerifier.create(navnService.convert(request))
+                .assertNext(target -> {
+
+                    assertThat(target.getNavn().getFirst().getFornavn(), is(equalTo("Full")));
+                    assertThat(target.getNavn().getFirst().getMellomnavn(), is(equalTo("Sjanglende")));
+                    assertThat(target.getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
+                })
+                .verifyComplete();
     }
 }

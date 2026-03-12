@@ -34,6 +34,8 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
@@ -66,14 +68,17 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     private final MapperFacade mapperFacade;
     private final DeltBostedService deltBostedService;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getForelderBarnRelasjon())
                 .filter(type -> isTrue(type.getIsNew()))
                 .flatMap(type -> handle(type, person))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
                 .collectList()
-                .doOnNext(nyeRelasjoner -> person.getForelderBarnRelasjon().addAll(nyeRelasjoner))
-                .then();
+                .then(Mono.just(person));
     }
 
     @Override

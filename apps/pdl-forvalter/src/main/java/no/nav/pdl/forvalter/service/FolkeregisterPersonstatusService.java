@@ -38,12 +38,12 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterPersonstatusDTO, PersonDTO> {
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         var touched = new AtomicBoolean(false);
 
         if (person.isNotChanged() || isTestnorgeIdent(person.getIdent()) || person.getIdenttype() == NPID) {
-            return Mono.empty();
+            return Mono.just(person);
         }
 
         person.getFolkeregisterPersonstatus()
@@ -73,10 +73,10 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         }
 
         setGyldigTilOgMed(person);
-        return Mono.empty();
+        return Mono.just(person);
     }
 
-    public Mono<Void> update(PersonDTO person) {
+    public Mono<PersonDTO> update(PersonDTO person) {
 
         person.setIsChanged(true);
         return convert(person);
@@ -171,7 +171,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     @Override
     public Mono<Void> validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
 
-        // Ingen valalidering
+        // Ingen validering
         return Mono.empty();
     }
 
