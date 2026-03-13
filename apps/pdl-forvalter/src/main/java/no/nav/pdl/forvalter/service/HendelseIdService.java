@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HendelseIdRequest;
@@ -60,9 +61,9 @@ public class HendelseIdService {
                 .then();
     }
 
-    public Flux<DbVersjonDTO> getPdlHendelser(String ident) {
+    public Flux<DbVersjonDTO> getPdlHendelser(DbPerson dbPerson) {
 
-        return personRepository.findByIdent(ident)
+        return Mono.just(dbPerson)
                 .map(DbPerson::getPerson)
                 .flatMapMany(person -> Flux.fromArray(person.getClass().getMethods())
                         .filter(method -> method.getName().contains("get"))
@@ -86,22 +87,19 @@ public class HendelseIdService {
 
         if (isTestnorgeIdent(person.getIdent())) {
 
-            return Flux.concat(
-                            getPdlHendelser(person.getIdent())
+            return Flux.concat(getPdlHendelser(person)
                                     .flatMap(opplysning -> buildHendelseRequest(person.getIdent(), opplysning)),
-                            relasjonRepository.findByPersonId(person.getId())
-                                    .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))
+                            Flux.fromIterable(person.getRelasjoner())
+                                    .map(DbRelasjon::getRelatertPerson)
                                     .map(DbPerson::getPerson)
                                     .flatMap(relasjonPerson -> Flux.concat(
                                             Flux.fromIterable(relasjonPerson.getSivilstand())
-                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
+                                                    .flatMap(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
                                             Flux.fromIterable(relasjonPerson.getForelderBarnRelasjon())
-                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
+                                                    .flatMap(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
                                             Flux.fromIterable(relasjonPerson.getFullmakt())
-                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert))))
-                                    .flatMap(Flux::from))
+                                                    .flatMap(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)))))
                     .flatMap(pdlTestdataConsumer::deleteHendelse)
-                    .collectList()
                     .then();
         }
 

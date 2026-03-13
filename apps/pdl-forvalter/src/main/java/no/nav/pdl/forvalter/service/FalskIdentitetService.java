@@ -52,7 +52,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getFalskIdentitet())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -62,7 +62,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     @Override

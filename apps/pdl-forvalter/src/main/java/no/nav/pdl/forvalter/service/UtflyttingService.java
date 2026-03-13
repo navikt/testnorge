@@ -14,7 +14,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 import static java.util.Objects.isNull;
@@ -35,7 +34,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     private final KodeverkConsumer kodeverkConsumer;
     private final KontaktAdresseService kontaktAdresseService;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getUtflytting())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -45,7 +44,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     @Override

@@ -47,9 +47,9 @@ class UtflyttingServiceTest {
 
         StepVerifier.create(utflyttingService.validate(request))
                 .verifyErrorSatisfies(throwable ->
-                    Assertions.assertThat(throwable)
-                            .isInstanceOf(InvalidRequestException.class)
-                            .hasMessageContaining("400 Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
+                        Assertions.assertThat(throwable)
+                                .isInstanceOf(InvalidRequestException.class)
+                                .hasMessageContaining("400 Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
     }
 
     @Test
@@ -62,11 +62,15 @@ class UtflyttingServiceTest {
 
         when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("TGW"));
         when(kontaktAdresseService.convert(any(PersonDTO.class), anyBoolean())).thenReturn(Mono.just(request));
-        
-        StepVerifier.create(utflyttingService.convert(request))
-                        .verifyComplete();
 
-        verify(kodeverkConsumer).getTilfeldigLand();
-        assertThat(request.getUtflytting().getFirst().getTilflyttingsland(), is(equalTo("TGW")));
+        StepVerifier.create(utflyttingService.convert(request))
+                .assertNext(target -> {
+
+                    verify(kodeverkConsumer).getTilfeldigLand();
+                    verify(kontaktAdresseService).convert(any(PersonDTO.class), anyBoolean());
+
+                    assertThat(target.getUtflytting().getFirst().getTilflyttingsland(), is(equalTo("TGW")));
+                })
+                .verifyComplete();
     }
 }

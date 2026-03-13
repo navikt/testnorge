@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -15,7 +13,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class NavPersonIdentifikatorService implements Validation<NavPersonIdentifikatorDTO> {
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getNavPersonIdentifikator())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -25,8 +23,7 @@ public class NavPersonIdentifikatorService implements Validation<NavPersonIdenti
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(identifikator -> person.setNavPersonIdentifikator(new ArrayList<>(identifikator)))
-                .then();
+                .thenReturn(person);
     }
 
     protected Mono<NavPersonIdentifikatorDTO> handle(NavPersonIdentifikatorDTO type) {

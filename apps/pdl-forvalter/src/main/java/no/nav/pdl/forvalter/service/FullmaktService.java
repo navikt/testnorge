@@ -31,7 +31,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getFullmakt())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -42,7 +42,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
                 })
                 .collectList()
                 .doOnNext(fullmakt -> person.setFullmakt(new ArrayList<>(fullmakt)))
-                .then();
+                .thenReturn(person);
     }
 
     @Override

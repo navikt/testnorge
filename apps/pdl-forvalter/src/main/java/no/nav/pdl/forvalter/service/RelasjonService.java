@@ -48,8 +48,8 @@ public class RelasjonService {
 
         return relasjonRepository.findByPersonIdAndRelatertPersonIdAndRelasjonType(person1.getId(), person2.getId(), relasjonType)
                 .switchIfEmpty(Mono.just(DbRelasjon.builder()
-                        .personId(person1.getId())
-                        .relatertPersonId(person2.getId())
+                        .person(person1)
+                        .relatertPerson(person2)
                         .relasjonType(relasjonType)
                         .sistOppdatert(now())
                         .build())

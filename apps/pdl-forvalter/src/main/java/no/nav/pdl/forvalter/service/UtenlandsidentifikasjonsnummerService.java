@@ -21,7 +21,7 @@ public class UtenlandsidentifikasjonsnummerService implements Validation<Utenlan
     private static final String VALIDATION_UTSTEDER_LAND_MISSING = "Utsteder land må oppgis";
     private static final String VALIDATION_LANDKODE_ILLEGAL_FORMAT = "Trebokstavers landkode er forventet på utstederland";
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getUtenlandskIdentifikasjonsnummer())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -30,7 +30,7 @@ public class UtenlandsidentifikasjonsnummerService implements Validation<Utenlan
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     @Override

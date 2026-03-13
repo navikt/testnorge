@@ -97,13 +97,12 @@ public class PersonService {
                                 validateArtifactsService.validate(mergedPerson.getPerson())
                                         .then(Mono.just(mergedPerson)) : Mono.just(mergedPerson))
                         .flatMap(mergedPerson -> personArtifactService.buildPerson(mergedPerson, relaxed))
-                        .map(extendedArtifacts -> {
-                            dbPerson.setPerson(extendedArtifacts);
-                            dbPerson.setFornavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn());
-                            dbPerson.setMellomnavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
-                            dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
-                            dbPerson.setSistOppdatert(now());
-                            return dbPerson;
+                        .map(mergedPerson -> {
+                            mergedPerson.setFornavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn());
+                            mergedPerson.setMellomnavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
+                            mergedPerson.setEtternavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
+                            mergedPerson.setSistOppdatert(now());
+                            return mergedPerson;
                         }))
                 .flatMap(personRepository::save)
                 .map(DbPerson::getIdent);
@@ -119,15 +118,12 @@ public class PersonService {
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
                 .flatMap(dbPerson -> unhookEksternePersonerService.unhook(dbPerson)
                         .thenReturn(dbPerson))
-                .flatMapMany(dbPerson -> Flux.concat(
-                                Flux.just(dbPerson.getId()),
-                                relasjonRepository.findByPersonId(dbPerson.getId())
-                                        .map(DbRelasjon::getRelatertPersonId))
-                        .flatMap(relatertPersonId -> personRepository.findById(relatertPersonId)
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getRelasjoner())
+                        .map(DbRelasjon::getRelatertPerson)
                                 // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
                                 .flatMap(relatertPerson -> aliasRepository.existsByTidligereIdent(relatertPerson.getIdent())
                                         .zipWith(Mono.just(relatertPerson))))
-                        .filter(tuple -> isNotTrue(tuple.getT1())))
+                        .filter(tuple -> isNotTrue(tuple.getT1()))
                 .reduce(new HashSet<String>(), (set, tuple) -> {
                     set.add(tuple.getT2().getIdent());
                     return set;
@@ -151,8 +147,7 @@ public class PersonService {
         if (nonNull(identer) && !identer.isEmpty()) {
 
             return aliasRepository.findByTidligereIdentIn(identer)
-                                    .map(DbAlias::getPersonId)
-                    .flatMap(personRepository::findById)
+                    .map(DbAlias::getPerson)
                     .map(DbPerson::getIdent)
                     .reduce(new HashSet<String>(), (set, ident) -> {
                         set.add(ident);
@@ -167,17 +162,16 @@ public class PersonService {
                             PageRequest.of(paginering.getSidenummer(),
                                     paginering.getSidestoerrelse(),
                                     Sort.by(SORT_BY_FIELD).descending())))
-                    .map(person ->
-                            mapperFacade.map(person, FullPersonDTO.class)); // TBD
+                    .map(person -> mapperFacade.map(person, FullPersonDTO.class));
 
-        } else
-
-            return  Flux.empty();
+        } else {
+            return Flux.empty();
 //            return personRepository.findAll(
 //                            PageRequest.of(paginering.getSidenummer(),
 //                                    paginering.getSidestoerrelse(),
 //                                    Sort.by(SORT_BY_FIELD).descending()))
 //                    .map(person -> mapperFacade.map(person, FullPersonDTO.class)); //TBD
+        }
     }
 
     @Transactional

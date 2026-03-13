@@ -1,6 +1,5 @@
-package no.nav.pdl.forvalter.service;
+package no.nav.pdl.forvalter.utils;
 
-import no.nav.pdl.forvalter.utils.RelasjonerAlderUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -25,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class RelasjonerAlderUtilityTest {
 
     private final static LocalDate LOCAL_DATE = LocalDate.of(2023, 6, 8);
+
     @Mock
     private Clock clock;
 

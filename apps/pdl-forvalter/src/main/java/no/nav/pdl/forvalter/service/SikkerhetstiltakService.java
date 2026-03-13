@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 
 import static java.util.Objects.isNull;
@@ -32,7 +31,7 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
     private static final String VALIDATION_PERSONIDENT_ERROR = "Sikkerhetstiltak: NAV personident må angis";
     private static final String VALIDATION_ENHET_ERROR = "Sikkerhetstiltak: Enhet må angis";
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getSikkerhetstiltak())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -43,10 +42,9 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
                 .collectList()
                 .doOnNext(sikkerhetstiltak -> {
                     sikkerhetstiltak.sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
-                    person.setSikkerhetstiltak(new ArrayList<>(sikkerhetstiltak));
                     renumberId(person.getSikkerhetstiltak());
                 })
-                .then();
+                .thenReturn(person);
     }
 
     public Mono<Void> validate(SikkerhetstiltakDTO sikkerhetstiltak) {

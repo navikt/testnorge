@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -20,6 +20,8 @@ public class TelefonnummerService implements Validation<TelefonnummerDTO> {
 
     private static final String VALIDATION_PRIORITET_REQUIRED = "Telefonnummer: prioritet er påkrevet";
     private static final String VALIDATION_PRIORITET_ERROR = "Telefonnummerets prioritet må være 1 eller 2";
+    private static final String VALIDATION_PRIORITET_INVALID = "Telefonnummer: prioritet 1 må angis før 2 kan benyttes";
+    private static final String VALIDATION_PRIORITET_AMBIGUOUS = "Telefonnummer: prioritet 1 og prioritet 2 kan kun benyttes én gang hver";
     private static final String VALIDATION_NUMMER_REQUIRED = "Telefonnummer: nummer er påkrevet felt";
     private static final String VALIDATION_LANDSKODE_REQUIRED = "Telefonnummer: landskode er påkrevet felt";
     private static final String VALIDATION_LANDKODE_INVALID_FORMAT = "Telefonnummer: Landkode består av ledende + " +
@@ -27,7 +29,7 @@ public class TelefonnummerService implements Validation<TelefonnummerDTO> {
     private static final String VALIDATION_NUMMER_INVALID_FORMAT = "Telefonnummer: nummer kan kun inneholde tallsifre";
     private static final String VALIDATION_NUMMER_INVALID_LENGTH = "Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre";
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getTelefonnummer())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -37,8 +39,8 @@ public class TelefonnummerService implements Validation<TelefonnummerDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(telefonnumre -> person.setTelefonnummer(new ArrayList<>(telefonnumre)))
-                .then();
+                .doOnNext(this::enforceIntegrity)
+                .thenReturn(person);
     }
 
     @Override
@@ -70,5 +72,25 @@ public class TelefonnummerService implements Validation<TelefonnummerDTO> {
 
         type.setMaster(Master.PDL);
         return  Mono.just(type);
+    }
+
+    protected void enforceIntegrity(List<TelefonnummerDTO> telefonnummer) {
+
+        var pri1 = 0;
+        var pri2 = 0;
+        for (var tlf : telefonnummer) {
+            if (tlf.getPrioritet() == 1) {
+                pri1++;
+            }
+            if (tlf.getPrioritet() == 2) {
+                pri2++;
+            }
+        }
+        if (pri2 > 0 && pri1 == 0) {
+            throw new InvalidRequestException(VALIDATION_PRIORITET_INVALID);
+        }
+        if (pri1 > 1 || pri2 > 1) {
+            throw new InvalidRequestException(VALIDATION_PRIORITET_AMBIGUOUS);
+        }
     }
 }

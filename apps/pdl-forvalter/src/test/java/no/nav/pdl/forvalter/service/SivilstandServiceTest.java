@@ -8,8 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,12 +45,11 @@ class SivilstandServiceTest {
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(Mono.just(false));
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.validate(request, PersonDTO.builder()
-                                .ident(IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("Sivilstand: Relatert person finnes ikke"));
+        StepVerifier.create(sivilstandService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                .build()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sivilstand: Relatert person finnes ikke")));
     }
 
     @Test
@@ -70,9 +68,11 @@ class SivilstandServiceTest {
                                 .build()))
                 .build();
 
-        var target = sivilstandService.convert(request);
-
-//        assertThat(target.get(0).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(1).getSivilstandsdato())));
-//        assertThat(target.get(1).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(0).getSivilstandsdato())));
+        StepVerifier.create(sivilstandService.convert(request))
+                .assertNext(target -> {
+                    assertThat(target.getSivilstand().get(0).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(1).getSivilstandsdato())));
+                    assertThat(target.getSivilstand().get(1).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(0).getSivilstandsdato())));
+                })
+                .verifyComplete();
     }
 }

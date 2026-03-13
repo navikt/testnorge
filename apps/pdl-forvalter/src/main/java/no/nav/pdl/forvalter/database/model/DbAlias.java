@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.database.model;
 
+import io.github.joselion.springr2dbcrelationships.annotations.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,8 +31,8 @@ public class DbAlias {
     @Column
     private LocalDateTime sistOppdatert;
 
-    @Column
-    private Long personId;
+    @ManyToOne(foreignKey = "person_id")
+    private DbPerson person;
 
     @Column
     private String tidligereIdent;
@@ -45,22 +46,22 @@ public class DbAlias {
 
         if (!(o instanceof DbAlias dbAlias)) return false;
 
-        return new EqualsBuilder().append(id, dbAlias.id).append(personId, dbAlias.personId).append(tidligereIdent, dbAlias.tidligereIdent).isEquals();
+        return new EqualsBuilder().append(id, dbAlias.id).append(sistOppdatert, dbAlias.sistOppdatert).append(person, dbAlias.person).append(tidligereIdent, dbAlias.tidligereIdent).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(personId).append(tidligereIdent).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(sistOppdatert).append(person).append(tidligereIdent).toHashCode();
     }
 
     @Override
     public String toString() {
         return "DbAlias{" +
-                "id=" + id +
-                ", sistOppdatert=" + sistOppdatert +
-                ", personId=" + personId +
-                ", tidligereIdent='" + tidligereIdent + '\'' +
-                ", versjon=" + versjon +
-                '}';
+               "id=" + id +
+               ", sistOppdatert=" + sistOppdatert +
+               ", person=" + person +
+               ", tidligereIdent='" + tidligereIdent + '\'' +
+               ", versjon=" + versjon +
+               '}';
     }
 }

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -14,7 +13,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonIDDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +20,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -43,7 +38,6 @@ public class IdentitetService {
     private static final String SORT_BY_FIELD = "sistOppdatert";
 
     private final PersonRepository personRepository;
-    private final RelasjonRepository relasjonRepository;
 
     @Transactional(readOnly = true)
     public Flux<PersonIDDTO> getfragment(String fragment, Paginering paginering) {
@@ -91,8 +85,10 @@ public class IdentitetService {
 
     private Mono<Void> setStandaloneRelasjoner(DbPerson person) {
 
-        return relasjonRepository.findByPersonId(person.getId())
-                .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))
+        return Mono.just(person)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .map(DbRelasjon::getRelatertPerson)
                 .flatMap(relasjonPerson -> setStandalonePerson(relasjonPerson, person.getIdent(), person.getPerson().isStandalone()))
                 .flatMap(personRepository::save)
                 .then();

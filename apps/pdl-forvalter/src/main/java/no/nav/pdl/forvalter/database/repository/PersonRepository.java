@@ -11,7 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -26,8 +25,8 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
 
 //    Flux<DbPerson> findAll(Pageable pageable);
 
-    Flux<DbPerson> findByIdIn(List<Long> identer);
     Mono<DbPerson> findById(Long id);
+    Flux<DbPerson> findByIdIn(Set<Long> ids);
 
     @Modifying
     Mono<Void> deleteByIdentIn(Set<String> ident);

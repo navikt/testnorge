@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasSpraak;
@@ -24,7 +22,7 @@ public class TilrettelagtKommunikasjonService implements Validation<Tilrettelagt
     private static final String VALIDATION_TOLKESPRAAK_ERROR = "Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
     private static final String VALIDATION_TEGNSPRAAK_ERROR = "Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
         return Flux.fromIterable(person.getTilrettelagtKommunikasjon())
                 .filter(type -> isTrue(type.getIsNew()))
                 .flatMap(this::handle)
@@ -33,8 +31,7 @@ public class TilrettelagtKommunikasjonService implements Validation<Tilrettelagt
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .doOnNext(kommunikasjon -> person.setTilrettelagtKommunikasjon(new ArrayList<>(kommunikasjon)))
-                .then();
+                .thenReturn(person);
     }
 
     @Override

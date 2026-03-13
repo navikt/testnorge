@@ -22,10 +22,8 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
            "where r.person.id in (select p.id from DbPerson p where p.ident in (:identer))")
     Mono<Void> deleteByPersonIdentIn(Collection<String> identer);
 
-    @Modifying
-    Flux<DbRelasjon> saveAll(Collection<DbRelasjon> relasjoner);
-
     Flux<DbRelasjon> findByPersonId(Long id);
+    Flux<DbRelasjon> findByPersonIdIn(List<Long> ids);
 
     @Query("""
             select exists (select 1 from DbRelasjon r

@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -42,7 +41,7 @@ public class PersonArtifactService {
     private final UtflyttingService utflyttingService;
     private final VergemaalService vergemaalService;
 
-    public Mono<PersonDTO> buildPerson(DbPerson dbPerson, Boolean relaxed) {
+    public Mono<DbPerson> buildPerson(DbPerson dbPerson, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
 
@@ -77,8 +76,7 @@ public class PersonArtifactService {
                 .then(navPersonIdentifikatorService.convert(person))
                 .then(folkeregisterPersonstatusService.convert(person))
                 .then(identtypeService.convert(dbPerson)))
-                .thenReturn(person)
-                .then(folkeregisterPersonstatusService.convert(person)
-                        .thenReturn(person));
+                .flatMap(person1 -> folkeregisterPersonstatusService.convert(person1.getPerson())
+                        .thenReturn(person1));
     }
 }

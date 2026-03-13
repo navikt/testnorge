@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FoedselsdatoService implements BiValidation<FoedselsdatoDTO, PersonDTO> {
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getFoedselsdato())
                 .filter(foedselsdato -> isTrue(foedselsdato.getIsNew()))
@@ -39,7 +39,7 @@ public class FoedselsdatoService implements BiValidation<FoedselsdatoDTO, Person
 
                     renumberId(person.getFoedselsdato());
                 })
-                .then();
+                .thenReturn(person);
     }
 
     private Mono<FoedselsdatoDTO> handle(FoedselsdatoDTO foedselsdato, String ident) {

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
@@ -29,7 +27,7 @@ public class FoedestedService implements BiValidation<FoedestedDTO, PersonDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getFoedested())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -41,7 +39,7 @@ public class FoedestedService implements BiValidation<FoedestedDTO, PersonDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     private Mono<FoedestedDTO> handle(FoedestedDTO foedested, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {

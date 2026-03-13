@@ -6,13 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class SikkerhetstiltakServiceTest {
@@ -27,10 +26,9 @@ class SikkerhetstiltakServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: Tiltakstype må angis"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: Tiltakstype må angis")));
     }
 
     @Test
@@ -41,10 +39,9 @@ class SikkerhetstiltakServiceTest {
                 .tiltakstype(Tiltakstype.TOAN)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: Beskrivelse må angis"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: Beskrivelse må angis")));
     }
 
     @Test
@@ -56,10 +53,9 @@ class SikkerhetstiltakServiceTest {
                 .beskrivelse("To ansatte ved samtale")
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: GyldigFom må angis"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: GyldigFom må angis")));
     }
 
     @Test
@@ -72,10 +68,9 @@ class SikkerhetstiltakServiceTest {
                 .gyldigFraOgMed(LocalDateTime.now())
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: GyldigTom må angis"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: GyldigTom må angis")));
     }
 
     @Test
@@ -89,10 +84,9 @@ class SikkerhetstiltakServiceTest {
                 .gyldigTilOgMed(LocalDateTime.now().plusYears(1))
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: Personident og enhet må angis"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: Personident og enhet må angis")));
     }
 
     @Test
@@ -107,10 +101,9 @@ class SikkerhetstiltakServiceTest {
                 .kontaktperson(new SikkerhetstiltakDTO.Kontaktperson())
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: NAV personident må angis"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: NAV personident må angis")));
     }
 
     @Test
@@ -127,10 +120,9 @@ class SikkerhetstiltakServiceTest {
                         .build())
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: Enhet må angis"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: Enhet må angis")));
     }
 
     @Test
@@ -148,9 +140,8 @@ class SikkerhetstiltakServiceTest {
                         .build())
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sikkerhetstiltakService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sikkerhetstiltak: Ugyldig datointervall: gyldigFom må være før gyldigTom"));
+        StepVerifier.create(sikkerhetstiltakService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Sikkerhetstiltak: Ugyldig datointervall: gyldigFom må være før gyldigTom")));
     }
 }

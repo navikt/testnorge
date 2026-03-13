@@ -27,7 +27,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -52,15 +51,11 @@ public class MetadataTidspunkterService {
 
         return fixPerson(ident)
                 .flatMap(dbPerson -> relasjonRepository.findByPersonId(dbPerson.getId())
-                        .collectList()
-                        .flatMapMany(Flux::fromIterable)
-                        .map(DbRelasjon::getRelatertPersonId)
-                        .collectList()
-                        .flatMapMany(personRepository::findByIdIn)
+                        .map(DbRelasjon::getRelatertPerson)
                         .map(DbPerson::getIdent)
+                        .distinct()
                         .flatMap(this::fixPerson)
-                        .collectList())
-                .then();
+                        .then());
     }
 
     private Mono<DbPerson> fixPerson(String ident) {

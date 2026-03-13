@@ -24,9 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +48,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getDeltBosted())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -66,7 +64,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                         person.setDeltBosted(null);
                     }
                 })
-                .then();
+                .thenReturn(person);
     }
 
     public Mono<Void> handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {

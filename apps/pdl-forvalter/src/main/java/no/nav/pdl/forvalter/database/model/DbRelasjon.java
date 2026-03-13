@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.database.model;
 
+import io.github.joselion.springr2dbcrelationships.annotations.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,11 +35,11 @@ public class DbRelasjon {
     @Column
     private RelasjonType relasjonType;
 
-    @Column
-    private Long personId;
+    @ManyToOne(foreignKey = "person_id")
+    private DbPerson person;
 
-    @Column
-    private Long relatertPersonId;
+    @ManyToOne(foreignKey = "relatert_person_id")
+    private DbPerson relatertPerson;
 
     @Version
     private Integer versjon;
@@ -49,23 +50,23 @@ public class DbRelasjon {
 
         if (!(o instanceof DbRelasjon that)) return false;
 
-        return new EqualsBuilder().append(id, that.id).append(relasjonType, that.relasjonType).append(personId, that.personId).append(relatertPersonId, that.relatertPersonId).isEquals();
+        return new EqualsBuilder().append(id, that.id).append(sistOppdatert, that.sistOppdatert).append(relasjonType, that.relasjonType).append(person, that.person).append(relatertPerson, that.relatertPerson).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(relasjonType).append(personId).append(relatertPersonId).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(sistOppdatert).append(relasjonType).append(person).append(relatertPerson).toHashCode();
     }
 
     @Override
     public String toString() {
         return "DbRelasjon{" +
-                "id=" + id +
-                ", sistOppdatert=" + sistOppdatert +
-                ", relasjonType=" + relasjonType +
-                ", personId=" + personId +
-                ", relatertPersonId=" + relatertPersonId +
-                ", versjon=" + versjon +
-                '}';
+               "id=" + id +
+               ", sistOppdatert=" + sistOppdatert +
+               ", relasjonType=" + relasjonType +
+               ", person=" + person +
+               ", relatertPerson=" + relatertPerson +
+               ", versjon=" + versjon +
+               '}';
     }
 }

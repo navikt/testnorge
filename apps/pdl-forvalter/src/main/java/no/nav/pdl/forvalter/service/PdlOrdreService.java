@@ -7,6 +7,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
@@ -120,11 +121,12 @@ public class PdlOrdreService {
                     val dbPerson = tuple.getT2();
                     return Flux.concat(
                                     Mono.just(dbPerson),
-                                    relasjonRepository.findByPersonId(dbPerson.getId())
-                                            .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))
-                                            .filter(dbPerson1 -> isNotTrue(ekskluderEksterenePersoner) ||
-                                                                 eksternePersoner.stream()
-                                                                         .noneMatch(ekstern -> ekstern.equals(dbPerson1.getIdent()))),
+                                    Flux.fromIterable(dbPerson.getRelasjoner())
+                                            .filter(relasjon -> isNotTrue(ekskluderEksterenePersoner) ||
+                                                                eksternePersoner.stream()
+                                                                        .noneMatch(ekstern ->
+                                                                                ekstern.equals(relasjon.getRelatertPerson().getIdent())))
+                                            .map(DbRelasjon::getRelatertPerson),
                                     Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                                             .filter(ForelderBarnRelasjonDTO::hasBarn)
                                             .map(ForelderBarnRelasjonDTO::getRelatertPerson)
@@ -211,9 +213,8 @@ public class PdlOrdreService {
     private Mono<Void> checkAlias(String ident) {
 
         return aliasRepository.findByTidligereIdent(ident)
-                .flatMap(alias -> personRepository.findById(alias.getPersonId()))
-                .flatMap(dbPerson -> Mono.error(new InvalidRequestException(
-                        VIOLATION_ALIAS_EXISTS.formatted(dbPerson.getIdent()))));
+                .flatMap(dbAlias -> Mono.error(new InvalidRequestException(
+                        VIOLATION_ALIAS_EXISTS.formatted(dbAlias.getPerson().getIdent()))));
     }
 
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger) {
@@ -233,7 +234,7 @@ public class PdlOrdreService {
                         Flux.fromIterable(sorterteOpprettinger)
                                 .flatMap(oppretting -> oppretting.isNotTestnorgeIdent() ?
                                         deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), List.of(new PdlDelete())) :
-                                        hendelseIdService.getPdlHendelser(oppretting.getPerson().getIdent())
+                                        hendelseIdService.getPdlHendelser(oppretting.getPerson())
                                                 .collectList()
                                                 .flatMapMany(pdlHendelser ->
                                                         deployService.createOrdre(PDL_SLETTING_HENDELSEID, oppretting.getPerson().getIdent(),
@@ -313,8 +314,8 @@ public class PdlOrdreService {
                                 .map(DbPerson::getIdent)
                                 .filter(IdenttypeUtility::isNpidIdent)
                                 .map(ident -> MergeIdent.builder()
-                                                .npid(ident)
-                                                .build())
+                                        .npid(ident)
+                                        .build())
                                 .toList()));
     }
 

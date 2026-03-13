@@ -26,7 +26,7 @@ public class DoedsfallService implements Validation<DoedsfallDTO> {
     private static final String INVALID_DATO_MISSING = "Dødsfall: dødsdato må oppgis";
     private final PersonRepository personRepository;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getDoedsfall())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -41,8 +41,7 @@ public class DoedsfallService implements Validation<DoedsfallDTO> {
                     renumberId(doedsfall);
                     return doedsfall;
                 })
-                .doOnNext(doedsfall -> person.setDoedsfall(new java.util.ArrayList<>(doedsfall)))
-                .then();
+                .thenReturn(person);
     }
 
     private Mono<DoedsfallDTO> handle(DoedsfallDTO doedsfall, PersonDTO person) {

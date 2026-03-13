@@ -3,11 +3,10 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import org.springframework.data.domain.Pageable;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,14 +17,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMEKTIG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +46,11 @@ public class UnhookEksternePersonerService {
 
         val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
 
-        return personRepository.findByIdentIn(hovedperson.getPerson().getSivilstand().stream()
-                        .map(SivilstandDTO::getRelatertVedSivilstand)
-                        .toList(), Pageable.unpaged())
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.EKTEFELLE_PARTNER))
+                .map(DbRelasjon::getRelatertPerson)
                 .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                         .doOnNext(sivilstand -> {
                             if (sivilstand.isEksisterendePerson()) {
@@ -78,9 +71,12 @@ public class UnhookEksternePersonerService {
 
         val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
 
-        return personRepository.findByIdentIn(hovedperson.getPerson().getForelderBarnRelasjon().stream()
-                        .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                        .toList(), Pageable.unpaged())
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FAMILIERELASJON_FORELDER) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.FAMILIERELASJON_BARN))
+                .map(DbRelasjon::getRelatertPerson)
                 .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                         .doOnNext(relasjon -> {
                             if (relasjon.isEksisterendePerson()) {
@@ -101,20 +97,23 @@ public class UnhookEksternePersonerService {
 
         val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
 
-        return Flux.concat(relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), FORELDREANSVAR_BARN),
-                        relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), FORELDREANSVAR_FORELDER))
-                .flatMap(relasjon -> personRepository.findById(relasjon.getPersonId())
-                        .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
-                                .doOnNext(foreldreansvar -> {
-                                    if (foreldreansvar.isEksisterendePerson()) {
-                                        standalonePartnere.get().add(dbPerson);
-                                    }
-                                })
-                                .filter(foreldreansvar ->
-                                        !Objects.equals(hovedperson.getIdent(), foreldreansvar.getIdentForRelasjon()))
-                                .collectList()
-                                .doOnNext(foreldreansvar -> dbPerson.getPerson().setForeldreansvar(foreldreansvar))
-                                .thenReturn(dbPerson)))
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FORELDREANSVAR_BARN) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.FORELDREANSVAR_FORELDER))
+                .map(DbRelasjon::getRelatertPerson)
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
+                        .doOnNext(foreldreansvar -> {
+                            if (foreldreansvar.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(foreldreansvar ->
+                                !Objects.equals(hovedperson.getIdent(), foreldreansvar.getIdentForRelasjon()))
+                        .collectList()
+                        .doOnNext(foreldreansvar -> dbPerson.getPerson().setForeldreansvar(foreldreansvar))
+                        .thenReturn(dbPerson))
                 .flatMap(personRepository::save)
                 .then()
                 .thenReturn(standalonePartnere.get());
@@ -124,20 +123,23 @@ public class UnhookEksternePersonerService {
 
         val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
 
-        return Flux.concat(relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), FULLMAKTSGIVER),
-                        relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), FULLMEKTIG))
-                .flatMap(relasjon -> personRepository.findById(relasjon.getPersonId())
-                        .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getFullmakt())
-                                .doOnNext(fullmakt -> {
-                                    if (fullmakt.isEksisterendePerson()) {
-                                        standalonePartnere.get().add(dbPerson);
-                                    }
-                                })
-                                .filter(fullmakt ->
-                                        !Objects.equals(hovedperson.getIdent(), fullmakt.getMotpartsPersonident()))
-                                .collectList()
-                                .doOnNext(fullmakt -> dbPerson.getPerson().setFullmakt(fullmakt))
-                                .thenReturn(dbPerson)))
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMAKTSGIVER) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG))
+                .map(DbRelasjon::getRelatertPerson)
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getFullmakt())
+                        .doOnNext(fullmakt -> {
+                            if (fullmakt.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(fullmakt ->
+                                !Objects.equals(hovedperson.getIdent(), fullmakt.getMotpartsPersonident()))
+                        .collectList()
+                        .doOnNext(fullmakt -> dbPerson.getPerson().setFullmakt(fullmakt))
+                        .thenReturn(dbPerson))
                 .flatMap(personRepository::save)
                 .then()
                 .thenReturn(standalonePartnere.get());
@@ -147,20 +149,23 @@ public class UnhookEksternePersonerService {
 
         val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
 
-        return Flux.concat(relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), VERGE),
-                        relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), VERGE_MOTTAKER))
-                .flatMap(relasjon -> personRepository.findById(relasjon.getPersonId())
-                        .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getVergemaal())
-                                .doOnNext(vergemaal -> {
-                                    if (vergemaal.isEksisterendePerson()) {
-                                        standalonePartnere.get().add(dbPerson);
-                                    }
-                                })
-                                .filter(vergemaal ->
-                                        !Objects.equals(hovedperson.getIdent(), vergemaal.getIdentForRelasjon()))
-                                .collectList()
-                                .doOnNext(vergemaal -> dbPerson.getPerson().setVergemaal(vergemaal))
-                                .thenReturn(dbPerson)))
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.VERGE) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.VERGE_MOTTAKER))
+                .map(DbRelasjon::getRelatertPerson)
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getVergemaal())
+                        .doOnNext(vergemaal -> {
+                            if (vergemaal.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(vergemaal ->
+                                !Objects.equals(hovedperson.getIdent(), vergemaal.getIdentForRelasjon()))
+                        .collectList()
+                        .doOnNext(vergemaal -> dbPerson.getPerson().setVergemaal(vergemaal))
+                        .thenReturn(dbPerson))
                 .flatMap(personRepository::save)
                 .then()
                 .thenReturn(standalonePartnere.get());
@@ -170,21 +175,24 @@ public class UnhookEksternePersonerService {
 
         val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
 
-        return Flux.concat(relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), KONTAKT_FOR_DOEDSBO),
-                        relasjonRepository.findByPersonIdOrRelatertPersonIdAndRelasjonType(hovedperson.getId(), AVDOEDD_FOR_KONTAKT))
-                .flatMap(relasjon -> personRepository.findById(relasjon.getPersonId())
-                        .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
-                                .doOnNext(kontakt -> {
-                                    if (nonNull(kontakt.getPersonSomKontakt()) &&
-                                        kontakt.getPersonSomKontakt().isEksisterendePerson()) {
-                                        standalonePartnere.get().add(dbPerson);
-                                    }
-                                })
-                                .filter(kontakt ->
-                                        !Objects.equals(hovedperson.getIdent(), kontakt.getIdentForRelasjon()))
-                                .collectList()
-                                .doOnNext(kontakt -> dbPerson.getPerson().setKontaktinformasjonForDoedsbo(kontakt))
-                                .thenReturn(dbPerson)))
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.KONTAKT_FOR_DOEDSBO) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.AVDOEDD_FOR_KONTAKT))
+                .map(DbRelasjon::getRelatertPerson)
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
+                        .doOnNext(kontakt -> {
+                            if (nonNull(kontakt.getPersonSomKontakt()) &&
+                                kontakt.getPersonSomKontakt().isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(kontakt ->
+                                !Objects.equals(hovedperson.getIdent(), kontakt.getIdentForRelasjon()))
+                        .collectList()
+                        .doOnNext(kontakt -> dbPerson.getPerson().setKontaktinformasjonForDoedsbo(kontakt))
+                        .thenReturn(dbPerson))
                 .flatMap(personRepository::save)
                 .then()
                 .thenReturn(standalonePartnere.get());

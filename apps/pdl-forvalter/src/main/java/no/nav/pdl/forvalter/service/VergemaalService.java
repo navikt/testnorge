@@ -13,7 +13,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -38,7 +37,7 @@ public class VergemaalService implements Validation<VergemaalDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getVergemaal())
                 .filter(vergemaal -> isTrue(vergemaal.getIsNew()))
@@ -48,7 +47,7 @@ public class VergemaalService implements Validation<VergemaalDTO> {
                     vergemaal.setMaster(getMaster(vergemaal, person));
                 })
                 .collectList()
-                .then();
+                .thenReturn(person);
     }
 
     public Mono<Void> validate(VergemaalDTO vergemaal) {

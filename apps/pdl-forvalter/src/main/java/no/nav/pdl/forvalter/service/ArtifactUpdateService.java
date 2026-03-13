@@ -395,7 +395,8 @@ public class ArtifactUpdateService {
                         .thenReturn(tuple.getT2()))
                 .flatMap(person -> adressebeskyttelseService.convert(person.getPerson())
                         .thenReturn(person))
-                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
+                .flatMap(person ->
+                        folkeregisterPersonstatusService.update(person.getPerson())
                         .thenReturn(person))
                 .flatMap(this::savePerson);
     }

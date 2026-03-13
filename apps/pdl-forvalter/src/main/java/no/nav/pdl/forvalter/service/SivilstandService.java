@@ -54,7 +54,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getSivilstand())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -67,7 +67,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 .collectList()
                 .map(sivilstand -> enforceIntegrity(person))
                 .doOnNext(ArtifactUtils::renumberId)
-                .then();
+                .thenReturn(person);
     }
 
     @Override

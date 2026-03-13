@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
@@ -35,7 +32,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<Void> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         return Flux.fromIterable(person.getStatsborgerskap())
                 .filter(type -> isTrue(type.getIsNew()))
@@ -45,7 +42,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
                     type.setMaster(getMaster(type, person));
                 })
                 .collectList()
-                .then();
+                .then(Mono.just(person));
     }
 
     @Override
