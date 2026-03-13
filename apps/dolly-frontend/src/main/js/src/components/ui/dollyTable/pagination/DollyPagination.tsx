@@ -10,7 +10,7 @@ import { sideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 type PaginationProps = {
 	visSide?: number
-	gruppeDetaljer?: { pageSize: number; antallPages: number; antallElementer: number }
+	gruppeDetaljer?: { pageSize: number; antallPages: number; antallElementer?: number }
 	items: any[]
 	render: (arg0: any) => boolean | React.ReactChild
 	manualLocalStorageKey?: string | null

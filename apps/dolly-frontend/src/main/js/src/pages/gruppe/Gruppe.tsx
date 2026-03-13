@@ -9,7 +9,7 @@ import {
 	setVisning,
 } from '@/ducks/finnPerson'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { useGruppeById, useGruppeInfo } from '@/utils/hooks/useGruppe'
 import { useIkkeFerdigBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import './Gruppe.less'
@@ -35,7 +35,7 @@ export enum VisningType {
 }
 
 export default ({ sidetall, sorting, update }: GruppeProps) => {
-	const { gruppeId } = useParams<{ gruppeId: number }>()
+	const { gruppeId } = useParams<{ gruppeId: string }>()
 	const { currentBruker, loading: loadingBruker } = useCurrentBruker()
 	const location = useLocation()
 	const dispatch = useDispatch()
@@ -63,6 +63,8 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 		update,
 	)
 
+	const { gruppeInfo, loading: loadingGruppeInfo } = useGruppeInfo(gruppeId)
+
 	const {
 		gruppe,
 		identer,
@@ -78,11 +80,11 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
-	if (loadingBruker || loadingGruppe) {
-		return <Loading label="Laster gruppe..." panel />
+	if (loadingGruppeInfo) {
+		return <Loading label="Laster gruppe ..." panel />
 	}
 
-	if (!gruppe) {
+	if (!gruppe && !loadingGruppe && !loadingBruker) {
 		return <GruppeFeilmelding feil={GruppeFeil.FETCH_FAILED} />
 	}
 
@@ -94,14 +96,14 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 
 	const startBestilling = () => navigate(`/gruppe/${gruppeId}/bestilling`)
 
-	const erLaast = gruppe.erLaast
+	const erLaast = gruppeInfo?.erLaast
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeader gruppeId={gruppe.id} />
+			<GruppeHeader gruppeId={gruppeInfo?.id} />
 			{ikkeFerdigBestillinger && (
 				<StatusListeConnector
-					gruppeId={gruppe.id}
+					gruppeId={gruppeInfo?.id}
 					bestillingListe={Object.values(ikkeFerdigBestillinger)}
 				/>
 			)}
@@ -144,8 +146,8 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 					<GruppeToggle
 						visning={visning}
 						byttVisning={byttVisning}
-						antallIdenter={gruppe.antallIdenter || 0}
-						antallBestillinger={gruppe.antallBestillinger || 0}
+						antallIdenter={gruppeInfo?.antallIdenter || 0}
+						antallBestillinger={gruppeInfo?.antallBestillinger || 0}
 					/>
 				</div>
 			</div>
@@ -157,6 +159,7 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 				identer={identer}
 				bestillingerById={bestillingerById}
 				lasterBestillinger={loadingBestillinger}
+				lasterGruppe={loadingGruppe || loadingBruker}
 			/>
 		</div>
 	)

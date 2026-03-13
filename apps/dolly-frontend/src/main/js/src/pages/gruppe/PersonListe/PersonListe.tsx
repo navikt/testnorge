@@ -33,6 +33,7 @@ const ikonTypeMap = {
 
 export default function PersonListe({
 	isFetching,
+	isLoading,
 	search,
 	gruppeId,
 	identer,
@@ -252,8 +253,8 @@ export default function PersonListe({
 		return column
 	})
 
-	if (isFetching && personListe?.length === 0) {
-		return <Loading label="Laster personer..." panel />
+	if ((isFetching || isLoading) && personListe?.length === 0) {
+		return <Loading label="Laster personer ..." panel />
 	}
 
 	if (_.isEmpty(identer)) {
