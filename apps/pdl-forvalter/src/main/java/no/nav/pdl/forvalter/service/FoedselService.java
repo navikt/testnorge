@@ -9,10 +9,11 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -31,44 +32,50 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public List<FoedselDTO> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
-        for (var type : person.getFoedsel()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person.getIdent(),
+        return Flux.fromIterable(person.getFoedsel())
+                .filter(foedsel -> isTrue(foedsel.getIsNew()))
+                .flatMap(foedsel -> handle(foedsel, person.getIdent(),
                         person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
-                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
+                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person));
+                })
+                .collectList()
+                .doOnNext(foedsler -> {
 
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
+                    person.setFoedsel(new ArrayList<>(foedsler));
+                    person.getFoedsel().sort(Comparator.comparing(FoedselDTO::getFoedselsaar).
+                            reversed());
 
-        person.setFoedsel(new ArrayList<>(person.getFoedsel()));
-        person.getFoedsel().sort(Comparator.comparing(FoedselDTO::getFoedselsaar).reversed());
-
-        renumberId(person.getFoedsel());
-
-        return person.getFoedsel();
+                    renumberId(person.getFoedsel());
+                })
+                .thenReturn(person);
     }
 
-    private void handle(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
+    private Mono<FoedselDTO> handle(FoedselDTO foedsel, String ident, BostedadresseDTO
+            bostedadresse, InnflyttingDTO innflytting) {
 
-        if (isNull(foedsel.getFoedselsaar())) {
-            if (isNull(foedsel.getFoedselsdato())) {
-                foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
-            }
+        return Mono.defer(() -> {
+                    if (isNull(foedsel.getFoedselsaar())) {
+                        if (isNull(foedsel.getFoedselsdato())) {
+                            foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+                        }
 
-            foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
-        }
+                        foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
+                    }
 
-        setFoedeland(foedsel, ident, bostedadresse, innflytting);
-        setFoedekommune(foedsel, bostedadresse);
+                    return setFoedeland(foedsel, ident, bostedadresse, innflytting)
+                            .then(setFoedekommune(foedsel, bostedadresse))
+                            .thenReturn(foedsel);
+                })
+                .thenReturn(foedsel);
     }
 
-    private void setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
+    private Mono<FoedselDTO> setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
+
         if (isNull(foedsel.getFoedeland())) {
             if (FNR.equals(IdenttypeUtility.getIdenttype(ident))) {
                 foedsel.setFoedeland(NORGE);
@@ -77,12 +84,16 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
             } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
                 foedsel.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
             } else {
-                foedsel.setFoedeland(kodeverkConsumer.getTilfeldigLand());
+                return kodeverkConsumer.getTilfeldigLand()
+                        .doOnNext(foedsel::setFoedeland)
+                        .thenReturn(foedsel);
             }
         }
+        return Mono.just(foedsel);
     }
 
-    private void setFoedekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
+    private Mono<FoedselDTO> setFoedekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
+
         if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFoedekommune())) {
             if (nonNull(bostedadresse)) {
                 if (nonNull(bostedadresse.getVegadresse())) {
@@ -90,20 +101,26 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                 } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
                     foedsel.setFoedekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
                 } else if (nonNull(bostedadresse.getUkjentBosted()) &&
-                        isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune())) {
+                           isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune())) {
                     foedsel.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
                 } else {
-                    foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
+                    return kodeverkConsumer.getTilfeldigKommune()
+                            .doOnNext(foedsel::setFoedekommune)
+                            .thenReturn(foedsel);
                 }
             } else {
-                foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
+                return kodeverkConsumer.getTilfeldigKommune()
+                        .doOnNext(foedsel::setFoedekommune)
+                        .thenReturn(foedsel);
             }
         }
+        return Mono.just(foedsel);
     }
 
     @Override
-    public void validate(FoedselDTO artifact, PersonDTO personDTO) {
+    public Mono<Void> validate(FoedselDTO artifact, PersonDTO personDTO) {
 
         // Ingen validering
+        return Mono.empty();
     }
 }

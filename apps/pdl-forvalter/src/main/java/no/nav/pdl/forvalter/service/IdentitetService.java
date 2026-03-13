@@ -13,16 +13,14 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonIDDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -42,23 +40,22 @@ public class IdentitetService {
     private final PersonRepository personRepository;
 
     @Transactional(readOnly = true)
-    public List<PersonIDDTO> getfragment(String fragment, Paginering paginering) {
+    public Flux<PersonIDDTO> getfragment(String fragment, Paginering paginering) {
 
         if (isBlank(fragment)) {
-            throw new InvalidRequestException(FRAGMENT_INVALID);
+            return Flux.error(new InvalidRequestException(FRAGMENT_INVALID));
         }
 
-        return searchPerson(fragment, paginering).stream()
+        return searchPerson(fragment, paginering)
                 .map(person -> PersonIDDTO.builder()
                         .ident(person.getIdent())
                         .fornavn(person.getFornavn())
                         .mellomnavn(person.getMellomnavn())
                         .etternavn(person.getEtternavn())
-                        .build())
-                .toList();
+                        .build());
     }
 
-    private List<DbPerson> searchPerson(String query, Paginering paginering) {
+    private Flux<DbPerson> searchPerson(String query, Paginering paginering) {
 
         Optional<String> ident = Stream.of(query.split(" "))
                 .filter(StringUtils::isNumeric)
@@ -77,75 +74,56 @@ public class IdentitetService {
     }
 
     @Transactional
-    public void updateStandalone(String ident, Boolean standalone) {
+    public Mono<Void> updateStandalone(String ident, Boolean standalone) {
 
-        var dbPerson = personRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException("Ident " + ident + " ikke funnet"));
-
-        dbPerson.getPerson().setStandalone(standalone);
-
-        var identerRelasjon = dbPerson.getRelasjoner().stream()
-                .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getPerson)
-                .flatMap(person -> Arrays.stream(PersonDTO.class.getMethods())
-                        .filter(method -> method.getName().contains("get"))
-                        .map(method -> {
-                            try {
-                                return method.invoke(person);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                log.error("Feilet å utføre metodekall for {} ", method);
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .filter(List.class::isInstance)
-                        .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
-                        .flatMap(Collection::stream)
-                        .map(DbVersjonDTO::getIdentForRelasjon)
-                        .filter(Objects::nonNull)
-                        .filter(ident1 -> ident1.equals(ident))
-                        .map(ident1 -> person.getIdent())
-                        .distinct())
-                .toList();
-
-        identerRelasjon
-                .forEach(relasjonsident -> setStandalonePerson(dbPerson, relasjonsident, standalone));
-
-        personRepository.findByIdentIn(identerRelasjon, Pageable.ofSize(100))
-                .forEach(relasjonPerson -> setStandalonePerson(relasjonPerson, ident, standalone));
+        return personRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
+                .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
+                .flatMap(personRepository::save)
+                .flatMap(this::setStandaloneRelasjoner);
     }
 
-    private void setStandalonePerson(DbPerson person, String motpartsIdent, Boolean standalone) {
+    private Mono<Void> setStandaloneRelasjoner(DbPerson person) {
 
-        Stream.of(person)
+        return Mono.just(person)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .map(DbRelasjon::getRelatertPerson)
+                .flatMap(relasjonPerson -> setStandalonePerson(relasjonPerson, person.getIdent(), person.getPerson().isStandalone()))
+                .flatMap(personRepository::save)
+                .then();
+    }
+
+    private Mono<DbPerson> setStandalonePerson(DbPerson person, String motpartsIdent, Boolean standalone) {
+
+        return Mono.just(person)
                 .map(DbPerson::getPerson)
-                .flatMap(person1 ->
-                        Arrays.stream(PersonDTO.class.getMethods())
+                .flatMapMany(person1 ->
+                        Flux.fromArray(PersonDTO.class.getMethods())
                                 .filter(method -> method.getName().contains("get"))
-                                .map(method -> {
+                                .flatMap(method -> {
                                     try {
-                                        return method.invoke(person1);
+                                        return Mono.just(method.invoke(person1));
                                     } catch (IllegalAccessException | InvocationTargetException e) {
                                         log.error("Feilet å utføre metodekall for {} ", method);
-                                        return null;
+                                        return Mono.empty();
                                     }
                                 })
-                                .filter(Objects::nonNull)
                                 .filter(List.class::isInstance)
                                 .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
-                                .flatMap(Collection::stream)
-                )
-                .forEach(opplysning -> {
-                    if (motpartsIdent.equals(opplysning.getIdentForRelasjon())) {
-                        try {
-                            var method = opplysning.getClass().getMethod("setEksisterendePerson", Boolean.class);
-                            method.invoke(opplysning, isTrue(standalone));
+                                .flatMap(Flux::fromIterable)
+                                .doOnNext(opplysning -> {
+                                    if (motpartsIdent.equals(opplysning.getIdentForRelasjon())) {
+                                        try {
+                                            var method = opplysning.getClass().getMethod("setEksisterendePerson", Boolean.class);
+                                            method.invoke(opplysning, isTrue(standalone));
 
-                        } catch (NoSuchMethodException | InvocationTargetException |
-                                 IllegalAccessException e) {
-                            log.error("Method setEksisterendePerson not found in {}", opplysning);
-                        }
-                    }
-                });
+                                        } catch (NoSuchMethodException | InvocationTargetException |
+                                                 IllegalAccessException e) {
+                                            log.error("Method setEksisterendePerson not found in {}", opplysning);
+                                        }
+                                    }
+                                }))
+                .reduce(person, (dbPerson, person1) -> dbPerson);
     }
 }

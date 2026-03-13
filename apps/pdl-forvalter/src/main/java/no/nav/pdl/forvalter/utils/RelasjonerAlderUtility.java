@@ -1,15 +1,12 @@
-package no.nav.pdl.forvalter.service;
+package no.nav.pdl.forvalter.utils;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,12 +18,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Service
-@RequiredArgsConstructor
-public class RelasjonerAlderService {
+@UtilityClass
+public class RelasjonerAlderUtility {
 
     private static final Random RANDOM = new SecureRandom();
-    private final Clock clock;
 
     public BestillingRequestDTO fixRelasjonerAlder(BestillingRequestDTO request) {
 
@@ -50,7 +45,7 @@ public class RelasjonerAlderService {
                 .map(Integer::longValue)
                 .ifPresent(eldsteBarn -> {
                     if (isNull(request.getAlder()) && isNull(request.getFoedtFoer())) {
-                        request.setFoedtFoer(LocalDateTime.now(clock).minusYears(18 + eldsteBarn));
+                        request.setFoedtFoer(LocalDateTime.now().minusYears(18 + eldsteBarn));
                         request.setFoedtEtter(request.getFoedtFoer().minusYears(18));
                     }
                     request.getPerson().getSivilstand().stream()
@@ -176,7 +171,7 @@ public class RelasjonerAlderService {
 
     private Integer getAlder(LocalDate start) {
 
-        return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now(clock));
+        return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now());
     }
 
     private Integer getAlder(LocalDateTime start) {

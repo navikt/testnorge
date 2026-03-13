@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service;
+package no.nav.pdl.forvalter.utils;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -21,16 +21,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class RelasjonerAlderServiceTest {
+class RelasjonerAlderUtilityTest {
 
     private final static LocalDate LOCAL_DATE = LocalDate.of(2023, 6, 8);
+
     @Mock
     private Clock clock;
 
     private Clock fixedClock;
 
     @InjectMocks
-    private RelasjonerAlderService relasjonerAlderService;
+    private RelasjonerAlderUtility relasjonerAlderUtility;
 
     @BeforeEach
     void setup() {
@@ -47,7 +48,7 @@ class RelasjonerAlderServiceTest {
                                 .build()))
                         .build())
                 .build();
-        var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
+        var oppdatertBestilling = relasjonerAlderUtility.fixRelasjonerAlder(bestilling);
         assertThat(oppdatertBestilling.getFoedtEtter(), is(equalTo(LocalDateTime.of(1984, 12, 31, 1, 1))));
         assertThat(oppdatertBestilling.getFoedtFoer(), is(equalTo(LocalDateTime.of(1985, 1, 2, 1, 1))));
     }
@@ -62,7 +63,7 @@ class RelasjonerAlderServiceTest {
                                 .build()))
                         .build())
                 .build();
-        var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
+        var oppdatertBestilling = relasjonerAlderUtility.fixRelasjonerAlder(bestilling);
         assertThat(oppdatertBestilling.getFoedtEtter(), is(equalTo(LocalDateTime.of(1984, 12, 31, 23, 59))));
         assertThat(oppdatertBestilling.getFoedtFoer(), is(equalTo(LocalDateTime.of(1986, 1, 1, 0, 0))));
     }

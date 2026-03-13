@@ -12,6 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.Folk
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,12 +38,12 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterPersonstatusDTO, PersonDTO> {
 
-    public List<FolkeregisterPersonstatusDTO> convert(PersonDTO person) {
+    public Mono<PersonDTO> convert(PersonDTO person) {
 
         var touched = new AtomicBoolean(false);
 
         if (person.isNotChanged() || isTestnorgeIdent(person.getIdent()) || person.getIdenttype() == NPID) {
-            return person.getFolkeregisterPersonstatus();
+            return Mono.just(person);
         }
 
         person.getFolkeregisterPersonstatus()
@@ -72,10 +73,10 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         }
 
         setGyldigTilOgMed(person);
-        return person.getFolkeregisterPersonstatus();
+        return Mono.just(person);
     }
 
-    public List<FolkeregisterPersonstatusDTO> update(PersonDTO person) {
+    public Mono<PersonDTO> update(PersonDTO person) {
 
         person.setIsChanged(true);
         return convert(person);
@@ -168,9 +169,10 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     }
 
     @Override
-    public void validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
+    public Mono<Void> validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
 
         // Ingen validering
+        return Mono.empty();
     }
 
     private static LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {

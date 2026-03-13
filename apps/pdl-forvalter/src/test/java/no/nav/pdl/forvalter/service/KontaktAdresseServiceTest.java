@@ -12,7 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.nullable;
@@ -53,10 +53,9 @@ class KontaktAdresseServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString("Postnummer består av fire sifre"));
+        StepVerifier.create(kontaktAdresseService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Postnummer består av fire sifre")));
     }
 
     @Test
@@ -68,10 +67,9 @@ class KontaktAdresseServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString("Kan ikke være tom"));
+        StepVerifier.create(kontaktAdresseService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Kan ikke være tom")));
     }
 
     @Test
@@ -83,10 +81,9 @@ class KontaktAdresseServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString("kun én adresse skal være satt"));
+        StepVerifier.create(kontaktAdresseService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("kun én adresse skal være satt")));
     }
 
     @Test
@@ -99,11 +96,10 @@ class KontaktAdresseServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString(
-                "Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
+        StepVerifier.create(kontaktAdresseService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString(
+                                "Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre")));
     }
 
     @Test
@@ -116,7 +112,7 @@ class KontaktAdresseServiceTest {
                 .kommunenummer("5678")
                 .matrikkelId("111111111")
                 .build();
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(vegadresse);
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(Mono.just(vegadresse));
         doNothing().when(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
 
         var request = PersonDTO.builder()
@@ -129,12 +125,14 @@ class KontaktAdresseServiceTest {
                         .build())))
                 .build();
 
-        var kontaktadresse =
-                kontaktAdresseService.convert(request, null).getFirst();
+        StepVerifier.create(kontaktAdresseService.convert(request, null))
+                .assertNext(target -> {
+                    verify(adresseServiceConsumer).getVegadresse(any(VegadresseDTO.class), nullable(String.class));
+                    verify(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
 
-        verify(adresseServiceConsumer).getVegadresse(any(VegadresseDTO.class), nullable(String.class));
-        verify(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
-        assertThat(kontaktadresse.getAdresseIdentifikatorFraMatrikkelen(), is(equalTo(vegadresse.getMatrikkelId())));
-        assertThat(kontaktadresse.getKilde(), is(equalTo("Dolly")));
+                    assertThat(target.getKontaktadresse().getFirst().getAdresseIdentifikatorFraMatrikkelen(), is(equalTo(vegadresse.getMatrikkelId())));
+                    assertThat(target.getKontaktadresse().getFirst().getKilde(), is(equalTo("Dolly")));
+                })
+                .verifyComplete();
     }
 }

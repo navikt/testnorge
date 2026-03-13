@@ -1,195 +1,217 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
-import org.springframework.data.domain.Pageable;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static java.util.Objects.isNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMEKTIG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
 public class UnhookEksternePersonerService {
 
     private final PersonRepository personRepository;
+    private final RelasjonRepository relasjonRepository;
 
-    public void unhook(DbPerson hovedperson) {
+    public Mono<Void> unhook(DbPerson hovedperson) {
 
-        deleteSivilstandArtifact(hovedperson);
-        deleteForeldreansvarRelasjoner(hovedperson);
-        deleteForelderBarnRelasjoner(hovedperson);
-
-        deleteFullmaktRelasjoner(hovedperson);
-        deleteVergemaalRelasjoner(hovedperson);
-        deleteKontaktinformasjonForDoedsboeAndreRelasjoner(hovedperson);
+        return Flux.concat(deleteSivilstandArtifact(hovedperson),
+                        deleteForeldreansvarRelasjoner(hovedperson),
+                        deleteForelderBarnRelasjoner(hovedperson),
+                        deleteFullmaktRelasjoner(hovedperson),
+                        deleteVergemaalRelasjoner(hovedperson),
+                        deleteKontaktinformasjonForDoedsboeAndreRelasjoner(hovedperson))
+                .reduce(new HashSet<DbPerson>(), (acc, set) -> {
+                    acc.addAll(set);
+                    return acc;
+                })
+                .flatMap(standalonePartnere ->
+                        deleteStandaloneRelasjoner(hovedperson, standalonePartnere))
+                .then();
     }
 
-    private void deleteSivilstandArtifact(DbPerson hovedperson) {
+    private Mono<Set<DbPerson>> deleteSivilstandArtifact(DbPerson hovedperson) {
 
-        var partnere = personRepository.findByIdentIn(hovedperson.getPerson().getSivilstand().stream()
-                .map(SivilstandDTO::getRelatertVedSivilstand)
-                .toList(), Pageable.unpaged());
+        val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
 
-        partnere.stream()
-                .map(DbPerson::getPerson)
-                .forEach(person -> person.setSivilstand(person.getSivilstand().stream()
-                        .filter(sivilstand -> isBlank(sivilstand.getRelatertVedSivilstand()) ||
-                                !sivilstand.getRelatertVedSivilstand().equals(hovedperson.getIdent()))
-                        .toList()));
-
-        if (hovedperson.getPerson().isStandalone() ||
-                hovedperson.getPerson().getSivilstand().stream().anyMatch(SivilstandDTO::isEksisterendePerson) ||
-                partnere.stream().anyMatch(dbPerson -> dbPerson.getPerson().isStandalone())) {
-
-            deleteRelasjoner(hovedperson, partnere);
-        }
-    }
-
-    private void deleteForelderBarnRelasjoner(DbPerson hovedperson) {
-
-        var relasjoner = personRepository.findByIdentIn(hovedperson.getPerson().getForelderBarnRelasjon().stream()
-                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                .toList(), Pageable.unpaged());
-
-        relasjoner.stream()
-                .map(DbPerson::getPerson)
-                .forEach(person -> person.setForelderBarnRelasjon(person.getForelderBarnRelasjon().stream()
-                        .filter(relasjon -> !Objects.equals(hovedperson.getIdent(), relasjon.getRelatertPerson()))
-                        .toList()));
-
-        if (hovedperson.getPerson().isStandalone() ||
-                hovedperson.getPerson().getForelderBarnRelasjon().stream().anyMatch(ForelderBarnRelasjonDTO::isEksisterendePerson) ||
-                relasjoner.stream().anyMatch(dbPerson -> dbPerson.getPerson().isStandalone())) {
-
-            deleteRelasjoner(hovedperson, relasjoner);
-        }
-    }
-
-    private void deleteForeldreansvarRelasjoner(DbPerson hovedperson) {
-
-        var relasjoner = personRepository.findByIdentIn(hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> FORELDREANSVAR_BARN == relasjon.getRelasjonType() ||
-                        FORELDREANSVAR_FORELDER == relasjon.getRelasjonType())
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.EKTEFELLE_PARTNER))
                 .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getIdent)
-                .toList(), Pageable.unpaged());
-
-        relasjoner.stream()
-                .map(DbPerson::getPerson)
-                .forEach(person -> person.setForeldreansvar(
-                        person.getForeldreansvar().stream()
-                                .filter(relasjon -> !Objects.equals(hovedperson.getIdent(), relasjon.getIdentForRelasjon()))
-                                .toList()));
-
-        if (hovedperson.getPerson().isStandalone() ||
-                hovedperson.getPerson().getForeldreansvar().stream().anyMatch(ForeldreansvarDTO::isEksisterendePerson) ||
-                relasjoner.stream().anyMatch(dbPerson -> dbPerson.getPerson().isStandalone())) {
-
-            deleteRelasjoner(hovedperson, relasjoner);
-        }
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getSivilstand())
+                        .doOnNext(sivilstand -> {
+                            if (sivilstand.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(sivilstand ->
+                                !Objects.equals(hovedperson.getIdent(), sivilstand.getRelatertVedSivilstand()))
+                        .collectList()
+                        .doOnNext(sivilstand -> dbPerson.getPerson().setSivilstand(sivilstand))
+                        .thenReturn(dbPerson))
+                .flatMap(personRepository::save)
+                .then()
+                .thenReturn(standalonePartnere.get());
     }
 
-    private void deleteFullmaktRelasjoner(DbPerson hovedperson) {
+    private Mono<Set<DbPerson>> deleteForelderBarnRelasjoner(DbPerson hovedperson) {
 
-        var relasjoner = personRepository.findByIdentIn(hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> FULLMAKTSGIVER == relasjon.getRelasjonType() ||
-                        FULLMEKTIG == relasjon.getRelasjonType())
+        val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
+
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FAMILIERELASJON_FORELDER) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.FAMILIERELASJON_BARN))
                 .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getIdent)
-                .toList(), Pageable.unpaged());
-
-        relasjoner.stream()
-                .map(DbPerson::getPerson)
-                .forEach(person -> person.setFullmakt(person.getFullmakt().stream()
-                        .filter(fullmakt -> !Objects.equals(hovedperson.getIdent(), fullmakt.getMotpartsPersonident()))
-                        .toList()));
-
-        if (hovedperson.getPerson().isStandalone() ||
-                hovedperson.getPerson().getFullmakt().stream().anyMatch(FullmaktDTO::isEksisterendePerson) ||
-                relasjoner.stream().anyMatch(dbPerson -> dbPerson.getPerson().isStandalone())) {
-
-            deleteRelasjoner(hovedperson, relasjoner);
-        }
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
+                        .doOnNext(relasjon -> {
+                            if (relasjon.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(relasjon ->
+                                !Objects.equals(hovedperson.getIdent(), relasjon.getRelatertPerson()))
+                        .collectList()
+                        .doOnNext(relasjon -> dbPerson.getPerson().setForelderBarnRelasjon(relasjon))
+                        .thenReturn(dbPerson))
+                .flatMap(personRepository::save)
+                .then()
+                .thenReturn(standalonePartnere.get());
     }
 
-    private void deleteVergemaalRelasjoner(DbPerson hovedperson) {
+    private Mono<Set<DbPerson>> deleteForeldreansvarRelasjoner(DbPerson hovedperson) {
 
-        var relasjoner = personRepository.findByIdentIn(hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> VERGE_MOTTAKER == relasjon.getRelasjonType() ||
-                        VERGE == relasjon.getRelasjonType())
+        val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
+
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FORELDREANSVAR_BARN) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.FORELDREANSVAR_FORELDER))
                 .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getIdent)
-                .toList(), Pageable.unpaged());
-
-        relasjoner.stream()
-                .map(DbPerson::getPerson)
-                .forEach(person -> person.setVergemaal(person.getVergemaal().stream()
-                        .filter(vergemaal -> !Objects.equals(hovedperson.getIdent(), vergemaal.getIdentForRelasjon()))
-                        .toList()));
-
-        if (hovedperson.getPerson().isStandalone() ||
-                hovedperson.getPerson().getVergemaal().stream().anyMatch(VergemaalDTO::isEksisterendePerson) ||
-                relasjoner.stream().anyMatch(dbPerson -> dbPerson.getPerson().isStandalone())) {
-
-            deleteRelasjoner(hovedperson, relasjoner);
-        }
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
+                        .doOnNext(foreldreansvar -> {
+                            if (foreldreansvar.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(foreldreansvar ->
+                                !Objects.equals(hovedperson.getIdent(), foreldreansvar.getIdentForRelasjon()))
+                        .collectList()
+                        .doOnNext(foreldreansvar -> dbPerson.getPerson().setForeldreansvar(foreldreansvar))
+                        .thenReturn(dbPerson))
+                .flatMap(personRepository::save)
+                .then()
+                .thenReturn(standalonePartnere.get());
     }
 
-    private void deleteKontaktinformasjonForDoedsboeAndreRelasjoner(DbPerson hovedperson) {
+    private Mono<Set<DbPerson>> deleteFullmaktRelasjoner(DbPerson hovedperson) {
 
-        var relasjoner = personRepository.findByIdentIn(hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> KONTAKT_FOR_DOEDSBO == relasjon.getRelasjonType() ||
-                        AVDOEDD_FOR_KONTAKT == relasjon.getRelasjonType())
+        val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
+
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMAKTSGIVER) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG))
                 .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getIdent)
-                .toList(), Pageable.unpaged());
-
-        relasjoner.stream()
-                .map(DbPerson::getPerson)
-                .forEach(person -> person.setKontaktinformasjonForDoedsbo(person.getKontaktinformasjonForDoedsbo().stream()
-                        .filter(kontakt -> isNull(kontakt.getPersonSomKontakt()) ||
-                                !hovedperson.getIdent().equals(kontakt.getPersonSomKontakt().getIdentifikasjonsnummer()))
-                        .toList()));
-
-        if (hovedperson.getPerson().isStandalone() ||
-                hovedperson.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                        .anyMatch(kontakt -> kontakt.getPersonSomKontakt().isEksisterendePerson()) ||
-                relasjoner.stream().anyMatch(dbPerson -> dbPerson.getPerson().isStandalone())) {
-
-            deleteRelasjoner(hovedperson, relasjoner);
-        }
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getFullmakt())
+                        .doOnNext(fullmakt -> {
+                            if (fullmakt.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(fullmakt ->
+                                !Objects.equals(hovedperson.getIdent(), fullmakt.getMotpartsPersonident()))
+                        .collectList()
+                        .doOnNext(fullmakt -> dbPerson.getPerson().setFullmakt(fullmakt))
+                        .thenReturn(dbPerson))
+                .flatMap(personRepository::save)
+                .then()
+                .thenReturn(standalonePartnere.get());
     }
 
-    private void deleteRelasjoner(DbPerson hovedPerson, List<DbPerson> relasjoner) {
+    private Mono<Set<DbPerson>> deleteVergemaalRelasjoner(DbPerson hovedperson) {
 
-        relasjoner.forEach(person -> {
-            deleteRelasjon(person, hovedPerson.getIdent());
-            deleteRelasjon(hovedPerson, person.getIdent());
+        val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
+
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.VERGE) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.VERGE_MOTTAKER))
+                .map(DbRelasjon::getRelatertPerson)
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getVergemaal())
+                        .doOnNext(vergemaal -> {
+                            if (vergemaal.isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(vergemaal ->
+                                !Objects.equals(hovedperson.getIdent(), vergemaal.getIdentForRelasjon()))
+                        .collectList()
+                        .doOnNext(vergemaal -> dbPerson.getPerson().setVergemaal(vergemaal))
+                        .thenReturn(dbPerson))
+                .flatMap(personRepository::save)
+                .then()
+                .thenReturn(standalonePartnere.get());
+    }
+
+    private Mono<Set<DbPerson>> deleteKontaktinformasjonForDoedsboeAndreRelasjoner(DbPerson hovedperson) {
+
+        val standalonePartnere = new AtomicReference<>(new HashSet<DbPerson>());
+
+        return Mono.just(hovedperson)
+                .map(DbPerson::getRelasjoner)
+                .flatMapMany(Flux::fromIterable)
+                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.KONTAKT_FOR_DOEDSBO) ||
+                                    relasjon.getRelasjonType().equals(RelasjonType.AVDOEDD_FOR_KONTAKT))
+                .map(DbRelasjon::getRelatertPerson)
+                .flatMap(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
+                        .doOnNext(kontakt -> {
+                            if (nonNull(kontakt.getPersonSomKontakt()) &&
+                                kontakt.getPersonSomKontakt().isEksisterendePerson()) {
+                                standalonePartnere.get().add(dbPerson);
+                            }
+                        })
+                        .filter(kontakt ->
+                                !Objects.equals(hovedperson.getIdent(), kontakt.getIdentForRelasjon()))
+                        .collectList()
+                        .doOnNext(kontakt -> dbPerson.getPerson().setKontaktinformasjonForDoedsbo(kontakt))
+                        .thenReturn(dbPerson))
+                .flatMap(personRepository::save)
+                .then()
+                .thenReturn(standalonePartnere.get());
+    }
+
+
+    private Mono<Void> deleteStandaloneRelasjoner(DbPerson hovedperson, Set<DbPerson> standalonePartnere) {
+
+        return Mono.defer(() -> {
+
+            if (hovedperson.getPerson().isStandalone() || !standalonePartnere.isEmpty()) {
+
+                return Flux.fromIterable(standalonePartnere)
+                        .flatMap(partner -> relasjonRepository.deleteByPersonIdAndRelatertPersonId(hovedperson.getId(), partner.getId())
+                                .then(relasjonRepository.deleteByPersonIdAndRelatertPersonId(partner.getId(), hovedperson.getId())))
+                        .then();
+            }
+
+            return Mono.empty();
         });
-    }
-
-    private void deleteRelasjon(DbPerson person, String relasjonIdent) {
-
-        person.getRelasjoner()
-                .removeIf(thisRelasjon -> thisRelasjon.getRelatertPerson().getIdent().equals(relasjonIdent));
     }
 }

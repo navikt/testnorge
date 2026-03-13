@@ -2,7 +2,9 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -16,9 +18,12 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.isNull;
@@ -42,9 +47,9 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private static final LocalDateTime START_OF_ERA = LocalDateTime.of(1900, 1, 1, 0, 0);
     private static final String VALIDATION_DATO_INVALID = "Identtype ugyldig forespørsel: støttet datointervall " +
-            "er fødsel mellom 1.1.1900 og dagens dato";
+                                                          "er fødsel mellom 1.1.1900 og dagens dato";
     private static final String VALIDATION_DATO_INTERVAL_INVALID = "Identtype ugyldig forespørsel: fødtFør kan ikke være tidligere " +
-            "enn fødtEtter";
+                                                                   "enn fødtEtter";
     private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller BOST";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
 
@@ -54,91 +59,90 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private final MapperFacade mapperFacade;
     private final PersonRepository personRepository;
 
-    public PersonDTO convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson person) {
 
-        var nyPerson = person;
-        var nyeIdenter = mapperFacade.mapAsList(person.getNyident(), IdentRequestDTO.class);
+        var nyPerson = new AtomicReference<>(person);
+        var nyeIdenter = mapperFacade.mapAsList(person.getPerson().getNyident(), IdentRequestDTO.class);
         nyeIdenter.forEach(nyIdent -> nyIdent.setIdenttype(
                 nonNull(nyIdent.getIdenttype()) ? nyIdent.getIdenttype() : IdenttypeUtility.getIdenttype(person.getIdent())));
         nyeIdenter.sort(sortIdenter());
-        for (IdentRequestDTO type : nyeIdenter) {
-            if (isTrue(type.getIsNew())) {
 
-                nyPerson = handle(type, nyPerson);
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-        return nyPerson;
+        return Flux.fromIterable(nyeIdenter)
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, person.getPerson()));
+                    return handle(type, nyPerson.get())
+                            .doOnNext(nyPerson::set);
+                })
+                .last(nyPerson.get());
     }
 
     @Override
-    public void validate(IdentRequestDTO request) {
+    public Mono<Void> validate(IdentRequestDTO request) {
 
         if (nonNull(request.getIdenttype()) && FNR != request.getIdenttype() &&
-                DNR != request.getIdenttype() && NPID != request.getIdenttype()) {
-            throw new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID);
+            DNR != request.getIdenttype() && NPID != request.getIdenttype()) {
+            return Mono.error(new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID));
         }
 
         if (nonNull(request.getFoedtEtter()) && (START_OF_ERA.isAfter(request.getFoedtEtter()) ||
-                LocalDateTime.now().isBefore(request.getFoedtEtter()))) {
-            throw new InvalidRequestException(VALIDATION_DATO_INVALID);
+                                                 LocalDateTime.now().isBefore(request.getFoedtEtter()))) {
+            return Mono.error(new InvalidRequestException(VALIDATION_DATO_INVALID));
         }
 
         if (nonNull(request.getFoedtFoer()) && (START_OF_ERA.isAfter(request.getFoedtFoer()) ||
-                LocalDateTime.now().isBefore(request.getFoedtFoer()))) {
-            throw new InvalidRequestException(VALIDATION_DATO_INVALID);
+                                                LocalDateTime.now().isBefore(request.getFoedtFoer()))) {
+            return Mono.error(new InvalidRequestException(VALIDATION_DATO_INVALID));
         }
 
         if (nonNull(request.getFoedtEtter()) && nonNull(request.getFoedtFoer()) &&
-                request.getFoedtEtter().isAfter(request.getFoedtFoer())) {
-            throw new InvalidRequestException(VALIDATION_DATO_INTERVAL_INVALID);
+            request.getFoedtEtter().isAfter(request.getFoedtFoer())) {
+            return Mono.error(new InvalidRequestException(VALIDATION_DATO_INTERVAL_INVALID));
         }
 
         if (nonNull(request.getAlder()) && (request.getAlder() < 0 || request.getAlder() > 120)) {
-            throw new InvalidRequestException(VALIDATION_ALDER_NOT_ALLOWED);
+            return Mono.error(new InvalidRequestException(VALIDATION_ALDER_NOT_ALLOWED));
         }
+        return Mono.empty();
     }
 
-    private PersonDTO handle(IdentRequestDTO request, PersonDTO person) {
+    private Mono<DbPerson> handle(IdentRequestDTO request, DbPerson person) {
 
-        PersonDTO nyPerson;
-
-        person.getNavPersonIdentifikator().stream()
+        person.getPerson().getNavPersonIdentifikator().stream()
                 .filter(navIdent -> isNull(navIdent.getGyldigTilOgMed()))
                 .forEach(navIdent ->
                         navIdent.setGyldigTilOgMed(now().minusDays(1)));
 
-        if (isNotBlank(request.getEksisterendeIdent())) {
+        return Mono.defer(() -> {
+                    if (isNotBlank(request.getEksisterendeIdent())) {
 
-            nyPerson = personRepository.findByIdent(request.getEksisterendeIdent())
-                    .orElseThrow(() -> new NotFoundException(String.format("Eksisterende ident %s ble ikke funnet",
-                            request.getEksisterendeIdent())))
-                    .getPerson();
-        } else {
+                        return personRepository.findByIdent(request.getEksisterendeIdent())
+                                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Eksisterende ident %s ble ikke funnet",
+                                        request.getEksisterendeIdent()))));
 
-            var nyRequest = PersonRequestDTO.builder()
-                    .eksisterendeIdent(request.getEksisterendeIdent())
-                    .identtype(getIdenttype(request, person.getIdent()))
-                    .kjoenn(getKjoenn(request, person))
-                    .foedtEtter(getFoedtEtter(request, person))
-                    .foedtFoer(getFoedtFoer(request, person))
-                    .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
-                    .syntetisk(isSyntetisk(request, person.getIdent()))
-                    .id2032(nonNull(request.getId2032()) ? request.getId2032() : person.getId2032())
-                    .build();
+                    } else {
 
-            if (nyRequest.getFoedtFoer().isBefore(nyRequest.getFoedtEtter())) {
-                nyRequest.setFoedtFoer(nyRequest.getFoedtEtter().plusDays(3));
-            }
-            nyPerson = createPersonService.execute(nyRequest);
-        }
+                        val nyRequest = PersonRequestDTO.builder()
+                                .eksisterendeIdent(request.getEksisterendeIdent())
+                                .identtype(getIdenttype(request, person.getIdent()))
+                                .kjoenn(getKjoenn(request, person.getPerson()))
+                                .foedtEtter(getFoedtEtter(request, person.getPerson()))
+                                .foedtFoer(getFoedtFoer(request, person.getPerson()))
+                                .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
+                                .syntetisk(isSyntetisk(request, person.getIdent()))
+                                .id2032(nonNull(request.getId2032()) ? request.getId2032() : person.getPerson().getId2032())
+                                .build();
 
-        var oppdatertPerson = swopIdentsService.execute(person.getIdent(), nyPerson.getIdent());
-
-        relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
-
-        return oppdatertPerson;
+                        if (nyRequest.getFoedtFoer().isBefore(nyRequest.getFoedtEtter())) {
+                            nyRequest.setFoedtFoer(nyRequest.getFoedtEtter().plusDays(3));
+                        }
+                        return createPersonService.execute(nyRequest);
+                    }
+                })
+                .flatMap(dbPerson -> swopIdentsService.execute(person.getIdent(), dbPerson.getIdent()))
+                .flatMap(dbPerson -> relasjonService.setRelasjoner(dbPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET)
+                        .thenReturn(dbPerson));
     }
 
     private static Identtype getIdenttype(IdentRequestDTO request, String ident) {

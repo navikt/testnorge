@@ -1,22 +1,26 @@
 package no.nav.pdl.forvalter.service;
 
+import lombok.val;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,30 +40,37 @@ class UtflyttingServiceTest {
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 
-        var request = UtflyttingDTO.builder()
+        val request = UtflyttingDTO.builder()
                 .tilflyttingsland("Mali")
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                utflyttingService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
+        StepVerifier.create(utflyttingService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        Assertions.assertThat(throwable)
+                                .isInstanceOf(InvalidRequestException.class)
+                                .hasMessageContaining("400 Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
     }
 
     @Test
     void whenEmptyLandkode_thenProvideCountryFromGeografiskeKodeverkConsumer() {
 
-        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("TGW");
-
-        var request = PersonDTO.builder()
+        val request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
                 .build();
 
-        var target = utflyttingService.convert(request).getFirst();
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("TGW"));
+        when(kontaktAdresseService.convert(any(PersonDTO.class), anyBoolean())).thenReturn(Mono.just(request));
 
-        verify(kodeverkConsumer).getTilfeldigLand();
-        assertThat(target.getTilflyttingsland(), is(equalTo("TGW")));
+        StepVerifier.create(utflyttingService.convert(request))
+                .assertNext(target -> {
+
+                    verify(kodeverkConsumer).getTilfeldigLand();
+                    verify(kontaktAdresseService).convert(any(PersonDTO.class), anyBoolean());
+
+                    assertThat(target.getUtflytting().getFirst().getTilflyttingsland(), is(equalTo("TGW")));
+                })
+                .verifyComplete();
     }
 }
