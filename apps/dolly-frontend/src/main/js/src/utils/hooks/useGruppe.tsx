@@ -61,7 +61,7 @@ export type Gruppe = {
 	tags: string[]
 }
 
-export const useGruppeInfo = (gruppeId?: number) => {
+export const useGruppeInfo = (gruppeId?: string) => {
 	const { data, isLoading, error } = useSWR<Gruppe, Error>(
 		gruppeId ? getPaginertGruppeUrl(gruppeId, 0, 1) : null,
 		fetcher,
