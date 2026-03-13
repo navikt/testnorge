@@ -25,7 +25,6 @@ public class PersonMappingStrategy implements MappingStrategy {
                                 kilde.getRelatertPerson().getPerson() : null);
                     }
                 })
-                .byDefault()
                 .register();
     }
 }

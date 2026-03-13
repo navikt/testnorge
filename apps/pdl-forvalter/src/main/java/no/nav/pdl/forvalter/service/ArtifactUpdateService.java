@@ -397,7 +397,7 @@ public class ArtifactUpdateService {
                         .thenReturn(person))
                 .flatMap(person ->
                         folkeregisterPersonstatusService.update(person.getPerson())
-                        .thenReturn(person))
+                                .thenReturn(person))
                 .flatMap(this::savePerson);
     }
 
@@ -529,13 +529,15 @@ public class ArtifactUpdateService {
                                         .thenReturn(slettePerson))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
                                         .thenReturn(vergemaal))
-                                .flatMap(type -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
+                                .flatMapMany(type -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
                                 .doOnNext(type -> {
                                     oppdatertVergemaal.setId(id);
                                     person.getPerson().getVergemaal().add(oppdatertVergemaal);
                                     person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
-                                    person.getPerson().setVergemaal(type);
                                 }))
+                        .switchIfEmpty(updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal")
+                                .doOnNext(type ->
+                                        person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed())))
                         .flatMap(vergemaal -> vergemaalService.convert(person.getPerson())
                                 .thenReturn(person)))
                 .flatMap(this::savePerson)

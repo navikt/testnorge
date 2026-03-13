@@ -31,7 +31,10 @@ public class DbAlias {
     @Column
     private LocalDateTime sistOppdatert;
 
-    @ManyToOne(foreignKey = "person_id")
+    @Column
+    private Long personId;
+
+    @ManyToOne(foreignKey = "personId")
     private DbPerson person;
 
     @Column

@@ -32,8 +32,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -144,6 +143,8 @@ public class PersonService {
     @Transactional(readOnly = true)
     public Flux<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
 
+        val now = System.currentTimeMillis();
+
         if (nonNull(identer) && !identer.isEmpty()) {
 
             return aliasRepository.findByTidligereIdentIn(identer)
@@ -159,10 +160,10 @@ public class PersonService {
                         return identerSet;
                     })
                     .flatMapMany(query -> personRepository.findByIdentIn(query,
-                            PageRequest.of(paginering.getSidenummer(),
-                                    paginering.getSidestoerrelse(),
-                                    Sort.by(SORT_BY_FIELD).descending())))
-                    .map(person -> mapperFacade.map(person, FullPersonDTO.class));
+                                    Pageable.unpaged()))
+                    .map(person -> mapperFacade.map(person, FullPersonDTO.class))
+                    .doOnNext(person -> log.info("Henting av person med ident {} tok {} ms",
+                            person.getPerson().getIdent(), System.currentTimeMillis() - now));
 
         } else {
             return Flux.empty();
@@ -176,6 +177,8 @@ public class PersonService {
 
     @Transactional
     public Mono<String> createPerson(BestillingRequestDTO request) {
+
+        val now = System.currentTimeMillis();
 
         if (isNull(request.getPerson())) {
             request.setPerson(new PersonDTO());
@@ -216,7 +219,8 @@ public class PersonService {
                 })
                 .flatMap(identifier -> updatePersonInternal(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
                         .person(request.getPerson())
-                        .build(), null));
+                        .build(), null))
+                .doOnNext(ident -> log.info("Oppretting av person {} tok {} ms", ident, System.currentTimeMillis() - now));
     }
 
     private Mono<IdentDTO> acquireIdentifier(BestillingRequestDTO request) {

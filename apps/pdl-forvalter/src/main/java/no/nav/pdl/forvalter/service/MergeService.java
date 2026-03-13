@@ -46,11 +46,12 @@ public class MergeService {
 
     public Mono<DbPerson> merge(PersonDTO request, DbPerson dbPerson) {
 
-        val person = nonNull(dbPerson.getPerson()) ? dbPerson.getPerson() : new PersonDTO();
-        dbPerson.setPerson(person);
+        if (isNull(dbPerson.getPerson())) {
+            dbPerson.setPerson(new PersonDTO());
+        }
 
         if (!request.getTelefonnummer().isEmpty()) {
-            person.setTelefonnummer(null);
+            dbPerson.getPerson().setTelefonnummer(null);
         }
 
         return Flux.fromArray(request.getClass().getDeclaredFields())
@@ -60,7 +61,7 @@ public class MergeService {
                 .filter(field -> List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty())
                 .flatMap(field -> {
                     val infoElementRequest = (List<DbVersjonDTO>) getValue(request, field.getName());
-                    val infoElementDbPerson = (List<DbVersjonDTO>) getValue(person, field.getName());
+                    val infoElementDbPerson = (List<DbVersjonDTO>) getValue(dbPerson.getPerson(), field.getName());
                     val dbId = new AtomicInteger(infoElementDbPerson.stream()
                             .mapToInt(DbVersjonDTO::getId)
                             .max().orElse(0));

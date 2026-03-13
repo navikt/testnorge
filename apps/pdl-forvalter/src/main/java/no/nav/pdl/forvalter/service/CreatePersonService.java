@@ -55,6 +55,7 @@ public class CreatePersonService {
     private static PersonDTO buildPerson(PersonRequestDTO request, IdentDTO identifikator) {
 
         return PersonDTO.builder()
+                .ident(identifikator.getIdent())
                 .kjoenn(List.of(KjoennDTO.builder()
                         .kjoenn(nonNull(request.getKjoenn()) ? request.getKjoenn() : null)
                         .folkeregistermetadata(new FolkeregistermetadataDTO())

@@ -35,10 +35,16 @@ public class DbRelasjon {
     @Column
     private RelasjonType relasjonType;
 
-    @ManyToOne(foreignKey = "person_id")
+    @Column
+    private Long personId;
+
+    @ManyToOne
     private DbPerson person;
 
-    @ManyToOne(foreignKey = "relatert_person_id")
+    @Column
+    private Long relatertPersonId;
+
+    @ManyToOne(foreignKey = "relatertPersonId")
     private DbPerson relatertPerson;
 
     @Version
