@@ -1,6 +1,7 @@
 package no.nav.dolly.libs.test;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.test.annotation.DirtiesContext;
@@ -15,9 +16,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.isNull;
 
-@Slf4j
 class DollySpringContextCacheTestExecutionListener extends AbstractTestExecutionListener {
 
+    private static final Logger log = LoggerFactory.getLogger(DollyTrackSpringContextCache.class);
     private static final ConcurrentMap<Class<?>, CacheSnapshot> cacheSnapshots = new ConcurrentHashMap<>();
     private static final AtomicBoolean contextCacheResolutionFailureLogged = new AtomicBoolean(false);
 
