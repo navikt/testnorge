@@ -7,7 +7,12 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * <p>Convenience annotation for Dolly tests normally annotated with {@code @SpringBootTest}.</p>
@@ -20,6 +25,7 @@ import java.lang.annotation.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
+@Inherited
 public @interface DollySpringBootTest {
 
     /**
