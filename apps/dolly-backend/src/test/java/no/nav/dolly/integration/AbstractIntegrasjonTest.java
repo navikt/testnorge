@@ -20,7 +20,7 @@ import java.util.UUID;
 import static java.time.LocalDateTime.now;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
 
-@Disabled
+@Disabled // NOTE: This is not inherited. Implementing classes must also ensure they're @Disabled. Kept here for reference as to intention.
 @DollySpringBootTest
 @ExtendWith(TestDatabaseConfig.class)
 public abstract class AbstractIntegrasjonTest {
