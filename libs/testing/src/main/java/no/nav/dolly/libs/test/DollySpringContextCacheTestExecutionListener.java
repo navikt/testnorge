@@ -11,6 +11,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.isNull;
 
@@ -18,6 +19,7 @@ import static java.util.Objects.isNull;
 class DollySpringContextCacheTestExecutionListener extends AbstractTestExecutionListener {
 
     private static final ConcurrentMap<Class<?>, CacheSnapshot> CACHE_SNAPSHOTS = new ConcurrentHashMap<>();
+    private static final AtomicBoolean CONTEXT_CACHE_RESOLUTION_WARN_LOGGED = new AtomicBoolean(false);
 
     @Override
     public void beforeTestClass(@NonNull TestContext testContext) {
@@ -80,7 +82,11 @@ class DollySpringContextCacheTestExecutionListener extends AbstractTestExecution
                     return contextCache;
                 }
             } catch (Exception e) {
-                log.debug("Unable to resolve Spring Test context cache", e);
+                if (CONTEXT_CACHE_RESOLUTION_WARN_LOGGED.compareAndSet(false, true)) {
+                    log.warn("Unable to resolve Spring Test context cache; cache growth tracking will be disabled for tests annotated with @DollyTrackSpringContextCache", e);
+                } else {
+                    log.debug("Unable to resolve Spring Test context cache", e);
+                }
             }
         }
         return null;
