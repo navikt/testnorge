@@ -46,7 +46,7 @@ class DollySpringContextCacheTestExecutionListener extends AbstractTestExecution
         var sizeDelta = after.size() - before.size();
         var missDelta = after.missCount() - before.missCount();
         var hitDelta = after.hitCount() - before.hitCount();
-        var dirtiesContext = testClass.isAnnotationPresent(DirtiesContext.class);
+        var dirtiesContext = AnnotatedElementUtils.hasAnnotation(testClass, DirtiesContext.class);
 
         if (sizeDelta > 0) {
             log.info("spring-context-cache-growth testClass={} sizeBefore={} sizeAfter={} delta={} missDelta={} hitDelta={} dirtiesContext={}",
