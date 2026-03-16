@@ -18,8 +18,8 @@ import static java.util.Objects.isNull;
 @Slf4j
 class DollySpringContextCacheTestExecutionListener extends AbstractTestExecutionListener {
 
-    private static final ConcurrentMap<Class<?>, CacheSnapshot> CACHE_SNAPSHOTS = new ConcurrentHashMap<>();
-    private static final AtomicBoolean CONTEXT_CACHE_RESOLUTION_WARN_LOGGED = new AtomicBoolean(false);
+    private static final ConcurrentMap<Class<?>, CacheSnapshot> cacheSnapshots = new ConcurrentHashMap<>();
+    private static final AtomicBoolean contextCacheResolutionFailureLogged = new AtomicBoolean(false);
 
     @Override
     public void beforeTestClass(@NonNull TestContext testContext) {
@@ -28,7 +28,7 @@ class DollySpringContextCacheTestExecutionListener extends AbstractTestExecution
         if (isNull(contextCache)) {
             return;
         }
-        CACHE_SNAPSHOTS.put(testClass, CacheSnapshot.from(contextCache));
+        cacheSnapshots.put(testClass, CacheSnapshot.from(contextCache));
     }
 
     @Override
@@ -39,7 +39,7 @@ class DollySpringContextCacheTestExecutionListener extends AbstractTestExecution
         if (isNull(contextCache)) {
             return;
         }
-        var before = CACHE_SNAPSHOTS.remove(testClass);
+        var before = cacheSnapshots.remove(testClass);
         if (isNull(before)) {
             return;
         }
@@ -82,7 +82,7 @@ class DollySpringContextCacheTestExecutionListener extends AbstractTestExecution
                     return contextCache;
                 }
             } catch (Exception e) {
-                if (CONTEXT_CACHE_RESOLUTION_WARN_LOGGED.compareAndSet(false, true)) {
+                if (contextCacheResolutionFailureLogged.compareAndSet(false, true)) {
                     log.warn("Unable to resolve Spring Test context cache; cache growth tracking will be disabled for tests annotated with @DollyTrackSpringContextCache", e);
                 } else {
                     log.debug("Unable to resolve Spring Test context cache", e);
