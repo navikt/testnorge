@@ -33,6 +33,7 @@ public @interface DollySpringBootTest {
      * <p>Defaults to {@link SpringBootTest.WebEnvironment#RANDOM_PORT}.</p>
      */
     @AliasFor(annotation = SpringBootTest.class, attribute = "webEnvironment")
+    @SuppressWarnings("unused")
     SpringBootTest.WebEnvironment webEnvironment() default SpringBootTest.WebEnvironment.RANDOM_PORT;
 
     /**
