@@ -38,7 +38,7 @@ public class DbRelasjon {
     @Column
     private Long personId;
 
-    @ManyToOne
+    @ManyToOne(foreignKey = "personId")
     private DbPerson person;
 
     @Column

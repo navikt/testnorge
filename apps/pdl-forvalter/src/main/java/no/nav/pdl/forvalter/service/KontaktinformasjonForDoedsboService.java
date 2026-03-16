@@ -405,7 +405,9 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 .doOnNext(createdPerson ->
                         kontakt.setIdentifikasjonsnummer(createdPerson.getIdent()))
                 .flatMap(createdPerson ->
-                        relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
-                                createdPerson.getIdent(), RelasjonType.KONTAKT_FOR_DOEDSBO));
+                        relasjonService.setRelasjon(hovedperson,
+                                        createdPerson.getIdent(), RelasjonType.AVDOEDD_FOR_KONTAKT)
+                                .then(relasjonService.setRelasjon(createdPerson.getIdent(), hovedperson,
+                                        RelasjonType.KONTAKT_FOR_DOEDSBO)));
     }
 }

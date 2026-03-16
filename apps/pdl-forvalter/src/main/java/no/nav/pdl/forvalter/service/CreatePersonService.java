@@ -128,6 +128,6 @@ public class CreatePersonService {
                         .sistOppdatert(now())
                         .build())
                 .flatMap(personRepository::save)
-                .doOnNext(person -> log.info("Oppretting av ident {} tok {} ms", person.getIdent(), currentTimeMillis() - startTime));
+                .doOnNext(person -> log.info("Oppretting av person med ident {} tok {} ms", person.getIdent(), currentTimeMillis() - startTime));
     }
 }

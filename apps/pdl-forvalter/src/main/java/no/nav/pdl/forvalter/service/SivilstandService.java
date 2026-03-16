@@ -96,8 +96,10 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             return setRelatertVedSivilstand(sivilstand, hovedperson)
-                    .then(relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
+                    .then(relasjonService.setRelasjon(hovedperson.getIdent(),
                             sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER))
+                    .then(relasjonService.setRelasjon(sivilstand.getRelatertVedSivilstand(),
+                            hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER))
                     .then(createRelatertSivilstand(sivilstand, hovedperson.getIdent()))
                     .thenReturn(sivilstand);
 

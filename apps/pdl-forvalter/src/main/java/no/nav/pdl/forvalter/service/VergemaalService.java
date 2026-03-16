@@ -77,10 +77,8 @@ public class VergemaalService implements Validation<VergemaalDTO> {
     private Mono<VergemaalDTO> handle(VergemaalDTO vergemaal, String ident) {
 
         return getVergeident(vergemaal, ident)
-                .flatMap(vm ->
-                        relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,
-                                        vm.getVergeIdent(), RelasjonType.VERGE)
-                                .thenReturn(vergemaal));
+                .flatMap(vm -> relasjonService.setRelasjoner(ident, RelasjonType.VERGE, vm.getVergeIdent(), RelasjonType.VERGE_MOTTAKER))
+                .thenReturn(vergemaal);
     }
 
     private Mono<VergemaalDTO> getVergeident(VergemaalDTO vergemaal, String ident) {

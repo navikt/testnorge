@@ -47,7 +47,9 @@ public class MergeService {
     public Mono<DbPerson> merge(PersonDTO request, DbPerson dbPerson) {
 
         if (isNull(dbPerson.getPerson())) {
-            dbPerson.setPerson(new PersonDTO());
+            dbPerson.setPerson(PersonDTO.builder()
+                    .ident(request.getIdent())
+                    .build());
         }
 
         if (!request.getTelefonnummer().isEmpty()) {

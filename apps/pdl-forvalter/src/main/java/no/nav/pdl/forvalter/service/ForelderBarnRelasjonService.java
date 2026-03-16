@@ -122,46 +122,46 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         var request = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         return setRelatertPerson(relasjon, hovedperson)
                 .then(addForelderBarnRelasjon(relasjon, hovedperson))
-                        .flatMap(relasjon1 -> {
-                            if (isNotBlank(request.getRelatertPerson())) {
+                .flatMap(relasjon1 -> {
+                    if (isNotBlank(request.getRelatertPerson())) {
+                        return Mono.empty();
+                    }
+
+                    return setForelderBarnRelasjon(relasjon, hovedperson, request).thenReturn(relasjon1)
+                            .flatMap(relasjon2 -> {
+                                if (request.getRelatertPersonsRolle() == Rolle.BARN && nonNull(relasjon.getDeltBosted())) {
+                                    return deltBostedService.handle(relasjon.getDeltBosted(), hovedperson, relasjon.getRelatertPerson());
+                                }
+                                relasjon.setPartnerErIkkeForelder(null);
                                 return Mono.empty();
-                            }
+                            }).thenReturn(relasjon)
+                            .flatMap(relasjon3 -> {
 
-                            return setForelderBarnRelasjon(relasjon, hovedperson, request).thenReturn(relasjon1)
-                                    .flatMap(relasjon2 -> {
-                                        if (request.getRelatertPersonsRolle() == Rolle.BARN && nonNull(relasjon.getDeltBosted())) {
-                                            return deltBostedService.handle(relasjon.getDeltBosted(), hovedperson, relasjon.getRelatertPerson());
-                                        }
-                                        relasjon.setPartnerErIkkeForelder(null);
-                                        return Mono.empty();
-                                    }).thenReturn(relasjon)
-                                    .flatMap(relasjon3 -> {
+                                if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
 
-                                        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
-
-                                            var forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
-                                            return personRepository.findByIdent(relasjon.getRelatertPerson())
-                                                    .doOnNext(person -> {
-                                                        forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
-                                                                .kjoenn(KjoennFraIdentUtility.getKjoenn(person.getPerson()) == MANN ? KVINNE : MANN)
-                                                                .build());
-                                                        forelderRelasjon.setRelatertPerson(null);
-                                                    })
-                                                    .flatMap(person -> setRelatertPerson(forelderRelasjon, hovedperson)
-                                                            .thenReturn(person))
-                                                    .flatMap(person -> addForelderBarnRelasjon(forelderRelasjon, hovedperson)
-                                                            .thenReturn(person))
-                                                    .doOnNext(dbPerson ->
-                                                            forelderRelasjon.setId(hovedperson.getForelderBarnRelasjon().stream()
-                                                                                           .map(ForelderBarnRelasjonDTO::getId)
-                                                                                           .findFirst()
-                                                                                           .orElse(0) + 1))
-                                                    .flatMap(personRepository::save)
-                                                    .thenReturn(forelderRelasjon);
-                                        }
-                                        return Mono.empty();
-                                    });
-                        });
+                                    var forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
+                                    return personRepository.findByIdent(relasjon.getRelatertPerson())
+                                            .doOnNext(person -> {
+                                                forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
+                                                        .kjoenn(KjoennFraIdentUtility.getKjoenn(person.getPerson()) == MANN ? KVINNE : MANN)
+                                                        .build());
+                                                forelderRelasjon.setRelatertPerson(null);
+                                            })
+                                            .flatMap(person -> setRelatertPerson(forelderRelasjon, hovedperson)
+                                                    .thenReturn(person))
+                                            .flatMap(person -> addForelderBarnRelasjon(forelderRelasjon, hovedperson)
+                                                    .thenReturn(person))
+                                            .doOnNext(dbPerson ->
+                                                    forelderRelasjon.setId(hovedperson.getForelderBarnRelasjon().stream()
+                                                                                   .map(ForelderBarnRelasjonDTO::getId)
+                                                                                   .findFirst()
+                                                                                   .orElse(0) + 1))
+                                            .flatMap(personRepository::save)
+                                            .thenReturn(forelderRelasjon);
+                                }
+                                return Mono.empty();
+                            });
+                });
     }
 
     private Mono<Void> setForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson, ForelderBarnRelasjonDTO request) {
@@ -219,9 +219,9 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                         return Mono.just(relasjon);
                     } else {
                         return createMotsattRelasjon(relasjon, hovedperson.getIdent())
-                                .then(relasjonService.setRelasjoner(hovedperson.getIdent(),
-                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
-                                        relasjon.getRelatertPerson(),
+                                .then(relasjonService.setRelasjon(hovedperson.getIdent(), relasjon.getRelatertPerson(),
+                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN))
+                                .then(relasjonService.setRelasjon(relasjon.getRelatertPerson(), hovedperson.getIdent(),
                                         relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER))
                                 .thenReturn(relasjon);
                     }
