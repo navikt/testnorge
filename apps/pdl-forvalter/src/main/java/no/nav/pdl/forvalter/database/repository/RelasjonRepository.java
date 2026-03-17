@@ -4,7 +4,6 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -24,21 +23,16 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
     Mono<Void> deleteByPersonIdentIn(Collection<String> identer);
 
     Flux<DbRelasjon> findByPersonId(Long id);
+
     Flux<DbRelasjon> findByPersonIdIn(List<Long> ids);
 
     @Query("""
-            select exists (select 1 from relasjon r
-            where r.person_id = :id or r.relatert_person_id = :id)
-    """)
+                    select exists (select 1 from relasjon r
+                    where r.person_id = :id or r.relatert_person_id = :id)
+            """)
     Mono<Boolean> existsByPersonIdOrRelatertPersonId(Long id);
 
-    @Query("""
-            select * from relasjon r
-            where (r.person_id = :personId or r.relatert_person_id = :personId)
-            and r.relasjon_type = :relasjonType
-            """)
-    Flux<DbRelasjon> findByPersonIdOrRelatertPersonIdAndRelasjonType(@Param("personId") Long personId,
-                                                                     @Param("relasjonType") RelasjonType relasjonType);
+    Flux<DbRelasjon> findByPersonIdAndRelasjonTypeIn(Long personId, List<RelasjonType> relasjonTyper);
 
     @Modifying
     Mono<Void> deleteByPersonIdAndRelatertPersonId(Long personId, Long relatertPersonId);
