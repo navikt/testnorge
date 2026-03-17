@@ -37,14 +37,8 @@ public class DbRelasjon {
     @Column
     private Long personId;
 
-//    @ManyToOne(foreignKey = "personId")
-//    private DbPerson person;
-
     @Column
     private Long relatertPersonId;
-
-//    @ManyToOne(foreignKey = "relatertPersonId")
-//    private DbPerson relatertPerson;
 
     @Version
     private Integer versjon;
@@ -70,7 +64,7 @@ public class DbRelasjon {
                ", sistOppdatert=" + sistOppdatert +
                ", relasjonType=" + relasjonType +
                ", personId=" + personId +
-               ", relatertPersonId" + relatertPersonId +
+               ", relatertPersonId=" + relatertPersonId +
                ", versjon=" + versjon +
                '}';
     }

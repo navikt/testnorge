@@ -21,21 +21,22 @@ public class PersonMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(DbRelasjon.class, FullPersonDTO.class)
+        factory.classMap(DbPerson.class, FullPersonDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(DbRelasjon kilde, FullPersonDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(DbPerson kilde, FullPersonDTO destinasjon, MappingContext context) {
 
                         val relasjoner = (List<DbRelasjon>) context.getProperty("relasjoner");
                         val relatertePersoner = (Map<Long, DbPerson>) context.getProperty("relatertePersoner");
 
                         if (nonNull(relasjoner) && nonNull(relatertePersoner)) {
                             destinasjon.setRelasjoner(relasjoner.stream()
-                                    .filter(relasjon -> relasjon.getPersonId().equals(kilde.getPersonId()))
+                                    .filter(relasjon -> relasjon.getPersonId().equals(kilde.getId()))
                                     .map(relasjon -> {
                                         val relatertPerson = relatertePersoner.get(relasjon.getRelatertPersonId());
                                         return FullPersonDTO.RelasjonDTO.builder()
                                                 .id(relasjon.getId())
+                                                .relasjonType(relasjon.getRelasjonType())
                                                 .relatertPerson(relatertPerson.getPerson())
                                                 .sistOppdatert(relasjon.getSistOppdatert())
                                                 .build();
@@ -43,6 +44,8 @@ public class PersonMappingStrategy implements MappingStrategy {
                                     .toList());
                         }
                     }
-                }).register();
+                })
+                .byDefault()
+                .register();
     }
 }
