@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
-import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
+import { LaasModal } from '@/components/ui/button/LaasButton/LaasModal'
 import { Header } from '@/components/ui/header/Header'
 import { arrayToString, formatBrukerNavn, formatStringDates } from '@/utils/DataFormatter'
 import './GruppeHeader.less'
@@ -131,18 +131,12 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							GJENOPPRETT
 						</Button>
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<LaasButton
+							<LaasModal
 								autoMutate={false}
 								gruppeId={gruppe.id}
 								action={laasGruppe}
 								loading={isLockingGruppe}
-							>
-								Er du sikker på at du vil låse denne gruppen? <br />
-								En gruppe som er låst kan ikke endres, og blir heller ikke <br />
-								påvirket av prodlast i samhandlermiljøet (Q1). <br />
-								Når gruppen er låst må du kontakte Team Dolly <br />
-								dersom du ønsker å låse den opp igjen.
-							</LaasButton>
+							/>
 						)}
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<SlettButton
