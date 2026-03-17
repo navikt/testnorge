@@ -9,9 +9,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 import static java.time.LocalDateTime.now;
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,10 @@ public class RelasjonService {
         return Mono.zip(fetchPerson(ident),
                         fetchPerson(identRelasjon))
                 .flatMap(personer ->
-                        createRelasjoner(personer.getT1(), relasjon, personer.getT2(), reverseRelasjon))
+                        checkAndCreateRelasjon(personer.getT1(), personer.getT2(), relasjon)
+                                .then(nonNull(reverseRelasjon) ?
+                                        checkAndCreateRelasjon(personer.getT2(), personer.getT1(), reverseRelasjon) :
+                                        Mono.empty()))
                 .then();
     }
 
@@ -54,25 +56,5 @@ public class RelasjonService {
                         .sistOppdatert(now())
                         .build()))
                 .flatMap(relasjonRepository::save);
-    }
-
-    private Mono<Void> createRelasjoner(DbPerson person1, RelasjonType relasjon,
-                                              DbPerson person2, RelasjonType reverseRelasjon) {
-
-        return Mono.just(List.of(
-                        DbRelasjon.builder()
-                                .personId(person1.getId())
-                                .relatertPersonId(person2.getId())
-                                .relasjonType(relasjon)
-                                .sistOppdatert(now())
-                                .build(),
-                        DbRelasjon.builder()
-                                .personId(person2.getId())
-                                .relatertPersonId(person1.getId())
-                                .relasjonType(reverseRelasjon)
-                                .sistOppdatert(now())
-                                .build()))
-                .flatMapMany(relasjonRepository::saveAll)
-                .then();
     }
 }
