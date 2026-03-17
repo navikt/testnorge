@@ -18,23 +18,23 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
     Mono<DbRelasjon> findByPersonIdAndRelatertPersonIdAndRelasjonType(Long id1, Long id2, RelasjonType relasjonType);
 
     @Modifying
-    @Query("delete from DbRelasjon r " +
-           "where r.person.id in (select p.id from DbPerson p where p.ident in (:identer))")
+    @Query("delete from relasjon r " +
+           "where r.person_id in (select p.id from person p where p.ident in (:identer))")
     Mono<Void> deleteByPersonIdentIn(Collection<String> identer);
 
     Flux<DbRelasjon> findByPersonId(Long id);
     Flux<DbRelasjon> findByPersonIdIn(List<Long> ids);
 
     @Query("""
-            select exists (select 1 from DbRelasjon r
-            where r.person.id = :id or r.relatertPerson.id = :id)
+            select exists (select 1 from relasjon r
+            where r.person_id = :id or r.relatert_person_id = :id)
     """)
     Mono<Boolean> existsByPersonIdOrRelatertPersonId(Long id);
 
     @Query("""
-            select r from DbRelasjon r
-            where (r.personId = :personId or r.relatertPersonId = :personId)
-            and r.relasjonType = :relasjonType
+            select r from relasjon r
+            where (r.person_id = :personId or r.relatert_person_id = :personId)
+            and r.relasjon_type = :relasjonType
             """)
     Flux<DbRelasjon> findByPersonIdOrRelatertPersonIdAndRelasjonType(Long personId, RelasjonType relasjonType);
 
@@ -43,16 +43,18 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
 
     @Modifying
     @Query("""
-            delete from DbRelasjon r
-            where r.person.id = :person_id or r.relatertPerson.id = :personId
+            delete from relasjon r
+            where r.person_id = :personId or r.relatert_person_id = :personId
             """)
     Mono<Void> deleteByPersonIdOrRelatertPersonId(Long personId);
 
     @Modifying
     @Query("""
-            delete from DbRelasjon r
-            where (r.person.id = :personId or r.relatertPerson.id = :relatertPersonId)
-            and r.relasjonType = :relasjonType
+            delete from relasjon r
+            where (r.person_id = :personId or r.relatert_person_id = :relatertPersonId)
+            and r.relasjon_type = :relasjonType
             """)
-    Mono<Void> deleteByPersonIdAndRelatertPersonIdAndRelasjonType(Long personId, Long relatertPersonId, RelasjonType relasjonType);
+    Mono<Void> deleteByPersonIdAndRelatertPersonIdAndRelasjonType(Long personId,
+                                                                  Long relatertPersonId,
+                                                                  RelasjonType relasjonType);
 }
