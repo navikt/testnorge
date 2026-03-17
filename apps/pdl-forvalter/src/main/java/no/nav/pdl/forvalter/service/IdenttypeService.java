@@ -141,8 +141,8 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                     }
                 })
                 .flatMap(dbPerson -> swopIdentsService.execute(person.getIdent(), dbPerson.getIdent()))
-                .flatMap(dbPerson -> relasjonService.setRelasjon(dbPerson.getIdent(), person.getIdent(), NY_IDENTITET)
-                        .then(relasjonService.setRelasjon(person.getIdent(), dbPerson.getIdent(), GAMMEL_IDENTITET))
+                .flatMap(dbPerson -> relasjonService.setRelasjoner(dbPerson.getIdent(), NY_IDENTITET,
+                                person.getIdent(), GAMMEL_IDENTITET)
                         .thenReturn(dbPerson));
     }
 

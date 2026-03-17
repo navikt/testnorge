@@ -83,6 +83,10 @@ public class PersonService {
     public Mono<String> updatePerson(String ident, PersonUpdateRequestDTO request, Boolean relaxed) {
 
         val now = System.currentTimeMillis();
+        if (isNull(request.getPerson())) {
+            request.setPerson(new PersonDTO());
+        }
+
         return updatePersonInternal(ident, request, relaxed)
                 .doOnNext(updatedIdent -> log.info("Oppdatering av person {} tok {} ms", updatedIdent, System.currentTimeMillis() - now));
     }

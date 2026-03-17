@@ -31,15 +31,6 @@ public class RelasjonService {
                 .then();
     }
 
-    public Mono<Void> setRelasjon(String ident, String identRelasjon, RelasjonType relasjon) {
-
-        return Mono.zip(fetchPerson(ident),
-                        fetchPerson(identRelasjon))
-                .flatMap(personer ->
-                        checkAndCreateRelasjon(personer.getT1(), personer.getT2(), relasjon))
-                .then();
-    }
-
     private Mono<DbPerson> fetchPerson(String ident) {
 
         return personRepository.findByIdent(ident)

@@ -231,10 +231,9 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
                 .map(DbPerson::getIdent)
                 .doOnNext(identitet::setRettIdentitetVedIdentifikasjonsnummer)
                 .doOnNext(identitet1 -> identitet.setNyFalskIdentitetPerson(null))
-                .flatMap(rettIdenitet -> relasjonService.setRelasjon(person.getIdent(),
-                                identitet.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.FALSK_IDENTITET)
-                        .then(relasjonService.setRelasjon(identitet.getRettIdentitetVedIdentifikasjonsnummer(),
-                                person.getIdent(), RelasjonType.RIKTIG_IDENTITET)));
+                .flatMap(rettIdenitet -> relasjonService.setRelasjoner(person.getIdent(),
+                                RelasjonType.FALSK_IDENTITET, identitet.getRettIdentitetVedIdentifikasjonsnummer(),
+                        RelasjonType.RIKTIG_IDENTITET));
     }
 
     private static String blankCheck(String value, String defaultValue) {

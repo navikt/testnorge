@@ -54,10 +54,9 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
     private Mono<FullmaktDTO> handle(FullmaktDTO fullmakt, String ident) {
 
         return getFullmaktPerson(fullmakt, ident)
-                .flatMap(fm -> relasjonService.setRelasjon(ident,
-                                fm.getMotpartsPersonident(), RelasjonType.FULLMAKTSGIVER)
-                        .then(relasjonService.setRelasjon(fm.getMotpartsPersonident(), ident,
-                                RelasjonType.FULLMEKTIG).thenReturn(fm)))
+                .flatMap(fm -> relasjonService.setRelasjoner(ident,
+                        RelasjonType.FULLMAKTSGIVER, fm.getMotpartsPersonident(),
+                        RelasjonType.FULLMEKTIG).thenReturn(fm))
                 .doOnNext(fm -> fm.setMaster(Master.PDL));
     }
 

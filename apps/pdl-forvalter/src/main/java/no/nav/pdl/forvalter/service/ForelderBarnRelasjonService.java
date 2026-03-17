@@ -219,9 +219,9 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                         return Mono.just(relasjon);
                     } else {
                         return createMotsattRelasjon(relasjon, hovedperson.getIdent())
-                                .then(relasjonService.setRelasjon(hovedperson.getIdent(), relasjon.getRelatertPerson(),
-                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN))
-                                .then(relasjonService.setRelasjon(relasjon.getRelatertPerson(), hovedperson.getIdent(),
+                                .then(relasjonService.setRelasjoner(hovedperson.getIdent(),
+                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
+                                        relasjon.getRelatertPerson(),
                                         relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER))
                                 .thenReturn(relasjon);
                     }

@@ -15,7 +15,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
@@ -35,6 +34,7 @@ import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.def
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
@@ -96,12 +96,10 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             return setRelatertVedSivilstand(sivilstand, hovedperson)
-                    .then(relasjonService.setRelasjon(hovedperson.getIdent(),
-                            sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER))
-                    .then(relasjonService.setRelasjon(sivilstand.getRelatertVedSivilstand(),
-                            hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER))
-                    .then(createRelatertSivilstand(sivilstand, hovedperson.getIdent()))
-                    .thenReturn(sivilstand);
+                    .then(relasjonService.setRelasjoner(hovedperson.getIdent(), EKTEFELLE_PARTNER,
+                            sivilstand.getRelatertVedSivilstand(), EKTEFELLE_PARTNER))
+                    .then(createRelatertSivilstand(sivilstand, hovedperson.getIdent())
+                            .thenReturn(sivilstand));
 
         } else {
             sivilstand.setRelatertVedSivilstand(null);
