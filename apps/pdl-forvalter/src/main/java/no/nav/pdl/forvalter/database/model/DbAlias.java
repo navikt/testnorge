@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.database.model;
 
-import io.github.joselion.springr2dbcrelationships.annotations.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,8 +33,8 @@ public class DbAlias {
     @Column
     private Long personId;
 
-    @ManyToOne(foreignKey = "personId")
-    private DbPerson person;
+//    @ManyToOne(foreignKey = "personId")
+//    private DbPerson person;
 
     @Column
     private String tidligereIdent;
@@ -49,12 +48,12 @@ public class DbAlias {
 
         if (!(o instanceof DbAlias dbAlias)) return false;
 
-        return new EqualsBuilder().append(id, dbAlias.id).append(sistOppdatert, dbAlias.sistOppdatert).append(person, dbAlias.person).append(tidligereIdent, dbAlias.tidligereIdent).isEquals();
+        return new EqualsBuilder().append(id, dbAlias.id).append(sistOppdatert, dbAlias.sistOppdatert).append(personId, dbAlias.personId).append(tidligereIdent, dbAlias.tidligereIdent).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(sistOppdatert).append(person).append(tidligereIdent).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(sistOppdatert).append(personId).append(tidligereIdent).toHashCode();
     }
 
     @Override
@@ -62,7 +61,7 @@ public class DbAlias {
         return "DbAlias{" +
                "id=" + id +
                ", sistOppdatert=" + sistOppdatert +
-               ", person=" + person +
+               ", person=" + personId +
                ", tidligereIdent='" + tidligereIdent + '\'' +
                ", versjon=" + versjon +
                '}';

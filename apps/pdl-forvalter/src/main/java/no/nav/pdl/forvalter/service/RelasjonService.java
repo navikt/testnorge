@@ -62,17 +62,13 @@ public class RelasjonService {
         return Mono.just(List.of(
                         DbRelasjon.builder()
                                 .personId(person1.getId())
-                                .person(person1)
                                 .relatertPersonId(person2.getId())
-                                .relatertPerson(person2)
                                 .relasjonType(relasjon)
                                 .sistOppdatert(now())
                                 .build(),
                         DbRelasjon.builder()
                                 .personId(person2.getId())
-                                .person(person2)
                                 .relatertPersonId(person1.getId())
-                                .relatertPerson(person1)
                                 .relasjonType(reverseRelasjon)
                                 .sistOppdatert(now())
                                 .build()))

@@ -87,19 +87,22 @@ public class HendelseIdService {
 
         if (isTestnorgeIdent(person.getIdent())) {
 
-            return Flux.concat(getPdlHendelser(person)
+            return Flux.concat(
+                            getPdlHendelser(person)
                                     .flatMap(opplysning -> buildHendelseRequest(person.getIdent(), opplysning)),
-                            Flux.fromIterable(person.getRelasjoner())
-                                    .map(DbRelasjon::getRelatertPerson)
+                            relasjonRepository.findByPersonId(person.getId())
+                                    .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))
                                     .map(DbPerson::getPerson)
                                     .flatMap(relasjonPerson -> Flux.concat(
                                             Flux.fromIterable(relasjonPerson.getSivilstand())
-                                                    .flatMap(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
+                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
                                             Flux.fromIterable(relasjonPerson.getForelderBarnRelasjon())
-                                                    .flatMap(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
+                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
                                             Flux.fromIterable(relasjonPerson.getFullmakt())
-                                                    .flatMap(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)))))
+                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert))))
+                                    .flatMap(Flux::from))
                     .flatMap(pdlTestdataConsumer::deleteHendelse)
+                    .collectList()
                     .then();
         }
 

@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.database.model;
 
-import io.github.joselion.springr2dbcrelationships.annotations.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,10 +14,6 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -51,30 +46,30 @@ public class DbPerson {
     @Column
     private PersonDTO person;
 
-    @OneToMany(mappedBy = "personId")
-    private List<DbRelasjon> relasjoner;
+//    @OneToMany(mappedBy = "personId")
+//    private List<DbRelasjon> relasjoner;
 
-    @OneToMany(mappedBy = "personId")
-    private List<DbAlias> alias;
+//    @OneToMany(mappedBy = "personId")
+//    private List<DbAlias> alias;
 
     @Version
     private Integer versjon;
 
-    public List<DbRelasjon> getRelasjoner() {
+//    public List<DbRelasjon> getRelasjoner() {
+//
+//        if (isNull(relasjoner)) {
+//            relasjoner = new ArrayList<>();
+//        }
+//        return relasjoner;
+//    }
 
-        if (isNull(relasjoner)) {
-            relasjoner = new ArrayList<>();
-        }
-        return relasjoner;
-    }
-
-    public List<DbAlias> getAlias() {
-
-        if (isNull(alias)) {
-            alias = new ArrayList<>();
-        }
-        return alias;
-    }
+//    public List<DbAlias> getAlias() {
+//
+//        if (isNull(alias)) {
+//            alias = new ArrayList<>();
+//        }
+//        return alias;
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -32,7 +32,6 @@ dependencies {
 
     implementation "org.postgresql:r2dbc-postgresql"
     runtimeOnly "io.r2dbc:r2dbc-pool"
-    implementation 'io.github.joselion:spring-r2dbc-relationships:1.1.0'
 
     implementation "org.postgresql:postgresql"
     implementation "org.flywaydb:flyway-core"

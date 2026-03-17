@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, Long> {
@@ -22,12 +23,20 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
     Mono<Void> deleteByPersonIdentIn(Collection<String> identer);
 
     Flux<DbRelasjon> findByPersonId(Long id);
+    Flux<DbRelasjon> findByPersonIdIn(List<Long> ids);
 
     @Query("""
             select exists (select 1 from DbRelasjon r
             where r.person.id = :id or r.relatertPerson.id = :id)
     """)
     Mono<Boolean> existsByPersonIdOrRelatertPersonId(Long id);
+
+    @Query("""
+            select r from DbRelasjon r
+            where (r.personId = :personId or r.relatertPersonId = :personId)
+            and r.relasjonType = :relasjonType
+            """)
+    Flux<DbRelasjon> findByPersonIdOrRelatertPersonIdAndRelasjonType(Long personId, RelasjonType relasjonType);
 
     @Modifying
     Mono<Void> deleteByPersonIdAndRelatertPersonId(Long personId, Long relatertPersonId);

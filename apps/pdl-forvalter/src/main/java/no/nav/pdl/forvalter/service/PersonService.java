@@ -18,6 +18,7 @@ import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.pdl.forvalter.mapper.MappingContextUtils;
 import no.nav.pdl.forvalter.utils.RelasjonerAlderUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -32,7 +33,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -41,6 +44,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -117,12 +121,15 @@ public class PersonService {
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
                 .flatMap(dbPerson -> unhookEksternePersonerService.unhook(dbPerson)
                         .thenReturn(dbPerson))
-                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getRelasjoner())
-                        .map(DbRelasjon::getRelatertPerson)
+                .flatMapMany(dbPerson -> Flux.concat(
+                                Flux.just(dbPerson.getId()),
+                                relasjonRepository.findByPersonId(dbPerson.getId())
+                                        .map(DbRelasjon::getRelatertPersonId))
+                        .flatMap(relatertPersonId -> personRepository.findById(relatertPersonId)
                                 // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
                                 .flatMap(relatertPerson -> aliasRepository.existsByTidligereIdent(relatertPerson.getIdent())
                                         .zipWith(Mono.just(relatertPerson))))
-                        .filter(tuple -> isNotTrue(tuple.getT1()))
+                        .filter(tuple -> isNotTrue(tuple.getT1())))
                 .reduce(new HashSet<String>(), (set, tuple) -> {
                     set.add(tuple.getT2().getIdent());
                     return set;
@@ -148,7 +155,8 @@ public class PersonService {
         if (nonNull(identer) && !identer.isEmpty()) {
 
             return aliasRepository.findByTidligereIdentIn(identer)
-                    .map(DbAlias::getPerson)
+                    .map(DbAlias::getPersonId)
+                    .flatMap(personRepository::findById)
                     .map(DbPerson::getIdent)
                     .reduce(new HashSet<String>(), (set, ident) -> {
                         set.add(ident);
@@ -160,11 +168,28 @@ public class PersonService {
                         return identerSet;
                     })
                     .flatMapMany(query -> personRepository.findByIdentIn(query,
-                                    Pageable.unpaged()))
-                    .map(person -> mapperFacade.map(person, FullPersonDTO.class))
-                    .doOnNext(person -> log.info("Henting av person med ident {} tok {} ms",
-                            person.getPerson().getIdent(), System.currentTimeMillis() - now));
-
+                            PageRequest.of(paginering.getSidenummer(),
+                                    paginering.getSidestoerrelse(),
+                                    Sort.by(SORT_BY_FIELD).descending())))
+                    .collectList()
+                    .flatMapMany(personer -> relasjonRepository.findByPersonIdIn(personer.stream()
+                                    .map(DbPerson::getId)
+                                    .toList())
+                            .collectList()
+                            .flatMapMany(relasjoner ->
+                                    personRepository.findByIdIn(relasjoner.stream()
+                                                    .map(DbRelasjon::getRelatertPersonId)
+                                                    .collect(Collectors.toSet()))
+                                            .collectMap(DbPerson::getId)
+                                            .map(relatertePersoner -> {
+                                                val context = MappingContextUtils.getMappingContext();
+                                                context.setProperty("relasjoner", relasjoner);
+                                                context.setProperty("relatertePersoner", relatertePersoner);
+                                                return context;
+                                            }))
+                            .doOnNext(person -> log.info("Henting av personer tok {} ms", System.currentTimeMillis() - now))
+                            .flatMap(context -> Flux.fromIterable(personer)
+                                    .map(person -> mapperFacade.map(person, FullPersonDTO.class, context))));
         } else {
             return Flux.empty();
 //            return personRepository.findAll(

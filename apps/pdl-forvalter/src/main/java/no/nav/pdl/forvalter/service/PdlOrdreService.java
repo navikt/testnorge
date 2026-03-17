@@ -121,12 +121,11 @@ public class PdlOrdreService {
                     val dbPerson = tuple.getT2();
                     return Flux.concat(
                                     Mono.just(dbPerson),
-                                    Flux.fromIterable(dbPerson.getRelasjoner())
-                                            .filter(relasjon -> isNotTrue(ekskluderEksterenePersoner) ||
-                                                                eksternePersoner.stream()
-                                                                        .noneMatch(ekstern ->
-                                                                                ekstern.equals(relasjon.getRelatertPerson().getIdent())))
-                                            .map(DbRelasjon::getRelatertPerson),
+                                    relasjonRepository.findByPersonId(dbPerson.getId())
+                                            .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))
+                                            .filter(dbPerson1 -> isNotTrue(ekskluderEksterenePersoner) ||
+                                                                 eksternePersoner.stream()
+                                                                         .noneMatch(ekstern -> ekstern.equals(dbPerson1.getIdent()))),
                                     Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                                             .filter(ForelderBarnRelasjonDTO::hasBarn)
                                             .map(ForelderBarnRelasjonDTO::getRelatertPerson)
@@ -213,8 +212,9 @@ public class PdlOrdreService {
     private Mono<Void> checkAlias(String ident) {
 
         return aliasRepository.findByTidligereIdent(ident)
-                .flatMap(dbAlias -> Mono.error(new InvalidRequestException(
-                        VIOLATION_ALIAS_EXISTS.formatted(dbAlias.getPerson().getIdent()))));
+                .flatMap(dbAlias -> personRepository.findById(dbAlias.getPersonId()))
+                .flatMap(dbPerson -> Mono.error(new InvalidRequestException(
+                        VIOLATION_ALIAS_EXISTS.formatted(dbPerson.getIdent()))));
     }
 
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger) {
