@@ -34,7 +34,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +82,9 @@ public class PersonService {
     @Transactional
     public Mono<String> updatePerson(String ident, PersonUpdateRequestDTO request, Boolean relaxed) {
 
-        return updatePersonInternal(ident, request, relaxed);
+        val now = System.currentTimeMillis();
+        return updatePersonInternal(ident, request, relaxed)
+                .doOnNext(updatedIdent -> log.info("Oppdatering av person {} tok {} ms", updatedIdent, System.currentTimeMillis() - now));
     }
 
     private Mono<String> updatePersonInternal(String ident, PersonUpdateRequestDTO request, Boolean relaxed) {
@@ -251,8 +252,8 @@ public class PersonService {
     private Mono<IdentDTO> acquireIdentifier(BestillingRequestDTO request) {
 
         if (isBlank(request.getOpprettFraIdent())) {
-            return identPoolConsumer.acquireIdent(
-                            mapperFacade.map(request, HentIdenterRequest.class))
+            return Mono.just(mapperFacade.map(request, HentIdenterRequest.class))
+                    .flatMap(identPoolConsumer::acquireIdent)
                     .doOnNext(identifier ->
                             Objects.requireNonNull(identifier, "Personident fra identpool kan ikke være null"));
 
