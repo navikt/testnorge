@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -22,16 +22,16 @@ public class TilrettelagtKommunikasjonService implements Validation<Tilrettelagt
     private static final String VALIDATION_TOLKESPRAAK_ERROR = "Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
     private static final String VALIDATION_TEGNSPRAAK_ERROR = "Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
-        return Flux.fromIterable(person.getTilrettelagtKommunikasjon())
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
+        return Flux.fromIterable(dbPerson.getPerson().getTilrettelagtKommunikasjon())
                 .filter(type -> isTrue(type.getIsNew()))
                 .flatMap(this::handle)
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

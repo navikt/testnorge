@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavPersonIdentifikatorDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,17 +13,17 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class NavPersonIdentifikatorService implements Validation<NavPersonIdentifikatorDTO> {
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getNavPersonIdentifikator())
+        return Flux.fromIterable(dbPerson.getPerson().getNavPersonIdentifikator())
                 .filter(type -> isTrue(type.getIsNew()))
                 .flatMap(this::handle)
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     protected Mono<NavPersonIdentifikatorDTO> handle(NavPersonIdentifikatorDTO type) {

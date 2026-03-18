@@ -245,9 +245,7 @@ public class ArtifactDeleteService {
                         dbPerson.getPerson().setUtflytting(dbPerson.getPerson().getUtflytting().stream()
                                 .filter(type -> !id.equals(type.getId()))
                                 .toList()))
-                .flatMap(dbPerson ->
-                        folkeregisterPersonstatusService.update(dbPerson.getPerson())
-                                .thenReturn(dbPerson))
+                .flatMap(dbPerson -> folkeregisterPersonstatusService.update(dbPerson)
                 .flatMap(personRepository::save)
                 .then();
     }

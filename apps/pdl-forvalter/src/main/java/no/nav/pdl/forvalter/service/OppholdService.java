@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,14 +22,14 @@ public class OppholdService implements Validation<OppholdDTO> {
     private static final String VALIDATION_TYPE_ERROR = "Type av opphold må angis";
     private static final String VALIDATION_OPPHOLD_OVELAP_ERROR = "Feil: Overlappende opphold er detektert";
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson person) {
 
-        return Flux.fromIterable(person.getOpphold())
+        return Flux.fromIterable(person.getPerson().getOpphold())
                 .filter(type -> isTrue(type.getIsNew()))
                 .flatMap(this::handle)
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, person.getPerson()));
                 })
                 .collectList()
                 .flatMap(this::enforceIntegrity)

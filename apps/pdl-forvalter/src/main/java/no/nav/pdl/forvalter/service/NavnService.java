@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
@@ -34,18 +35,18 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO> {
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getNavn())
+        return Flux.fromIterable(dbPerson.getPerson().getNavn())
                 .filter(type -> isTrue(type.getIsNew()))
                 .flatMap(this::handle)
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .map(pers -> fixGyldigFraOgMed(person))
-                .thenReturn(person);
+                .map(pers -> fixGyldigFraOgMed(dbPerson.getPerson()))
+                .thenReturn(dbPerson);
     }
 
     @Override

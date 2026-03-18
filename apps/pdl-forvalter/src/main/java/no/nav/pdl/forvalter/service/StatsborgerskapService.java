@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
@@ -32,17 +33,17 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getStatsborgerskap())
+        return Flux.fromIterable(dbPerson.getPerson().getStatsborgerskap())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .flatMap(type -> handle(type, dbPerson.getPerson(), dbPerson.getPerson().getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .then(Mono.just(person));
+                .then(Mono.just(dbPerson));
     }
 
     @Override

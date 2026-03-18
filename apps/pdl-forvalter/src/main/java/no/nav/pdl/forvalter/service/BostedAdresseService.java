@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -52,21 +53,21 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public Mono<PersonDTO> convert(PersonDTO person, Boolean relaxed) {
+    public Mono<DbPerson> convert(DbPerson dbPerson, Boolean relaxed) {
 
-        return Flux.fromIterable(person.getBostedsadresse())
+        return Flux.fromIterable(dbPerson.getPerson().getBostedsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
-                .flatMap(adresse -> handle(adresse, person))
+                .flatMap(adresse -> handle(adresse, dbPerson.getPerson()))
                 .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
-                    adresse.setMaster(getMaster(adresse, person));
+                    adresse.setMaster(getMaster(adresse, dbPerson.getPerson()));
                 })
                 .collectList()
                 .doOnNext(adresser -> {
-                    oppdaterAdressedatoer(person.getBostedsadresse(), person);
-                    setAngittFlyttedato(person.getBostedsadresse());
+                    oppdaterAdressedatoer(dbPerson.getPerson().getBostedsadresse(), dbPerson.getPerson());
+                    setAngittFlyttedato(dbPerson.getPerson().getBostedsadresse());
                 })
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

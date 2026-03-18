@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedfoedtBarnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,17 +17,17 @@ public class DoedfoedtBarnService implements Validation<DoedfoedtBarnDTO> {
 
     private static final String INVALID_DATO_MISSING = "DødfødtBarn: dato må oppgis";
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getDoedfoedtBarn())
+        return Flux.fromIterable(dbPerson.getPerson().getDoedfoedtBarn())
                 .filter(doedfoedtBarn -> isTrue(doedfoedtBarn.getIsNew()))
                 .flatMap(this::handle)
                 .doOnNext(dfb -> {
                     dfb.setKilde(getKilde(dfb));
-                    dfb.setMaster(getMaster(dfb, person));
+                    dfb.setMaster(getMaster(dfb, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

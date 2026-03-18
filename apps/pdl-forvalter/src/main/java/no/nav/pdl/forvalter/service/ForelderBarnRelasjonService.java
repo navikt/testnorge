@@ -68,17 +68,17 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     private final MapperFacade mapperFacade;
     private final DeltBostedService deltBostedService;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getForelderBarnRelasjon())
+        return Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person))
+                .flatMap(type -> handle(type, dbPerson.getPerson()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .then(Mono.just(person));
+                .then(Mono.just(dbPerson));
     }
 
     @Override

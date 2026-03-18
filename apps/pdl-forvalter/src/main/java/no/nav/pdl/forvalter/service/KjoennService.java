@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -15,17 +16,17 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class KjoennService implements BiValidation<KjoennDTO, PersonDTO> {
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getKjoenn())
+        return Flux.fromIterable(dbPerson.getPerson().getKjoenn())
                 .filter(kjoenn -> isTrue(kjoenn.getIsNew()))
-                .flatMap(kjoenn -> handle(kjoenn, person.getIdent()))
+                .flatMap(kjoenn -> handle(kjoenn, dbPerson.getIdent()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     private Mono<KjoennDTO> handle(KjoennDTO kjoenn, String ident) {

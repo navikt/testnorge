@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -21,25 +22,25 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FoedselsdatoService implements BiValidation<FoedselsdatoDTO, PersonDTO> {
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getFoedselsdato())
+        return Flux.fromIterable(dbPerson.getPerson().getFoedselsdato())
                 .filter(foedselsdato -> isTrue(foedselsdato.getIsNew()))
-                .flatMap(foedselsdato -> handle(foedselsdato, person.getIdent()))
+                .flatMap(foedselsdato -> handle(foedselsdato, dbPerson.getIdent()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
                 .doOnNext(foedselsdatoer -> {
 
-                    person.setFoedselsdato(new ArrayList<>(foedselsdatoer));
-                    person.getFoedselsdato().sort(Comparator.comparing(FoedselsdatoDTO::getFoedselsaar).
+                    dbPerson.getPerson().setFoedselsdato(new ArrayList<>(foedselsdatoer));
+                    dbPerson.getPerson().getFoedselsdato().sort(Comparator.comparing(FoedselsdatoDTO::getFoedselsaar).
                             reversed());
 
-                    renumberId(person.getFoedselsdato());
+                    renumberId(dbPerson.getPerson().getFoedselsdato());
                 })
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     private Mono<FoedselsdatoDTO> handle(FoedselsdatoDTO foedselsdato, String ident) {

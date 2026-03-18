@@ -83,19 +83,19 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson person) {
 
-        var alleForeldreansvar = mapperFacade.mapAsList(person.getForeldreansvar(), ForeldreansvarDTO.class);
+        var alleForeldreansvar = mapperFacade.mapAsList(person.getPerson().getForeldreansvar(), ForeldreansvarDTO.class);
 
         return Flux.fromIterable(alleForeldreansvar)
-                .flatMap(type -> Flux.fromIterable(person.getForeldreansvar())
+                .flatMap(type -> Flux.fromIterable(person.getPerson().getForeldreansvar())
                         .filter(ansvar -> Objects.equals(type.getId(), ansvar.getId()))
                         .flatMap(foreldreansvar -> {
                             if (isTrue(foreldreansvar.getIsNew())) {
 
                                 foreldreansvar.setKilde(getKilde(foreldreansvar));
-                                foreldreansvar.setMaster(getMaster(foreldreansvar, person));
-                                return handle(foreldreansvar, person);
+                                foreldreansvar.setMaster(getMaster(foreldreansvar, person.getPerson()));
+                                return handle(foreldreansvar, person.getPerson());
                             }
                             return Mono.empty();
                         }))

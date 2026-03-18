@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -29,18 +29,18 @@ public class TelefonnummerService implements Validation<TelefonnummerDTO> {
     private static final String VALIDATION_NUMMER_INVALID_FORMAT = "Telefonnummer: nummer kan kun inneholde tallsifre";
     private static final String VALIDATION_NUMMER_INVALID_LENGTH = "Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre";
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getTelefonnummer())
+        return Flux.fromIterable(dbPerson.getPerson().getTelefonnummer())
                 .filter(type -> isTrue(type.getIsNew()))
                 .flatMap(this::handle)
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
                 .doOnNext(this::enforceIntegrity)
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

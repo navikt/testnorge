@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -45,38 +44,36 @@ public class PersonArtifactService {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
 
-        val person = dbPerson.getPerson();
-        return (falskIdentitetService.convert(person)
-                .then(adressebeskyttelseService.convert(person))
-                .then(foedselService.convert(person))
-                .then(foedselsdatoService.convert(person))
-                .then(kjoennService.convert(person))
-                .then(bostedAdresseService.convert(person, relaxed))
-                .then(innflyttingService.convert(person))
-                .then(foedestedService.convert(person))
-                .then(statsborgerskapService.convert(person))
-                .then(navnService.convert(person))
-                .then(oppholdsadresseService.convert(person))
-                .then(telefonnummerService.convert(person))
-                .then(utflyttingService.convert(person))
-                .then(oppholdService.convert(person))
-                .then(tilrettelagtKommunikasjonService.convert(person))
-                .then(sivilstandService.convert(person))
-                .then(doedsfallService.convert(person))
-                .then(fullmaktService.convert(person))
-                .then(kontaktAdresseService.convert(person, relaxed))
-                .then(utenlandsidentifikasjonsnummerService.convert(person))
-                .then(vergemaalService.convert(person))
-                .then(kontaktinformasjonForDoedsboService.convert(person))
-                .then(forelderBarnRelasjonService.convert(person))
-                .then(foreldreansvarService.convert(person))
-                .then(doedfoedtBarnService.convert(person))
-                .then(deltBostedService.convert(person))
-                .then(sikkerhetstiltakService.convert(person))
-                .then(navPersonIdentifikatorService.convert(person))
-                .then(folkeregisterPersonstatusService.convert(person))
-                .then(identtypeService.convert(dbPerson)))
-                .flatMap(person1 -> folkeregisterPersonstatusService.convert(person1.getPerson())
-                        .thenReturn(person1));
+        return falskIdentitetService.convert(dbPerson)
+                .flatMap(adressebeskyttelseService::convert)
+                .flatMap(foedselService::convert)
+                .flatMap(foedselsdatoService::convert)
+                .flatMap(kjoennService::convert)
+                .flatMap(person1 -> bostedAdresseService.convert(person1, relaxed))
+                .flatMap(innflyttingService::convert)
+                .flatMap(foedestedService::convert)
+                .flatMap(statsborgerskapService::convert)
+                .flatMap(navnService::convert)
+                .flatMap(oppholdsadresseService::convert)
+                .flatMap(telefonnummerService::convert)
+                .flatMap(utflyttingService::convert)
+                .flatMap(oppholdService::convert)
+                .flatMap(tilrettelagtKommunikasjonService::convert)
+                .flatMap(sivilstandService::convert)
+                .flatMap(doedsfallService::convert)
+                .flatMap(fullmaktService::convert)
+                .flatMap(person1 -> kontaktAdresseService.convert(dbPerson, relaxed))
+                .flatMap(utenlandsidentifikasjonsnummerService::convert)
+                .flatMap(vergemaalService::convert)
+                .flatMap(kontaktinformasjonForDoedsboService::convert)
+                .flatMap(forelderBarnRelasjonService::convert)
+                .flatMap(foreldreansvarService::convert)
+                .flatMap(doedfoedtBarnService::convert)
+                .flatMap(deltBostedService::convert)
+                .flatMap(sikkerhetstiltakService::convert)
+                .flatMap(navPersonIdentifikatorService::convert)
+                .flatMap(folkeregisterPersonstatusService::convert)
+                .flatMap(identtypeService::convert)
+                .flatMap(folkeregisterPersonstatusService::convert);
     }
 }

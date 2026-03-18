@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -50,20 +51,20 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getOppholdsadresse())
+        return Flux.fromIterable(dbPerson.getPerson().getOppholdsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()))
-                .flatMap(adresse -> handle(adresse, person))
+                .flatMap(adresse -> handle(adresse, dbPerson.getPerson()))
                 .filter(Objects::nonNull)
                 .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
-                    adresse.setMaster(getMaster(adresse, person));
+                    adresse.setMaster(getMaster(adresse, dbPerson.getPerson()));
                 })
                 .collectList()
                 .doOnNext(adresser ->
-                        oppdaterAdressedatoer(adresser, person))
-                .thenReturn(person);
+                        oppdaterAdressedatoer(adresser, dbPerson.getPerson()))
+                .thenReturn(dbPerson);
     }
 
     @Override

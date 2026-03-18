@@ -14,7 +14,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -31,18 +30,17 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getFullmakt())
+        return Flux.fromIterable(dbPerson.getPerson().getFullmakt())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person.getIdent()))
+                .flatMap(type -> handle(type, dbPerson.getIdent()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .doOnNext(fullmakt -> person.setFullmakt(new ArrayList<>(fullmakt)))
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -26,17 +27,17 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
     private static final String VALIDATION_INVALID_BESKYTTELSE = "Adressebeskyttelse: Gradering " +
             "FORTROLIG kan kun settes på personer med fødselsnummer";
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getAdressebeskyttelse())
+        return Flux.fromIterable(dbPerson.getPerson().getAdressebeskyttelse())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person))
+                .flatMap(type -> handle(type, dbPerson.getPerson()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

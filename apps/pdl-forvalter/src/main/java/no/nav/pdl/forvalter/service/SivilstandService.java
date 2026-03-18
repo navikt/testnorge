@@ -54,20 +54,20 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getSivilstand())
+        return Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person))
+                .flatMap(type -> handle(type, dbPerson.getPerson()))
                 .filter(Objects::nonNull)
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .map(sivilstand -> enforceIntegrity(person))
+                .map(sivilstand -> enforceIntegrity(dbPerson.getPerson()))
                 .doOnNext(ArtifactUtils::renumberId)
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

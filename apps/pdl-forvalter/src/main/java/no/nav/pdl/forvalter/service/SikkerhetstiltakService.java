@@ -1,9 +1,9 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -31,9 +31,9 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
     private static final String VALIDATION_PERSONIDENT_ERROR = "Sikkerhetstiltak: NAV personident må angis";
     private static final String VALIDATION_ENHET_ERROR = "Sikkerhetstiltak: Enhet må angis";
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getSikkerhetstiltak())
+        return Flux.fromIterable(dbPerson.getPerson().getSikkerhetstiltak())
                 .filter(type -> isTrue(type.getIsNew()))
                 .doOnNext(type -> {
                      type.setKilde(getKilde(type));
@@ -42,9 +42,9 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
                 .collectList()
                 .doOnNext(sikkerhetstiltak -> {
                     sikkerhetstiltak.sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
-                    renumberId(person.getSikkerhetstiltak());
+                    renumberId(dbPerson.getPerson().getSikkerhetstiltak());
                 })
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     public Mono<Void> validate(SikkerhetstiltakDTO sikkerhetstiltak) {

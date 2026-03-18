@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -21,16 +21,16 @@ public class UtenlandsidentifikasjonsnummerService implements Validation<Utenlan
     private static final String VALIDATION_UTSTEDER_LAND_MISSING = "Utsteder land må oppgis";
     private static final String VALIDATION_LANDKODE_ILLEGAL_FORMAT = "Trebokstavers landkode er forventet på utstederland";
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getUtenlandskIdentifikasjonsnummer())
+        return Flux.fromIterable(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer())
                 .filter(type -> isTrue(type.getIsNew()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

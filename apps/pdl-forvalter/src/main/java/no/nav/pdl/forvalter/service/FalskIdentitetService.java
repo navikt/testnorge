@@ -52,17 +52,17 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getFalskIdentitet())
+        return Flux.fromIterable(dbPerson.getPerson().getFalskIdentitet())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person).thenReturn(type))
+                .flatMap(type -> handle(type, dbPerson.getPerson()).thenReturn(type))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override

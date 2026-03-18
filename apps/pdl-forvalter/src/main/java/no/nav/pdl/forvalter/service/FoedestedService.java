@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
@@ -27,19 +28,19 @@ public class FoedestedService implements BiValidation<FoedestedDTO, PersonDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getFoedested())
+        return Flux.fromIterable(dbPerson.getPerson().getFoedested())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person.getIdent(),
-                        person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
-                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .flatMap(type -> handle(type, dbPerson.getIdent(),
+                        dbPerson.getPerson().getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
+                        dbPerson.getPerson().getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     private Mono<FoedestedDTO> handle(FoedestedDTO foedested, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {

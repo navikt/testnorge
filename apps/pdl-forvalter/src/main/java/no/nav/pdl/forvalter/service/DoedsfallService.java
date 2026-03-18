@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
@@ -26,14 +27,14 @@ public class DoedsfallService implements Validation<DoedsfallDTO> {
     private static final String INVALID_DATO_MISSING = "Dødsfall: dødsdato må oppgis";
     private final PersonRepository personRepository;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getDoedsfall())
+        return Flux.fromIterable(dbPerson.getPerson().getDoedsfall())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person))
+                .flatMap(type -> handle(type, dbPerson.getPerson()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
                 .map(doedsfall -> {
@@ -41,7 +42,7 @@ public class DoedsfallService implements Validation<DoedsfallDTO> {
                     renumberId(doedsfall);
                     return doedsfall;
                 })
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     private Mono<DoedsfallDTO> handle(DoedsfallDTO doedsfall, PersonDTO person) {

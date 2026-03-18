@@ -1,10 +1,10 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
@@ -37,17 +37,17 @@ public class VergemaalService implements Validation<VergemaalDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getVergemaal())
+        return Flux.fromIterable(dbPerson.getPerson().getVergemaal())
                 .filter(vergemaal -> isTrue(vergemaal.getIsNew()))
-                .flatMap(vergemaal -> handle(vergemaal, person.getIdent()))
+                .flatMap(vergemaal -> handle(vergemaal, dbPerson.getIdent()))
                 .doOnNext(vergemaal -> {
                     vergemaal.setKilde(getKilde(vergemaal));
-                    vergemaal.setMaster(getMaster(vergemaal, person));
+                    vergemaal.setMaster(getMaster(vergemaal, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     public Mono<Void> validate(VergemaalDTO vergemaal) {

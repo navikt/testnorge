@@ -48,23 +48,23 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getDeltBosted())
+        return Flux.fromIterable(dbPerson.getPerson().getDeltBosted())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person).thenReturn(type))
+                .flatMap(type -> handle(type, dbPerson.getPerson()).thenReturn(type))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
                 .doOnNext(deltBosted -> {
 
-                    if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
-                        person.setDeltBosted(null);
+                    if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(dbPerson.getPerson()))) {
+                        dbPerson.getPerson().setDeltBosted(null);
                     }
                 })
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     public Mono<Void> handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {

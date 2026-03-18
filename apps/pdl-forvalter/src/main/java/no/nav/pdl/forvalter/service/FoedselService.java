@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -32,27 +33,27 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getFoedsel())
+        return Flux.fromIterable(dbPerson.getPerson().getFoedsel())
                 .filter(foedsel -> isTrue(foedsel.getIsNew()))
-                .flatMap(foedsel -> handle(foedsel, person.getIdent(),
-                        person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
-                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .flatMap(foedsel -> handle(foedsel, dbPerson.getIdent(),
+                        dbPerson.getPerson().getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
+                        dbPerson.getPerson().getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
                 .doOnNext(foedsler -> {
 
-                    person.setFoedsel(new ArrayList<>(foedsler));
-                    person.getFoedsel().sort(Comparator.comparing(FoedselDTO::getFoedselsaar).
+                    dbPerson.getPerson().setFoedsel(new ArrayList<>(foedsler));
+                    dbPerson.getPerson().getFoedsel().sort(Comparator.comparing(FoedselDTO::getFoedselsaar).
                             reversed());
 
-                    renumberId(person.getFoedsel());
+                    renumberId(dbPerson.getPerson().getFoedsel());
                 })
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     private Mono<FoedselDTO> handle(FoedselDTO foedsel, String ident, BostedadresseDTO

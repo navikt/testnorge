@@ -75,17 +75,17 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public Mono<PersonDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(person.getKontaktinformasjonForDoedsbo())
+        return Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, person.getIdent()))
+                .flatMap(type -> handle(type, dbPerson.getIdent()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(person);
+                .thenReturn(dbPerson);
     }
 
     @Override
