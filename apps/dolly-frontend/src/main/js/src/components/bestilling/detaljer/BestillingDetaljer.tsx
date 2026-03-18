@@ -6,7 +6,7 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 import './BestillingDetaljer.less'
 import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import * as _ from 'lodash-es'
-import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -71,14 +71,13 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 								OPPRETT MAL
 							</Button>
 						)}
-					<SlettButton
-						bestillingId={bestilling.id}
+					<SlettModal
 						action={DollyApi.slettBestilling}
+						bestillingId={bestilling.id}
 						loading={false}
 						navigateHome={false}
-					>
-						Er du sikker på at du vil slette denne bestillingen?
-					</SlettButton>
+						slettType={'bestilling'}
+					/>
 				</div>
 			)}
 

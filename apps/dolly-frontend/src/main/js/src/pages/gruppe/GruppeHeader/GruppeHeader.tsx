@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
-import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import { LaasModal } from '@/components/ui/button/LaasButton/LaasModal'
 import { Header } from '@/components/ui/header/Header'
 import { arrayToString, formatBrukerNavn, formatStringDates } from '@/utils/DataFormatter'
@@ -139,15 +139,14 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							/>
 						)}
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<SlettButton
-								autoMutate={false}
-								gruppeId={gruppe.id}
+							<SlettModal
 								action={deleteGruppe}
+								gruppeId={gruppe.id}
 								loading={isDeletingGruppe}
 								navigateHome={true}
-							>
-								Er du sikker på at du vil slette denne gruppen?
-							</SlettButton>
+								autoMutate={false}
+								slettType={'gruppe'}
+							/>
 						)}
 						{brukertype !== 'BANKID' && (
 							<TagsButton

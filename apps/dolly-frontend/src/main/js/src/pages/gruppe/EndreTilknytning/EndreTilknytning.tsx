@@ -7,6 +7,7 @@ export const EndreTilknytning = ({ gruppe }) => {
 
 	return (
 		<>
+			{/*TODO: Endre Button til Aksel-button*/}
 			<Button onClick={() => setOpen(true)} kind="rediger-person">
 				BYTT EIER
 			</Button>

@@ -3,7 +3,7 @@ import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
-import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
@@ -607,9 +607,7 @@ export default (props: PersonVisningProps) => {
 						</>
 					)}
 					{!iLaastGruppe && ident.master !== 'PDL' && (
-						<SlettButton action={slettPerson} loading={loading.slettPerson}>
-							Er du sikker på at du vil slette denne personen?
-						</SlettButton>
+						<SlettModal action={slettPerson} loading={loading.slettPerson} slettType={'person'} />
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton slettPerson={slettPerson} loading={loading.slettPerson} />

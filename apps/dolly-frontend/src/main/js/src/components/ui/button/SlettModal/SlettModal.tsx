@@ -20,8 +20,7 @@ type Props = {
 	slettType: string
 }
 
-// TODO: Test at alle typer sletting funker
-export const SlettButton = ({
+export const SlettModal = ({
 	action,
 	gruppeId,
 	bestillingId,
