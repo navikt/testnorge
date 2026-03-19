@@ -31,7 +31,6 @@ public class EregOrganisasjonMappingStrategy implements MappingStrategy {
 
                         val juridiskEnhet = (Set<String>) context.getProperty("opplysningspliktige");
 
-                        destinasjon.setOrganisasjonsnummer(kilde.getOrganisasjonsnummer());
                         destinasjon.setJuridiskEnhet(juridiskEnhet.stream()
                                 .findFirst()
                                 .orElse(null));
