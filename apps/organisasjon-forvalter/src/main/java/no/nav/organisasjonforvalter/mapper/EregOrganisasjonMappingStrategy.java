@@ -6,12 +6,12 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.organisasjonforvalter.dto.responses.RsAdresse;
 import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Enhetstype;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Epostadresse;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Forretningsadresse;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Internettadresse;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Organisasjon;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Postadresse;
+import no.nav.testnav.libs.dto.ereg.v1.Enhetstype;
+import no.nav.testnav.libs.dto.ereg.v1.Epostadresse;
+import no.nav.testnav.libs.dto.ereg.v1.Forretningsadresse;
+import no.nav.testnav.libs.dto.ereg.v1.Internettadresse;
+import no.nav.testnav.libs.dto.ereg.v1.Organisasjon;
+import no.nav.testnav.libs.dto.ereg.v1.Postadresse;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

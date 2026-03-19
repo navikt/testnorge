@@ -19,9 +19,11 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsOrganisasjon {
 
+    private String error;
+
     private Long id;
     private String organisasjonsnummer;
-    // Behøver ikke å være juridisk enhet, kan også være en annen overordnet enhet
+    // Behøver ikke å være juridisk enhet, kan også være en annen overordnet enhet, dvs "opplysningspliktig"
     private String juridiskEnhet;
     private String enhetstype;
     private String naeringskode;

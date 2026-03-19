@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.organisasjonforvalter.consumer.command.EregServicesCommand;
-import no.nav.organisasjonforvalter.dto.responses.ereg.EregServicesResponse;
+import no.nav.testnav.libs.dto.ereg.v1.EregServicesResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -50,7 +50,6 @@ public class EregServicesConsumer {
                     default -> Mono.error(new IllegalArgumentException("Ukjent miljoe: " + miljoe));
                 })
                 .flatMap(tuple ->
-                        new EregServicesCommand(tuple.getT1(), orgnummer, tuple.getT2()).call())
-                .filter(response -> nonNull(response.getOrganisasjon()));
+                        new EregServicesCommand(tuple.getT1(), orgnummer, tuple.getT2()).call());
     }
 }

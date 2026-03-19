@@ -9,15 +9,16 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.EregServicesConsumer;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
 import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
-import no.nav.organisasjonforvalter.dto.responses.ereg.InngaarIJuridiskEnhet;
-import no.nav.organisasjonforvalter.dto.responses.ereg.JuridiskEnhet;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Organisasjon;
-import no.nav.organisasjonforvalter.dto.responses.ereg.OrganisasjonBase;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Organisasjonsledd;
-import no.nav.organisasjonforvalter.dto.responses.ereg.Virksomhet;
 import no.nav.organisasjonforvalter.mapper.MappingContextUtils;
+import no.nav.testnav.libs.dto.ereg.v1.InngaarIJuridiskEnhet;
+import no.nav.testnav.libs.dto.ereg.v1.JuridiskEnhet;
+import no.nav.testnav.libs.dto.ereg.v1.Organisasjon;
+import no.nav.testnav.libs.dto.ereg.v1.OrganisasjonBase;
+import no.nav.testnav.libs.dto.ereg.v1.Organisasjonsledd;
+import no.nav.testnav.libs.dto.ereg.v1.Virksomhet;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -47,13 +48,19 @@ public class EregStatusesService {
                 .flatMapMany(miljoerAaSjekke -> eregServicesConsumer.getStatus(orgnummer, miljoerAaSjekke)
                         .doOnNext(resultat -> log.info("Mottatt fra Ereg: {}", resultat))
                         .map(eregVirksomhet -> {
+                            if (nonNull(eregVirksomhet.getOrganisasjon())) {
 
-                            val organisasjon = getObject(eregVirksomhet.getOrganisasjon());
+                                val organisasjon = getObject(eregVirksomhet.getOrganisasjon());
                                 val opplysningspliktige = finnOpplysningspliktige(organisasjon);
                                 log.info("Fant opplysningspliktige: for miljoe: {}, {}", eregVirksomhet.getMiljoe(), opplysningspliktige);
                                 val context = MappingContextUtils.getMappingContext();
                                 context.setProperty("opplysningspliktige", opplysningspliktige);
                                 return Map.of(eregVirksomhet.getMiljoe(), mapperFacade.map(organisasjon, RsOrganisasjon.class, context));
+                            } else {
+                                return Map.of(eregVirksomhet.getMiljoe(), RsOrganisasjon.builder()
+                                        .error(eregVirksomhet.getError())
+                                        .build());
+                            }
                         }));
     }
 
