@@ -8,7 +8,7 @@ import { LaasModal } from '@/components/ui/button/LaasButton/LaasModal'
 import { Header } from '@/components/ui/header/Header'
 import { arrayToString, formatBrukerNavn, formatStringDates } from '@/utils/DataFormatter'
 import './GruppeHeader.less'
-import { TagsButton } from '@/components/ui/button/Tags/TagsButton'
+import { TagsModal } from '@/components/ui/button/Tags/TagsModal'
 import { GjenopprettGruppe } from '@/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
@@ -149,7 +149,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							/>
 						)}
 						{brukertype !== 'BANKID' && (
-							<TagsButton
+							<TagsModal
 								isSending={isSendingTags}
 								gruppeId={gruppe.id}
 								eksisterendeTags={gruppe.tags}
