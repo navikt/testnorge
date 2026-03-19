@@ -52,7 +52,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
   ereg-services:
-    url: https://ereg-services-{miljoe}.intern.dev.nav.no
+    url: https://ereg-services-{miljoe}.dev-fss-pub.nais.io
     name: ereg-services-{miljoe}
     cluster: dev-fss
     namespace: arbeidsforhold
