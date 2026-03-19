@@ -12,6 +12,7 @@ import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
 import no.nav.organisasjonforvalter.service.BestillingService;
 import no.nav.organisasjonforvalter.service.DrivervirksomheterService;
+import no.nav.organisasjonforvalter.service.EregStatusesService;
 import no.nav.organisasjonforvalter.service.ImportService;
 import no.nav.organisasjonforvalter.service.OrdreService;
 import no.nav.organisasjonforvalter.service.OrdreStatusService;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,7 @@ public class OrganisasjonController {
     private final ImportService importService;
     private final DrivervirksomheterService drivervirksomheterService;
     private final GetAuthenticatedId getAuthenticatedId;
+    private final EregStatusesService eregStatusesService;
 
     @PostMapping
     @Operation(description = "Opprett organisasjon med angitte egenskaper")
@@ -85,6 +88,14 @@ public class OrganisasjonController {
                                                           @RequestParam(required = false) Set<String> miljoer) {
 
         return importService.getOrganisasjoner(orgnummer, miljoer);
+    }
+
+    @GetMapping("/framiljoe/ny")
+    @Operation(description = "Hent organisasjon fra EREG")
+    public Flux<Map<String, RsOrganisasjon>> sjekkOrganisasjon(@RequestParam String orgnummer,
+                                                               @RequestParam(required = false) Set<String> miljoer) {
+
+        return eregStatusesService.getOrganisasjoner(orgnummer, miljoer);
     }
 
     @GetMapping("/virksomheter")

@@ -44,7 +44,7 @@ public class OrdreService {
 
         var tilgjengeligeMiljoer = miljoerServiceConsumer.getOrgMiljoer();
         request.getEnvironments().forEach(miljoe -> {
-            if (tilgjengeligeMiljoer.stream().noneMatch(tilgjengelig -> tilgjengelig.equals(miljoe))) {
+            if (tilgjengeligeMiljoer.block().stream().noneMatch(tilgjengelig -> tilgjengelig.equals(miljoe))) {
                 throw new HttpClientErrorException(BAD_REQUEST, format("Miljoe %s eksisterer ikke", miljoe));
             }
         });

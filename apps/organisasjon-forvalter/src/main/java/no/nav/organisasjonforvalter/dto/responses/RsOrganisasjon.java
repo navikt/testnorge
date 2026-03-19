@@ -21,6 +21,7 @@ public class RsOrganisasjon {
 
     private Long id;
     private String organisasjonsnummer;
+    // Behøver ikke å være juridisk enhet, kan også være en annen overordnet enhet
     private String juridiskEnhet;
     private String enhetstype;
     private String naeringskode;
