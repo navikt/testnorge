@@ -65,7 +65,7 @@ public class OrganisasjonDetaljer {
 
     private LocalDate opphoersdato;
 
-    @Schema(description = "Dublettorganisajon")
+    @Schema(description = "Dublettorganisasjon")
     private Organisasjon dublettAv;
 
     @Schema(description = "Liste av organisasjonsdubletter")

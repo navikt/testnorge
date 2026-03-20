@@ -31,7 +31,7 @@ public class JuridiskEnhetDetaljer {
     @Schema(description = "Enhetstype - juridisk enhet (kodeverk: EnhetstyperJuridiskEnhet)", example = "ENK")
     private String enhetstype;
 
-    @Schema(description = "Er enhet regisrert i Stiftelsesregisteret?", example = "false")
+    @Schema(description = "Er enhet registrert i Stiftelsesregisteret?", example = "false")
     private Boolean registrertStiftelsesregisteret;
 
     @Schema(description = "Har enhet ansatte?", example = "true")

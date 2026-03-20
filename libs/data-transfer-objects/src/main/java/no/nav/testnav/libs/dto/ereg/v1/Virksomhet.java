@@ -10,6 +10,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -39,14 +41,14 @@ public class Virksomhet extends Organisasjon {
     private VirksomhetDetaljer virksomhetDetaljer;
 
     public List<BestaarAvOrganisasjonsledd> getBestaarAvOrganisasjonsledd() {
-        if (bestaarAvOrganisasjonsledd == null) {
+        if (isNull(bestaarAvOrganisasjonsledd)) {
             bestaarAvOrganisasjonsledd = new ArrayList<>();
         }
         return this.bestaarAvOrganisasjonsledd;
     }
 
     public List<InngaarIJuridiskEnhet> getInngaarIJuridiskEnheter() {
-        if (inngaarIJuridiskEnheter == null) {
+        if (isNull(inngaarIJuridiskEnheter)) {
             inngaarIJuridiskEnheter = new ArrayList<>();
         }
         return this.inngaarIJuridiskEnheter;

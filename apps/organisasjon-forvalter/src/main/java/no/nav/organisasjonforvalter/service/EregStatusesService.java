@@ -32,6 +32,8 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class EregStatusesService {
 
+    private static final int MAX_DEPTH = 100;
+
     private final EregServicesConsumer eregServicesConsumer;
     private final MiljoerServiceConsumer miljoerServiceConsumer;
     private final ObjectMapper objectMapper;
@@ -47,48 +49,52 @@ public class EregStatusesService {
                 miljoerServiceConsumer.getOrgMiljoer())
                 .flatMapMany(miljoerAaSjekke -> eregServicesConsumer.getStatus(orgnummer, miljoerAaSjekke)
                         .doOnNext(resultat -> log.info("Mottatt fra Ereg: {}", resultat))
-                        .map(eregVirksomhet -> {
-                            if (nonNull(eregVirksomhet.getOrganisasjon())) {
+                        .flatMap(eregVirksomhet -> {
 
-                                val organisasjon = getObject(eregVirksomhet.getOrganisasjon());
-                                val opplysningspliktige = finnOpplysningspliktige(organisasjon);
-                                log.info("Fant opplysningspliktige: for miljoe: {}, {}", eregVirksomhet.getMiljoe(), opplysningspliktige);
-                                val context = MappingContextUtils.getMappingContext();
-                                context.setProperty("opplysningspliktige", opplysningspliktige);
-                                return Map.of(eregVirksomhet.getMiljoe(), mapperFacade.map(organisasjon, RsOrganisasjon.class, context));
+                            if (nonNull(eregVirksomhet.getOrganisasjon())) {
+                                return getOrganisasjon(eregVirksomhet.getOrganisasjon())
+                                        .map(organisasjon -> {
+                                            val opplysningspliktige = finnOpplysningspliktige(organisasjon);
+                                            log.info("Fant opplysningspliktige: for miljoe: {}, {}", eregVirksomhet.getMiljoe(), opplysningspliktige);
+                                            val context = MappingContextUtils.getMappingContext();
+                                            context.setProperty("opplysningspliktige", opplysningspliktige);
+                                            return Map.of(eregVirksomhet.getMiljoe(), mapperFacade.map(organisasjon, RsOrganisasjon.class, context));
+                                        });
                             } else {
-                                return Map.of(eregVirksomhet.getMiljoe(), RsOrganisasjon.builder()
+                                return Mono.just(Map.of(eregVirksomhet.getMiljoe(), RsOrganisasjon.builder()
                                         .error(eregVirksomhet.getError())
-                                        .build());
+                                        .build()));
                             }
                         }));
     }
 
-    private Organisasjon getObject(JsonNode organisasjon) {
+    private Mono<Organisasjon> getOrganisasjon(JsonNode organisasjon) {
 
         return switch (organisasjon.get("type").asText()) {
-            case "Organisasjon" -> objectMapper.convertValue(organisasjon, Organisasjon.class);
-            case "Virksomhet" -> objectMapper.convertValue(organisasjon, Virksomhet.class);
-            case "Organisasjonsledd" -> objectMapper.convertValue(organisasjon, Organisasjonsledd.class);
-            case "JuridiskEnhet" -> objectMapper.convertValue(organisasjon, JuridiskEnhet.class);
-            default -> throw new RuntimeException("Ukjent type: " + organisasjon.get("type").asText());
+            case "Organisasjon" -> Mono.just(objectMapper.convertValue(organisasjon, Organisasjon.class));
+            case "Virksomhet" -> Mono.just(objectMapper.convertValue(organisasjon, Virksomhet.class));
+            case "Organisasjonsledd" -> Mono.just(objectMapper.convertValue(organisasjon, Organisasjonsledd.class));
+            case "JuridiskEnhet" -> Mono.just(objectMapper.convertValue(organisasjon, JuridiskEnhet.class));
+            default -> Mono.empty();
         };
     }
 
     private Set<String> finnOpplysningspliktige(Organisasjon eregVirksomhet) {
+
         var result = new HashSet<String>();
 
         OrganisasjonBase current = eregVirksomhet;
 
+        var depth = 0;
         var traverse = true;
-        while (traverse) {
-            if (current instanceof InngaarIJuridiskEnhet inngaarIJuridiskEnhet) {
+        do {
+            if (nonNull(current) && current instanceof InngaarIJuridiskEnhet inngaarIJuridiskEnhet) {
                 result.add(inngaarIJuridiskEnhet.getOrganisasjonsnummer());
 
                 traverse = false;
             }
 
-            if (current instanceof Organisasjonsledd orgledd) {
+            if (nonNull(current) && current instanceof Organisasjonsledd orgledd) {
                 result.add(orgledd.getOrganisasjonsnummer());
 
                 var overOrdnedeJuridiskeEnheter = orgledd.getInngaarIJuridiskEnheter();
@@ -96,17 +102,20 @@ public class EregStatusesService {
                 if (!overOrdnedeJuridiskeEnheter.isEmpty()) {
                     current = overOrdnedeJuridiskeEnheter.getFirst();
                 } else {
-                    current = overOrdnedeOrganisasjonsledd.getFirst().getOrganisasjonsledd();
+                    current = overOrdnedeOrganisasjonsledd.isEmpty() ? null :
+                            overOrdnedeOrganisasjonsledd.getFirst().getOrganisasjonsledd();
                 }
             }
 
-            if (current instanceof Virksomhet virksomhet) {
+            if (nonNull(current) && current instanceof Virksomhet virksomhet) {
                 var overOrdnedeJuridiskeEnheter = virksomhet.getInngaarIJuridiskEnheter();
                 var overOrdnedeOrganisasjonsledd = virksomhet.getBestaarAvOrganisasjonsledd();
                 if (!overOrdnedeJuridiskeEnheter.isEmpty()) {
-                    current = overOrdnedeJuridiskeEnheter.getFirst();
+                    overOrdnedeJuridiskeEnheter.getFirst();
+                    current = overOrdnedeJuridiskeEnheter.isEmpty() ? null :
+                            overOrdnedeJuridiskeEnheter.getFirst();
                 } else {
-                    if (overOrdnedeOrganisasjonsledd == null || overOrdnedeOrganisasjonsledd.isEmpty()) {
+                    if (overOrdnedeOrganisasjonsledd.isEmpty()) {
                         log.info("Fant ikke organisasjonsledd for virksomhet: {}", virksomhet.getOrganisasjonsnummer());
                         traverse = false;
                     } else {
@@ -114,7 +123,7 @@ public class EregStatusesService {
                     }
                 }
             }
-        }
+        } while (traverse && depth++ < MAX_DEPTH);
 
         return result;
     }

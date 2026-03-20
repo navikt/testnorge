@@ -53,6 +53,12 @@ public abstract class Adresse {
     @Schema(description = "Adresselinje #3")
     private String adresselinje3;
 
+    @Schema(description = "Adresselinje #4")
+    private String adresselinje4;
+
+    @Schema(description = "Adresselinje #5")
+    private String adresselinje5;
+
     @Schema(description = "Postnummer (kodeverk: Postnummer)", example = "0557")
     private String postnummer;
 
@@ -64,4 +70,6 @@ public abstract class Adresse {
 
     @Schema(description = "Landkode (kodeverk: Landkoder)", example = "JPN")
     private String landkode;
+
+    private String vegadresseId;
 }
