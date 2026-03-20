@@ -34,6 +34,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -77,6 +78,10 @@ public class TagController {
                                                           @PathVariable("gruppeId") Long gruppeId) {
 
         return testgruppeRepository.findById(gruppeId)
+                .doOnNext(gruppe -> gruppe.setTags(tags.stream()
+                        .map(Tags::name)
+                        .collect(Collectors.joining(","))))
+                .flatMap(testgruppeRepository::save)
                 .flatMap(gruppe -> identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                         .map(Testident::getIdent)
                         .collectList()
@@ -112,7 +117,8 @@ public class TagController {
                                         .toList())
                                 .flatMap(Flux::fromIterable)
                                 .collectList()
-                                .flatMap(personBolk -> tagsHendelseslagerConsumer.createTags(personBolk, tags))))
+                                .flatMap(personBolk ->
+                                        tagsHendelseslagerConsumer.createTags(personBolk, tags))))
                 .switchIfEmpty(Mono.error(new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId))));
     }
 }
