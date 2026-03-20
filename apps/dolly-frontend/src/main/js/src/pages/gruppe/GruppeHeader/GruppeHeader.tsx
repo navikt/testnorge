@@ -29,7 +29,6 @@ import { Button } from '@navikt/ds-react'
 import { ArrowsCirclepathIcon, PencilIcon } from '@navikt/aksel-icons'
 
 const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
-const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
 const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
 
 type GruppeHeaderProps = {
@@ -45,7 +44,6 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 	const brukertype = currentBruker?.brukertype
 
 	const isDeletingGruppe = useSelector((state: any) => loadingSelectorSlettGruppe(state))
-	const isSendingTags = useSelector((state: any) => loadingSelectorSendTags(state))
 	const isLockingGruppe = useSelector((state: any) => loadingSelectorLaasGruppe(state))
 
 	const { gruppe, error } = useGruppeById(gruppeId)
@@ -154,11 +152,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							/>
 						)}
 						{brukertype !== 'BANKID' && (
-							<TagsModal
-								isSending={isSendingTags}
-								gruppeId={gruppe.id}
-								eksisterendeTags={gruppe.tags}
-							/>
+							<TagsModal gruppeId={gruppe.id} eksisterendeTags={gruppe.tags} />
 						)}
 						{!gruppe.erEierAvGruppe && <FavoriteButton groupId={gruppe.id} />}
 						<EksporterExcel gruppeId={gruppe.id} />
