@@ -13,7 +13,6 @@ import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
 import no.nav.organisasjonforvalter.service.BestillingService;
 import no.nav.organisasjonforvalter.service.DrivervirksomheterService;
 import no.nav.organisasjonforvalter.service.EregStatusesService;
-import no.nav.organisasjonforvalter.service.ImportService;
 import no.nav.organisasjonforvalter.service.OrdreService;
 import no.nav.organisasjonforvalter.service.OrdreStatusService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
@@ -42,7 +41,6 @@ public class OrganisasjonController {
     private final OrdreService ordreService;
     private final OrdreStatusService ordreStatusService;
     private final OrganisasjonService organisasjonService;
-    private final ImportService importService;
     private final DrivervirksomheterService drivervirksomheterService;
     private final GetAuthenticatedId getAuthenticatedId;
     private final EregStatusesService eregStatusesService;
@@ -84,16 +82,8 @@ public class OrganisasjonController {
 
     @GetMapping("/framiljoe")
     @Operation(description = "Hent organisasjon fra EREG")
-    public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
+    public Flux<Map<String, RsOrganisasjon>> importOrganisasjon(@RequestParam String orgnummer,
                                                           @RequestParam(required = false) Set<String> miljoer) {
-
-        return importService.getOrganisasjoner(orgnummer, miljoer);
-    }
-
-    @GetMapping("/framiljoe/ny")
-    @Operation(description = "Hent organisasjon fra EREG")
-    public Flux<Map<String, RsOrganisasjon>> sjekkOrganisasjon(@RequestParam String orgnummer,
-                                                               @RequestParam(required = false) Set<String> miljoer) {
 
         return eregStatusesService.getOrganisasjoner(orgnummer, miljoer);
     }
