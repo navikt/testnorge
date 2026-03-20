@@ -1,8 +1,9 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -39,44 +40,40 @@ public class PersonArtifactService {
     private final UtflyttingService utflyttingService;
     private final VergemaalService vergemaalService;
 
-    public PersonDTO buildPerson(PersonDTO person, Boolean relaxed) {
+    public Mono<DbPerson> buildPerson(DbPerson dbPerson, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
-        person.setFoedsel(foedselService.convert(person));
-        person.setFoedselsdato(foedselsdatoService.convert(person));
-        person.setKjoenn(kjoennService.convert(person));
-        person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
-        person.setInnflytting(innflyttingService.convert(person));
-        person.setFoedested(foedestedService.convert(person));
-        person.setStatsborgerskap(statsborgerskapService.convert(person));
-        person.setNavn(navnService.convert(person));
-        person.setOppholdsadresse(oppholdsadresseService.convert(person));
-        person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
-        person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
-        person.setUtflytting(utflyttingService.convert(person));
-        person.setOpphold(oppholdService.convert(person.getOpphold()));
-        person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
-        person.setSivilstand(sivilstandService.convert(person));
-        person.setDoedsfall(doedsfallService.convert(person));
-        person.setFullmakt(fullmaktService.convert(person));
-        person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
-        person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService.convert(person));
-        person.setVergemaal(vergemaalService.convert(person));
-        person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));
-        person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
-        person.setForeldreansvar(foreldreansvarService.convert(person));
-        person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
-        person.setDeltBosted(deltBostedService.convert(person));
-        person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
-        person.setNavPersonIdentifikator(navPersonIdentifikatorService.convert(person));
 
-        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
-
-        person = identtypeService.convert(person);
-
-        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
-        person.setFalskIdentitet(falskIdentitetService.convert(person));
-
-        return person;
+        return falskIdentitetService.convert(dbPerson)
+                .flatMap(adressebeskyttelseService::convert)
+                .flatMap(foedselService::convert)
+                .flatMap(foedselsdatoService::convert)
+                .flatMap(kjoennService::convert)
+                .flatMap(person1 -> bostedAdresseService.convert(person1, relaxed))
+                .flatMap(innflyttingService::convert)
+                .flatMap(foedestedService::convert)
+                .flatMap(statsborgerskapService::convert)
+                .flatMap(navnService::convert)
+                .flatMap(oppholdsadresseService::convert)
+                .flatMap(telefonnummerService::convert)
+                .flatMap(utflyttingService::convert)
+                .flatMap(oppholdService::convert)
+                .flatMap(tilrettelagtKommunikasjonService::convert)
+                .flatMap(sivilstandService::convert)
+                .flatMap(doedsfallService::convert)
+                .flatMap(fullmaktService::convert)
+                .flatMap(person1 -> kontaktAdresseService.convert(dbPerson, relaxed))
+                .flatMap(utenlandsidentifikasjonsnummerService::convert)
+                .flatMap(vergemaalService::convert)
+                .flatMap(kontaktinformasjonForDoedsboService::convert)
+                .flatMap(forelderBarnRelasjonService::convert)
+                .flatMap(foreldreansvarService::convert)
+                .flatMap(doedfoedtBarnService::convert)
+                .flatMap(deltBostedService::convert)
+                .flatMap(sikkerhetstiltakService::convert)
+                .flatMap(navPersonIdentifikatorService::convert)
+                .flatMap(folkeregisterPersonstatusService::convert)
+                .flatMap(identtypeService::convert)
+                .flatMap(folkeregisterPersonstatusService::convert);
     }
 }

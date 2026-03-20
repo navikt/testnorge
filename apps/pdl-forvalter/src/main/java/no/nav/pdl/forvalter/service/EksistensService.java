@@ -34,44 +34,45 @@ public class EksistensService {
 
 
     public Flux<AvailibilityResponseDTO> checkAvailibility(List<String> identer) {
-
         var validIdents = IdentValidCheck.isIdentValid(identer);
 
-        var existsInDatabase = personRepository.findByIdentIn(validIdents, Pageable.unpaged()).stream()
+        return personRepository.findByIdentIn(validIdents, Pageable.unpaged())
                 .map(DbPerson::getIdent)
-                .collect(Collectors.toSet());
-
-        return Mono.zip(
-                        identPoolConsumer.getErLedig(new HashSet<>(validIdents))
-                                .filter(ident -> !existsInDatabase.contains(ident.getIdent()))
-                                .collectList(),
-                        identPoolConsumer.getProdSjekk(new HashSet<>(validIdents))
-                                .filter(ident -> !existsInDatabase.contains(ident.getIdent()))
-                                .collectList())
-                .flatMapMany(tuple -> Flux.concat(
-                        Flux.fromIterable(identer)
-                                .filter(ident -> !validIdents.contains(ident))
-                                .map(ident -> new AvailibilityResponseDTO(ident, INVALID_IDENT, false)),
-                        Flux.fromIterable(existsInDatabase)
-                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_DB, false)),
-                        Flux.fromIterable(tuple.getT1())
-                                .filter(IdentpoolLedigDTO::isIBruk)
-                                .filter(ident -> tuple.getT2().stream()
-                                        .noneMatch(prodSjekk ->
-                                                prodSjekk.getIdent().equals(ident.getIdent()) &&
-                                                prodSjekk.isInUse()))
-                                .map(IdentpoolLedigDTO::getIdent)
-                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_ENV, false)),
-                        Flux.fromIterable(tuple.getT2())
-                                .filter(ProdSjekkDTO::isInUse)
-                                .map(ProdSjekkDTO::getIdent)
-                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_PROD, false)),
-                        Flux.fromIterable(validIdents)
-                                .filter(ident -> !existsInDatabase.contains(ident))
-                                .filter(ident -> tuple.getT1().stream()
-                                        .noneMatch(identpoolLedigDTO ->
-                                                identpoolLedigDTO.getIdent().equals(ident) &&
-                                                identpoolLedigDTO.isIBruk()))
-                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_AVAIL, true))));
+                .collect(Collectors.toSet())
+                .flatMapMany(existsInDatabase ->
+                        Mono.zip(
+                                identPoolConsumer.getErLedig(new HashSet<>(validIdents))
+                                        .filter(ident -> !existsInDatabase.contains(ident.getIdent()))
+                                        .collectList(),
+                                identPoolConsumer.getProdSjekk(new HashSet<>(validIdents))
+                                        .filter(ident -> !existsInDatabase.contains(ident.getIdent()))
+                                        .collectList())
+                                .flatMapMany(tuple -> Flux.concat(
+                                        Flux.fromIterable(identer)
+                                                .filter(ident -> !validIdents.contains(ident))
+                                                .map(ident -> new AvailibilityResponseDTO(ident, INVALID_IDENT, false)),
+                                        Flux.fromIterable(existsInDatabase)
+                                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_DB, false)),
+                                        Flux.fromIterable(tuple.getT1())
+                                                .filter(IdentpoolLedigDTO::isIBruk)
+                                                .filter(ident -> tuple.getT2().stream()
+                                                        .noneMatch(prodSjekk ->
+                                                                prodSjekk.getIdent().equals(ident.getIdent()) &&
+                                                                        prodSjekk.isInUse()))
+                                                .map(IdentpoolLedigDTO::getIdent)
+                                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_ENV, false)),
+                                        Flux.fromIterable(tuple.getT2())
+                                                .filter(ProdSjekkDTO::isInUse)
+                                                .map(ProdSjekkDTO::getIdent)
+                                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_PROD, false)),
+                                        Flux.fromIterable(validIdents)
+                                                .filter(ident -> !existsInDatabase.contains(ident))
+                                                .filter(ident -> tuple.getT1().stream()
+                                                        .noneMatch(identpoolLedigDTO ->
+                                                                identpoolLedigDTO.getIdent().equals(ident) &&
+                                                                        identpoolLedigDTO.isIBruk()))
+                                                .map(ident -> new AvailibilityResponseDTO(ident, IDENT_AVAIL, true))
+                                ))
+                );
     }
 }
