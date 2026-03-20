@@ -1,8 +1,6 @@
 package no.nav.testnav.libs.dto.ereg.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -58,11 +56,13 @@ public class OrganisasjonDetaljer {
 
     private LocalDateTime registreringsdato;
 
+    @Schema(description = "Dato sist endret, format (ISO-8601): yyyy-MM-dd", example = "2015-01-13")
     private LocalDate sistEndret;
 
     @Schema(description = "M&aring;lform (kodeverk: M_c3_a5lformer)", example = "NB")
     private String maalform;
 
+    @Schema(description = "Dato for opph&oslash;r, format (ISO-8601): yyyy-MM-dd", example = "2016-12-31")
     private LocalDate opphoersdato;
 
     @Schema(description = "Dublettorganisasjon")
@@ -113,6 +113,7 @@ public class OrganisasjonDetaljer {
     @Schema(description = "Liste av mobiltelefonnummer")
     private List<Telefonnummer> mobiltelefonnummer;
 
+    @Schema(description = "Dato for stiftelse, format (ISO-8601): yyyy-MM-dd", example = "2014-07-15")
     private LocalDate stiftelsesdato;
 
     @Schema(description = "Liste av hjemlandregister")
@@ -123,40 +124,6 @@ public class OrganisasjonDetaljer {
 
     @Schema(description = "Liste av ansattinformasjon")
     private List<Ansatte> ansatte;
-
-    @JsonIgnore
-    public LocalDateTime getRegistreringsdato() {
-        return registreringsdato;
-    }
-
-    @JsonIgnore
-    public LocalDate getSistEndret() {
-        return sistEndret;
-    }
-
-    @JsonProperty("registreringsdato")
-    @Schema(description = "Dato for registrering, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]", example = "2014-07-15T12:10:58.059")
-    public String getRegistreringsdatoAsString() {
-        return JavaTimeUtil.toString(registreringsdato);
-    }
-
-    @JsonProperty("sistEndret")
-    @Schema(description = "Dato sist endret, format (ISO-8601): yyyy-MM-dd", example = "2015-01-13")
-    public String getSistEndretDatoAsString() {
-        return JavaTimeUtil.toString(sistEndret);
-    }
-
-    @JsonProperty("opphoersdato")
-    @Schema(description = "Dato for opph&oslash;r, format (ISO-8601): yyyy-MM-dd", example = "2016-12-31")
-    public String getOpphoersdatoAsString() {
-        return JavaTimeUtil.toString(opphoersdato);
-    }
-
-    @JsonProperty("stiftelsesdato")
-    @Schema(description = "Dato for stiftelse, format (ISO-8601): yyyy-MM-dd", example = "2014-07-15")
-    public String getStiftelsesdatoAsString() {
-        return JavaTimeUtil.toString(stiftelsesdato);
-    }
 
     public List<Organisasjon> getDubletter() {
 

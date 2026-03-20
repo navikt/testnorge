@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.dto.ereg.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
@@ -26,14 +25,9 @@ public class JuridiskEnhetFusjon {
 
     private Gyldighetsperiode gyldighetsperiode = new Gyldighetsperiode();
 
+    @Schema(description = "Virkningsdato for fusjon, format (ISO-8601): yyyy-MM-dd", example = "2015-05-31")
     private LocalDate virkningsdato;
 
     @Schema(description = "Informasjon om juridisk enhet")
     private JuridiskEnhet juridiskEnhet;
-
-    @JsonProperty("virkningsdato")
-    @Schema(description = "Virkningsdato for fusjon, format (ISO-8601): yyyy-MM-dd", example = "2015-05-31")
-    public String getVirkningsdatoAsString() {
-        return JavaTimeUtil.toString(virkningsdato);
-    }
 }

@@ -14,6 +14,7 @@ import no.nav.testnav.libs.dto.ereg.v1.Internettadresse;
 import no.nav.testnav.libs.dto.ereg.v1.Organisasjon;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -45,6 +46,7 @@ public class EregOrganisasjonMappingStrategy implements MappingStrategy {
                             destinasjon.setAdresser(
                                     Stream.of(kilde.getOrganisasjonDetaljer().getForretningsadresser(),
                                             kilde.getOrganisasjonDetaljer().getPostadresser())
+                                            .flatMap(Collection::stream)
                                             .map(adresse -> mapperFacade.map(adresse, RsAdresse.class))
                                             .toList());
                             destinasjon.setEpost(kilde.getOrganisasjonDetaljer().getEpostadresser().stream()

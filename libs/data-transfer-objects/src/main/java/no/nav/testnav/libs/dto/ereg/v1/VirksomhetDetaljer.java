@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.dto.ereg.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
@@ -23,10 +22,13 @@ import java.time.LocalDate;
 })
 public class VirksomhetDetaljer {
 
+    @Schema(description = "Dato for oppstart, format (ISO-8601): yyyy-MM-dd", example = "2014-07-15")
     private LocalDate oppstartsdato;
 
+    @Schema(description = "Dato for eierskifte, format (ISO-8601): yyyy-MM-dd", example = "2015-01-13")
     private LocalDate eierskiftedato;
 
+    @Schema(description = "Dato for nedleggelse, format (ISO-8601): yyyy-MM-dd", example = "2016-12-31")
     private LocalDate nedleggelsesdato;
 
     @Schema(description = "Enhetstype - virksomhet (kodeverk: EnhetstyperVirksomhet)", example = "BEDR")
@@ -34,22 +36,4 @@ public class VirksomhetDetaljer {
 
     @Schema(description = "Er virksomheten ubemannet?", example = "false")
     private Boolean ubemannetVirksomhet;
-
-    @JsonProperty("oppstartsdato")
-    @Schema(description = "Dato for oppstart, format (ISO-8601): yyyy-MM-dd", example = "2014-07-15")
-    public String getOppstartsdatoAsString() {
-        return JavaTimeUtil.toString(oppstartsdato);
-    }
-
-    @JsonProperty("eierskiftedato")
-    @Schema(description = "Dato for eierskifte, format (ISO-8601): yyyy-MM-dd", example = "2015-01-13")
-    public String getEierskiftedatoAsString() {
-        return JavaTimeUtil.toString(eierskiftedato);
-    }
-
-    @JsonProperty("nedleggelsesdato")
-    @Schema(description = "Dato for nedleggelse, format (ISO-8601): yyyy-MM-dd", example = "2016-12-31")
-    public String getNedleggelsesdatoAsString() {
-        return JavaTimeUtil.toString(nedleggelsesdato);
-    }
 }

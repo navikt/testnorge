@@ -10,6 +10,7 @@ import no.nav.organisasjonforvalter.consumer.EregServicesConsumer;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
 import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.mapper.MappingContextUtils;
+import no.nav.testnav.libs.dto.ereg.v1.EregServicesResponse;
 import no.nav.testnav.libs.dto.ereg.v1.InngaarIJuridiskEnhet;
 import no.nav.testnav.libs.dto.ereg.v1.JuridiskEnhet;
 import no.nav.testnav.libs.dto.ereg.v1.Organisasjon;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -61,11 +63,23 @@ public class EregStatusesService {
                                             return Map.of(eregVirksomhet.getMiljoe(), mapperFacade.map(organisasjon, RsOrganisasjon.class, context));
                                         });
                             } else {
-                                return Mono.just(Map.of(eregVirksomhet.getMiljoe(), RsOrganisasjon.builder()
-                                        .error(eregVirksomhet.getError())
-                                        .build()));
+                                return getError(eregVirksomhet);
                             }
                         }));
+    }
+
+    private Mono<Map<String, RsOrganisasjon>> getError(EregServicesResponse eregVirksomhet) {
+
+        if (isBlank(eregVirksomhet.getError()) || eregVirksomhet.getError().contains("Ingen organisasjon")) {
+
+            return Mono.empty();
+
+        } else {
+
+            return Mono.just(Map.of(eregVirksomhet.getMiljoe(), RsOrganisasjon.builder()
+                    .error(eregVirksomhet.getError())
+                    .build()));
+        }
     }
 
     private Mono<Organisasjon> getOrganisasjon(JsonNode organisasjon) {
