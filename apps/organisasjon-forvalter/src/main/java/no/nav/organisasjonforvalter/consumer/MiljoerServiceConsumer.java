@@ -36,7 +36,7 @@ public class MiljoerServiceConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Set<String> getOrgMiljoer() {
+    public Mono<Set<String>> getOrgMiljoer() {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token ->
@@ -45,7 +45,6 @@ public class MiljoerServiceConsumer {
                         .filter(env -> !env.equals("qx"))
                         .collect(Collectors.toSet()))
                 .flatMap(Mono::from)
-                .cache(Duration.ofMinutes(5))
-                .block();
+                .cache(Duration.ofMinutes(5));
     }
 }
