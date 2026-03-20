@@ -29,7 +29,7 @@ public class UnderlagtHjemlandLovgivningForetaksform {
     @Schema(description = "Landkode (kodeverk: Landkoder)", example = "GB")
     private String landkode;
 
-    @Schema(description = "Fortaksform (kodeverk: ForetaksformUtland)", example = "LTD")
+    @Schema(description = "Foretaksform (kodeverk: ForetaksformUtland)", example = "LTD")
     private String foretaksform;
 
     @Schema(description = "Beskrivelse i hjemland")

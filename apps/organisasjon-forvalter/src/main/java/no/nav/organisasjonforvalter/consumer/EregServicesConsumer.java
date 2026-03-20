@@ -12,8 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @Service
 public class EregServicesConsumer {
@@ -47,7 +45,7 @@ public class EregServicesConsumer {
                     case "q1" -> Mono.just(webClientQ1).zipWith(Mono.just(miljoe));
                     case "q2" -> Mono.just(webClientQ2).zipWith(Mono.just(miljoe));
                     case "q4" -> Mono.just(webClientQ4).zipWith(Mono.just(miljoe));
-                    default -> Mono.error(new IllegalArgumentException("Ukjent miljoe: " + miljoe));
+                    default -> Mono.empty();
                 })
                 .flatMap(tuple ->
                         new EregServicesCommand(tuple.getT1(), orgnummer, tuple.getT2()).call());
