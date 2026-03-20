@@ -1,0 +1,38 @@
+{
+  "name": "dolly-devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "BASE_IMAGE": "mcr.microsoft.com/devcontainers/java:1-21-bullseye"
+    }
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/testnorge,type=bind,consistency=cached",
+  "workspaceFolder": "/workspaces/testnorge",
+  "containerUser": "vscode",
+  "remoteUser": "vscode",
+  "runArgs": [
+    "--name",
+    "dolly-devcontainer"
+  ],
+  "containerEnv": {
+    "NAV_TOKEN": "${localEnv:NAV_TOKEN}",
+    "DOLLY_APPLICATION_CREDENTIALS": "${localEnv:DOLLY_APPLICATION_CREDENTIALS}",
+    "TZ": "Europe/Oslo",
+    "JAVA_TOOL_OPTIONS": "-Duser.timezone=Europe/Oslo -Dreactor.bufferSize.small=10000 --add-opens=java.base/java.lang=ALL-UNNAMED"
+  },
+  "mounts": [
+    "source=gradle-cache,target=/home/vscode/.gradle,type=volume"
+  ],
+  "forwardPorts": [8080, 9200, 9600],
+  "postCreateCommand": "/bin/bash -lc \"sudo mkdir -p /home/vscode/.gradle && sudo chown -R vscode:vscode /home/vscode/.gradle && sed -i 's/\\r$//' ./gradlew && chmod +x ./gradlew && ./gradlew --version && ./gradlew help\"",
+  "postAttachCommand": "/bin/bash -lc \"echo 'Monorepo mode: run tasks like ./gradlew :dolly-backend:build. For a prod-like backend run, use scripts in ./.devcontainer. To try prod base image, set build.args.BASE_IMAGE to europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/jre:openjdk-21 and rebuild.'\"",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot"
+      ]
+    }
+  }
+}
