@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
@@ -26,6 +25,8 @@ import { createLoadingSelector } from '@/ducks/loading'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { EndreTilknytning } from '@/pages/gruppe/EndreTilknytning/EndreTilknytning'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { Button } from '@navikt/ds-react'
+import { ArrowsCirclepathIcon, PencilIcon } from '@navikt/aksel-icons'
 
 const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
 const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
@@ -115,20 +116,24 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<Button
 								data-testid={TestComponentSelectors.BUTTON_REDIGER_GRUPPE}
-								kind="edit"
+								size="xsmall"
+								variant="tertiary"
+								icon={<PencilIcon aria-hidden />}
 								onClick={visRediger}
 							>
-								REDIGER
+								Rediger
 							</Button>
 						)}
 						<Button
 							data-testid={TestComponentSelectors.BUTTON_GJENOPPRETT_GRUPPE}
+							size="xsmall"
+							variant="tertiary"
+							icon={<ArrowsCirclepathIcon aria-hidden />}
 							onClick={visGjenopprettModal}
-							kind="synchronize"
 							disabled={antallPersoner < 1}
 							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : undefined}
 						>
-							GJENOPPRETT
+							Gjenopprett
 						</Button>
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<LaasModal
@@ -155,8 +160,8 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 								eksisterendeTags={gruppe.tags}
 							/>
 						)}
-						<EksporterExcel gruppeId={gruppe.id} />
 						{!gruppe.erEierAvGruppe && <FavoriteButton groupId={gruppe.id} />}
+						<EksporterExcel gruppeId={gruppe.id} />
 					</div>
 				</div>
 			</header>

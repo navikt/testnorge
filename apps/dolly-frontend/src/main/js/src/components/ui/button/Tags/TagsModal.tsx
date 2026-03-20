@@ -30,6 +30,10 @@ export const TagsModal = ({ gruppeId, eksisterendeTags, isSending }: Props) => {
 		}
 	}
 
+	//TODO: Test at alt funker naar backend er fikset
+	//TODO: Slett selectedOptinos on close?
+	//TODO: Er det mulig aa vise tags label istedenfor value?
+
 	return (
 		<Dialog>
 			<Dialog.Trigger>
