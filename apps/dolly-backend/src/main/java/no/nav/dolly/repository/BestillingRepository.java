@@ -17,6 +17,8 @@ import java.util.List;
 @Repository
 public interface BestillingRepository extends ReactiveSortingRepository<Bestilling, Long> {
 
+    Mono<Void> deleteAll();
+
     Mono<Bestilling> findById(Long id);
 
     Flux<Bestilling> findByOrderByIdDesc();
