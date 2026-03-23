@@ -21,6 +21,8 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
 
     Flux<Testgruppe> findByOrderByIdDesc(Pageable pageable);
 
+    Mono<Void> deleteAll();
+
     @Modifying
     Mono<Void> deleteById(Long id);
 

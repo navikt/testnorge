@@ -5,9 +5,16 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.repository.BestillingKontrollRepository;
+import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +39,39 @@ public abstract class AbstractIntegrasjonTest {
     @Autowired
     private TeamBrukerRepository teamBrukerRepository;
 
+    @Autowired
+    private IdentRepository identRepository;
+
+    @Autowired
+    private BrukerFavoritterRepository brukerFavoritterRepository;
+
+    @Autowired
+    private TestgruppeRepository testgruppeRepository;
+
+    @Autowired
+    private TransaksjonMappingRepository transaksjonMappingRepository;
+
+    @Autowired
+    private BestillingProgressRepository bestillingProgressRepository;
+
+    @Autowired
+    private BestillingKontrollRepository bestillingKontrollRepository;
+
+    @Autowired
+    private BestillingRepository bestillingRepository;
+
     @BeforeEach
     void cleanup() {
 
         teamBrukerRepository.deleteAll().block();
         teamRepository.deleteAll().block();
+        identRepository.deleteAll().block();
+        brukerFavoritterRepository.deleteAll().block();
+        transaksjonMappingRepository.deleteAll().block();
+        bestillingProgressRepository.deleteAll().block();
+        bestillingKontrollRepository.deleteAll().block();
+        bestillingRepository.deleteAll().block();
+        testgruppeRepository.deleteAll().block();
         brukerRepository.deleteAll().block();
     }
 
