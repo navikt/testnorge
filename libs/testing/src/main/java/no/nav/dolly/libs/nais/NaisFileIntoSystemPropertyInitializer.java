@@ -20,7 +20,7 @@ public class NaisFileIntoSystemPropertyInitializer implements ApplicationContext
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext applicationContext) {
 
-        boolean isLocalProfile = Arrays
+        var isLocalProfile = Arrays
                 .stream(applicationContext.getEnvironment().getActiveProfiles())
                 .anyMatch(s -> s.startsWith("local"));
         if (isLocalProfile) {
