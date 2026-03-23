@@ -9,7 +9,6 @@ import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
@@ -20,7 +19,6 @@ import java.util.UUID;
 import static java.time.LocalDateTime.now;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
 
-@Disabled
 @DollySpringBootTest
 @ExtendWith(TestDatabaseConfig.class)
 public abstract class AbstractIntegrasjonTest {

@@ -74,10 +74,7 @@ const GruppeOversikt: React.FC = () => {
 				visningType === VisningType.FAVORITTER
 					? Math.ceil((grupper?.favoritter?.length || 0) / sideStoerrelse)
 					: grupper?.antallPages,
-			antallElementer:
-				visningType === VisningType.FAVORITTER
-					? grupper?.favoritter?.length
-					: grupper?.antallElementer,
+			antallElementer: visningType === VisningType.FAVORITTER ? null : grupper?.antallElementer,
 		}),
 		[grupper, sideStoerrelse, visningType],
 	)

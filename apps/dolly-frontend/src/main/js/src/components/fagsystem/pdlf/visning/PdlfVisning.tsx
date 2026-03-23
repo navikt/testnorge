@@ -23,6 +23,7 @@ import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials
 import { TpsMBankkonto } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { ForeldreansvarVisning } from '@/components/fagsystem/pdlf/visning/partials/Foreldreansvar'
 import FullmaktVisning from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
+import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 export const getBankkontoData = (data) => {
 	if (data?.kontoregister) {
@@ -62,7 +63,7 @@ const getKontoregisterBankkonto = (bankkontoData) => {
 	return resp
 }
 
-export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar = true }) => {
+export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => {
 	if (loading?.pdlforvalter) {
 		return <Loading label="Laster PDL-data" />
 	}
@@ -73,7 +74,8 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 	}
 
 	const ident = data?.person?.ident
-	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+	const { pdlforvalterPerson } = usePdlForvalterPerson(ident)
+	const tmpPdlforvalter = pdlforvalterPerson ? { [ident]: pdlforvalterPerson } : {}
 
 	const bankkontoData = getBankkontoData(fagsystemData)
 
@@ -84,7 +86,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 			<div>
 				<Persondetaljer
 					data={data?.person}
-					tmpPersoner={tmpPersoner}
+					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					tpsMessaging={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}

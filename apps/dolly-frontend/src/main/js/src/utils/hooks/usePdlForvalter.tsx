@@ -1,8 +1,10 @@
-import useSWR from 'swr'
+import useSWR, { mutate as globalMutate } from 'swr'
 import { fetcher } from '@/api'
 
+const pdlForvalterPersonerBasePath = '/testnav-pdl-forvalter/api/v1/personer'
+
 const getPersonerUrl = (identer: string | null) =>
-	`/testnav-pdl-forvalter/api/v1/personer?identer=${identer}`
+	`${pdlForvalterPersonerBasePath}?identer=${identer}`
 
 const getEksistensUrl = (identer: string[] | null) =>
 	`/testnav-pdl-forvalter/api/v1/eksistens?identer=${identer}`
@@ -17,7 +19,15 @@ export const usePdlForvalterPerson = (ident: string) => {
 		pdlforvalterPerson: data?.[0],
 		loading: isLoading,
 		error: error,
-		refresh: () => mutate(),
+		refresh: () =>
+			mutate().then(() =>
+				globalMutate(
+					(key) =>
+						typeof key === 'string' &&
+						key.startsWith(pdlForvalterPersonerBasePath) &&
+						key !== getPersonerUrl(ident),
+				),
+			),
 	}
 }
 
