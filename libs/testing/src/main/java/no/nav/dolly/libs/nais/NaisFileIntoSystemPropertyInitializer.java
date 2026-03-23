@@ -20,11 +20,11 @@ public class NaisFileIntoSystemPropertyInitializer implements ApplicationContext
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext applicationContext) {
 
-        var isLocalProfile = Arrays
-                .asList(applicationContext.getEnvironment().getActiveProfiles())
-                .contains("local");
+        boolean isLocalProfile = Arrays
+                .stream(applicationContext.getEnvironment().getActiveProfiles())
+                .anyMatch(s -> s.startsWith("local"));
         if (isLocalProfile) {
-            log.info("Skipping setting property {} from file {} due to local profile",  systemProperty, sourceFile);
+            log.info("Skipping setting property {} from file {} due to local profile", systemProperty, sourceFile);
             return;
         }
         try {
