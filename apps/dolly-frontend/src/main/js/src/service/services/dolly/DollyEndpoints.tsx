@@ -1,4 +1,5 @@
 import { arrayToString } from '@/utils/DataFormatter'
+import { sideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 const uri = `/dolly-backend/api/v1`
 const kodeverkUri = `/testnav-kodeverk-service/api/v1`
@@ -14,6 +15,8 @@ const bestillingBase = `${uri}/bestilling`
 const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
 const teamBase = `${uri}/team`
+
+const getPageSize = () => localStorage.getItem(sideStoerrelseLocalStorageKey)
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -92,6 +95,10 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/soekBestilling?fragment=${fragment}`
 	}
 
+	static grupperFragment(fragment) {
+		return `${groupBase}/soekGruppe?fragment=${fragment}`
+	}
+
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
 	}
@@ -104,8 +111,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}?organisasjonBestilling=${erOrganisasjon}`
 	}
 
-	static personoppslag(ident, pdlMiljoe = null) {
-		return `${personoppslagBase}/ident/${ident}${pdlMiljoe ? '?pdlMiljoe=' + pdlMiljoe : ''}`
+	static personoppslag(ident: string) {
+		return `${personoppslagBase}/ident/${ident}`
 	}
 
 	static personoppslagMange(identer) {
@@ -138,11 +145,13 @@ export default class DollyEndpoints {
 	}
 
 	static navigerTilIdent(ident) {
-		return `${identBase}/naviger/${ident}`
+		const pageSize = getPageSize()
+		return `${identBase}/naviger/${ident}${pageSize ? '?pageSize=' + pageSize : ''}`
 	}
 
 	static navigerTilBestilling(bestillingId) {
-		return `${bestillingBase}/naviger/${bestillingId}`
+		const pageSize = getPageSize()
+		return `${bestillingBase}/naviger/${bestillingId}${pageSize ? '?pageSize=' + pageSize : ''}`
 	}
 
 	static ordre(ident) {

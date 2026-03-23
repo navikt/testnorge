@@ -5,7 +5,7 @@ import no.nav.registre.testnorge.sykemelding.consumer.command.SyfosmreglerPostVa
 import no.nav.registre.testnorge.sykemelding.dto.ReceivedSykemeldingDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.ValidationResultDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

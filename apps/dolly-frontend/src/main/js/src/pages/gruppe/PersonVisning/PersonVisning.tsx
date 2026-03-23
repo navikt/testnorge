@@ -7,7 +7,7 @@ import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
-import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
+import { PdlfVisning } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router'
@@ -53,6 +53,7 @@ import {
 	harDokarkivBestilling,
 	harHistarkBestilling,
 	harInntektsmeldingBestilling,
+	harInntektstubBestilling,
 	harInstBestilling,
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
@@ -91,7 +92,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
-import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
+import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useSkattekort } from '@/utils/hooks/useSkattekort'
 import { SkattekortVisning } from '@/components/fagsystem/skattekort/visning/Visning'
@@ -117,6 +118,7 @@ import { useNomData } from '@/utils/hooks/useNom'
 import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
 import { useSkjerming } from '@/utils/hooks/useSkjerming'
+import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -140,7 +142,6 @@ interface PersonVisningProps {
 	slettPerson: any
 	leggTilPaaPerson: any
 	iLaastGruppe: any
-	tmpPersoner: any
 }
 
 export default (props: PersonVisningProps) => {
@@ -154,12 +155,12 @@ export default (props: PersonVisningProps) => {
 		slettPerson,
 		leggTilPaaPerson,
 		iLaastGruppe,
-		tmpPersoner,
 	} = props
 	const { gruppeId } = ident
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
+	const { pdlforvalterPerson } = usePdlForvalterPerson(ident?.ident)
 	const bestillinger: any[] = []
 	if (ident.bestillinger) {
 		ident.bestillinger.map((b: any) => {
@@ -348,8 +349,14 @@ export default (props: PersonVisningProps) => {
 	const manglerFagsystemdata = (): boolean => {
 		const checks: Array<{ condition: boolean; reason: string }> = [
 			{
-				condition: [inntektstub, krrstub].some((fs) => Array.isArray(fs) && fs.length === 0),
-				reason: 'Tomt inntektstub eller krrstub',
+				condition: Array.isArray(krrstub) && krrstub.length === 0,
+				reason: 'Krrstub mangler data',
+			},
+			{
+				condition:
+					harInntektstubBestilling(bestillingerFagsystemer) &&
+					(!inntektstub || (Array.isArray(inntektstub) && inntektstub.length === 0)),
+				reason: 'Inntektstub mangler data',
 			},
 			{
 				condition: !!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
@@ -467,6 +474,31 @@ export default (props: PersonVisningProps) => {
 					id: person.ansvarlig,
 				})
 			})
+		data.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt
+			?.filter((vergemaal: any) => vergemaal?.vergeEllerFullmektig?.motpartsPersonident)
+			?.forEach((vergemaal: any) => {
+				relatertePersoner.push({
+					type: 'VERGE',
+					id: vergemaal.vergeEllerFullmektig?.motpartsPersonident,
+				})
+			})
+		data.pdlforvalter?.person?.fullmakt
+			?.filter((fullmakt: any) => fullmakt?.motpartsPersonident)
+			?.forEach((fullmakt: any) => {
+				relatertePersoner.push({
+					type: 'FULLMEKTIG',
+					id: fullmakt.motpartsPersonident,
+				})
+			})
+		data.pdl?.hentPerson?.kontaktinformasjonForDoedsbo
+			?.filter((kontaktinfo: any) => kontaktinfo?.personSomKontakt?.identifikasjonsnummer)
+			?.forEach((kontaktinfo: any) => {
+				relatertePersoner.push({
+					type: 'KONTAKTPERSON DØDSBO',
+					id: kontaktinfo.personSomKontakt.identifikasjonsnummer,
+				})
+			})
+
 		return relatertePersoner
 	}
 
@@ -516,8 +548,8 @@ export default (props: PersonVisningProps) => {
 						<Button
 							onClick={() => {
 								let personData = data
-								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
-									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
+								if (pdlforvalterPerson) {
+									personData.pdlforvalter = pdlforvalterPerson
 								}
 								if (skjermingData) {
 									personData.skjermingsregister = skjermingData
@@ -553,7 +585,11 @@ export default (props: PersonVisningProps) => {
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-					<GjenopprettPerson ident={ident} />
+					<GjenopprettPerson
+						ident={ident}
+						gruppeId={gruppeId}
+						onGjenopprettDone={() => fetchDataFraFagsystemer(bestillinger)}
+					/>
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
@@ -586,9 +622,9 @@ export default (props: PersonVisningProps) => {
 						dersom problemet vedvarer.
 					</StyledAlert>
 				)}
-				{ident.master === 'PDLF' && <PdlfVisningConnector fagsystemData={data} loading={loading} />}
+				{ident.master === 'PDLF' && <PdlfVisning fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (
-					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
+					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
 				<NavAnsattVisning nomData={nomData} nomLoading={loadingNom} ident={ident.ident} />
 				{visArbeidsforhold && (
@@ -609,7 +645,11 @@ export default (props: PersonVisningProps) => {
 					data={sigrunstubSummertSkattegrunnlag}
 					loading={loadingSigrunstubSummertSkattegrunnlag}
 				/>
-				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
+				<InntektstubVisning
+					liste={inntektstub}
+					loading={loading.inntektstub}
+					harInntektstubBestilling={harInntektstubBestilling(bestillingerFagsystemer)}
+				/>
 				<InntektsmeldingVisning
 					liste={inntektsmeldingData as any}
 					ident={ident.ident}

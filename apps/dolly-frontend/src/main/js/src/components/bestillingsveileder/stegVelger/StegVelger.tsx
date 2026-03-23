@@ -183,6 +183,7 @@ export const StegVelger = ({
 							key={index}
 							completed={index < step}
 							onClick={() => index < stepMaxIndex && setStep(index)}
+							style={{ whiteSpace: 'nowrap' }}
 						>
 							{label.label}
 						</Stepper.Step>

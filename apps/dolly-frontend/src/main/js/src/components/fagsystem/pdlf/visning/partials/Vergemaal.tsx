@@ -11,7 +11,6 @@ import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/
 import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import React from 'react'
 
 type TjenesteomraadeType = {
 	tjenesteoppgave?: string[]
@@ -102,19 +101,6 @@ const VergemaalLes = ({
 				/>
 				<TitleValue title="Gyldig f.o.m." value={formatDate(vergemaalData.gyldigFraOgMed)} />
 				<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaalData.gyldigTilOgMed)} />
-				{tjenesteomraadeListe?.map((tjenesteomraade, toIdx) => (
-					<React.Fragment key={toIdx}>
-						<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
-						<TitleValue
-							title="Tjenesteoppgaver"
-							value={
-								Array.isArray(tjenesteomraade.tjenesteoppgave)
-									? tjenesteomraade.tjenesteoppgave.map((val) => toTitleCase(val)).join(', ')
-									: toTitleCase(tjenesteomraade.tjenesteoppgave)
-							}
-						/>
-					</React.Fragment>
-				))}
 				{!relasjon && !relasjonRedigert && (
 					<TitleValue
 						title={harFullmektig ? 'Fullmektig' : 'Verge'}
@@ -124,6 +110,23 @@ const VergemaalLes = ({
 					/>
 				)}
 			</div>
+			{tjenesteomraadeListe && tjenesteomraadeListe.length > 0 && (
+				<DollyFieldArray data={tjenesteomraadeListe} header="Tjenesteområde" nested whiteBackground>
+					{(tjenesteomraade: TjenesteomraadeType, toIdx: number) => (
+						<div className="person-visning_redigerbar" key={toIdx}>
+							<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
+							<TitleValue
+								title="Tjenesteoppgaver"
+								value={
+									Array.isArray(tjenesteomraade.tjenesteoppgave)
+										? tjenesteomraade.tjenesteoppgave.map((val) => toTitleCase(val)).join(', ')
+										: toTitleCase(tjenesteomraade.tjenesteoppgave)
+								}
+							/>
+						</div>
+					)}
+				</DollyFieldArray>
+			)}
 			{(relasjonRedigert || relasjon) && (
 				<RelatertPerson
 					data={relasjonRedigert?.relatertPerson || relasjon?.relatertPerson}

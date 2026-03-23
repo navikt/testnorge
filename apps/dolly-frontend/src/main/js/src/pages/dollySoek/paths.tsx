@@ -12,6 +12,7 @@ export const PersoniformasjonPaths = [
 	'personRequest.harSikkerhetstiltak',
 	'personRequest.harTilrettelagtKommunikasjon',
 	'personRequest.harSkjerming',
+	'personRequest.antallStatsborgerskap',
 ]
 
 export const AdresserPaths = [
@@ -26,6 +27,9 @@ export const AdresserPaths = [
 	'personRequest.adresse.harUkjentAdresse',
 	'personRequest.adresse.harKontaktadresse',
 	'personRequest.adresse.harOppholdsadresse',
+	'personRequest.adresse.adressehistorikk.antallBostedsadresser',
+	'personRequest.adresse.adressehistorikk.antallKontaktadresser',
+	'personRequest.adresse.adressehistorikk.antallOppholdsadresser',
 ]
 
 export const FamilierelasjonerPaths = [
@@ -35,6 +39,7 @@ export const FamilierelasjonerPaths = [
 	'personRequest.harDoedfoedtBarn',
 	'personRequest.harForeldreAnsvar',
 	'personRequest.adresse.harDeltBosted',
+	'personRequest.antallRelasjoner',
 ]
 
 export const IdentifikasjonPaths = [

@@ -6,10 +6,10 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,10 +27,6 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
     private static final String LANDKODE_NORGE = "NOR";
     private static final String ADRESSE_TYPE_NOT_SUPPORTED = "KontaktinformasjonForDoedsbo: Ukjent bosted er ikke støttet";
     private final KodeverkConsumer kodeverkConsumer;
-
-    private static String blankCheck(String value, String defaultValue) {
-        return isNotBlank(value) ? value : defaultValue;
-    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -120,5 +116,9 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                     }
                 })
                 .register();
+    }
+
+    private static String blankCheck(String value, String defaultValue) {
+        return isNotBlank(value) ? value : defaultValue;
     }
 }

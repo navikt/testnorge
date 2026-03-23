@@ -25,10 +25,10 @@ import { PdlVergemaal } from '@/components/fagsystem/pdl/visning/partials/vergem
 import { getBankkontoData } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
 import React from 'react'
 import FullmaktVisning from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
+import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 type PdlVisningProps = {
 	pdlData: PdlData
-	tmpPersoner: any
 	fagsystemData?: any
 	loading?: any
 	miljoeVisning?: boolean
@@ -36,7 +36,6 @@ type PdlVisningProps = {
 
 export const PdlVisning = ({
 	pdlData,
-	tmpPersoner,
 	fagsystemData = {},
 	loading = {},
 	miljoeVisning = false,
@@ -70,7 +69,8 @@ export const PdlVisning = ({
 
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 	const identtype = pdlfPerson?.identtype
-	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+	const { pdlforvalterPerson } = usePdlForvalterPerson(ident)
+	const tmpPdlforvalter = pdlforvalterPerson ? { [ident]: pdlforvalterPerson } : {}
 
 	const gjeldendeIdent = hentIdenter?.identer?.find(
 		(id) => !id.historisk && id.gruppe === 'FOLKEREGISTERIDENT',

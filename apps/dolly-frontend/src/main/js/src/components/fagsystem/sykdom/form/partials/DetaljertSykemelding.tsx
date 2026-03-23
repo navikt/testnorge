@@ -14,7 +14,7 @@ import {
 } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
-import React, { BaseSyntheticEvent, useContext, useEffect, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 import { useSykemeldingValidering } from '@/utils/hooks/useSykemelding'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
@@ -106,7 +106,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	const { organisasjoner, loading, hasBeenCalled } = useOrganisasjonForvalter([selectedOrgnummer])
 	const lastAppliedOrg = useRef<string | undefined>(undefined)
 
-	const mapForvalterOrganisasjon = (org: any) => {
+	const mapForvalterOrganisasjon = useCallback((org: any) => {
 		if (!org) {
 			formMethods.setError('manual.sykemelding.detaljertSykemelding', {
 				message: 'Ingen organisasjon funnet',
@@ -176,15 +176,15 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 				postnummer: fAddr.postnr || fAddr.postnummer || firstAdresse?.postnr || null,
 			},
 		}
-	}
+	}, [])
 
-	const setMottakerFromForvalter = (org: any) => {
+	const setMottakerFromForvalter = useCallback((org: any) => {
 		formMethods.setValue(
 			'sykemelding.detaljertSykemelding.arbeidsgiver.navn',
 			org?.navn || org?.organisasjonsnavn || null,
 		)
 		formMethods.setValue('sykemelding.detaljertSykemelding.mottaker', mapForvalterOrganisasjon(org))
-	}
+	}, [mapForvalterOrganisasjon])
 
 	const clearValgtOrganisasjon = () => {
 		formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.arbeidsgiver.navn')
@@ -194,6 +194,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 		formMethods.clearErrors('sykemelding.detaljertSykemelding.mottaker.navn')
 		formMethods.setValue('sykemelding.detaljertSykemelding.arbeidsgiver.navn', null)
 		formMethods.setValue('sykemelding.detaljertSykemelding.mottaker', initialValuesMottaker)
+		hasErrorRef.current = false
 	}
 
 	const handleArbeidsgiverChange = (v: Arbeidsgiver | BaseSyntheticEvent) => {
@@ -208,15 +209,22 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 		}
 	}
 
+	const hasErrorRef = useRef(false)
+
 	useEffect(() => {
 		const org = organisasjoner?.[0]?.q1
-		if (hasBeenCalled && !loading && !org) {
+		const shouldHaveError = hasBeenCalled && !loading && !org
+		
+		if (shouldHaveError && !hasErrorRef.current) {
 			formMethods.setError('manual.sykemelding.detaljertSykemelding.mottaker.orgNr', {
 				message: 'Organisasjon ikke funnet i Q1',
 			})
-		} else {
+			hasErrorRef.current = true
+		} else if (!shouldHaveError && hasErrorRef.current) {
 			formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.mottaker.orgNr')
+			hasErrorRef.current = false
 		}
+		
 		const currentOrgNr = org?.organisasjonsnummer
 		if (
 			selectedOrgnummer &&
@@ -227,7 +235,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 			setMottakerFromForvalter(org)
 			lastAppliedOrg.current = currentOrgNr
 		}
-	}, [organisasjoner, selectedOrgnummer])
+	}, [organisasjoner, selectedOrgnummer, hasBeenCalled, loading, setMottakerFromForvalter])
 
 	const { kodeverk: yrker } = useKodeverk(ArbeidKodeverk.Yrker)
 	const randomYrke = getRandomValue(yrker)

@@ -59,10 +59,7 @@ export const IdentvalidatorVisning = ({ data }: IdentvalidatorVisningProps) => {
 	]
 
 	return (
-		<Box
-			padding="6"
-			background={data.feilmelding ? 'surface-danger-subtle' : 'surface-success-subtle'}
-		>
+		<Box padding="space-16" background={data.feilmelding ? 'danger-moderate' : 'success-moderate'}>
 			<Table>
 				<Table.Body>
 					{mappedData.map((item) => {

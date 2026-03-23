@@ -26,10 +26,6 @@ enum TypeUnderenhet {
 	VIRKSOMHET = 'VIRKSOMHET',
 }
 
-const StyledToggleGroup = styled(ToggleGroup)`
-	margin-bottom: 7px;
-`
-
 export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) => {
 	const watchedValues = formMethods.watch(path)
 	const initialValues = useMemo(
@@ -84,10 +80,11 @@ export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) =>
 			<Kategori title={!number ? 'Organisasjon' : undefined} vis={organisasjonPaths} flexRow={true}>
 				<div className="toggle--wrapper">
 					{level > 0 && (
-						<StyledToggleGroup
+						<ToggleGroup
 							size={'small'}
 							onChange={(v: string) => handleToggleChange(v as TypeUnderenhet)}
 							value={typeUnderenhet}
+							style={{ marginBottom: '10px' }}
 						>
 							<ToggleGroup.Item
 								key={TypeUnderenhet.JURIDISKENHET}
@@ -99,7 +96,7 @@ export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) =>
 								key={TypeUnderenhet.VIRKSOMHET}
 								value={TypeUnderenhet.VIRKSOMHET}
 								disabled={hasChildren}
-								style={hasChildren ? { opacity: 0.5 } : undefined}
+								style={hasChildren ? { opacity: 0.5, cursor: 'default' } : undefined}
 								title={
 									hasChildren
 										? 'Kan ikke endre til virksomhet når denne enheten har underenheter. Fjern underenheter først.'
@@ -108,7 +105,7 @@ export const Detaljer = ({ formMethods, path, level, number }: DetaljerProps) =>
 							>
 								Virksomhet
 							</ToggleGroup.Item>
-						</StyledToggleGroup>
+						</ToggleGroup>
 					)}
 					{path === 'organisasjon' ? (
 						<FormSelect

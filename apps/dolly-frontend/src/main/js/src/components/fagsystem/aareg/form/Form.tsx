@@ -58,6 +58,7 @@ export const AaregForm = () => {
 								path={path}
 								arbeidsforholdIndex={idx}
 								tidligereAaregdata={tidligereAaregdata}
+								formMethods={formMethods}
 							/>
 						</>
 					)}

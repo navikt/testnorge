@@ -7,7 +7,8 @@ const getOrganisasjonMalerUrl = '/dolly-backend/api/v1/organisasjon/bestilling/m
 export type Mal = {
 	malNavn: string
 	id: number
-	malBestilling: any
+	malBestilling?: any
+	bestilling?: any
 }
 
 type MalResponse = {

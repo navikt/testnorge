@@ -15,7 +15,7 @@ const BestiltMiljoTab = styled(Tabs.Tab)`
 	color: #06893a;
 
 	&&& {
-		.navds-tabs__tab-inner {
+		.aksel-tabs__tab-inner {
 			color: #06893a;
 		}
 	}
@@ -23,7 +23,7 @@ const BestiltMiljoTab = styled(Tabs.Tab)`
 
 const ErrorMiljoTab = styled(Tabs.Tab)`
 	&&& {
-		.navds-tabs__tab-inner {
+		.aksel-tabs__tab-inner {
 			color: #ba3a26;
 		}
 	}

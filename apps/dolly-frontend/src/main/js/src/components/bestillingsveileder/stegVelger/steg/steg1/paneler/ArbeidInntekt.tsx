@@ -69,7 +69,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }: any) => {
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
 			</AttributtKategori>
-			<AttributtKategori title="Skattekort (SOKOS)" attr={sm.attrs}>
+			<AttributtKategori title="Nav skattekort" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.skattekort} />
 			</AttributtKategori>
 		</Panel>

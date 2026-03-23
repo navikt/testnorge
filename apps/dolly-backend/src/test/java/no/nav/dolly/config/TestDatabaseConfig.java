@@ -12,7 +12,8 @@ public class TestDatabaseConfig implements BeforeAllCallback {
         new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("test")
             .withUsername("test")
-            .withPassword("test");
+            .withPassword("test")
+            .withReuse(true);
 
     @Override
     public void beforeAll(ExtensionContext context) {

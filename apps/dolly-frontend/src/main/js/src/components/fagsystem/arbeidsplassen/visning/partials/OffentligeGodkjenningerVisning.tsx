@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
+import { OffentligeGodkjenninger } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const OffentligeGodkjenningerVisning = ({ data }) => {
+type OffentligeGodkjenningerVisningProps = {
+	data?: Array<OffentligeGodkjenninger>
+}
+
+export const OffentligeGodkjenningerVisning = ({ data }: OffentligeGodkjenningerVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const OffentligeGodkjenningerVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Offentlige godkjenninger" nested>
-					{(offentligGodkjenning) => (
+					{(offentligGodkjenning: OffentligeGodkjenninger) => (
 						<>
 							<TitleValue
 								title="Offentlig godkjenning"

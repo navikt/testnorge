@@ -35,15 +35,13 @@ export default ({ brukerId }: { brukerId: string }) => {
 	return (
 		<div className="maloversikt">
 			<hr />
-			<div className="flexbox--space">
+			<div className="flexbox--align-center--space">
 				<h2>Mine maler</h2>
 				<SearchField
+					placeholder={`Søk etter mal (${shortcutKey})`}
+					setText={setSearchText}
 					ref={searchInputRef}
 					data-testid={TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL}
-					placeholder={`Søk etter mal`}
-					shortcutKey={shortcutKey}
-					style={{ width: '300px', marginRight: '-79px' }}
-					setText={setSearchText}
 				/>
 			</div>
 			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 ? (

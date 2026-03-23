@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType
+	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 import { sendBestilling } from '@/ducks/bestilling'

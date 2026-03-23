@@ -13,12 +13,10 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -31,36 +29,34 @@ public class OpenSearchQueryService {
     @Value("${open.search.pdl-index}")
     private String pdlIndex;
 
-    public Mono<SearchInternalResponse> execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
+    public SearchInternalResponse execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
 
-        var now = System.currentTimeMillis();
-
-        if (isNull(request.getSide())) {
+        if (request.getSide() == null) {
             request.setSide(0);
         }
 
-        if (isNull(request.getAntall())) {
+        if (request.getAntall() == null) {
             request.setAntall(10);
         }
 
         try {
-            val personSoekResponse = Mono.just(openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
-                            .index(pdlIndex)
-                            .query(new Query.Builder()
-                                    .bool(queryBuilder.build())
-                                    .build())
-                            .from(request.getSide() * request.getAntall())
-                            .size(request.getAntall())
-                            .timeout("3s")
-                            .build(), JsonNode.class))
-                    .map(response -> formatResponse(response, request));
+            var now = System.currentTimeMillis();
+
+            val response = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                    .index(pdlIndex)
+                    .query(new Query.Builder()
+                            .bool(queryBuilder.build())
+                            .build())
+                    .from(request.getSide() * request.getAntall())
+                    .size(request.getAntall())
+                    .timeout("3s")
+                    .build(), JsonNode.class);
 
             log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
-            return personSoekResponse;
+            return formatResponse(response, request);
 
         } catch (IOException e) {
-
             log.error("Feil ved personsøk i OpenSearch", e);
             throw new InternalError("Feil ved personsøk i OpenSearch", e);
         }
@@ -79,7 +75,7 @@ public class OpenSearchQueryService {
                     .personer(List.of())
                     .build();
         }
-        
+
         var hitsList = hits.hits();
 
         return SearchInternalResponse.builder()

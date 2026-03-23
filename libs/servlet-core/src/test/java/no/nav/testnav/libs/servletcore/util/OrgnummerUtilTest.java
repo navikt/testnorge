@@ -1,10 +1,10 @@
 package no.nav.testnav.libs.servletcore.util;
 
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
-import org.junit.jupiter.api.Test;
 
 class OrgnummerUtilTest {
 

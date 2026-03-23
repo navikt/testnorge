@@ -3,6 +3,7 @@ import { runningE2ETest } from '@/service/services/Request'
 export const initialDokarkiv = {
 	tittel: runningE2ETest() ? 'test' : '',
 	tema: runningE2ETest() ? 'test ' : '',
+	skjemaValg: '',
 	sak: {
 		sakstype: 'GENERELL_SAK',
 		fagsaksystem: '',
@@ -22,6 +23,7 @@ export const initialDokarkiv = {
 export const initialDigitalInnsending = {
 	tittel: '',
 	tema: '',
+	skjemaValg: '',
 	kanal: 'NAV_NO',
 	sak: {
 		sakstype: 'GENERELL_SAK',

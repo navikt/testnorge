@@ -19,17 +19,20 @@ import { isDate } from 'date-fns'
 import * as _ from 'lodash-es'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type ArbeidsforholdProps = {
 	path: string
 	arbeidsforholdIndex: number
 	tidligereAaregdata: any
+	formMethods: UseFormReturn
 }
 
 export const ArbeidsforholdForm = ({
 	path,
 	arbeidsforholdIndex,
 	tidligereAaregdata,
+	formMethods,
 }: ArbeidsforholdProps) => {
 	const { watch, getValues, setValue, trigger } = useFormContext()
 
@@ -154,7 +157,7 @@ export const ArbeidsforholdForm = ({
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
 				<>
 					<TimeloennetForm path={`${path}.antallTimerForTimeloennet`} />
-					<UtenlandsoppholdForm path={`${path}.utenlandsopphold`} />
+					<UtenlandsoppholdForm path={`${path}.utenlandsopphold`} formMethods={formMethods} />
 					<PermisjonForm path={`${path}.permisjon`} />
 					<PermitteringForm path={`${path}.permittering`} />
 				</>

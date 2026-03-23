@@ -30,7 +30,6 @@ export const Kontaktinfo = () => {
 				open={openState}
 				onClose={() => setOpenState(false)}
 				anchorEl={buttonRef.current}
-				arrow={false}
 				placement={'top-end'}
 				style={{ border: 'none' }}
 			>

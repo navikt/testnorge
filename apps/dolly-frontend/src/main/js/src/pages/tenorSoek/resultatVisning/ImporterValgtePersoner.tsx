@@ -22,12 +22,6 @@ const CheckboxWrapper = styled.div`
 	height: 20px;
 	margin-left: auto;
 	margin-right: 15px;
-
-	&& {
-		.navds-checkbox {
-			margin-bottom: 20px;
-		}
-	}
 `
 
 export const ImporterValgtePersoner = ({
@@ -110,7 +104,7 @@ export const ImporterValgtePersoner = ({
 					data-testid={TestComponentSelectors.BUTTON_IMPORTER_PERSONER}
 					variant="tertiary"
 					size="xsmall"
-					icon={<EnterIcon />}
+					icon={<EnterIcon aria-hidden />}
 					loading={loading}
 					onClick={handleSubmit}
 					style={{ minWidth: '155px', height: '24px', marginTop: '10px' }}

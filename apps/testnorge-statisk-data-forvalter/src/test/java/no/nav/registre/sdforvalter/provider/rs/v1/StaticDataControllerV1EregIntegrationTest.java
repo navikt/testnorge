@@ -3,6 +3,7 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.database.model.EregModel;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
@@ -13,7 +14,6 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.Gruppe;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +55,6 @@ class StaticDataControllerV1EregIntegrationTest {
     @Autowired
     private GruppeRepository gruppeRepository;
 
-    @AfterEach
-    void cleanUp() {
-        eregRepository.deleteAll();
-        gruppeRepository.deleteAll();
-        opprinnelseRepository.deleteAll();
-    }
-
     private EregListe create(Ereg... eregs) {
         return new EregListe(Arrays.asList(eregs));
     }
@@ -97,6 +90,13 @@ class StaticDataControllerV1EregIntegrationTest {
 
     private Ereg createEreg(String orgnr, String enhetstype) {
         return new Ereg(createEregModel(orgnr, enhetstype), new ArrayList<>());
+    }
+
+    @AfterEach
+    void cleanUp() {
+        eregRepository.deleteAll();
+        gruppeRepository.deleteAll();
+        opprinnelseRepository.deleteAll();
     }
 
     @Test

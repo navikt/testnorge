@@ -25,6 +25,8 @@ import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
@@ -74,9 +76,9 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                     @Override
                     public void mapAtoB(PensjonData.Alderspensjon alderspensjon, AlderspensjonSoknadRequest request, MappingContext context) {
 
-                        var ident = (String) context.getProperty("ident");
+                        var ident = (String) context.getProperty(IDENT);
                         request.setFnr(ident);
-                        request.setMiljoer((Set<String>) context.getProperty("miljoer"));
+                        request.setMiljoer((Set<String>) context.getProperty(MILJOER));
 
                         var pdlRelasjoner = (List<PdlPersonBolk.PersonBolk>) context.getProperty("pdlRelasjoner");
                         var dollyRelasjoner = (List<FullPersonDTO>) context.getProperty("dollyRelasjoner");

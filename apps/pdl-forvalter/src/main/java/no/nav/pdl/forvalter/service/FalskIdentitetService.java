@@ -5,9 +5,9 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
-import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
@@ -49,19 +49,6 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private final RelasjonService relasjonService;
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
-
-    protected static <T> int count(T artifact) {
-        return nonNull(artifact) ? 1 : 0;
-    }
-
-    private static String blankCheck(String value, String defaultValue) {
-        return isNotBlank(value) ? value : defaultValue;
-    }
-
-    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.FalsktNavnDTO navn) {
-        return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
-                (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
-    }
 
     public List<FalskIdentitetDTO> convert(PersonDTO person) {
 
@@ -217,5 +204,18 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         relasjonService.setRelasjoner(person.getIdent(), RelasjonType.FALSK_IDENTITET,
                 identitet.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.RIKTIG_IDENTITET);
         identitet.setNyFalskIdentitetPerson(null);
+    }
+
+    private static String blankCheck(String value, String defaultValue) {
+        return isNotBlank(value) ? value : defaultValue;
+    }
+
+    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.FalsktNavnDTO navn) {
+        return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
+                (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
+    }
+
+    protected static <T> int count(T artifact) {
+        return nonNull(artifact) ? 1 : 0;
     }
 }

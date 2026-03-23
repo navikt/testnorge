@@ -586,15 +586,15 @@ Proxy (lenke til repo), Cluster (proxyens primære cluster utledet fra accessPol
 [cols="1,1,2,2,2,1,1", options="header"]
 |===
 |Proxy |Cluster |Ingress |Downstream apper |Downstream URLer |Cross-tenant |Status
-|link:https://github.com/navikt/testnorge/tree/master/proxies/aareg-proxy[aareg-proxy] |dev-fss |https://testnav-aareg-proxy.dev-fss-pub.nais.io |detektert-testnav-aareg-proxy |https://testnav-aareg-proxy.dev-fss-pub.nais.io |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/aareg-proxy[aareg-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/altinn3-tilgang-proxy[altinn3-tilgang-proxy] |dev-gcp |https://testnav-altinn3-tilgang-proxy.intern.dev.nav.no |testnav-altinn3-tilgang-service-prod |https://testnav-altinn3-tilgang-service.nav.no |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/arbeidsplassencv-proxy[arbeidsplassencv-proxy] |dev-gcp |https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no |pam-cv-api-gcp |http://pam-cv-api-gcp.teampam.svc.cluster.local |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/arbeidssoekerregisteret-proxy[arbeidssoekerregisteret-proxy] |dev-gcp |https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no |paw-arbeidssoekerregisteret-api-dolly |http://paw-arbeidssoekerregisteret-api-dolly.paw.svc.cluster.local |true |aktiv
-|link:https://github.com/navikt/testnorge/tree/master/proxies/arena-forvalteren-proxy[arena-forvalteren-proxy] |dev-fss |https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io |arena-services-MILJOE |http://arena-ords-MILJOE.teamarenanais.svc.nais.local |false |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/arena-forvalteren-proxy[arena-forvalteren-proxy] |dev-gcp |- |detektert-arena-ords-MILJOE |http://arena-ords-MILJOE.teamarenanais.svc.nais.local |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/batch-adeo-proxy[batch-adeo-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/brregstub-proxy[brregstub-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/brregstub-reverse-proxy[brregstub-reverse-proxy] |dev-fss |https://testnav-brregstub-reverse-proxy.dev-fss-pub.nais.io |brreg-stub |http://brreg-stub.dolly.svc.nais.local |true |aktiv
-|link:https://github.com/navikt/testnorge/tree/master/proxies/dokarkiv-proxy[dokarkiv-proxy] |dev-fss |https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io |dokarkiv-MILJOE |http://dokarkiv-MILJOE.teamdokumenthandtering.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/dokarkiv-proxy[dokarkiv-proxy] |dev-gcp |- |detektert-dokarkiv-MILJOE |http://dokarkiv-MILJOE.teamdokumenthandtering.svc.nais.local |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/dolly-proxy[dolly-proxy] |dev-fss |https://testnav-dolly-proxy.intern.dev.nav.no |digdir-krr-stub |- |true |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/ereg-proxy[ereg-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/fullmakt-proxy[fullmakt-proxy] |dev-gcp |- |detektert-repr-fullmakt |http://repr-fullmakt.repr.svc.nais.local |false |aktiv
@@ -608,7 +608,7 @@ Proxy (lenke til repo), Cluster (proxyens primære cluster utledet fra accessPol
 |link:https://github.com/navikt/testnorge/tree/master/proxies/norg2-proxy[norg2-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/pdl-proxy[pdl-proxy] |dev-fss |https://testnav-pdl-proxy.dev-fss-pub.nais.io |pdl-api, pdl-api-q1, pdl-testdata |http://pdl-api.pdl.svc.nais.local, http://pdl-api-q1.pdl.svc.nais.local, http://pdl-testdata.pdl.svc.nais.local |true |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/pensjon-testdata-facade-proxy[pensjon-testdata-facade-proxy] |dev-gcp |- |detektert-pensjon-testdata-facade |http://pensjon-testdata-facade.pensjontestdata.svc.nais.local; https://pensjon-testdata-facade.dev.intern.nav.no |false |aktiv
-|link:https://github.com/navikt/testnorge/tree/master/proxies/saf-proxy[saf-proxy] |dev-fss |https://testnav-saf-proxy.dev-fss-pub.nais.io |saf-MILJOE |http://saf-MILJOE.teamdokumenthandtering.svc.nais.local |true |aktiv
+|link:https://github.com/navikt/testnorge/tree/master/proxies/saf-proxy[saf-proxy] |dev-gcp |- |detektert-saf-MILJOE |http://saf-MILJOE.teamdokumenthandtering.svc.nais.local |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/sigrunstub-proxy[sigrunstub-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/skjermingsregister-proxy[skjermingsregister-proxy] |dev-gcp |- |detektert-skjermede-personer |https://skjermede-personer.dev.adeo.no |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/sykemelding-proxy[sykemelding-proxy] |dev-gcp |https://testnav-sykemelding-proxy.intern.dev.nav.no |syfosmregler, tsm-input-dolly |http://syfosmregler.teamsykmelding.svc.cluster.local, http://tsm-input-dolly.tsm.svc.cluster.local |true |aktiv

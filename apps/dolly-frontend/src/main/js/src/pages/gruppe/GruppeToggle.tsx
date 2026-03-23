@@ -18,7 +18,7 @@ export const GruppeToggle: React.FC<ToggleGroupComponentProps> = ({
 	antallBestillinger,
 }) => {
 	return (
-		<ToggleGroup value={visning} onChange={byttVisning} style={{ backgroundColor: '#ffffff' }}>
+		<ToggleGroup value={visning} onChange={byttVisning}>
 			<ToggleGroup.Item
 				data-testid={TestComponentSelectors.TOGGLE_VISNING_PERSONER}
 				key={VisningType.VISNING_PERSONER}

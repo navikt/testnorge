@@ -13,7 +13,7 @@ import no.nav.testnav.libs.dto.kontoregister.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;

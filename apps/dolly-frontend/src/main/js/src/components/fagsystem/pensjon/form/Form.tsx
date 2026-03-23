@@ -86,7 +86,7 @@ export const PensjonForm = () => {
 							? inputValg.generertInntekt
 							: inputValg.fyllInnInntekt
 					}
-					style={{ margin: '5px 0 5px', backgroundColor: '#ffffff' }}
+					style={{ margin: '5px 0' }}
 				>
 					<ToggleGroup.Item key={inputValg.fyllInnInntekt} value={inputValg.fyllInnInntekt}>
 						Fyll inn inntekt

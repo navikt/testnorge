@@ -5,12 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubGetCommand;
+import no.nav.dolly.bestilling.inntektstub.command.InntektstubCheckImportCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubPostCommand;
+import no.nav.dolly.bestilling.inntektstub.domain.CheckImportResponse;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -77,6 +79,15 @@ public class InntektstubConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inntk_import"})
+    public Mono<CheckImportResponse> sjekkImporterInntekt(String ident, Boolean isCheck) {
+
+        log.info("Import av inntekt for {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new InntektstubCheckImportCommand(webClient, isCheck, ident, token.getTokenValue()).call());
     }
 
     @Override

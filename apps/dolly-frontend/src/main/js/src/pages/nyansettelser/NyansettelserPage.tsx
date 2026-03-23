@@ -29,13 +29,13 @@ export default () => {
 	return (
 		<>
 			<h1>Nyansettelser</h1>
-			<VStack gap="4">
+			<VStack gap="space-16">
 				<NyansettelserSoek
 					setIdentSoekData={setIdentSoekData}
 					setOrgnummerSoekData={setOrgnummerSoekData}
 					setPage={setPage}
 				/>
-				<Box background="surface-default" padding="4">
+				<Box background="default" padding="space-16">
 					{loading ? (
 						<Loading label="Laster arbeidsforhold ..." />
 					) : !sortData || sortData.length < 1 ? (

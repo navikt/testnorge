@@ -19,7 +19,8 @@ import {
 	PersoniformasjonPaths,
 } from '@/pages/dollySoek/paths'
 import { DollyApi } from '@/service/Api'
-import { dollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
+import { getDollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
+import { dollySoekSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 import { Fagsystemer } from '@/pages/dollySoek/soekFormPartials/Fagsystemer'
 import { Personinformasjon } from '@/pages/dollySoek/soekFormPartials/Personinformasjon'
 import { Adresser } from '@/pages/dollySoek/soekFormPartials/Adresser'
@@ -45,7 +46,6 @@ export const SoekForm = ({
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
 	const [soekError, setSoekError] = useState(null)
-	const [visAntall, setVisAntall] = useState(10)
 
 	const maxTotalHits = 10000
 
@@ -81,7 +81,7 @@ export const SoekForm = ({
 	}
 
 	const handleChangeAntall = (antall: { value: number }) => {
-		setVisAntall(antall.value)
+		localStorage.setItem(dollySoekSideStoerrelseLocalStorageKey, antall.value.toString())
 		const updatedRequest = { ...values, antall: antall.value, side: 0, seed: result?.seed }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
@@ -90,12 +90,13 @@ export const SoekForm = ({
 	const emptyCategory = (paths: string[]) => {
 		const requestClone = { ...values }
 		const lagreSoekRequestClone = { ...lagreSoekRequest }
+		const initialValues = getDollySoekInitialValues()
 		paths.forEach((path) => {
 			if (path === 'personRequest.alderFom') {
 				setValue(path, undefined)
 				reset()
 			}
-			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
+			_.set(requestClone, path, _.get(initialValues, path))
 			delete lagreSoekRequestClone[path]
 			if (path === 'personRequest.harSkjerming') {
 				_.set(
@@ -119,9 +120,9 @@ export const SoekForm = ({
 	}
 
 	const emptySearch = () => {
-		setVisAntall(10)
-		reset(dollySoekInitialValues)
-		setRequest(dollySoekInitialValues)
+		const initialValues = getDollySoekInitialValues()
+		reset(initialValues)
+		setRequest(initialValues)
 		setLagreSoekRequest({})
 	}
 
@@ -272,7 +273,7 @@ export const SoekForm = ({
 				resultat={result}
 				loading={soekPaagaar}
 				soekError={soekError}
-				visAntall={visAntall}
+				visAntall={values.antall}
 				handleChangeSide={handleChangeSide}
 				handleChangeAntall={handleChangeAntall}
 			/>

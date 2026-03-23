@@ -98,15 +98,15 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
 					<Vis attributt={statsborgerskapPath}>
-						<Statsborgerskap />
+						<Statsborgerskap formMethods={formMethods} />
 					</Vis>
 
 					<Kategori title="Innvandring" vis={innvandringPath}>
-						<Innvandring />
+						<Innvandring formMethods={formMethods} />
 					</Kategori>
 
 					<Kategori title="Utvandring" vis={utvandringPath}>
-						<Utvandring />
+						<Utvandring formMethods={formMethods} />
 					</Kategori>
 				</Kategori>
 

@@ -69,9 +69,10 @@ public class BestillingController {
     @Operation(description = "Naviger til ønsket bestilling")
     @Transactional
     @GetMapping("/naviger/{bestillingId}")
-    public Mono<RsWhereAmI> navigerTilBestilling(@PathVariable Long bestillingId) {
+    public Mono<RsWhereAmI> navigerTilBestilling(@PathVariable Long bestillingId,
+                                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
 
-        return navigasjonService.navigerTilBestilling(bestillingId);
+        return navigasjonService.navigerTilBestilling(bestillingId, pageSize);
     }
 
     @Cacheable(value = CACHE_BESTILLING)

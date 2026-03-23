@@ -5,6 +5,12 @@ export type Person = {
 	relasjoner?: Array<Relasjon>
 }
 
+export type OpprettNyPerson = {
+	alder: number
+	foedtEtter: string
+	foedtFoer: string
+}
+
 export type Relasjon = {
 	id: number
 	relasjonType: string
@@ -25,7 +31,7 @@ export type PersonData = {
 	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<SivilstandData>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
-	foreldreansvar?: Array<Foreldreansvar>
+	foreldreansvar?: Array<ForeldreansvarData>
 	innflytting?: Array<Innflytting>
 	utflytting?: Array<Utflytting>
 	vergemaal?: Array<VergemaalValues>
@@ -40,10 +46,19 @@ export type PersonUtenIdData = {
 	statsborgerskap: string
 }
 
-type Navn = {
+export type Navn = {
 	fornavn: string
 	mellomnavn: string
 	etternavn: string
+}
+
+export type NavnBestilling = {
+	fornavn: string
+	mellomnavn?: string
+	etternavn: string
+	hasMellomnavn: boolean
+	gyldigFraOgMed?: string
+	master?: string
 }
 
 type Kjoenn = {
@@ -62,8 +77,9 @@ export type FoedselData = {
 	foedested: string
 	foedekommune: string
 	foedeland: string
-	metadata: Metadata
+	metadata?: Metadata
 	id?: number
+	master?: string
 }
 
 export type FoedselsdatoData = {
@@ -71,6 +87,7 @@ export type FoedselsdatoData = {
 	foedselsaar: number
 	metadata: Metadata
 	id?: number
+	master?: string
 }
 
 export type FoedestedData = {
@@ -79,19 +96,23 @@ export type FoedestedData = {
 	foedeland: string
 	metadata: Metadata
 	id?: number
+	master?: string
 }
 
 export type DoedsfallData = {
 	doedsdato: string
-	metadata: Metadata
+	metadata?: Metadata
 	id?: number
+	master?: string
 }
 
 export type StatsborgerskapData = {
 	landkode: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
+	bekreftelsesdato?: string
 	id?: number
+	master?: string
 }
 
 export type Innflytting = {
@@ -122,8 +143,10 @@ export type SivilstandData = {
 	bekreftelsesdato?: string
 	id?: number
 	sivilstandsdato?: string
+	borIkkeSammen?: boolean
 	nyRelatertPerson?: NyIdent
 	metadata: Metadata
+	master?: string
 }
 
 export type Metadata = {
@@ -155,19 +178,27 @@ export type ForeldreBarnRelasjon = {
 	relatertPersonsRolle: Rolle
 	deltBosted?: any
 	typeForelderBarn?: string
+	borIkkeSammen?: boolean
+	partnerErIkkeForelder?: boolean
+	master?: string
 }
 
 export type DoedfoedtBarnData = {
 	id?: number
 	dato: Date
+	master?: string
 }
 
-export type Foreldreansvar = {
+export type ForeldreansvarData = {
 	ansvar: string
 	ansvarlig: string
+	ansvarssubjekt?: string
+	gyldigFraOgMed?: string
+	gyldigTilOgMed?: string
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId
 	nyAnsvarlig?: NyIdent
 	metadata?: Metadata
+	master?: string
 }
 
 export type ForeldreansvarUtenId = {
@@ -192,11 +223,22 @@ export type VergemaalValues = {
 	vergeIdent?: string
 	tjenesteomraade?: Array<TjenesteomraadeValues>
 	id: number
+	master?: string
 }
 
 export type FullmaktValues = {
+	omraade?: Array<FullmaktOmraade>
+	gyldigFraOgMed?: string
+	gyldigTilOgMed?: string
+	fullmektig?: string
+	fullmektigsNavn?: string
 	nyFullmektig?: NyIdent
 	id: number
+}
+
+export type FullmaktOmraade = {
+	tema: string
+	handling: Array<string>
 }
 
 export type DeltBostedValues = {
@@ -213,6 +255,73 @@ export type NyIdent = {
 	nyttNavn?: {
 		hasMellomnavn: boolean
 	}
+	eksisterendeIdent?: string
+	master?: string
+}
+
+export type FalskIdentitetData = {
+	rettIdentitetVedIdentifikasjonsnummer?: string
+	rettIdentitetVedOpplysninger?: {
+		personnavn?: {
+			fornavn?: string
+			mellomnavn?: string
+			etternavn?: string
+		}
+		foedselsdato?: string
+		kjoenn?: string
+		statsborgerskap?: Array<string>
+	}
+	rettIdentitetErUkjent?: boolean
+	master?: string
+}
+
+export type UtenlandskIdentData = {
+	identifikasjonsnummer: string
+	utstederland: string
+	opphoert: boolean
+	master?: string
+}
+
+export type KontaktinformasjonForDoedsboData = {
+	skifteform: string
+	attestutstedelsesdato: string
+	kontaktType: string
+	adresse?: {
+		adresselinje1: string
+		adresselinje2: string
+		postnummer: string
+		poststedsnavn: string
+		landkode: string
+	}
+	advokatSomKontakt?: {
+		organisasjonsnummer: string
+		organisasjonsnavn: string
+		kontaktperson: Navn
+	}
+	organisasjonSomKontakt?: {
+		organisasjonsnummer: string
+		organisasjonsnavn: string
+		kontaktperson: Navn
+	}
+	personSomKontakt?: {
+		identifikasjonsnummer?: string
+		foedselsdato?: string
+		navn?: Navn
+		nyKontaktperson?: {
+			identtype: string
+			kjoenn: string
+			foedtEtter: string
+			foedtFoer: string
+			alder: string
+			syntetisk: string
+			nyttNavn: {
+				hasMellomnavn: boolean
+			}
+			statsborgerskapLandkode: string
+			gradering: string
+		}
+	}
+	master?: string
 }
 
 export type SelectedValue = {

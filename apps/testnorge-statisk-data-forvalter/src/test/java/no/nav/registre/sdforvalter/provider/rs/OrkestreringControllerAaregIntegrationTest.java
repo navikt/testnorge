@@ -2,10 +2,10 @@ package no.nav.registre.sdforvalter.provider.rs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -57,6 +57,13 @@ class OrkestreringControllerAaregIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private AaregModel createAaregModel() {
+        AaregModel model = new AaregModel();
+        model.setFnr(FNR);
+        model.setOrgId(ORGNR);
+        return model;
+    }
+
     @AfterEach
     void cleanUp() {
         reset();
@@ -66,13 +73,6 @@ class OrkestreringControllerAaregIntegrationTest {
     @BeforeAll
     static void setup() {
         syntString = getResourceFileContent("files/enkel_arbeidsforholdmelding.json");
-    }
-
-    private AaregModel createAaregModel() {
-        AaregModel model = new AaregModel();
-        model.setFnr(FNR);
-        model.setOrgId(ORGNR);
-        return model;
     }
 
     @Test

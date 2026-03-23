@@ -7,9 +7,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -22,11 +22,11 @@ public class HelsepersonellService {
 
     private static final String FILE_URL = "helsepersonell/helsepersonell.csv";
 
-    public List<HelsepersonellDTO> getHelsepersonell() {
+    public Mono<List<HelsepersonellDTO>> getHelsepersonell() {
 
-        var resource = new ClassPathResource(FILE_URL);
         try {
-            return new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))
+            var resource = new ClassPathResource(FILE_URL);
+            var helsepersonell = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))
                     .lines()
                     .filter(line -> !line.contains("FNR"))
                     .map(line -> line.split(";"))
@@ -38,9 +38,9 @@ public class HelsepersonellService {
                             .samhandlerType(words[3].trim())
                             .build())
                     .toList();
-
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, FILE_URL);
+            return Mono.just(helsepersonell);
+        } catch (Exception e) {
+            return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, FILE_URL));
         }
     }
 }

@@ -89,7 +89,6 @@ const selectOptions = {
 		{ value: 'FYUS', label: 'FYUS - Fysisk utestengelse' },
 		{ value: 'TFUS', label: 'TFUS - Telefonisk utestengelse' },
 		{ value: 'FTUS', label: 'FTUS - Fysisk/telefonisk utestengelse' },
-		{ value: 'DIUS', label: 'DIUS - Digital utestengelse' },
 		{ value: 'TOAN', label: 'TOAN - To ansatte i samtale' },
 	],
 
@@ -179,7 +178,7 @@ const selectOptions = {
 		{ value: 'POSTADRESSE_I_FRITT_FORMAT', label: 'Postadresse i fritt format (historisk)' },
 		{
 			value: 'UTENLANDSK_ADRESSE_I_FRITT_FORMAT',
-			label: 'Utenlandsk adresse i fritt format( historisk)',
+			label: 'Utenlandsk adresse i fritt format (historisk)',
 		},
 	],
 
@@ -861,11 +860,15 @@ const selectOptions = {
 
 	// Yrkesskader:
 	klassifisering: [
+		{ value: 'AVSLAG', label: 'Avslag' },
 		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
 		{ value: 'IMPORT', label: 'Import' },
+		{ value: 'IMPORT_PAPIR', label: 'Import papir' },
+		{ value: 'LARM_SYKDOM', label: 'Larm sykdom' },
 		{ value: 'MANUELL', label: 'Manuell' },
 		{ value: 'MELLOMSKADER', label: 'Mellomskader' },
 		{ value: 'MULIG_NULLSKADE', label: 'Mulig nullskade' },
+		{ value: 'RESTERENDE_SKADER', label: 'Resterende skader' },
 	],
 
 	tidstype: [

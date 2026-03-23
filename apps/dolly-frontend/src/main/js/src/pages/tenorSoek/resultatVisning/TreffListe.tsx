@@ -97,7 +97,7 @@ export const TreffListe = ({
 				className="flexbox--full-width"
 				style={{ marginBottom: '20px', position: 'sticky', top: '10px', zIndex: 1 }}
 			>
-				<Box background="surface-default" padding="3" borderRadius="medium">
+				<Box background="default" padding="space-12" borderRadius="4">
 					<div className="flexbox--space">
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
 							{antallTreff ? `${antallTreff} treff` : ''}
@@ -112,17 +112,19 @@ export const TreffListe = ({
 				</Box>
 			</div>
 			<div style={{ width: '30%' }}>
-				<VStack gap="4">
+				<VStack gap="space-16">
 					{personListe?.map((person: any) => {
 						return (
 							<Box
 								key={person?.id}
 								data-testid={TestComponentSelectors.BUTTON_PERSON_TENORSOEK}
-								padding="2"
+								padding="space-8"
 								background={
-									person?.id === valgtPerson?.id ? 'surface-alt-3-moderate' : 'surface-alt-3-subtle'
+									person?.id === valgtPerson?.id ? 'accent-moderate-pressed' : 'accent-moderate'
 								}
-								borderRadius="medium"
+								borderColor={person?.id === valgtPerson?.id ? 'accent-strong' : 'accent'}
+								borderWidth="1"
+								borderRadius="4"
 								onClick={() => setValgtPerson(person)}
 								style={{ cursor: 'pointer' }}
 							>
@@ -134,8 +136,9 @@ export const TreffListe = ({
 									{person?.iarenaSynt && (
 										<Tooltip content="Person har allerede arbeidsytelse(r) i Arena">
 											<Tag
+												data-color="meta-purple"
 												size="small"
-												variant="info"
+												variant="outline"
 												key={person?.id + 'arena'}
 												style={{ margin: '0 5px 5px 0' }}
 											>
@@ -145,7 +148,12 @@ export const TreffListe = ({
 									)}
 									{person?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
 										<Tooltip content={getTagTooltip(relasjon)} key={person?.id + idx}>
-											<Tag size="small" variant="neutral" style={{ margin: '0 5px 5px 0' }}>
+											<Tag
+												data-color="neutral"
+												size="small"
+												variant="outline"
+												style={{ margin: '0 5px 5px 0' }}
+											>
 												{relasjon}
 											</Tag>
 										</Tooltip>

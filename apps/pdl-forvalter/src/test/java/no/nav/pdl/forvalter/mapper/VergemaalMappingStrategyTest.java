@@ -33,9 +33,11 @@ class VergemaalMappingStrategyTest {
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto));
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getTjenesteoppgave()).isEqualTo("hjelpemidler,pensjon,arbeid");
-        assertThat(result.getFirst().getTjenestevirksomhet()).isEqualTo("nav");
+        assertThat(result).containsExactlyInAnyOrder(
+                Tjenesteomraade.builder().tjenesteoppgave("hjelpemidler").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("pensjon").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("arbeid").tjenestevirksomhet("nav").build()
+        );
     }
 
     @Test
@@ -46,35 +48,31 @@ class VergemaalMappingStrategyTest {
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto));
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getTjenesteoppgave()).isEqualTo("hjelpemidler");
-        assertThat(result.getFirst().getTjenestevirksomhet()).isEqualTo("nav");
+        assertThat(result).containsExactly(
+                Tjenesteomraade.builder().tjenesteoppgave("hjelpemidler").tjenestevirksomhet("nav").build()
+        );
     }
 
     @Test
-    void shouldMapTjenesteomraadeWithNullTjenesteoppgaveToEmptyString() {
+    void shouldMapTjenesteomraadeWithNullTjenesteoppgaveToEmptyList() {
         TjenesteomraadeDTO dto = new TjenesteomraadeDTO();
         dto.setTjenesteoppgave(null);
         dto.setTjenestevirksomhet("nav");
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto));
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getTjenesteoppgave()).isEmpty();
-        assertThat(result.getFirst().getTjenestevirksomhet()).isEqualTo("nav");
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void shouldMapTjenesteomraadeWithEmptyTjenesteoppgaveListToEmptyString() {
+    void shouldMapTjenesteomraadeWithEmptyTjenesteoppgaveListToEmptyList() {
         TjenesteomraadeDTO dto = new TjenesteomraadeDTO();
         dto.setTjenesteoppgave(Collections.emptyList());
         dto.setTjenestevirksomhet("nav");
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto));
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getTjenesteoppgave()).isEmpty();
-        assertThat(result.getFirst().getTjenestevirksomhet()).isEqualTo("nav");
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -89,10 +87,10 @@ class VergemaalMappingStrategyTest {
 
         List<Tjenesteomraade> result = VergemaalMappingStrategy.mapTjenesteomraade(List.of(dto1, dto2));
 
-        assertThat(result).hasSize(2);
-        assertThat(result.getFirst().getTjenesteoppgave()).isEqualTo("hjelpemidler,pensjon");
-        assertThat(result.getFirst().getTjenestevirksomhet()).isEqualTo("nav");
-        assertThat(result.get(1).getTjenesteoppgave()).isEqualTo("arbeid");
-        assertThat(result.get(1).getTjenestevirksomhet()).isEqualTo("annen");
+        assertThat(result).containsExactlyInAnyOrder(
+                Tjenesteomraade.builder().tjenesteoppgave("hjelpemidler").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("pensjon").tjenestevirksomhet("nav").build(),
+                Tjenesteomraade.builder().tjenesteoppgave("arbeid").tjenestevirksomhet("annen").build()
+        );
     }
 }

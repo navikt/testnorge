@@ -12,9 +12,9 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ToggleGroup } from '@navikt/ds-react'
-import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
 import { initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
+import { PersonIcon, PersonPlusIcon } from '@navikt/aksel-icons'
 
 interface PdlPersonValues {
 	path: string
@@ -31,16 +31,11 @@ interface PdlPersonValues {
 
 const StyledToggleGroup = styled(ToggleGroup)`
 	&&&& {
-		div {
-			background-color: #ffffff;
-		}
-
 		button {
 			margin-right: unset;
 		}
 	}
-
-	margin: 5px 0;
+	margin: 5px 0 10px 0;
 `
 
 const PersonType = {
@@ -123,25 +118,18 @@ export const PdlPersonForm = ({
 						label={'Personvalg'}
 						key={'toggle-' + path}
 					>
-						<ToggleGroup.Item key={path + PersonType.NY_PERSON} value={PersonType.NY_PERSON}>
-							<Icon
-								key={path + PersonType.NY_PERSON}
-								size={13}
-								kind={type === PersonType.NY_PERSON ? 'person-plus' : 'person-plus-fill'}
-							/>
-							{'Opprett ny person'}
-						</ToggleGroup.Item>
+						<ToggleGroup.Item
+							key={path + PersonType.NY_PERSON}
+							value={PersonType.NY_PERSON}
+							icon={<PersonPlusIcon aria-hidden />}
+							label="Opprett ny person"
+						/>
 						<ToggleGroup.Item
 							key={path + PersonType.EKSISTERENDE_PERSON}
 							value={PersonType.EKSISTERENDE_PERSON}
-						>
-							<Icon
-								key={path + PersonType.EKSISTERENDE_PERSON}
-								size={13}
-								kind={type === PersonType.EKSISTERENDE_PERSON ? 'person' : 'person-fill'}
-							/>
-							{'Velg eksisterende person'}
-						</ToggleGroup.Item>
+							icon={<PersonIcon aria-hidden />}
+							label="Velg eksisterende person"
+						/>
 					</StyledToggleGroup>
 					{type === PersonType.NY_PERSON && (
 						<PdlNyPerson

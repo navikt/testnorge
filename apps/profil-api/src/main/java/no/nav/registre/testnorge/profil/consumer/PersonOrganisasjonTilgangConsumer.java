@@ -5,7 +5,7 @@ import no.nav.registre.testnorge.profil.config.Consumers;
 import no.nav.registre.testnorge.profil.consumer.command.GetPersonOrganisasjonTilgangCommand;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

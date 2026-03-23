@@ -10,6 +10,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                 })
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error -> Mono.empty());
+                .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.empty());
     }
 
 }

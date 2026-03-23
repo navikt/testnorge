@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: testnav-levende-arbeidsforhold-service
     version: 1

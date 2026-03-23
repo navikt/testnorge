@@ -18,8 +18,10 @@ configurations {
 }
 
 // android-json is a stripped down version of org.json which causes conflicts with other libraries using org.json.*.
+// swagger-annotations (non-Jakarta) from Confluent kafka conflicts with swagger-annotations-jakarta used by springdoc.
 configurations.configureEach {
     exclude group: "com.vaadin.external.google", module: "android-json"
+    exclude group: "io.swagger.core.v3", module: "swagger-annotations"
 }
 
 dependencies {

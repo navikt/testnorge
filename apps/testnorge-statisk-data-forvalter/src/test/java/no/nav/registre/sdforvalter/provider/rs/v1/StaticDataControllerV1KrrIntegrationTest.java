@@ -1,12 +1,12 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
 import no.nav.registre.sdforvalter.domain.Krr;
 import no.nav.registre.sdforvalter.domain.KrrListe;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +39,6 @@ class StaticDataControllerV1KrrIntegrationTest {
     @Autowired
     private KrrRepository repository;
 
-    @AfterEach
-    void cleanUp() {
-        reset();
-        repository.deleteAll();
-    }
-
     private KrrModel createKrrModel(String fnr) {
         return createKrrModel(fnr, null);
     }
@@ -70,6 +64,12 @@ class StaticDataControllerV1KrrIntegrationTest {
 
     private Krr createKrr(String fnr, String gruppe) {
         return new Krr(createKrrModel(fnr, gruppe));
+    }
+
+    @AfterEach
+    void cleanUp() {
+        reset();
+        repository.deleteAll();
     }
 
     @Test

@@ -1,4 +1,3 @@
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
@@ -9,21 +8,29 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { LandVelger } from '@/components/landVelger/LandVelger'
 
 type StatsborgerskapTypes = {
 	path: string
 	kanVelgeMaster?: boolean
+	formMethods: UseFormReturn
 }
 
-export const StatsborgerskapForm = ({ path, kanVelgeMaster }: StatsborgerskapTypes) => {
+export const StatsborgerskapForm = ({
+	path,
+	kanVelgeMaster,
+	formMethods,
+}: StatsborgerskapTypes) => {
 	return (
 		<>
-			<FormSelect
-				name={`${path}.landkode`}
+			<LandVelger
+				formMethods={formMethods}
+				path={`${path}.landkode`}
+				checkboxName={`${path}.ukjentLand`}
+				ukjentLandKode="XUK"
 				label="Statsborgerskap"
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				size="large"
-				isClearable={false}
 			/>
 			<FormDatepicker
 				name={`${path}.gyldigFraOgMed`}
@@ -36,7 +43,7 @@ export const StatsborgerskapForm = ({ path, kanVelgeMaster }: StatsborgerskapTyp
 	)
 }
 
-export const Statsborgerskap = () => {
+export const Statsborgerskap = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
@@ -53,6 +60,7 @@ export const Statsborgerskap = () => {
 					<StatsborgerskapForm
 						path={path}
 						kanVelgeMaster={opts?.identMaster !== 'PDL' && opts?.identtype !== 'NPID'}
+						formMethods={formMethods}
 					/>
 				)}
 			</FormDollyFieldArray>

@@ -1,38 +1,71 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { KodeverkTitleValue } from '@/components/fagsystem/skattekort/visning/Visning'
-import { toTitleCase } from '@/utils/DataFormatter'
 
-export const ForskuddstrekkVisning = ({ trekkliste }: any) => {
+interface ForskuddstrekkDTO {
+	trekkode: string
+	frikort?: FrikortDTO
+	prosentkort?: ProsentkortDTO
+	trekktabell?: TabellkortDTO
+}
+
+interface FrikortDTO {
+	frikortBeloep?: number
+}
+
+interface ProsentkortDTO {
+	prosentSats: number
+	antallMndForTrekk?: number
+}
+
+interface TabellkortDTO {
+	tabell: string
+	prosentSats: number
+	antallMndForTrekk: number
+}
+
+interface ForskuddstrekkVisningProps {
+	trekkliste?: ForskuddstrekkDTO[]
+}
+
+export const ForskuddstrekkVisning = ({ trekkliste }: ForskuddstrekkVisningProps) => {
 	if (!trekkliste || trekkliste?.length < 1) {
 		return null
 	}
 
+	const getFrikortBeloep = (frikort: any): any => {
+		if (frikort === undefined) {
+			return undefined
+		}
+
+		if (frikort.frikortBeloep === undefined) {
+			return 'Ingen beløpsgrense'
+		}
+
+		return frikort.frikortBeloep
+	}
+
 	return (
 		<DollyFieldArray header="Forskuddstrekk" data={trekkliste} nested whiteBackground>
-			{(trekk: any, idx: number) => {
-				const forskuddstrekkType = Object.keys(trekk)?.filter((key) => trekk[key])?.[0]
-				const forskuddstrekk = trekk[forskuddstrekkType]
-
+			{(trekk: ForskuddstrekkDTO, idx: number) => {
 				return (
 					<div className="person-visning_content" key={idx}>
-						<TitleValue title="Trekktype" value={toTitleCase(forskuddstrekkType)} />
 						<KodeverkTitleValue
-							kodeverkstype="TREKKODE"
-							value={forskuddstrekk?.trekkode}
+							kodeverkstype="TREKKODE_FRA_SOKOS"
+							value={trekk?.trekkode}
 							label="Trekkode"
 						/>
-						<TitleValue title="Frikortbeløp" value={forskuddstrekk?.frikortbeloep} />
-						<KodeverkTitleValue
-							kodeverkstype="TABELLTYPE"
-							value={forskuddstrekk?.tabelltype}
-							label="Tabelltype"
-						/>
-						<TitleValue title="Tabellnummer" value={forskuddstrekk?.tabellnummer} />
-						<TitleValue title="Prosentsats" value={forskuddstrekk?.prosentsats} />
+						<TitleValue title="Frikortbeløp" value={getFrikortBeloep(trekk?.frikort)} />
+						<TitleValue title="Prosentsats" value={trekk?.prosentkort?.prosentSats} />
 						<TitleValue
 							title="Antall måneder for trekk"
-							value={forskuddstrekk?.antallMaanederForTrekk}
+							value={trekk?.prosentkort?.antallMndForTrekk}
+						/>
+						<TitleValue title="Tabell" value={trekk?.trekktabell?.tabell} />
+						<TitleValue title="Prosentsats" value={trekk?.trekktabell?.prosentSats} />
+						<TitleValue
+							title="Antall måneder for trekk"
+							value={trekk?.trekktabell?.antallMndForTrekk}
 						/>
 					</div>
 				)

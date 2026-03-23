@@ -5,7 +5,6 @@ import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseRequest;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.existQuery;
-import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.fuzzyQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.matchQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -29,7 +28,7 @@ public class OpenSearchMatrikkeladresseQueryUtils {
 
         if (isNotBlank(request.getTilleggsnavn())) {
 
-            queryBuilder.must(q -> q.fuzzy(fuzzyQuery("matrikkeladresse.adressetilleggsnavn", request.getTilleggsnavn())));
+            queryBuilder.must(q -> q.match(matchQuery("matrikkeladresse.adressetilleggsnavn", request.getTilleggsnavn())));
         }
     }
 

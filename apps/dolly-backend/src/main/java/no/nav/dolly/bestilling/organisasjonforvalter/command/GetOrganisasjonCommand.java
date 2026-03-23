@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class GetOrganisasjonCommand implements Callable<Flux<OrganisasjonDetalje
                 .doOnError(WebClientError.logTo(log))
 
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> Flux.empty());
+                .onErrorResume(WebClientResponseException.NotFound.class, throwable -> Flux.empty());
     }
 
 }

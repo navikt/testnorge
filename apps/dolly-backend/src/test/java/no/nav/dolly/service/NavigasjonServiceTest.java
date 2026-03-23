@@ -101,7 +101,7 @@ class NavigasjonServiceTest {
         when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(1));
         when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT))
+        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT, 10))
                 .expectNextMatches(rsWhereAmI ->
                         rsWhereAmI.getIdentHovedperson().equals(expected.getIdentHovedperson()) &&
                                 rsWhereAmI.getIdentNavigerTil().equals(expected.getIdentNavigerTil()))
@@ -140,7 +140,7 @@ class NavigasjonServiceTest {
         when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(1));
         when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(TENOR_IDENT))
+        StepVerifier.create(navigasjonService.navigerTilIdent(TENOR_IDENT, 10))
                 .expectNextMatches(rsWhereAmI ->
                         rsWhereAmI.getIdentHovedperson().equals(expected.getIdentHovedperson()) &&
                                 rsWhereAmI.getIdentNavigerTil().equals(expected.getIdentNavigerTil()))
@@ -160,7 +160,7 @@ class NavigasjonServiceTest {
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fpRefused));
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT))
+        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT, 10))
                 .expectError(NotFoundException.class)
                 .verify();
     }
@@ -175,7 +175,7 @@ class NavigasjonServiceTest {
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.empty());
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.empty());
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT))
+        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT, 10))
                 .expectError(NotFoundException.class)
                 .verify();
     }
@@ -198,7 +198,7 @@ class NavigasjonServiceTest {
         when(identRepository.countByGruppeIdAndIBruk(bestilling.getGruppeId(), true)).thenReturn(Mono.just(1));
         when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
-        Mono<RsWhereAmI> result = navigasjonService.navigerTilBestilling(1L);
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilBestilling(1L, 10);
 
         StepVerifier.create(result)
                 .expectNextMatches(rsWhereAmI -> rsWhereAmI.getBestillingNavigerTil().equals(1L))
@@ -211,8 +211,92 @@ class NavigasjonServiceTest {
         var bestillingId = 1L;
         when(bestillingService.fetchBestillingById(any())).thenReturn(Mono.empty());
 
-        StepVerifier.create(navigasjonService.navigerTilBestilling(bestillingId))
+        StepVerifier.create(navigasjonService.navigerTilBestilling(bestillingId, 10))
                 .expectError(NotFoundException.class)
                 .verify();
     }
+
+    @Test
+    void shouldCalculateCorrectPageForIdentWithCustomPageSize() {
+
+        var testident = Testident.builder()
+                .ident(IDENT)
+                .gruppeId(1L)
+                .build();
+
+        var fullPersonDTO = FullPersonDTO.builder()
+                .person(PersonDTO.builder().ident(IDENT).build())
+                .build();
+
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().brukerId(TESTBRUKER).build()));
+        when(identRepository.findByIdent(any())).thenReturn(Mono.just(testident));
+        when(identService.getPaginertIdentIndex(any(), any())).thenReturn(Mono.just(45));
+        when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
+        when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
+        when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
+        when(testgruppeRepository.findById(1L)).thenReturn(Mono.just(Testgruppe.builder().id(1L).build()));
+        when(identRepository.countByGruppeId(any())).thenReturn(Mono.just(50));
+        when(bestillingRepository.countByGruppeId(any())).thenReturn(Mono.just(0));
+        when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(50));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
+
+        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT, 20))
+                .expectNextMatches(rsWhereAmI -> rsWhereAmI.getSidetall() == 2)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCalculateCorrectPageForIdentWithPageSize50() {
+
+        var testident = Testident.builder()
+                .ident(IDENT)
+                .gruppeId(1L)
+                .build();
+
+        var fullPersonDTO = FullPersonDTO.builder()
+                .person(PersonDTO.builder().ident(IDENT).build())
+                .build();
+
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().brukerId(TESTBRUKER).build()));
+        when(identRepository.findByIdent(any())).thenReturn(Mono.just(testident));
+        when(identService.getPaginertIdentIndex(any(), any())).thenReturn(Mono.just(45));
+        when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
+        when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
+        when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
+        when(testgruppeRepository.findById(1L)).thenReturn(Mono.just(Testgruppe.builder().id(1L).build()));
+        when(identRepository.countByGruppeId(any())).thenReturn(Mono.just(100));
+        when(bestillingRepository.countByGruppeId(any())).thenReturn(Mono.just(0));
+        when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(100));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
+
+        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT, 50))
+                .expectNextMatches(rsWhereAmI -> rsWhereAmI.getSidetall() == 0)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCalculateCorrectPageForBestillingWithCustomPageSize() {
+
+        var bestillingId = 1L;
+        var bestilling = Bestilling.builder()
+                .id(bestillingId)
+                .gruppeId(1L)
+                .build();
+
+        when(bestillingService.fetchBestillingById(any())).thenReturn(Mono.just(bestilling));
+        when(testgruppeRepository.findByBestillingId(bestilling.getId())).thenReturn(Mono.just(Testgruppe.builder().id(bestilling.getGruppeId()).build()));
+        when(bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppeId())).thenReturn(Mono.just(25));
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().brukerId(TESTBRUKER).build()));
+        when(identRepository.countByGruppeId(1L)).thenReturn(Mono.just(30));
+        when(bestillingRepository.countByGruppeId(bestilling.getGruppeId())).thenReturn(Mono.just(30));
+        when(identRepository.countByGruppeIdAndIBruk(bestilling.getGruppeId(), true)).thenReturn(Mono.just(30));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
+
+        StepVerifier.create(navigasjonService.navigerTilBestilling(bestillingId, 20))
+                .expectNextMatches(rsWhereAmI ->
+                        rsWhereAmI.getBestillingNavigerTil().equals(1L) &&
+                                rsWhereAmI.getSidetall() == 1)
+                .verifyComplete();
+    }
+
 }

@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
-import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterClient;
 import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
@@ -24,10 +23,10 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.opensearch.BestillingDokument;
-import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.opensearch.BestillingDokument;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -145,22 +144,15 @@ public class DollyBestillingService {
 
     private GjenopprettSteg fase3Klienter() {
 
-        return ArenaForvalterClient.class::isInstance;
-    }
-
-    private GjenopprettSteg fase4Klienter() {
-
         return register ->
                 !fase1Klienter().apply(register) &&
-                        !fase2Klienter().apply(register) &&
-                        !fase3Klienter().apply(register);
+                        !fase2Klienter().apply(register);
     }
 
     private List<GjenopprettSteg> remainingFaser() {
 
         return List.of(fase2Klienter(),
-                fase3Klienter(),
-                fase4Klienter());
+                fase3Klienter());
     }
 
     protected Mono<BestillingProgress> gjenopprettKlienterStart(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,

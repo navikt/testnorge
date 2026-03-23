@@ -53,7 +53,7 @@ export const ActionMenuWrapper: React.FC<ActionMenuProps> = ({
 				) : (
 					<ActionMenu.Trigger
 						className={isActive ? 'dropdown-toggle active' : 'dropdown-toggle'}
-						style={{ margin: 0, padding: '19px 10px' }}
+						style={{ margin: 0, padding: '19px 10px', color: 'white' }}
 					>
 						<InternalHeader.Button data-testid={dataTestId}>{title}</InternalHeader.Button>
 					</ActionMenu.Trigger>

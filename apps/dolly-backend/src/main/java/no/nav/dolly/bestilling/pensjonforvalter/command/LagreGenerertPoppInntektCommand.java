@@ -10,12 +10,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,7 +43,6 @@ public class LagreGenerertPoppInntektCommand implements Callable<Flux<Pensjonfor
                 .bodyValue(pensjonPoppGenerertInntektRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
-                .timeout(Duration.ofSeconds(SHORT_REQUEST_DURATION))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {

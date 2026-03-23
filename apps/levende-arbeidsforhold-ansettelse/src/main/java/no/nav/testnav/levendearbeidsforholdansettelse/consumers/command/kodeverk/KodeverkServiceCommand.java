@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -44,6 +45,6 @@ public class KodeverkServiceCommand implements Callable<Mono<Map<String, String>
                         mapper.convertValue(node.get("kodeverk"), KODEVERK_TYPE) :
                         HashMap.<String, String>newHashMap(0))
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(error -> Mono.empty());
+                .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.just(Map.of()));
     }
 }

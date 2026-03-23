@@ -19,7 +19,7 @@ import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/Org
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-	background-color: #ffffff;
+	margin-bottom: 10px;
 `
 
 type ArbeidsforholdToggleProps = {
