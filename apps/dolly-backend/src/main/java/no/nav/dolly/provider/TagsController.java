@@ -30,7 +30,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/tags", produces = MediaType.APPLICATION_JSON_VALUE)
-public class TagController {
+public class TagsController {
 
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
     private final TagsService tagsService;
