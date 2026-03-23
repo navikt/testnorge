@@ -103,8 +103,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setFoedsel(tuple.getT1()))
                 .flatMap(tuple -> foedselService.validate(oppdatertFoedsel, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> foedselService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(foedselService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -116,8 +115,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setFoedested(tuple.getT1()))
                 .flatMap(tuple -> foedestedService.validate(oppdatertFoedested, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> foedestedService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(foedestedService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -129,8 +127,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setFoedselsdato(tuple.getT1()))
                 .flatMap(tuple -> foedselsdatoService.validate(oppdatertFoedselsdato, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> foedselsdatoService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(foedselsdatoService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -142,8 +139,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setNavn(tuple.getT1()))
                 .flatMap(tuple -> navnService.validate(oppdatertNavn, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> navnService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(navnService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -155,8 +151,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setKjoenn(tuple.getT1()))
                 .flatMap(tuple -> kjoennService.validate(oppdatertKjoenn, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> kjoennService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(kjoennService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -168,10 +163,8 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setBostedsadresse(tuple.getT1()))
                 .flatMap(tuple -> bostedAdresseService.validate(oppdatertAdresse, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> bostedAdresseService.convert(person.getPerson(), false)
-                        .thenReturn(person))
-                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(person -> bostedAdresseService.convert(person, false))
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
     }
 
@@ -183,8 +176,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setKontaktadresse(tuple.getT1()))
                 .flatMap(tuple -> kontaktAdresseService.validate(oppdatertAdresse, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> kontaktAdresseService.convert(person.getPerson(), false)
-                        .thenReturn(person))
+                .flatMap(person -> kontaktAdresseService.convert(person, false))
                 .flatMap(this::savePerson);
     }
 
@@ -196,8 +188,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setOppholdsadresse(tuple.getT1()))
                 .flatMap(tuple -> oppholdsadresseService.validate(oppdatertAdresse, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> oppholdsadresseService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(oppholdsadresseService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -209,10 +200,8 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setInnflytting(tuple.getT1()))
                 .flatMap(tuple -> innflyttingService.validate(oppdatertInnflytting)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> innflyttingService.convert(person.getPerson())
-                        .thenReturn(person))
-                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(innflyttingService::convert)
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
     }
 
@@ -224,10 +213,8 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setUtflytting(tuple.getT1()))
                 .flatMap(tuple -> utflyttingService.validate(oppdatertUtflytting)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> utflyttingService.convert(person.getPerson())
-                        .thenReturn(person))
-                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(utflyttingService::convert)
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
     }
 
@@ -267,8 +254,7 @@ public class ArtifactUpdateService {
                     tuple.getT2().getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
                     tuple.getT2().getPerson().setForelderBarnRelasjon(tuple.getT1());
                 })
-                .flatMap(tuple -> forelderBarnRelasjonService.convert(tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(tuple -> forelderBarnRelasjonService.convert(tuple.getT2()))
                 .flatMap(this::savePerson)
                 .then();
     }
@@ -335,8 +321,7 @@ public class ArtifactUpdateService {
                     tuple.getT2().getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed());
                     tuple.getT2().getPerson().setKontaktinformasjonForDoedsbo(tuple.getT1());
                 })
-                .flatMap(tuple -> kontaktinformasjonForDoedsboService.convert(tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(tuple -> kontaktinformasjonForDoedsboService.convert(tuple.getT2()))
                 .flatMap(this::savePerson)
                 .then();
     }
@@ -349,8 +334,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setUtenlandskIdentifikasjonsnummer(tuple.getT1()))
                 .flatMap(tuple -> utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> utenlandsidentifikasjonsnummerService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(utenlandsidentifikasjonsnummerService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -377,10 +361,8 @@ public class ArtifactUpdateService {
                     tuple.getT2().getPerson().getFalskIdentitet().sort(Comparator.comparing(FalskIdentitetDTO::getId).reversed());
                     tuple.getT2().getPerson().setFalskIdentitet(tuple.getT1());
                 })
-                .flatMap(tuple -> falskIdentitetService.convert(tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
-                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(tuple -> falskIdentitetService.convert(tuple.getT2()))
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson)
                 .then();
     }
@@ -393,11 +375,8 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setAdressebeskyttelse(tuple.getT1()))
                 .flatMap(tuple -> adressebeskyttelseService.validate(oppdatertBeskyttelse, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> adressebeskyttelseService.convert(person.getPerson())
-                        .thenReturn(person))
-                .flatMap(person ->
-                        folkeregisterPersonstatusService.update(person.getPerson())
-                                .thenReturn(person))
+                .flatMap(adressebeskyttelseService::convert)
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
     }
 
@@ -409,10 +388,8 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setDoedsfall(tuple.getT1()))
                 .flatMap(tuple -> doedsfallService.validate(oppdatertDoedsfall)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> doedsfallService.convert(person.getPerson())
-                        .thenReturn(person))
-                .flatMap(person -> folkeregisterPersonstatusService.update(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(doedsfallService::convert)
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
     }
 
@@ -424,8 +401,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setFolkeregisterPersonstatus(tuple.getT1()))
                 .flatMap(tuple -> folkeregisterPersonstatusService.validate(oppdatertStatus, tuple.getT2().getPerson())
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> folkeregisterPersonstatusService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(folkeregisterPersonstatusService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -437,8 +413,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setTilrettelagtKommunikasjon(tuple.getT1()))
                 .flatMap(tuple -> tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> tilrettelagtKommunikasjonService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(tilrettelagtKommunikasjonService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -450,8 +425,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setStatsborgerskap(tuple.getT1()))
                 .flatMap(tuple -> statsborgerskapService.validate(oppdatertStatsborgerskap)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> statsborgerskapService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(statsborgerskapService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -463,8 +437,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setOpphold(tuple.getT1()))
                 .flatMap(tuple -> oppholdService.validate(oppdatertOpphold)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> oppholdService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(oppholdService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -491,8 +464,7 @@ public class ArtifactUpdateService {
                     tuple.getT2().getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
                     tuple.getT2().getPerson().setSivilstand(tuple.getT1());
                 })
-                .flatMap(tuple -> sivilstandService.convert(tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(tuple -> sivilstandService.convert(tuple.getT2()))
                 .flatMap(this::savePerson)
                 .then();
     }
@@ -510,8 +482,7 @@ public class ArtifactUpdateService {
                         .collectList()
                         .doOnNext(telefonnumre ->
                                 person.getPerson().setTelefonnummer(telefonnumre))
-                        .flatMap(type -> telefonnummerService.convert(person.getPerson())
-                                .thenReturn(person)))
+                        .flatMap(type -> telefonnummerService.convert(person)))
                 .flatMap(this::savePerson);
     }
 
@@ -538,8 +509,7 @@ public class ArtifactUpdateService {
                         .switchIfEmpty(updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal")
                                 .doOnNext(type ->
                                         person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed())))
-                        .flatMap(vergemaal -> vergemaalService.convert(person.getPerson())
-                                .thenReturn(person)))
+                        .flatMap(vergemaal -> vergemaalService.convert(person)))
                 .flatMap(this::savePerson)
                 .then();
     }
@@ -552,8 +522,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setSikkerhetstiltak(tuple.getT1()))
                 .flatMap(tuple -> sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> sikkerhetstiltakService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(sikkerhetstiltakService::convert)
                 .flatMap(this::savePerson);
     }
 
@@ -565,8 +534,7 @@ public class ArtifactUpdateService {
                 .doOnNext(tuple -> tuple.getT2().getPerson().setDoedfoedtBarn(tuple.getT1()))
                 .flatMap(tuple -> doedfoedtBarnService.validate(oppdatertDoedfoedt)
                         .thenReturn(tuple.getT2()))
-                .flatMap(person -> doedfoedtBarnService.convert(person.getPerson())
-                        .thenReturn(person))
+                .flatMap(doedfoedtBarnService::convert)
                 .flatMap(this::savePerson);
     }
 

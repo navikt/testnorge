@@ -7,7 +7,6 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
 
         return Flux.fromIterable(dbPerson.getPerson().getUtflytting())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, dbPerson.getPerson()))
+                .flatMap(type -> handle(type, dbPerson))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
@@ -57,11 +56,11 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
         return Mono.empty();
     }
 
-    protected Mono<UtflyttingDTO> handle(UtflyttingDTO utflytting, PersonDTO person) {
+    protected Mono<UtflyttingDTO> handle(UtflyttingDTO utflytting, DbPerson dbPerson) {
 
-        return getUtflytting(utflytting, person)
+        return getUtflytting(utflytting, dbPerson)
                 .doOnNext(utflytting1 -> {
-                    if (person.getFolkeregisterPersonstatus().stream()
+                    if (dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
                             .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getStatus()) ||
                                                                  UTFLYTTET == folkeregisterPersonstatus.getStatus())
                             .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getGyldigFraOgMed()) ||
@@ -69,9 +68,9 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                             .findFirst()
                             .isEmpty()) {
 
-                        person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
+                        dbPerson.getPerson().getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
                                 .isNew(true)
-                                .id(person.getFolkeregisterPersonstatus().stream()
+                                .id(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
                                             .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
                                             .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
                                             .getId() + 1)
@@ -80,7 +79,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                 });
     }
 
-    private Mono<UtflyttingDTO> getUtflytting(UtflyttingDTO utflytting, PersonDTO person) {
+    private Mono<UtflyttingDTO> getUtflytting(UtflyttingDTO utflytting, DbPerson dbPerson) {
 
 
         return Mono.just(utflytting)
@@ -96,39 +95,39 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                         utflytting2.setUtflyttingsdato(LocalDateTime.now());
                     }
 
-                    person.getBostedsadresse()
+                    dbPerson.getPerson().getBostedsadresse()
                             .removeIf(bostedsadresse -> bostedsadresse.isAdresseNorge() &&
                                                         bostedsadresse.getGyldigFraOgMed().isAfter(utflytting2.getUtflyttingsdato()));
 
-                    if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().getFirst().isAdresseNorge()) {
-                        person.getBostedsadresse().getFirst().setGyldigTilOgMed(utflytting2.getUtflyttingsdato().minusDays(1));
+                    if (!dbPerson.getPerson().getBostedsadresse().isEmpty() && dbPerson.getPerson().getBostedsadresse().getFirst().isAdresseNorge()) {
+                        dbPerson.getPerson().getBostedsadresse().getFirst().setGyldigTilOgMed(utflytting2.getUtflyttingsdato().minusDays(1));
                     }
 
-                    if (utflytting2.isVelkjentLand() && person.getBostedsadresse().stream()
+                    if (utflytting2.isVelkjentLand() && dbPerson.getPerson().getBostedsadresse().stream()
                             .filter(BostedadresseDTO::isAdresseUtland)
                             .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
                                                adresse.getGyldigTilOgMed().isAfter(utflytting2.getUtflyttingsdato()))
                             .findFirst()
-                            .isEmpty() && person.getKontaktadresse().stream()
+                            .isEmpty() && dbPerson.getPerson().getKontaktadresse().stream()
                                 .filter(KontaktadresseDTO::isAdresseUtland)
                                 .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
                                                    adresse.getGyldigTilOgMed().isAfter(utflytting2.getUtflyttingsdato()))
                                 .findFirst()
                                 .isEmpty()) {
 
-                        person.getKontaktadresse().addFirst(KontaktadresseDTO.builder()
+                        dbPerson.getPerson().getKontaktadresse().addFirst(KontaktadresseDTO.builder()
                                 .utenlandskAdresse(UtenlandskAdresseDTO.builder()
                                         .landkode(utflytting2.getTilflyttingsland())
                                         .build())
                                 .gyldigFraOgMed(utflytting2.getUtflyttingsdato())
                                 .isNew(true)
-                                .id(person.getKontaktadresse().stream()
+                                .id(dbPerson.getPerson().getKontaktadresse().stream()
                                             .max(Comparator.comparing(KontaktadresseDTO::getId))
                                             .orElse(KontaktadresseDTO.builder().id(0).build())
                                             .getId() + 1)
                                 .build());
 
-                        return kontaktAdresseService.convert(person, false)
+                        return kontaktAdresseService.convert(dbPerson, false)
                                 .thenReturn(utflytting2);
                     }
                     return Mono.just(utflytting2);

@@ -171,9 +171,7 @@ public class ArtifactDeleteService {
                         dbPerson.getPerson().setBostedsadresse(dbPerson.getPerson().getBostedsadresse().stream()
                                 .filter(type -> !id.equals(type.getId()))
                                 .toList()))
-                .flatMap(dbPerson ->
-                        folkeregisterPersonstatusService.update(dbPerson.getPerson())
-                                .thenReturn(dbPerson))
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(personRepository::save)
                 .then();
     }
@@ -225,9 +223,7 @@ public class ArtifactDeleteService {
                         dbPerson.getPerson().setInnflytting(dbPerson.getPerson().getInnflytting().stream()
                                 .filter(type -> !id.equals(type.getId()))
                                 .toList()))
-                .flatMap(dbPerson ->
-                        folkeregisterPersonstatusService.update(dbPerson.getPerson())
-                                .thenReturn(dbPerson))
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(personRepository::save)
                 .then();
     }
@@ -245,7 +241,7 @@ public class ArtifactDeleteService {
                         dbPerson.getPerson().setUtflytting(dbPerson.getPerson().getUtflytting().stream()
                                 .filter(type -> !id.equals(type.getId()))
                                 .toList()))
-                .flatMap(dbPerson -> folkeregisterPersonstatusService.update(dbPerson)
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(personRepository::save)
                 .then();
     }
@@ -386,8 +382,7 @@ public class ArtifactDeleteService {
                         dbPerson.getPerson().setFalskIdentitet(dbPerson.getPerson().getFalskIdentitet().stream()
                                 .filter(type -> !id.equals(type.getId()))
                                 .toList()))
-                .flatMap(dbPerson -> folkeregisterPersonstatusService.update(dbPerson.getPerson())
-                        .thenReturn(dbPerson))
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(personRepository::save)
                 .then();
     }
@@ -422,8 +417,7 @@ public class ArtifactDeleteService {
                         dbPerson.getPerson().setDoedsfall(dbPerson.getPerson().getDoedsfall().stream()
                                 .filter(type -> !id.equals(type.getId()))
                                 .toList()))
-                .flatMap(dbPerson -> folkeregisterPersonstatusService.update(dbPerson.getPerson())
-                        .thenReturn(dbPerson))
+                .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(personRepository::save)
                 .then();
     }
