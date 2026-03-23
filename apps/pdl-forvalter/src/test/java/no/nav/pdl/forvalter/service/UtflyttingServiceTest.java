@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.val;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
@@ -55,21 +56,23 @@ class UtflyttingServiceTest {
     @Test
     void whenEmptyLandkode_thenProvideCountryFromGeografiskeKodeverkConsumer() {
 
-        val request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
+        val request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
+                        .build())
                 .build();
 
         when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("TGW"));
-        when(kontaktAdresseService.convert(any(PersonDTO.class), anyBoolean())).thenReturn(Mono.just(request));
+        when(kontaktAdresseService.convert(any(DbPerson.class), anyBoolean())).thenReturn(Mono.just(request));
 
         StepVerifier.create(utflyttingService.convert(request))
                 .assertNext(target -> {
 
                     verify(kodeverkConsumer).getTilfeldigLand();
-                    verify(kontaktAdresseService).convert(any(PersonDTO.class), anyBoolean());
+                    verify(kontaktAdresseService).convert(any(DbPerson.class), anyBoolean());
 
-                    assertThat(target.getUtflytting().getFirst().getTilflyttingsland(), is(equalTo("TGW")));
+                    assertThat(target.getPerson().getUtflytting().getFirst().getTilflyttingsland(), is(equalTo("TGW")));
                 })
                 .verifyComplete();
     }

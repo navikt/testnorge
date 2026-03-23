@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,8 @@ class NavnServiceTest {
     @Test
     void whenNameVerifies_acceptProposal() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .navn(List.of(NavnDTO.builder()
                         .fornavn("Gyldig")
@@ -61,13 +63,14 @@ class NavnServiceTest {
                         .etternavn("Sjømann")
                         .isNew(true)
                         .build()))
+                .build())
                 .build();
 
         StepVerifier.create(navnService.convert(request))
                 .assertNext(target -> {
-                    assertThat(target.getNavn().getFirst().getFornavn(), is(equalTo("Gyldig")));
-                    assertThat(target.getNavn().getFirst().getMellomnavn(), is(equalTo("Sjanglende")));
-                    assertThat(target.getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
+                    assertThat(target.getPerson().getNavn().getFirst().getFornavn(), is(equalTo("Gyldig")));
+                    assertThat(target.getPerson().getNavn().getFirst().getMellomnavn(), is(equalTo("Sjanglende")));
+                    assertThat(target.getPerson().getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
                 })
                 .verifyComplete();
 
@@ -76,11 +79,13 @@ class NavnServiceTest {
     @Test
     void whenNamesNotProvidedWithoutMellomnavn_provideNames() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .navn(List.of(NavnDTO.builder()
                         .isNew(true)
                         .build()))
+                .build())
                 .build();
 
         when(genererNavnServiceConsumer.getNavn()).thenReturn(Mono.just(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
@@ -92,9 +97,9 @@ class NavnServiceTest {
         StepVerifier.create(navnService.convert(request))
                 .assertNext(target -> {
 
-                    assertThat(target.getNavn().getFirst().getFornavn(), is(equalTo("Full")));
-                    assertThat(target.getNavn().getFirst().getMellomnavn(), nullValue());
-                    assertThat(target.getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
+                    assertThat(target.getPerson().getNavn().getFirst().getFornavn(), is(equalTo("Full")));
+                    assertThat(target.getPerson().getNavn().getFirst().getMellomnavn(), nullValue());
+                    assertThat(target.getPerson().getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
                 })
                 .verifyComplete();
     }
@@ -102,12 +107,14 @@ class NavnServiceTest {
     @Test
     void whenNamesNotProvidedWithMellomnavn_provideNames() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .navn(List.of(NavnDTO.builder()
                         .hasMellomnavn(true)
                         .isNew(true)
                         .build()))
+                .build())
                 .build();
 
         when(genererNavnServiceConsumer.getNavn()).thenReturn(Mono.just(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
@@ -119,9 +126,9 @@ class NavnServiceTest {
         StepVerifier.create(navnService.convert(request))
                 .assertNext(target -> {
 
-                    assertThat(target.getNavn().getFirst().getFornavn(), is(equalTo("Full")));
-                    assertThat(target.getNavn().getFirst().getMellomnavn(), is(equalTo("Sjanglende")));
-                    assertThat(target.getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
+                    assertThat(target.getPerson().getNavn().getFirst().getFornavn(), is(equalTo("Full")));
+                    assertThat(target.getPerson().getNavn().getFirst().getMellomnavn(), is(equalTo("Sjanglende")));
+                    assertThat(target.getPerson().getNavn().getFirst().getEtternavn(), is(equalTo("Sjømann")));
                 })
                 .verifyComplete();
     }

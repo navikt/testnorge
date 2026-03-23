@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -65,31 +66,35 @@ class StatsborgerskapServiceTest {
     @Test
     void whenLandkodeIsEmptyAndAvailFromInnflytting_thenPickLandkodeFromInnflytting() {
 
-        StepVerifier.create(statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
+        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
+                        .person(PersonDTO.builder()
+                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                        .isNew(true)
+                                        .build()))
+                                .ident(FNR_IDENT)
+                                .innflytting(List.of(InnflyttingDTO.builder()
+                                        .fraflyttingsland("GER")
+                                        .build()))
+                                .build())
                         .build()))
-                .ident(FNR_IDENT)
-                .innflytting(List.of(InnflyttingDTO.builder()
-                        .fraflyttingsland("GER")
-                        .build()))
-                .build()))
                 .assertNext(target ->
-                        assertThat(target.getStatsborgerskap().getFirst().getLandkode(), is(equalTo("GER"))))
+                        assertThat(target.getPerson().getStatsborgerskap().getFirst().getLandkode(), is(equalTo("GER"))))
                 .verifyComplete();
     }
 
     @Test
     void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeFNR_thenSetLandkodeNorge() {
 
-        StepVerifier.create(statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
+        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
+                        .person(PersonDTO.builder()
+                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                        .isNew(true)
+                                        .build()))
+                                .ident(FNR_IDENT)
+                                .build())
                         .build()))
-                .ident(FNR_IDENT)
-                .build()))
                 .assertNext(target ->
-                        assertThat(target.getStatsborgerskap().getFirst().getLandkode(), is(equalTo("NOR"))))
+                        assertThat(target.getPerson().getStatsborgerskap().getFirst().getLandkode(), is(equalTo("NOR"))))
                 .verifyComplete();
     }
 
@@ -98,15 +103,17 @@ class StatsborgerskapServiceTest {
 
         when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("CHL"));
 
-        StepVerifier.create(statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
+        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
+                        .person(PersonDTO.builder()
+                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                        .isNew(true)
+                                        .build()))
+                                .ident(DNR_IDENT)
+                                .build())
                         .build()))
-                .ident(DNR_IDENT)
-                .build()))
                 .assertNext(target -> {
                     verify(kodeverkConsumer).getTilfeldigLand();
-                    assertThat(target.getStatsborgerskap().getFirst().getLandkode(), is(equalTo("CHL")));
+                    assertThat(target.getPerson().getStatsborgerskap().getFirst().getLandkode(), is(equalTo("CHL")));
                 })
                 .verifyComplete();
     }
@@ -114,15 +121,17 @@ class StatsborgerskapServiceTest {
     @Test
     void whenGyldigFomNotProvided_thenDeriveGyldigFomFromBirthdate() {
 
-        StepVerifier.create(statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
-                        .master(DbVersjonDTO.Master.PDL)
+        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
+                        .person(PersonDTO.builder()
+                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                        .isNew(true)
+                                        .master(DbVersjonDTO.Master.PDL)
+                                        .build()))
+                                .ident(FNR_IDENT)
+                                .build())
                         .build()))
-                .ident(FNR_IDENT)
-                .build()))
                 .assertNext(target ->
-                        assertThat(target.getStatsborgerskap().getFirst().getGyldigFraOgMed(),
+                        assertThat(target.getPerson().getStatsborgerskap().getFirst().getGyldigFraOgMed(),
                                 is(equalTo(LocalDate.of(1956, 4, 12).atStartOfDay()))))
                 .verifyComplete();
     }

@@ -37,7 +37,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
         return Flux.fromIterable(dbPerson.getPerson().getFoedsel())
                 .filter(foedsel -> isTrue(foedsel.getIsNew()))
-                .flatMap(foedsel -> handle(foedsel, dbPerson.getIdent(),
+                .flatMap(foedsel -> handle(foedsel, dbPerson.getPerson().getIdent(),
                         dbPerson.getPerson().getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
                         dbPerson.getPerson().getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
                 .doOnNext(type -> {

@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
@@ -52,19 +53,21 @@ class InnflyttingServiceTest {
     void whenEmptyLandkode_thenProvideRandomCountry() {
 
         when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("IND"));
-        when(bostedAdresseService.convert(any(PersonDTO.class), eq(false))).thenReturn(Mono.just(new PersonDTO()));
+        when(bostedAdresseService.convert(any(DbPerson.class), eq(false))).thenReturn(Mono.just(new DbPerson()));
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(DNR_IDENT)
                 .innflytting(List.of(InnflyttingDTO.builder()
                         .isNew(true)
                         .build()))
+                .build())
                 .build();
 
         StepVerifier.create(innflyttingService.convert(request))
                 .assertNext(target -> {
-                    assertThat(target.getIdent(), is(equalTo(DNR_IDENT)));
-                    assertThat(target.getInnflytting().getFirst().getFraflyttingsland(), is(equalTo("IND")));
+                    assertThat(target.getPerson().getIdent(), is(equalTo(DNR_IDENT)));
+                    assertThat(target.getPerson().getInnflytting().getFirst().getFraflyttingsland(), is(equalTo("IND")));
                 })
                 .verifyComplete();
     }

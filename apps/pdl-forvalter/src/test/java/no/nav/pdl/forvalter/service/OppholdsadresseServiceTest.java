@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
@@ -139,7 +140,8 @@ class OppholdsadresseServiceTest {
     @Test
     void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
                         .isNew(true)
@@ -147,22 +149,25 @@ class OppholdsadresseServiceTest {
                 .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
                         .gradering(STRENGT_FORTROLIG)
                         .build()))
+                .build())
                 .build();
 
         StepVerifier.create(oppholdsadresseService.convert(request))
                 .assertNext(target ->
-                        assertThat(target.getOppholdsadresse().size(), is(0)))
+                        assertThat(target.getPerson().getOppholdsadresse().size(), is(0)))
                 .verifyComplete();
     }
 
     @Test
     void whenIdenttypeFnrAndNoAdresseBeskyttelse_thenMakeAdress() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
                         .isNew(true)
                         .build())))
+                .build())
                 .build();
 
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
@@ -170,8 +175,8 @@ class OppholdsadresseServiceTest {
 
         StepVerifier.create(oppholdsadresseService.convert(request))
                 .assertNext(target -> {
-                    assertThat(target.getOppholdsadresse().getFirst().countAdresser(), is(1));
-                    assertThat(target.getOppholdsadresse().getFirst().getVegadresse(), is(notNullValue()));
+                    assertThat(target.getPerson().getOppholdsadresse().getFirst().countAdresser(), is(1));
+                    assertThat(target.getPerson().getOppholdsadresse().getFirst().getVegadresse(), is(notNullValue()));
                 })
                 .verifyComplete();
     }
@@ -179,20 +184,22 @@ class OppholdsadresseServiceTest {
     @Test
     void whenUtenlandskAdresse_thenMakeUtenlandskAdresse() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(DNR_IDENT)
                 .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
                         .isNew(true)
                         .utenlandskAdresse(new UtenlandskAdresseDTO())
                         .build())))
-                .build();
+                .build())
+                        .build();
 
         when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(Mono.just(new UtenlandskAdresseDTO()));
 
         StepVerifier.create(oppholdsadresseService.convert(request))
                 .assertNext(target -> {
-                    assertThat(target.getOppholdsadresse().getFirst().countAdresser(), is(1));
-                    assertThat(target.getOppholdsadresse().getFirst().getUtenlandskAdresse(), is(notNullValue()));
+                    assertThat(target.getPerson().getOppholdsadresse().getFirst().countAdresser(), is(1));
+                    assertThat(target.getPerson().getOppholdsadresse().getFirst().getUtenlandskAdresse(), is(notNullValue()));
                 })
                 .verifyComplete();
     }

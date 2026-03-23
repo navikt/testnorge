@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
@@ -58,19 +59,21 @@ class OppholdServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .ident(IDENT)
-                .opphold(
-                        List.of(OppholdDTO.builder()
-                                        .oppholdFra(LocalDate.of(2020, 1, 2).atStartOfDay())
-                                        .type(OPPLYSNING_MANGLER)
-                                        .isNew(true)
-                                        .build(),
-                                OppholdDTO.builder()
-                                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                        .type(MIDLERTIDIG)
-                                        .isNew(true)
-                                        .build()))
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(IDENT)
+                        .opphold(
+                                List.of(OppholdDTO.builder()
+                                                .oppholdFra(LocalDate.of(2020, 1, 2).atStartOfDay())
+                                                .type(OPPLYSNING_MANGLER)
+                                                .isNew(true)
+                                                .build(),
+                                        OppholdDTO.builder()
+                                                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                                .type(MIDLERTIDIG)
+                                                .isNew(true)
+                                                .build()))
+                        .build())
                 .build();
 
         StepVerifier.create(oppholdService.convert(request))
@@ -81,7 +84,8 @@ class OppholdServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .opphold(List.of(OppholdDTO.builder()
                                 .oppholdFra(LocalDate.of(2020, 2, 3).atStartOfDay())
@@ -94,6 +98,7 @@ class OppholdServiceTest {
                                 .type(MIDLERTIDIG)
                                 .isNew(true)
                                 .build()))
+                .build())
                 .build();
 
         StepVerifier.create(oppholdService.convert(request))
@@ -104,15 +109,17 @@ class OppholdServiceTest {
     @Test
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
-        StepVerifier.create(oppholdService.convert(PersonDTO.builder()
+        StepVerifier.create(oppholdService.convert(DbPerson.builder()
+                        .person(PersonDTO.builder()
                         .ident(IDENT)
                         .opphold(List.of(OppholdDTO.builder()
                                 .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                                 .type(OPPLYSNING_MANGLER)
                                 .isNew(true)
                                 .build()))
+                        .build())
                         .build()))
-                .assertNext(target -> assertThat(target.getOpphold().getFirst().getOppholdFra(),
+                .assertNext(target -> assertThat(target.getPerson().getOpphold().getFirst().getOppholdFra(),
                         is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay()))))
                 .verifyComplete();
     }
@@ -120,7 +127,8 @@ class OppholdServiceTest {
     @Test
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 
-        StepVerifier.create(oppholdService.convert(PersonDTO.builder()
+        StepVerifier.create(oppholdService.convert(DbPerson.builder()
+                        .person(PersonDTO.builder()
                         .ident(IDENT)
                         .opphold(List.of(OppholdDTO.builder()
                                         .oppholdFra(LocalDate.of(2020, 2, 4).atStartOfDay())
@@ -132,9 +140,10 @@ class OppholdServiceTest {
                                         .type(MIDLERTIDIG)
                                         .isNew(true)
                                         .build()))
+                        .build())
                         .build()))
                 .assertNext(target ->
-                        assertThat(target.getOpphold().getFirst().getOppholdFra(),
+                        assertThat(target.getPerson().getOpphold().getFirst().getOppholdFra(),
                                 is(equalTo(LocalDate.of(2020, 2, 4).atStartOfDay()))))
                 .verifyComplete();
     }

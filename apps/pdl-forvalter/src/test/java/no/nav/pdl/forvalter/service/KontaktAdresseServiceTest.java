@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -115,7 +116,8 @@ class KontaktAdresseServiceTest {
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(Mono.just(vegadresse));
         doNothing().when(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .kontaktadresse(new ArrayList<>(List.of(KontaktadresseDTO.builder()
                         .vegadresse(VegadresseDTO.builder()
@@ -123,6 +125,7 @@ class KontaktAdresseServiceTest {
                                 .build())
                         .isNew(true)
                         .build())))
+                .build())
                 .build();
 
         StepVerifier.create(kontaktAdresseService.convert(request, null))
@@ -130,8 +133,8 @@ class KontaktAdresseServiceTest {
                     verify(adresseServiceConsumer).getVegadresse(any(VegadresseDTO.class), nullable(String.class));
                     verify(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
 
-                    assertThat(target.getKontaktadresse().getFirst().getAdresseIdentifikatorFraMatrikkelen(), is(equalTo(vegadresse.getMatrikkelId())));
-                    assertThat(target.getKontaktadresse().getFirst().getKilde(), is(equalTo("Dolly")));
+                    assertThat(target.getPerson().getKontaktadresse().getFirst().getAdresseIdentifikatorFraMatrikkelen(), is(equalTo(vegadresse.getMatrikkelId())));
+                    assertThat(target.getPerson().getKontaktadresse().getFirst().getKilde(), is(equalTo("Dolly")));
                 })
                 .verifyComplete();
     }

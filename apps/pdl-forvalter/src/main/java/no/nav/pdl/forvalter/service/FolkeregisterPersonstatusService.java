@@ -43,7 +43,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
         var touched = new AtomicBoolean(false);
 
-        if (dbPerson.getPerson().isNotChanged() || isTestnorgeIdent(dbPerson.getIdent()) || dbPerson.getPerson().getIdenttype() == NPID) {
+        if (dbPerson.getPerson().isNotChanged() || isTestnorgeIdent(dbPerson.getPerson().getIdent()) || dbPerson.getPerson().getIdenttype() == NPID) {
             return Mono.just(dbPerson);
         }
 

@@ -20,7 +20,7 @@ public class KjoennService implements BiValidation<KjoennDTO, PersonDTO> {
 
         return Flux.fromIterable(dbPerson.getPerson().getKjoenn())
                 .filter(kjoenn -> isTrue(kjoenn.getIsNew()))
-                .flatMap(kjoenn -> handle(kjoenn, dbPerson.getIdent()))
+                .flatMap(kjoenn -> handle(kjoenn, dbPerson.getPerson().getIdent()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));

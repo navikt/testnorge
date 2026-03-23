@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -148,24 +149,26 @@ class BostedAdresseServiceTest {
         when(enkelAdresseService.getUtenlandskAdresse(any(UtenlandskAdresseDTO.class), isNull(), any(Master.class)))
                 .thenReturn(Mono.just(new UtenlandskAdresseDTO()));
 
-        val request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(
-                        BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2021, 2, 2).atStartOfDay())
-                                .matrikkeladresse(new MatrikkeladresseDTO())
-                                .isNew(true)
-                                .build(),
-                        BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .utenlandskAdresse(new UtenlandskAdresseDTO())
-                                .isNew(true)
-                                .build())))
+        val request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .bostedsadresse(new ArrayList<>(List.of(
+                                BostedadresseDTO.builder()
+                                        .gyldigFraOgMed(LocalDate.of(2021, 2, 2).atStartOfDay())
+                                        .matrikkeladresse(new MatrikkeladresseDTO())
+                                        .isNew(true)
+                                        .build(),
+                                BostedadresseDTO.builder()
+                                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                        .utenlandskAdresse(new UtenlandskAdresseDTO())
+                                        .isNew(true)
+                                        .build())))
+                        .build())
                 .build();
 
         StepVerifier.create(bostedAdresseService.convert(request, null))
                 .assertNext(response ->
-                        assertThat(response.getBostedsadresse().getFirst().getGyldigTilOgMed(),
+                        assertThat(response.getPerson().getBostedsadresse().getFirst().getGyldigTilOgMed(),
                                 is(equalTo(LocalDate.of(2021, 2, 1).atStartOfDay()))))
                 .verifyComplete();
     }
@@ -173,18 +176,20 @@ class BostedAdresseServiceTest {
     @Test
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
-        val request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
-                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .ukjentBosted(new UkjentBostedDTO())
-                        .isNew(true)
-                        .build())))
+        val request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
+                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                .ukjentBosted(new UkjentBostedDTO())
+                                .isNew(true)
+                                .build())))
+                        .build())
                 .build();
 
         StepVerifier.create(bostedAdresseService.convert(request, null))
                 .assertNext(target ->
-                        assertThat(target.getBostedsadresse().getFirst().getGyldigFraOgMed(),
+                        assertThat(target.getPerson().getBostedsadresse().getFirst().getGyldigFraOgMed(),
                                 is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay()))))
                 .verifyComplete();
     }
@@ -198,23 +203,25 @@ class BostedAdresseServiceTest {
         when(enkelAdresseService.getUtenlandskAdresse(any(UtenlandskAdresseDTO.class), isNull(), any(Master.class)))
                 .thenReturn(Mono.just(new UtenlandskAdresseDTO()));
 
-        val request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
-                                .vegadresse(new VegadresseDTO())
-                                .isNew(true)
-                                .build(),
-                        BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .utenlandskAdresse(new UtenlandskAdresseDTO())
-                                .isNew(true)
-                                .build())))
+        val request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
+                                        .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
+                                        .vegadresse(new VegadresseDTO())
+                                        .isNew(true)
+                                        .build(),
+                                BostedadresseDTO.builder()
+                                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                        .utenlandskAdresse(new UtenlandskAdresseDTO())
+                                        .isNew(true)
+                                        .build())))
+                        .build())
                 .build();
 
         StepVerifier.create(bostedAdresseService.convert(request, null))
                 .assertNext(target ->
-                        assertThat(target.getBostedsadresse().getFirst().getGyldigTilOgMed(),
+                        assertThat(target.getPerson().getBostedsadresse().getFirst().getGyldigTilOgMed(),
                                 is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay()))))
                 .verifyComplete();
     }
@@ -222,29 +229,33 @@ class BostedAdresseServiceTest {
     @Test
     void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
 
-        val request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
-                        .isNew(true)
-                        .build())))
-                .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
-                        .gradering(STRENGT_FORTROLIG)
-                        .build()))
+        val request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
+                                .isNew(true)
+                                .build())))
+                        .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                                .gradering(STRENGT_FORTROLIG)
+                                .build()))
+                        .build())
                 .build();
 
         StepVerifier.create(bostedAdresseService.convert(request, null))
-                .assertNext(target -> assertThat(target.getBostedsadresse(), is(empty())))
+                .assertNext(target -> assertThat(target.getPerson().getBostedsadresse(), is(empty())))
                 .verifyComplete();
     }
 
     @Test
     void whenIdenttypeFnrAndNoAdresseBeskyttelse_thenMakeAdress() {
 
-        val request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
-                        .isNew(true)
-                        .build())))
+        val request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
+                                .isNew(true)
+                                .build())))
+                        .build())
                 .build();
 
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
@@ -255,9 +266,9 @@ class BostedAdresseServiceTest {
         StepVerifier.create(bostedAdresseService.convert(request, null))
                 .assertNext(target -> {
 
-                    assertThat(target.getBostedsadresse().getFirst().countAdresser(), is(1));
-                    assertThat(target.getBostedsadresse().getFirst().getVegadresse(), is(notNullValue()));
-                    assertThat(target.getBostedsadresse().getFirst().getAdresseIdentifikatorFraMatrikkelen(), is(equalTo("123456789")));
+                    assertThat(target.getPerson().getBostedsadresse().getFirst().countAdresser(), is(1));
+                    assertThat(target.getPerson().getBostedsadresse().getFirst().getVegadresse(), is(notNullValue()));
+                    assertThat(target.getPerson().getBostedsadresse().getFirst().getAdresseIdentifikatorFraMatrikkelen(), is(equalTo("123456789")));
                 })
                 .verifyComplete();
     }
@@ -265,11 +276,13 @@ class BostedAdresseServiceTest {
     @Test
     void whenIdenttypeDNr_thenMakeUtenlandskAdresse() {
 
-        val request = PersonDTO.builder()
-                .ident(DNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
-                        .isNew(true)
-                        .build())))
+        val request = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(DNR_IDENT)
+                        .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
+                                .isNew(true)
+                                .build())))
+                        .build())
                 .build();
 
         when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(Mono.just(new UtenlandskAdresseDTO()));
@@ -277,8 +290,8 @@ class BostedAdresseServiceTest {
         StepVerifier.create(bostedAdresseService.convert(request, null))
                 .assertNext(target -> {
 
-                    assertThat(target.getBostedsadresse().getFirst().countAdresser(), is(1));
-                    assertThat(target.getBostedsadresse().getFirst().getUtenlandskAdresse(), is(notNullValue()));
+                    assertThat(target.getPerson().getBostedsadresse().getFirst().countAdresser(), is(1));
+                    assertThat(target.getPerson().getBostedsadresse().getFirst().getUtenlandskAdresse(), is(notNullValue()));
                 })
                 .verifyComplete();
     }

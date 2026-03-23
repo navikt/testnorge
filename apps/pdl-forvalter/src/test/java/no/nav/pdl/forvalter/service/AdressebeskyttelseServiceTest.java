@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -68,24 +69,27 @@ class AdressebeskyttelseServiceTest {
     @Test
     void whenStrengtFortroligUtland_thenSetMasterToPdl() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(DNR_IDENT)
                 .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
                         .gradering(STRENGT_FORTROLIG_UTLAND)
                         .isNew(true)
                         .build()))
+                .build())
                 .build();
 
         StepVerifier.create(adressebeskyttelseService.convert(request))
                 .assertNext(person ->
-                        assertThat(person.getAdressebeskyttelse().getFirst().getMaster(), is(equalTo(Master.PDL))))
+                        assertThat(person.getPerson().getAdressebeskyttelse().getFirst().getMaster(), is(equalTo(Master.PDL))))
                 .verifyComplete();
     }
 
     @Test
     void whenStrengtFortrolig_thenSetKontaktadresseClearOtherAdresses() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(DNR_IDENT)
                 .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
                         .gradering(STRENGT_FORTROLIG)
@@ -94,17 +98,18 @@ class AdressebeskyttelseServiceTest {
                 .bostedsadresse(List.of(new BostedadresseDTO()))
                 .oppholdsadresse(List.of(new OppholdsadresseDTO()))
                 .kontaktadresse(List.of(new KontaktadresseDTO()))
+                .build())
                 .build();
 
         StepVerifier.create(adressebeskyttelseService.convert(request))
                 .assertNext(target -> {
 
-                    assertThat(target.getAdressebeskyttelse().getFirst().getMaster(), is(equalTo(Master.FREG)));
-                    assertThat(target.getBostedsadresse(), is(empty()));
-                    assertThat(target.getOppholdsadresse(), is(empty()));
-                    assertThat(target.getKontaktadresse().getFirst().getPostboksadresse().getPostboks(), is("2094"));
-                    assertThat(target.getKontaktadresse().getFirst().getPostboksadresse().getPostbokseier(), is("SOT6 Vika"));
-                    assertThat(target.getKontaktadresse().getFirst().getPostboksadresse().getPostnummer(), is("0125"));
+                    assertThat(target.getPerson().getAdressebeskyttelse().getFirst().getMaster(), is(equalTo(Master.FREG)));
+                    assertThat(target.getPerson().getBostedsadresse(), is(empty()));
+                    assertThat(target.getPerson().getOppholdsadresse(), is(empty()));
+                    assertThat(target.getPerson().getKontaktadresse().getFirst().getPostboksadresse().getPostboks(), is("2094"));
+                    assertThat(target.getPerson().getKontaktadresse().getFirst().getPostboksadresse().getPostbokseier(), is("SOT6 Vika"));
+                    assertThat(target.getPerson().getKontaktadresse().getFirst().getPostboksadresse().getPostnummer(), is("0125"));
                 })
                 .verifyComplete();
     }

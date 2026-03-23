@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
@@ -55,7 +56,8 @@ class SivilstandServiceTest {
     @Test
     void whenSivilstandDatoHasInvalidOrdering_fixIt() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .sivilstand(List.of(SivilstandDTO.builder()
                                 .type(SKILT)
@@ -66,12 +68,13 @@ class SivilstandServiceTest {
                                 .type(GIFT)
                                 .sivilstandsdato(LocalDateTime.now())
                                 .build()))
+                .build())
                 .build();
 
         StepVerifier.create(sivilstandService.convert(request))
                 .assertNext(target -> {
-                    assertThat(target.getSivilstand().get(0).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(1).getSivilstandsdato())));
-                    assertThat(target.getSivilstand().get(1).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(0).getSivilstandsdato())));
+                    assertThat(target.getPerson().getSivilstand().get(0).getSivilstandsdato(), is(equalTo(request.getPerson().getSivilstand().get(1).getSivilstandsdato())));
+                    assertThat(target.getPerson().getSivilstand().get(1).getSivilstandsdato(), is(equalTo(request.getPerson().getSivilstand().get(0).getSivilstandsdato())));
                 })
                 .verifyComplete();
     }

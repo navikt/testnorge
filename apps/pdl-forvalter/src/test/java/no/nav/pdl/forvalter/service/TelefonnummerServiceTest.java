@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import org.junit.jupiter.api.Test;
@@ -122,7 +123,8 @@ class TelefonnummerServiceTest {
     @Test
     void whenPriority2ExistsBefore1_thenThrowException() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .telefonnummer(
                         List.of(TelefonnummerDTO.builder()
@@ -131,6 +133,7 @@ class TelefonnummerServiceTest {
                                 .prioritet(2)
                                 .isNew(true)
                                 .build()))
+                .build())
                 .build();
 
         StepVerifier.create(telefonnummerService.convert(request))
@@ -141,7 +144,8 @@ class TelefonnummerServiceTest {
     @Test
     void whenGivenPriorityExistsMultipleTimes_thenThrowException() {
 
-        var request = PersonDTO.builder()
+        var request = DbPerson.builder()
+                .person(PersonDTO.builder()
                 .ident(IDENT)
                 .telefonnummer(
                         List.of(TelefonnummerDTO.builder()
@@ -156,6 +160,7 @@ class TelefonnummerServiceTest {
                                         .prioritet(1)
                                         .isNew(true)
                                         .build()))
+                .build())
                 .build();
 
         StepVerifier.create(telefonnummerService.convert(request))
