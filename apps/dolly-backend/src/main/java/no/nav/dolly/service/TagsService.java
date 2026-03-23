@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -24,10 +23,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.Tags.DOLLY;
 
@@ -42,8 +41,6 @@ public class TagsService {
 
     public Mono<TagsOpprettingResponse> sendTags(Long gruppeId, List<String> tags) {
 
-        val oppdatertGruppe = new AtomicReference<Testgruppe>();
-
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId))))
                 .flatMapMany(gruppe -> Flux.fromArray(Tags.values())
@@ -54,7 +51,6 @@ public class TagsService {
                         .doOnNext(gruppe::setTags)
                         .thenReturn(gruppe))
                 .flatMap(testgruppeRepository::save)
-                .doOnNext(oppdatertGruppe::set)
                 .flatMap(gruppe -> identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                         .map(Testident::getIdent)
                         .collectList()
@@ -91,7 +87,7 @@ public class TagsService {
                                                                 .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer))
                                                 .distinct())
                                         .collectList()
-                                        .flatMap(bolkPersoner -> updateTags(bolkPersoner, oppdatertGruppe.get().getTags()));
+                                        .flatMap(bolkPersoner -> updateTags(bolkPersoner, gruppe.getTags()));
 
                             } else {
                                 return Mono.just(TagsOpprettingResponse.builder()
@@ -116,7 +112,7 @@ public class TagsService {
                             } else {
                                 return Mono.just(ident);
                             }
-                        })
+                        }, 10)
                         .flatMap(ident -> {
 
                             val tagsForCreate = tagsForCreate(tags, tagsBolk.get(ident));
@@ -126,7 +122,7 @@ public class TagsService {
                             } else {
                                 return Mono.just(ident);
                             }
-                        }))
+                        }, 10))
                 .then(Mono.just(TagsOpprettingResponse.builder()
                         .status(HttpStatus.OK)
                         .build()));
@@ -134,17 +130,21 @@ public class TagsService {
 
     private List<Tags> tagsForDelete(List<Tags> request, List<String> existing) {
 
+        val existingTags = nonNull(existing) ? existing : emptyList();
+
         return Stream.of(Tags.values())
                 .filter(tag -> !tag.equals(DOLLY))
-                .filter(tag -> existing.contains(tag.name()) && !request.contains(tag))
+                .filter(tag -> existingTags.contains(tag.name()) && !request.contains(tag))
                 .toList();
     }
 
     private List<Tags> tagsForCreate(List<Tags> request, List<String> existing) {
 
+        val existingTags = nonNull(existing) ? existing : emptyList();
+
         return Stream.of(Tags.values())
                 .filter(tag -> !tag.equals(DOLLY))
-                .filter(tag -> !existing.contains(tag.name()) && request.contains(tag))
+                .filter(tag -> !existingTags.contains(tag.name()) && request.contains(tag))
                 .toList();
     }
 }
