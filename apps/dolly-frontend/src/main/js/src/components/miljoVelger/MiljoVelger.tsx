@@ -1,5 +1,6 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
+import { OrgMiljoeVarsel } from './OrgMiljoeVarsel'
 import { useEffect } from 'react'
 import './MiljoVelger.less'
 import styled from 'styled-components'
@@ -125,6 +126,7 @@ export const MiljoVelger = ({
 				</div>
 			</fieldset>
 			<DollyErrorMessageWrapper name="environments" />
+			<OrgMiljoeVarsel />
 		</div>
 	)
 }

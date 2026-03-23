@@ -1,4 +1,12 @@
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
+import { OrganisasjonForvalterData } from '@/service/services/organisasjonforvalter/types'
+
+export const getOrgMiljoer = (org: OrganisasjonForvalterData | undefined): string[] => {
+	if (!org) return []
+	return Object.keys(org).filter(
+		(key) => (org as Record<string, any>)[key]?.organisasjonsnummer,
+	)
+}
 
 export const arbeidsgiverToggleValues = [
 	{

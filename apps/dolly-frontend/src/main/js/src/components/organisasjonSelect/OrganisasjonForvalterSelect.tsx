@@ -9,6 +9,7 @@ interface OrgProps {
 	value?: any
 	parentPath: string
 	success: boolean
+	miljoer?: string[]
 	loading?: boolean
 	error?: Error
 	onTextBlur: (event: React.ChangeEvent<any>) => void
@@ -18,6 +19,7 @@ export const OrganisasjonForvalterSelect = ({
 	path,
 	parentPath,
 	success,
+	miljoer,
 	value,
 	loading = false,
 	error,
@@ -39,6 +41,7 @@ export const OrganisasjonForvalterSelect = ({
 				size="xlarge"
 				label={'Organisasjonsnummer'}
 				onBlur={onTextBlur}
+				manualError={errorMessage}
 			/>
 			{loading && (
 				<div className={'flexbox--align-center'}>
@@ -47,15 +50,11 @@ export const OrganisasjonForvalterSelect = ({
 			)}
 			{success && !loading && (
 				<div className={'flexbox--align-center'}>
-					<Icon kind="feedback-check-circle" style={{ marginRight: '5px' }} /> Organisasjon funnet
+					<Icon kind="feedback-check-circle" style={{ marginRight: '5px' }} />
+					{miljoer?.length
+						? `Organisasjon funnet i miljø: ${miljoer.map((m) => m.toUpperCase()).join(', ')}`
+						: 'Organisasjon funnet'}
 				</div>
-			)}
-			{errorMessage && (
-				<p
-					style={{ marginTop: '-5px', marginBottom: '0px', color: '#ba3a26', fontStyle: 'italic' }}
-				>
-					{errorMessage}
-				</p>
 			)}
 		</div>
 	)

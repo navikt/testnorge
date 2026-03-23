@@ -11,7 +11,9 @@ import {
 } from '@/utils/hooks/useDollyOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import Loading from '@/components/ui/loading/Loading'
-import { getOrgType } from '@/utils/OrgUtils'
+import { getOrgMiljoer, getOrgType } from '@/utils/OrgUtils'
+import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
+import { useOrganisasjonValidation } from '@/components/shared/ArbeidsforholdToggle/useOrganisasjonValidation'
 
 interface OrgnrToggleProps {
 	path: string
@@ -47,6 +49,17 @@ export const OrgnrToggle = ({
 		brukerOrganisasjoner,
 		formMethods.watch('inntektsmelding.inntekter')?.length,
 	])
+
+	const isFritekst = inputType === ArbeidsgiverTyper.fritekst
+
+	const { organisasjoner, loading, error } = useOrganisasjonValidation({
+		formMethods,
+		organisasjonPath: virksomhetPath,
+		watchedOrgnr: orgnr,
+		useValidation: isFritekst,
+	})
+
+	const orgMiljoer = getOrgMiljoer(organisasjoner?.[0])
 
 	const handleToggleChange = (value: string) => {
 		setInputType(value)
@@ -92,8 +105,22 @@ export const OrgnrToggle = ({
 					handleChange={handleChangeEgne}
 				/>
 			)}
-			{inputType === ArbeidsgiverTyper.fritekst && (
-				<FormTextInput type="number" name={virksomhetPath} label={label} size="xlarge" />
+			{isFritekst && (
+				<OrganisasjonForvalterSelect
+					value={orgnr}
+					path={virksomhetPath}
+					parentPath={path}
+					success={
+						organisasjoner?.length > 0 &&
+						!error &&
+						!formMethods.getFieldState(`manual.${virksomhetPath}`)?.error
+					}
+					miljoer={orgMiljoer}
+					loading={loading}
+					onTextBlur={(event) => {
+						formMethods.setValue(virksomhetPath, event.target.value || null)
+					}}
+				/>
 			)}
 		</div>
 	)
