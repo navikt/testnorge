@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +56,7 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
         var teams = getAllTeams().collectList().block();
         assertNotNull(teams);
+        assertThat(teams).isNotEmpty();
 
         webTestClient
                 .get()
@@ -73,6 +75,7 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
         var teams = getAllTeams().collectList().block();
         assertNotNull(teams);
+        assertThat(teams).isNotEmpty();
 
         webTestClient
                 .get()
@@ -116,11 +119,11 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
                 .put()
                 .uri("/api/v1/team/" + teams.getFirst().getId())
                 .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(RsTeamUpdate.builder()
-                                .navn("Test Team 2")
-                                .beskrivelse("Test Team Description")
-                                .build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(RsTeamUpdate.builder()
+                        .navn("Test Team 2")
+                        .beskrivelse("Test Team Description")
+                        .build())
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -142,7 +145,7 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     }
 
     @Test
-    void addTeamMember_shouldReturnCreated()  {
+    void addTeamMember_shouldReturnCreated() {
 
         var team = getAllTeams().blockFirst();
         assertNotNull(team);
@@ -165,13 +168,15 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
     @Test
     void removeTeamMember_shouldReturnNoContent() {
-
         var teams = getAllTeams().collectList().block();
         assertNotNull(teams);
+        assertThat(teams).isNotEmpty();
 
+        var teamId = teams.getFirst().getId();
+        var userId = teams.getFirst().getBrukerId();
         webTestClient
                 .delete()
-                .uri("/api/v1/team/"+ teams.getFirst().getId()+ "/medlem/user1")
+                .uri("/api/v1/team/{teamId}/medlem/user{userId}", teamId, userId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
