@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
-import no.nav.dolly.service.RsTransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
