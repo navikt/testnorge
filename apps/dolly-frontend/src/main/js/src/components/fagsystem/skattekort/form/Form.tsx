@@ -62,6 +62,7 @@ export const SkattekortForm = () => {
 	const onBlurResultatPaaForespoersel = (path: string, index: number) => {
 		if (!isResultatOK(index)) {
 			formMethods.setValue(`${path}.arbeidstaker[0].tilleggsopplysning`, [])
+			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.utstedtDato`, null)
 			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
 		}
 	}
@@ -112,10 +113,12 @@ export const SkattekortForm = () => {
 										size="xsmall"
 										isClearable={false}
 									/>
-									<FormDatepicker
-										name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
-										label="Utstedt dato"
-									/>
+									{isResultatOK(index) && (
+										<FormDatepicker
+											name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
+											label="Utstedt dato"
+										/>
+									)}
 								</div>
 								{isResultatOK(index) && (
 									<FormSelect
