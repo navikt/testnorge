@@ -40,7 +40,7 @@ export const Foedested = ({ foedestedListe }: FoedestedTypes) => {
 										<TitleValue
 											title="Fødeland"
 											value={foedested.foedeland}
-											kodeverk={AdresseKodeverk.StatsborgerskapLand}
+											kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 										/>
 										<TitleValue title="Master" value={foedested.master} />
 									</>

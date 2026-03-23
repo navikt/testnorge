@@ -19,7 +19,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -115,7 +114,7 @@ public class PensjonPersondataService {
                                                                       boolean isUpdateEndre) {
 
         if (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getPerson()) ||
-                bestilling.getPdldata().getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isGift)) {
+                bestilling.getPdldata().getPerson().getSivilstand().isEmpty()) {
             return Flux.empty();
         }
 

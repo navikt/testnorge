@@ -42,7 +42,9 @@ public class OrdreService {
 
     public DeployResponse deploy(DeployRequest request) {
 
-        var tilgjengeligeMiljoer = miljoerServiceConsumer.getOrgMiljoer();
+        var tilgjengeligeMiljoer = miljoerServiceConsumer.getOrgMiljoer()
+                .block();
+
         request.getEnvironments().forEach(miljoe -> {
             if (tilgjengeligeMiljoer.stream().noneMatch(tilgjengelig -> tilgjengelig.equals(miljoe))) {
                 throw new HttpClientErrorException(BAD_REQUEST, format("Miljoe %s eksisterer ikke", miljoe));

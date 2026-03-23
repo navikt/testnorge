@@ -12,6 +12,7 @@ type GruppeVisningProps = {
 	identer: any
 	bestillingerById: any
 	lasterBestillinger?: boolean
+	lasterGruppe?: boolean
 }
 
 export const GruppeVisning: React.FC<GruppeVisningProps> = ({
@@ -22,9 +23,10 @@ export const GruppeVisning: React.FC<GruppeVisningProps> = ({
 	identer,
 	bestillingerById,
 	lasterBestillinger,
+	lasterGruppe,
 }) => {
 	return lasterBestillinger ? (
-		<Loading label={'Laster bestillinger...'} />
+		<Loading label={'Laster bestillinger ...'} panel />
 	) : (
 		<>
 			{visning === VisningType.VISNING_PERSONER && (
@@ -34,6 +36,7 @@ export const GruppeVisning: React.FC<GruppeVisningProps> = ({
 					gruppeId={gruppeId}
 					identer={identer}
 					bestillingerById={bestillingerById}
+					isLoading={lasterGruppe}
 				/>
 			)}
 			{visning === VisningType.VISNING_BESTILLING && (

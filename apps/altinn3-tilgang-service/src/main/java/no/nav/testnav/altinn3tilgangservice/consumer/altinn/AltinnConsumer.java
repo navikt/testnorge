@@ -70,13 +70,13 @@ public class AltinnConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(altinnConfig.getUrl())
-                .codecs(clientDefaultCodecsConfigurer -> {
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
+                .codecs(config -> {
+                    config.defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
+                    config.defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
+                    config.defaultCodecs()
+                            .maxInMemorySize(10 * 1024 * 1024);
                 })
                 .build();
         this.brregConsumer = brregConsumer;
@@ -172,7 +172,7 @@ public class AltinnConsumer {
                 .expand(response -> {
 
                     if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext()) &&
-                            counter.getAndIncrement() < maxPages) {
+                        counter.getAndIncrement() < maxPages) {
 
                         String continueToken;
                         try {

@@ -47,6 +47,10 @@ spec:
         - application: testnav-tps-messaging-service
         - application: logging
           namespace: nais-system
+      external:
+        - host: ereg-services-q1.dev-fss-pub.nais.io
+        - host: ereg-services.dev-fss-pub.nais.io
+        - host: ereg-services-q4.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_15

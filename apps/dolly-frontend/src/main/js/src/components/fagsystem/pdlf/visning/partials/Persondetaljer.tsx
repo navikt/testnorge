@@ -12,7 +12,7 @@ import {
 import { VisningRedigerbarPersondetaljer } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljer'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { Personstatus } from '@/components/fagsystem/pdlf/visning/partials/Personstatus'
 
@@ -100,7 +100,8 @@ export const Persondetaljer = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
+
+	const redigertPerson = _.get(tmpPersoner, `${data?.ident}.person`)
 
 	const getNavn = () => {
 		if (data?.navn?.length > 1) {
@@ -123,7 +124,7 @@ export const Persondetaljer = ({
 		folkeregisterpersonstatus: getPersonstatus(),
 	}
 
-	const redigertPersonPdlf = _.get(tmpPersoner?.pdlforvalter, `${ident}.person`)
+	const redigertPersonPdlf = _.get(tmpPersoner, `${ident}.person`)
 
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
 
@@ -143,12 +144,9 @@ export const Persondetaljer = ({
 		pdlf: redigertPdlfPersonValues,
 	}
 
-	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
+	const tmpNavn = _.get(tmpPersoner, `${ident}.person.navn`)
 
-	const tmpPersonstatus = _.get(
-		tmpPersoner?.pdlforvalter,
-		`${ident}.person.folkeregisterPersonstatus`,
-	)
+	const tmpPersonstatus = _.get(tmpPersoner, `${ident}.person.folkeregisterPersonstatus`)
 
 	const harFlerePersonstatuser =
 		tmpPersonstatus?.length > 1 || data?.folkeregisterPersonstatus?.length > 1
@@ -188,13 +186,11 @@ export const Persondetaljer = ({
 							{(tmpNavn ? tmpNavn.length > 1 : data?.navn?.length > 1) && (
 								<DollyFieldArray data={data?.navn} header="Navn" nested>
 									{(navn) => {
-										const redigertNavn = _.get(
-											tmpPersoner?.pdlforvalter,
-											`${ident}.person.navn`,
-										)?.find((a) => a.id === navn.id)
+										const redigertNavn = _.get(tmpPersoner, `${ident}.person.navn`)?.find(
+											(a) => a.id === navn.id,
+										)
 
-										const slettetNavn =
-											tmpPersoner?.pdlforvalter?.hasOwnProperty(ident) && !redigertNavn
+										const slettetNavn = tmpPersoner?.hasOwnProperty(ident) && !redigertNavn
 										if (slettetNavn) {
 											return <OpplysningSlettet />
 										}
@@ -233,7 +229,7 @@ export const Persondetaljer = ({
 							{harFlerePersonstatuser && (
 								<Personstatus
 									data={data?.folkeregisterPersonstatus}
-									tmpPersoner={tmpPersoner?.pdlforvalter}
+									tmpPersoner={tmpPersoner}
 									ident={ident}
 								/>
 							)}
