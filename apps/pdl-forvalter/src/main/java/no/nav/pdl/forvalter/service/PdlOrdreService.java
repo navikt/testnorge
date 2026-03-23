@@ -7,7 +7,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
@@ -279,7 +278,8 @@ public class PdlOrdreService {
                                 .anyMatch(status -> status == OPPHOERT))
                         .build())
                 .flatMapMany(opprettIdent ->
-                        deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(), List.of(opprettIdent)));
+                        deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(), List.of(opprettIdent)))
+                .doOnNext(ordre -> log.info("Ordre for oppretting: {}", ordre));
     }
 
     // Rekursiv metode som henter alle historiske personer basert på aliaser.
@@ -316,7 +316,8 @@ public class PdlOrdreService {
                                 .map(ident -> MergeIdent.builder()
                                         .npid(ident)
                                         .build())
-                                .toList()));
+                                .toList()))
+                .doOnNext(ordre -> log.info("Ordre for npid-merge: {}", ordre));
     }
 
     private Flux<Ordre> getOrdrer(OpprettRequest oppretting) {

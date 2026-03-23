@@ -26,13 +26,13 @@ public class DeployService {
 
     public Flux<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
 
-        return setOpprettet(artifacter)
+        return Flux.fromIterable(setOpprettet(artifacter))
                 .map(element -> ArtifactValue.builder()
                         .artifact(type)
                         .ident(ident)
                         .body(element)
                         .build())
-                .map(value -> accessToken ->
+                .map(value ->accessToken ->
                         pdlTestdataConsumer.send(value, accessToken)
                                 .map(hendelse -> OrdreResponseDTO.PdlStatusDTO
                                         .builder()
@@ -47,15 +47,19 @@ public class DeployService {
         return pdlTestdataConsumer.send(ordres);
     }
 
-    private Flux<? extends DbVersjonDTO> setOpprettet(List<? extends DbVersjonDTO> artifacter) {
+    private List<? extends DbVersjonDTO> setOpprettet(List<? extends DbVersjonDTO> artifacter) {
 
-        return Flux.fromIterable(artifacter)
+        var max = artifacter.stream()
                 .filter(artifact -> nonNull(artifact.getId()))
-                .map(DbVersjonDTO::getId)
-                .reduce(Integer::max)
-                .flatMapMany(max -> Flux.fromIterable(artifacter)
-                        .filter(artifact -> nonNull(artifact.getId()))
-                        .doOnNext(artifact -> artifact.setOpprettet(
-                                Instant.now().minusSeconds((max - artifact.getId()) * 10L))));
+                .mapToInt(DbVersjonDTO::getId)
+                .max()
+                .orElse(1);
+
+        artifacter.stream()
+                .filter(artifact -> nonNull(artifact.getId()))
+                .forEach(artifact -> artifact.setOpprettet(
+                        Instant.now().minusSeconds((max - artifact.getId()) * 10L)));
+
+        return artifacter;
     }
 }
