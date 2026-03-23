@@ -1,11 +1,3 @@
-dolly:
-  nais:
-    cluster: dev-gcp
-    name: testnav-nom-proxy
-    variables:
-      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
-      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
-
 spring:
   config:
     import: "sm://"
