@@ -81,7 +81,7 @@ public class ArtifactDeleteService {
                         checkExists(dbPerson.getPerson().getFoedsel(), id, PDL_FOEDSEL.getDescription())
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_FOEDSEL.getDescription(), id)
-                        .thenReturn(dbPerson))
+                        .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setFoedsel(dbPerson.getPerson().getFoedsel().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -98,7 +98,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FOEDESTED.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setFoedested(dbPerson.getPerson().getFoedested().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -115,7 +115,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FOEDSELSDATO.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setFoedselsdato(dbPerson.getPerson().getFoedselsdato().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -132,7 +132,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_NAVN.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setNavn(dbPerson.getPerson().getNavn().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -149,7 +149,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_KJOENN.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setKjoenn(dbPerson.getPerson().getKjoenn().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -166,7 +166,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_BOSTEDADRESSE.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setBostedsadresse(dbPerson.getPerson().getBostedsadresse().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -184,7 +184,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTADRESSE.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setKontaktadresse(dbPerson.getPerson().getKontaktadresse().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -201,7 +201,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_OPPHOLDSADRESSE.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setOppholdsadresse(dbPerson.getPerson().getOppholdsadresse().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -218,7 +218,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_INNFLYTTING.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setInnflytting(dbPerson.getPerson().getInnflytting().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -236,7 +236,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_UTFLYTTING.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setUtflytting(dbPerson.getPerson().getUtflytting().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -254,7 +254,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_DELTBOSTED.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setDeltBosted(dbPerson.getPerson().getDeltBosted().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -271,7 +271,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FORELDRE_BARN_RELASJON.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson ->
                         Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                                 .filter(type -> id.equals(type.getId()) &&
@@ -279,9 +279,9 @@ public class ArtifactDeleteService {
                                 .flatMap(type -> getPerson(type.getRelatertPerson())
                                         .flatMap(slettePerson ->
                                                 deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_FORELDER)
-                                                        .thenReturn(slettePerson))
+                                                        .then(Mono.just(slettePerson)))
                                         .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
-                                                .thenReturn(dbPerson))))
+                                                .then(Mono.just(dbPerson)))))
                 .doOnNext(dbPerson -> dbPerson.getPerson().setForelderBarnRelasjon(dbPerson.getPerson().getForelderBarnRelasjon().stream()
                         .filter(type -> !id.equals(type.getId()))
                         .toList()))
@@ -297,7 +297,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FORELDREANSVAR.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
                         .filter(type -> id.equals(type.getId()) &&
                                         (isNotBlank(type.getAnsvarlig()) || isNotBlank(type.getAnsvarssubjekt())))
@@ -305,9 +305,9 @@ public class ArtifactDeleteService {
                                 type.getAnsvarlig() : type.getAnsvarssubjekt())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FORELDREANSVAR_FORELDER)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
-                                        .thenReturn(dbPerson))))
+                                        .then(Mono.just(dbPerson)))))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setForeldreansvar(dbPerson.getPerson().getForeldreansvar().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -324,7 +324,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
                         .filter(doedsbo -> id.equals(doedsbo.getId()) &&
                                            nonNull(doedsbo.getPersonSomKontakt()) &&
@@ -332,9 +332,9 @@ public class ArtifactDeleteService {
                         .flatMap(doedsbo -> getPerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, KONTAKT_FOR_DOEDSBO)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, doedsbo.getPersonSomKontakt().isEksisterendePerson())
-                                        .thenReturn(dbPerson))))
+                                        .then(Mono.just(dbPerson)))))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setKontaktinformasjonForDoedsbo(
                                 dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
@@ -352,7 +352,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_UTENLANDS_IDENTIFIKASJON_NUMMER.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setUtenlandskIdentifikasjonsnummer(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -368,16 +368,16 @@ public class ArtifactDeleteService {
                         checkExists(dbPerson.getPerson().getFalskIdentitet(), id, PDL_FALSK_IDENTITET.getDescription())
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_FALSK_IDENTITET.getDescription(), id)
-                        .thenReturn(dbPerson))
+                        .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getFalskIdentitet())
                         .filter(falskId -> id.equals(falskId.getId()) &&
                                            isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()))
                         .flatMap(falskId -> getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FALSK_IDENTITET)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, falskId.isEksisterendePerson())
-                                        .thenReturn(dbPerson))))
+                                        .then(Mono.just(dbPerson)))))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setFalskIdentitet(dbPerson.getPerson().getFalskIdentitet().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -395,7 +395,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_ADRESSEBESKYTTELSE.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setAdressebeskyttelse(dbPerson.getPerson().getAdressebeskyttelse().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -412,7 +412,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_DOEDSFALL.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setDoedsfall(dbPerson.getPerson().getDoedsfall().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -430,7 +430,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_FOLKEREGISTER_PERSONSTATUS.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson -> {
                     dbPerson.getPerson().setFolkeregisterPersonstatus(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
                             .filter(type -> !id.equals(type.getId()))
@@ -449,7 +449,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_SIKKERHETSTILTAK.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setSikkerhetstiltak(dbPerson.getPerson().getSikkerhetstiltak().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -466,7 +466,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_TILRETTELAGT_KOMMUNIKASJON.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setTilrettelagtKommunikasjon(dbPerson.getPerson().getTilrettelagtKommunikasjon().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -483,7 +483,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_STATSBORGERSKAP.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setStatsborgerskap(dbPerson.getPerson().getStatsborgerskap().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -500,7 +500,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_OPPHOLD.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setOpphold(dbPerson.getPerson().getOpphold().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -516,15 +516,15 @@ public class ArtifactDeleteService {
                         checkExists(dbPerson.getPerson().getSivilstand(), id, PDL_SIVILSTAND.getDescription())
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson -> hendelseIdService.deletePdlHendelse(ident, PDL_SIVILSTAND.getDescription(), id)
-                        .thenReturn(dbPerson))
+                        .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                         .filter(type -> id.equals(type.getId()) && isNotBlank(type.getRelatertVedSivilstand()))
                         .flatMap(type -> getPerson(type.getRelatertVedSivilstand())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, EKTEFELLE_PARTNER)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
-                                        .thenReturn(dbPerson))))
+                                        .then(Mono.just(dbPerson)))))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setSivilstand(dbPerson.getPerson().getSivilstand().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -541,7 +541,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_TELEFONUMMER.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setTelefonnummer(dbPerson.getPerson().getTelefonnummer().stream()
                                 .filter(type -> !id.equals(type.getId()))
@@ -558,16 +558,16 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_VERGEMAAL.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getVergemaal())
                         .filter(type -> id.equals(type.getId()) &&
                                         isNotBlank(type.getVergeIdent()))
                         .flatMap(type -> getPerson(type.getVergeIdent())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, RelasjonType.VERGE_MOTTAKER)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, type.isEksisterendePerson())
-                                        .thenReturn(dbPerson))))
+                                        .then(Mono.just(dbPerson)))))
                 .doOnNext(dbPerson -> dbPerson.getPerson().setVergemaal(dbPerson.getPerson().getVergemaal().stream()
                         .filter(type -> !id.equals(type.getId()))
                         .toList()))
@@ -583,7 +583,7 @@ public class ArtifactDeleteService {
                                 .thenReturn(dbPerson))
                 .flatMap(dbPerson ->
                         hendelseIdService.deletePdlHendelse(ident, PDL_DOEDFOEDT_BARN.getDescription(), id)
-                                .thenReturn(dbPerson))
+                                .then(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setDoedfoedtBarn(dbPerson.getPerson().getDoedfoedtBarn().stream()
                                 .filter(type -> !id.equals(type.getId()))

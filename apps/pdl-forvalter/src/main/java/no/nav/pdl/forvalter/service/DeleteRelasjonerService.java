@@ -5,8 +5,9 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
@@ -32,28 +33,31 @@ public class DeleteRelasjonerService {
 
     public Mono<Void> deleteRelasjoner(DbPerson person, DbPerson relatertPerson, RelasjonType type) {
 
-        return Flux.fromArray(getRelasjonTyper(type))
-                .flatMap(relasjonType ->
-                        relasjonRepository.deleteByPersonIdAndRelatertPersonIdAndRelasjonType(person.getId(), relatertPerson.getId(), type)
-                                .then(relasjonRepository.deleteByPersonIdAndRelatertPersonIdAndRelasjonType(relatertPerson.getId(), person.getId(), type)))
-                .then();
+        return relasjonRepository.deleteByPersonIdAndRelatertPersonIdAndRelasjonTypeIn(
+                        person.getId(),
+                        relatertPerson.getId(),
+                        getRelasjonTyper(type))
+                .then(relasjonRepository.deleteByPersonIdAndRelatertPersonIdAndRelasjonTypeIn(
+                        relatertPerson.getId(),
+                        person.getId(),
+                        getRelasjonTyper(type)));
     }
 
-    private static RelasjonType[] getRelasjonTyper(RelasjonType relasjonType) {
+    private static List<RelasjonType> getRelasjonTyper(RelasjonType relasjonType) {
 
         return switch (relasjonType) {
 
-            case FULLMEKTIG, FULLMAKTSGIVER -> new RelasjonType[]{FULLMEKTIG, FULLMAKTSGIVER};
-            case VERGE, VERGE_MOTTAKER -> new RelasjonType[]{VERGE, VERGE_MOTTAKER};
-            case RIKTIG_IDENTITET, FALSK_IDENTITET -> new RelasjonType[]{RIKTIG_IDENTITET, FALSK_IDENTITET};
+            case FULLMEKTIG, FULLMAKTSGIVER -> List.of(FULLMEKTIG, FULLMAKTSGIVER);
+            case VERGE, VERGE_MOTTAKER -> List.of(VERGE, VERGE_MOTTAKER);
+            case RIKTIG_IDENTITET, FALSK_IDENTITET -> List.of(RIKTIG_IDENTITET, FALSK_IDENTITET);
             case KONTAKT_FOR_DOEDSBO, AVDOEDD_FOR_KONTAKT ->
-                    new RelasjonType[]{KONTAKT_FOR_DOEDSBO, AVDOEDD_FOR_KONTAKT};
-            case NY_IDENTITET, GAMMEL_IDENTITET -> new RelasjonType[]{NY_IDENTITET, GAMMEL_IDENTITET};
-            case EKTEFELLE_PARTNER -> new RelasjonType[]{EKTEFELLE_PARTNER};
+                    List.of(KONTAKT_FOR_DOEDSBO, AVDOEDD_FOR_KONTAKT);
+            case NY_IDENTITET, GAMMEL_IDENTITET -> List.of(NY_IDENTITET, GAMMEL_IDENTITET);
+            case EKTEFELLE_PARTNER -> List.of(EKTEFELLE_PARTNER);
             case FAMILIERELASJON_BARN, FAMILIERELASJON_FORELDER ->
-                    new RelasjonType[]{FAMILIERELASJON_BARN, FAMILIERELASJON_FORELDER};
+                    List.of(FAMILIERELASJON_BARN, FAMILIERELASJON_FORELDER);
             case FORELDREANSVAR_BARN, FORELDREANSVAR_FORELDER ->
-                    new RelasjonType[]{FORELDREANSVAR_BARN, FORELDREANSVAR_FORELDER};
+                    List.of(FORELDREANSVAR_BARN, FORELDREANSVAR_FORELDER);
         };
     }
 }

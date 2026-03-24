@@ -44,13 +44,7 @@ public interface RelasjonRepository extends ReactiveCrudRepository<DbRelasjon, L
             """)
     Mono<Void> deleteByPersonIdOrRelatertPersonId(Long personId);
 
-    @Modifying
-    @Query("""
-            delete from relasjon r
-            where (r.person_id = :personId or r.relatert_person_id = :relatertPersonId)
-            and r.relasjon_type = :relasjonType
-            """)
-    Mono<Void> deleteByPersonIdAndRelatertPersonIdAndRelasjonType(Long personId,
-                                                                  Long relatertPersonId,
-                                                                  RelasjonType relasjonType);
+    Mono<Void> deleteByPersonIdAndRelatertPersonIdAndRelasjonTypeIn(Long personId,
+                                                                    Long relatertPersonId,
+                                                                    Collection<RelasjonType> relasjonTyper);
 }

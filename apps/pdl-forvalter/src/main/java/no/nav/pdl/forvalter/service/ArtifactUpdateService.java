@@ -98,11 +98,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateFoedsel(String ident, Integer id, FoedselDTO oppdatertFoedsel) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getFoedsel(), oppdatertFoedsel, id, "Foedsel")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setFoedsel(tuple.getT1()))
-                .flatMap(tuple -> foedselService.validate(oppdatertFoedsel, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getFoedsel(), oppdatertFoedsel, id, "Foedsel")
+                        .doOnNext(foedsler -> dbPerson.getPerson().setFoedsel(foedsler))
+                        .then(foedselService.validate(oppdatertFoedsel, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(foedselService::convert)
                 .flatMap(this::savePerson);
     }
@@ -110,11 +108,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateFoedested(String ident, Integer id, FoedestedDTO oppdatertFoedested) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getFoedested(), oppdatertFoedested, id, "Foedested")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setFoedested(tuple.getT1()))
-                .flatMap(tuple -> foedestedService.validate(oppdatertFoedested, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getFoedested(), oppdatertFoedested, id, "Foedested")
+                        .doOnNext(foedesteder -> dbPerson.getPerson().setFoedested(foedesteder))
+                        .then(foedestedService.validate(oppdatertFoedested, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(foedestedService::convert)
                 .flatMap(this::savePerson);
     }
@@ -122,11 +118,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateFoedselsdato(String ident, Integer id, FoedselsdatoDTO oppdatertFoedselsdato) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getFoedselsdato(), oppdatertFoedselsdato, id, "Foedselsdato")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setFoedselsdato(tuple.getT1()))
-                .flatMap(tuple -> foedselsdatoService.validate(oppdatertFoedselsdato, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getFoedselsdato(), oppdatertFoedselsdato, id, "Foedselsdato")
+                        .doOnNext(foedselsdatoer -> dbPerson.getPerson().setFoedselsdato(foedselsdatoer))
+                        .then(foedselsdatoService.validate(oppdatertFoedselsdato, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(foedselsdatoService::convert)
                 .flatMap(this::savePerson);
     }
@@ -134,11 +128,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateNavn(String ident, Integer id, NavnDTO oppdatertNavn) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getNavn(), oppdatertNavn, id, "Navn")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setNavn(tuple.getT1()))
-                .flatMap(tuple -> navnService.validate(oppdatertNavn, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getNavn(), oppdatertNavn, id, "Navn")
+                        .doOnNext(navn -> dbPerson.getPerson().setNavn(navn))
+                        .then(navnService.validate(oppdatertNavn, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(navnService::convert)
                 .flatMap(this::savePerson);
     }
@@ -146,11 +138,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateKjoenn(String ident, Integer id, KjoennDTO oppdatertKjoenn) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, id, "Kjoenn")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setKjoenn(tuple.getT1()))
-                .flatMap(tuple -> kjoennService.validate(oppdatertKjoenn, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getKjoenn(), oppdatertKjoenn, id, "Kjoenn")
+                        .doOnNext(kjoenn -> dbPerson.getPerson().setKjoenn(kjoenn))
+                        .then(kjoennService.validate(oppdatertKjoenn, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(kjoennService::convert)
                 .flatMap(this::savePerson);
     }
@@ -158,11 +148,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateBostedsadresse(String ident, Integer id, BostedadresseDTO oppdatertAdresse) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, id, "Bostedsadresse")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setBostedsadresse(tuple.getT1()))
-                .flatMap(tuple -> bostedAdresseService.validate(oppdatertAdresse, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getBostedsadresse(), oppdatertAdresse, id, "Bostedsadresse")
+                        .doOnNext(bostedsadresser -> dbPerson.getPerson().setBostedsadresse(bostedsadresser))
+                        .then(bostedAdresseService.validate(oppdatertAdresse, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(person -> bostedAdresseService.convert(person, false))
                 .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
@@ -171,11 +159,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateKontaktadresse(String ident, Integer id, KontaktadresseDTO oppdatertAdresse) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, id, "Kontaktadresse")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setKontaktadresse(tuple.getT1()))
-                .flatMap(tuple -> kontaktAdresseService.validate(oppdatertAdresse, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getKontaktadresse(), oppdatertAdresse, id, "Kontaktadresse")
+                        .doOnNext(kontaktadresser -> dbPerson.getPerson().setKontaktadresse(kontaktadresser))
+                        .then(kontaktAdresseService.validate(oppdatertAdresse, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(person -> kontaktAdresseService.convert(person, false))
                 .flatMap(this::savePerson);
     }
@@ -183,11 +169,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateOppholdsadresse(String ident, Integer id, OppholdsadresseDTO oppdatertAdresse) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, id, "Oppholdsadresse")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setOppholdsadresse(tuple.getT1()))
-                .flatMap(tuple -> oppholdsadresseService.validate(oppdatertAdresse, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getOppholdsadresse(), oppdatertAdresse, id, "Oppholdsadresse")
+                        .doOnNext(oppholdsadresser -> dbPerson.getPerson().setOppholdsadresse(oppholdsadresser))
+                        .then(oppholdsadresseService.validate(oppdatertAdresse, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(oppholdsadresseService::convert)
                 .flatMap(this::savePerson);
     }
@@ -195,11 +179,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateInnflytting(String ident, Integer id, InnflyttingDTO oppdatertInnflytting) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setInnflytting(tuple.getT1()))
-                .flatMap(tuple -> innflyttingService.validate(oppdatertInnflytting)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting")
+                        .doOnNext(innflyttinger -> dbPerson.getPerson().setInnflytting(innflyttinger))
+                        .then(innflyttingService.validate(oppdatertInnflytting).then(Mono.just(dbPerson))))
                 .flatMap(innflyttingService::convert)
                 .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
@@ -208,11 +190,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateUtflytting(String ident, Integer id, UtflyttingDTO oppdatertUtflytting) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setUtflytting(tuple.getT1()))
-                .flatMap(tuple -> utflyttingService.validate(oppdatertUtflytting)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting")
+                        .doOnNext(utflyttinger -> dbPerson.getPerson().setUtflytting(utflyttinger))
+                        .then(utflyttingService.validate(oppdatertUtflytting).then(Mono.just(dbPerson))))
                 .flatMap(utflyttingService::convert)
                 .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
@@ -221,11 +201,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setDeltBosted(tuple.getT1()))
-                .flatMap(tuple -> deltBostedService.prepAdresser(oppdatertDeltBosted)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted")
+                        .doOnNext(deltebosteder -> dbPerson.getPerson().setDeltBosted(deltebosteder))
+                        .then(deltBostedService.prepAdresser(oppdatertDeltBosted).then(Mono.just(dbPerson))))
                 .flatMap(this::savePerson);
     }
 
@@ -233,7 +211,7 @@ public class ArtifactUpdateService {
 
         return getPerson(ident)
                 .flatMap(person -> forelderBarnRelasjonService.validate(oppdatertRelasjon, person.getPerson())
-                        .thenReturn(person))
+                        .then(Mono.just(person)))
                 .flatMapMany(person -> Flux.fromIterable(person.getPerson().getForelderBarnRelasjon())
                         .filter(relasjon -> relasjon.getId().equals(id))
                         .filter(relasjon ->
@@ -243,9 +221,9 @@ public class ArtifactUpdateService {
                         .flatMap(relasjon -> getPerson(relasjon.getIdentForRelasjon())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FAMILIERELASJON_BARN)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, relasjon.isEksisterendePerson())
-                                        .thenReturn(person))))
+                                        .then(Mono.just(person)))))
                 .flatMap(person -> updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon")
                         .zipWith(Mono.just(person)))
                 .doOnNext(tuple -> {
@@ -263,7 +241,7 @@ public class ArtifactUpdateService {
 
         return getPerson(ident)
                 .flatMap(person -> foreldreansvarService.validate(oppdatertAnsvar, person.getPerson())
-                        .thenReturn(person))
+                        .then(Mono.just(person)))
                 .flatMapMany(person -> Flux.fromIterable(person.getPerson().getForeldreansvar())
                         .filter(relasjon -> relasjon.getId().equals(id))
                         .filter(ansvar -> oppdatertAnsvar.getAnsvar() != ansvar.getAnsvar() ||
@@ -272,9 +250,9 @@ public class ArtifactUpdateService {
                         .flatMap(ansvar -> getPerson(ansvar.getAnsvarlig())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, ansvar.isEksisterendePerson())
-                                        .thenReturn(person))
+                                        .then(Mono.just(person)))
                                 .flatMapMany(type -> Flux.fromIterable(person.getPerson().getForeldreansvar())
                                         .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
                                         .filter(ForeldreansvarDTO::isAnsvarligMedIdentifikator)
@@ -282,7 +260,7 @@ public class ArtifactUpdateService {
                                         .flatMap(ansvar1 -> getPerson(ansvar1.getAnsvarlig())
                                                 .flatMap(slettePerson ->
                                                         deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER)
-                                                                .thenReturn(person))))))
+                                                                .then(Mono.just(person)))))))
                 .flatMap(person -> updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, id, "Foreldreansvar")
                         .zipWith(Mono.just(person)))
                 .doOnNext(tuple -> {
@@ -310,18 +288,19 @@ public class ArtifactUpdateService {
                         .flatMap(kontakt -> getPerson(kontakt.getIdentForRelasjon())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(person, slettePerson, KONTAKT_FOR_DOEDSBO)
-                                                .thenReturn(slettePerson))
-                                .flatMap(slettePerson -> deletePerson(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson())
-                                        .thenReturn(person))))
-                .flatMap(person -> updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> {
-                    oppdatertInformasjon.setId(id);
-                    tuple.getT2().getPerson().getKontaktinformasjonForDoedsbo().add(oppdatertInformasjon);
-                    tuple.getT2().getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed());
-                    tuple.getT2().getPerson().setKontaktinformasjonForDoedsbo(tuple.getT1());
-                })
-                .flatMap(tuple -> kontaktinformasjonForDoedsboService.convert(tuple.getT2()))
+                                                .then(Mono.just(slettePerson)))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson()))
+                                .then(updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo"))
+                                .doOnNext(kontaktinfo -> {
+                                    oppdatertInformasjon.setId(id);
+                                    person.getPerson().getKontaktinformasjonForDoedsbo().add(oppdatertInformasjon);
+                                    person.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed());
+                                    person.getPerson().setKontaktinformasjonForDoedsbo(kontaktinfo);
+                                }))
+                        .switchIfEmpty(updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo")
+                                .doOnNext(type ->
+                                        person.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed())))
+                        .then(kontaktinformasjonForDoedsboService.convert(person)))
                 .flatMap(this::savePerson)
                 .then();
     }
@@ -329,11 +308,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateUtenlandskIdentifikasjonsnummer(String ident, Integer id, UtenlandskIdentifikasjonsnummerDTO oppdatertIdentifikasjon) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setUtenlandskIdentifikasjonsnummer(tuple.getT1()))
-                .flatMap(tuple -> utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer")
+                        .doOnNext(utenlandskIdentifikasjon -> dbPerson.getPerson().setUtenlandskIdentifikasjonsnummer(utenlandskIdentifikasjon))
+                        .then(utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon).then(Mono.just(dbPerson))))
                 .flatMap(utenlandsidentifikasjonsnummerService::convert)
                 .flatMap(this::savePerson);
     }
@@ -350,9 +327,9 @@ public class ArtifactUpdateService {
                         .flatMap(falskId -> getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer())
                                 .flatMap(slettePerson ->
                                         deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FALSK_IDENTITET)
-                                                .thenReturn(slettePerson))
+                                                .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, falskId.isEksisterendePerson())
-                                        .thenReturn(person))))
+                                        .then(Mono.just(person)))))
                 .flatMap(person -> updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, id, "FalskIdentitet")
                         .zipWith(Mono.just(person)))
                 .doOnNext(tuple -> {
@@ -370,11 +347,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateAdressebeskyttelse(String ident, Integer id, AdressebeskyttelseDTO oppdatertBeskyttelse) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, id, "Adressebeskyttelse")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setAdressebeskyttelse(tuple.getT1()))
-                .flatMap(tuple -> adressebeskyttelseService.validate(oppdatertBeskyttelse, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, id, "Adressebeskyttelse")
+                        .doOnNext(adressebeskyttelser -> dbPerson.getPerson().setAdressebeskyttelse(adressebeskyttelser))
+                        .then(adressebeskyttelseService.validate(oppdatertBeskyttelse, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(adressebeskyttelseService::convert)
                 .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
@@ -383,11 +358,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateDoedsfall(String ident, Integer id, DoedsfallDTO oppdatertDoedsfall) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setDoedsfall(tuple.getT1()))
-                .flatMap(tuple -> doedsfallService.validate(oppdatertDoedsfall)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall")
+                        .doOnNext(doedsfall -> dbPerson.getPerson().setDoedsfall(doedsfall))
+                        .then(doedsfallService.validate(oppdatertDoedsfall).then(Mono.just(dbPerson))))
                 .flatMap(doedsfallService::convert)
                 .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson);
@@ -396,11 +369,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateFolkeregisterPersonstatus(String ident, Integer id, FolkeregisterPersonstatusDTO oppdatertStatus) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, id, "FolkeregisterPersonstatus")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setFolkeregisterPersonstatus(tuple.getT1()))
-                .flatMap(tuple -> folkeregisterPersonstatusService.validate(oppdatertStatus, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, id, "FolkeregisterPersonstatus")
+                        .doOnNext(personstatus -> dbPerson.getPerson().setFolkeregisterPersonstatus(personstatus))
+                        .then(folkeregisterPersonstatusService.validate(oppdatertStatus, dbPerson.getPerson()).then(Mono.just(dbPerson))))
                 .flatMap(folkeregisterPersonstatusService::convert)
                 .flatMap(this::savePerson);
     }
@@ -408,11 +379,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateTilrettelagtKommunikasjon(String ident, Integer id, TilrettelagtKommunikasjonDTO oppdatertKommunikasjon) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, id, "TilrettelagtKommunikasjon")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setTilrettelagtKommunikasjon(tuple.getT1()))
-                .flatMap(tuple -> tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, id, "TilrettelagtKommunikasjon")
+                        .doOnNext(tilrettelagtKommunikasjon -> dbPerson.getPerson().setTilrettelagtKommunikasjon(tilrettelagtKommunikasjon))
+                        .then(tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon).then(Mono.just(dbPerson))))
                 .flatMap(tilrettelagtKommunikasjonService::convert)
                 .flatMap(this::savePerson);
     }
@@ -420,11 +389,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateStatsborgerskap(String ident, Integer id, StatsborgerskapDTO oppdatertStatsborgerskap) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, id, "Statsborgerskap")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setStatsborgerskap(tuple.getT1()))
-                .flatMap(tuple -> statsborgerskapService.validate(oppdatertStatsborgerskap)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, id, "Statsborgerskap")
+                        .doOnNext(statsborgerskap -> dbPerson.getPerson().setStatsborgerskap(statsborgerskap))
+                        .then(statsborgerskapService.validate(oppdatertStatsborgerskap).then(Mono.just(dbPerson))))
                 .flatMap(statsborgerskapService::convert)
                 .flatMap(this::savePerson);
     }
@@ -432,11 +399,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateOpphold(String ident, Integer id, OppholdDTO oppdatertOpphold) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, id, "Opphold")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setOpphold(tuple.getT1()))
-                .flatMap(tuple -> oppholdService.validate(oppdatertOpphold)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getOpphold(), oppdatertOpphold, id, "Opphold")
+                        .doOnNext(opphold -> dbPerson.getPerson().setOpphold(opphold))
+                        .then(oppholdService.validate(oppdatertOpphold).then(Mono.just(dbPerson))))
                 .flatMap(oppholdService::convert)
                 .flatMap(this::savePerson);
     }
@@ -444,28 +409,28 @@ public class ArtifactUpdateService {
     public Mono<Void> updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
 
         return getPerson(ident)
-                .flatMap(person -> sivilstandService.validate(oppdatertSivilstand, person.getPerson())
-                        .thenReturn(person))
-                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getSivilstand())
+                .flatMap(dbPerson -> sivilstandService.validate(oppdatertSivilstand, dbPerson.getPerson())
+                        .then(Mono.just(dbPerson)))
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                         .filter(sivilstand -> sivilstand.getId().equals(id))
                         .filter(sivilstand -> sivilstand.hasRelatertVedSivilstand() &&
                                               !Objects.equals(sivilstand.getRelatertVedSivilstand(), oppdatertSivilstand.getRelatertVedSivilstand()))
                         .flatMap(sivilstand -> getPerson(sivilstand.getRelatertVedSivilstand())
                                 .flatMap(slettePerson ->
-                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, EKTEFELLE_PARTNER)
-                                                .thenReturn(slettePerson))
-                                .flatMap(slettePerson -> deletePerson(slettePerson, sivilstand.isEksisterendePerson())
-                                        .thenReturn(person))))
-                .flatMap(person -> updateArtifact(person.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> {
-                    oppdatertSivilstand.setId(id);
-                    tuple.getT2().getPerson().getSivilstand().add(oppdatertSivilstand);
-                    tuple.getT2().getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
-                    tuple.getT2().getPerson().setSivilstand(tuple.getT1());
-                })
-                .flatMap(tuple -> sivilstandService.convert(tuple.getT2()))
-                .flatMap(this::savePerson)
+                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, EKTEFELLE_PARTNER)
+                                                .then(deletePerson(slettePerson, sivilstand.isEksisterendePerson())))
+                                .then(updateArtifact(dbPerson.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand")
+                                        .doOnNext(type -> {
+                                            oppdatertSivilstand.setId(id);
+                                            dbPerson.getPerson().getSivilstand().add(oppdatertSivilstand);
+                                            dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
+                                            dbPerson.getPerson().setSivilstand(type);
+                                        })))
+                        .switchIfEmpty(updateArtifact(dbPerson.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand")
+                                .doOnNext(type ->
+                                        dbPerson.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed())))
+                        .flatMap(tuple -> sivilstandService.convert(dbPerson))
+                        .flatMap(this::savePerson))
                 .then();
     }
 
@@ -474,7 +439,7 @@ public class ArtifactUpdateService {
         return getPerson(ident)
                 .flatMap(person -> Flux.fromIterable(oppdaterteTelefonnumre)
                         .flatMap(telefonnummer -> telefonnummerService.validate(telefonnummer)
-                                .thenReturn(telefonnummer))
+                                .then(Mono.just(telefonnummer)))
                         .doOnNext(telefonnummer -> {
                             telefonnummer.setIsNew(true);
                             telefonnummer.setId(telefonnummer.getPrioritet());
@@ -497,9 +462,9 @@ public class ArtifactUpdateService {
                                               !Objects.equals(vergemaal.getVergeIdent(), oppdatertVergemaal.getVergeIdent())))
                         .flatMap(vergemaal -> getPerson(vergemaal.getVergeIdent())
                                 .flatMap(slettePerson -> deleteRelasjonerService.deleteRelasjoner(person, slettePerson, VERGE)
-                                        .thenReturn(slettePerson))
+                                        .then(Mono.just((slettePerson))))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
-                                        .thenReturn(vergemaal))
+                                        .then(Mono.just(vergemaal)))
                                 .flatMapMany(type -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
                                 .doOnNext(type -> {
                                     oppdatertVergemaal.setId(id);
@@ -517,11 +482,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateSikkerhetstiltak(String ident, Integer id, SikkerhetstiltakDTO oppdatertSikkerhetstiltak) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, id, "Sikkerhetstiltak")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setSikkerhetstiltak(tuple.getT1()))
-                .flatMap(tuple -> sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, id, "Sikkerhetstiltak")
+                        .doOnNext(sikkerhetstiltak -> dbPerson.getPerson().setSikkerhetstiltak(sikkerhetstiltak))
+                        .then(sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak).then(Mono.just(dbPerson))))
                 .flatMap(sikkerhetstiltakService::convert)
                 .flatMap(this::savePerson);
     }
@@ -529,11 +492,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateDoedfoedtBarn(String ident, Integer id, DoedfoedtBarnDTO oppdatertDoedfoedt) {
 
         return getPerson(ident)
-                .flatMap(person -> updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, id, "DoedfoedtBarn")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> tuple.getT2().getPerson().setDoedfoedtBarn(tuple.getT1()))
-                .flatMap(tuple -> doedfoedtBarnService.validate(oppdatertDoedfoedt)
-                        .thenReturn(tuple.getT2()))
+                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, id, "DoedfoedtBarn")
+                        .doOnNext(doedfoedtBarn -> dbPerson.getPerson().setDoedfoedtBarn(doedfoedtBarn))
+                        .then(doedfoedtBarnService.validate(oppdatertDoedfoedt).then(Mono.just(dbPerson))))
                 .flatMap(doedfoedtBarnService::convert)
                 .flatMap(this::savePerson);
     }
