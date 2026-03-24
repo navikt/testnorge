@@ -7,7 +7,6 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasLandkode;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
         return Flux.fromIterable(dbPerson.getPerson().getStatsborgerskap())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, dbPerson.getPerson(), dbPerson.getPerson().getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .flatMap(type -> handle(type, dbPerson.getPerson()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
@@ -57,12 +57,12 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
             !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
             return Mono.error(new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR));
         }
-        return  Mono.empty();
+        return Mono.empty();
     }
 
-    private Mono<StatsborgerskapDTO> handle(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
+    private Mono<StatsborgerskapDTO> handle(StatsborgerskapDTO statsborgerskap, PersonDTO person) {
 
-        return setLandkode(statsborgerskap, person, innflytting)
+        return setLandkode(statsborgerskap, person)
                 .doOnNext(type -> {
                     if (isNull(type.getGyldigFraOgMed()) &&
                         isNull(type.getBekreftelsesdato()) &&
@@ -72,11 +72,12 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
                 });
     }
 
-    private Mono<StatsborgerskapDTO> setLandkode(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
+    private Mono<StatsborgerskapDTO> setLandkode(StatsborgerskapDTO statsborgerskap, PersonDTO person) {
 
         if (isBlank(statsborgerskap.getLandkode())) {
-            if (nonNull(innflytting)) {
-                statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
+            if (!person.getInnflytting().isEmpty() &&
+                isNotBlank(person.getInnflytting().getFirst().getFraflyttingsland())) {
+                statsborgerskap.setLandkode(person.getInnflytting().getFirst().getFraflyttingsland());
                 return Mono.just(statsborgerskap);
             } else if (FNR.equals(IdenttypeUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);

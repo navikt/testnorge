@@ -5,7 +5,6 @@ import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasLandkode;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -56,30 +54,6 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
     }
 
     protected Mono<InnflyttingDTO> handle(InnflyttingDTO innflytting, DbPerson dbPerson) {
-
-        return getInnflyttingDTO(innflytting, dbPerson)
-                .doOnNext(innflytting1 -> {
-
-                    if (dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
-                            .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getStatus()) ||
-                                                                 BOSATT == folkeregisterPersonstatus.getStatus())
-                            .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getGyldigFraOgMed()) ||
-                                                                 folkeregisterPersonstatus.getGyldigFraOgMed().equals(innflytting1.getInnflyttingsdato()))
-                            .findFirst()
-                            .isEmpty()) {
-
-                        dbPerson.getPerson().getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
-                                .isNew(true)
-                                .id(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
-                                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
-                                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
-                                            .getId() + 1)
-                                .build());
-                    }
-                });
-    }
-
-    private Mono<InnflyttingDTO> getInnflyttingDTO(InnflyttingDTO innflytting, DbPerson dbPerson) {
 
         return Mono.just(innflytting)
                 .flatMap(innflytting1 ->

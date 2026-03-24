@@ -187,16 +187,6 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     protected static void setGyldigTilOgMed(PersonDTO person) {
 
-        var newStatus = new ArrayList<>(person
-                .getFolkeregisterPersonstatus()
-                .stream()
-                .filter(status -> nonNull(status.getGyldigFraOgMed()))
-                .sorted(Comparator
-                        .comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed)
-                        .reversed())
-                .toList());
-        person.setFolkeregisterPersonstatus(newStatus);
-
         var folkeregisterPersonstatus = person.getFolkeregisterPersonstatus();
         ArtifactUtils.renumberId(folkeregisterPersonstatus);
 
