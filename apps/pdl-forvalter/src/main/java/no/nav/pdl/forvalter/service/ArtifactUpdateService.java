@@ -414,23 +414,26 @@ public class ArtifactUpdateService {
                         .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                         .filter(sivilstand -> sivilstand.getId().equals(id))
-                        .filter(sivilstand -> sivilstand.hasRelatertVedSivilstand() &&
-                                              !Objects.equals(sivilstand.getRelatertVedSivilstand(), oppdatertSivilstand.getRelatertVedSivilstand()))
-                        .flatMap(sivilstand -> getPerson(sivilstand.getRelatertVedSivilstand())
-                                .flatMap(slettePerson ->
-                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, EKTEFELLE_PARTNER)
-                                                .then(deletePerson(slettePerson, sivilstand.isEksisterendePerson())))
-                                .then(updateArtifact(dbPerson.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand")
-                                        .doOnNext(type -> {
-                                            oppdatertSivilstand.setId(id);
-                                            dbPerson.getPerson().getSivilstand().add(oppdatertSivilstand);
-                                            dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
-                                            dbPerson.getPerson().setSivilstand(type);
-                                        })))
-                        .switchIfEmpty(updateArtifact(dbPerson.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand")
-                                .doOnNext(type ->
-                                        dbPerson.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed())))
-                        .flatMap(tuple -> sivilstandService.convert(dbPerson))
+                        .flatMap(sivilstand -> {
+                            if (sivilstand.hasRelatertVedSivilstand() &&
+                                !Objects.equals(sivilstand.getRelatertVedSivilstand(),
+                                        oppdatertSivilstand.getRelatertVedSivilstand())) {
+                                return getPerson(sivilstand.getRelatertVedSivilstand())
+                                        .flatMap(slettePerson ->
+                                                deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, EKTEFELLE_PARTNER)
+                                                        .then(deletePerson(slettePerson, sivilstand.isEksisterendePerson())));
+                            } else {
+                                return Mono.empty();
+                            }
+                        })
+                        .then(updateArtifact(dbPerson.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand")
+                                .doOnNext(type -> {
+                                    dbPerson.getPerson().setSivilstand(type);
+                                    dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
+                                })
+                        .doOnNext(type ->
+                                dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed()))
+                        .flatMap(tuple -> sivilstandService.convert(dbPerson)))
                         .flatMap(this::savePerson))
                 .then();
     }

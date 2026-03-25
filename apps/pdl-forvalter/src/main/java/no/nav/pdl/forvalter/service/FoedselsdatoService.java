@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -9,10 +10,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
@@ -34,10 +35,8 @@ public class FoedselsdatoService implements BiValidation<FoedselsdatoDTO, Person
                 .collectList()
                 .doOnNext(foedselsdatoer -> {
 
-                    dbPerson.getPerson().setFoedselsdato(new ArrayList<>(foedselsdatoer));
                     dbPerson.getPerson().getFoedselsdato().sort(Comparator.comparing(FoedselsdatoDTO::getFoedselsaar).
                             reversed());
-
                     renumberId(dbPerson.getPerson().getFoedselsdato());
                 })
                 .thenReturn(dbPerson);
@@ -59,7 +58,11 @@ public class FoedselsdatoService implements BiValidation<FoedselsdatoDTO, Person
     @Override
     public Mono<Void> validate(FoedselsdatoDTO artifact, PersonDTO personDTO) {
 
-        // Ingen validering
+        if (nonNull(artifact.getFoedselsaar()) && nonNull(artifact.getFoedselsdato()) &&
+            artifact.getFoedselsaar() != artifact.getFoedselsdato().getYear()) {
+
+            return Mono.error(new InvalidRequestException("Foedselsår og foedselsdato må være konsistente"));
+        }
         return Mono.empty();
     }
 }

@@ -127,14 +127,14 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                         return Mono.empty();
                     }
 
-                    return setForelderBarnRelasjon(relasjon, hovedperson, request).thenReturn(relasjon1)
+                    return setForelderBarnRelasjon(relasjon, hovedperson, request).then(Mono.just(relasjon1))
                             .flatMap(relasjon2 -> {
                                 if (request.getRelatertPersonsRolle() == Rolle.BARN && nonNull(relasjon.getDeltBosted())) {
                                     return deltBostedService.handle(relasjon.getDeltBosted(), hovedperson, relasjon.getRelatertPerson());
                                 }
                                 relasjon.setPartnerErIkkeForelder(null);
                                 return Mono.empty();
-                            }).thenReturn(relasjon)
+                            }).then(Mono.just(relasjon))
                             .flatMap(relasjon3 -> {
 
                                 if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
@@ -148,7 +148,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                                                 forelderRelasjon.setRelatertPerson(null);
                                             })
                                             .flatMap(person -> setRelatertPerson(forelderRelasjon, hovedperson)
-                                                    .thenReturn(person))
+                                                    .then(Mono.just((person))))
                                             .flatMap(person -> addForelderBarnRelasjon(forelderRelasjon, hovedperson)
                                                     .thenReturn(person))
                                             .doOnNext(dbPerson ->
@@ -194,8 +194,8 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                             .doOnNext(forelderBarnRelasjon ->
                                     partnerPerson.getPerson().getForelderBarnRelasjon()
                                             .addFirst(forelderBarnRelasjon))
-                            .thenReturn(partnerPerson)
-                            .flatMap(personRepository::save))
+                            .thenReturn(partnerPerson))
+                    .flatMap(personRepository::save)
                     .then();
         }
         return Mono.empty();
@@ -220,10 +220,10 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                     } else {
                         return createMotsattRelasjon(relasjon, hovedperson.getIdent())
                                 .then(relasjonService.setRelasjoner(hovedperson.getIdent(),
-                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
-                                        relasjon.getRelatertPerson(),
-                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER))
-                                .thenReturn(relasjon);
+                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN :FAMILIERELASJON_FORELDER,
+                        relasjon.getRelatertPerson(),
+                                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN))
+                                .then(Mono.just(relasjon));
                     }
                 });
     }

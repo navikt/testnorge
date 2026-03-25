@@ -95,10 +95,10 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             return setRelatertVedSivilstand(sivilstand, hovedperson)
-                    .then(relasjonService.setRelasjoner(hovedperson.getIdent(), EKTEFELLE_PARTNER,
-                            sivilstand.getRelatertVedSivilstand(), EKTEFELLE_PARTNER))
-                    .then(createRelatertSivilstand(sivilstand, hovedperson.getIdent())
-                            .then(Mono.just((sivilstand))));
+                    .then(Mono.defer(() -> relasjonService.setRelasjoner(hovedperson.getIdent(), EKTEFELLE_PARTNER,
+                            sivilstand.getRelatertVedSivilstand(), EKTEFELLE_PARTNER)))
+                    .then(Mono.defer(() -> createRelatertSivilstand(sivilstand, hovedperson.getIdent())))
+                    .then(Mono.just(sivilstand));
 
         } else {
             sivilstand.setRelatertVedSivilstand(null);
@@ -106,7 +106,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
         return Mono.just(sivilstand);
     }
 
-    private Mono<Void> setRelatertVedSivilstand(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private Mono<SivilstandDTO> setRelatertVedSivilstand(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
         if (isBlank(sivilstand.getRelatertVedSivilstand())) {
 
@@ -158,9 +158,9 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                         sivilstand.setNyRelatertPerson(null);
                         sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
                     })
-                    .then();
+                    .thenReturn(sivilstand);
         }
-        return Mono.empty();
+        return Mono.just(sivilstand);
     }
 
     private Mono<Void> createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {

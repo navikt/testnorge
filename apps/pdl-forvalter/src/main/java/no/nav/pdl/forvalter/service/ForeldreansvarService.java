@@ -131,7 +131,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                         }
                     } else {
 
-                        validateBarn(foreldreansvar, hovedperson);
+                        return validateBarn(foreldreansvar, hovedperson);
                     }
                     return Mono.empty();
                 }));

@@ -36,7 +36,6 @@ public class KodeverkCommand implements Callable<Mono<KodeverkDTO>> {
                 .bodyToMono(KodeverkDTO.class)
                 .doFinally(value -> log.info("Kodeverk {} hentet", kodeverknavn))
                 .retryWhen(WebClientError.is5xxException())
-                .cache(Duration.ofMinutes(30));
+                .cache(Duration.ofMinutes(500));
     }
-
 }

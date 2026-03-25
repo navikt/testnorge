@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -121,7 +122,37 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
     @Override
     public Mono<Void> validate(FoedselDTO artifact, PersonDTO personDTO) {
 
-        // Ingen validering
-        return Mono.empty();
+        return Mono.defer(() -> {
+                    if (nonNull(artifact.getFoedselsaar()) && nonNull(artifact.getFoedselsdato()) &&
+                        artifact.getFoedselsaar() != artifact.getFoedselsdato().getYear()) {
+
+                        return Mono.error(new InvalidRequestException("Foedselsår og foedselsdato må være konsistente"));
+                    }
+                    return Mono.empty();
+                })
+                .then(Mono.defer(() -> {
+                    if (isNotBlank(artifact.getFoedeland())) {
+                        return kodeverkConsumer.hentKodeverk(KodeverkConsumer.LANDKODER)
+                                .flatMap(landkoder -> {
+                                    if (!landkoder.containsKey(artifact.getFoedeland())) {
+                                        return Mono.error(new InvalidRequestException("Ugyldig foedeland: " + artifact.getFoedeland()));
+                                    }
+                                    return Mono.empty();
+                                });
+                    }
+                    return Mono.empty();
+                }))
+                .then(Mono.defer(() -> {
+                    if (isNotBlank(artifact.getFoedekommune())) {
+                        return kodeverkConsumer.hentKodeverk(KodeverkConsumer.KOMMUNER_MED_HISTORISKE)
+                                .flatMap(kommuner -> {
+                                    if (!kommuner.containsKey(artifact.getFoedekommune())) {
+                                        return Mono.error(new InvalidRequestException("Ugyldig foedekommune: " + artifact.getFoedekommune()));
+                                    }
+                                    return Mono.empty();
+                                });
+                    }
+                    return Mono.empty();
+                }));
     }
 }

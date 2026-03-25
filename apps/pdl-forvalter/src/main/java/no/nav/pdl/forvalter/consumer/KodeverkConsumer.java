@@ -19,9 +19,9 @@ import java.util.Random;
 public class KodeverkConsumer {
 
     private static final String POSTNUMMER = "Postnummer";
-    private static final String LANDKODER = "Landkoder";
-    private static final String KOMMUNER = "Kommuner";
-    private static final String KOMMUNER_MED_HISTORISKE = "KommunerMedHistoriske";
+    public static final String LANDKODER = "Landkoder";
+    public static final String KOMMUNER = "Kommuner";
+    public static final String KOMMUNER_MED_HISTORISKE = "KommunerMedHistoriske";
     private static final String EMBETER = "Vergemål_Fylkesmannsembeter";
     private static final Random random = new SecureRandom();
 
@@ -81,7 +81,7 @@ public class KodeverkConsumer {
                 .map(KodeverkDTO::getKodeverk);
     }
 
-    private Mono<Map<String, String>> hentKodeverk(String kodeverk) {
+    public Mono<Map<String, String>> hentKodeverk(String kodeverk) {
 
         return hentKodeverkInner(kodeverk)
                 .switchIfEmpty(hentKodeverkInner(kodeverk));

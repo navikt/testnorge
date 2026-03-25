@@ -156,7 +156,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     }
                     return Mono.empty();
                 }))
-                .then(isValidPersonnavn(kontaktinfo))
+                .then(Mono.defer(() -> isValidPersonnavn(kontaktinfo)))
                 .flatMap(valid -> isFalse(valid) ?
                         Mono.error(new InvalidRequestException(VALIDATION_PERSONNAVN_INVALID)) :
                         Mono.empty());
