@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
@@ -99,7 +98,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                     .then(relasjonService.setRelasjoner(hovedperson.getIdent(), EKTEFELLE_PARTNER,
                             sivilstand.getRelatertVedSivilstand(), EKTEFELLE_PARTNER))
                     .then(createRelatertSivilstand(sivilstand, hovedperson.getIdent())
-                            .thenReturn(sivilstand));
+                            .then(Mono.just((sivilstand))));
 
         } else {
             sivilstand.setRelatertVedSivilstand(null);
@@ -167,14 +166,8 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
     private Mono<Void> createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
 
         return personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
-                .switchIfEmpty(Mono.just(DbPerson.builder()
-                                .ident(sivilstand.getRelatertVedSivilstand())
-                                .person(PersonDTO.builder()
-                                        .ident(sivilstand.getRelatertVedSivilstand())
-                                        .build())
-                                .sistOppdatert(now())
-                                .build())
-                        .flatMap(personRepository::save))
+                .switchIfEmpty(Mono.error(new RuntimeException("Relatert person med ident %s ikke funnet"
+                        .formatted(sivilstand.getRelatertVedSivilstand()))))
                 .doOnNext(relatertPerson -> {
 
                     val relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);

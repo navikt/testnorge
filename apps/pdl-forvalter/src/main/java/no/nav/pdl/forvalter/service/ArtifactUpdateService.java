@@ -210,9 +210,9 @@ public class ArtifactUpdateService {
     public Mono<Void> updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
         return getPerson(ident)
-                .flatMap(person -> forelderBarnRelasjonService.validate(oppdatertRelasjon, person.getPerson())
-                        .then(Mono.just(person)))
-                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getForelderBarnRelasjon())
+                .flatMap(dbPerson -> forelderBarnRelasjonService.validate(oppdatertRelasjon, dbPerson.getPerson())
+                        .then(Mono.just(dbPerson)))
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                         .filter(relasjon -> relasjon.getId().equals(id))
                         .filter(relasjon ->
                                 isEndretRolle(relasjon, oppdatertRelasjon) ||
@@ -220,28 +220,29 @@ public class ArtifactUpdateService {
                                 !Objects.equals(relasjon.getRelatertPerson(), oppdatertRelasjon.getRelatertPerson()))
                         .flatMap(relasjon -> getPerson(relasjon.getIdentForRelasjon())
                                 .flatMap(slettePerson ->
-                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FAMILIERELASJON_BARN)
+                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_BARN)
                                                 .then(Mono.just(slettePerson)))
-                                .flatMap(slettePerson -> deletePerson(slettePerson, relasjon.isEksisterendePerson())
-                                        .then(Mono.just(person)))))
-                .flatMap(person -> updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> {
-                    oppdatertRelasjon.setId(id);
-                    tuple.getT2().getPerson().getForelderBarnRelasjon().add(oppdatertRelasjon);
-                    tuple.getT2().getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
-                    tuple.getT2().getPerson().setForelderBarnRelasjon(tuple.getT1());
-                })
-                .flatMap(tuple -> forelderBarnRelasjonService.convert(tuple.getT2()))
-                .flatMap(this::savePerson)
+                                .flatMap(slettePerson -> deletePerson(slettePerson, relasjon.isEksisterendePerson()))
+                                .then(updateArtifact(dbPerson.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"))
+                                .doOnNext(forelderBarnRelasjoner -> {
+                                    oppdatertRelasjon.setId(id);
+                                    dbPerson.getPerson().getForelderBarnRelasjon().add(oppdatertRelasjon);
+                                    dbPerson.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
+                                    dbPerson.getPerson().setForelderBarnRelasjon(forelderBarnRelasjoner);
+                                }))
+                        .switchIfEmpty(updateArtifact(dbPerson.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon")
+                                .doOnNext(forelderBarnRelasjoner ->
+                                        dbPerson.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed())))
+                        .then(forelderBarnRelasjonService.convert(dbPerson))
+                        .flatMap(this::savePerson))
                 .then();
     }
 
     public Mono<Void> updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
 
         return getPerson(ident)
-                .flatMap(person -> foreldreansvarService.validate(oppdatertAnsvar, person.getPerson())
-                        .then(Mono.just(person)))
+                .flatMap(dbPerson -> foreldreansvarService.validate(oppdatertAnsvar, dbPerson.getPerson())
+                        .then(Mono.just(dbPerson)))
                 .flatMapMany(person -> Flux.fromIterable(person.getPerson().getForeldreansvar())
                         .filter(relasjon -> relasjon.getId().equals(id))
                         .filter(ansvar -> oppdatertAnsvar.getAnsvar() != ansvar.getAnsvar() ||
