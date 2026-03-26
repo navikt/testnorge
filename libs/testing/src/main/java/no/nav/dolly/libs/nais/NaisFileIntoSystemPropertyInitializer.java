@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,15 +20,18 @@ public class NaisFileIntoSystemPropertyInitializer implements ApplicationContext
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext applicationContext) {
 
+        var isLocalProfile = Arrays
+                .stream(applicationContext.getEnvironment().getActiveProfiles())
+                .anyMatch(s -> s.startsWith("local"));
+        if (isLocalProfile) {
+            log.info("Skipping setting property {} from file {} due to local profile", systemProperty, sourceFile);
+            return;
+        }
         try {
             var path = Paths.get(sourceFile);
-            if (Files.exists(path)) {
-                var value = Files.readString(path).trim();
-                System.setProperty(systemProperty, value);
-                log.info("System property {} set from file {}", systemProperty, sourceFile);
-            } else {
-                log.warn("File not found at {}; hopefully you're running locally", sourceFile);
-            }
+            var value = Files.readString(path).trim();
+            System.setProperty(systemProperty, value);
+            log.info("System property {} set from file {}", systemProperty, sourceFile);
         } catch (Exception e) {
             throw new RuntimeException("Error setting system property %s from file %s".formatted(systemProperty, sourceFile), e);
         }

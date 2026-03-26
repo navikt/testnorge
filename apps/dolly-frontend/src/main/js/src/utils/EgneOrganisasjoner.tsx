@@ -88,7 +88,7 @@ const OrgMiljoeInfoVisning = ({ miljoer, loading = false, error = false }: Props
 						style={{ marginRight: '5px' }}
 					/>
 					{harMiljoe
-						? 'Organisasjon funnet i miljø: ' + miljoer
+						? `Organisasjon funnet i miljø: ${miljoer.map((m) => m.toUpperCase()).join(', ')}`
 						: 'Fant ikke organisasjon i noen miljø'}
 				</div>
 			)}

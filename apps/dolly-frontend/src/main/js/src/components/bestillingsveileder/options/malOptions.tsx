@@ -226,7 +226,11 @@ const getUpdatedSkattekortData = (skattekortData: any) => {
 			_.set(arbeidsgiver, 'arbeidsgiveridentifikator', identifikator)
 			const forskuddstrekk = arbeidsgiver?.arbeidstaker?.[0]?.skattekort?.forskuddstrekk?.map(
 				(forskuddstrekk: any) =>
-					Object.fromEntries(Object.entries(forskuddstrekk)?.filter(([key, value]) => value)),
+					forskuddstrekk
+						? Object.fromEntries(
+								Object.entries(forskuddstrekk).filter(([key, value]) => value),
+							)
+						: forskuddstrekk,
 			)
 			_.set(arbeidsgiver, 'arbeidstaker[0].skattekort.forskuddstrekk', forskuddstrekk)
 			return arbeidsgiver
