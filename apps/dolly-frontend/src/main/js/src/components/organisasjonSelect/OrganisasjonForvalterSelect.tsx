@@ -35,6 +35,7 @@ export const OrganisasjonForvalterSelect = ({
 	return (
 		<div className={'flexbox--align-start'} style={{ flexFlow: 'column' }} key={path}>
 			<DollyTextInput
+				name={path}
 				fieldName={path}
 				value={value}
 				type="number"
