@@ -320,26 +320,27 @@ public class ArtifactUpdateService {
 
         return falskIdentitetService.validate(oppdatertIdentitet)
                 .then(getPerson(ident))
-                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getFalskIdentitet())
+                .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getFalskIdentitet())
                         .filter(falskIdentitet -> falskIdentitet.getId().equals(id))
-                        .filter(falskId -> isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()) &&
-                                           !Objects.equals(falskId.getRettIdentitetVedIdentifikasjonsnummer(),
-                                                   oppdatertIdentitet.getRettIdentitetVedIdentifikasjonsnummer()))
-                        .flatMap(falskId -> getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer())
-                                .flatMap(slettePerson ->
-                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FALSK_IDENTITET)
-                                                .then(Mono.just(slettePerson)))
-                                .flatMap(slettePerson -> deletePerson(slettePerson, falskId.isEksisterendePerson())
-                                        .then(Mono.just(person)))))
-                .flatMap(person -> updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, id, "FalskIdentitet")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> {
-                    oppdatertIdentitet.setId(id);
-                    tuple.getT2().getPerson().getFalskIdentitet().add(oppdatertIdentitet);
-                    tuple.getT2().getPerson().getFalskIdentitet().sort(Comparator.comparing(FalskIdentitetDTO::getId).reversed());
-                    tuple.getT2().getPerson().setFalskIdentitet(tuple.getT1());
-                })
-                .flatMap(tuple -> falskIdentitetService.convert(tuple.getT2()))
+                        .flatMap(falskId -> {
+                            if (nonNull(oppdatertIdentitet.getNyFalskIdentitetPerson()) ||
+                                !Objects.equals(falskId.getRettIdentitetVedIdentifikasjonsnummer(),
+                                        oppdatertIdentitet.getRettIdentitetVedIdentifikasjonsnummer())) {
+                                return getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer())
+                                        .flatMap(slettePerson ->
+                                                deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FALSK_IDENTITET)
+                                                        .then(Mono.just(slettePerson)))
+                                        .flatMap(slettePerson -> deletePerson(slettePerson, falskId.isEksisterendePerson()));
+                            } else {
+                                return Mono.empty();
+                            }
+                        })
+                        .then(updateArtifact(dbPerson.getPerson().getFalskIdentitet(), oppdatertIdentitet, id, "FalskIdentitet")
+                                .doOnNext(falskeIdentiter -> {
+                                    dbPerson.getPerson().setFalskIdentitet(falskeIdentiter);
+                                    dbPerson.getPerson().getFalskIdentitet().sort(Comparator.comparing(FalskIdentitetDTO::getId).reversed());
+                                }))
+                        .then(Mono.defer(() -> falskIdentitetService.convert(dbPerson))))
                 .flatMap(folkeregisterPersonstatusService::update)
                 .flatMap(this::savePerson)
                 .then();
@@ -431,9 +432,9 @@ public class ArtifactUpdateService {
                                     dbPerson.getPerson().setSivilstand(type);
                                     dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
                                 })
-                        .doOnNext(type ->
-                                dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed()))
-                        .flatMap(tuple -> sivilstandService.convert(dbPerson)))
+                                .doOnNext(type ->
+                                        dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed()))
+                                .flatMap(tuple -> sivilstandService.convert(dbPerson)))
                         .flatMap(this::savePerson))
                 .then();
     }
