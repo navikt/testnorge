@@ -199,7 +199,10 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 
 	const organisasjonerMap = new Map<string, OrganisasjonForvalterData>()
 	if (data) {
-		data.forEach((org) => {
+		data.forEach((orgResult) => {
+			const org = Array.isArray(orgResult)
+				? (Object.assign({}, ...orgResult) as OrganisasjonForvalterData)
+				: orgResult
 			if (org && !_.isEmpty(org)) {
 				const orgnummer = org.q1?.organisasjonsnummer || org.q2?.organisasjonsnummer
 				if (orgnummer) {
@@ -218,6 +221,7 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 		organisasjoner: dataFiltered,
 		loading: isLoading,
 		error: error,
+		hasBeenCalled: stableKeyRef.current !== null && !isLoading,
 	}
 }
 

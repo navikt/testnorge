@@ -8,6 +8,7 @@ type UseOrganisasjonValidationParams = {
 	organisasjonPath: string
 	watchedOrgnr: string
 	useValidation: boolean
+	parentPath?: string | null
 }
 
 export const useOrganisasjonValidation = ({
@@ -15,83 +16,90 @@ export const useOrganisasjonValidation = ({
 	organisasjonPath,
 	watchedOrgnr,
 	useValidation,
+	parentPath = null,
 }: UseOrganisasjonValidationParams) => {
 	const { organisasjoner, loading, error, hasBeenCalled } = useOrganisasjonForvalter(
 		useValidation ? [watchedOrgnr] : [],
 	)
 	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
+	const organisasjonsnummer = organisasjon?.organisasjonsnummer as string | undefined
+
+	const formMethodsRef = useRef(formMethods)
+	formMethodsRef.current = formMethods
+
+	const parentPathRef = useRef(parentPath)
+	parentPathRef.current = parentPath
 
 	const previousStateRef = useRef<{
 		orgnr?: string
-		hasError: boolean
-		hasOrganisation: boolean
+		errorMessage: string | null
+		orgApplied: boolean
 	}>({
-		hasError: false,
-		hasOrganisation: false,
+		errorMessage: null,
+		orgApplied: false,
 	})
 
 	useEffect(() => {
-		if (!useValidation || loading) return
+		if (!useValidation) return
 
+		const methods = formMethodsRef.current
+		const errorPath = `manual.${organisasjonPath}`
 		const isValidLength = watchedOrgnr?.length === 9
-		const hasInvalidLength = watchedOrgnr && watchedOrgnr.length > 0 && !isValidLength
-		const currentHasError = !organisasjon && watchedOrgnr && isValidLength && hasBeenCalled
-		const currentHasOrganisation = !!organisasjon && isValidLength
-		const prevState = previousStateRef.current
 
-		if (
-			currentHasOrganisation &&
-			(!prevState.hasOrganisation || prevState.orgnr !== watchedOrgnr)
-		) {
-			formMethods.clearErrors(`manual.${organisasjonPath}`)
-			handleManualOrgChange(watchedOrgnr, formMethods, organisasjonPath, null, organisasjon)
-			previousStateRef.current = {
-				orgnr: watchedOrgnr,
-				hasError: false,
-				hasOrganisation: true,
+		if (loading) {
+			if (isValidLength && previousStateRef.current.orgnr !== watchedOrgnr) {
+				methods.clearErrors(errorPath)
+				previousStateRef.current = { orgnr: watchedOrgnr, errorMessage: null, orgApplied: false }
 			}
-		} else if (currentHasError && (!prevState.hasError || prevState.orgnr !== watchedOrgnr)) {
-			formMethods.setError(`manual.${organisasjonPath}`, {
-				message: 'Fant ikke organisasjonen',
-			})
-			previousStateRef.current = {
-				orgnr: watchedOrgnr,
-				hasError: true,
-				hasOrganisation: false,
-			}
-		} else if (hasInvalidLength && (!prevState.hasError || prevState.orgnr !== watchedOrgnr)) {
-			formMethods.setError(`manual.${organisasjonPath}`, {
-				message: 'Organisasjonsnummer må være 9 siffer',
-			})
-			previousStateRef.current = {
-				orgnr: watchedOrgnr,
-				hasError: true,
-				hasOrganisation: false,
-			}
-		} else if (isValidLength && hasBeenCalled && prevState.hasError && prevState.orgnr !== watchedOrgnr) {
-			formMethods.clearErrors(`manual.${organisasjonPath}`)
-			previousStateRef.current = {
-				orgnr: watchedOrgnr,
-				hasError: false,
-				hasOrganisation: false,
-			}
-		} else if (!watchedOrgnr && prevState.hasError) {
-			formMethods.clearErrors(`manual.${organisasjonPath}`)
-			previousStateRef.current = {
-				orgnr: watchedOrgnr,
-				hasError: false,
-				hasOrganisation: false,
-			}
+			return
 		}
-	}, [
-		organisasjon,
-		loading,
-		useValidation,
-		watchedOrgnr,
-		organisasjonPath,
-		hasBeenCalled,
-		formMethods,
-	])
+
+		let expectedError: string | null = null
+		let shouldApplyOrg = false
+
+		if (!watchedOrgnr || watchedOrgnr.length === 0) {
+			expectedError = null
+		} else if (!isValidLength) {
+			expectedError = 'Organisasjonsnummer må være 9 siffer'
+		} else if (!hasBeenCalled) {
+			return
+		} else if (organisasjonsnummer) {
+			expectedError = null
+			shouldApplyOrg = true
+		} else {
+			expectedError = 'Fant ikke organisasjonen'
+		}
+
+		const prev = previousStateRef.current
+		const isUnchanged =
+			prev.orgnr === watchedOrgnr &&
+			prev.errorMessage === expectedError &&
+			(!shouldApplyOrg || prev.orgApplied)
+
+		if (isUnchanged) return
+
+		if (expectedError) {
+			methods.setError(errorPath, { message: expectedError })
+		} else {
+			methods.clearErrors(errorPath)
+		}
+
+		if (shouldApplyOrg) {
+			handleManualOrgChange(
+				watchedOrgnr,
+				methods,
+				organisasjonPath,
+				parentPathRef.current,
+				organisasjon,
+			)
+		}
+
+		previousStateRef.current = {
+			orgnr: watchedOrgnr,
+			errorMessage: expectedError,
+			orgApplied: shouldApplyOrg,
+		}
+	}, [organisasjonsnummer, loading, useValidation, watchedOrgnr, organisasjonPath, hasBeenCalled])
 
 	return { organisasjoner, loading, error }
 }
