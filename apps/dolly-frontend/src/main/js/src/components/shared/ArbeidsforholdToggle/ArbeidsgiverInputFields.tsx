@@ -82,7 +82,6 @@ export const ArbeidsgiverInputFields = ({
 			return (
 				<OrganisasjonForvalterSelect
 					path={organisasjonPath}
-					parentPath={path}
 					value={watchedOrgnr}
 					success={
 						organisasjoner?.length > 0 &&
@@ -90,7 +89,6 @@ export const ArbeidsgiverInputFields = ({
 						!formMethods.getFieldState(`manual.${organisasjonPath}`)?.error
 					}
 					miljoer={orgMiljoer}
-					error={validationError}
 					loading={validationLoading}
 					onTextBlur={(event) => {
 						formMethods.setValue(organisasjonPath, event.target.value || null)

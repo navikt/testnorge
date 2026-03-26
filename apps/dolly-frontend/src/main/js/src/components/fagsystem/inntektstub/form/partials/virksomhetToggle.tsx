@@ -128,7 +128,6 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 					<OrganisasjonForvalterSelect
 						value={watchedOrgnr}
 						path={virksomhetPath}
-						parentPath={opplysningspliktigPath}
 						success={
 							organisasjoner?.length > 0 &&
 							!error &&

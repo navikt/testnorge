@@ -109,7 +109,6 @@ export const OrgnrToggle = ({
 				<OrganisasjonForvalterSelect
 					value={orgnr}
 					path={virksomhetPath}
-					parentPath={path}
 					success={
 						organisasjoner?.length > 0 &&
 						!error &&
