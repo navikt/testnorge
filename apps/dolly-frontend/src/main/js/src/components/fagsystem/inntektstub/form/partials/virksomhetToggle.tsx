@@ -137,7 +137,6 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 						loading={loading}
 						onTextBlur={(event) => {
 							formMethods.setValue(virksomhetPath, event.target.value || null)
-							formMethods.setValue(opplysningspliktigPath, null)
 						}}
 					/>
 				)}

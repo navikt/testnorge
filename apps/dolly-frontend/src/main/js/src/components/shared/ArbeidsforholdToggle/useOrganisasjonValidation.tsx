@@ -21,7 +21,12 @@ export const useOrganisasjonValidation = ({
 	const { organisasjoner, loading, error, hasBeenCalled } = useOrganisasjonForvalter(
 		useValidation ? [watchedOrgnr] : [],
 	)
-	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
+	const firstOrg = organisasjoner?.[0]
+	const organisasjon = firstOrg
+		? (Object.values(firstOrg).find(
+				(val) => val && typeof val === 'object' && 'organisasjonsnummer' in val,
+			) as any)
+		: undefined
 	const organisasjonsnummer = organisasjon?.organisasjonsnummer as string | undefined
 
 	const formMethodsRef = useRef(formMethods)

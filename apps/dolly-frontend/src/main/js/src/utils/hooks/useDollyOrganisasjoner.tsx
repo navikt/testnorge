@@ -204,7 +204,10 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 				? (Object.assign({}, ...orgResult) as OrganisasjonForvalterData)
 				: orgResult
 			if (org && !_.isEmpty(org)) {
-				const orgnummer = org.q1?.organisasjonsnummer || org.q2?.organisasjonsnummer
+				const firstEnvData = Object.values(org).find(
+					(val) => val && typeof val === 'object' && 'organisasjonsnummer' in val,
+				) as any
+				const orgnummer = firstEnvData?.organisasjonsnummer
 				if (orgnummer) {
 					organisasjonerMap.set(orgnummer, org)
 				}
