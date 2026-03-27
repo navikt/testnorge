@@ -150,7 +150,7 @@ export const identpoolFetcher = (url, body) =>
 
 export const fetcher = (url, headers?) =>
 	axios
-		.get(url, { headers: headers })
+		.get(url, { headers: headers, timeout: 0 })
 		.then((res) => {
 			if (res.status === 404) {
 				return null
