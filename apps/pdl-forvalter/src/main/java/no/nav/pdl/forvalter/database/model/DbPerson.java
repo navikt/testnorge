@@ -46,30 +46,8 @@ public class DbPerson {
     @Column
     private PersonDTO person;
 
-//    @OneToMany(mappedBy = "personId")
-//    private List<DbRelasjon> relasjoner;
-
-//    @OneToMany(mappedBy = "personId")
-//    private List<DbAlias> alias;
-
     @Version
     private Integer versjon;
-
-//    public List<DbRelasjon> getRelasjoner() {
-//
-//        if (isNull(relasjoner)) {
-//            relasjoner = new ArrayList<>();
-//        }
-//        return relasjoner;
-//    }
-
-//    public List<DbAlias> getAlias() {
-//
-//        if (isNull(alias)) {
-//            alias = new ArrayList<>();
-//        }
-//        return alias;
-//    }
 
     @Override
     public boolean equals(Object o) {

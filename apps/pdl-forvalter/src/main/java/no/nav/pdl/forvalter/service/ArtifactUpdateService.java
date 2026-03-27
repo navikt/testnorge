@@ -214,25 +214,22 @@ public class ArtifactUpdateService {
                         .then(Mono.just(dbPerson)))
                 .flatMapMany(dbPerson -> Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                         .filter(relasjon -> relasjon.getId().equals(id))
-                        .filter(relasjon ->
-                                isEndretRolle(relasjon, oppdatertRelasjon) ||
-                                relasjon.isRelatertMedIdentifikator() &&
-                                !Objects.equals(relasjon.getRelatertPerson(), oppdatertRelasjon.getRelatertPerson()))
-                        .flatMap(relasjon -> getPerson(relasjon.getIdentForRelasjon())
-                                .flatMap(slettePerson ->
-                                        deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_BARN)
-                                                .then(Mono.just(slettePerson)))
-                                .flatMap(slettePerson -> deletePerson(slettePerson, relasjon.isEksisterendePerson()))
-                                .then(updateArtifact(dbPerson.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"))
-                                .doOnNext(forelderBarnRelasjoner -> {
-                                    oppdatertRelasjon.setId(id);
-                                    dbPerson.getPerson().getForelderBarnRelasjon().add(oppdatertRelasjon);
-                                    dbPerson.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
-                                    dbPerson.getPerson().setForelderBarnRelasjon(forelderBarnRelasjoner);
-                                }))
-                        .switchIfEmpty(updateArtifact(dbPerson.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon")
-                                .doOnNext(forelderBarnRelasjoner ->
-                                        dbPerson.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed())))
+                        .flatMap(relasjon -> {
+                            if (isEndretRolle(relasjon, oppdatertRelasjon) ||
+                                !Objects.equals(relasjon.getRelatertPerson(), oppdatertRelasjon.getRelatertPerson())) {
+                                return getPerson(relasjon.getIdentForRelasjon())
+                                        .flatMap(slettePerson ->
+                                                deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_BARN)
+                                        .then(Mono.defer(() -> deletePerson(slettePerson, relasjon.isEksisterendePerson()))));
+                            } else {
+                                return Mono.empty();
+                            }
+                        })
+                        .then(updateArtifact(dbPerson.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"))
+                        .doOnNext(forelderBarnRelasjoner -> {
+                            dbPerson.getPerson().setForelderBarnRelasjon(forelderBarnRelasjoner);
+                            dbPerson.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
+                        })
                         .then(forelderBarnRelasjonService.convert(dbPerson))
                         .flatMap(this::savePerson))
                 .then();
@@ -472,7 +469,6 @@ public class ArtifactUpdateService {
                                         .then(Mono.just(vergemaal)))
                                 .flatMapMany(type -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
                                 .doOnNext(type -> {
-                                    oppdatertVergemaal.setId(id);
                                     person.getPerson().getVergemaal().add(oppdatertVergemaal);
                                     person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
                                 }))
