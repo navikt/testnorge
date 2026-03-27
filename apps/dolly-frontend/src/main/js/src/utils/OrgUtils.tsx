@@ -77,7 +77,7 @@ export const handleManualOrgChange = (
 				formMethods.setValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
 		} else {
 			formMethods.setError(`manual.${path}`, {
-				message: 'Organisasjonen mangler juridisk enhet',
+				message: 'Organisasjonen mangler opplysningspliktig org',
 			})
 			return
 		}
