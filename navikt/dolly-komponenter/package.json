@@ -7,7 +7,7 @@
   "files": [
     "dist"
   ],
-  "scripts": {
+"scripts": {
     "build": "rollup -c",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -80,5 +80,10 @@
     "semi": true,
     "tabWidth": 2,
     "printWidth": 100
+  },
+  "engines": {
+    "pnpm": ">=8.0.0",
+    "npm": "please-use-pnpm",
+    "yarn": "please-use-pnpm"
   }
 }

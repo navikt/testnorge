@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@navikt/dolly-komponenter':
-        specifier: ^1.6.5
-        version: 1.6.5(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^1.6.6
+        version: 1.6.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@navikt/dolly-lib':
-        specifier: ^1.4.5
-        version: 1.4.5
+        specifier: ^1.4.6
+        version: 1.4.6
       '@navikt/ds-css':
         specifier: ^7.40.0
         version: 7.40.0
@@ -27,8 +27,8 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1
       axios:
-        specifier: ^1.13.6
-        version: 1.13.6
+        specifier: ^1.14.0
+        version: 1.14.0
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -91,8 +91,8 @@ importers:
         specifier: ^4.17.23
         version: 4.17.23
       mini-css-extract-plugin:
-        specifier: ^2.10.1
-        version: 2.10.1(webpack@5.103.0(esbuild@0.27.4))
+        specifier: ^2.10.2
+        version: 2.10.2(webpack@5.103.0(esbuild@0.27.4))
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -466,17 +466,17 @@ packages:
   '@navikt/aksel-icons@7.40.0':
     resolution: {integrity: sha512-1xuhplMhKCEPn2iMFypMVgkRNxUd5iupQ7HP2itdQCkK3K2mm2b8HsDwL9d7YDWcxowq5ff7ewpKgQFPn6o1UQ==, tarball: https://npm.pkg.github.com/download/@navikt/aksel-icons/7.40.0/16d67c0742bcf2a2c38ad37be6c287765640fd7f}
 
-  '@navikt/dolly-assets@1.4.5':
-    resolution: {integrity: sha512-GI6CJMDQCs9ox4D12WUQUImOURLOVgmX09wnmDd/KLk7neg8vdFN05nEWWOyBThCpVIdd48MHuQVaOsZTNcYlg==, tarball: https://npm.pkg.github.com/download/@navikt/dolly-assets/1.4.5/5c453067fa84593ec20fe449bae632031517caf4}
+  '@navikt/dolly-assets@1.4.6':
+    resolution: {integrity: sha512-O0uIWSsy+EXFdjjNX5yPtNKPNj/uOp4J3HRITbGWNpdMGrnPf9l+kjqae91PUS/kdfid/bHfQuVkmccPy6PPuQ==, tarball: https://npm.pkg.github.com/download/@navikt/dolly-assets/1.4.6/2b1b4cfdbf05fcd2cfc3496fca174ce4f104d11c}
 
-  '@navikt/dolly-komponenter@1.6.5':
-    resolution: {integrity: sha512-4lw5R0pSWqzUggw0WA19D+Fv4sW3M0aWWpnnJvDwx+s64uTjTgqCPr0xJWKhBZqNOv/3Q++GUL6qMcdvlqttEA==, tarball: https://npm.pkg.github.com/download/@navikt/dolly-komponenter/1.6.5/fddd4b6cf4aa564d5abdec44d3ffb9b3bd2af78c}
+  '@navikt/dolly-komponenter@1.6.6':
+    resolution: {integrity: sha512-fkwkQuUkONN8U4ww18fg347q7tNBZeCegUEdjIjr8fy2SonkTx2wGROuOC0zwhHPI0Q2FEvuiNs525SMsD4VqQ==, tarball: https://npm.pkg.github.com/download/@navikt/dolly-komponenter/1.6.6/b5631811e86bdf8bfa080a3d89de969477bcc4e8}
     peerDependencies:
       react: '>=19.0.0'
       react-dom: '>=19.0.0'
 
-  '@navikt/dolly-lib@1.4.5':
-    resolution: {integrity: sha512-W0+XDJlm39ueoBEeD2Kr5jqlpxRCgJIlgshBa79Nvy/wVMG0URely9t51KSXRCFvrwO73Ryuwct85iDD/9ot3w==, tarball: https://npm.pkg.github.com/download/@navikt/dolly-lib/1.4.5/7752fa0e714d70e78a868e2b40dd894ceda3199e}
+  '@navikt/dolly-lib@1.4.6':
+    resolution: {integrity: sha512-5lYROniFeFqxdOsaDn/4jkvpnDk3RE8ig6BFJY4fQT9xP6iZkAtpfxtKuUfYU7JgnEzEDKJpFmc2KtJikLJLPA==, tarball: https://npm.pkg.github.com/download/@navikt/dolly-lib/1.4.6/69361fcfc72997d2b807f0a0faf80b93e9e0dae8}
 
   '@navikt/ds-css@7.40.0':
     resolution: {integrity: sha512-DPxoESUbmPImfbYrmcrOIL1XVsxqqFITgNCZ3cXQgv2xRHP9G6LTEdiYjwHecffHb6L/7mEPJ929MZ50o1fZNA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-css/7.40.0/267682132732537194904a0498ce8971bf8b4922}
@@ -873,8 +873,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.13.6:
-    resolution: {integrity: sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ==}
+  axios@1.14.0:
+    resolution: {integrity: sha512-3Y8yrqLSwjuzpXuZ0oIYZ/XGgLwUIBU3uLvbcpb0pidD9ctpShJd43KSlEEkVQg6DS0G9NKyzOvBfUtDKEyHvQ==}
 
   babel-plugin-macros@3.1.0:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
@@ -885,8 +885,8 @@ packages:
     peerDependencies:
       styled-components: '>= 2'
 
-  baseline-browser-mapping@2.10.10:
-    resolution: {integrity: sha512-sUoJ3IMxx4AyRqO4MLeHlnGDkyXRoUG0/AI9fjK+vS72ekpV0yWVY7O0BVjmBcRtkNcsAO2QDZ4tdKKGoI6YaQ==}
+  baseline-browser-mapping@2.10.11:
+    resolution: {integrity: sha512-DAKrHphkJyiGuau/cFieRYhcTFeK/lBuD++C7cZ6KZHbMhBrisoi+EvhQ5RZrIfV5qwsW8kgQ07JIC+MDJRAhg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -1011,8 +1011,8 @@ packages:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
 
-  electron-to-chromium@1.5.325:
-    resolution: {integrity: sha512-PwfIw7WQSt3xX7yOf5OE/unLzsK9CaN2f/FvV3WjPR1Knoc1T9vePRVV4W1EM301JzzysK51K7FNKcusCr0zYA==}
+  electron-to-chromium@1.5.328:
+    resolution: {integrity: sha512-QNQ5l45DzYytThO21403XN3FvK0hOkWDG8viNf6jqS42msJ8I4tGDSpBCgvDRRPnkffafiwAym2X2eHeGD2V0w==}
 
   enhanced-resolve@5.20.1:
     resolution: {integrity: sha512-Qohcme7V1inbAfvjItgw0EaxVX5q2rdVEZHRBrEQdRZTssLDGsL8Lwrznl8oQ/6kuTJONLaDcGjkNP247XEhcA==}
@@ -1291,8 +1291,8 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
-  mini-css-extract-plugin@2.10.1:
-    resolution: {integrity: sha512-k7G3Y5QOegl380tXmZ68foBRRjE9Ljavx835ObdvmZjQ639izvZD8CS7BkWw1qKPPzHsGL/JDhl0uyU1zc2rJw==}
+  mini-css-extract-plugin@2.10.2:
+    resolution: {integrity: sha512-AOSS0IdEB95ayVkxn5oGzNQwqAi2J0Jb/kKm43t7H73s8+f5873g0yuj0PNvK4dO75mu5DHg4nlgp4k6Kga8eg==}
     engines: {node: '>= 12.13.0'}
     peerDependencies:
       webpack: ^5.0.0
@@ -1388,8 +1388,9 @@ packages:
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
 
-  proxy-from-env@1.1.0:
-    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+  proxy-from-env@2.1.0:
+    resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+    engines: {node: '>=10'}
 
   prr@1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
@@ -2071,12 +2072,12 @@ snapshots:
 
   '@navikt/aksel-icons@7.40.0': {}
 
-  '@navikt/dolly-assets@1.4.5': {}
+  '@navikt/dolly-assets@1.4.6': {}
 
-  '@navikt/dolly-komponenter@1.6.5(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@navikt/dolly-komponenter@1.6.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
-      '@navikt/dolly-assets': 1.4.5
-      '@navikt/dolly-lib': 1.4.5
+      '@navikt/dolly-assets': 1.4.6
+      '@navikt/dolly-lib': 1.4.6
       '@navikt/ds-css': 7.40.0
       '@navikt/ds-react': 7.40.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@popperjs/core': 2.11.8
@@ -2100,7 +2101,7 @@ snapshots:
       - date-fns-tz
       - supports-color
 
-  '@navikt/dolly-lib@1.4.5': {}
+  '@navikt/dolly-lib@1.4.6': {}
 
   '@navikt/ds-css@7.40.0': {}
 
@@ -2473,11 +2474,11 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.13.6:
+  axios@1.14.0:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.5
-      proxy-from-env: 1.1.0
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
 
@@ -2499,13 +2500,13 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  baseline-browser-mapping@2.10.10: {}
+  baseline-browser-mapping@2.10.11: {}
 
   browserslist@4.28.1:
     dependencies:
-      baseline-browser-mapping: 2.10.10
+      baseline-browser-mapping: 2.10.11
       caniuse-lite: 1.0.30001781
-      electron-to-chromium: 1.5.325
+      electron-to-chromium: 1.5.328
       node-releases: 2.0.36
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
 
@@ -2608,7 +2609,7 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
-  electron-to-chromium@1.5.325: {}
+  electron-to-chromium@1.5.328: {}
 
   enhanced-resolve@5.20.1:
     dependencies:
@@ -2882,7 +2883,7 @@ snapshots:
   mime@1.6.0:
     optional: true
 
-  mini-css-extract-plugin@2.10.1(webpack@5.103.0(esbuild@0.27.4)):
+  mini-css-extract-plugin@2.10.2(webpack@5.103.0(esbuild@0.27.4)):
     dependencies:
       schema-utils: 4.3.3
       tapable: 2.3.2
@@ -2965,7 +2966,7 @@ snapshots:
       object-assign: 4.1.1
       react-is: 16.13.1
 
-  proxy-from-env@1.1.0: {}
+  proxy-from-env@2.1.0: {}
 
   prr@1.0.1:
     optional: true
