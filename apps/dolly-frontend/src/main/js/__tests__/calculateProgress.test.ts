@@ -223,11 +223,16 @@ describe('getExpectedFagsystemer', () => {
 		expect(result).toHaveLength(0)
 	})
 
-	it('should return PDL entries when pdldata is present', () => {
+	it('should return PDL entries and PEN when pdldata is present', () => {
 		const result = getExpectedFagsystemer({ pdldata: { person: {} } })
 
-		expect(result).toHaveLength(3)
-		expect(result.map((f) => f.id)).toEqual(['PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
+		expect(result).toHaveLength(4)
+		expect(result.map((f) => f.id)).toEqual([
+			'PDL_FORVALTER',
+			'PDL_ORDRE',
+			'PDL_PERSONSTATUS',
+			'PEN_FORVALTER',
+		])
 	})
 
 	it('should include fagsystems based on non-null bestilling fields', () => {
@@ -238,9 +243,10 @@ describe('getExpectedFagsystemer', () => {
 			skattekort: { year: 2024 },
 		})
 
-		expect(result).toHaveLength(6)
+		expect(result).toHaveLength(7)
 		const ids = result.map((f) => f.id)
 		expect(ids).toContain('PDL_FORVALTER')
+		expect(ids).toContain('PEN_FORVALTER')
 		expect(ids).toContain('AAREG')
 		expect(ids).toContain('KRRSTUB')
 		expect(ids).toContain('SKATTEKORT')

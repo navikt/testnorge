@@ -14,6 +14,8 @@ const PDL_FAGSYSTEMER = [
 	{ id: 'PDL_PERSONSTATUS', navn: 'Person finnes i PDL' },
 ]
 
+const ALWAYS_EXPECTED_FAGSYSTEMER = [{ id: 'PEN_FORVALTER', navn: 'Pensjon persondata (PEN)' }]
+
 const BESTILLING_FAGSYSTEM_MAP: Record<string, { id: string; navn: string }> = {
 	aareg: { id: 'AAREG', navn: 'Arbeidsregister (AAREG)' },
 	arenaforvalter: { id: 'ARENA_BRUKER', navn: 'Arena bruker' },
@@ -75,6 +77,10 @@ export const getExpectedFagsystemer = (bestillingRequest: any) => {
 		for (const pdl of PDL_FAGSYSTEMER) {
 			expected.push(pdl)
 			seenIds.add(pdl.id)
+		}
+		for (const fs of ALWAYS_EXPECTED_FAGSYSTEMER) {
+			expected.push(fs)
+			seenIds.add(fs.id)
 		}
 	}
 
