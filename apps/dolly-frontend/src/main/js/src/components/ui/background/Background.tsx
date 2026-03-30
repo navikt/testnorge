@@ -23,7 +23,7 @@ import '@/flowers.scss'
 import { NEDBOER_TYPE, useWeatherFyrstikkAlleen } from '@/utils/hooks/useWeather'
 import * as _ from 'lodash-es'
 
-const month = new Date().getMonth()
+const month = new Date().getMonth() // Ulik de andre, Januar=0, Februar=1...
 const day = new Date().getDate()
 const weekDay = new Date().getDay()
 
@@ -33,7 +33,7 @@ const isSummer = month >= 5 && month <= 7
 const isFall = month >= 8 && month <= 10
 const isWinter = month === 0 || month === 1
 const isChristmas = month === 11
-const isEaster = (month === 3 && day >= 30) || (month === 4 && day <= 6)
+const isEaster = (month === 2 && day >= 30) || (month === 3 && day <= 6)
 const isFaarikaal = month === 8 && day > 23 && weekDay === 4
 
 const DefaultBackground = styled.div`
