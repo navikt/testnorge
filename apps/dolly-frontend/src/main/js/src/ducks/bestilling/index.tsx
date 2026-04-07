@@ -48,6 +48,19 @@ const trackBestilling = (values: Record<string, any>) => {
 		})
 }
 
+const cleanBestillingValues = (values: any): any => {
+	if (!values?.dokarkiv?.length) {
+		return values
+	}
+	return {
+		...values,
+		dokarkiv: values.dokarkiv.map((item: any) => {
+			const { vedlegg, skjema, skjemaValg, ...rest } = item
+			return rest
+		}),
+	}
+}
+
 /**
  * Sender de ulike bestillingstypene fra Bestillingsveileder
  */
@@ -56,27 +69,28 @@ export const sendBestilling =
 	async (dispatch: any) => {
 		const opts = options
 		const valgtGruppe = values?.gruppeId || gruppeId
+		const cleanedValues = cleanBestillingValues(values)
 		let bestillingAction
 
 		if (opts.is.leggTil) {
 			const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
-			bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
+			bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, cleanedValues)
 		} else if (opts.is.leggTilPaaGruppe) {
-			bestillingAction = actions.postBestillingLeggTilPaaGruppe(valgtGruppe, values)
+			bestillingAction = actions.postBestillingLeggTilPaaGruppe(valgtGruppe, cleanedValues)
 		} else if (opts.is.opprettFraIdenter) {
-			bestillingAction = actions.postBestillingFraEksisterendeIdenter(valgtGruppe, values)
+			bestillingAction = actions.postBestillingFraEksisterendeIdenter(valgtGruppe, cleanedValues)
 		} else if (opts.is.importTestnorge) {
-			values = Object.assign({}, values, {
+			const importValues = Object.assign({}, cleanedValues, {
 				identer: (options.importPersoner || []).map((person: { ident: string }) => person.ident),
-				environments: values.environments || [],
+				environments: cleanedValues.environments || [],
 			})
-			bestillingAction = actions.postTestnorgeBestilling(values.valgtGruppe, values)
-		} else if (values.organisasjon) {
-			trackBestilling(values)
-			bestillingAction = actions.postOrganisasjonBestilling(values)
+			bestillingAction = actions.postTestnorgeBestilling(importValues.valgtGruppe, importValues)
+		} else if (cleanedValues.organisasjon) {
+			trackBestilling(cleanedValues)
+			bestillingAction = actions.postOrganisasjonBestilling(cleanedValues)
 		} else {
-			trackBestilling(values)
-			bestillingAction = actions.postBestilling(valgtGruppe, values)
+			trackBestilling(cleanedValues)
+			bestillingAction = actions.postBestilling(valgtGruppe, cleanedValues)
 		}
 
 		const response = await dispatch(bestillingAction)
