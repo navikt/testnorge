@@ -6,6 +6,8 @@ spring:
     allow-circular-references: true
   config:
     import: "dolly-application.yml"
+  codec:
+    max-in-memory-size: 50MB
   http:
     codecs:
       max-in-memory-size: 50MB
