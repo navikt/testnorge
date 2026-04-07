@@ -220,7 +220,7 @@ public class ArtifactUpdateService {
                                 return getPerson(relasjon.getIdentForRelasjon())
                                         .flatMap(slettePerson ->
                                                 deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_BARN)
-                                        .then(Mono.defer(() -> deletePerson(slettePerson, relasjon.isEksisterendePerson()))));
+                                                        .then(Mono.defer(() -> deletePerson(slettePerson, relasjon.isEksisterendePerson()))));
                             } else {
                                 return Mono.empty();
                             }
@@ -240,39 +240,37 @@ public class ArtifactUpdateService {
         return getPerson(ident)
                 .flatMap(dbPerson -> foreldreansvarService.validate(oppdatertAnsvar, dbPerson.getPerson())
                         .then(Mono.just(dbPerson)))
-                .flatMapMany(person -> Flux.fromIterable(person.getPerson().getForeldreansvar())
+                .flatMap(person -> Flux.fromIterable(person.getPerson().getForeldreansvar())
                         .filter(relasjon -> relasjon.getId().equals(id))
-                        .filter(ansvar -> oppdatertAnsvar.getAnsvar() != ansvar.getAnsvar() ||
-                                          ansvar.isAnsvarligMedIdentifikator() &&
-                                          !Objects.equals(ansvar.getAnsvarlig(), oppdatertAnsvar.getAnsvarlig()))
-                        .flatMap(ansvar -> getPerson(ansvar.getAnsvarlig())
-                                .flatMap(slettePerson ->
-                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER)
-                                                .then(Mono.just(slettePerson)))
-                                .flatMap(slettePerson -> deletePerson(slettePerson, ansvar.isEksisterendePerson())
-                                        .then(Mono.just(person)))
-                                .flatMapMany(type -> Flux.fromIterable(person.getPerson().getForeldreansvar())
-                                        .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
-                                        .filter(ForeldreansvarDTO::isAnsvarligMedIdentifikator)
-                                        .filter(ansvar1 -> !ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
-                                        .flatMap(ansvar1 -> getPerson(ansvar1.getAnsvarlig())
-                                                .flatMap(slettePerson ->
-                                                        deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER)
-                                                                .then(Mono.just(person)))))))
-                .flatMap(person -> updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, id, "Foreldreansvar")
-                        .zipWith(Mono.just(person)))
-                .doOnNext(tuple -> {
-                    oppdatertAnsvar.setId(id);
-                    tuple.getT2().getPerson().getForeldreansvar().add(oppdatertAnsvar);
-                    tuple.getT2().getPerson().getForeldreansvar().sort(Comparator.comparing(ForeldreansvarDTO::getId).reversed());
-                    tuple.getT2().getPerson().setForeldreansvar(tuple.getT1());
+                        .flatMap(ansvar -> {
+                            if (oppdatertAnsvar.getAnsvar() != ansvar.getAnsvar() ||
+                                ansvar.isAnsvarligMedIdentifikator() &&
+                                !Objects.equals(ansvar.getAnsvarlig(), oppdatertAnsvar.getAnsvarlig())) {
+                                return getPerson(ansvar.getAnsvarlig())
+                                        .flatMap(slettePerson ->
+                                                deleteRelasjonerService.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER)
+                                                        .then(deletePerson(slettePerson, ansvar.isEksisterendePerson()))
+                                                        .then(Flux.fromIterable(person.getPerson().getForeldreansvar())
+                                                                .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
+                                                                .filter(ForeldreansvarDTO::isAnsvarligMedIdentifikator)
+                                                                .filter(ansvar1 -> !ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
+                                                                .flatMap(ansvar1 -> getPerson(ansvar1.getAnsvarlig())
+                                                                        .flatMap(slettePerson1 ->
+                                                                                deleteRelasjonerService.deleteRelasjoner(person, slettePerson1, FORELDREANSVAR_FORELDER)))
+                                                                .then()));
+                            } else {
+                                return Mono.empty();
+                            }
+                        })
+                        .then(updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, id, "Foreldreansvar"))
+                        .doOnNext(foreldreansvar -> {
+                            person.getPerson().getForeldreansvar().sort(Comparator.comparing(ForeldreansvarDTO::getId).reversed());
+                            person.getPerson().setForeldreansvar(foreldreansvar);
 
-                })
-                .flatMap(tuple -> foreldreansvarService.handle(oppdatertAnsvar, tuple.getT2().getPerson())
-                        .thenReturn(tuple.getT2()))
-                .doOnNext(person -> ArtifactUtils.renumberId(person.getPerson().getForeldreansvar()))
-                .flatMap(this::savePerson)
-                .then();
+                        })
+                        .then(foreldreansvarService.handle(oppdatertAnsvar, person.getPerson()))
+                        .doOnNext(foreldreansvar -> ArtifactUtils.renumberId(person.getPerson().getForeldreansvar()))
+                        .then(savePerson(person)));
     }
 
     public Mono<Void> updateKontaktinformasjonForDoedsbo(String ident, Integer id, KontaktinformasjonForDoedsboDTO oppdatertInformasjon) {
