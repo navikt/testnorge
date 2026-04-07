@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
@@ -10,10 +11,13 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +55,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class KontaktinformasjonForDoedsboServiceTest {
 
-    private static final String IDENT = "12345678901";
+    private static final String IDENT = "12445678901";
     private static final String HOVEDPERSON_IDENT = "98765432100";
 
     @Mock
@@ -90,8 +94,8 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectMissingSkifteform() {
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .isNew(true)
-                        .build();
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable -> {
@@ -106,9 +110,9 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectMissingAdressat() {
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable ->
@@ -121,11 +125,11 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectMultipleAdressater() {
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .advokatSomKontakt(new OrganisasjonDTO())
-                        .organisasjonSomKontakt(new OrganisasjonDTO())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .advokatSomKontakt(new OrganisasjonDTO())
+                .organisasjonSomKontakt(new OrganisasjonDTO())
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable ->
@@ -197,17 +201,17 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(personRepository.existsByIdent(IDENT)).thenReturn(Mono.just(false));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .personSomKontakt(KontaktpersonDTO.builder()
-                                .identifikasjonsnummer(IDENT)
-                                .build())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .personSomKontakt(KontaktpersonDTO.builder()
+                        .identifikasjonsnummer(IDENT)
+                        .build())
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable.getMessage(), containsString(format("KontaktinformasjonForDoedsbo: personSomKontakt med identifikasjonsnummer %s " +
-                                "ikke funnet i database", IDENT))));
+                                                                                 "ikke funnet i database", IDENT))));
     }
 
     @Test
@@ -252,7 +256,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectInvalidPersonnavnOnAdvokatSomKontakt() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
-        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1",Map.of("123456789", "Toys"))));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1", Map.of("123456789", "Toys"))));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -272,16 +276,16 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectInvalidPersonnavnOnOrganisasjonSomKontakt() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
-        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1",Map.of("123456789", "Toys"))));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1", Map.of("123456789", "Toys"))));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .organisasjonSomKontakt(OrganisasjonDTO.builder()
-                                .organisasjonsnummer("123456789")
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                .build())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .organisasjonSomKontakt(OrganisasjonDTO.builder()
+                        .organisasjonsnummer("123456789")
+                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                        .build())
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable ->
@@ -367,17 +371,17 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectOrgNavnWithoutOrgNumberOnOrganisasjon() {
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .organisasjonSomKontakt(OrganisasjonDTO.builder()
-                                .organisasjonsnavn("Tada")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .organisasjonSomKontakt(OrganisasjonDTO.builder()
+                        .organisasjonsnavn("Tada")
+                        .build())
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnavn kan " +
-                                "ikke oppgis uten at organisasjonsnummer finnes")));
+                                                                          "ikke oppgis uten at organisasjonsnummer finnes")));
     }
 
     @Test
@@ -402,18 +406,18 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(new HashMap<>()));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .advokatSomKontakt(OrganisasjonDTO.builder()
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                .organisasjonsnummer("123456789")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .advokatSomKontakt(OrganisasjonDTO.builder()
+                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                        .organisasjonsnummer("123456789")
+                        .build())
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
-                                "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]")));
+                                                                          "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]")));
     }
 
     @Test
@@ -423,19 +427,19 @@ class KontaktinformasjonForDoedsboServiceTest {
                 Map.of("organisasjonsnavn", "Toys"))));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
-                        .skifteform(OFFENTLIG)
-                        .advokatSomKontakt(OrganisasjonDTO.builder()
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                .organisasjonsnummer("123456789")
-                                .organisasjonsnavn("Tull")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .skifteform(OFFENTLIG)
+                .advokatSomKontakt(OrganisasjonDTO.builder()
+                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                        .organisasjonsnummer("123456789")
+                        .organisasjonsnavn("Tull")
+                        .build())
+                .isNew(true)
+                .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
-                                "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]")));
+                                                                          "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]")));
     }
 
     @Test
@@ -686,6 +690,9 @@ class KontaktinformasjonForDoedsboServiceTest {
                 .ident(IDENT)
                 .person(PersonDTO.builder()
                         .ident(IDENT)
+                        .foedselsdato(List.of(FoedselsdatoDTO.builder()
+                                .foedselsdato(LocalDate.of(1956, 4, 12).atStartOfDay())
+                                .build()))
                         .bostedsadresse(new ArrayList<>(List.of(bostedadresse)))
                         .build())
                 .build();
@@ -693,7 +700,6 @@ class KontaktinformasjonForDoedsboServiceTest {
         var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
                 .personSomKontakt(KontaktpersonDTO.builder()
-                        .identifikasjonsnummer(IDENT)
                         .build())
                 .isNew(true)
                 .build();
@@ -714,13 +720,16 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(mapperFacade.map(any(KontaktinformasjonForDoedsboDTO.class), eq(KontaktinformasjonForDoedsboDTO.class)))
                 .thenReturn(KontaktinformasjonForDoedsboDTO.builder().build());
         when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(kontaktPerson));
-        when(mapperFacade.map(any(BostedadresseDTO.class), eq(KontaktinformasjonForDoedsboAdresse.class)))
+        when(mapperFacade.map(any(BostedadresseDTO.class), eq(KontaktinformasjonForDoedsboAdresse.class), any(MappingContext.class)))
                 .thenReturn(mappedAdresse);
+        when(createPersonService.execute(any(PersonRequestDTO.class))).thenReturn(Mono.just(kontaktPerson));
+        when(relasjonService.setRelasjoner(anyString(), eq(RelasjonType.AVDOEDD_FOR_KONTAKT),
+                anyString(), eq(RelasjonType.KONTAKT_FOR_DOEDSBO))).thenReturn(Mono.empty());
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
                 .assertNext(result -> {
-                    assertThat(result.getPerson().getKontaktinformasjonForDoedsbo().getFirst().getAdresse(), is(notNullValue()));
                     verify(personRepository).findByIdent(IDENT);
+                    assertThat(result.getPerson().getKontaktinformasjonForDoedsbo().getFirst().getAdresse(), is(notNullValue()));
                 })
                 .verifyComplete();
     }

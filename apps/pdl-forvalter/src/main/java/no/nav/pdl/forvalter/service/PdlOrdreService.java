@@ -111,7 +111,7 @@ public class PdlOrdreService {
         var timestamp = System.currentTimeMillis();
 
         return checkAlias(ident)
-                .then(personRepository.findByIdent(ident))
+                .then(Mono.defer(() -> personRepository.findByIdent(ident)))
                 .switchIfEmpty(Mono.error(new NotFoundException(String.format("Ident %s finnes ikke i databasen", ident))))
                 .flatMap(dbPerson -> getEksternePersoner(dbPerson)
                         .zipWith(Mono.just(dbPerson)))

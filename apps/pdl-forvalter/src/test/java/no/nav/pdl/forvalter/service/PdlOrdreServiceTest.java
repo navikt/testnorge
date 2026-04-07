@@ -23,11 +23,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -39,6 +41,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -263,6 +266,9 @@ class PdlOrdreServiceTest {
         when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+        when(personRepository.findByIdentIn(anyList(), eq(Pageable.unpaged())))
+                .thenReturn(Flux.just(dbRelatertPerson));
+        when(kodeverkConsumer.getFylkesmannsembeter()).thenReturn(Mono.just(new HashMap<String, String>()));
 
         StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, true))
                 .assertNext(response -> {

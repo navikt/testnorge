@@ -165,7 +165,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     private Mono<KontaktinformasjonForDoedsboDTO> handle(KontaktinformasjonForDoedsboDTO kontaktinfo, String hovedperson) {
 
         return kodeverkConsumer.getPoststedNavn()
-                .map(poststedsnavn -> {
+                .flatMap(poststedsnavn -> {
 
                     val context = MappingContextUtils.getMappingContext();
                     context.setProperty("poststedsnavn", poststedsnavn);
@@ -174,7 +174,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
                         kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
                     }
-                    return kontaktinfoOriginal;
+                    return Mono.just(kontaktinfoOriginal)
+                            .zipWith(Mono.just(poststedsnavn));
                 })
                 .flatMap(kontaktinfoOriginal -> {
 
@@ -206,17 +207,17 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                         if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
                             processing = leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson)
-                                    .then(leggTilPersonadresse(kontaktinfo))
+                                    .then(Mono.defer(() -> leggTilPersonadresse(kontaktinfo, kontaktinfoOriginal.getT2())))
                                     .then(Mono.fromRunnable(() -> kontaktinfo.getPersonSomKontakt().setNavn(null)));
                         }
                     }
 
-                    if (nonNull(kontaktinfoOriginal.getAdresse()) &&
-                        (isNotBlank(kontaktinfoOriginal.getAdresse().getLandkode()) ||
-                         isNotBlank(kontaktinfoOriginal.getAdresse().getAdresselinje1()))) {
+                    if (nonNull(kontaktinfoOriginal.getT1().getAdresse()) &&
+                        (isNotBlank(kontaktinfoOriginal.getT1().getAdresse().getLandkode()) ||
+                         isNotBlank(kontaktinfoOriginal.getT1().getAdresse().getAdresselinje1()))) {
 
                         processing = processing
-                                .then(getAdresse(kontaktinfoOriginal)
+                                .then(getAdresse(kontaktinfoOriginal.getT1())
                                         .doOnNext(kontaktinfo::setAdresse)
                                         .then());
                     }
@@ -225,7 +226,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 });
     }
 
-    private Mono<Void> leggTilPersonadresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+    private Mono<Void> leggTilPersonadresse(KontaktinformasjonForDoedsboDTO kontaktinfo, Map<String, String> poststedsnavn) {
 
         if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
 
@@ -234,8 +235,11 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     .map(PersonDTO::getBostedsadresse)
                     .flatMapMany(Flux::fromIterable)
                     .next()
-                    .map(bostedsadresse ->
-                            mapperFacade.map(bostedsadresse, KontaktinformasjonForDoedsboAdresse.class))
+                    .map(bostedsadresse -> {
+                        val context = MappingContextUtils.getMappingContext();
+                        context.setProperty("poststedsnavn", poststedsnavn);
+                        return mapperFacade.map(bostedsadresse, KontaktinformasjonForDoedsboAdresse.class, context);
+                    })
                     .doOnNext(kontaktinfo::setAdresse)
                     .then();
         }
@@ -276,8 +280,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 .doOnNext(organisasjon -> {
                     organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
                     if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
-                        kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
-                                mapperFacade.map(((List<Map>) organisasjon.get("adresser")).getFirst(),
+                        kontaktinfo.setAdresse(!((List<Map<String,String>>) organisasjon.get("adresser")).isEmpty() ?
+                                mapperFacade.map(((List<Map<String,String>>) organisasjon.get("adresser")).getFirst(),
                                         KontaktinformasjonForDoedsboAdresse.class) :
                                 null);
                     }
