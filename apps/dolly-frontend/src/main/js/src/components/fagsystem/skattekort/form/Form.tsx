@@ -50,7 +50,7 @@ export const skattekortAttributt = 'skattekort'
 
 export const SkattekortForm = () => {
 	const formMethods = useFormContext()
-	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts: BestillingsveilederContextType = useContext(BestillingsveilederContext)
 
 	const { kodeverk: resultatstatus } = useSkattekortKodeverk('RESULTATSTATUS')
 	const { kodeverk: tilleggsopplysning } = useSkattekortKodeverk('TILLEGGSOPPLYSNING')

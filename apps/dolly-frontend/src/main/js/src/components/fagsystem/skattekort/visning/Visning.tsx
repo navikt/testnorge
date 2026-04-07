@@ -59,7 +59,7 @@ export const KodeverkTitleValue = ({ kodeverkstype, value, label }: KodeverkType
 	return <TitleValue title={label} value={visningValue} />
 }
 
-export const SkattekortData = ({ liste }: SkattekortVisningProps) => {
+export const SkattekortData = ({ liste }: { liste: SkattekortDTO[] }) => {
 	return (
 		<DollyFieldArray header="" data={liste} expandable={liste.length > 5} nested>
 			{(skattekort: SkattekortDTO, idx: number) => {
