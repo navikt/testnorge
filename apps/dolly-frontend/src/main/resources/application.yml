@@ -6,6 +6,9 @@ spring:
     allow-circular-references: true
   config:
     import: "dolly-application.yml"
+  http:
+    codecs:
+      max-in-memory-size: 50MB
   data:
     redis:
       host: ${VALKEY_HOST_SESSION}
