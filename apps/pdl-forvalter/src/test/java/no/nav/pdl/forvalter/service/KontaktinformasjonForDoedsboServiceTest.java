@@ -399,7 +399,6 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void shouldRejectAdvokatWithNonExistingOrgNumber() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(true));
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(new HashMap<>()));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
@@ -420,7 +419,6 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void shouldRejectAdvokatWithNonMatchingOrgNavn() {
 
-        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(true));
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1",
                 Map.of("organisasjonsnavn", "Toys"))));
 

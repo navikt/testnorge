@@ -1,7 +1,9 @@
 package no.nav.pdl.forvalter.service;
 
+import lombok.val;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,7 +51,7 @@ class SivilstandServiceTest {
 
         StepVerifier.create(sivilstandService.validate(request, PersonDTO.builder()
                         .ident(IDENT)
-                .build()))
+                        .build()))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable.getMessage(), containsString("Sivilstand: Relatert person finnes ikke")));
     }
@@ -56,25 +59,30 @@ class SivilstandServiceTest {
     @Test
     void whenSivilstandDatoHasInvalidOrdering_fixIt() {
 
-        var request = DbPerson.builder()
+        val skiltDato = LocalDateTime.now();
+        val giftDato = LocalDateTime.now().minusYears(3);
+
+        val request = DbPerson.builder()
                 .person(PersonDTO.builder()
-                .ident(IDENT)
-                .sivilstand(List.of(SivilstandDTO.builder()
-                                .type(SKILT)
-                                .sivilstandsdato(LocalDateTime.now().minusYears(3))
-                                .isNew(true)
-                                .build(),
-                        SivilstandDTO.builder()
-                                .type(GIFT)
-                                .sivilstandsdato(LocalDateTime.now())
+                        .ident(IDENT)
+                        .foedselsdato(List.of(FoedselsdatoDTO.builder()
+                                .foedselsdato(LocalDate.of(1956, 12, 31).atStartOfDay())
                                 .build()))
-                .build())
+                        .sivilstand(List.of(SivilstandDTO.builder()
+                                        .type(GIFT)
+                                        .sivilstandsdato(giftDato)
+                                        .build(),
+                                SivilstandDTO.builder()
+                                        .type(SKILT)
+                                        .sivilstandsdato(skiltDato)
+                                        .build()))
+                        .build())
                 .build();
 
         StepVerifier.create(sivilstandService.convert(request))
                 .assertNext(target -> {
-                    assertThat(target.getPerson().getSivilstand().get(0).getSivilstandsdato(), is(equalTo(request.getPerson().getSivilstand().get(1).getSivilstandsdato())));
-                    assertThat(target.getPerson().getSivilstand().get(1).getSivilstandsdato(), is(equalTo(request.getPerson().getSivilstand().get(0).getSivilstandsdato())));
+                    assertThat(target.getPerson().getSivilstand().get(0).getSivilstandsdato(), is(equalTo(skiltDato)));
+                    assertThat(target.getPerson().getSivilstand().get(1).getSivilstandsdato(), is(equalTo(giftDato)));
                 })
                 .verifyComplete();
     }

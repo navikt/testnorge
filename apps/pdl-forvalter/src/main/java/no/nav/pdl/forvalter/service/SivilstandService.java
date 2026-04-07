@@ -64,7 +64,8 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .map(sivilstand -> enforceIntegrity(dbPerson.getPerson()))
+                .doOnNext(type ->
+                        dbPerson.getPerson().setSivilstand(enforceIntegrity(dbPerson.getPerson())))
                 .doOnNext(ArtifactUtils::renumberId)
                 .thenReturn(dbPerson);
     }
