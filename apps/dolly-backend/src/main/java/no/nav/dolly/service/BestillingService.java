@@ -602,6 +602,10 @@ public class BestillingService {
                             return lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
                                     .doOnNext(id -> dokument.setFysiskDokument(null));
+                        } else if (nonNull(dokument.getDokumentReferanse())) {
+                            return dokumentRepository.updateBestillingIdIfNull(
+                                            dokument.getDokumentReferanse(), request.getId())
+                                    .thenReturn(dokument.getDokumentReferanse());
                         }
                         return Mono.empty();
                     })

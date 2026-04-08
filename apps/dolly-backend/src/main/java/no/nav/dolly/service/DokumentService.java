@@ -11,9 +11,7 @@ import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.DokumentRepository;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,7 +19,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -40,24 +37,30 @@ public class DokumentService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public Mono<Long> uploadDokument(FilePart filePart) {
+    public Mono<Long> initUpload(DokumentType dokumentType) {
 
-        return DataBufferUtils.join(filePart.content())
-                .map(dataBuffer -> {
-                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                    dataBuffer.read(bytes);
-                    DataBufferUtils.release(dataBuffer);
-                    return Base64.getEncoder().encodeToString(bytes);
-                })
-                .flatMap(base64Content -> dokumentRepository.save(
+        return dokumentRepository.save(
                         Dokument.builder()
-                                .contents(base64Content)
-                                .dokumentType(DokumentType.BESTILLING_DOKARKIV)
+                                .contents("")
+                                .dokumentType(dokumentType)
                                 .sistOppdatert(LocalDateTime.now())
                                 .build()
-                ))
+                )
                 .map(Dokument::getId)
-                .doOnSuccess(id -> log.info("Dokument lastet opp med id {}, filnavn: {}", id, filePart.filename()));
+                .doOnSuccess(id -> log.info("Dokument-opplasting initiert med id {}", id));
+    }
+
+    @Transactional
+    public Mono<Void> appendChunk(Long dokumentId, String data) {
+
+        return dokumentRepository.appendContent(dokumentId, data)
+                .flatMap(updated -> {
+                    if (updated == 0) {
+                        return Mono.error(new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Dokument med id " + dokumentId + " finnes ikke"));
+                    }
+                    return Mono.empty();
+                });
     }
 
     @Transactional

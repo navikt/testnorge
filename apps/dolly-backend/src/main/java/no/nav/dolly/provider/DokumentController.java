@@ -4,21 +4,21 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Dokument;
+import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.service.DokumentService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,12 +27,22 @@ public class DokumentController {
 
     private final DokumentService dokumentService;
 
-    @Operation(description = "Laster opp et dokument og returnerer dokument-ID")
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(description = "Initierer en dokument-opplasting og returnerer dokument-ID")
+    @PostMapping("/upload/init")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Long> uploadDokument(@RequestPart("file") FilePart filePart) {
+    public Mono<Long> initUpload(@RequestBody Map<String, String> body) {
 
-        return dokumentService.uploadDokument(filePart);
+        var dokumentType = DokumentType.valueOf(
+                body.getOrDefault("dokumentType", DokumentType.BESTILLING_DOKARKIV.name()));
+        return dokumentService.initUpload(dokumentType);
+    }
+
+    @Operation(description = "Legger til en datachunk til et eksisterende dokument")
+    @PostMapping("/upload/{dokumentId}/append")
+    public Mono<Void> appendChunk(@PathVariable("dokumentId") Long dokumentId,
+                                  @RequestBody Map<String, String> body) {
+
+        return dokumentService.appendChunk(dokumentId, body.get("data"));
     }
 
     @Operation(description = "Henter dokumenter basert på bestillingId")

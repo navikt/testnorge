@@ -20,4 +20,8 @@ public interface DokumentRepository extends ReactiveCrudRepository<Dokument, Lon
     @Modifying
     @Query("UPDATE dokument SET bestilling_id = :bestillingId, sist_oppdatert = NOW() WHERE id = :id AND bestilling_id IS NULL")
     Mono<Integer> updateBestillingIdIfNull(Long id, Long bestillingId);
+
+    @Modifying
+    @Query("UPDATE dokument SET contents = COALESCE(contents, '') || :chunk, sist_oppdatert = NOW() WHERE id = :id")
+    Mono<Integer> appendContent(Long id, String chunk);
 }
