@@ -28,6 +28,9 @@ public class DokarkivUploadService {
         if (isNull(builder)) {
             throw new IllegalArgumentException("Ukjent upload id: " + uploadId);
         }
+        if (builder.isEmpty() && chunk.length() >= 20) {
+            log.info("Dokarkiv upload {} foerste chunk starter med: '{}'", uploadId, chunk.substring(0, 20));
+        }
         builder.append(chunk);
         log.info("Dokarkiv upload {} mottok chunk paa {} tegn, totalt {} tegn", uploadId, chunk.length(), builder.length());
     }
@@ -39,8 +42,10 @@ public class DokarkivUploadService {
         }
         var content = builder.toString();
         dokarkivUploadCache.invalidate(uploadId);
-        log.info("Dokarkiv upload {} resolved med {} tegn (~{} MB)", uploadId, content.length(),
-                String.format("%.1f", content.length() / (1024.0 * 1024.0)));
+        log.info("Dokarkiv upload {} resolved med {} tegn (~{} MB), starter med: '{}'",
+                uploadId, content.length(),
+                String.format("%.1f", content.length() / (1024.0 * 1024.0)),
+                content.length() >= 20 ? content.substring(0, 20) : content);
         return content;
     }
 

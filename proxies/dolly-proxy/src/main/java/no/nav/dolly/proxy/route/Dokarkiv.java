@@ -73,6 +73,8 @@ public class Dokarkiv {
                             if (isNotBlank(uploadRef)) {
                                 log.info("Resolver uploadReferanse {} for dokarkiv request", uploadRef);
                                 var content = uploadService.resolveUpload(uploadRef);
+                                log.info("Resolved content starter med: '{}', lengde: {}",
+                                        content.length() >= 20 ? content.substring(0, 20) : content, content.length());
                                 variant.put("fysiskDokument", content);
                                 variant.remove("uploadReferanse");
                                 resolved = true;
