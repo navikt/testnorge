@@ -3,18 +3,25 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Dokument;
+import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.DokumentRepository;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +30,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DokumentService {
@@ -30,6 +38,27 @@ public class DokumentService {
     private final DokumentRepository dokumentRepository;
     private final BestillingMalRepository bestillingMalRepository;
     private final ObjectMapper objectMapper;
+
+    @Transactional
+    public Mono<Long> uploadDokument(FilePart filePart) {
+
+        return DataBufferUtils.join(filePart.content())
+                .map(dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    DataBufferUtils.release(dataBuffer);
+                    return Base64.getEncoder().encodeToString(bytes);
+                })
+                .flatMap(base64Content -> dokumentRepository.save(
+                        Dokument.builder()
+                                .contents(base64Content)
+                                .dokumentType(DokumentType.BESTILLING_DOKARKIV)
+                                .sistOppdatert(LocalDateTime.now())
+                                .build()
+                ))
+                .map(Dokument::getId)
+                .doOnSuccess(id -> log.info("Dokument lastet opp med id {}, filnavn: {}", id, filePart.filename()));
+    }
 
     @Transactional
     public Flux<Dokument> getDokumenterByBestilling(Long bestillingId) {

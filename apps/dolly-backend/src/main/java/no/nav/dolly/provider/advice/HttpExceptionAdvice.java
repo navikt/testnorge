@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.time.LocalDateTime;
@@ -39,6 +41,14 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
                                ServerCodecConfigurer configurer) {
         super(errorAttributes, webProperties.getResources(), errorProperties, applicationContext);
         this.setMessageWriters(configurer.getWriters());
+    }
+
+    @Override
+    protected void logError(ServerRequest request, ServerResponse response, Throwable throwable) {
+        super.logError(request, response, throwable);
+        if (response.statusCode().is4xxClientError()) {
+            log.warn("4xx error {} for {} {}: {}", response.statusCode(), request.method(), request.path(), throwable.getMessage(), throwable);
+        }
     }
 
     private ExceptionInformation informationForException(RuntimeException exception, ServerWebExchange serverWebExchange, HttpStatus status) {

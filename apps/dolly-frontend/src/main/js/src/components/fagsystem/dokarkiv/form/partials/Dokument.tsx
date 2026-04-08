@@ -15,6 +15,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form'
 import styled from 'styled-components'
+import { fileUploader } from '@/api'
 
 type Skjema = {
 	data: string
@@ -37,10 +38,9 @@ type DokumentProps = {
 
 type Dokumentvariant = {
 	filtype: string
-	fysiskDokument: string | ArrayBuffer | undefined
+	fysiskDokument?: string | ArrayBuffer
 	variantformat: string
-	/** optional referanse id fra mal */
-	dokumentReferanse?: string
+	dokumentReferanse?: number
 }
 
 type DokumentObjekt = {
@@ -70,6 +70,8 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 	const [vedlegg, setVedlegg] = useState<FileObject[]>(
 		() => formMethods.getValues(`${path}.vedlegg`) || [],
 	)
+	const [isUploading, setIsUploading] = useState(false)
+	const [uploadError, setUploadError] = useState<string | null>(null)
 
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
 
@@ -84,17 +86,6 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		const malDokumentListe = dokumenterFraMal as any[]
 
 		malDokumentListe.forEach((malDokument: any) => {
-			currentDokumenter.forEach((dokument: DokumentObjekt, idx: number) => {
-				dokument?.dokumentvarianter?.forEach((variant: Dokumentvariant, idy: number) => {
-					if (variant?.dokumentReferanse === malDokument?.id) {
-						formMethods.setValue(
-							`${path}.dokumenter[${idx}].dokumentvarianter[${idy}].fysiskDokument`,
-							malDokument?.contents,
-						)
-					}
-				})
-			})
-
 			const fileName = currentDokumenter.find((dok: DokumentObjekt) =>
 				dok?.dokumentvarianter?.find(
 					(variant: Dokumentvariant) => variant.dokumentReferanse === malDokument.id,
@@ -162,29 +153,59 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		const dokumenterIsEmpty =
 			currentDokumenter.length === 1 && !currentDokumenter[0]?.dokumentvarianter
 		const newDokumenter: DokumentObjekt[] = dokumenterIsEmpty ? [] : [...currentDokumenter]
-		updateVedlegg([...vedlegg, ...newFiles])
 
-		files.forEach((file: File) => {
-			const reader = new FileReader()
-			reader.onabort = () => console.warn('file reading was aborted')
-			reader.onerror = () => console.error('file reading has failed')
-			reader.onload = () => {
-				const binaryStr = reader.result?.slice(28)
-				newDokumenter.push({
-					tittel: file.name,
-					brevkode: '',
-					dokumentvarianter: [
-						{
-							filtype: 'PDFA',
-							fysiskDokument: binaryStr,
-							variantformat: 'ARKIV',
-						},
-					],
-				})
-				updateDokumenter(newDokumenter)
-				formMethods.setValue(`${path}.dokumenter[0].brevkode`, currentBrevkode)
+		updateVedlegg([...vedlegg, ...newFiles])
+		setIsUploading(true)
+		setUploadError(null)
+
+		Promise.all(
+			files.map((file) =>
+				fileUploader('/dolly-backend/api/v1/dokument/upload', file)
+					.then((dokumentId) => ({
+						file,
+						dokumentId,
+						error: false as const,
+					}))
+					.catch(() => ({
+						file,
+						dokumentId: null as number | null,
+						error: true as const,
+					})),
+			),
+		).then((results) => {
+			const failedNames = new Set(results.filter((r) => r.error).map((r) => r.file.name))
+
+			results.forEach((result) => {
+				if (!result.error && result.dokumentId !== null) {
+					newDokumenter.push({
+						tittel: result.file.name,
+						brevkode: '',
+						dokumentvarianter: [
+							{
+								filtype: 'PDFA',
+								variantformat: 'ARKIV',
+								dokumentReferanse: result.dokumentId,
+							},
+						],
+					})
+				}
+			})
+
+			if (failedNames.size > 0) {
+				setUploadError(`Opplasting feilet for: ${Array.from(failedNames).join(', ')}`)
+				const allVedlegg = [...vedlegg, ...newFiles]
+				updateVedlegg(
+					allVedlegg.map((v) =>
+						failedNames.has(v.file.name)
+							? { ...v, error: true, reasons: ['Opplasting feilet'] }
+							: v,
+					),
+				)
 			}
-			reader.readAsDataURL(file)
+
+			updateDokumenter(newDokumenter)
+			formMethods.setValue(`${path}.dokumenter[0].brevkode`, currentBrevkode)
+			setIsUploading(false)
 		})
 	}
 
@@ -275,6 +296,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 					description={`Du kan laste opp PDF-filer. Maks 10 filer.`}
 					accept=".pdf"
 					fileLimit={{ max: 10, current: vedlegg?.length }}
+					disabled={isUploading}
 					onSelect={(selectedFiles) =>
 						handleSelectFiles(
 							selectedFiles,
@@ -282,6 +304,12 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 						)
 					}
 				/>
+				{isUploading && <Loading label="Laster opp filer ..." />}
+				{uploadError && (
+					<Alert variant="error" size="small">
+						{uploadError}
+					</Alert>
+				)}
 				{vedlegg?.length < 1 && loadingDokumenterFraMal && malId && (
 					<Loading label="Laster vedlegg fra mal ..." />
 				)}

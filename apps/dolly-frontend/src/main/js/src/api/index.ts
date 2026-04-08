@@ -268,6 +268,22 @@ const fetchJson = (url: string, config: Config, body?: object): Promise =>
 			return data ? JSON.parse(data) : {}
 		})
 
+export const fileUploader = (url: string, file: File): Promise<number> => {
+	const formData = new FormData()
+	formData.append('file', file)
+
+	return originalFetch(url, {
+		method: 'POST',
+		body: formData,
+		credentials: 'include',
+	}).then((response: Response) => {
+		if (!response.ok) {
+			throw new Error(`Opplasting feilet med status ${response.status}`)
+		}
+		return response.json()
+	})
+}
+
 export default {
 	fetch: _fetch,
 	fetchJson,

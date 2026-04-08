@@ -19,9 +19,9 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
@@ -582,6 +582,10 @@ public class BestillingService {
                                                     dokumentVariant.setFysiskDokument(null);
                                                     return id;
                                                 });
+                                    } else if (nonNull(dokumentVariant.getDokumentReferanse())) {
+                                        return dokumentRepository.updateBestillingIdIfNull(
+                                                        dokumentVariant.getDokumentReferanse(), request.getId())
+                                                .thenReturn(dokumentVariant.getDokumentReferanse());
                                     }
                                     return Mono.just(0L);
                                 })))
@@ -654,6 +658,12 @@ public class BestillingService {
         return null;
     }
 
+    private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
+
+        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
+                .collectList();
+    }
+
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
 
         aaregdata.forEach(arbeidforhold -> {
@@ -662,11 +672,5 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
-    }
-
-    private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
-
-        return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
-                .collectList();
     }
 }

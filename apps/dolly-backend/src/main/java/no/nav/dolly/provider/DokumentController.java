@@ -5,11 +5,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.service.DokumentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -19,6 +26,14 @@ import java.util.List;
 public class DokumentController {
 
     private final DokumentService dokumentService;
+
+    @Operation(description = "Laster opp et dokument og returnerer dokument-ID")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Long> uploadDokument(@RequestPart("file") FilePart filePart) {
+
+        return dokumentService.uploadDokument(filePart);
+    }
 
     @Operation(description = "Henter dokumenter basert på bestillingId")
     @GetMapping("/bestilling/{bestillingId}")
