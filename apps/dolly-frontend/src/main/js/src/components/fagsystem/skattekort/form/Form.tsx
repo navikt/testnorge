@@ -67,6 +67,12 @@ export const SkattekortForm = () => {
 		return arbeidstaker?.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
 	}
 
+	const showTillegsopplysning = (index: number): boolean => {
+		const gyldigeResultater = ['SKATTEKORTOPPLYSNINGER_OK', 'IKKE_SKATTEKORT']
+		const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[index]?.arbeidstaker?.[0]
+		return gyldigeResultater.includes(arbeidstaker?.resultatPaaForespoersel)
+	}
+
 	const isTilleggsopplysning = (index: number): boolean => {
 		const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[index]?.arbeidstaker?.[0]
 		return arbeidstaker?.tilleggsopplysning?.find(
@@ -150,7 +156,7 @@ export const SkattekortForm = () => {
 										/>
 									)}
 								</div>
-								{isResultatOK(index) && (
+								{showTillegsopplysning(index) && (
 									<FormSelect
 										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
 										label="Tilleggsopplysning"
