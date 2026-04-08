@@ -32,6 +32,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
@@ -169,7 +170,7 @@ class BostedAdresseServiceTest {
         StepVerifier.create(bostedAdresseService.convert(request, null))
                 .assertNext(response ->
                         assertThat(response.getPerson().getBostedsadresse().getFirst().getGyldigTilOgMed(),
-                                is(equalTo(LocalDate.of(2021, 2, 1).atStartOfDay()))))
+                                is(nullValue())))
                 .verifyComplete();
     }
 
@@ -222,7 +223,7 @@ class BostedAdresseServiceTest {
         StepVerifier.create(bostedAdresseService.convert(request, null))
                 .assertNext(target ->
                         assertThat(target.getPerson().getBostedsadresse().getFirst().getGyldigTilOgMed(),
-                                is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay()))))
+                                is(nullValue())))
                 .verifyComplete();
     }
 

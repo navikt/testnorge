@@ -1,12 +1,15 @@
-package no.nav.pdl.forvalter.utils;
+package no.nav.pdl.forvalter.service;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,10 +21,12 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@UtilityClass
-public class RelasjonerAlderUtility {
+@Service
+@RequiredArgsConstructor
+public class RelasjonerAlderService {
 
     private static final Random RANDOM = new SecureRandom();
+    private final Clock clock;
 
     public BestillingRequestDTO fixRelasjonerAlder(BestillingRequestDTO request) {
 
@@ -45,7 +50,7 @@ public class RelasjonerAlderUtility {
                 .map(Integer::longValue)
                 .ifPresent(eldsteBarn -> {
                     if (isNull(request.getAlder()) && isNull(request.getFoedtFoer())) {
-                        request.setFoedtFoer(LocalDateTime.now().minusYears(18 + eldsteBarn));
+                        request.setFoedtFoer(LocalDateTime.now(clock).minusYears(18 + eldsteBarn));
                         request.setFoedtEtter(request.getFoedtFoer().minusYears(18));
                     }
                     request.getPerson().getSivilstand().stream()
@@ -83,7 +88,7 @@ public class RelasjonerAlderUtility {
                 });
     }
 
-    private static void fixFoedsel(BestillingRequestDTO request) {
+    private void fixFoedsel(BestillingRequestDTO request) {
         request.getPerson().getFoedsel()
                 .forEach(foedsel -> {
 
@@ -97,8 +102,8 @@ public class RelasjonerAlderUtility {
                 });
 
         if (request.hasAlder() && nonNull(request.getAlder())) {
-            request.setFoedtEtter(LocalDateTime.now().minusYears(request.getAlder()).minusMonths(6));
-            request.setFoedtFoer(LocalDateTime.now().minusYears(request.getAlder()));
+            request.setFoedtEtter(LocalDateTime.now(clock).minusYears(request.getAlder()).minusMonths(6));
+            request.setFoedtFoer(LocalDateTime.now(clock).minusYears(request.getAlder()));
             request.setAlder(null);
         }
     }
@@ -171,7 +176,7 @@ public class RelasjonerAlderUtility {
 
     private Integer getAlder(LocalDate start) {
 
-        return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now());
+        return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now(clock));
     }
 
     private Integer getAlder(LocalDateTime start) {

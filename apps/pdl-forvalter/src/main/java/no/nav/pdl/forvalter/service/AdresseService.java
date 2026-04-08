@@ -43,8 +43,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         return "c/o " +
                coNavn.getFornavn() +
                ' ' +
-               (isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() : "") +
-               (isNotBlank(coNavn.getMellomnavn()) ? ' ' : "") +
+               (isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() + ' ' : "") +
                coNavn.getEtternavn();
     }
 

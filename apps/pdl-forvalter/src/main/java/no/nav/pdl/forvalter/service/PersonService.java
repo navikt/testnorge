@@ -19,7 +19,6 @@ import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.mapper.MappingContextUtils;
-import no.nav.pdl.forvalter.utils.RelasjonerAlderUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
@@ -76,6 +75,7 @@ public class PersonService {
     private final PersonArtifactService personArtifactService;
     private final PersonRepository personRepository;
     private final RelasjonRepository relasjonRepository;
+    private final RelasjonerAlderService relasjonerAlderService;
     private final UnhookEksternePersonerService unhookEksternePersonerService;
     private final ValidateArtifactsService validateArtifactsService;
 
@@ -213,7 +213,7 @@ public class PersonService {
         if (isNull(request.getPerson())) {
             request.setPerson(new PersonDTO());
         }
-        RelasjonerAlderUtility.fixRelasjonerAlder(request);
+        relasjonerAlderService.fixRelasjonerAlder(request);
 
         return acquireIdentifier(request)
                 .doOnNext(identifier -> request.getPerson().setIdent(identifier.getIdent()))
