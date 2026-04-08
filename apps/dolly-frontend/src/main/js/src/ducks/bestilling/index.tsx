@@ -51,18 +51,15 @@ const trackBestilling = (values: Record<string, any>) => {
 		})
 }
 
-const uploadSingleDocument = async (
-	base64Data: string,
-	dokumentType: string = 'BESTILLING_DOKARKIV',
-): Promise<number> => {
-	const dokumentId = await initDocumentUpload(dokumentType)
+const uploadSingleDocument = async (base64Data: string): Promise<string> => {
+	const uploadId = await initDocumentUpload()
 
 	for (let i = 0; i < base64Data.length; i += CHUNK_SIZE) {
 		const chunk = base64Data.slice(i, i + CHUNK_SIZE)
-		await appendDocumentChunk(dokumentId, chunk)
+		await appendDocumentChunk(uploadId, chunk)
 	}
 
-	return dokumentId
+	return uploadId
 }
 
 const uploadDokarkivDocuments = async (values: any): Promise<any> => {
@@ -88,14 +85,11 @@ const uploadDokarkivDocuments = async (values: any): Promise<any> => {
 								return variant
 							}
 
-							const dokumentId = await uploadSingleDocument(
-								variant.fysiskDokument,
-								'BESTILLING_DOKARKIV',
-							)
+							const uploadId = await uploadSingleDocument(variant.fysiskDokument)
 							return {
 								...variant,
 								fysiskDokument: undefined,
-								dokumentReferanse: dokumentId,
+								uploadReferanse: uploadId,
 							}
 						}),
 					)
@@ -120,11 +114,11 @@ const uploadHistarkDocuments = async (values: any): Promise<any> => {
 				return dok
 			}
 
-			const dokumentId = await uploadSingleDocument(dok.fysiskDokument, 'BESTILLING_HISTARK')
+			const uploadId = await uploadSingleDocument(dok.fysiskDokument)
 			return {
 				...dok,
 				fysiskDokument: undefined,
-				dokumentReferanse: dokumentId,
+				uploadReferanse: uploadId,
 			}
 		}),
 	)

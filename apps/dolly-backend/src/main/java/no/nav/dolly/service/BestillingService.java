@@ -68,6 +68,7 @@ public class BestillingService {
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final DokumentRepository dokumentRepository;
+    private final DokumentService dokumentService;
     private final IdentRepository identRepository;
     private final MalBestillingService malBestillingService;
     private final MiljoerConsumer miljoerConsumer;
@@ -582,10 +583,17 @@ public class BestillingService {
                                                     dokumentVariant.setFysiskDokument(null);
                                                     return id;
                                                 });
-                                    } else if (nonNull(dokumentVariant.getDokumentReferanse())) {
-                                        return dokumentRepository.updateBestillingIdIfNull(
-                                                        dokumentVariant.getDokumentReferanse(), request.getId())
-                                                .thenReturn(dokumentVariant.getDokumentReferanse());
+                                    } else if (isNotBlank(dokumentVariant.getUploadReferanse())) {
+                                        var contents = dokumentService.resolveUpload(dokumentVariant.getUploadReferanse());
+                                        if (isNull(contents)) {
+                                            return Mono.error(new NotFoundException("Upload har utløpt for referanse: " + dokumentVariant.getUploadReferanse()));
+                                        }
+                                        return lagreDokument(contents, request.getId(), DokumentType.BESTILLING_DOKARKIV)
+                                                .map(id -> {
+                                                    dokumentVariant.setDokumentReferanse(id);
+                                                    dokumentVariant.setUploadReferanse(null);
+                                                    return id;
+                                                });
                                     }
                                     return Mono.just(0L);
                                 })))
@@ -602,10 +610,14 @@ public class BestillingService {
                             return lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
                                     .doOnNext(id -> dokument.setFysiskDokument(null));
-                        } else if (nonNull(dokument.getDokumentReferanse())) {
-                            return dokumentRepository.updateBestillingIdIfNull(
-                                            dokument.getDokumentReferanse(), request.getId())
-                                    .thenReturn(dokument.getDokumentReferanse());
+                        } else if (isNotBlank(dokument.getUploadReferanse())) {
+                            var contents = dokumentService.resolveUpload(dokument.getUploadReferanse());
+                            if (isNull(contents)) {
+                                return Mono.error(new NotFoundException("Upload har utløpt for referanse: " + dokument.getUploadReferanse()));
+                            }
+                            return lagreDokument(contents, request.getId(), DokumentType.BESTILLING_HISTARK)
+                                    .doOnNext(dokument::setDokumentReferanse)
+                                    .doOnNext(id -> dokument.setUploadReferanse(null));
                         }
                         return Mono.empty();
                     })

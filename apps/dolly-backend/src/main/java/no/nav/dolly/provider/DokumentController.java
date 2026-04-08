@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Dokument;
-import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.service.DokumentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -27,22 +25,20 @@ public class DokumentController {
 
     private final DokumentService dokumentService;
 
-    @Operation(description = "Initierer en dokument-opplasting og returnerer dokument-ID")
+    @Operation(description = "Initierer en dokument-opplasting og returnerer midlertidig upload-ID")
     @PostMapping("/upload/init")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Long> initUpload(@RequestBody Map<String, String> body) {
+    public String initUpload() {
 
-        var dokumentType = DokumentType.valueOf(
-                body.getOrDefault("dokumentType", DokumentType.BESTILLING_DOKARKIV.name()));
-        return dokumentService.initUpload(dokumentType);
+        return dokumentService.initUpload();
     }
 
-    @Operation(description = "Legger til en datachunk til et eksisterende dokument")
-    @PostMapping("/upload/{dokumentId}/append")
-    public Mono<Void> appendChunk(@PathVariable("dokumentId") Long dokumentId,
-                                  @RequestBody Map<String, String> body) {
+    @Operation(description = "Legger til en datachunk til en pågående opplasting")
+    @PostMapping("/upload/{uploadId}/append")
+    public void appendChunk(@PathVariable("uploadId") String uploadId,
+                            @RequestBody Map<String, String> body) {
 
-        return dokumentService.appendChunk(dokumentId, body.get("data"));
+        dokumentService.appendChunk(uploadId, body.get("data"));
     }
 
     @Operation(description = "Henter dokumenter basert på bestillingId")

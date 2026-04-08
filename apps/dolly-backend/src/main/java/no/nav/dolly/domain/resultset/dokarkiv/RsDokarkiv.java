@@ -134,6 +134,9 @@ public class RsDokarkiv {
             @Schema(description = "Referanse til dokumentet")
             private Long dokumentReferanse;
 
+            @Schema(description = "Midlertidig referanse til opplastet dokument i minne")
+            private String uploadReferanse;
+
             @Schema(description = """
                     ARKIV brukes for dokumentvarianter i menneskelesbart format (for eksempel PDFA).
                     Gosys og nav.no henter arkivvariant og viser denne til bruker.

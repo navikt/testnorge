@@ -2,10 +2,10 @@ package no.nav.dolly.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Dokument;
-import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -35,32 +35,34 @@ public class DokumentService {
     private final DokumentRepository dokumentRepository;
     private final BestillingMalRepository bestillingMalRepository;
     private final ObjectMapper objectMapper;
+    private final Cache<String, StringBuilder> dokumentUploadCache;
 
-    @Transactional
-    public Mono<Long> initUpload(DokumentType dokumentType) {
+    public String initUpload() {
 
-        return dokumentRepository.save(
-                        Dokument.builder()
-                                .contents("")
-                                .dokumentType(dokumentType)
-                                .sistOppdatert(LocalDateTime.now())
-                                .build()
-                )
-                .map(Dokument::getId)
-                .doOnSuccess(id -> log.info("Dokument-opplasting initiert med id {}", id));
+        var uploadId = UUID.randomUUID().toString();
+        dokumentUploadCache.put(uploadId, new StringBuilder());
+        log.info("Dokument-opplasting initiert med uploadId {}", uploadId);
+        return uploadId;
     }
 
-    @Transactional
-    public Mono<Void> appendChunk(Long dokumentId, String data) {
+    public void appendChunk(String uploadId, String data) {
 
-        return dokumentRepository.appendContent(dokumentId, data)
-                .flatMap(updated -> {
-                    if (updated == 0) {
-                        return Mono.error(new ResponseStatusException(
-                                HttpStatus.NOT_FOUND, "Dokument med id " + dokumentId + " finnes ikke"));
-                    }
-                    return Mono.empty();
-                });
+        var buffer = dokumentUploadCache.getIfPresent(uploadId);
+        if (isNull(buffer)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Upload med id " + uploadId + " finnes ikke eller har utløpt");
+        }
+        buffer.append(data);
+    }
+
+    public String resolveUpload(String uploadId) {
+
+        var buffer = dokumentUploadCache.getIfPresent(uploadId);
+        if (isNull(buffer)) {
+            return null;
+        }
+        dokumentUploadCache.invalidate(uploadId);
+        return buffer.toString();
     }
 
     @Transactional
