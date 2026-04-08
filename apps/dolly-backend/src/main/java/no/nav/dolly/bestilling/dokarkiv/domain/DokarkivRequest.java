@@ -103,12 +103,15 @@ public class DokarkivRequest {
         private String variantformat;
         @JsonIgnore
         private Long dokumentReferanse;
+        private String uploadReferanse;
 
         @Override
         public String toString() {
             return "DokumentVariant{" +
                     "filtype='" + filtype + '\'' +
-                    ", fysiskDok='" + fysiskDokument.substring(0, 10) + "..." + '\'' +
+                    ", fysiskDok='" + (fysiskDokument != null && fysiskDokument.length() > 10
+                    ? fysiskDokument.substring(0, 10) + "..." : fysiskDokument) + '\'' +
+                    ", uploadReferanse='" + uploadReferanse + '\'' +
                     ", variantformat='" + variantformat + '\'' +
                     '}';
         }

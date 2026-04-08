@@ -7,10 +7,13 @@ import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
@@ -18,6 +21,8 @@ import static org.springframework.web.reactive.function.BodyInserters.fromMultip
 @Slf4j
 @RequiredArgsConstructor
 public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
+
+    private static final Duration RESPONSE_TIMEOUT = Duration.ofMinutes(5);
 
     private final WebClient webClient;
     private final HistarkRequest histarkRequest;
@@ -30,7 +35,11 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
         body.add("file", histarkRequest.getFile());
         body.add("metadata", histarkRequest.getMetadata().toString());
 
-        return webClient
+        return webClient.mutate()
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create()
+                                .responseTimeout(RESPONSE_TIMEOUT)))
+                .build()
                 .post()
                 .uri(builder ->
                         builder.path("/histark/api/saksmapper/import") // requestParam metadata er overflødig
