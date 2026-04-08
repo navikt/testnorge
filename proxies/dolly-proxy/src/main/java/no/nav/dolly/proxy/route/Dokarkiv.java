@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -56,6 +57,9 @@ public class Dokarkiv {
 
     @SuppressWarnings("unchecked")
     private Mono<String> resolveUploadReferences(String body) {
+        if (isBlank(body)) {
+            return Mono.justOrEmpty(body);
+        }
         try {
             var request = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
             var dokumenter = (List<Map<String, Object>>) request.get("dokumenter");
