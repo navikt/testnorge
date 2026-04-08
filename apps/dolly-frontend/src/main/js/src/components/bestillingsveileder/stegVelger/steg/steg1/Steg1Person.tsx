@@ -18,7 +18,7 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
-import { BankinformasjonPanel } from "@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Bankinformasjon";
+import { BankinformasjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Bankinformasjon'
 import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidssoeker'
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
