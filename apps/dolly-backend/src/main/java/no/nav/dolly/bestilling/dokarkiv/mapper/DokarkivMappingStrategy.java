@@ -103,9 +103,6 @@ public class DokarkivMappingStrategy implements MappingStrategy {
         if (isBlank(dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().getVariantformat())) {
             dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().setVariantformat(ARKIV);
         }
-        dokumenter.forEach(doku -> log.info("Dokument fra DB id={}: {} tegn, starter med: '{}'",
-                doku.getId(), doku.getContents().length(),
-                doku.getContents().length() >= 20 ? doku.getContents().substring(0, 20) : doku.getContents()));
         dokarkivRequest.getDokumenter()
                 .forEach(dokument -> dokument.getDokumentvarianter()
                         .forEach(dokumentVariant ->

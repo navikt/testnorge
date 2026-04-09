@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
@@ -52,8 +51,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class DokarkivClient implements ClientRegister {
-
-    private static final int CHUNK_SIZE = 500_000;
 
     private final ApplicationConfig applicationConfig;
     private final DokarkivConsumer dokarkivConsumer;
@@ -85,7 +82,6 @@ public class DokarkivClient implements ClientRegister {
                                                         Flux.fromIterable(bestilling.getDokarkiv())
                                                                 .flatMap(dokarkiv ->
                                                                         buildRequest(dokarkiv, person, bestilling.getId())
-                                                                                .flatMap(this::uploadLargeDocumentsToProxy)
                                                                                 .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
                                                                 .collectList()
                                                                 .flatMap(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
@@ -247,42 +243,5 @@ public class DokarkivClient implements ClientRegister {
                         }
                 );
         return transaksjoner;
-    }
-
-    private Mono<DokarkivRequest> uploadLargeDocumentsToProxy(DokarkivRequest request) {
-
-        var largeVariants = request.getDokumenter().stream()
-                .flatMap(dok -> dok.getDokumentvarianter().stream())
-                .filter(variant -> isNotBlank(variant.getFysiskDokument()) && variant.getFysiskDokument().length() > CHUNK_SIZE)
-                .toList();
-
-        if (largeVariants.isEmpty()) {
-            return Mono.just(request);
-        }
-
-        log.info("Laster opp {} store dokumentvarianter til proxy", largeVariants.size());
-
-        return Flux.fromIterable(largeVariants)
-                .flatMap(variant -> uploadSingleDocumentToProxy(variant.getFysiskDokument())
-                        .doOnNext(uploadId -> {
-                            variant.setUploadReferanse(uploadId);
-                            variant.setFysiskDokument(null);
-                        }))
-                .then(Mono.just(request));
-    }
-
-    private Mono<String> uploadSingleDocumentToProxy(String content) {
-
-        return dokarkivConsumer.initProxyUpload()
-                .flatMap(uploadId -> {
-                    var chunks = new ArrayList<String>();
-                    for (int i = 0; i < content.length(); i += CHUNK_SIZE) {
-                        chunks.add(content.substring(i, Math.min(i + CHUNK_SIZE, content.length())));
-                    }
-                    log.info("Dokarkiv proxy upload {}: {} chunks for {} tegn", uploadId, chunks.size(), content.length());
-                    return Flux.fromIterable(chunks)
-                            .concatMap(chunk -> dokarkivConsumer.appendProxyChunk(uploadId, chunk))
-                            .then(Mono.just(uploadId));
-                });
     }
 }

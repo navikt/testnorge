@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetMiljoeCommand;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivPostCommand;
-import no.nav.dolly.bestilling.dokarkiv.command.DokarkivProxyUploadAppendCommand;
-import no.nav.dolly.bestilling.dokarkiv.command.DokarkivProxyUploadInitCommand;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.Consumers;
@@ -60,20 +58,6 @@ public class DokarkivConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new DokarkivGetMiljoeCommand(webClient, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "dokarkiv_proxy_upload_init"})
-    public Mono<String> initProxyUpload() {
-
-        return tokenService.exchange(serverProperties)
-                .flatMap(token -> new DokarkivProxyUploadInitCommand(webClient, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "dokarkiv_proxy_upload_append"})
-    public Mono<Void> appendProxyChunk(String uploadId, String chunk) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMap(token -> new DokarkivProxyUploadAppendCommand(webClient, uploadId, chunk, token.getTokenValue()).call());
     }
 
     @Override
