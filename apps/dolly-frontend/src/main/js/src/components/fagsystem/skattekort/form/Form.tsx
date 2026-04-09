@@ -67,8 +67,11 @@ export const SkattekortForm = () => {
 		return arbeidstaker?.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
 	}
 
-	const showTillegsopplysning = (index: number): boolean => {
-		const gyldigeResultater = ['SKATTEKORTOPPLYSNINGER_OK', 'IKKE_SKATTEKORT']
+	const showForskuddstrekk = (index: number): boolean => {
+		const gyldigeResultater = [
+			'SKATTEKORTOPPLYSNINGER_OK',
+			'UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT',
+		]
 		const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[index]?.arbeidstaker?.[0]
 		return gyldigeResultater.includes(arbeidstaker?.resultatPaaForespoersel)
 	}
@@ -156,17 +159,15 @@ export const SkattekortForm = () => {
 										/>
 									)}
 								</div>
-								{showTillegsopplysning(index) && (
-									<FormSelect
-										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
-										label="Tilleggsopplysning"
-										options={tilleggsopplysning}
-										size="grow"
-										isMulti={true}
-										onBlur={() => onBlurTillegsinformasjon(path, index)}
-									/>
-								)}
-								{isResultatOK(index) && !isTilleggsopplysning(index) && (
+								<FormSelect
+									name={`${path}.arbeidstaker[0].tilleggsopplysning`}
+									label="Tilleggsopplysning"
+									options={tilleggsopplysning}
+									size="grow"
+									isMulti={true}
+									onBlur={() => onBlurTillegsinformasjon(path, index)}
+								/>
+								{showForskuddstrekk(index) && !isTilleggsopplysning(index) && (
 									<ForskuddstrekkForm
 										formMethods={formMethods}
 										path={`${path}.arbeidstaker[0].skattekort`}
