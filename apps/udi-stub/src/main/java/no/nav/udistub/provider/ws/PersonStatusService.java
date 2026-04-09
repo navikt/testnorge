@@ -49,33 +49,45 @@ public class PersonStatusService implements MT1067NAVV1Interface {
     @Override
     public HentPersonstatusResponseType hentPersonstatus(HentPersonstatusRequestType parameters)
             throws HentPersonstatusFault {
+        var fnr = parameters.getParameter().getFodselsnummer();
         try {
             log.info("Mottatt hentPersonstatus request: {}", objectMapper.writeValueAsString(parameters));
         } catch (JsonProcessingException e) {
             log.warn("Kunne ikke serialisere hentPersonstatus request til JSON", e);
         }
-        UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
-        var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
+        try {
+            UdiPerson foundPerson = personService.finnPerson(fnr);
+            var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
 
-        var response = new HentPersonstatusResponseType();
-        response.setResultat(filtrerResultat(parameters, resultat));
-        return response;
+            var response = new HentPersonstatusResponseType();
+            response.setResultat(filtrerResultat(parameters, resultat));
+            return response;
+        } catch (Exception e) {
+            log.error("Feil ved hentPersonstatus for ident {}: {}", fnr, e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
     public HentUtvidetPersonstatusResponseType hentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType parameters)
             throws HentUtvidetPersonstatusFault {
+        var fnr = parameters.getParameter().getFodselsnummer();
         try {
             log.info("Mottatt hentUtvidetPersonstatus request: {}", objectMapper.writeValueAsString(parameters));
         } catch (JsonProcessingException e) {
             log.warn("Kunne ikke serialisere hentUtvidetPersonstatus request til JSON", e);
         }
-        UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
-        var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);
+        try {
+            UdiPerson foundPerson = personService.finnPerson(fnr);
+            var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);
 
-        var response = new HentUtvidetPersonstatusResponseType();
-        response.setResultat(filtererResultat(parameters, resultat));
-        return response;
+            var response = new HentUtvidetPersonstatusResponseType();
+            response.setResultat(filtererResultat(parameters, resultat));
+            return response;
+        } catch (Exception e) {
+            log.error("Feil ved hentUtvidetPersonstatus for ident {}: {}", fnr, e.getMessage(), e);
+            throw e;
+        }
     }
 
     private static HentPersonstatusResultat filtrerResultat(HentPersonstatusRequestType request, HentPersonstatusResultat resultat) {
