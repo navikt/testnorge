@@ -15,15 +15,15 @@
 - Day-to-day development is usually run from the specific app or proxy directory rather than repo root.
 - Before running shell commands, determine the developer OS from explicit environment metadata if available; otherwise probe once using the active shell, and if still unclear provide both PowerShell and bash/zsh variants instead of guessing.
 - PowerShell:
-```powershell
-Set-Location apps/dolly-backend
-./gradlew build
-```
+  ```powershell
+  Set-Location apps/dolly-backend
+  ./gradlew build
+  ```
 - bash/zsh:
-```bash
-cd apps/dolly-backend
-./gradlew build
-```
+  ```bash
+  cd apps/dolly-backend
+  ./gradlew build
+  ```
 - `build` normally runs `dollyValidation` for apps and proxies, so `dollyValidation` does not need to be executed explicitly during normal local development.
 - `dollyValidation` (`plugins/java/src/main/java/no/nav/dolly/plugins/DollyBuildValidationTask.java`) enforces consistency between:
   - module `build.gradle` dependencies on `no.nav.testnav.libs:*`
@@ -52,31 +52,31 @@ cd apps/dolly-backend
 - Non-master deploys are commit-message driven (`#deploy-...`, `#deploy-test-...`), and `#nodeploy` disables deploy.
 - Frontend module commands.
 - PowerShell:
-```powershell
-Set-Location apps/dolly-frontend/src/main/js
-pnpm install --frozen-lockfile
-pnpm start
-pnpm run test:vitest-run
-pnpm run test:playwright-run
-```
+  ```powershell
+  Set-Location apps/dolly-frontend/src/main/js
+  pnpm install --frozen-lockfile
+  pnpm start
+  pnpm run test:vitest-run
+  pnpm run test:playwright-run
+  ```
 - bash/zsh:
-```bash
-cd apps/dolly-frontend/src/main/js
-pnpm install --frozen-lockfile
-pnpm start
-pnpm run test:vitest-run
-pnpm run test:playwright-run
-```
+  ```bash
+  cd apps/dolly-frontend/src/main/js
+  pnpm install --frozen-lockfile
+  pnpm start
+  pnpm run test:vitest-run
+  pnpm run test:playwright-run
+  ```
 - Private npm packages require a GitHub token in user `.npmrc` (`apps/dolly-frontend/README.md`).
 - Proxy table in `docs/modules/ROOT/pages/index.adoc` is generated; regenerate after proxy config changes.
 - PowerShell:
-```powershell
-python .\scripts\generate_proxy_table.py
-```
+  ```powershell
+  python .\scripts\generate_proxy_table.py
+  ```
 - bash/zsh:
-```bash
-python ./scripts/generate_proxy_table.py
-```
+  ```bash
+  python ./scripts/generate_proxy_table.py
+  ```
 
 
 
