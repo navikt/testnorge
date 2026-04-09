@@ -103,6 +103,7 @@ public class DokarkivRequest {
         private String variantformat;
         @JsonIgnore
         private Long dokumentReferanse;
+        private String uploadReferanse;
 
         @Override
         public String toString() {
