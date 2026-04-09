@@ -5,23 +5,21 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 ## General Style
 
 - IMPORTANT: Prefer obvious code over clever code.
+- IMPORTANT: Follow the touched module's existing conventions before applying a global preference.
 - IMPORTANT: DO NOT ADD ANY COMMENTS unless asked, and DO NOT REMOVE or MODIFY existing comments in the code.
-- Provide entire files instead of snippets, unless specified.
 - use descriptive variable names unless in a loop or other obvious context.
 
 ## Java
 
-- Java: Spring Boot 3.x, Java 21, unless otherwise specified.
+- Java: Match the versions already configured in the touched module; in this repo that is typically Spring Boot 3.x and Java 21.
 - Java tests: JUnit 5, AssertJ, Mockito; name test methods: `should<Behavior>()`.
 - Null handling: prefer `Optional` only at API boundaries.
 - Keep functions small; extract private helpers.
-- IMPORTANT: Always use `isNull(obj)` and `nonNull(obj)` from `java.util.Objects` instead of `obj == null` or `obj != null`.
-- IMPORTANT: Always use `isBlank(str)` and `isNotBlank(str)` from Apache Commons Lang3 instead of manual string checks.
+- IMPORTANT: Prefer `isNull(obj)` and `nonNull(obj)` from `java.util.Objects` when adding or refactoring null checks, especially where the surrounding code already follows that pattern.
+- IMPORTANT: Prefer Apache Commons Lang3 `isBlank(str)` and `isNotBlank(str)` for blank-string checks when the module already uses Commons Lang.
 - Logging: SLF4J, no `System.out`.
 - Avoid deprecated Spring APIs.
-- Always use explicit, fully qualified Java imports.
-- Never use wildcard imports (e.g., `import com.example.package.*`).
-- Ensure all necessary classes are imported individually.
+- Prefer explicit Java imports and avoid wildcard imports in new or modified code.
 
 ## REST
 
@@ -31,7 +29,8 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 
 ## JS / React / TS:
 
-- Javascript: React 18, TypeScript 5, React Router, React Hook Form, useSWR, Styled components, functional components,
+- Javascript: Match the versions already configured in the touched module; in this repo that is typically React 19, TypeScript 5, React Router, React Hook Form, useSWR, and Styled Components.
+- Functional components,
   hooks unless otherwise specified.
 - Javascript tests: MSW, React Testing Library, Vitest, Playwright for e2e.
 - TypeScript interfaces should be explicit for props
@@ -40,16 +39,17 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
     - Self-contained and reusable where possible
     - Focused on a single responsibility
     - Well-typed with TypeScript
-- Prefer using useSWR for data fetching and create a custom hook.
+- Prefer existing useSWR + custom hook patterns for frontend read-fetching, but follow the local data-flow pattern in the touched area.
 - Prefer early returns for conditionals
 - TypeScript strict mode assumptions.
 - Uses NAV design system (@navikt/ds-react and @navikt/ds-css)
-- Prefer NAV design system components and styling where possible
+- Prefer NAV design system components and styling where the touched frontend already uses them.
 - Keep components small and focused
 - Follow accessibility best practices
 - Reuse existing UI components; do not introduce new state libs
+- Prefer existing frontend request helpers, custom hooks, and UI patterns before introducing parallel abstractions.
 - Prefer creating .tsx files for components, not .ts
-- Export components directly where they are written, never in dedicated export/index files.
+- Prefer following the local folder convention for component exports; use direct exports unless the touched area already uses index/barrel files.
 
 ## Error Handling React / TS:
 
@@ -60,4 +60,4 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 ## What NOT to do
 
 - Do not invent APIs not present.
-- Do not add libraries without minimal justification comment.
+- Do not add libraries unless existing repo dependencies or utilities are insufficient.
