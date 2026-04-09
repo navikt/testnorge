@@ -268,6 +268,18 @@ const fetchJson = (url: string, config: Config, body?: object): Promise =>
 			return data ? JSON.parse(data) : {}
 		})
 
+export const initDocumentUpload = (): Promise<string> =>
+	_fetch('/dolly-backend/api/v1/dokument/upload/init', { method: 'POST' }).then((response) =>
+		response.text(),
+	)
+
+export const appendDocumentChunk = (uploadId: string, data: string): Promise<void> =>
+	fetchJson(
+		`/dolly-backend/api/v1/dokument/upload/${uploadId}/append`,
+		{ method: 'POST' },
+		{ data },
+	)
+
 export default {
 	fetch: _fetch,
 	fetchJson,
