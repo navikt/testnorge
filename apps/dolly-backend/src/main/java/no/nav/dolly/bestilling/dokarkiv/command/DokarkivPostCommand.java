@@ -6,12 +6,9 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -20,8 +17,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Slf4j
 public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
 
-    private static final Duration RESPONSE_TIMEOUT = Duration.ofMinutes(5);
-
     private final WebClient webClient;
     private final String environment;
     private final DokarkivRequest dokarkivRequest;
@@ -29,12 +24,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
 
     @Override
     public Mono<DokarkivResponse> call() {
-
-        return webClient.mutate()
-                .clientConnector(new ReactorClientHttpConnector(
-                        HttpClient.create()
-                                .responseTimeout(RESPONSE_TIMEOUT)))
-                .build()
+        return webClient
                 .post()
                 .uri(builder ->
                         builder.path("/dokarkiv/api/{miljo}/v1/journalpost")
@@ -48,6 +38,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                     response.setMiljoe(environment);
                     return response;
                 })
+
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> DokarkivResponse.of(WebClientError.describe(throwable), environment));
