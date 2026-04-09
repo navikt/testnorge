@@ -59,6 +59,34 @@ export const KodeverkTitleValue = ({ kodeverkstype, value, label }: KodeverkType
 	return <TitleValue title={label} value={visningValue} />
 }
 
+export const SkattekortData = ({ liste }: { liste: SkattekortDTO[] }) => {
+	return (
+		<DollyFieldArray header="" data={liste} expandable={liste.length > 5} nested>
+			{(skattekort: SkattekortDTO, idx: number) => {
+				return (
+					<React.Fragment key={idx}>
+						<div className="person-visning_content">
+							<KodeverkTitleValue
+								kodeverkstype="RESULTATSTATUS_FRA_SOKOS"
+								value={skattekort?.resultatForSkattekort}
+								label="Resultat for skattekort"
+							/>
+							<TitleValue title="Inntektsår" value={skattekort?.inntektsaar} />
+							<TitleValue title="Utstedt dato" value={formatDate(skattekort?.utstedtDato)} />
+							<KodeverkTitleValue
+								kodeverkstype="TILLEGGSOPPLYSNING_FRA_SOKOS"
+								value={skattekort?.tilleggsopplysningList}
+								label="Tilleggsopplysning"
+							/>
+							<ForskuddstrekkVisning trekkliste={skattekort?.forskuddstrekkList} />
+						</div>
+					</React.Fragment>
+				)
+			}}
+		</DollyFieldArray>
+	)
+}
+
 export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster skattekort-data" />
@@ -83,29 +111,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 				</Alert>
 			) : (
 				<ErrorBoundary>
-					<DollyFieldArray header="" data={liste} expandable={liste.length > 5} nested>
-						{(skattekort: SkattekortDTO, idx: number) => {
-							return (
-								<React.Fragment key={idx}>
-									<div className="person-visning_content">
-										<KodeverkTitleValue
-											kodeverkstype="RESULTATSTATUS_FRA_SOKOS"
-											value={skattekort?.resultatForSkattekort}
-											label="Resultat for skattekort"
-										/>
-										<TitleValue title="Inntektsår" value={skattekort?.inntektsaar} />
-										<TitleValue title="Utstedt dato" value={formatDate(skattekort?.utstedtDato)} />
-										<KodeverkTitleValue
-											kodeverkstype="TILLEGGSOPPLYSNING_FRA_SOKOS"
-											value={skattekort?.tilleggsopplysningList}
-											label="Tilleggsopplysning"
-										/>
-										<ForskuddstrekkVisning trekkliste={skattekort?.forskuddstrekkList} />
-									</div>
-								</React.Fragment>
-							)
-						}}
-					</DollyFieldArray>
+					<SkattekortData liste={liste} />
 				</ErrorBoundary>
 			)}
 		</>
