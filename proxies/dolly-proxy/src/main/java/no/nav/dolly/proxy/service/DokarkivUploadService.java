@@ -14,11 +14,11 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class DokarkivUploadService {
 
-    private final Cache<String, StringBuilder> dokarkivUploadCache;
+    private final Cache<String, StringBuffer> dokarkivUploadCache;
 
     public String initUpload() {
         var uploadId = UUID.randomUUID().toString();
-        dokarkivUploadCache.put(uploadId, new StringBuilder());
+        dokarkivUploadCache.put(uploadId, new StringBuffer());
         log.info("Dokarkiv upload startet med id {}", uploadId);
         return uploadId;
     }

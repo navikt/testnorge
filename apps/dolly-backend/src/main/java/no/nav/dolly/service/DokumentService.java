@@ -35,12 +35,12 @@ public class DokumentService {
     private final DokumentRepository dokumentRepository;
     private final BestillingMalRepository bestillingMalRepository;
     private final ObjectMapper objectMapper;
-    private final Cache<String, StringBuilder> dokumentUploadCache;
+    private final Cache<String, StringBuffer> dokumentUploadCache;
 
     public String initUpload() {
 
         var uploadId = UUID.randomUUID().toString();
-        dokumentUploadCache.put(uploadId, new StringBuilder());
+        dokumentUploadCache.put(uploadId, new StringBuffer());
         log.info("Dokument-opplasting initiert med uploadId {}", uploadId);
         return uploadId;
     }

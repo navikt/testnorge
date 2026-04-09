@@ -86,7 +86,9 @@ public class Dokarkiv {
         } catch (JsonProcessingException e) {
             log.warn("Kunne ikke parse dokarkiv request for upload-resolving, sender videre umodifisert", e);
         } catch (IllegalArgumentException e) {
-            log.error("Feilet ved resolving av uploadReferanse: {}", e.getMessage());
+            return Mono.error(new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "Feilet ved resolving av uploadReferanse: " + e.getMessage()));
         }
         return Mono.just(body);
     }

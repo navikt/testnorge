@@ -11,7 +11,7 @@ import java.time.Duration;
 public class DokarkivUploadCacheConfig {
 
     @Bean
-    public Cache<String, StringBuilder> dokarkivUploadCache() {
+    public Cache<String, StringBuffer> dokarkivUploadCache() {
         return Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(30))
                 .maximumSize(100)

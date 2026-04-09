@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class DokumentUploadCacheConfig {
 
     @Bean
-    public Cache<String, StringBuilder> dokumentUploadCache() {
+    public Cache<String, StringBuffer> dokumentUploadCache() {
         return Caffeine.newBuilder()
                 .expireAfterWrite(30, TimeUnit.MINUTES)
                 .maximumSize(100)
