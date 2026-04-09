@@ -15,6 +15,7 @@ import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 import { Arbeidsforhold } from '@/pages/tenorSoek/soekFormPartials/Arbeidsforhold'
+import { BeregnetSkatt } from '@/pages/tenorSoek/soekFormPartials/BeregnetSkatt'
 
 const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 
@@ -215,6 +216,20 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 											<Header
 												title="Skattemelding"
 												paths={['skattemelding.inntektsaar', 'skattemelding.skattemeldingstype']}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
+									<Table.ExpandableRow content={<BeregnetSkatt handleChange={handleChange} />}>
+										<Table.HeaderCell>
+											<Header
+												title="Beregnet skatt"
+												paths={[
+													'beregnetSkatt.inntektsaar',
+													'beregnetSkatt.oppgjoerstype',
+													'beregnetSkatt.pensjonsgivendeInntekt',
+												]}
 												getValues={getValues}
 												emptyCategory={emptyCategory}
 											/>
