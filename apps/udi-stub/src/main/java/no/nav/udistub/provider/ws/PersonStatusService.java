@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.udistub.exception.NotFoundException;
 import no.nav.udistub.service.PersonService;
 import no.nav.udistub.service.dto.UdiPerson;
+import no.udi.common.fault.v3.Fault;
 import no.udi.common.v2.PingRequestType;
 import no.udi.common.v2.PingResponseType;
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
@@ -62,6 +64,12 @@ public class PersonStatusService implements MT1067NAVV1Interface {
             var response = new HentPersonstatusResponseType();
             response.setResultat(filtrerResultat(parameters, resultat));
             return response;
+        } catch (NotFoundException e) {
+            log.warn("Person ikke funnet for hentPersonstatus: {}", e.getMessage());
+            var fault = new Fault();
+            fault.setFeilmelding(e.getMessage());
+            fault.setKategori("IkkeFunnet");
+            throw new HentPersonstatusFault(e.getMessage(), fault);
         } catch (Exception e) {
             log.error("Feil ved hentPersonstatus for ident {}: {}", fnr, e.getMessage(), e);
             throw e;
@@ -84,6 +92,12 @@ public class PersonStatusService implements MT1067NAVV1Interface {
             var response = new HentUtvidetPersonstatusResponseType();
             response.setResultat(filtererResultat(parameters, resultat));
             return response;
+        } catch (NotFoundException e) {
+            log.warn("Person ikke funnet for hentUtvidetPersonstatus: {}", e.getMessage());
+            var fault = new Fault();
+            fault.setFeilmelding(e.getMessage());
+            fault.setKategori("IkkeFunnet");
+            throw new HentUtvidetPersonstatusFault(e.getMessage(), fault);
         } catch (Exception e) {
             log.error("Feil ved hentUtvidetPersonstatus for ident {}: {}", fnr, e.getMessage(), e);
             throw e;
