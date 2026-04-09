@@ -22,22 +22,23 @@ public class PersonService {
     @Transactional
     public UdiPerson opprettPerson(UdiPerson udiPerson) {
 
-        Person nyPerson = personRepository.save(Person.builder()
-                .ident(udiPerson.getIdent())
-                .build());
-
-        mapperFacade.map(udiPerson, nyPerson);
+        Person nyPerson = mapperFacade.map(udiPerson, Person.class);
+        personRepository.save(nyPerson);
         return mapperFacade.map(nyPerson, UdiPerson.class);
     }
 
     @Transactional
     public UdiPerson oppdaterPerson(UdiPerson udiPerson) {
 
-        var endrePerson = personRepository.findByIdent(udiPerson.getIdent())
+        var eksisterendePerson = personRepository.findByIdent(udiPerson.getIdent())
                 .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, udiPerson.getIdent())));
 
-        mapperFacade.map(udiPerson, endrePerson);
-        return mapperFacade.map(endrePerson, UdiPerson.class);
+        personRepository.delete(eksisterendePerson);
+        personRepository.flush();
+
+        Person nyPerson = mapperFacade.map(udiPerson, Person.class);
+        personRepository.save(nyPerson);
+        return mapperFacade.map(nyPerson, UdiPerson.class);
     }
 
     @Transactional
