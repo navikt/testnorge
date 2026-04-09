@@ -61,9 +61,12 @@ public class VaultDatabaseAutoConfiguration implements InitializingBean {
                                 if (dataSource.getHikariPoolMXBean() != null) {
                                     dataSource.getHikariPoolMXBean().softEvictConnections();
                                 }
-
                             }
                         });
+        container
+                .addErrorListener(
+                        (leaseEvent, exception) ->
+                                log.error("Vault lease error for {}: {}", leaseEvent.getSource(), exception.getMessage()));
         container.addRequestedSecret(secret);
 
     }
