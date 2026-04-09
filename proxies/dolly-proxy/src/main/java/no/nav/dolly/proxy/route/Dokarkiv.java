@@ -71,10 +71,7 @@ public class Dokarkiv {
                         for (var variant : varianter) {
                             var uploadRef = (String) variant.get("uploadReferanse");
                             if (isNotBlank(uploadRef)) {
-                                log.info("Resolver uploadReferanse {} for dokarkiv request", uploadRef);
                                 var content = uploadService.resolveUpload(uploadRef);
-                                log.info("Resolved content starter med: '{}', lengde: {}",
-                                        content.length() >= 20 ? content.substring(0, 20) : content, content.length());
                                 variant.put("fysiskDokument", content);
                                 variant.remove("uploadReferanse");
                                 resolved = true;
@@ -83,10 +80,7 @@ public class Dokarkiv {
                     }
                 }
                 if (resolved) {
-                    var result = objectMapper.writeValueAsString(request);
-                    log.info("Dokarkiv request resolved, total storrelse: {} tegn (~{} MB)",
-                            result.length(), String.format("%.1f", result.length() / (1024.0 * 1024.0)));
-                    return Mono.just(result);
+                    return Mono.just(objectMapper.writeValueAsString(request));
                 }
             }
         } catch (JsonProcessingException e) {

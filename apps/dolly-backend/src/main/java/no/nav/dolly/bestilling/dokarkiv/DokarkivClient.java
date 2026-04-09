@@ -273,9 +273,6 @@ public class DokarkivClient implements ClientRegister {
 
     private Mono<String> uploadSingleDocumentToProxy(String content) {
 
-        log.info("Dokarkiv proxy upload starter, innhold starter med: '{}'",
-                content.length() >= 20 ? content.substring(0, 20) : content);
-
         return dokarkivConsumer.initProxyUpload()
                 .flatMap(uploadId -> {
                     var chunks = new ArrayList<String>();

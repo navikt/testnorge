@@ -588,9 +588,6 @@ public class BestillingService {
                                         if (isNull(contents)) {
                                             return Mono.error(new NotFoundException("Upload har utløpt for referanse: " + dokumentVariant.getUploadReferanse()));
                                         }
-                                        log.info("Lagrer dokarkiv dokument fra upload {}: {} tegn, starter med: '{}'",
-                                                dokumentVariant.getUploadReferanse(), contents.length(),
-                                                contents.length() >= 20 ? contents.substring(0, 20) : contents);
                                         return lagreDokument(contents, request.getId(), DokumentType.BESTILLING_DOKARKIV)
                                                 .map(id -> {
                                                     dokumentVariant.setDokumentReferanse(id);

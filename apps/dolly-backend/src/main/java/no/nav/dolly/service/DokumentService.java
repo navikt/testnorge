@@ -52,9 +52,6 @@ public class DokumentService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Upload med id " + uploadId + " finnes ikke eller har utløpt");
         }
-        if (buffer.isEmpty() && data.length() >= 20) {
-            log.info("Dokument upload {} foerste chunk starter med: '{}'", uploadId, data.substring(0, 20));
-        }
         buffer.append(data);
     }
 
@@ -65,10 +62,7 @@ public class DokumentService {
             return null;
         }
         dokumentUploadCache.invalidate(uploadId);
-        var result = buffer.toString();
-        log.info("Dokument upload {} resolved: {} tegn, starter med: '{}'",
-                uploadId, result.length(), result.length() >= 20 ? result.substring(0, 20) : result);
-        return result;
+        return buffer.toString();
     }
 
     @Transactional
