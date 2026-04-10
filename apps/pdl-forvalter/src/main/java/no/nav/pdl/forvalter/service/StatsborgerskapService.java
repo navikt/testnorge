@@ -42,7 +42,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
-                .collectList()
+                .distinct(StatsborgerskapDTO::getLandkode)
                 .then(Mono.just(dbPerson));
     }
 

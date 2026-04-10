@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
@@ -36,6 +37,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.TRUE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO> {
@@ -83,40 +85,40 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
 
                                     if (deltBosted.countAdresser() > 0) {
                                         return prepAdresser(deltBosted)
-                                                .thenReturn(forelder);
+                                                .then(Mono.defer(() -> Mono.just(forelder)))
+                                                .doOnNext(type1 -> log.info("Forelder {} får delt bosted med adresse {}", forelder.getIdent(), deltBosted.getVegadresse()));
+
                                     } else {
                                         if (!forelder.getIdent().equals(hovedperson.getIdent())) {
                                             return Flux.fromIterable(forelder.getBostedsadresse())
                                                     .filter(boadresse -> !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse))
                                                     .doOnNext(boadresse -> setAdresse(deltBosted, boadresse))
-                                                    .then().thenReturn(forelder);
+                                                    .then(Mono.just(forelder));
                                         }
                                         return Mono.just(forelder);
                                     }
                                 })
                                 .collectList()
-                                .flatMap(foreldre -> Flux.fromIterable(foreldre)
-                                        .map(PersonDTO::getForelderBarnRelasjon)
-                                        .flatMap(Flux::fromIterable)
-                                        .filter(ForelderBarnRelasjonDTO::isForeldre)
-                                        .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
-                                        .collect(Collectors.toSet())
-                                        .flatMapMany(barna ->
-                                                personRepository.findByIdentIn(barna, Pageable.unpaged())
-                                                        .map(DbPerson::getPerson)
-                                                        .filter(person -> person.getForelderBarnRelasjon().stream()
-                                                                .anyMatch(forelder ->
-                                                                        forelder.getIdentForRelasjon().equals(foreldre.getFirst().getIdent()) ||
-                                                                        forelder.getIdentForRelasjon().equals(foreldre.get(1).getIdent())))
-                                                        .doOnNext(person -> {
-                                                            deltBosted.setId(person.getDeltBosted().size() + 1);
-                                                            person.getDeltBosted()
-                                                                    .addFirst(mapperFacade.map(deltBosted, DeltBostedDTO.class));
-                                                        })
-                                        )
-                                        .collectList()
-                                        .then()
-                                );
+                                .flatMap(foreldre ->
+                                        Flux.fromIterable(foreldre)
+                                                .map(PersonDTO::getForelderBarnRelasjon)
+                                                .flatMap(Flux::fromIterable)
+                                                .filter(ForelderBarnRelasjonDTO::isForeldre)
+                                                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
+                                                .collect(Collectors.toSet())
+                                                .flatMapMany(barna ->
+                                                        personRepository.findByIdentIn(barna, Pageable.unpaged())
+                                                                .filter(dbPerson -> dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                                                                        .anyMatch(forelder ->
+                                                                                forelder.getIdentForRelasjon().equals(foreldre.getFirst().getIdent()) ||
+                                                                                forelder.getIdentForRelasjon().equals(foreldre.get(1).getIdent())))
+                                                                .doOnNext(dbPerson -> {
+                                                                    deltBosted.setId(dbPerson.getPerson().getDeltBosted().size() + 1);
+                                                                    dbPerson.getPerson().getDeltBosted()
+                                                                            .addFirst(mapperFacade.map(deltBosted, DeltBostedDTO.class));
+                                                                })
+                                                                .flatMap(personRepository::save))
+                                                .then());
 
                     } else {
                         // DeltBosted for barn, settes på barnet
@@ -132,19 +134,15 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                                                         .filter(ForelderBarnRelasjonDTO::isBarn)
                                                         .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                                                         .toList(), Pageable.unpaged())
-                                                .map(DbPerson::getPerson)
-                                                .map(PersonDTO::getBostedsadresse)
-                                                .flatMap(Flux::fromIterable)
-                                                .collectList()
-                                                .flatMapMany(Flux::fromIterable)
-                                                .doOnNext(boadresse -> {
-                                                    if (!hovedperson.getBostedsadresse().isEmpty() &&
-                                                        !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse)) {
+                                                .doOnNext(dbPerson ->
+                                                        dbPerson.getPerson().getBostedsadresse().forEach(boadresse -> {
+                                                            if (!hovedperson.getBostedsadresse().isEmpty() &&
+                                                                !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse)) {
 
-                                                        setAdresse(deltBosted, boadresse);
-                                                    }
-                                                })
-                                                .collectList()
+                                                                setAdresse(deltBosted, boadresse);
+                                                            }
+                                                        }))
+                                                .flatMap(personRepository::save)
                                                 .then();
                                     }
                                 });

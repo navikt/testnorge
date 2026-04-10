@@ -202,8 +202,8 @@ public class ArtifactUpdateService {
 
         return getPerson(ident)
                 .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted")
-                        .doOnNext(deltebosteder -> dbPerson.getPerson().setDeltBosted(deltebosteder))
-                        .then(deltBostedService.prepAdresser(oppdatertDeltBosted).then(Mono.just(dbPerson))))
+                        .then(deltBostedService.validate(oppdatertDeltBosted, dbPerson.getPerson()).then(Mono.just(dbPerson))))
+                .flatMap(dbPerson -> deltBostedService.handle(oppdatertDeltBosted, dbPerson.getPerson()).then(Mono.just(dbPerson)))
                 .flatMap(this::savePerson);
     }
 
