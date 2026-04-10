@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
 	calculateProgress,
+	filterImportSubSteps,
 	getExpectedFagsystemer,
 	mergeStatusWithExpected,
+	sortFagsystemer,
 } from '@/components/bestilling/statusListe/BestillingProgresjon/fagsystemUtils'
 
 describe('calculateProgress', () => {
@@ -365,5 +367,67 @@ describe('mergeStatusWithExpected', () => {
 		const result = mergeStatusWithExpected(actual, [])
 
 		expect(result).toStrictEqual(actual)
+	})
+})
+
+describe('filterImportSubSteps', () => {
+	it('should remove PDL sub-steps when PDLIMPORT is present', () => {
+		const statusList = [
+			{ id: 'PDLIMPORT', navn: 'Import av personer (TESTNORGE)', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_FORVALTER', navn: 'Opprett persondetaljer', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_ORDRE', navn: 'Ordre til PDL', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_PERSONSTATUS', navn: 'Person finnes i PDL', statuser: [{ melding: 'OK' }] },
+			{ id: 'AAREG', navn: 'Arbeidsregister (AAREG)', statuser: [{ melding: 'OK' }] },
+		]
+		const result = filterImportSubSteps(statusList)
+
+		expect(result).toHaveLength(2)
+		expect(result.map((s) => s.id)).toEqual(['PDLIMPORT', 'AAREG'])
+	})
+
+	it('should not filter anything when PDLIMPORT is not present', () => {
+		const statusList = [
+			{ id: 'PDL_FORVALTER', navn: 'Opprett persondetaljer', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_ORDRE', navn: 'Ordre til PDL', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_PERSONSTATUS', navn: 'Person finnes i PDL', statuser: [{ melding: 'OK' }] },
+			{ id: 'AAREG', navn: 'Arbeidsregister (AAREG)', statuser: [{ melding: 'OK' }] },
+		]
+		const result = filterImportSubSteps(statusList)
+
+		expect(result).toHaveLength(4)
+	})
+
+	it('should return empty list when given empty input', () => {
+		expect(filterImportSubSteps([])).toEqual([])
+	})
+})
+
+describe('sortFagsystemer', () => {
+	it('should filter import sub-steps when sorting', () => {
+		const statusList = [
+			{ id: 'AAREG', navn: 'Arbeidsregister (AAREG)', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDLIMPORT', navn: 'Import av personer (TESTNORGE)', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_FORVALTER', navn: 'Opprett persondetaljer', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_ORDRE', navn: 'Ordre til PDL', statuser: [{ melding: 'OK' }] },
+		]
+		const result = sortFagsystemer(statusList)
+
+		expect(result).toHaveLength(2)
+		expect(result[0].id).toBe('PDLIMPORT')
+		expect(result[1].id).toBe('AAREG')
+	})
+
+	it('should pin PDL entries first for non-import bestillinger', () => {
+		const statusList = [
+			{ id: 'AAREG', navn: 'Arbeidsregister (AAREG)', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_FORVALTER', navn: 'Opprett persondetaljer', statuser: [{ melding: 'OK' }] },
+			{ id: 'PDL_ORDRE', navn: 'Ordre til PDL', statuser: [{ melding: 'OK' }] },
+		]
+		const result = sortFagsystemer(statusList)
+
+		expect(result).toHaveLength(3)
+		expect(result[0].id).toBe('PDL_FORVALTER')
+		expect(result[1].id).toBe('PDL_ORDRE')
+		expect(result[2].id).toBe('AAREG')
 	})
 })

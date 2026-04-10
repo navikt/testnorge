@@ -144,6 +144,7 @@ public class OrganisasjonBestillingController {
 
                     var updates = bestillingEventPublisher.subscribeOrg(bestillingId)
                             .concatMap(id -> bestillingService.fetchBestillingSnapshot(bestillingId)
+                                    .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> {
                                         log.warn("Feil ved henting av org-bestilling-status for {}: {}", bestillingId, e.getMessage());
                                         return Mono.empty();
@@ -152,6 +153,7 @@ public class OrganisasjonBestillingController {
 
                     var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
                             .concatMap(tick -> bestillingService.fetchBestillingSnapshot(bestillingId)
+                                    .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> Mono.empty()))
                             .map(this::toOrgSse);
 

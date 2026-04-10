@@ -98,9 +98,18 @@ export const getExpectedFagsystemer = (bestillingRequest: any) => {
 
 const PINNED_IDS = new Set(['PDLIMPORT', 'PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
 
+const IMPORT_HIDDEN_IDS = new Set(['PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
+
+export const filterImportSubSteps = (statusList: any[]) => {
+	const isImport = statusList.some((s) => s.id === 'PDLIMPORT')
+	if (!isImport) return statusList
+	return statusList.filter((s) => !IMPORT_HIDDEN_IDS.has(s.id))
+}
+
 export const sortFagsystemer = (list: any[]) => {
-	const pinned = list.filter((s) => PINNED_IDS.has(s.id))
-	const rest = list.filter((s) => !PINNED_IDS.has(s.id))
+	const filtered = filterImportSubSteps(list)
+	const pinned = filtered.filter((s) => PINNED_IDS.has(s.id))
+	const rest = filtered.filter((s) => !PINNED_IDS.has(s.id))
 	rest.sort((a, b) => (a.navn || '').localeCompare(b.navn || '', 'nb'))
 	return [...pinned, ...rest]
 }

@@ -156,6 +156,7 @@ public class BestillingController {
                     var updates = bestillingEventPublisher.subscribe(bestillingId)
                             .concatMap(id -> bestillingService.fetchBestillingById(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
+                                    .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> {
                                         log.warn("Feil ved henting av bestilling-status for {}: {}", bestillingId, e.getMessage());
                                         return Mono.empty();
@@ -165,6 +166,7 @@ public class BestillingController {
                     var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
                             .concatMap(tick -> bestillingService.fetchBestillingById(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
+                                    .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> Mono.empty()))
                             .map(this::toBestillingSse);
 

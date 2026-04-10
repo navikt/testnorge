@@ -21,11 +21,15 @@ export const useBestillingStream = (
 		setSseFailed(true)
 	}, [])
 
-	const { data: sseData, isConnected, isComplete } = useEventSource<Bestilling>(
-		url,
-		['progress', 'completed'],
-		{ onError: handleError, completeOnEvent: 'completed' },
-	)
+	const {
+		data: sseData,
+		isConnected,
+		isComplete,
+	} = useEventSource<Bestilling>(url, ['progress', 'completed'], {
+		onError: handleError,
+		completeOnEvent: 'completed',
+		staleTimeoutMs: 10_000,
+	})
 
 	const pollingId = sseFailed ? bestillingId : 0
 	const { bestilling: polledBestilling, loading: pollingLoading } = useBestillingById(

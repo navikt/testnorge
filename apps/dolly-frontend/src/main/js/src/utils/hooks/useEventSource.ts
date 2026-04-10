@@ -7,6 +7,7 @@ interface EventSourceOptions {
 	onComplete?: () => void
 	maxRetries?: number
 	completeOnEvent?: string
+	staleTimeoutMs?: number
 }
 
 interface EventSourceResult<T> {
@@ -29,15 +30,27 @@ export const useEventSource = <T>(
 	const eventSourceRef = useRef<EventSource | null>(null)
 	const retryCountRef = useRef(0)
 	const completedRef = useRef(false)
+	const staleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const reconnectCountRef = useRef(0)
 	const maxRetries = options?.maxRetries ?? 3
+	const staleTimeoutMs = options?.staleTimeoutMs ?? 0
+	const maxReconnects = 10
+
+	const clearStaleTimer = useCallback(() => {
+		if (staleTimerRef.current) {
+			clearTimeout(staleTimerRef.current)
+			staleTimerRef.current = null
+		}
+	}, [])
 
 	const close = useCallback(() => {
+		clearStaleTimer()
 		if (eventSourceRef.current) {
 			eventSourceRef.current.close()
 			eventSourceRef.current = null
 			setIsConnected(false)
 		}
-	}, [])
+	}, [clearStaleTimer])
 
 	useEffect(() => {
 		if (!url) {
@@ -47,66 +60,104 @@ export const useEventSource = <T>(
 
 		retryCountRef.current = 0
 		completedRef.current = false
+		reconnectCountRef.current = 0
 		setData(null)
 		setError(null)
 		setIsComplete(false)
 
-		const eventSource = new EventSource(url, {
-			withCredentials: options?.withCredentials ?? true,
-		})
-		eventSourceRef.current = eventSource
+		const connect = () => {
+			clearStaleTimer()
+			if (eventSourceRef.current) {
+				eventSourceRef.current.close()
+				eventSourceRef.current = null
+			}
 
-		eventSource.onopen = () => {
-			retryCountRef.current = 0
-			setIsConnected(true)
-			setError(null)
-			options?.onOpen?.()
-		}
+			const eventSource = new EventSource(url, {
+				withCredentials: options?.withCredentials ?? true,
+			})
+			eventSourceRef.current = eventSource
 
-		eventTypes.forEach((eventType) => {
-			eventSource.addEventListener(eventType, (event: MessageEvent) => {
-				try {
-					const parsed = JSON.parse(event.data) as T
-					setData(parsed)
+			const resetStaleTimer = () => {
+				clearStaleTimer()
+				if (staleTimeoutMs > 0 && !completedRef.current) {
+					staleTimerRef.current = setTimeout(() => {
+						if (completedRef.current) return
+						reconnectCountRef.current += 1
+						if (reconnectCountRef.current > maxReconnects) {
+							eventSource.close()
+							eventSourceRef.current = null
+							setIsConnected(false)
+							setError(new Error('SSE-tilkobling mistet etter flere reconnects'))
+							options?.onError?.(new Event('stale'))
+							return
+						}
+						connect()
+					}, staleTimeoutMs)
+				}
+			}
 
-					if (options?.completeOnEvent && eventType === options.completeOnEvent) {
-						completedRef.current = true
-						setIsComplete(true)
-						setIsConnected(false)
+			eventSource.onopen = () => {
+				retryCountRef.current = 0
+				setIsConnected(true)
+				setError(null)
+				resetStaleTimer()
+				options?.onOpen?.()
+			}
+
+			eventTypes.forEach((eventType) => {
+				eventSource.addEventListener(eventType, (event: MessageEvent) => {
+					try {
+						const parsed = JSON.parse(event.data) as T
+						setData(parsed)
+						reconnectCountRef.current = 0
+						resetStaleTimer()
+
+						if (options?.completeOnEvent && eventType === options.completeOnEvent) {
+							completedRef.current = true
+							clearStaleTimer()
+							setIsComplete(true)
+							setIsConnected(false)
+							eventSource.close()
+							eventSourceRef.current = null
+							options?.onComplete?.()
+						}
+					} catch (parseError) {
+						setError(new Error(`Kunne ikke parse SSE-data: ${event.data}`))
+					}
+				})
+			})
+
+			eventSource.onerror = (event) => {
+				if (completedRef.current) {
+					return
+				}
+
+				if (eventSource.readyState === EventSource.CLOSED) {
+					setIsConnected(false)
+					setError(new Error('SSE-tilkobling lukket'))
+					options?.onError?.(event)
+				} else if (eventSource.readyState === EventSource.CONNECTING) {
+					retryCountRef.current += 1
+					setIsConnected(false)
+					if (retryCountRef.current >= maxRetries) {
 						eventSource.close()
 						eventSourceRef.current = null
-						options?.onComplete?.()
+						clearStaleTimer()
+						setError(new Error('SSE-tilkobling feilet etter flere forsøk'))
+						options?.onError?.(event)
 					}
-				} catch (parseError) {
-					setError(new Error(`Kunne ikke parse SSE-data: ${event.data}`))
-				}
-			})
-		})
-
-		eventSource.onerror = (event) => {
-			if (completedRef.current) {
-				return
-			}
-
-			if (eventSource.readyState === EventSource.CLOSED) {
-				setIsConnected(false)
-				setError(new Error('SSE-tilkobling lukket'))
-				options?.onError?.(event)
-			} else if (eventSource.readyState === EventSource.CONNECTING) {
-				retryCountRef.current += 1
-				setIsConnected(false)
-				if (retryCountRef.current >= maxRetries) {
-					eventSource.close()
-					eventSourceRef.current = null
-					setError(new Error('SSE-tilkobling feilet etter flere forsøk'))
-					options?.onError?.(event)
 				}
 			}
 		}
 
+		connect()
+
 		return () => {
-			eventSource.close()
-			eventSourceRef.current = null
+			clearStaleTimer()
+			if (eventSourceRef.current) {
+				eventSourceRef.current.close()
+				eventSourceRef.current = null
+			}
 			setIsConnected(false)
 		}
 	}, [url])
