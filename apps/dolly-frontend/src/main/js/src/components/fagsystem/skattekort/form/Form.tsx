@@ -63,11 +63,6 @@ export const SkattekortForm = () => {
 	}
 
 	const isResultatOK = (index: number): boolean => {
-		const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[index]?.arbeidstaker?.[0]
-		return arbeidstaker?.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
-	}
-
-	const showForskuddstrekk = (index: number): boolean => {
 		const gyldigeResultater = [
 			'SKATTEKORTOPPLYSNINGER_OK',
 			'UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT',
@@ -167,7 +162,7 @@ export const SkattekortForm = () => {
 									isMulti={true}
 									onBlur={() => onBlurTillegsinformasjon(path, index)}
 								/>
-								{showForskuddstrekk(index) && !isTilleggsopplysning(index) && (
+								{isResultatOK(index) && !isTilleggsopplysning(index) && (
 									<ForskuddstrekkForm
 										formMethods={formMethods}
 										path={`${path}.arbeidstaker[0].skattekort`}
