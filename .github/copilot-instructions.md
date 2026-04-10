@@ -29,10 +29,10 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 
 ## JS / React / TS:
 
-- Javascript: Match the versions already configured in the touched module; in this repo that is typically React 19, TypeScript 5, React Router, React Hook Form, useSWR, and Styled Components.
+- JavaScript: Match the versions already configured in the touched module; in this repo that is typically React 19, TypeScript 5, React Router, React Hook Form, useSWR, and Styled Components.
 - Functional components,
   hooks unless otherwise specified.
-- Javascript tests: MSW, React Testing Library, Vitest, Playwright for e2e.
+- JavaScript tests: MSW, React Testing Library, Vitest, Playwright for e2e.
 - TypeScript interfaces should be explicit for props
 - Functional components, hooks only.
 - Components should be:
