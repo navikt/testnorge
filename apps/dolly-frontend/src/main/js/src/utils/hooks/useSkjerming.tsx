@@ -6,8 +6,8 @@ const skjermingUrl = '/testnav-dolly-proxy/skjermingsregister/api/v1/skjerming/d
 
 export const useSkjerming = (ident: string) => {
 	const { data, isLoading, error, mutate } = useSWR<any, Error>(
-		ident?.length > 0 ? [skjermingUrl, { personident: ident }] : null,
-		([url, params]) => fetcher(url, params),
+		ident?.length > 0 ? `${skjermingUrl}?personident=${ident}` : null,
+		() => fetcher(skjermingUrl, { personident: ident }),
 	)
 
 	return {
