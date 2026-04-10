@@ -22,3 +22,7 @@ opensearch:
 springdoc:
   swagger-ui:
     path: /swagger
+    
+server:
+  error:
+    include-stacktrace: always
