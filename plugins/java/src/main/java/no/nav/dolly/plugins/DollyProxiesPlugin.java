@@ -11,6 +11,7 @@ import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
+import org.gradle.plugins.ide.idea.model.IdeaModel;
 
 import java.util.HashMap;
 
@@ -35,6 +36,10 @@ public class DollyProxiesPlugin implements Plugin<Project> {
         plugins.apply("org.springframework.boot");
 
         project.setGroup("no.nav.testnav.proxies");
+
+        var idea = project.getExtensions().getByType(IdeaModel.class);
+        idea.getModule().setDownloadJavadoc(true);
+        idea.getModule().setDownloadSources(true);
 
         var java = project.getExtensions().getByType(JavaPluginExtension.class);
         java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(21));

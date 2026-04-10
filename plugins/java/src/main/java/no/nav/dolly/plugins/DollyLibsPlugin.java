@@ -8,6 +8,7 @@ import org.gradle.api.plugins.JavaLibraryPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
+import org.gradle.plugins.ide.idea.model.IdeaModel;
 
 @SuppressWarnings("unused")
 public class DollyLibsPlugin implements Plugin<Project> {
@@ -28,6 +29,10 @@ public class DollyLibsPlugin implements Plugin<Project> {
         plugins.apply(JavaLibraryPlugin.class);
 
         project.setGroup("no.nav.testnav.libs");
+
+        var idea = project.getExtensions().getByType(IdeaModel.class);
+        idea.getModule().setDownloadJavadoc(true);
+        idea.getModule().setDownloadSources(true);
 
         var java = project.getExtensions().getByType(JavaPluginExtension.class);
         java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(21));
