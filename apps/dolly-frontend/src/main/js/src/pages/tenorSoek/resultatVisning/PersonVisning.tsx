@@ -11,6 +11,7 @@ import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/Import
 import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning/TjenestepensjonsavtaleVisning'
 import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/SkattemeldingVisning'
 import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
+import { BeregnetSkattVisning } from '@/pages/tenorSoek/resultatVisning/BeregnetSkattVisning'
 
 type PersonVisningProps = {
 	person: any
@@ -83,6 +84,7 @@ export const PersonVisning = ({
 					data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
 				/>
 				<SkattemeldingVisning data={personData?.tenorRelasjoner?.skattemelding} />
+				<BeregnetSkattVisning data={personData?.tenorRelasjoner?.beregnetSkatt} />
 				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
 				<OrganisasjonArbeidsforholdVisning data={personData?.tenorRelasjoner?.arbeidsforhold} />
 			</Box>
