@@ -332,11 +332,8 @@ export default (props: PersonVisningProps) => {
 
 	const { skjerming: skjermingData } = useSkjerming(ident.ident)
 
-	const getGruppeIdenter = () => {
-		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
-	}
-
-	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person: any) => person.ident)
+	const gruppeIdenterAsync = useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
+	const gruppeIdenter = gruppeIdenterAsync.value?.data?.identer?.map((person: any) => person.ident)
 
 	const navigate = useNavigate()
 
