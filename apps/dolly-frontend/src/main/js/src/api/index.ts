@@ -155,9 +155,6 @@ export const fetcher = (url, headers?, timeout = 10000) =>
 			return res.data
 		})
 		.catch((reason) => {
-			if (reason.response?.status === 404) {
-				return null
-			}
 			if (reason.response?.status === 401 || reason.response?.status === 403) {
 				if (logoutOnForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')

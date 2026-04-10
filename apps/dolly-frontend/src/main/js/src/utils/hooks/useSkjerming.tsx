@@ -8,10 +8,13 @@ export const useSkjerming = (ident: string) => {
 	const { data, isLoading, error, mutate } = useSWR<any, Error>(
 		ident?.length > 0 ? `${skjermingUrl}?personident=${ident}` : null,
 		() => fetcher(skjermingUrl, { personident: ident }),
+		{ errorRetryCount: 0, revalidateOnFocus: false },
 	)
 
+	const isErrorResponse = data && (data.status === 404 || data.error)
+
 	return {
-		skjerming: data,
+		skjerming: isErrorResponse ? null : data,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,
