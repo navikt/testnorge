@@ -44,7 +44,7 @@ spring:
       include-source-in-location: true
   http:
     codecs:
-      max-in-memory-size: 10MB
+      max-in-memory-size: 50MB
 
 springdoc:
   swagger-ui:

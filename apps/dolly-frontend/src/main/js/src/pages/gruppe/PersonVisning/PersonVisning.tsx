@@ -511,7 +511,8 @@ export default (props: PersonVisningProps) => {
 		loadingArbeidssoekerregisteret ||
 		loadingArbeidsplassencvData ||
 		loadingArenaData ||
-		loadingApData
+		loadingApData ||
+		loadingSkattekort
 
 	const timedOutFagsystemer = useTimedOutFagsystemer({
 		data,
@@ -568,6 +569,9 @@ export default (props: PersonVisningProps) => {
 								}
 								if (apData) {
 									personData.alderspensjon = apData
+								}
+								if (skattekortData) {
+									personData.skattekort = skattekortData
 								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
