@@ -30,9 +30,9 @@ public class DollyLibsPlugin implements Plugin<Project> {
 
         project.setGroup("no.nav.testnav.libs");
 
-        var idea = project.getExtensions().getByType(IdeaModel.class);
-        idea.getModule().setDownloadJavadoc(true);
-        idea.getModule().setDownloadSources(true);
+        var idea = project.getExtensions().getByType(IdeaModel.class).getModule();
+        idea.setDownloadJavadoc(true);
+        idea.setDownloadSources(true);
 
         var java = project.getExtensions().getByType(JavaPluginExtension.class);
         java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(21));
