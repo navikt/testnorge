@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
@@ -117,7 +117,6 @@ import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/s
 import { useNomData } from '@/utils/hooks/useNom'
 import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
-import { useSkjerming } from '@/utils/hooks/useSkjerming'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 const getIdenttype = (ident: string) => {
@@ -330,7 +329,7 @@ export default (props: PersonVisningProps) => {
 
 	const { nomData, loading: loadingNom } = useNomData(ident.ident)
 
-	const { skjerming: skjermingData } = useSkjerming(ident.ident)
+	const skjermingRef = useRef<any>(null)
 
 	const gruppeIdenterAsync = useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	const gruppeIdenter = gruppeIdenterAsync.value?.data?.identer?.map((person: any) => person.ident)
@@ -549,8 +548,8 @@ export default (props: PersonVisningProps) => {
 								if (pdlforvalterPerson) {
 									personData.pdlforvalter = pdlforvalterPerson
 								}
-								if (skjermingData) {
-									personData.skjermingsregister = skjermingData
+								if (skjermingRef.current) {
+									personData.skjermingsregister = skjermingRef.current
 								}
 								if (nomData) {
 									personData.nomdata = nomData
@@ -627,7 +626,16 @@ export default (props: PersonVisningProps) => {
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
-				<NavAnsattVisning nomData={nomData} nomLoading={loadingNom} ident={ident.ident} />
+				<ErrorBoundary>
+					<NavAnsattVisning
+						nomData={nomData}
+						nomLoading={loadingNom}
+						ident={ident.ident}
+						onSkjermingData={(data) => {
+							skjermingRef.current = data
+						}}
+					/>
+				</ErrorBoundary>
 				{visArbeidsforhold && (
 					<AaregVisning
 						liste={arbeidsforhold}
