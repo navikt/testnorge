@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.sykemelding;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +87,7 @@ public class SykemeldingClient implements ClientRegister {
     }
 
     private Mono<SykemeldingResponseDTO> postNySykemelding(RsSykemelding.RsNySykemelding rsNySykemelding,
-                                                             String ident) {
+                                                           String ident) {
 
         var aktivitet = rsNySykemelding.getAktivitet().stream()
                 .map(a -> SykemeldingRequestDTO.Aktivitet.builder()

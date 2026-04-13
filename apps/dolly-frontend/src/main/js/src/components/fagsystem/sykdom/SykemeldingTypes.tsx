@@ -4,8 +4,13 @@ export interface SykemeldingForm {
 	formMethods: UseFormReturn
 }
 
+export type SykemeldingMiljoData = {
+	miljo: string
+	data?: unknown
+}
+
 export type Sykemelding = {
-	data: Array<any>
+	data: Array<SykemeldingMiljoData>
 	ident: any
 	loading: boolean
 	bestillingIdListe: any
