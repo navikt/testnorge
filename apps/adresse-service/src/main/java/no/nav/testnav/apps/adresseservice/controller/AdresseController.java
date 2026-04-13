@@ -33,7 +33,7 @@ public class AdresseController {
 
     @GetMapping(value = "/vegadresse")
     @Operation(description = "Henter tilfeldige vegadresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig vegadresse")
-    public Flux<VegadresseDTO> getVegadresse(@RequestParam(required = false) String matrikkelId,
+    public Flux<VegadresseDTO> getVegadresse(@RequestParam(required = false) Long matrikkelId,
                                                    @RequestParam(required = false) String adressenavn,
                                                    @RequestParam(required = false) String husnummer,
                                                    @RequestParam(required = false) String husbokstav,
@@ -73,7 +73,7 @@ public class AdresseController {
 
     @GetMapping(value = "/matrikkeladresse")
     @Operation(description = "Henter tilfeldige matrikkeladresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig matrikkeladresse")
-    public Flux<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) String matrikkelId,
+    public Flux<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) Long matrikkelId,
                                                                @RequestParam(required = false) String kommunenummer,
                                                                @RequestParam(required = false) String gaardsnummer,
                                                                @RequestParam(required = false) String bruksnummer,
