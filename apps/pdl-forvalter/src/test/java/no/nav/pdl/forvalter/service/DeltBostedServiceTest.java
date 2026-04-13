@@ -20,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -107,7 +106,7 @@ class DeltBostedServiceTest {
 
         var deltBosted = DeltBostedDTO.builder().isNew(true).build();
 
-        when(personRepository.findByIdentIn(anyList(), any(Pageable.class)))
+        when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .thenReturn(Flux.just(
                         buildDbPerson(FORELDER1_IDENT, buildVoksenPerson(FORELDER1_IDENT, List.of())),
                         buildDbPerson(FORELDER2_IDENT, buildVoksenPerson(FORELDER2_IDENT, List.of()))));
@@ -127,7 +126,7 @@ class DeltBostedServiceTest {
 
         var deltBosted = DeltBostedDTO.builder().isNew(true).build();
 
-        when(personRepository.findByIdentIn(anyList(), any(Pageable.class)))
+        when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .thenReturn(Flux.just(
                         buildDbPerson(FORELDER1_IDENT, buildVoksenPerson(FORELDER1_IDENT, List.of())),
                         buildDbPerson(FORELDER2_IDENT, buildVoksenPerson(FORELDER2_IDENT, List.of()))));
@@ -184,7 +183,7 @@ class DeltBostedServiceTest {
 
         var deltBosted = DeltBostedDTO.builder().isNew(true).build();
 
-        when(personRepository.findByIdentIn(anyList(), any(Pageable.class)))
+        when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .thenReturn(Flux.just(
                         buildDbPerson(FORELDER1_IDENT, buildVoksenPerson(FORELDER1_IDENT, List.of())),
                         buildDbPerson(FORELDER2_IDENT, buildVoksenPerson(FORELDER2_IDENT, List.of()))));
@@ -216,7 +215,7 @@ class DeltBostedServiceTest {
                 .isNew(true)
                 .build();
 
-        when(personRepository.findByIdentIn(anyList(), any(Pageable.class)))
+        when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .thenReturn(Flux.just(
                         buildDbPerson(FORELDER1_IDENT, buildVoksenPerson(FORELDER1_IDENT, List.of())),
                         buildDbPerson(FORELDER2_IDENT, buildVoksenPerson(FORELDER2_IDENT, List.of()))));
@@ -252,7 +251,7 @@ class DeltBostedServiceTest {
                         BostedadresseDTO.builder().vegadresse(sharedVegadresse).id(2).build())))
                 .build();
 
-        when(personRepository.findByIdentIn(anyList(), any(Pageable.class)))
+        when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .thenReturn(Flux.just(buildDbPerson(FORELDER1_IDENT, forelder1Person)));
 
         StepVerifier.create(deltBostedService.validate(deltBosted, person))
@@ -346,7 +345,7 @@ class DeltBostedServiceTest {
 
         StepVerifier.create(deltBostedService.convert(dbPerson))
                 .assertNext(result ->
-                        verify(personRepository, never()).findByIdentIn(anyList(), any(Pageable.class)))
+                        verify(personRepository, never()).findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .verifyComplete();
     }
 

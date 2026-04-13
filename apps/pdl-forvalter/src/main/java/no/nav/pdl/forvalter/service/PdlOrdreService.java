@@ -40,7 +40,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -408,9 +407,10 @@ public class PdlOrdreService {
         return Mono.defer(() -> {
                     if (!oppretting.getPerson().getPerson().getVergemaal().isEmpty()) {
                         return Mono.zip(kodeverkConsumer.getFylkesmannsembeter(),
-                                personRepository.findByIdentIn(oppretting.getPerson().getPerson().getVergemaal().stream()
+                                personRepository.findByIdentInOrderBySistOppdatertDesc(oppretting.getPerson()
+                                                .getPerson().getVergemaal().stream()
                                                 .map(VergemaalDTO::getVergeIdent)
-                                                .toList(), Pageable.unpaged())
+                                                .toList())
                                         .collectList());
                     } else {
                         return Mono.empty();

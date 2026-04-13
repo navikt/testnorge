@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.ArtifactDeleteService;
 import no.nav.pdl.forvalter.service.ArtifactUpdateService;
 import no.nav.pdl.forvalter.service.MetadataTidspunkterService;
@@ -74,16 +73,9 @@ public class PersonController {
     @GetMapping
     @Operation(description = "Hent person(er) med angitt(e) ident(er) eller alle")
     public Flux<FullPersonDTO> getPerson(@Parameter(description = "Ident(er) på personer som skal hentes")
-                                         @RequestParam(required = false) List<String> identer,
-                                         @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
-                                         @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
-                                         @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først, default 10")
-                                         @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
+                                         @RequestParam(required = false) List<String> identer) {
 
-        return personService.getPerson(identer, Paginering.builder()
-                .sidenummer(sidenummer)
-                .sidestoerrelse(sidestorrelse)
-                .build());
+        return personService.getPerson(identer);
     }
 
     @PostMapping

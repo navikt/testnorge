@@ -15,7 +15,6 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
-import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.mapper.MappingContextUtils;
@@ -32,8 +31,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -153,7 +150,7 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public Flux<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
+    public Flux<FullPersonDTO> getPerson(List<String> identer) {
 
         val now = System.currentTimeMillis();
 
@@ -172,10 +169,7 @@ public class PersonService {
                         identerSet.removeAll(identerFraAlias);
                         return identerSet;
                     })
-                    .flatMapMany(query -> personRepository.findByIdentIn(query,
-                            PageRequest.of(paginering.getSidenummer(),
-                                    paginering.getSidestoerrelse(),
-                                    Sort.by(SORT_BY_FIELD).descending())))
+                    .flatMapMany(personRepository::findByIdentInOrderBySistOppdatertDesc)
                     .collectList()
                     .flatMapMany(personer -> relasjonRepository.findByPersonIdIn(personer.stream()
                                     .map(DbPerson::getId)
@@ -197,11 +191,6 @@ public class PersonService {
                                     .map(person -> mapperFacade.map(person, FullPersonDTO.class, context))));
         } else {
             return Flux.empty();
-//            return personRepository.findAll(
-//                            PageRequest.of(paginering.getSidenummer(),
-//                                    paginering.getSidestoerrelse(),
-//                                    Sort.by(SORT_BY_FIELD).descending()))
-//                    .map(person -> mapperFacade.map(person, FullPersonDTO.class)); //TBD
         }
     }
 

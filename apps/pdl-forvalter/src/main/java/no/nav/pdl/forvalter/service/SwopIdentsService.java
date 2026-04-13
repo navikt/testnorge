@@ -21,7 +21,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -204,7 +203,7 @@ public class SwopIdentsService {
 
     public Mono<DbPerson> execute(String ident1, String ident2) {
 
-        return personRepository.findByIdentIn(List.of(ident1, ident2), Pageable.unpaged())
+        return personRepository.findByIdentInOrderBySistOppdatertDesc(List.of(ident1, ident2))
                 .collectList()
                 .flatMap(personer -> Mono.zip(
                         Mono.justOrEmpty(personer.stream()

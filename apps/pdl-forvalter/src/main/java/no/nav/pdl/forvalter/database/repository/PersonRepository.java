@@ -21,9 +21,7 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
     Mono<DbPerson> save(DbPerson person);
     Flux<DbPerson> saveAll(Collection<DbPerson> persons);
 
-    Flux<DbPerson> findByIdentIn(Collection<String> identer, Pageable pageable);
-
-//    Flux<DbPerson> findAll(Pageable pageable);
+    Flux<DbPerson> findByIdentInOrderBySistOppdatertDesc(Collection<String> idents);
 
     Mono<DbPerson> findById(Long id);
     Flux<DbPerson> findByIdIn(Set<Long> ids);

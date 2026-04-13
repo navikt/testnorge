@@ -19,7 +19,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -107,7 +106,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                                                 .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                                                 .collect(Collectors.toSet())
                                                 .flatMapMany(barna ->
-                                                        personRepository.findByIdentIn(barna, Pageable.unpaged())
+                                                        personRepository.findByIdentInOrderBySistOppdatertDesc(barna)
                                                                 .filter(dbPerson -> dbPerson.getPerson().getForelderBarnRelasjon().stream()
                                                                         .anyMatch(forelder ->
                                                                                 forelder.getIdentForRelasjon().equals(foreldre.getFirst().getIdent()) ||
@@ -130,10 +129,10 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                                                 .then();
 
                                     } else {
-                                        return personRepository.findByIdentIn(hovedperson.getForelderBarnRelasjon().stream()
+                                        return personRepository.findByIdentInOrderBySistOppdatertDesc(hovedperson.getForelderBarnRelasjon().stream()
                                                         .filter(ForelderBarnRelasjonDTO::isBarn)
                                                         .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
-                                                        .toList(), Pageable.unpaged())
+                                                        .toList())
                                                 .doOnNext(dbPerson ->
                                                         dbPerson.getPerson().getBostedsadresse().forEach(boadresse -> {
                                                             if (!hovedperson.getBostedsadresse().isEmpty() &&
@@ -152,12 +151,12 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
 
     private Flux<PersonDTO> getForeldre(PersonDTO person) {
 
-        return personRepository.findByIdentIn(
+        return personRepository.findByIdentInOrderBySistOppdatertDesc(
                         Stream.of(Stream.of(person.getIdent()), person.getSivilstand().stream()
                                         .filter(SivilstandDTO::isGiftOrSamboer)
                                         .map(SivilstandDTO::getRelatertVedSivilstand))
                                 .flatMap(Function.identity())
-                                .toList(), Pageable.unpaged())
+                                .toList())
                 .map(DbPerson::getPerson);
     }
 
@@ -300,7 +299,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
             return Mono.error(new InvalidRequestException(VALIDATION_TO_FORELDRE_ERROR));
         }
 
-        return personRepository.findByIdentIn(foreldre, Pageable.unpaged())
+        return personRepository.findByIdentInOrderBySistOppdatertDesc(foreldre)
                 .map(DbPerson::getPerson)
                 .map(PersonDTO::getBostedsadresse)
                 .flatMap(adresser -> {

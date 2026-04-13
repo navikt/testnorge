@@ -9,7 +9,6 @@ import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.pdl.forvalter.dto.ProdSjekkDTO;
 import no.nav.pdl.forvalter.utils.IdentValidCheck;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,7 +35,7 @@ public class EksistensService {
     public Flux<AvailibilityResponseDTO> checkAvailibility(List<String> identer) {
         var validIdents = IdentValidCheck.isIdentValid(identer);
 
-        return personRepository.findByIdentIn(validIdents, Pageable.unpaged())
+        return personRepository.findByIdentInOrderBySistOppdatertDesc(validIdents)
                 .map(DbPerson::getIdent)
                 .collect(Collectors.toSet())
                 .flatMapMany(existsInDatabase ->
