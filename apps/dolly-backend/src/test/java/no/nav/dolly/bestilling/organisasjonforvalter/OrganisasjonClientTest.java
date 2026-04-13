@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
+import no.nav.dolly.service.BestillingEventPublisher;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +48,9 @@ class OrganisasjonClientTest {
 
     @Mock
     private OrganisasjonBestillingService organisasjonBestillingService;
+
+    @Mock
+    private BestillingEventPublisher bestillingEventPublisher;
 
     @Mock
     private OrganisasjonBestillingProgressRepository organisasjonBestillingProgressRepository;

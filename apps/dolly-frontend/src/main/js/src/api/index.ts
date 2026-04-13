@@ -152,9 +152,6 @@ export const fetcher = (url, headers?, timeout = 10000) =>
 	axios
 		.get(url, { headers: headers, timeout: timeout })
 		.then((res) => {
-			if (res.status === 404) {
-				return null
-			}
 			return res.data
 		})
 		.catch((reason) => {

@@ -2,7 +2,7 @@ import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Bestilling, Inntekt } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
-import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
+import { harGyldigTransaksjonsid } from '@/components/transaksjonid/GyldigeBestillinger'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
@@ -118,7 +118,11 @@ export const InntektsmeldingVisning = ({
 	)
 }
 
-InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {
+InntektsmeldingVisning.filterValues = (
+	bestillinger: Array<Bestilling>,
+	ident: string,
+	allTransaksjonsid?: any[],
+) => {
 	if (!bestillinger) {
 		return false
 	}
@@ -127,7 +131,7 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: s
 		(bestilling: any) =>
 			bestilling.data?.inntektsmelding &&
 			!tomBestilling(bestilling.data?.inntektsmelding.inntekter) &&
-			erGyldig(bestilling.id, 'INNTKMELD', ident),
+			harGyldigTransaksjonsid(bestilling.id, allTransaksjonsid),
 	)
 }
 

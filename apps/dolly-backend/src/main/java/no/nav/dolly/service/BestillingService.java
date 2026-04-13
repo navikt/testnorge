@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
@@ -11,6 +12,7 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -130,6 +132,15 @@ public class BestillingService {
 
         return bestillingRepository.findByGruppeId(gruppeId)
                 .doOnNext(bestilling -> log.info("Bestilling {}", bestilling))
+                .filter(bestilling -> isNotBlank(bestilling.getMiljoer()))
+                .map(Bestilling::getMiljoer)
+                .flatMap(miljoer -> Flux.just(miljoer.split(",")))
+                .collect(toSet());
+    }
+
+    public Mono<Set<String>> fetchBestilteMiljoerByIds(List<Long> bestillingIds) {
+
+        return bestillingRepository.findByIdIn(bestillingIds)
                 .filter(bestilling -> isNotBlank(bestilling.getMiljoer()))
                 .map(Bestilling::getMiljoer)
                 .flatMap(miljoer -> Flux.just(miljoer.split(",")))
@@ -342,7 +353,7 @@ public class BestillingService {
                             .sistOppdatert(now())
                             .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer(), tuple.getT3()))
                             .opprettetFraId(bestillingId)
-                            .bestKriterier("{}")
+                            .bestKriterier(tuple.getT1().getBestKriterier())
                             .bruker(tuple.getT2())
                             .brukerId(tuple.getT2().getId())
                             .build());
@@ -364,12 +375,16 @@ public class BestillingService {
                 .flatMap(testident -> Mono.zip(
                         Mono.just(testident),
                         brukerService.fetchOrCreateBruker(),
-                        miljoerConsumer.getMiljoer()))
+                        miljoerConsumer.getMiljoer(),
+                        identRepository.getBestillingerByIdent(ident)
+                                .map(GruppeBestillingIdent::getBestkriterier)
+                                .collectList()
+                                .map(this::mergeBestKriterier)))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(tuple.getT1().getGruppeId())
                         .ident(ident)
                         .antallIdenter(1)
-                        .bestKriterier("{}")
+                        .bestKriterier(tuple.getT4())
                         .sistOppdatert(now())
                         .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .gjenopprettetFraIdent(ident)
@@ -394,7 +409,11 @@ public class BestillingService {
                         brukerService.fetchOrCreateBruker(),
                         identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                                 .collectList(),
-                        miljoerConsumer.getMiljoer()))
+                        miljoerConsumer.getMiljoer(),
+                        identRepository.getBestillingerFromGruppe(gruppeId)
+                                .map(GruppeBestillingIdent::getBestkriterier)
+                                .collectList()
+                                .map(this::mergeBestKriterier)))
                 .flatMap(tuple -> {
                     if (tuple.getT2().isEmpty()) {
                         return Mono.error(new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId)));
@@ -405,7 +424,7 @@ public class BestillingService {
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
                         .antallIdenter(tuple.getT2().size())
-                        .bestKriterier("{}")
+                        .bestKriterier(tuple.getT4())
                         .sistOppdatert(now())
                         .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .opprettetFraGruppeId(gruppeId)
@@ -678,6 +697,26 @@ public class BestillingService {
 
         return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .collectList();
+    }
+
+    private String mergeBestKriterier(List<String> kriterierList) {
+
+        var merged = objectMapper.createObjectNode();
+        for (var kriterier : kriterierList) {
+            try {
+                var node = objectMapper.readTree(kriterier);
+                if (node instanceof ObjectNode objectNode) {
+                    objectNode.fields().forEachRemaining(entry -> {
+                        if (!merged.has(entry.getKey())) {
+                            merged.set(entry.getKey(), entry.getValue());
+                        }
+                    });
+                }
+            } catch (JsonProcessingException e) {
+                log.warn("Kunne ikke parse bestKriterier: {}", kriterier, e);
+            }
+        }
+        return merged.isEmpty() ? "{}" : merged.toString();
     }
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
