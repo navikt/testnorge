@@ -105,15 +105,8 @@ export type Bestillingsstatus = {
 }
 
 export const useDollyOrganisasjoner = (brukerId?: string) => {
-	if (!brukerId) {
-		return {
-			loading: false,
-			error: 'BrukerId mangler!',
-		}
-	}
-
 	const { data, isLoading, error } = useSWR<Organisasjon[], Error>(
-		getOrganisasjonerUrl(brukerId),
+		brukerId ? getOrganisasjonerUrl(brukerId) : null,
 		fetcher,
 	)
 
@@ -229,14 +222,8 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 }
 
 export const useOrganisasjonBestilling = (brukerId: string) => {
-	if (!brukerId) {
-		return {
-			loading: false,
-			error: 'BrukerId mangler!',
-		}
-	}
 	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
-		getOrganisasjonBestillingerUrl(brukerId),
+		brukerId ? getOrganisasjonBestillingerUrl(brukerId) : null,
 		fetcher,
 	)
 
@@ -287,23 +274,11 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 		?.map((miljoe: { id: string }) => miljoe.id)
 		?.filter((miljoe: string) => !unsupportedEnvironments.includes(miljoe))
 
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
-
-	if (!harAaregBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const miljoer = miljoe ? [miljoe] : filteredEnvironments
+	const miljoer = miljoe ? [miljoe] : filteredEnvironments ?? []
+	const shouldFetch = !!(ident && harAaregBestilling && miljoer.length > 0)
 
 	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
-		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
+		shouldFetch ? [getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }] : null,
 		([urlList, headers]: [ReturnType<typeof getArbeidsforholdUrl>, Record<string, string>]) =>
 			multiFetcherAareg(urlList, headers),
 	)

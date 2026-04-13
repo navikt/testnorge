@@ -22,16 +22,8 @@ const getBatchMiljoerUrl = (bestillingIdListe: Array<string>) =>
 type VisningType = 'personer' | 'liste' | string
 
 export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
-	if (!gruppeId) {
-		return {
-			miljoer: undefined as string[] | undefined,
-			loading: false,
-			error: 'GruppeId mangler!',
-		}
-	}
-
 	const { data, isLoading, error } = useSWR<string[], Error>(
-		getMiljoerForGruppeUrl(gruppeId),
+		gruppeId ? getMiljoerForGruppeUrl(gruppeId) : null,
 		fetcher,
 	)
 
@@ -49,20 +41,12 @@ export const useIkkeFerdigBestillingerGruppe = (
 	sideStoerrelse: number,
 	update?: string,
 ) => {
-	if (!gruppeId) {
-		return {
-			bestillinger: undefined as Bestilling[] | undefined,
-			bestillingerById: undefined as Record<string, Bestilling> | undefined,
-			loading: false,
-			error: 'GruppeId mangler!',
-		}
-	}
-
 	const updateParam = update ? `?update=${update}` : ''
-	const url =
-		visning === 'personer'
+	const url = gruppeId
+		? visning === 'personer'
 			? getIkkeFerdigBestillingerGruppeUrl(gruppeId) + updateParam
 			: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
+		: null
 
 	const { data, isLoading, error } = useSWR<Bestilling[], Error>(url, fetcher)
 
