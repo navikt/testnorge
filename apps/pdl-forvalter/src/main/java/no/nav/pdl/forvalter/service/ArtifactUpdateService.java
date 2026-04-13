@@ -201,10 +201,15 @@ public class ArtifactUpdateService {
     public Mono<Void> updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
 
         return getPerson(ident)
-                .flatMap(dbPerson -> updateArtifact(dbPerson.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted")
-                        .then(deltBostedService.validate(oppdatertDeltBosted, dbPerson.getPerson()).then(Mono.just(dbPerson))))
-                .flatMap(dbPerson -> deltBostedService.handle(oppdatertDeltBosted, dbPerson.getPerson()).then(Mono.just(dbPerson)))
-                .flatMap(this::savePerson);
+                .flatMap(dbPerson -> deltBostedService.validate(oppdatertDeltBosted, dbPerson.getPerson())
+                        .then(Mono.just(dbPerson)))
+                .flatMap(dbPerson -> id == 0 ?
+                        deltBostedService.handle(oppdatertDeltBosted, dbPerson.getPerson()) :
+                        updateArtifact(dbPerson.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted")
+                                .doOnNext(delteBosteder -> dbPerson.getPerson().setDeltBosted(delteBosteder))
+                                .then(deltBostedService.prepAdresser(oppdatertDeltBosted)
+                                        .then(Mono.just(dbPerson))
+                                        .flatMap(this::savePerson)));
     }
 
     public Mono<Void> updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
