@@ -17,9 +17,9 @@ public class VerifyNavnService {
 
     public boolean verifyNavn(NavnDTO navnDTO) {
 
-        var alleAdjektiv = navnDTO.getAdjektiv().split(" ");
-        var alleAdverb = isNotBlank(navnDTO.getAdverb()) ? navnDTO.getAdverb().split(" ") : new String[]{};
-        var alleSubstantiv = navnDTO.getSubstantiv().split(" ");
+        var alleAdjektiv = split(navnDTO.getAdjektiv());
+        var alleAdverb = split(navnDTO.getAdverb());
+        var alleSubstantiv = split(navnDTO.getSubstantiv());
 
         return Arrays.stream(alleAdjektiv).allMatch(adjektiv -> verify(adjektiv, ADJEKTIVER)) &&
                 Arrays.stream(alleAdverb).allMatch(adverb -> verify(adverb, ADVERBER)) &&
@@ -29,5 +29,10 @@ public class VerifyNavnService {
     private static boolean verify(String value, List<String> approvedValues) {
 
         return isNull(value) || approvedValues.stream().anyMatch(validValue -> validValue.equalsIgnoreCase(value));
+    }
+
+    private static String[] split(String value) {
+
+        return isNotBlank(value) ? value.split(" ") : new String[]{};
     }
 }

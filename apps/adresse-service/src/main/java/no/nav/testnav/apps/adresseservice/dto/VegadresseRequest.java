@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class VegadresseRequest {
 
-    private String matrikkelId;
+    private Long matrikkelId;
 
     private String adressenavn;
     private String husnummer;

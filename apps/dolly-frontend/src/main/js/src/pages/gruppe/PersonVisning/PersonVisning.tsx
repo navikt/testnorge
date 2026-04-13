@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
@@ -117,7 +117,6 @@ import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/s
 import { useNomData } from '@/utils/hooks/useNom'
 import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
-import { useSkjerming } from '@/utils/hooks/useSkjerming'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 const getIdenttype = (ident: string) => {
@@ -144,7 +143,7 @@ interface PersonVisningProps {
 	iLaastGruppe: any
 }
 
-export default (props: PersonVisningProps) => {
+const PersonVisning = (props: PersonVisningProps) => {
 	const {
 		fetchDataFraFagsystemer,
 		data,
@@ -296,7 +295,7 @@ export default (props: PersonVisningProps) => {
 		harAfpOffentligBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingSykemeldingData, data: sykemeldingData } = useTransaksjonIdData(
+	const { loading: loadingSykemeldingData, data: sykemeldingData, rawData: sykemeldingRawData } = useTransaksjonIdData(
 		ident.ident,
 		'SYKEMELDING',
 		harSykemeldingBestilling(bestillingerFagsystemer),
@@ -305,6 +304,7 @@ export default (props: PersonVisningProps) => {
 	const sykemeldingBestilling = SykemeldingVisning.filterValues(
 		bestillingListe as any,
 		ident.ident,
+		sykemeldingRawData,
 	) as any
 
 	const { loading: loadingYrkesskadeData, data: yrkesskadeData } = useTransaksjonIdData(
@@ -313,7 +313,7 @@ export default (props: PersonVisningProps) => {
 		harYrkesskaderBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingInntektsmeldingData, data: inntektsmeldingData } = useTransaksjonIdData(
+	const { loading: loadingInntektsmeldingData, data: inntektsmeldingData, rawData: inntektsmeldingRawData } = useTransaksjonIdData(
 		ident.ident,
 		'INNTKMELD',
 		harInntektsmeldingBestilling(bestillingerFagsystemer),
@@ -322,6 +322,7 @@ export default (props: PersonVisningProps) => {
 	const inntektsmeldingBestilling = InntektsmeldingVisning.filterValues(
 		bestillingListe as any,
 		ident.ident,
+		inntektsmeldingRawData,
 	) as any
 
 	const { person: tenorData, loading: loadingTenorData } = useTenorIdent(
@@ -330,15 +331,39 @@ export default (props: PersonVisningProps) => {
 
 	const { nomData, loading: loadingNom } = useNomData(ident.ident)
 
-	const { skjerming: skjermingData } = useSkjerming(ident.ident)
+	const skjermingRef = useRef<any>(null)
 
-	const getGruppeIdenter = () => {
-		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
-	}
-
-	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person: any) => person.ident)
+	const gruppeIdenterAsync = useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
+	const gruppeIdenter = gruppeIdenterAsync.value?.data?.identer?.map((person: any) => person.ident)
 
 	const navigate = useNavigate()
+
+	const timedOutFagsystemer = useTimedOutFagsystemer({
+		data,
+		ident,
+		arbeidsforhold,
+		poppData,
+		tpDataForhold,
+		apData,
+		uforetrygdData,
+		brregstub: data?.brregstub,
+		instData,
+		sykemeldingData,
+		sykemeldingBestilling,
+		yrkesskadeData,
+		arbeidsplassencvData,
+		arbeidsplassencvError,
+		dokarkivData,
+		dokarkivError,
+		histarkData,
+		histarkError,
+		udistub,
+		udistubError,
+		medl,
+		medlError,
+		loadingAareg,
+		aaregError,
+	})
 
 	if (!data) {
 		return null
@@ -511,34 +536,8 @@ export default (props: PersonVisningProps) => {
 		loadingArbeidssoekerregisteret ||
 		loadingArbeidsplassencvData ||
 		loadingArenaData ||
-		loadingApData
-
-	const timedOutFagsystemer = useTimedOutFagsystemer({
-		data,
-		ident,
-		arbeidsforhold,
-		poppData,
-		tpDataForhold,
-		apData,
-		uforetrygdData,
-		brregstub,
-		instData,
-		sykemeldingData,
-		sykemeldingBestilling,
-		yrkesskadeData,
-		arbeidsplassencvData,
-		arbeidsplassencvError,
-		dokarkivData,
-		dokarkivError,
-		histarkData,
-		histarkError,
-		udistub,
-		udistubError,
-		medl,
-		medlError,
-		loadingAareg,
-		aaregError,
-	})
+		loadingApData ||
+		loadingSkattekort
 
 	return (
 		<ErrorBoundary>
@@ -551,8 +550,8 @@ export default (props: PersonVisningProps) => {
 								if (pdlforvalterPerson) {
 									personData.pdlforvalter = pdlforvalterPerson
 								}
-								if (skjermingData) {
-									personData.skjermingsregister = skjermingData
+								if (skjermingRef.current) {
+									personData.skjermingsregister = skjermingRef.current
 								}
 								if (nomData) {
 									personData.nomdata = nomData
@@ -568,6 +567,9 @@ export default (props: PersonVisningProps) => {
 								}
 								if (apData) {
 									personData.alderspensjon = apData
+								}
+								if (skattekortData) {
+									personData.skattekort = skattekortData
 								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
@@ -626,7 +628,16 @@ export default (props: PersonVisningProps) => {
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
-				<NavAnsattVisning nomData={nomData} nomLoading={loadingNom} ident={ident.ident} />
+				<ErrorBoundary>
+					<NavAnsattVisning
+						nomData={nomData}
+						nomLoading={loadingNom}
+						ident={ident.ident}
+						onSkjermingData={(data) => {
+							skjermingRef.current = data
+						}}
+					/>
+				</ErrorBoundary>
 				{visArbeidsforhold && (
 					<AaregVisning
 						liste={arbeidsforhold}
@@ -777,3 +788,5 @@ export default (props: PersonVisningProps) => {
 		</ErrorBoundary>
 	)
 }
+
+export default PersonVisning

@@ -37,6 +37,7 @@ type TextInputProps = {
 	'data-testid'?: string
 	useOnChange?: boolean
 	useControlled?: boolean
+	step?: number
 	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
 	onClick?: (event: React.MouseEvent<HTMLInputElement>) => void
@@ -60,6 +61,7 @@ export const TextInput = ({
 	style,
 	'data-testid': dataTestId,
 	useControlled = false,
+	step = undefined,
 	...props
 }: TextInputProps) => {
 	'use no memo' // Skip compilation for this component
@@ -173,6 +175,7 @@ export const TextInput = ({
 				style={style}
 				data-testid={dataTestId}
 				readOnly={props.readOnly}
+				step={step}
 			/>
 
 			{icon && (

@@ -3,7 +3,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { SyntSykemelding } from './partials/SyntSykemelding'
 import { DetaljertSykemelding } from './partials/DetaljertSykemelding'
 import { Sykemelding, SykemeldingDetaljert, SykemeldingSynt } from '../SykemeldingTypes'
-import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
+import { harGyldigTransaksjonsid } from '@/components/transaksjonid/GyldigeBestillinger'
 import { Alert } from '@navikt/ds-react'
 import React from 'react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
@@ -172,13 +172,18 @@ export const SykemeldingVisning = ({
 	)
 }
 
-SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: string) => {
+SykemeldingVisning.filterValues = (
+	bestillinger: Array<Sykemelding>,
+	ident: string,
+	allTransaksjonsid?: any[],
+) => {
 	if (!bestillinger) {
 		return null
 	}
 
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data?.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident),
+			bestilling.data?.sykemelding &&
+			harGyldigTransaksjonsid(bestilling.id, allTransaksjonsid),
 	)
 }

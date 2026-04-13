@@ -14,7 +14,14 @@ import {
 } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
-import React, { BaseSyntheticEvent, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, {
+	BaseSyntheticEvent,
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 import { useSykemeldingValidering } from '@/utils/hooks/useSykemelding'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
@@ -178,13 +185,19 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 		}
 	}, [])
 
-	const setMottakerFromForvalter = useCallback((org: any) => {
-		formMethods.setValue(
-			'sykemelding.detaljertSykemelding.arbeidsgiver.navn',
-			org?.navn || org?.organisasjonsnavn || null,
-		)
-		formMethods.setValue('sykemelding.detaljertSykemelding.mottaker', mapForvalterOrganisasjon(org))
-	}, [mapForvalterOrganisasjon])
+	const setMottakerFromForvalter = useCallback(
+		(org: any) => {
+			formMethods.setValue(
+				'sykemelding.detaljertSykemelding.arbeidsgiver.navn',
+				org?.navn || org?.organisasjonsnavn || null,
+			)
+			formMethods.setValue(
+				'sykemelding.detaljertSykemelding.mottaker',
+				mapForvalterOrganisasjon(org),
+			)
+		},
+		[mapForvalterOrganisasjon],
+	)
 
 	const clearValgtOrganisasjon = () => {
 		formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.arbeidsgiver.navn')
@@ -214,7 +227,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	useEffect(() => {
 		const org = organisasjoner?.[0]?.q1
 		const shouldHaveError = hasBeenCalled && !loading && !org
-		
+
 		if (shouldHaveError && !hasErrorRef.current) {
 			formMethods.setError('manual.sykemelding.detaljertSykemelding.mottaker.orgNr', {
 				message: 'Organisasjon ikke funnet i Q1',
@@ -224,7 +237,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 			formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.mottaker.orgNr')
 			hasErrorRef.current = false
 		}
-		
+
 		const currentOrgNr = org?.organisasjonsnummer
 		if (
 			selectedOrgnummer &&

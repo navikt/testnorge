@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-lib",
-  "version": "1.4.5",
+  "version": "1.4.8",
   "description": "Bibliotek for diverse dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
@@ -14,8 +14,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.27.3",
-    "prettier": "^3.8.1",
+    "esbuild": "^0.27.7",
+    "prettier": "^3.8.2",
     "typescript": "^5.9.3"
   },
   "repository": {
@@ -27,5 +27,10 @@
     "semi": true,
     "tabWidth": 2,
     "printWidth": 100
+  },
+  "engines": {
+    "pnpm": ">=8.0.0",
+    "npm": "please-use-pnpm",
+    "yarn": "please-use-pnpm"
   }
 }

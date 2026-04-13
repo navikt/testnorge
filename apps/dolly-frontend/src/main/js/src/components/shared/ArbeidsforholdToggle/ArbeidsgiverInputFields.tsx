@@ -6,6 +6,7 @@ import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
 import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
+import { getOrgMiljoer } from '@/utils/OrgUtils'
 
 type ArbeidsgiverInputFieldsProps = {
 	formMethods: UseFormReturn
@@ -77,17 +78,17 @@ export const ArbeidsgiverInputFields = ({
 
 	if (currentValue === ArbeidsgiverTyper.fritekst) {
 		if (useValidation) {
+			const orgMiljoer = getOrgMiljoer(organisasjoner?.[0])
 			return (
 				<OrganisasjonForvalterSelect
 					path={organisasjonPath}
-					parentPath={path}
 					value={watchedOrgnr}
 					success={
 						organisasjoner?.length > 0 &&
 						!validationError &&
 						!formMethods.getFieldState(`manual.${organisasjonPath}`)?.error
 					}
-					error={validationError}
+					miljoer={orgMiljoer}
 					loading={validationLoading}
 					onTextBlur={(event) => {
 						formMethods.setValue(organisasjonPath, event.target.value || null)

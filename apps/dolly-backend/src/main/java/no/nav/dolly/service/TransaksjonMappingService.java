@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsTransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.stereotype.Service;
@@ -57,11 +58,6 @@ public class TransaksjonMappingService {
     public Mono<Boolean> existsByIdentAndMiljoe(String ident, String miljoe) {
 
         return transaksjonMappingRepository.existsByIdentAndMiljoe(ident, miljoe);
-    }
-
-    public Mono<Boolean> existAlready(SystemTyper system, String ident) {
-
-        return existAlready(system, ident, null, null);
     }
 
     public Mono<Boolean> existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
