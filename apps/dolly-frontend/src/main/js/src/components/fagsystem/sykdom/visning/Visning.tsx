@@ -22,7 +22,7 @@ export const sjekkManglerSykemeldingBestilling = (sykemeldingBestilling) => {
 	return !sykemeldingBestilling || sykemeldingBestilling?.length < 1
 }
 
-export const SykemeldingVisning = ({
+export const SykemeldingPanel = ({
 	data,
 	ident,
 	loading,
@@ -72,7 +72,7 @@ export const SykemeldingVisning = ({
 	)
 }
 
-SykemeldingVisning.filterValues = (
+SykemeldingPanel.filterValues = (
 	bestillinger: Array<Sykemelding>,
 	ident: string,
 	allTransaksjonsid?: any[],

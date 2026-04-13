@@ -79,7 +79,7 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import {
 	sjekkManglerSykemeldingBestilling,
 	sjekkManglerSykemeldingData,
-	SykemeldingVisning,
+	SykemeldingPanel,
 } from '@/components/fagsystem/sykdom/visning/Visning'
 import {
 	sjekkManglerUforetrygdData,
@@ -301,7 +301,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harSykemeldingBestilling(bestillingerFagsystemer),
 	)
 
-	const sykemeldingBestilling = SykemeldingVisning.filterValues(
+	const sykemeldingBestilling = SykemeldingPanel.filterValues(
 		bestillingListe as any,
 		ident.ident,
 		sykemeldingRawData,
@@ -729,7 +729,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 					harArenaBestilling={harArenaBestilling(bestillingerFagsystemer)}
 				/>
-				<SykemeldingVisning
+				<SykemeldingPanel
 					ident={ident}
 					data={(sykemeldingData as any) || ([] as any)}
 					loading={loadingSykemeldingData}

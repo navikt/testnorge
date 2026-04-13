@@ -16,12 +16,10 @@ export const validation = {
 								grad: Yup.number()
 									.nullable()
 									.transform((value, original) =>
-										original === '' || original === null || original === undefined
-											? null
-											: value,
+										original === '' || original === null || original === undefined ? null : value,
 									)
 									.min(1, 'Grad må være mellom 1 og 99')
-									.max(99, 'Grad må være mellom 1 og 99'),
+									.max(99, 'Grad må være mellom 1 og 99, tøm feltet for full sykemelding'),
 								fom: testDatoFom(requiredDate, 'tom'),
 								tom: testDatoTom(requiredDate, 'fom'),
 							}),
