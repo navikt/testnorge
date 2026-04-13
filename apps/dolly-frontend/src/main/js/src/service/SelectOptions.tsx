@@ -103,12 +103,6 @@ const selectOptions = {
 		{ value: 'Svalbard', label: 'Svalbard' },
 	],
 
-	oppgjoerstype: [
-		{ value: 'Fastland', label: 'Fastland' },
-		{ value: 'Svalbard', label: 'Svalbard' },
-		{ value: 'KildeskattPaaLoenn', label: 'Kildeskatt på lønn' },
-	],
-
 	// AAREG
 	aktoertype: [
 		{ value: 'ORG', label: 'Organisasjon' },

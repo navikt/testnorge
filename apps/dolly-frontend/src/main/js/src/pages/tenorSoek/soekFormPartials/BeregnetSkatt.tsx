@@ -3,18 +3,14 @@ import React from 'react'
 import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { oversettBoolean } from '@/utils/DataFormatter'
+import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
+import { createOptions, getInntektsaarOptions } from '@/pages/tenorSoek/utils'
 
 export const BeregnetSkatt = ({ handleChange }: any) => {
-	const getInntektsaarOptions = () => {
-		const inntektsaarListe = []
-		const currentAar = new Date().getFullYear()
-		for (let aar = currentAar - 5; aar < currentAar; aar++) {
-			inntektsaarListe.push({ value: aar.toString(), label: aar.toString() })
-		}
-		return inntektsaarListe
-	}
+	const { domain: typeOppgjoerOptions, loading: loadingTypeOppgjoer } =
+		useTenorDomain('Oppgjoerstype')
 
-	const inntektsaarOptions = getInntektsaarOptions()
+	const inntektsaarOptions = getInntektsaarOptions(7)
 
 	return (
 		<SoekKategori>
@@ -26,22 +22,23 @@ export const BeregnetSkatt = ({ handleChange }: any) => {
 					handleChange(
 						val?.value || null,
 						'beregnetSkatt.inntektsaar',
-						`Inntektsår beregnet skatt: ${val?.label}`,
+						`Beregnet skatt inntektsår: ${val?.label}`,
 					)
 				}
 			/>
 			<FormSelect
 				name="beregnetSkatt.oppgjoerstype"
-				options={Options('oppgjoerstype')}
+				options={createOptions(typeOppgjoerOptions?.data)}
 				label="Type oppgjør"
 				size="large"
 				onChange={(val: any) =>
 					handleChange(
 						val?.value || null,
 						'beregnetSkatt.oppgjoerstype',
-						`Type oppgjør: ${val?.label}`,
+						`Beregnet skatt type oppgjør: ${val?.label}`,
 					)
 				}
+				isLoading={loadingTypeOppgjoer}
 			/>
 			<FormSelect
 				name="beregnetSkatt.pensjonsgivendeInntekt"
