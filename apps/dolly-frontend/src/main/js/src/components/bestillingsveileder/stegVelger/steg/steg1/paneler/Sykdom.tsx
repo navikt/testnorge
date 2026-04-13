@@ -15,9 +15,7 @@ import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTi
 export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const sykemeldingTimeout = getTimeoutAttr('SYKEMELDING', opts)
 	const yrkesskadeTimeout = getTimeoutAttr('YRKESSKADE', opts)
-	const sykemeldingTitle = sykemeldingTimeout.title
 	const yrkesskadeTitle = yrkesskadeTimeout.title
 	return (
 		<Panel
@@ -28,11 +26,7 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 			startOpen={harValgtAttributt(formValues, [sykemeldingAttributt, yrkesskaderAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt
-					attr={sm.attrs.sykemelding}
-					disabled={sykemeldingTimeout.disabled}
-					title={sykemeldingTitle}
-				/>
+				<Attributt attr={sm.attrs.sykemelding} />
 				<Attributt
 					attr={sm.attrs.yrkesskader}
 					disabled={yrkesskadeTimeout.disabled}

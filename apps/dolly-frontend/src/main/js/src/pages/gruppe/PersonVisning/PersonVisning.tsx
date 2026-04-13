@@ -77,8 +77,6 @@ import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import {
-	sjekkManglerSykemeldingBestilling,
-	sjekkManglerSykemeldingData,
 	SykemeldingPanel,
 } from '@/components/fagsystem/sykdom/visning/Visning'
 import {
@@ -348,8 +346,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 		uforetrygdData,
 		brregstub: data?.brregstub,
 		instData,
-		sykemeldingData,
-		sykemeldingBestilling,
 		yrkesskadeData,
 		arbeidsplassencvData,
 		arbeidsplassencvError,
@@ -410,16 +406,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 			{
 				condition: !!(instData && sjekkManglerInstData(instData)),
 				reason: 'Inst mangler data',
-			},
-			{
-				condition: !!(
-					sykemeldingData &&
-					!_.isEmpty(sykemeldingData) &&
-					sjekkManglerSykemeldingData(sykemeldingData) &&
-					harSykemeldingBestilling(bestillingerFagsystemer) &&
-					sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
-				),
-				reason: 'Sykemelding mangler data eller feilet',
 			},
 			{
 				condition: !!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
