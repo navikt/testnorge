@@ -22,7 +22,7 @@ public class OpenSearchQueryUtils {
 
         return QueryBuilders.match()
                 .field(field)
-                .query(FieldValue.of(value.toString()))
+                .query(FieldValue.of(value))
                 .build();
     }
 

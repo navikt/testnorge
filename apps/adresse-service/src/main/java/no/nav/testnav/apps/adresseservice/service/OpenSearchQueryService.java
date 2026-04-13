@@ -74,7 +74,7 @@ public class OpenSearchQueryService {
         } catch (OpenSearchException e) {
             log.error("OpenSearch søkefeil: {}", e.getMessage(), e);
 
-            if (nonNull(e.response())) {
+            if (nonNull(e.response()) && nonNull(e.response().error())) {
                 log.error("OpenSearch feildetaljer: {}", e.response().error().rootCause().stream()
                         .map(ErrorCause::reason)
                         .collect(Collectors.joining(",")));
