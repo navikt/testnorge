@@ -5,7 +5,7 @@ import { useTsmSykemelding } from '@/utils/hooks/useSykemelding'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import Loading from '@/components/ui/loading/Loading'
 
-export const NySykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger }: any) => {
+export const SykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger }: any) => {
 	const { sykemeldinger, error, loading } = initialSykemeldinger
 		? { sykemeldinger: initialSykemeldinger, error: null, loading: false }
 		: useTsmSykemelding(ident?.ident)
@@ -14,6 +14,7 @@ export const NySykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinge
 		<DollyFieldArray key={idx} data={sykemelding.aktivitet} nested>
 			{(aktivitet: any, idx: number) => (
 				<div key={idx} className="person-visning_content">
+					<TitleValue title="Grad (%)" value={aktivitet.grad} />
 					<TitleValue title="F.o.m. dato" value={formatDate(aktivitet.fom)} />
 					<TitleValue title="T.o.m. dato" value={formatDate(aktivitet.tom)} />
 				</div>

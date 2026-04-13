@@ -157,7 +157,7 @@ describe('executeMutateAndValidate', () => {
 		const setStep = vi.fn()
 		const formMutate = vi.fn(async () => ({ status: 'SUCCESS' }))
 		const setMutateLoading = vi.fn()
-		const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
+		const manualMutateFields = ['manual.test.field']
 
 		await executeMutateAndValidate(
 			{ formMethods: formMethods as any, errorContext, validationPaths },
@@ -185,7 +185,7 @@ describe('executeMutateAndValidate', () => {
 		const setStep = vi.fn()
 		const formMutate = vi.fn(async () => ({ status: 'INVALID' }))
 		const setMutateLoading = vi.fn()
-		const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
+		const manualMutateFields = ['manual.test.field']
 
 		await executeMutateAndValidate(
 			{ formMethods: formMethods as any, errorContext, validationPaths },
@@ -212,7 +212,7 @@ describe('executeMutateAndValidate', () => {
 			throw new Error('Mutation failed')
 		})
 		const setMutateLoading = vi.fn()
-		const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
+		const manualMutateFields = ['manual.test.field']
 
 		await executeMutateAndValidate(
 			{ formMethods: formMethods as any, errorContext, validationPaths },
@@ -245,7 +245,7 @@ describe('executeMutateAndValidate', () => {
 			if (loading && !mutationInProgress) {
 			}
 		})
-		const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
+		const manualMutateFields = ['manual.test.field']
 
 		await executeMutateAndValidate(
 			{ formMethods: formMethods as any, errorContext, validationPaths },
@@ -268,7 +268,7 @@ describe('executeMutateAndValidate', () => {
 		const setStep = vi.fn()
 		const formMutate = vi.fn(async () => ({ status: 'SUCCESS' }))
 		const setMutateLoading = vi.fn()
-		const manualMutateFields = ['manual.sykemelding.detaljertSykemelding', 'manual.custom.field']
+		const manualMutateFields = ['manual.test.field', 'manual.custom.field']
 
 		await executeMutateAndValidate(
 			{ formMethods: formMethods as any, errorContext, validationPaths },

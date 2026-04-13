@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class NySykemeldingDeleteCommand implements Callable<Mono<Void>> {
+public class SykemeldingDeleteCommand implements Callable<Mono<Void>> {
 
     private static final String TSM_SYKEMELDING_URL = "/tsm/api/sykmelding/ident";
 

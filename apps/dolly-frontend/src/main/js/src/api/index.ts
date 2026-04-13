@@ -122,21 +122,6 @@ export const cvFetcher = (url, headers) => {
 		})
 }
 
-export const sykemeldingFetcher = (url, body) =>
-	axios
-		.post(url, body)
-		.then((res) => {
-			if (res.status === 404) {
-				return null
-			}
-			return res.data
-		})
-		.catch((reason) => {
-			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
-				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
-			}
-			throw new Error(`Henting av data fra ${url} feilet.`)
-		})
 
 export const identpoolFetcher = (url, body) =>
 	axios
