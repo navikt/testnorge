@@ -26,6 +26,9 @@ spring:
       read-timeout: 30000
       kv:
         enabled: false
+      config:
+        lifecycle:
+          lease-endpoints: legacy
       database:
         enabled: true
         role: testnav-brregstub-admin
