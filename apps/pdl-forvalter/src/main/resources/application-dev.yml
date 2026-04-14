@@ -1,21 +1,22 @@
 spring:
   application:
     name: testnav-pdl-forvalter-dev
-  datasource:
+  r2dbc:
+    url: r2dbc:postgresql://${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_HOST}:${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_PORT}/${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_DATABASE}
+    username: ${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_USERNAME}
+    password: ${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_DATABASE}
+  flyway:
     url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_HOST}:${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_PORT}/${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_DATABASE}?user=${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_USERNAME}&password=${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_PASSWORD}
-    driverClassName: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 100
-      minimum-idle: 3
+    user: ${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_USERNAME}
+    password: ${NAIS_DATABASE_TESTNAV_PDL_FORVALTER_DEV_TESTNAV_PDL_FORVALTER_DEV_DB_PASSWORD}
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   jpa:
     properties:
       hibernate:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
-    locations: classpath:db/migration
-    baseline-on-migrate: true
   security:
     oauth2:
       resourceserver:
