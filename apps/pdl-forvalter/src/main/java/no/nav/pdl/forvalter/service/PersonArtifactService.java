@@ -62,7 +62,7 @@ public class PersonArtifactService {
                 .flatMap(sivilstandService::convert)
                 .flatMap(doedsfallService::convert)
                 .flatMap(fullmaktService::convert)
-                .flatMap(person1 -> kontaktAdresseService.convert(dbPerson, relaxed))
+                .flatMap(person1 -> kontaktAdresseService.convert(person1, relaxed))
                 .flatMap(utenlandsidentifikasjonsnummerService::convert)
                 .flatMap(vergemaalService::convert)
                 .flatMap(kontaktinformasjonForDoedsboService::convert)

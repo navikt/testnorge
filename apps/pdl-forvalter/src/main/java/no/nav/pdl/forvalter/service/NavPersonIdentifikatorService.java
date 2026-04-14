@@ -17,7 +17,7 @@ public class NavPersonIdentifikatorService implements Validation<NavPersonIdenti
 
         return Flux.fromIterable(dbPerson.getPerson().getNavPersonIdentifikator())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(this::handle)
+                .flatMap(type -> handle(type, dbPerson))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
@@ -26,8 +26,10 @@ public class NavPersonIdentifikatorService implements Validation<NavPersonIdenti
                 .thenReturn(dbPerson);
     }
 
-    protected Mono<NavPersonIdentifikatorDTO> handle(NavPersonIdentifikatorDTO type) {
-        return Mono.just(type);
+    protected Mono<NavPersonIdentifikatorDTO> handle(NavPersonIdentifikatorDTO navPersonIdentifikator, DbPerson dbPerson) {
+
+        navPersonIdentifikator.setIdentifikator(dbPerson.getIdent());
+        return Mono.just(navPersonIdentifikator);
     }
 
     @Override

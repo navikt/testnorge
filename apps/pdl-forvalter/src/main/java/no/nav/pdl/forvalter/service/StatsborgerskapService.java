@@ -6,7 +6,6 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasLandkode;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -42,7 +42,6 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
-                .distinct(StatsborgerskapDTO::getLandkode)
                 .then(Mono.just(dbPerson));
     }
 
@@ -66,7 +65,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
                 .doOnNext(type -> {
                     if (isNull(type.getGyldigFraOgMed()) &&
                         isNull(type.getBekreftelsesdato()) &&
-                        type.getMaster() == DbVersjonDTO.Master.PDL) {
+                        IdenttypeUtility.getIdenttype(person.getIdent()) == NPID) {
                         type.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
                     }
                 });
