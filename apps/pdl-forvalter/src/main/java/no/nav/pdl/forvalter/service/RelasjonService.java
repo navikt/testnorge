@@ -41,11 +41,11 @@ public class RelasjonService {
 
         return relasjonRepository.findByPersonIdAndRelatertPersonIdAndRelasjonType(person1.getId(), person2.getId(), relasjonType)
                 .switchIfEmpty(Mono.just(DbRelasjon.builder()
-                        .personId(person1.getId())
-                        .relatertPersonId(person2.getId())
-                        .relasjonType(relasjonType)
-                        .sistOppdatert(now())
-                        .build()))
-                .flatMap(relasjonRepository::save);
+                                .personId(person1.getId())
+                                .relatertPersonId(person2.getId())
+                                .relasjonType(relasjonType)
+                                .sistOppdatert(now())
+                                .build())
+                        .flatMap(relasjonRepository::save));
     }
 }
