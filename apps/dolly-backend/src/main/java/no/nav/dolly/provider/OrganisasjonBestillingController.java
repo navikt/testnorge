@@ -143,24 +143,33 @@ public class OrganisasjonBestillingController {
                     }
 
                     var updates = bestillingEventPublisher.subscribeOrg(bestillingId)
+                            .sample(Duration.ofMillis(200))
                             .concatMap(id -> bestillingService.fetchBestillingSnapshot(bestillingId)
                                     .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> {
                                         log.warn("Feil ved henting av org-bestilling-status for {}: {}", bestillingId, e.getMessage());
                                         return Mono.empty();
-                                    }))
-                            .map(this::toOrgSse);
+                                    }));
 
                     var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
                             .concatMap(tick -> bestillingService.fetchBestillingSnapshot(bestillingId)
                                     .timeout(Duration.ofSeconds(5))
-                                    .onErrorResume(e -> Mono.empty()))
-                            .map(this::toOrgSse);
+                                    .onErrorResume(e -> Mono.empty()));
 
-                    return Flux.merge(Flux.concat(Flux.just(toOrgSse(initial)), updates), fallbackCheck)
+                    return Flux.concat(Flux.just(initial), Flux.merge(updates, fallbackCheck))
+                            .distinctUntilChanged(this::orgStatusFingerprint)
+                            .map(this::toOrgSse)
                             .takeUntil(sse -> "completed".equals(sse.event()))
                             .take(Duration.ofMinutes(30));
                 });
+    }
+
+    private String orgStatusFingerprint(RsOrganisasjonBestillingStatus status) {
+        return status.getFerdig() + ":"
+                + status.getAntallLevert() + ":"
+                + status.getSistOppdatert() + ":"
+                + (status.getFeil() != null ? status.getFeil().length() : 0) + ":"
+                + (status.getStatus() != null ? status.getStatus().size() : 0);
     }
 
     private ServerSentEvent<RsOrganisasjonBestillingStatus> toOrgSse(RsOrganisasjonBestillingStatus status) {
