@@ -12,6 +12,7 @@ import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning
 import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/SkattemeldingVisning'
 import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
 import { BeregnetSkattVisning } from '@/pages/tenorSoek/resultatVisning/BeregnetSkattVisning'
+import { SummertSkattegrunnlagVisning } from '@/pages/tenorSoek/resultatVisning/SummertSkattegrunnlagVisning'
 
 type PersonVisningProps = {
 	person: any
@@ -85,6 +86,7 @@ export const PersonVisning = ({
 				/>
 				<SkattemeldingVisning data={personData?.tenorRelasjoner?.skattemelding} />
 				<BeregnetSkattVisning data={personData?.tenorRelasjoner?.beregnetSkatt} />
+				<SummertSkattegrunnlagVisning data={personData?.tenorRelasjoner?.summertSkattegrunnlag} />
 				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
 				<OrganisasjonArbeidsforholdVisning data={personData?.tenorRelasjoner?.arbeidsforhold} />
 			</Box>
