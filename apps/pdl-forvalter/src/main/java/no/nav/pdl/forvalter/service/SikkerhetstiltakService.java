@@ -39,12 +39,12 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
                      type.setKilde(getKilde(type));
                      type.setMaster(Master.PDL);
                 })
-                .collectList()
-                .doOnNext(sikkerhetstiltak -> {
-                    sikkerhetstiltak.sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
+                .then(Mono.defer(() -> {
+                    dbPerson.getPerson().getSikkerhetstiltak()
+                            .sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
                     renumberId(dbPerson.getPerson().getSikkerhetstiltak());
-                })
-                .thenReturn(dbPerson);
+                    return Mono.just(dbPerson);
+                }));
     }
 
     public Mono<Void> validate(SikkerhetstiltakDTO sikkerhetstiltak) {

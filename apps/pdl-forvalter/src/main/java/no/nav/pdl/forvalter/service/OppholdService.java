@@ -31,8 +31,7 @@ public class OppholdService implements Validation<OppholdDTO> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, person.getPerson()));
                 })
-                .collectList()
-                .flatMap(this::enforceIntegrity)
+                .then(Mono.defer(() -> enforceIntegrity(person.getPerson().getOpphold())))
                 .thenReturn(person);
     }
 

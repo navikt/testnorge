@@ -36,13 +36,11 @@ public class DoedsfallService implements Validation<DoedsfallDTO> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
-                .collectList()
-                .map(doedsfall -> {
-                    doedsfall.sort(Comparator.comparing(DoedsfallDTO::getDoedsdato).reversed());
-                    renumberId(doedsfall);
-                    return doedsfall;
-                })
-                .thenReturn(dbPerson);
+                .then(Mono.defer(() -> {
+                    dbPerson.getPerson().getDoedsfall().sort(Comparator.comparing(DoedsfallDTO::getDoedsdato).reversed());
+                    renumberId(dbPerson.getPerson().getDoedsfall());
+                    return Mono.just(dbPerson);
+                }));
     }
 
     private Mono<DoedsfallDTO> handle(DoedsfallDTO doedsfall, PersonDTO person) {
