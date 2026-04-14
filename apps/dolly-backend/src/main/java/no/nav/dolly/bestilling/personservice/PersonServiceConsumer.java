@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @Slf4j
@@ -66,19 +67,24 @@ public class PersonServiceConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersonerNoRetries(List<String> identer) {
 
-        return getPdlPersoner(identer, new AtomicInteger(MAX_RETRIES));
+        return getPdlPersoner(identer, new AtomicInteger(MAX_RETRIES))
+                .doOnNext(resultat -> {
+                    if (isNotBlank(resultat.getErrors())) {
+                        log.error("Feil mottatt fra person-service {} ved henting av identer {}",
+                                resultat.getErrors(), String.join(", ", identer));
+                    }
+                });
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer, AtomicInteger retry) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                        .flatMap(index -> new PdlPersonerGetCommand(webClient,
-                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
-                                token.getTokenValue()
+                .flatMapMany(token -> Flux.fromIterable(identer)
+                        .buffer(BLOCK_SIZE)
+                        .flatMap(identerBlokk -> new PdlPersonerGetCommand(webClient,
+                                identerBlokk, token.getTokenValue()
                         ).call()))
-
                 .flatMap(resultat -> {
 
                     if (retry.get() < MAX_RETRIES &&

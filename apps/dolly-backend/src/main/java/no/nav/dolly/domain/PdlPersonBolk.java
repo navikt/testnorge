@@ -17,6 +17,7 @@ public class PdlPersonBolk {
 
     private Data data;
     private JsonNode extensions;
+    private String errors;
 
     @lombok.Data
     @Builder
