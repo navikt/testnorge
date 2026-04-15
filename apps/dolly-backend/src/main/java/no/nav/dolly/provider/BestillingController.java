@@ -154,26 +154,35 @@ public class BestillingController {
                     }
 
                     var updates = bestillingEventPublisher.subscribe(bestillingId)
+                            .sample(Duration.ofMillis(200))
                             .concatMap(id -> bestillingService.fetchBestillingById(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> {
                                         log.warn("Feil ved henting av bestilling-status for {}: {}", bestillingId, e.getMessage());
                                         return Mono.empty();
-                                    }))
-                            .map(this::toBestillingSse);
+                                    }));
 
                     var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
                             .concatMap(tick -> bestillingService.fetchBestillingById(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
-                                    .onErrorResume(e -> Mono.empty()))
-                            .map(this::toBestillingSse);
+                                    .onErrorResume(e -> Mono.empty()));
 
-                    return Flux.merge(Flux.concat(Flux.just(initialSse), updates), fallbackCheck)
+                    return Flux.concat(Flux.just(initial), Flux.merge(updates, fallbackCheck))
+                            .distinctUntilChanged(this::statusFingerprint)
+                            .map(this::toBestillingSse)
                             .takeUntil(sse -> "completed".equals(sse.event()))
                             .take(Duration.ofMinutes(30));
                 });
+    }
+
+    private String statusFingerprint(RsBestillingStatus status) {
+        return status.isFerdig() + ":"
+                + status.getAntallLevert() + ":"
+                + status.getSistOppdatert() + ":"
+                + (status.getFeil() != null ? status.getFeil().length() : 0) + ":"
+                + status.getStatus().size();
     }
 
     private ServerSentEvent<RsBestillingStatus> toBestillingSse(RsBestillingStatus status) {

@@ -52,6 +52,9 @@ export const InntektsmeldingVisning = ({
 	if (!data && !bestillinger) {
 		return null
 	}
+	if (data && !Array.isArray(data)) {
+		data = undefined
+	}
 
 	const manglerFagsystemData =
 		sjekkManglerInntektsmeldingData(data) && sjekkManglerInntektsmeldingBestilling(bestillinger)

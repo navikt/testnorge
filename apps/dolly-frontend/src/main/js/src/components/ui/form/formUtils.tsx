@@ -5,7 +5,6 @@ import { useFormContext } from 'react-hook-form'
 import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 import {
-	nySykemeldingAttributt,
 	sykemeldingAttributt,
 } from '@/components/fagsystem/sykdom/form/constants'
 
@@ -96,7 +95,6 @@ const getValgteAttributter = (values) => {
 		'pensjonforvalter.afpOffentlig',
 		'arenaforvalter',
 		sykemeldingAttributt,
-		nySykemeldingAttributt,
 		'yrkesskader',
 		'brregstub',
 		'instdata',

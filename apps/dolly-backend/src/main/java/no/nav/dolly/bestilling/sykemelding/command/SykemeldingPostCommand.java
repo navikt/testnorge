@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.sykemelding.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingRequestDTO;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingResponseDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.SykemeldingRequestDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.SykemeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
@@ -14,30 +14,30 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class NySykemeldingPostCommand implements Callable<Mono<NySykemeldingResponseDTO>> {
+public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponseDTO>> {
 
     private static final String TSM_SYKEMELDING_URL = "/tsm/api/sykmelding";
 
     private final WebClient webClient;
-    private final NySykemeldingRequestDTO request;
+    private final SykemeldingRequestDTO request;
     private final String token;
 
     @Override
-    public Mono<NySykemeldingResponseDTO> call() {
+    public Mono<SykemeldingResponseDTO> call() {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(TSM_SYKEMELDING_URL).build())
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
-                .toEntity(NySykemeldingResponseDTO.class)
-                .map(response -> NySykemeldingResponseDTO.builder()
+                .toEntity(SykemeldingResponseDTO.class)
+                .map(response -> SykemeldingResponseDTO.builder()
                         .status(HttpStatus.resolve(response.getStatusCode().value()))
                         .sykemeldingRequest(request)
                         .ident(request.getIdent())
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(error -> NySykemeldingResponseDTO.of(WebClientError.describe(error), request.getIdent()));
+                .onErrorResume(error -> SykemeldingResponseDTO.of(WebClientError.describe(error), request.getIdent()));
 
     }
 }

@@ -61,7 +61,6 @@ import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
-import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding.DollyDiagnose;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
@@ -466,25 +465,22 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
         var bestilling = RsDollyUtvidetBestilling.builder()
                 .sykemelding(RsSykemelding.builder()
-                        .detaljertSykemelding(RsSykemelding.RsDetaljertSykemelding.builder()
-                                .arbeidsgiver(RsSykemelding.RsDetaljertSykemelding.Arbeidsgiver.builder()
-                                        .navn("Arbeidsgiver AS")
-                                        .build())
-                                .hovedDiagnose(DollyDiagnose.builder()
-                                        .diagnosekode("A12B")
-                                        .build())
-                                .helsepersonell(RsSykemelding.RsDetaljertSykemelding.Helsepersonell.builder()
-                                        .samhandlerType("FASTLEGE")
-                                        .build())
+                        .nySykemelding(RsSykemelding.RsNySykemelding.builder()
+                                .aktivitet(List.of(
+                                        RsSykemelding.RsNySykemelding.Aktivitet.builder()
+                                                .grad(50)
+                                                .fom(java.time.LocalDate.of(2025, 1, 1))
+                                                .tom(java.time.LocalDate.of(2025, 1, 14))
+                                                .build()))
                                 .build())
                         .build())
                 .build();
 
         var target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
 
-        assertThat(target.getSykemelding().getDetaljertSykemelding().getArbeidsgiver().getNavn(), is(equalTo("Arbeidsgiver AS")));
-        assertThat(target.getSykemelding().getDetaljertSykemelding().getHovedDiagnose().getDiagnosekode(), is(equalTo("A12B")));
-        assertThat(target.getSykemelding().getDetaljertSykemelding().getHelsepersonell().getSamhandlerType(), is(equalTo("FASTLEGE")));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getGrad(), is(equalTo(50)));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getFom(), is(equalTo(java.time.LocalDate.of(2025, 1, 1))));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getTom(), is(equalTo(java.time.LocalDate.of(2025, 1, 14))));
     }
 
     @Test
