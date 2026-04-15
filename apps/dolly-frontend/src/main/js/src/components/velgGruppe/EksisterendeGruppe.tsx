@@ -1,5 +1,4 @@
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import Loading from '@/components/ui/loading/Loading'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import React from 'react'
 
@@ -19,10 +18,6 @@ export default ({ fraGruppe, grupper, loading }: EksisterendeGruppe) => {
 		}
 	})
 
-	if (loading) {
-		return <Loading label="Laster grupper" />
-	}
-
 	return (
 		<DollySelect
 			name="gruppeId"
@@ -30,6 +25,7 @@ export default ({ fraGruppe, grupper, loading }: EksisterendeGruppe) => {
 			options={gruppeOptions}
 			size={fraGruppe ? 'grow' : 'large'}
 			isClearable={false}
+			isLoading={loading}
 		/>
 	)
 }

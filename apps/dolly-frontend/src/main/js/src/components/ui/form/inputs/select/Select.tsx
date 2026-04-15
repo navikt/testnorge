@@ -10,11 +10,15 @@ import Option from '@/components/ui/form/inputs/select/Option'
 import * as _ from 'lodash-es'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { useController, useFormContext } from 'react-hook-form'
-import React, { createRef, useContext, useEffect } from 'react'
+import React, { createRef, useContext, useEffect, useMemo, useState } from 'react'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
+
+const LARGE_LIST_THRESHOLD = 500
+const MAX_DISPLAYED_OPTIONS = 200
+const defaultFilter = createFilter({ ignoreAccents: false })
 
 type SelectProps = {
 	id?: string
@@ -71,6 +75,26 @@ export const Select = ({
 }: SelectProps) => {
 	const formMethods = useFormContext()
 	const ref = createRef()
+	const [inputValue, setInputValue] = useState('')
+	const isLargeList = options.length > LARGE_LIST_THRESHOLD
+
+	const displayedOptions = useMemo(() => {
+		if (!isLargeList) return options
+		if (!inputValue) return options.slice(0, MAX_DISPLAYED_OPTIONS)
+
+		const needle = inputValue.toLowerCase()
+		const matches = []
+		for (const option of options) {
+			if (
+				option.label?.toLowerCase().includes(needle) ||
+				option.value?.toString().toLowerCase().includes(needle)
+			) {
+				matches.push(option)
+				if (matches.length >= MAX_DISPLAYED_OPTIONS) break
+			}
+		}
+		return matches
+	}, [options, inputValue, isLargeList])
 
 	useEffect(() => {
 		if (autoFocus) {
@@ -87,15 +111,11 @@ export const Select = ({
 	const val = formMethods?.watch(name)
 	let formValue = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
-		: options?.filter?.((o) => {
-				return _.isEqual(o?.value, val)
-			})
+		: options?.filter?.((o) => o?.value === val)
 
 	let propValue = isMulti
 		? options?.filter?.((o) => value?.some((el) => el === o?.value))
-		: options?.filter?.((o) => {
-				return _.isEqual(o?.value, value)
-			})
+		: options?.filter?.((o) => o?.value === value)
 
 	if (!onChange) {
 		onChange = (selected, meta) => {
@@ -110,6 +130,9 @@ export const Select = ({
 		} else if (options?.length === 0) {
 			return 'Ingen tilgjengelige verdier'
 		}
+		if (isLargeList) {
+			return 'Skriv for å søke ...'
+		}
 		return placeholder
 	}
 	const placeholderText = getPlaceholder()
@@ -120,11 +143,12 @@ export const Select = ({
 				value={!_.isEmpty(formValue) ? formValue : propValue}
 				defaultValue={propValue}
 				autoFocus={autoFocus}
-				options={options}
+				options={displayedOptions}
 				name={name}
 				inputId={id || name}
 				placeholder={placeholderText}
-				filterOption={createFilter({ ignoreAccents: false })}
+				filterOption={isLargeList ? null : defaultFilter}
+				onInputChange={isLargeList ? setInputValue : undefined}
 				className={cn('basic-single', className)}
 				classNamePrefix={classNamePrefix}
 				components={{

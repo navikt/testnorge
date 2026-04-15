@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
-import { Line } from 'rc-progress'
+import { ProgressBar } from '@navikt/ds-react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Icon from '@/components/ui/icon/Icon'
 
@@ -60,10 +60,7 @@ export const BestillingProgresjon = ({
 
 	const antallIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter || 0
 
-	const erSykemelding =
-		!erOrganisasjon &&
-		bestilling?.bestilling?.sykemelding != null &&
-		bestilling?.bestilling?.sykemelding?.syntSykemelding != null
+	const erSykemelding = !erOrganisasjon && bestilling?.bestilling?.sykemelding != null
 
 	useEffect(() => {
 		if (erOrganisasjon && bestillingStatus) {
@@ -140,7 +137,16 @@ export const BestillingProgresjon = ({
 		}
 
 		return { percent, title, text }
-	}, [antallLevert, antallIdenter, isFerdig, erSykemelding, erOrganisasjon, orgStatus, mergedStatus, expectedFagsystemer])
+	}, [
+		antallLevert,
+		antallIdenter,
+		isFerdig,
+		erSykemelding,
+		erOrganisasjon,
+		orgStatus,
+		mergedStatus,
+		expectedFagsystemer,
+	])
 
 	if (loading) {
 		return <Loading label={'Henter bestilling ...'} />
@@ -171,8 +177,8 @@ export const BestillingProgresjon = ({
 				</h5>
 				<span>{isFerdig ? 'Ferdigstiller bestilling' : progress.text}</span>
 			</div>
-			<div>
-				<Line percent={progress.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
+			<div style={{ marginTop: '10px' }}>
+				<ProgressBar value={progress.percent} size="small" aria-label="Bestillingsfremgang" />
 			</div>
 			<div className="cancel-container">
 				{timedOut && !erOrganisasjon && (
