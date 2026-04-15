@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PersonExistsGetCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
@@ -39,23 +39,23 @@ public class PersonServiceConsumer {
     }
 
     @SneakyThrows
-    public Mono<Boolean> syncIdent(String ident) {
+    public Flux<Boolean> syncIdent(String ident) {
 
         return getPersonService(ident, new AtomicLong(0), false);
     }
 
-    private Mono<Boolean> getPersonService(String ident, AtomicLong counter, Boolean response) {
+    private Flux<Boolean> getPersonService(String ident, AtomicLong counter, Boolean response) {
 
         if (isTrue(response) || counter.get() == MAX_REPETITIONS) {
             log.info("Synkronisering av ident {} tok {} repetisjoner", ident, counter.get());
-            return Mono.just(response);
+            return Flux.just(response);
 
         } else {
             counter.incrementAndGet();
-            return Mono.just(true)
-                    .delayElement(Duration.ofMillis(DELAY))
+            return Flux.just(1)
+                    .delayElements(Duration.ofMillis(DELAY))
                     .flatMap(delayed -> tokenExchange.exchange(serverProperties)
-                            .flatMap(token -> new PersonExistsGetCommand(webClient, ident, token.getTokenValue()).call())
+                            .flatMapMany(token -> new PersonExistsGetCommand(webClient, ident, token.getTokenValue()).call())
                             .flatMap(resultat -> getPersonService(ident, counter, resultat)));
         }
     }

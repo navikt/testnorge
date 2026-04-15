@@ -1,42 +1,40 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.ArtifactUtils;
-import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
+import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -53,39 +51,39 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
 
-    public Mono<DbPerson> convert(DbPerson dbPerson) {
+    public List<SivilstandDTO> convert(PersonDTO person) {
 
-        return Flux.fromIterable(dbPerson.getPerson().getSivilstand())
-                .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, dbPerson.getPerson()))
-                .filter(Objects::nonNull)
-                .doOnNext(type -> {
-                    type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, dbPerson.getPerson()));
-                })
-                .collectList()
-                .doOnNext(type ->
-                        dbPerson.getPerson().setSivilstand(enforceIntegrity(dbPerson.getPerson())))
-                .doOnNext(ArtifactUtils::renumberId)
-                .thenReturn(dbPerson);
+        for (var type : person.getSivilstand()) {
+
+            if (isTrue(type.getIsNew())) {
+
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
+
+                handle(type, person);
+            }
+        }
+
+        var oppdatertSivilstand = enforceIntegrity(person);
+        renumberId(oppdatertSivilstand);
+
+        return oppdatertSivilstand;
     }
 
     @Override
-    public Mono<Void> validate(SivilstandDTO sivilstand, PersonDTO person) {
+    public void validate(SivilstandDTO sivilstand, PersonDTO person) {
 
         if (!isTestnorgeIdent(person.getIdent()) && (sivilstand.isGift() ||
-                                                     sivilstand.isSeparert() ||
-                                                     sivilstand.getType() == SAMBOER) &&
-            isNotBlank(sivilstand.getRelatertVedSivilstand())) {
-            return personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand())
-                    .flatMap(isRelatert -> isFalse(isRelatert) ?
-                            Mono.error(new InvalidRequestException(INVALID_RELATERT_VED_SIVILSTAND)) :
-                            Mono.empty());
+                sivilstand.isSeparert() ||
+                sivilstand.getType() == SAMBOER) &&
+                isNotBlank(sivilstand.getRelatertVedSivilstand()) &&
+                !personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand())) {
+
+            throw new InvalidRequestException(INVALID_RELATERT_VED_SIVILSTAND);
         }
-        return Mono.empty();
     }
 
-    private Mono<SivilstandDTO> handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
         if (isNull(sivilstand.getType())) {
 
@@ -95,110 +93,101 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
         if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.isSamboer()) {
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
-            return setRelatertVedSivilstand(sivilstand, hovedperson)
-                    .then(Mono.defer(() -> relasjonService.setRelasjoner(hovedperson.getIdent(), EKTEFELLE_PARTNER,
-                            sivilstand.getRelatertVedSivilstand(), EKTEFELLE_PARTNER)))
-                    .then(Mono.defer(() -> createRelatertSivilstand(sivilstand, hovedperson.getIdent())))
-                    .then(Mono.just(sivilstand));
+            if (isBlank(sivilstand.getRelatertVedSivilstand())) {
+
+                if (isNull(sivilstand.getNyRelatertPerson())) {
+                    sivilstand.setNyRelatertPerson(new PersonRequestDTO());
+                }
+                if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
+                        isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
+                        isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
+                    var foedselsdato = FoedselsdatoUtility.getFoedselsdato(hovedperson);
+                    sivilstand.getNyRelatertPerson().setFoedtFoer(foedselsdato.plusYears(2));
+                    sivilstand.getNyRelatertPerson().setFoedtEtter(foedselsdato.minusYears(2));
+                }
+                if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
+                    KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream()
+                            .findFirst()
+                            .map(KjoennDTO::getKjoenn)
+                            .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
+                    sivilstand.getNyRelatertPerson().setKjoenn(KjoennUtility.getPartnerKjoenn(kjoenn));
+                }
+
+                EgenskaperFraHovedperson.kopierData(hovedperson, sivilstand.getNyRelatertPerson());
+
+                PersonDTO relatertPerson = createPersonService.execute(sivilstand.getNyRelatertPerson());
+
+                if (isNotTrue(sivilstand.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
+                    var fellesAdresse = mapperFacade.map(hovedperson.getBostedsadresse().stream()
+                            .map(adresse -> mapperFacade.map(adresse, BostedadresseDTO.class))
+                            .findFirst()
+                            .orElse(BostedadresseDTO.builder()
+                                    .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
+                                    .build()), BostedadresseDTO.class);
+                    var adressedato = nonNull(sivilstand.getSivilstandsdato()) ?
+                            sivilstand.getSivilstandsdato() :
+                            sivilstand.getBekreftelsesdato();
+                    adressedato = nonNull(adressedato) ? adressedato : LocalDateTime.now().minusYears(3);
+                    fellesAdresse.setGyldigFraOgMed(adressedato);
+                    fellesAdresse.setAngittFlyttedato(adressedato);
+                    fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
+                            .map(BostedadresseDTO::getId).findFirst()
+                            .orElse(0) + 1);
+                    relatertPerson.getBostedsadresse().addFirst(fellesAdresse);
+                }
+
+                sivilstand.setBorIkkeSammen(null);
+                sivilstand.setNyRelatertPerson(null);
+                sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
+            }
+
+            relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
+                    sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
+            createRelatertSivilstand(sivilstand, hovedperson.getIdent());
 
         } else {
             sivilstand.setRelatertVedSivilstand(null);
         }
-        return Mono.just(sivilstand);
     }
 
-    private Mono<SivilstandDTO> setRelatertVedSivilstand(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
 
-        if (isBlank(sivilstand.getRelatertVedSivilstand())) {
+        var relatertPerson = new AtomicReference<>(new DbPerson());
+        personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
+                .ifPresentOrElse(relatertPerson::set,
+                        () -> relatertPerson.set(personRepository.save(DbPerson.builder()
+                                .ident(sivilstand.getRelatertVedSivilstand())
+                                .person(PersonDTO.builder()
+                                        .ident(sivilstand.getRelatertVedSivilstand())
+                                        .build())
+                                .sistOppdatert(now())
+                                .build())));
 
-            if (isNull(sivilstand.getNyRelatertPerson())) {
-                sivilstand.setNyRelatertPerson(new PersonRequestDTO());
-            }
-            if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
-                isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
-                isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
-                val foedselsdato = FoedselsdatoUtility.getFoedselsdato(hovedperson);
-                sivilstand.getNyRelatertPerson().setFoedtFoer(foedselsdato.plusYears(2));
-                sivilstand.getNyRelatertPerson().setFoedtEtter(foedselsdato.minusYears(2));
-            }
-            if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
-                KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream()
-                        .findFirst()
-                        .map(KjoennDTO::getKjoenn)
-                        .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
-                sivilstand.getNyRelatertPerson().setKjoenn(KjoennUtility.getPartnerKjoenn(kjoenn));
-            }
+        var relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
+        relatertSivilstand.setRelatertVedSivilstand(hovedperson);
+        relatertSivilstand.setId(relatertPerson.get().getPerson().getSivilstand().stream()
+                .max(Comparator.comparing(SivilstandDTO::getId))
+                .map(SivilstandDTO::getId)
+                .orElse(0) + 1);
 
-            EgenskaperFraHovedperson.kopierData(hovedperson, sivilstand.getNyRelatertPerson());
+        relatertPerson.get().getPerson().getSivilstand().addFirst(relatertSivilstand);
 
-            return createPersonService.execute(sivilstand.getNyRelatertPerson())
-                    .flatMap(relatertPerson -> {
-                        if (isNotTrue(sivilstand.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
-                            val fellesAdresse = mapperFacade.map(hovedperson.getBostedsadresse().stream()
-                                    .map(adresse -> mapperFacade.map(adresse, BostedadresseDTO.class))
-                                    .findFirst()
-                                    .orElse(BostedadresseDTO.builder()
-                                            .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
-                                            .build()), BostedadresseDTO.class);
-                            var adressedato = nonNull(sivilstand.getSivilstandsdato()) ?
-                                    sivilstand.getSivilstandsdato() :
-                                    sivilstand.getBekreftelsesdato();
-                            adressedato = nonNull(adressedato) ? adressedato : LocalDateTime.now().minusYears(3);
-                            fellesAdresse.setGyldigFraOgMed(adressedato);
-                            fellesAdresse.setAngittFlyttedato(adressedato);
-                            fellesAdresse.setId(relatertPerson.getPerson().getBostedsadresse().stream()
-                                                        .map(BostedadresseDTO::getId).findFirst()
-                                                        .orElse(0) + 1);
-                            relatertPerson.getPerson().getBostedsadresse().addFirst(fellesAdresse);
-                            return personRepository.save(relatertPerson);
-                        }
-                        return Mono.just(relatertPerson);
-                    })
-                    .doOnNext(relatertPerson -> {
-                        sivilstand.setBorIkkeSammen(null);
-                        sivilstand.setNyRelatertPerson(null);
-                        sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
-                    })
-                    .thenReturn(sivilstand);
-        }
-        return Mono.just(sivilstand);
-    }
-
-    private Mono<Void> createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
-
-        return personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
-                .switchIfEmpty(Mono.error(new RuntimeException("Relatert person med ident %s ikke funnet"
-                        .formatted(sivilstand.getRelatertVedSivilstand()))))
-                .doOnNext(relatertPerson -> {
-
-                    val relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
-                    relatertSivilstand.setRelatertVedSivilstand(hovedperson);
-                    relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()
-                                                     .max(Comparator.comparing(SivilstandDTO::getId))
-                                                     .map(SivilstandDTO::getId)
-                                                     .orElse(0) + 1);
-
-                    relatertPerson.getPerson().getSivilstand().addFirst(relatertSivilstand);
-
-                    relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
-                })
-                .flatMap(personRepository::save)
-                .then();
+        relatertPerson.get().getPerson().setSivilstand(enforceIntegrity(relatertPerson.get().getPerson()));
     }
 
     protected List<SivilstandDTO> enforceIntegrity(PersonDTO person) {
 
-        val tidligsteSivilstandDato = person.getSivilstand().stream()
+        var tidligsteSivilstandDato = person.getSivilstand().stream()
                 .map(SivilstandDTO::getSivilstandsdato)
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo);
 
-        val myndighetsdato = FoedselsdatoUtility.getMyndighetsdato(person);
+        var myndighetsdato = FoedselsdatoUtility.getMyndighetsdato(person);
 
         person.getSivilstand().forEach(stand -> {
             if (stand.isUgift() && isNull(stand.getSivilstandsdato())) {
                 stand.setSivilstandsdato(tidligsteSivilstandDato.isPresent() &&
-                                         tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
+                        tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
                         tidligsteSivilstandDato.get().minusMonths(3) :
                         FoedselsdatoUtility.getFoedselsdato(person));
             }

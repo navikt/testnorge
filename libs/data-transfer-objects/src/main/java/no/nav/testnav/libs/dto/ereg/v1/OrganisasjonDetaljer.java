@@ -105,7 +105,7 @@ public class OrganisasjonDetaljer {
     private List<UnderlagtHjemlandLovgivningForetaksform> underlagtHjemlandLovgivningForetaksform;
 
     @Schema(description = "Liste av organisasjonsnavn")
-    private List<Navn> navn;
+    private List<Navn> navn = new ArrayList<>();
 
     @Schema(description = "Liste av form&aring;l")
     private List<Formaal> formaal;

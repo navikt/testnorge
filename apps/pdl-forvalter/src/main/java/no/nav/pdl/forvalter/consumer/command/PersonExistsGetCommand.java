@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class PersonExistsGetCommand implements Callable<Mono<Boolean>> {
+public class PersonExistsGetCommand implements Callable<Flux<Boolean>> {
 
     private static final String PERSON_URL = "/api/v1/personer/{ident}/exists";
 
@@ -20,7 +20,7 @@ public class PersonExistsGetCommand implements Callable<Mono<Boolean>> {
     private final String token;
 
     @Override
-    public Mono<Boolean> call() {
+    public Flux<Boolean> call() {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -28,8 +28,9 @@ public class PersonExistsGetCommand implements Callable<Mono<Boolean>> {
                         .build(ident))
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToFlux(Boolean.class)
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
+
 }

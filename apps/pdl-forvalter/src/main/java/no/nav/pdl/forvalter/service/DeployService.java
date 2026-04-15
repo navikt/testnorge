@@ -24,22 +24,24 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public Flux<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
+    public List<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
 
-        return Flux.fromIterable(setOpprettet(artifacter))
+        return setOpprettet(artifacter).stream()
                 .map(element -> ArtifactValue.builder()
                         .artifact(type)
                         .ident(ident)
                         .body(element)
                         .build())
-                .map(value ->accessToken ->
+                .map(value -> (Ordre) accessToken ->
                         pdlTestdataConsumer.send(value, accessToken)
-                                .map(hendelse -> OrdreResponseDTO.PdlStatusDTO
+                                .collectList()
+                                .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
                                         .builder()
                                         .ident(ident)
                                         .infoElement(type)
-                                        .hendelser(List.of(hendelse))
-                                        .build()));
+                                        .hendelser(hendelser)
+                                        .build()))
+                .toList();
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordres) {

@@ -80,10 +80,7 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BestillingRequestDTO kilde, HentIdenterRequest destinasjon, MappingContext context) {
 
-                        destinasjon.setSyntetisk(kilde.getSyntetisk());
-                        destinasjon.setId2032(kilde.getId2032());
                         destinasjon.setIdenttype(mapIdenttype(kilde.getIdenttype()));
-
                         var foedsel = kilde.getPerson().getFoedselsdato().stream()
                                 .findFirst()
                                 .orElse(kilde.getPerson().getFoedsel().stream()
@@ -116,6 +113,9 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
                     }
                 })
+                .exclude("identtype")
+                .exclude("kjoenn")
+                .byDefault()
                 .register();
     }
 }

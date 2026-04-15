@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class TelefonnummerDTO extends DbVersjonDTO {
 
     private String landskode;
+    private String land;
     private String nummer;
     private Integer prioritet;
 }

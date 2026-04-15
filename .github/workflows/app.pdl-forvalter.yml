@@ -6,9 +6,10 @@ on:
       - .github/workflows/app.pdl-forvalter.yml
       - apps/pdl-forvalter/**
       - libs/data-transfer-objects/**
-      - libs/security-core/**
       - libs/reactive-core/**
-      - libs/reactive-standalone-security/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
       - libs/testing/**
       - plugins/**
 

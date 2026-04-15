@@ -5,10 +5,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/testnav-pdl-forvalter-local
     username: testnav-pdl-forvalter-local
     password: ${sm\://testnav-pdl-forvalter-local}
-  r2dbc:
-    url: r2dbc:postgresql://localhost:5432/testnav-pdl-forvalter-local
-    username: testnav-pdl-forvalter-local
-    password: ${sm\://testnav-pdl-forvalter-local}
 
 consumers:
   adresse-service:

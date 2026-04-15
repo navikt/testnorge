@@ -6,12 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.test.StepVerifier;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class IdenttypeServiceTest {
@@ -27,10 +28,11 @@ class IdenttypeServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Identtype ugyldig forespørsel: støttet datointervall " +
-                                "er fødsel mellom 1.1.1900 og dagens dato")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                identtypeService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Identtype ugyldig forespørsel: støttet datointervall " +
+                "er fødsel mellom 1.1.1900 og dagens dato"));
     }
 
     @Test
@@ -41,10 +43,11 @@ class IdenttypeServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Identtype ugyldig forespørsel: støttet datointervall " +
-                                "er fødsel mellom 1.1.1900 og dagens dato")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                identtypeService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Identtype ugyldig forespørsel: støttet datointervall " +
+                "er fødsel mellom 1.1.1900 og dagens dato"));
     }
 
     @Test
@@ -57,10 +60,11 @@ class IdenttypeServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Identtype ugyldig forespørsel: fødtFør kan ikke være " +
-                                "tidligere enn fødtEtter")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                identtypeService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Identtype ugyldig forespørsel: fødtFør kan ikke være " +
+                "tidligere enn fødtEtter"));
     }
 
     @Test
@@ -71,21 +75,23 @@ class IdenttypeServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Alder må være mellom 0 og 120 år")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                identtypeService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Alder må være mellom 0 og 120 år"));
     }
 
     @Test
     void whenAlderIsOutsideBoundaries2_thenThrowError() {
 
         var request = IdentRequestDTO.builder()
-                .alder(150)
+                .alder(-1)
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Alder må være mellom 0 og 120 år")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                identtypeService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Alder må være mellom 0 og 120 år"));
     }
 }

@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
@@ -15,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -58,155 +55,129 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndVegadresseConveysKommune_thenCaptureFoedekommune() {
 
-        StepVerifier.create(foedselService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
-                                .foedsel(List.of(FoedselDTO.builder()
-                                        .isNew(true)
-                                        .build()))
-                                .ident(FNR_IDENT)
-                                .bostedsadresse(List.of(vegadresse))
-                                .build())
-                        .build()))
-                .assertNext(target -> {
+        var target = foedselService.convert(PersonDTO.builder()
+                        .foedsel(List.of(FoedselDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .bostedsadresse(List.of(vegadresse))
+                        .build())
+                .getFirst();
 
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsaar(), is(equalTo(1956)));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedeland(), is(equalTo("NOR")));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedekommune(), is(equalTo("3025")));
-                })
-                .verifyComplete();
+        assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
+        assertThat(target.getFoedselsaar(), is(equalTo(1956)));
+        assertThat(target.getFoedeland(), is(equalTo("NOR")));
+        assertThat(target.getFoedekommune(), is(equalTo("3025")));
     }
 
     @Test
     void whenIdentIsFnrAndMatrikkeldresseConveysKommune_thenCaptureFoedekommune() {
 
-        StepVerifier.create(foedselService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
-                                .foedsel(List.of(FoedselDTO.builder()
-                                        .isNew(true)
-                                        .build()))
-                                .ident(FNR_IDENT)
-                                .bostedsadresse(List.of(matrikkeladresse))
-                                .build())
-                        .build()))
-                .assertNext(target -> {
+        var target = foedselService.convert(PersonDTO.builder()
+                        .foedsel(List.of(FoedselDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .bostedsadresse(List.of(matrikkeladresse))
+                        .build())
+                .getFirst();
 
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsaar(), is(equalTo(1956)));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedeland(), is(equalTo("NOR")));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedekommune(), is(equalTo("3024")));
-                })
-                .verifyComplete();
+        assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
+        assertThat(target.getFoedselsaar(), is(equalTo(1956)));
+        assertThat(target.getFoedeland(), is(equalTo("NOR")));
+        assertThat(target.getFoedekommune(), is(equalTo("3024")));
     }
 
     @Test
     void whenIdentIsFnrAndUkjentBostedConveysKommune_thenCaptureFoedekommune() {
 
-        StepVerifier.create(foedselService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
+        var target = foedselService.convert(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()
                                 .isNew(true)
                                 .build()))
                         .ident(FNR_IDENT)
                         .bostedsadresse(List.of(ukjentBosted))
                         .build())
-                        .build()))
-                .assertNext(target -> {
+                .getFirst();
 
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsaar(), is(equalTo(1956)));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedeland(), is(equalTo("NOR")));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedekommune(), is(equalTo("4644")));
-                })
-                .verifyComplete();
+        assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
+        assertThat(target.getFoedselsaar(), is(equalTo(1956)));
+        assertThat(target.getFoedeland(), is(equalTo("NOR")));
+        assertThat(target.getFoedekommune(), is(equalTo("4644")));
     }
-
 
     @Test
     void whenIdentIsFnrAndKommuneOfBirthIsUnknown_thenVerifyGetTilfeldigKommuneIsCalled() {
 
-        when(kodeverkConsumer.getTilfeldigKommune()).thenReturn(Mono.just("4777"));
+        when(kodeverkConsumer.getTilfeldigKommune()).thenReturn("4777");
 
-        StepVerifier.create(foedselService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
+        var target = foedselService.convert(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()
                                 .isNew(true)
                                 .build()))
                         .ident(FNR_IDENT)
                         .build())
-                        .build()))
-                .assertNext(target -> {
+                .getFirst();
 
-                    verify(kodeverkConsumer).getTilfeldigKommune();
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsaar(), is(equalTo(1956)));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedeland(), is(equalTo("NOR")));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedekommune(), is(equalTo("4777")));
-                })
-                .verifyComplete();
+        verify(kodeverkConsumer).getTilfeldigKommune();
+
+        assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
+        assertThat(target.getFoedselsaar(), is(equalTo(1956)));
+        assertThat(target.getFoedeland(), is(equalTo("NOR")));
+        assertThat(target.getFoedekommune(), is(equalTo("4777")));
     }
 
     @Test
     void whenIdentIsDnrAndUtenLandskAdresseConveysCountry_thenCaptureLandkode() {
 
-        StepVerifier.create(foedselService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
+        var target = foedselService.convert(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()
                                 .isNew(true)
                                 .build()))
                         .ident(DNR_IDENT)
                         .bostedsadresse(List.of(utenlandskBoadresse))
                         .build())
-                        .build()))
-                .assertNext(target -> {
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsaar(), is(equalTo(1968)));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedeland(), is(equalTo("BRA")));
-                })
-                .verifyComplete();
+                .getFirst();
+
+        assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
+        assertThat(target.getFoedselsaar(), is(equalTo(1968)));
+        assertThat(target.getFoedeland(), is(equalTo("BRA")));
     }
 
     @Test
     void whenIdentIsDnrAndInnflyttingConveysCountry_thenCapturLandkode() {
 
-        StepVerifier.create(foedselService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
+        var target = foedselService.convert(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()
                                 .isNew(true)
                                 .build()))
                         .ident(DNR_IDENT)
                         .innflytting(List.of(innflytting))
                         .build())
-                        .build()))
-                .assertNext(target -> {
+                .getFirst();
 
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsaar(), is(equalTo(1968)));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedeland(), is(equalTo("JPN")));
-                })
-                .verifyComplete();
+        assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
+        assertThat(target.getFoedselsaar(), is(equalTo(1968)));
+        assertThat(target.getFoedeland(), is(equalTo("JPN")));
     }
 
     @Test
     void whenIdentIsDnrAndLandOfBirthUnkown_thenLandkodeServiceIsCalled() {
 
-        when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("COL"));
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("COL");
 
-        StepVerifier.create(foedselService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
+        var target = foedselService.convert(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()
                                 .isNew(true)
                                 .build()))
                         .ident(DNR_IDENT)
                         .build())
-                        .build()))
-                .assertNext(target -> {
+                .getFirst();
 
-                    verify(kodeverkConsumer).getTilfeldigLand();
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedselsaar(), is(equalTo(1968)));
-                    assertThat(target.getPerson().getFoedsel().getFirst().getFoedeland(), is(equalTo("COL")));
-                })
-                .verifyComplete();
+        verify(kodeverkConsumer).getTilfeldigLand();
+
+        assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
+        assertThat(target.getFoedselsaar(), is(equalTo(1968)));
+        assertThat(target.getFoedeland(), is(equalTo("COL")));
     }
 }

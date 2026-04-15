@@ -12,8 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,11 +47,12 @@ class ForelderBarnRelasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
                         .ident(IDENT)
-                        .build()))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("ForelderBarnRelasjon: min rolle for person må oppgis")));
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle for person må oppgis"));
     }
 
     @Test
@@ -62,11 +63,12 @@ class ForelderBarnRelasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
                         .ident(IDENT)
-                        .build()))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("ForelderBarnRelasjon: relatert persons rolle må oppgis")));
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: relatert persons rolle må oppgis"));
     }
 
     @Test
@@ -78,12 +80,13 @@ class ForelderBarnRelasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
                         .ident(IDENT)
-                        .build()))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert persons rolle " +
-                                                                          "må være av type barn -- forelder, eller forelder -- barn")));
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert persons rolle " +
+                "må være av type barn -- forelder, eller forelder -- barn"));
     }
 
     @Test
@@ -95,12 +98,13 @@ class ForelderBarnRelasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
                         .ident(IDENT)
-                        .build()))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert persons rolle " +
-                                                                          "må være av type barn -- forelder, eller forelder -- barn")));
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert persons rolle " +
+                "må være av type barn -- forelder, eller forelder -- barn"));
     }
 
     @Test
@@ -113,13 +117,15 @@ class ForelderBarnRelasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        when(personRepository.existsByIdent(IDENT)).thenReturn(Mono.just(false));
+        when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
-        StepVerifier.create(forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
                         .ident(IDENT)
-                        .build()))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString(String.format("ForelderBarnRelasjon: Relatert person %s finnes ikke", IDENT))));
+                        .build()));
+
+        assertThat(exception.getMessage(),
+                containsString(String.format("ForelderBarnRelasjon: Relatert person %s finnes ikke", IDENT)));
     }
 
     @Test
@@ -136,13 +142,12 @@ class ForelderBarnRelasjonServiceTest {
                         .build())
                 .build();
 
-        StepVerifier.create(
-                        forelderBarnRelasjonService.validate(request, PersonDTO.builder()
-                                .ident(IDENT)
-                                .build()))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(),
-                                containsString("Delt bosted: kun én adresse skal være satt (vegadresse, ukjentBosted, matrikkeladresse)")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString("Delt bosted: kun én adresse skal være satt (vegadresse, ukjentBosted, matrikkeladresse)"));
     }
 
     @Test
@@ -155,14 +160,13 @@ class ForelderBarnRelasjonServiceTest {
                 .relatertPersonUtenFolkeregisteridentifikator(new RelatertBiPersonDTO())
                 .build();
 
-        StepVerifier.create(
-                        forelderBarnRelasjonService.validate(request, PersonDTO.builder()
-                                .ident(IDENT)
-                                .build()))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(),
-                                containsString("ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
-                                              "ikke begge deler")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
+                "ikke begge deler"));
     }
 
 

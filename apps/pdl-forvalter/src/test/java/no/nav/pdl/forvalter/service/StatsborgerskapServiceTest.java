@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -11,8 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,9 +43,10 @@ class StatsborgerskapServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(statsborgerskapService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Ugyldig landkode, må være i hht ISO-3 Landkoder")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                statsborgerskapService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Ugyldig landkode, må være i hht ISO-3 Landkoder"));
     }
 
     @Test
@@ -58,81 +58,73 @@ class StatsborgerskapServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(statsborgerskapService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                statsborgerskapService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }
 
     @Test
     void whenLandkodeIsEmptyAndAvailFromInnflytting_thenPickLandkodeFromInnflytting() {
 
-        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
-                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                                        .isNew(true)
-                                        .build()))
-                                .ident(FNR_IDENT)
-                                .innflytting(List.of(InnflyttingDTO.builder()
-                                        .fraflyttingsland("GER")
-                                        .build()))
-                                .build())
-                        .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getStatsborgerskap().getFirst().getLandkode(), is(equalTo("GER"))))
-                .verifyComplete();
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .innflytting(List.of(InnflyttingDTO.builder()
+                                .fraflyttingsland("GER")
+                                .build()))
+                        .build())
+                .getFirst();
+
+        assertThat(target.getLandkode(), is(equalTo("GER")));
     }
 
     @Test
     void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeFNR_thenSetLandkodeNorge() {
 
-        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
-                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                                        .isNew(true)
-                                        .build()))
-                                .ident(FNR_IDENT)
-                                .build())
-                        .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getStatsborgerskap().getFirst().getLandkode(), is(equalTo("NOR"))))
-                .verifyComplete();
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .build())
+                .getFirst();
+
+        assertThat(target.getLandkode(), is(equalTo("NOR")));
     }
 
     @Test
     void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeDNR_thenGeografiskeKodeverkConsumerIsCalled() {
 
-        when(kodeverkConsumer.getTilfeldigLand()).thenReturn(Mono.just("CHL"));
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("CHL");
 
-        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
-                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                                        .isNew(true)
-                                        .build()))
-                                .ident(DNR_IDENT)
-                                .build())
-                        .build()))
-                .assertNext(target -> {
-                    verify(kodeverkConsumer).getTilfeldigLand();
-                    assertThat(target.getPerson().getStatsborgerskap().getFirst().getLandkode(), is(equalTo("CHL")));
-                })
-                .verifyComplete();
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(DNR_IDENT)
+                        .build())
+                .getFirst();
+
+        verify(kodeverkConsumer).getTilfeldigLand();
+
+        assertThat(target.getLandkode(), is(equalTo("CHL")));
     }
 
     @Test
     void whenGyldigFomNotProvided_thenDeriveGyldigFomFromBirthdate() {
 
-        StepVerifier.create(statsborgerskapService.convert(DbPerson.builder()
-                        .person(PersonDTO.builder()
-                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                                        .isNew(true)
-                                        .master(DbVersjonDTO.Master.PDL)
-                                        .build()))
-                                .ident(FNR_IDENT)
-                                .build())
-                        .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getStatsborgerskap().getFirst().getGyldigFraOgMed(),
-                                is(equalTo(LocalDate.of(1956, 4, 12).atStartOfDay()))))
-                .verifyComplete();
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .master(DbVersjonDTO.Master.PDL)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .build())
+                .getFirst();
+
+        assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(1956, 4, 12).atStartOfDay())));
     }
 }

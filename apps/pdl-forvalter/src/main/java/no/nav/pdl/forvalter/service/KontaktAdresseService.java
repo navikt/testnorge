@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.service;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -16,9 +15,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -38,7 +36,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, PersonDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kontaktadresse: kun én adresse skal være satt (vegadresse, " +
-                                                             "postboksadresse, utenlandskAdresse, postadresseIFrittFormat eller utenlandskAdresseIFrittFormat)";
+            "postboksadresse, utenlandskAdresse, postadresseIFrittFormat eller utenlandskAdresseIFrittFormat)";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
@@ -53,75 +51,56 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         this.enkelAdresseService = enkelAdresseService;
     }
 
-    public Mono<DbPerson> convert(DbPerson dbPerson, Boolean relaxed) {
-
-        return Flux.fromIterable(dbPerson.getPerson().getKontaktadresse())
-                .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
-                .flatMap(adresse -> handle(adresse, dbPerson.getPerson()))
-                .filter(Objects::nonNull)
-                .doOnNext(adresse -> {
-                    adresse.setKilde(getKilde(adresse));
-                    adresse.setMaster(getMaster(adresse, dbPerson.getPerson()));
-                })
-                .collectList()
-                .doOnNext(kontaktadresser ->
-                    oppdaterAdressedatoer(dbPerson.getPerson().getKontaktadresse(), dbPerson.getPerson()))
-                .thenReturn(dbPerson);
-    }
-
-    private static Mono<Void> validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
+    private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
 
         if (isBlank(postboksadresse.getPostboks())) {
-            return Mono.error(new InvalidRequestException(VALIDATION_POSTBOKS_ERROR));
+            throw new InvalidRequestException(VALIDATION_POSTBOKS_ERROR);
         }
         if (isBlank(postboksadresse.getPostnummer()) ||
-            !postboksadresse.getPostnummer().matches("\\d{4}")) {
-            return Mono.error(new InvalidRequestException(VALIDATION_POSTNUMMER_ERROR));
+                !postboksadresse.getPostnummer().matches("\\d{4}")) {
+            throw new InvalidRequestException(VALIDATION_POSTNUMMER_ERROR);
         }
-        return Mono.empty();
+    }
+
+    public List<KontaktadresseDTO> convert(PersonDTO person, Boolean relaxed) {
+
+        person.getKontaktadresse().stream()
+                .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
+                .forEach(adresse -> {
+                    handle(adresse, person);
+                    adresse.setKilde(getKilde(adresse));
+                    adresse.setMaster(getMaster(adresse, person));
+                });
+
+        oppdaterAdressedatoer(person.getBostedsadresse(), person);
+
+        return person.getKontaktadresse();
     }
 
     @Override
-    public Mono<Void> validate(KontaktadresseDTO adresse, PersonDTO person) {
+    public void validate(KontaktadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
-            return Mono.error(new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR));
+            throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
-            return validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
+            validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
         }
         if (nonNull(adresse.getPostboksadresse())) {
-            return validatePostBoksAdresse(adresse.getPostboksadresse());
+            validatePostBoksAdresse(adresse.getPostboksadresse());
         }
         if (nonNull(adresse.getOpprettCoAdresseNavn())) {
-            return validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
+            validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
         }
-        return Mono.empty();
     }
 
-    private Mono<KontaktadresseDTO> handle(KontaktadresseDTO kontaktadresse, PersonDTO person) {
-
-        return getKontaktadresse(kontaktadresse, person)
-                .flatMap(kontaktadresser -> {
-                    if (Master.PDL == kontaktadresse.getMaster()) {
-                        kontaktadresse.setGyldigFraOgMed(nonNull(kontaktadresse.getGyldigFraOgMed()) ? kontaktadresse.getGyldigFraOgMed() : now());
-                        kontaktadresse.setGyldigTilOgMed(nonNull(kontaktadresse.getGyldigTilOgMed()) ? kontaktadresse.getGyldigTilOgMed() :
-                                kontaktadresse.getGyldigFraOgMed().plusYears(1));
-                    }
-                    return genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn())
-                            .doOnNext(kontaktadresse::setCoAdressenavn)
-                            .doOnNext(navn -> kontaktadresse.setOpprettCoAdresseNavn(null))
-                            .thenReturn(kontaktadresse);
-                });
-    }
-
-    private Mono<KontaktadresseDTO> getKontaktadresse(KontaktadresseDTO kontaktadresse, PersonDTO person) {
+    private void handle(KontaktadresseDTO kontaktadresse, PersonDTO person) {
 
         if (FNR == IdenttypeUtility.getIdenttype(person.getIdent())) {
 
             if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
-                return Mono.empty();
+                return;
 
             } else if (kontaktadresse.countAdresser() == 0) {
                 kontaktadresse.setVegadresse(new VegadresseDTO());
@@ -132,39 +111,38 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         }
 
         if (nonNull(kontaktadresse.getVegadresse())) {
-            return adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen())
-                    .map(vegadresse -> {
-                        kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(kontaktadresse, person.getIdent(), vegadresse.getMatrikkelId()));
-                        mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
-                        kontaktadresse.getVegadresse().setKommunenummer(null);
-                        return kontaktadresse;
-                    });
+            var vegadresse =
+                    adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
+            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(kontaktadresse, person.getIdent(), vegadresse.getMatrikkelId()));
+            mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
+            kontaktadresse.getVegadresse().setKommunenummer(null);
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
-            return enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster())
-                    .doOnNext(kontaktadresse::setUtenlandskAdresse)
-                    .thenReturn(kontaktadresse);
+            kontaktadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster()));
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresseIFrittFormat())) {
 
-            return enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresseIFrittFormat(), getLandkode(person))
-                            .doOnNext(kontaktadresse::setUtenlandskAdresseIFrittFormat)
-                            .thenReturn(kontaktadresse);
+            kontaktadresse.setUtenlandskAdresseIFrittFormat(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresseIFrittFormat(), getLandkode(person)));
 
-        } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat()) && kontaktadresse.getPostadresseIFrittFormat().isEmpty()) {
+        } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat()) &&
+                kontaktadresse.getPostadresseIFrittFormat().isEmpty()) {
 
-            return adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
+            var vegadresse =
+                    adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
                             .postnummer(kontaktadresse.getPostadresseIFrittFormat().getPostnummer())
-                            .build(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen())
-                    .map(vegadresse -> {
-                        kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(kontaktadresse, person.getIdent(), vegadresse.getMatrikkelId()));
-                        mapperFacade.map(vegadresse, kontaktadresse.getPostadresseIFrittFormat());
-                        return kontaktadresse;
-                    });
+                            .build(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
+            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(getMatrikkelId(kontaktadresse, person.getIdent(), vegadresse.getMatrikkelId()));
+            mapperFacade.map(vegadresse, kontaktadresse.getPostadresseIFrittFormat());
         }
 
-        return Mono.just(kontaktadresse);
+        if (Master.PDL == kontaktadresse.getMaster()) {
+            kontaktadresse.setGyldigFraOgMed(nonNull(kontaktadresse.getGyldigFraOgMed()) ? kontaktadresse.getGyldigFraOgMed() : now());
+            kontaktadresse.setGyldigTilOgMed(nonNull(kontaktadresse.getGyldigTilOgMed()) ? kontaktadresse.getGyldigTilOgMed() :
+                    kontaktadresse.getGyldigFraOgMed().plusYears(1));
+        }
+        kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
+        kontaktadresse.setOpprettCoAdresseNavn(null);
     }
 
     private String getLandkode(PersonDTO person) {

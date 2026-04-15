@@ -2,6 +2,7 @@ package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
@@ -29,15 +29,8 @@ public class VergemaalDTO extends DbVersjonDTO {
     private PersonRequestDTO nyVergeIdent;
     private String vergeIdent;
     private VergemaalMandattype mandatType;
-
-    private List<TjenesteomraadeDTO> tjenesteomraade;
-
-    public List<TjenesteomraadeDTO> getTjenesteomraade() {
-        if (isNull(tjenesteomraade)) {
-            tjenesteomraade = new ArrayList<>();
-        }
-        return tjenesteomraade;
-    }
+    @Builder.Default
+    private List<TjenesteomraadeDTO> tjenesteomraade = new ArrayList<>();
 
     private Boolean eksisterendePerson;
 

@@ -5,10 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.test.StepVerifier;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class UtenlandsidentifikasjonsnummerServiceTest {
@@ -23,10 +24,10 @@ class UtenlandsidentifikasjonsnummerServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(
-                        utenlandsidentifikasjonsnummerService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Utenlandsk identifikasjonsnummer må oppgis")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                utenlandsidentifikasjonsnummerService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Utenlandsk identifikasjonsnummer må oppgis"));
     }
 
     @Test
@@ -37,10 +38,10 @@ class UtenlandsidentifikasjonsnummerServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(
-                        utenlandsidentifikasjonsnummerService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Er utenlandsk identifikasjonsnummer opphørt? Må angis")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                utenlandsidentifikasjonsnummerService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Er utenlandsk identifikasjonsnummer opphørt? Må angis"));
     }
 
     @Test
@@ -52,10 +53,10 @@ class UtenlandsidentifikasjonsnummerServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(
-                        utenlandsidentifikasjonsnummerService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Utsteder land må oppgis")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                utenlandsidentifikasjonsnummerService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Utsteder land må oppgis"));
     }
 
     @Test
@@ -68,9 +69,9 @@ class UtenlandsidentifikasjonsnummerServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(
-                        utenlandsidentifikasjonsnummerService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Trebokstavers landkode er forventet på utstederland")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                utenlandsidentifikasjonsnummerService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Trebokstavers landkode er forventet på utstederland"));
     }
 }

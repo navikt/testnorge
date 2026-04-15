@@ -5,9 +5,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -43,9 +43,9 @@ public class ValidateArtifactsService {
     private final VergemaalService vergemaalService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
 
-    public Mono<Void> validate(PersonDTO person) {
+    public void validate(PersonDTO person) {
 
-        return Flux.merge(
+        Stream.of(
                         validate(kjoennService, person.getKjoenn(), person),
                         validate(innflyttingService, person.getInnflytting()),
                         validate(bostedAdresseService, person.getBostedsadresse(), person),
@@ -74,7 +74,9 @@ public class ValidateArtifactsService {
                         validate(doedfoedtBarnService, person.getDoedfoedtBarn()),
                         validate(identtypeService, person.getNyident())
                 )
-                .then();
+                .reduce(Flux.empty(), Flux::concat)
+                .collectList()
+                .block();
     }
 
     private <T extends DbVersjonDTO> Flux<Void> validate(Validation<T> validation, List<T> artifact) {
@@ -88,8 +90,10 @@ public class ValidateArtifactsService {
 
     private <T extends DbVersjonDTO, R> Flux<Void> validate(BiValidation<T, R> validation, List<T> artifact, R person) {
 
-        return Flux.fromIterable(artifact)
+        artifact.stream()
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> validation.validate(type, person));
+                .forEach(type -> validation.validate(type, person));
+
+        return Flux.empty();
     }
 }
