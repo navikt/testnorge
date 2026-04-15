@@ -20,6 +20,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -69,9 +71,13 @@ public class PersonServiceConsumer extends ConsumerStatus {
 
         return getPdlPersoner(identer, new AtomicInteger(MAX_RETRIES))
                 .doOnNext(resultat -> {
-                    if (isNotBlank(resultat.getErrors())) {
-                        log.error("Feil mottatt fra person-service {} ved henting av identer {}",
-                                resultat.getErrors(), String.join(", ", identer));
+                    if (isNotBlank(resultat.getMessage())) {
+                        log.error("Feil mottatt fra person-service {} ved henting av identer {} ...",
+                                resultat.getMessage(),
+                                IntStream.range(0, 10)
+                                        .filter(i -> i < identer.size())
+                                        .mapToObj(identer::get)
+                                        .collect(Collectors.joining(", ")));
                     }
                 });
     }
@@ -88,8 +94,8 @@ public class PersonServiceConsumer extends ConsumerStatus {
                 .flatMap(resultat -> {
 
                     if (retry.get() < MAX_RETRIES &&
-                            (isNull(resultat.getData()) || resultat.getData().getHentPersonBolk().stream()
-                                    .anyMatch(data -> isNull(data.getPerson())))) {
+                        (isNull(resultat.getData()) || resultat.getData().getHentPersonBolk().stream()
+                                .anyMatch(data -> isNull(data.getPerson())))) {
 
                         return Flux.just(true)
                                 .doOnNext(melding ->

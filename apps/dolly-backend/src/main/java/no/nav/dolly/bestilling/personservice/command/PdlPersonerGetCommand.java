@@ -2,11 +2,11 @@ package no.nav.dolly.bestilling.personservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -36,9 +36,12 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
                 .bodyToFlux(PdlPersonBolk.class)
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(WebClientResponseException.class::isInstance,
-                        throwable -> Mono.just(PdlPersonBolk.builder()
-                                .errors(((WebClientResponseException) throwable).getResponseBodyAsString())
-                                .build()));
+                .onErrorResume(throwable -> {
+                    val error = WebClientError.describe(throwable);
+                    return Mono.just(PdlPersonBolk.builder()
+                            .message(error.getMessage())
+                            .status(error.getStatus())
+                            .build());
+                });
     }
 }
