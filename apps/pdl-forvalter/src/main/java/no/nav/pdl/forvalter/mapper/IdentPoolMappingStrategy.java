@@ -116,6 +116,8 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
                     }
                 })
+                .exclude("identtype")
+                .byDefault()
                 .register();
     }
 }
