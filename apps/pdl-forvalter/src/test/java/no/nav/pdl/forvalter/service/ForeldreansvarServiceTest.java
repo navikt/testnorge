@@ -13,11 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,10 +43,10 @@ class ForeldreansvarServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
+        StepVerifier.create(foreldreansvarService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
 
-        assertThat(exception.getMessage(), containsString("Forelderansvar: hvem som har ansvar må oppgis"));
+                        assertThat(throwable.getMessage(), containsString("Forelderansvar: hvem som har ansvar må oppgis")));
     }
 
     @Test
@@ -59,17 +59,16 @@ class ForeldreansvarServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString("Forelderansvar: kun et av feltene 'ansvarlig' og " +
-                "'ansvarligUtenIdentifikator' kan benyttes"));
+        StepVerifier.create(foreldreansvarService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Forelderansvar: kun et av feltene 'ansvarlig' og " +
+                                                                          "'ansvarligUtenIdentifikator' kan benyttes")));
     }
 
     @Test
     void whenAnsvarligPersonDontExist_thenThrowExecption() {
 
-        when(personRepository.existsByIdent(IDENT_ANDRE)).thenReturn(false);
+        when(personRepository.existsByIdent(IDENT_ANDRE)).thenReturn(Mono.just(false));
 
         var request = ForeldreansvarDTO.builder()
                 .ansvar(Ansvar.ANDRE)
@@ -77,10 +76,9 @@ class ForeldreansvarServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString(String.format("Foreldreansvar: Ansvarlig person %s finnes ikke", IDENT_ANDRE)));
+        StepVerifier.create(foreldreansvarService.validate(request, new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString(String.format("Foreldreansvar: Ansvarlig person %s finnes ikke", IDENT_ANDRE))));
     }
 
     @Test
@@ -90,23 +88,20 @@ class ForeldreansvarServiceTest {
                 .substantiv(ETTERNAVN)
                 .build();
 
-        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(false);
+        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(Mono.just(false));
 
-        var request = ForeldreansvarDTO.builder()
-                .ansvar(Ansvar.ANDRE)
-                .ansvarligUtenIdentifikator(RelatertBiPersonDTO.builder()
-                        .navn(PersonnavnDTO.builder()
-                                .etternavn(ETTERNAVN)
+        StepVerifier.create(foreldreansvarService.validate(ForeldreansvarDTO.builder()
+                        .ansvar(Ansvar.ANDRE)
+                        .ansvarligUtenIdentifikator(RelatertBiPersonDTO.builder()
+                                .navn(PersonnavnDTO.builder()
+                                        .etternavn(ETTERNAVN)
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(),
-                containsString("Foreldreansvar: Navn er ikke i liste over gyldige verdier"));
+                        .isNew(true)
+                        .build(), new PersonDTO()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(),
+                                containsString("Foreldreansvar: Navn er ikke i liste over gyldige verdier")));
     }
 
     @Test
@@ -116,23 +111,22 @@ class ForeldreansvarServiceTest {
                 .substantiv(ETTERNAVN)
                 .build();
 
-        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(false);
+        when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(Mono.just(false));
 
-        var request = ForeldreansvarDTO.builder()
-                .ansvar(Ansvar.ANDRE)
-                .ansvarligUtenIdentifikator(RelatertBiPersonDTO.builder()
-                        .navn(PersonnavnDTO.builder()
-                                .etternavn(ETTERNAVN)
+        StepVerifier.create(foreldreansvarService.validate(ForeldreansvarDTO.builder()
+                        .ansvar(Ansvar.MOR)
+                        .ansvarligUtenIdentifikator(RelatertBiPersonDTO.builder()
+                                .navn(PersonnavnDTO.builder()
+                                        .etternavn(ETTERNAVN)
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(),
-                containsString("Foreldreansvar: Navn er ikke i liste over gyldige verdier"));
+                        .isNew(true)
+                        .build(), PersonDTO.builder()
+                        .ident(IDENT_HOVEDPERSON)
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(),
+                                containsString("Foreldreansvar: Navn er ikke i liste over gyldige verdier")));
     }
 
     @Test
@@ -143,14 +137,12 @@ class ForeldreansvarServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, PersonDTO.builder()
-                        .ident(IDENT_HOVEDPERSON)
-                        .build()
-                ));
-
-        assertThat(exception.getMessage(),
-                containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til mor ikke funnet"));
+        StepVerifier.create(foreldreansvarService.validate(request, PersonDTO.builder()
+                .ident(IDENT_HOVEDPERSON)
+                .build()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(),
+                                containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til mor ikke funnet")));
     }
 
     @Test
@@ -161,14 +153,12 @@ class ForeldreansvarServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, PersonDTO.builder()
-                                .ident(IDENT_HOVEDPERSON)
-                                .build()
-                ));
-
-        assertThat(exception.getMessage(),
-                containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til far ikke funnet"));
+        StepVerifier.create(foreldreansvarService.validate(request, PersonDTO.builder()
+                        .ident(IDENT_HOVEDPERSON)
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(),
+                                containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til far ikke funnet")));
     }
 
     @Test
@@ -179,13 +169,11 @@ class ForeldreansvarServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, PersonDTO.builder()
-                                .ident(IDENT_HOVEDPERSON)
-                                .build()
-                ));
-
-        assertThat(exception.getMessage(),
-                containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til mor og/eller far ikke funnet"));
+        StepVerifier.create(foreldreansvarService.validate(request, PersonDTO.builder()
+                        .ident(IDENT_HOVEDPERSON)
+                        .build()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(),
+                                containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til mor og/eller far ikke funnet")));
     }
 }

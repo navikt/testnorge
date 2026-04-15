@@ -88,7 +88,7 @@ public class RelasjonerAlderService {
                 });
     }
 
-    private static void fixFoedsel(BestillingRequestDTO request) {
+    private void fixFoedsel(BestillingRequestDTO request) {
         request.getPerson().getFoedsel()
                 .forEach(foedsel -> {
 
@@ -102,8 +102,8 @@ public class RelasjonerAlderService {
                 });
 
         if (request.hasAlder() && nonNull(request.getAlder())) {
-            request.setFoedtEtter(LocalDateTime.now().minusYears(request.getAlder()).minusMonths(6));
-            request.setFoedtFoer(LocalDateTime.now().minusYears(request.getAlder()));
+            request.setFoedtEtter(LocalDateTime.now(clock).minusYears(request.getAlder()).minusMonths(6));
+            request.setFoedtFoer(LocalDateTime.now(clock).minusYears(request.getAlder()));
             request.setAlder(null);
         }
     }

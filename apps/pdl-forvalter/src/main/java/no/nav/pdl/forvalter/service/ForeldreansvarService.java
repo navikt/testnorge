@@ -27,15 +27,14 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 
 import static java.util.Objects.isNull;
@@ -61,16 +60,16 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private static final int MYNDIG_ALDER = 18;
     private static final String INVALID_EMPTY_ANSVAR_EXCEPTION = "Forelderansvar: hvem som har ansvar må oppgis";
     private static final String INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION = "Forelderansvar: kun et av feltene 'ansvarlig' " +
-            "og 'ansvarligUtenIdentifikator' kan benyttes";
+                                                                        "og 'ansvarligUtenIdentifikator' kan benyttes";
     private static final String INVALID_ANSVARLIG_PERSON_EXCEPTION = "Foreldreansvar: Ansvarlig person %s finnes ikke";
     private static final String INVALID_NAVN_ERROR = "Foreldreansvar: Navn er ikke i liste over gyldige verdier";
     private static final String BARN_MANGLER = "Foreldreansvar: barn mangler / ";
     private static final String INVALID_RELASJON_MOR_EXCEPTION = BARN_MANGLER +
-            "barnets foreldrerelasjon til mor ikke funnet";
+                                                                 "barnets foreldrerelasjon til mor ikke funnet";
     private static final String INVALID_RELASJON_FAR_EXCEPTION = BARN_MANGLER +
-            "barnets foreldrerelasjon til far ikke funnet";
+                                                                 "barnets foreldrerelasjon til far ikke funnet";
     private static final String INVALID_RELASJON_FELLES_EXCEPTION = BARN_MANGLER +
-            "barnets foreldrerelasjon til mor og/eller far ikke funnet";
+                                                                    "barnets foreldrerelasjon til mor og/eller far ikke funnet";
 
     private static final Random RANDOM = new SecureRandom();
 
@@ -84,57 +83,58 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    public List<ForeldreansvarDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson person) {
 
-        var alleForeldreansvar = mapperFacade.mapAsList(person.getForeldreansvar(), ForeldreansvarDTO.class);
+        var alleForeldreansvar = mapperFacade.mapAsList(person.getPerson().getForeldreansvar(), ForeldreansvarDTO.class);
 
-        for (var type : alleForeldreansvar) {
+        return Flux.fromIterable(alleForeldreansvar)
+                .flatMap(type -> Flux.fromIterable(person.getPerson().getForeldreansvar())
+                        .filter(ansvar -> Objects.equals(type.getId(), ansvar.getId()))
+                        .flatMap(foreldreansvar -> {
+                            if (isTrue(foreldreansvar.getIsNew())) {
 
-            person.getForeldreansvar().stream()
-                    .filter(ansvar -> Objects.equals(type.getId(), ansvar.getId()))
-                    .findFirst()
-                    .ifPresent(foreldreansvar -> {
-                        if (isTrue(foreldreansvar.getIsNew())) {
-
-                            foreldreansvar.setKilde(getKilde(foreldreansvar));
-                            foreldreansvar.setMaster(getMaster(foreldreansvar, person));
-                            handle(foreldreansvar, person);
-                        }
-                    });
-        }
-
-        return person.getForeldreansvar();
+                                foreldreansvar.setKilde(getKilde(foreldreansvar));
+                                foreldreansvar.setMaster(getMaster(foreldreansvar, person.getPerson()));
+                                return handle(foreldreansvar, person.getPerson());
+                            }
+                            return Mono.empty();
+                        }))
+                .then()
+                .thenReturn(person);
     }
 
     @Override
-    public void validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
+    public Mono<Void> validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
 
-        validateForeldreansvar(foreldreansvar);
+        return validateForeldreansvar(foreldreansvar)
+                .then(Mono.defer(() -> {
 
-        if (getFoedselsdato(hovedperson).stream()
-                .anyMatch(alder -> alder.getFoedselsaar() <= LocalDateTime.now().minusYears(MYNDIG_ALDER).getYear())) {
+                    if (getFoedselsdato(hovedperson).stream()
+                            .anyMatch(alder -> alder.getFoedselsaar() <= LocalDateTime.now().minusYears(MYNDIG_ALDER).getYear())) {
 
-            if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
-                    isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                    !isRelasjonMor(hovedperson)) {
-                throw new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION);
-            }
+                        if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
+                            isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+                            !isRelasjonMor(hovedperson)) {
+                            return Mono.error(new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION));
+                        }
 
-            if ((foreldreansvar.getAnsvar() == Ansvar.FAR) &&
-                    isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                    !isRelasjonFar(hovedperson)) {
-                throw new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION);
-            }
+                        if ((foreldreansvar.getAnsvar() == Ansvar.FAR) &&
+                            isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+                            !isRelasjonFar(hovedperson)) {
+                            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION));
+                        }
 
-            if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
-                    isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                    !isRelasjonForeldre(hovedperson)) {
-                throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
-            }
-        } else {
+                        if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
+                            isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+                            !isRelasjonForeldre(hovedperson)) {
+                            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION));
+                        }
+                    } else {
 
-            validateBarn(foreldreansvar, hovedperson);
-        }
+                        return validateBarn(foreldreansvar, hovedperson);
+                    }
+                    return Mono.empty();
+                }));
     }
 
     private List<? extends FoedselsdatoDTO> getFoedselsdato(PersonDTO person) {
@@ -150,68 +150,77 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
     }
 
-    private void validateForeldreansvar(ForeldreansvarDTO foreldreansvar) {
+    private Mono<Void> validateForeldreansvar(ForeldreansvarDTO foreldreansvar) {
 
         if (isNull(foreldreansvar.getAnsvar())) {
-            throw new InvalidRequestException(INVALID_EMPTY_ANSVAR_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_EMPTY_ANSVAR_EXCEPTION));
         }
 
         if (nonNull(foreldreansvar.getAnsvarlig()) &&
-                nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
+            nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-            throw new InvalidRequestException(INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION);
+            return Mono.error(new InvalidRequestException(INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION));
         }
 
-        if (isNotBlank(foreldreansvar.getAnsvarlig()) &&
-                !personRepository.existsByIdent(foreldreansvar.getAnsvarlig())) {
+        return Mono.defer(() -> {
+                    if (isNotBlank(foreldreansvar.getAnsvarlig())) {
+                        return personRepository.existsByIdent(foreldreansvar.getAnsvarlig())
+                                .flatMap(exists -> isFalse(exists) ?
+                                        Mono.error(new InvalidRequestException(
+                                                INVALID_ANSVARLIG_PERSON_EXCEPTION.formatted(foreldreansvar.getAnsvarlig()))) :
+                                        Mono.empty());
+                    }
+                    return Mono.empty();
+                })
+                .then(Mono.defer(() -> {
+                    if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-            throw new InvalidRequestException(String.format(INVALID_ANSVARLIG_PERSON_EXCEPTION,
-                    foreldreansvar.getAnsvarlig()));
-        }
+                        var navn = foreldreansvar.getAnsvarligUtenIdentifikator().getNavn();
+                        if (nonNull(navn) && (isNotBlank(navn.getFornavn()) ||
+                                              isNotBlank(navn.getMellomnavn()) ||
+                                              isNotBlank(navn.getEtternavn()))) {
 
-        if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
-
-            var navn = foreldreansvar.getAnsvarligUtenIdentifikator().getNavn();
-            if (nonNull(navn) && (isNotBlank(navn.getFornavn()) ||
-                    isNotBlank(navn.getMellomnavn()) ||
-                    isNotBlank(navn.getEtternavn())) &&
-                    isFalse(genererNavnServiceConsumer.verifyNavn(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
-                            .adjektiv(navn.getFornavn())
-                            .adverb(navn.getMellomnavn())
-                            .substantiv(navn.getEtternavn())
-                            .build()))) {
-
-                throw new InvalidRequestException(INVALID_NAVN_ERROR);
-            }
-        }
+                            return genererNavnServiceConsumer.verifyNavn(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
+                                            .adjektiv(navn.getFornavn())
+                                            .adverb(navn.getMellomnavn())
+                                            .substantiv(navn.getEtternavn())
+                                            .build())
+                                    .flatMap(valid -> isFalse(valid) ?
+                                            Mono.error(new InvalidRequestException(INVALID_NAVN_ERROR)) :
+                                            Mono.empty());
+                        }
+                    }
+                    return Mono.empty();
+                }));
     }
 
-    private void validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private Mono<Void> validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
         if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
-                isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                !isRelasjonFraBarn(barn, MOR, MEDMOR)) {
-            throw new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION);
+            isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+            !isRelasjonFraBarn(barn, MOR, MEDMOR)) {
+            return Mono.error(new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION));
         }
 
         if ((foreldreansvar.getAnsvar() == Ansvar.FAR) &&
-                isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                !isRelasjonFraBarn(barn, FAR)) {
-            throw new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION);
+            isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+            !isRelasjonFraBarn(barn, FAR)) {
+            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION));
         }
 
         if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
-                isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                !isRelasjonForeldreFraBarn(barn)) {
-            throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
+            isBlank(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+            !isRelasjonForeldreFraBarn(barn)) {
+            return Mono.error(new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION));
         }
+        return Mono.empty();
     }
 
     private static boolean isRelasjonForeldreFraBarn(PersonDTO barn) {
 
         return barn.getForelderBarnRelasjon().stream()
-                .filter(ForelderBarnRelasjonDTO::isBarn)
-                .count() == 2;
+                       .filter(ForelderBarnRelasjonDTO::isBarn)
+                       .count() == 2;
     }
 
     private static boolean isRelasjonFraBarn(PersonDTO barn, Rolle... roller) {
@@ -224,9 +233,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private boolean isRelasjonForeldre(PersonDTO person) {
 
         return person.getForelderBarnRelasjon().stream()
-                .anyMatch(relasjon -> relasjon.isForeldre() && isNotTrue(relasjon.getPartnerErIkkeForelder())) &&
-                person.getSivilstand().stream()
-                        .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert()));
+                       .anyMatch(relasjon -> relasjon.isForeldre() && isNotTrue(relasjon.getPartnerErIkkeForelder())) &&
+               person.getSivilstand().stream()
+                       .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
     private boolean isRelasjonMor(PersonDTO person) {
@@ -234,33 +243,28 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return person.getForelderBarnRelasjon().stream()
                 .anyMatch(relasjon ->
                         MOR == relasjon.getMinRolleForPerson() ||
-                                MEDMOR == relasjon.getMinRolleForPerson() ||
+                        MEDMOR == relasjon.getMinRolleForPerson() ||
 
-                                (FORELDER == relasjon.getMinRolleForPerson() &&
-                                        (Kjoenn.KVINNE == person.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
-                                                Kjoenn.KVINNE == KjoennFraIdentUtility.getKjoenn(person.getIdent()))) ||
+                        (FORELDER == relasjon.getMinRolleForPerson() &&
+                         (Kjoenn.KVINNE == person.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
+                          Kjoenn.KVINNE == KjoennFraIdentUtility.getKjoenn(person.getIdent()))) ||
 
-                                isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
-                                        person.getSivilstand().stream()
-                                                .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert())));
+                        isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
+                        person.getSivilstand().stream()
+                                .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert())));
     }
 
-    private List<BarnRelasjon> getBarnMorRelasjoner(PersonDTO person) {
+    private Flux<BarnRelasjon> getBarnMorRelasjoner(PersonDTO person) {
 
-        return person.getForelderBarnRelasjon().stream()
-                .map(barnRelasjon ->
-                        personRepository.findByIdent(barnRelasjon.getRelatertPerson())
-                                .map(barn -> barn.getPerson().getForelderBarnRelasjon().stream()
-                                        .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
-                                                foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
-                                        .map(foreldreRelasjon -> BarnRelasjon.builder()
-                                                .barn(barn)
-                                                .ansvarlig(foreldreRelasjon.getRelatertPerson())
-                                                .build())
-                                        .toList()))
-                .flatMap(Optional::stream)
-                .flatMap(Collection::stream)
-                .toList();
+        return Flux.fromIterable(person.getForelderBarnRelasjon())
+                .flatMap(barnRelasjon -> personRepository.findByIdent(barnRelasjon.getRelatertPerson())
+                        .flatMapMany(barn -> Flux.fromIterable(barn.getPerson().getForelderBarnRelasjon())
+                                .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
+                                                            foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
+                                .map(foreldreRelasjon -> BarnRelasjon.builder()
+                                        .barn(barn)
+                                        .ansvarlig(foreldreRelasjon.getRelatertPerson())
+                                        .build())));
     }
 
     private boolean isRelasjonFar(PersonDTO person) {
@@ -268,111 +272,133 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return person.getForelderBarnRelasjon().stream()
                 .anyMatch(relasjon -> FAR == relasjon.getMinRolleForPerson() ||
 
-                        (FORELDER == relasjon.getMinRolleForPerson() &&
-                                (Kjoenn.MANN == person.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
+                                      (FORELDER == relasjon.getMinRolleForPerson() &&
+                                       (Kjoenn.MANN == person.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
                                         Kjoenn.MANN == KjoennFraIdentUtility.getKjoenn(person.getIdent()))) ||
 
-                        isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
-                                person.getSivilstand().stream()
-                                        .anyMatch(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert()));
+                                      isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
+                                      person.getSivilstand().stream()
+                                              .anyMatch(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
-    private List<BarnRelasjon> getBarnFarRelasjoner(PersonDTO person) {
+    private Flux<BarnRelasjon> getBarnFarRelasjoner(PersonDTO person) {
 
-        return person.getForelderBarnRelasjon().stream()
-                .map(barnRelasjon ->
-                        personRepository.findByIdent(barnRelasjon.getRelatertPerson())
-                                .map(barn -> barn.getPerson().getForelderBarnRelasjon().stream()
-                                        .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
-                                        .map(foreldreRelasjon -> BarnRelasjon.builder()
-                                                .barn(barn)
-                                                .ansvarlig(foreldreRelasjon.getRelatertPerson())
-                                                .build())
-                                        .toList()))
-                .flatMap(Optional::stream)
-                .flatMap(Collection::stream)
-                .toList();
+        return Flux.fromIterable(person.getForelderBarnRelasjon())
+                .flatMap(barnRelasjon -> personRepository.findByIdent(barnRelasjon.getRelatertPerson())
+                        .flatMapMany(barn -> Flux.fromIterable(barn.getPerson().getForelderBarnRelasjon())
+                                .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
+                                .map(foreldreRelasjon -> BarnRelasjon.builder()
+                                        .barn(barn)
+                                        .ansvarlig(foreldreRelasjon.getRelatertPerson())
+                                        .build())));
     }
 
-    public void handle(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
+    public Mono<ForeldreansvarDTO> handle(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
 
         if (getFoedselsdato(person).stream()
                 .anyMatch(alder -> alder.getFoedselsaar() <= LocalDateTime.now().minusYears(MYNDIG_ALDER).getYear())) {
             // hovedperson er voksen
 
-            if (isNotBlank(foreldreansvar.getAnsvarssubjekt())) {
+            return Mono.defer(() -> {
+                        if (isNotBlank(foreldreansvar.getAnsvarssubjekt())) {
 
-                personRepository.findByIdent(foreldreansvar.getAnsvarssubjekt())
-                        .ifPresent(barn -> {
-                            barn.getPerson().getForeldreansvar()
-                                    .addFirst(ForeldreansvarDTO.builder()
-                                            .eksisterendePerson(true)
-                                            .ansvar(foreldreansvar.getAnsvar())
-                                            .ansvarlig(person.getIdent())
-                                            .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
-                                            .gyldigFraOgMed(foreldreansvar.getGyldigTilOgMed())
-                                            .kilde(foreldreansvar.getKilde())
-                                            .master(foreldreansvar.getMaster())
-                                            .id(barn.getPerson().getForeldreansvar().stream()
-                                                    .map(ForeldreansvarDTO::getId)
-                                                    .findFirst().orElse(0) + 1)
-                                            .build());
+                            return personRepository.findByIdent(foreldreansvar.getAnsvarssubjekt())
+                                    .doOnNext(barn ->
+                                            barn.getPerson().getForeldreansvar()
+                                                    .addFirst(ForeldreansvarDTO.builder()
+                                                            .eksisterendePerson(true)
+                                                            .ansvar(foreldreansvar.getAnsvar())
+                                                            .ansvarlig(person.getIdent())
+                                                            .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
+                                                            .gyldigFraOgMed(foreldreansvar.getGyldigTilOgMed())
+                                                            .kilde(foreldreansvar.getKilde())
+                                                            .master(foreldreansvar.getMaster())
+                                                            .id(barn.getPerson().getForeldreansvar().stream()
+                                                                        .map(ForeldreansvarDTO::getId)
+                                                                        .findFirst().orElse(0) + 1)
+                                                            .build()))
+                                    .flatMap(barn ->
+                                            relasjonService.setRelasjoner(barn.getIdent(), FORELDREANSVAR_FORELDER,
+                                                    person.getIdent(), FORELDREANSVAR_BARN));
+                        }
+                        return Mono.empty();
+                    })
+                    .then(Mono.defer(() -> {
+                        if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
 
-                            relasjonService.setRelasjon(barn.getIdent(), person.getIdent(), FORELDREANSVAR_FORELDER);
-                            relasjonService.setRelasjon(person.getIdent(), barn.getIdent(), FORELDREANSVAR_BARN);
-                        });
-            }
+                            return getBarnMorRelasjoner(person)
+                                    .flatMap(barnMorRelasjon ->
+                                            setRelasjon(barnMorRelasjon, foreldreansvar, person.getIdent())
+                                                    .thenReturn(barnMorRelasjon))
+                                    .doOnNext(barnMorRelasjon ->
+                                            slettRelasjonForHovedperson(person, foreldreansvar.getId(), barnMorRelasjon))
+                                    .then();
 
-            if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
-                var barnMorRelasjoner = getBarnMorRelasjoner(person);
-                setRelasjoner(barnMorRelasjoner, foreldreansvar, person.getIdent());
+                        } else if (foreldreansvar.getAnsvar() == Ansvar.FAR) {
 
-                slettRelasjonForHovedperson(person, foreldreansvar.getId(), barnMorRelasjoner);
+                            return getBarnFarRelasjoner(person)
+                                    .flatMap(barnFarRelasjon ->
+                                            setRelasjon(barnFarRelasjon, foreldreansvar, person.getIdent())
+                                                    .thenReturn(barnFarRelasjon))
+                                    .doOnNext(barnFarRelasjon ->
+                                            slettRelasjonForHovedperson(person, foreldreansvar.getId(), barnFarRelasjon))
+                                    .then();
 
-            } else if (foreldreansvar.getAnsvar() == Ansvar.FAR) {
-                var barnFarRelasjoner = getBarnFarRelasjoner(person);
-                setRelasjoner(barnFarRelasjoner, foreldreansvar, person.getIdent());
+                        } else if (foreldreansvar.getAnsvar() == Ansvar.FELLES) {
 
-                slettRelasjonForHovedperson(person, foreldreansvar.getId(), barnFarRelasjoner);
+                            return Flux.concat(getBarnMorRelasjoner(person),
+                                            getBarnFarRelasjoner(person))
+                                    .flatMap(barnRelasjon ->
+                                            setRelasjon(barnRelasjon, foreldreansvar, person.getIdent()))
+                                    .then();
 
-            } else if (foreldreansvar.getAnsvar() == Ansvar.FELLES) {
-                var barnFellesRelasjoner = new ArrayList<>(getBarnMorRelasjoner(person));
-                barnFellesRelasjoner.addAll(getBarnFarRelasjoner(person));
-                setRelasjoner(barnFellesRelasjoner, foreldreansvar, person.getIdent());
+                        } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
 
-            } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
+                            return Mono.defer(() -> {
+                                        if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-                if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
+                                            return makeAnsvarligUtenIdentifikator(foreldreansvar, person);
 
-                    makeAnsvarligUtenIdentifikator(foreldreansvar, person);
+                                        } else if (isBlank(foreldreansvar.getAnsvarlig())) {
 
-                } else if (isBlank(foreldreansvar.getAnsvarlig())) {
+                                            return opprettNyAsvarlig(foreldreansvar, person);
+                                        }
+                                        return Mono.empty();
+                                    })
+                                    .then(Mono.defer(() -> {
 
-                    opprettNyAsvarlig(foreldreansvar, person);
-                }
+                                        foreldreansvar.setEksisterendePerson(isNotBlank(foreldreansvar.getAnsvarlig()));
 
-                foreldreansvar.setEksisterendePerson(isNotBlank(foreldreansvar.getAnsvarlig()));
+                                        return getBarnRelasjoner(foreldreansvar, person)
+                                                .flatMap(barnRelasjon -> setRelasjon(barnRelasjon, foreldreansvar, person.getIdent())
+                                                        .thenReturn(barnRelasjon))
+                                                .doOnNext(barnRelasjon -> slettForeldreansvar(person, foreldreansvar.getId()))
+                                                .then();
+                                    }));
 
-                setRelasjoner(getBarnRelasjoner(foreldreansvar, person), foreldreansvar, person.getIdent());
-                slettForeldreansvar(person, foreldreansvar.getId());
+                        } else if (foreldreansvar.getAnsvar() == Ansvar.UKJENT) {
 
-            } else if (foreldreansvar.getAnsvar() == Ansvar.UKJENT) {
-
-                makeAnsvarligUtenIdentifikator(foreldreansvar, person);
-                setRelasjoner(getBarnRelasjoner(foreldreansvar, person), foreldreansvar, person.getIdent());
-                slettForeldreansvar(person, foreldreansvar.getId());
-            }
+                            return makeAnsvarligUtenIdentifikator(foreldreansvar, person)
+                                    .then(getBarnRelasjoner(foreldreansvar, person)
+                                            .flatMap(barnRelasjon -> setRelasjon(barnRelasjon, foreldreansvar, person.getIdent())
+                                                    .thenReturn(barnRelasjon))
+                                            .doOnNext(barnRelasjon -> slettForeldreansvar(person, foreldreansvar.getId()))
+                                            .then());
+                        }
+                        return Mono.empty()
+                                .then();
+                    }))
+                    .thenReturn(foreldreansvar);
 
         } else {
             // hovedperson er barn
-            handleBarn(foreldreansvar, person);
+            return handleBarn(foreldreansvar, person);
         }
     }
 
-    private static void slettRelasjonForHovedperson(PersonDTO person, Integer id, List<BarnRelasjon> barnForelderRelasjoner) {
+    private static void slettRelasjonForHovedperson(PersonDTO person, Integer id, BarnRelasjon barnForelderRelasjon) {
 
-        if (barnForelderRelasjoner.stream()
-                .noneMatch(relasjon -> relasjon.getAnsvarlig().equals(person.getIdent()))) {
+        if (!Objects.equals(barnForelderRelasjon.getAnsvarlig(), person.getIdent())) {
 
             slettForeldreansvar(person, id);
         }
@@ -385,84 +411,95 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 .toList());
     }
 
-    private List<BarnRelasjon> getBarnRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
-        return person.getForelderBarnRelasjon().stream()
+    private Flux<BarnRelasjon> getBarnRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
+
+        return Flux.fromIterable(person.getForelderBarnRelasjon())
                 .filter(ForelderBarnRelasjonDTO::hasBarn)
                 .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                .map(personRepository::findByIdent)
-                .flatMap(Optional::stream)
+                .flatMap(personRepository::findByIdent)
                 .map(dbperson -> BarnRelasjon.builder()
                         .ansvarlig(foreldreansvar.getAnsvarlig())
                         .barn(dbperson)
-                        .build())
-                .toList();
+                        .build());
     }
 
-    private void handleBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private Mono<ForeldreansvarDTO> handleBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
-        if (isNotBlank(foreldreansvar.getAnsvarlig())) {
+        return Mono.defer(() -> {
+                    if (isNotBlank(foreldreansvar.getAnsvarlig())) {
 
-            foreldreansvar.setEksisterendePerson(isTrue(foreldreansvar.getEksisterendePerson()));
+                        foreldreansvar.setEksisterendePerson(isTrue(foreldreansvar.getEksisterendePerson()));
+                        return relasjonService.setRelasjoner(barn.getIdent(), FORELDREANSVAR_FORELDER,
+                                        foreldreansvar.getAnsvarlig(), FORELDREANSVAR_BARN)
+                                .then(oppdaterRelatertAnsvar(foreldreansvar, barn, foreldreansvar.getAnsvarlig()));
 
-            relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
-            relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
-            oppdaterRelatertAnsvar(foreldreansvar, barn, foreldreansvar.getAnsvarlig());
+                    } else if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
 
-        } else if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
+                        return setRelasjoner(foreldreansvar, barn, MOR, MEDMOR);
 
-            setRelasjoner(foreldreansvar, barn, MOR, MEDMOR);
+                    } else if (foreldreansvar.getAnsvar() == Ansvar.FAR) {
 
-        } else if (foreldreansvar.getAnsvar() == Ansvar.FAR) {
+                        return setRelasjoner(foreldreansvar, barn, FAR);
 
-            setRelasjoner(foreldreansvar, barn, FAR);
+                    } else if (foreldreansvar.getAnsvar() == Ansvar.FELLES) {
 
-        } else if (foreldreansvar.getAnsvar() == Ansvar.FELLES) {
+                        return setFellesRelasjoner(foreldreansvar, barn);
 
-            setFellesRelasjoner(foreldreansvar, barn);
+                    } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
 
-        } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
+                        return Mono.defer(() -> {
+                                    if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-            if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
+                                        return setAnsvarUtenIdentifikator(foreldreansvar, barn);
 
-                setAnsvarUtenIdentifikator(foreldreansvar, barn);
+                                    } else if (isBlank(foreldreansvar.getAnsvarlig())) {
 
-            } else if (isBlank(foreldreansvar.getAnsvarlig())) {
+                                        return opprettNyAsvarlig(foreldreansvar, barn);
+                                    }
+                                    return Mono.empty();
+                                })
+                                .then(Mono.defer(() -> {
 
-                opprettNyAsvarlig(foreldreansvar, barn);
-            }
+                                    if (isNotBlank(foreldreansvar.getAnsvarlig())) {
+                                        foreldreansvar.setEksisterendePerson(true);
+                                        return relasjonService.setRelasjoner(barn.getIdent(), FORELDREANSVAR_FORELDER,
+                                                        foreldreansvar.getAnsvarlig(), FORELDREANSVAR_BARN)
+                                                .then(oppdaterRelatertAnsvar(foreldreansvar, barn, foreldreansvar.getAnsvarlig()));
+                                    }
+                                    return Mono.empty();
+                                }));
 
-            if (isNotBlank(foreldreansvar.getAnsvarlig())) {
-                foreldreansvar.setEksisterendePerson(true);
-                relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
-                relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
+                    } else if (foreldreansvar.getAnsvar() == Ansvar.UKJENT && nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-                oppdaterRelatertAnsvar(foreldreansvar, barn, foreldreansvar.getAnsvarlig());
-            }
-
-        } else if (foreldreansvar.getAnsvar() == Ansvar.UKJENT && nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
-
-                setAnsvarUtenIdentifikator(foreldreansvar, barn);
-        }
-
-        foreldreansvar.setNyAnsvarlig(null);
+                        return setAnsvarUtenIdentifikator(foreldreansvar, barn);
+                    }
+                    return Mono.empty();
+                })
+                .then(Mono.defer(() -> {
+                    foreldreansvar.setNyAnsvarlig(null);
+                    return Mono.empty();
+                }));
     }
 
-    private void setAnsvarUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
-        barn.getForelderBarnRelasjon().stream()
+    private Mono<Void> setAnsvarUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+
+        return Flux.fromIterable(barn.getForelderBarnRelasjon())
                 .filter(ForelderBarnRelasjonDTO::isBarn)
                 .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                .findFirst()
+                .next()
                 .flatMap(personRepository::findByIdent)
-                .ifPresent(person -> makeAnsvarligUtenIdentifikator(foreldreansvar, person.getPerson()));
+                .flatMap(dbPerson -> makeAnsvarligUtenIdentifikator(foreldreansvar, dbPerson.getPerson()))
+                .then();
     }
 
-    private void opprettNyAsvarlig(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private Mono<Void> opprettNyAsvarlig(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+
         if (isNull(foreldreansvar.getNyAnsvarlig())) {
             foreldreansvar.setNyAnsvarlig(new PersonRequestDTO());
         }
         if (isNull(foreldreansvar.getNyAnsvarlig().getAlder()) &&
-                isNull(foreldreansvar.getNyAnsvarlig().getFoedtEtter()) &&
-                isNull(foreldreansvar.getNyAnsvarlig().getFoedtFoer())) {
+            isNull(foreldreansvar.getNyAnsvarlig().getFoedtEtter()) &&
+            isNull(foreldreansvar.getNyAnsvarlig().getFoedtFoer())) {
 
             foreldreansvar.getNyAnsvarlig().setFoedtFoer(LocalDateTime.now().minusYears(30));
             foreldreansvar.getNyAnsvarlig().setFoedtEtter(LocalDateTime.now().minusYears(60));
@@ -472,65 +509,78 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
         EgenskaperFraHovedperson.kopierData(barn, foreldreansvar.getNyAnsvarlig());
 
-        PersonDTO relatertPerson = createPersonService.execute(foreldreansvar.getNyAnsvarlig());
-
-        foreldreansvar.setAnsvarlig(relatertPerson.getIdent());
+        return createPersonService.execute(foreldreansvar.getNyAnsvarlig())
+                .doOnNext(createdPerson -> foreldreansvar.setAnsvarlig(createdPerson.getIdent()))
+                .then();
     }
 
-    private void setRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO barn, Rolle... roller) {
+    private Mono<Void> setRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO barn, Rolle... roller) {
 
-        barn.getForelderBarnRelasjon().stream()
+        return Flux.fromIterable(barn.getForelderBarnRelasjon())
                 .filter(relasjon -> List.of(roller).contains(relasjon.getRelatertPersonsRolle()))
-                .findFirst()
-                .ifPresent(relasjon -> {
-
-                    foreldreansvar.setAnsvarlig(relasjon.getRelatertPerson());
-
+                .doOnNext(relasjon -> foreldreansvar.setAnsvarlig(relasjon.getRelatertPerson()))
+                .flatMap(relasjon -> {
                     if (isNotBlank(foreldreansvar.getAnsvarlig())) {
-                        relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
-                        relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
+                        return relasjonService.setRelasjoner(barn.getIdent(), FORELDREANSVAR_FORELDER,
+                                        foreldreansvar.getAnsvarlig(), FORELDREANSVAR_BARN)
+                                .thenReturn(relasjon);
                     }
-
-                    oppdaterRelatertAnsvar(foreldreansvar, barn, relasjon.getRelatertPerson());
-                });
+                    return Mono.just(relasjon);
+                })
+                .flatMap(relasjon -> oppdaterRelatertAnsvar(foreldreansvar, barn, relasjon.getRelatertPerson()))
+                .then();
     }
 
-    private void oppdaterRelatertAnsvar(ForeldreansvarDTO foreldreansvar, PersonDTO barn, String forelder) {
+    private Mono<Void> oppdaterRelatertAnsvar(ForeldreansvarDTO foreldreansvar, PersonDTO barn, String forelder) {
 
-        personRepository.findByIdent(forelder)
-                .ifPresent(dbPerson -> {
+        return personRepository.findByIdent(forelder)
+                .doOnNext(dbPerson -> {
                     var subjektAnsvar = mapperFacade.map(foreldreansvar, ForeldreansvarDTO.class);
                     subjektAnsvar.setNyAnsvarlig(null);
                     subjektAnsvar.setAnsvarlig(null);
                     subjektAnsvar.setAnsvarssubjekt(barn.getIdent());
                     subjektAnsvar.setId(dbPerson.getPerson().getForeldreansvar().size() + 1);
                     dbPerson.getPerson().getForeldreansvar().addFirst(subjektAnsvar);
-                });
+                })
+                .flatMap(personRepository::save)
+                .then();
     }
 
-    private void setFellesRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private Mono<Void> setFellesRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
-        var foreldre = barn.getForelderBarnRelasjon().stream()
+        return Flux.fromIterable(barn.getForelderBarnRelasjon())
                 .filter(ForelderBarnRelasjonDTO::isBarn)
-                .toList();
+                .collectList()
+                .flatMap(foreldre -> {
 
-        foreldreansvar.setNyAnsvarlig(null);
-        foreldreansvar.setAnsvarlig(foreldre.getFirst().getRelatertPerson());
-        relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
-        relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
+                    foreldreansvar.setNyAnsvarlig(null);
+                    foreldreansvar.setAnsvarlig(foreldre.get(0).getRelatertPerson());
+                    return relasjonService.setRelasjoner(barn.getIdent(), FORELDREANSVAR_FORELDER,
+                                    foreldreansvar.getAnsvarlig(), FORELDREANSVAR_BARN)
+                            .thenReturn(foreldre);
+                })
+                .flatMap(foreldre -> {
 
-        var nyttForeldreansvar = mapperFacade.map(foreldreansvar, ForeldreansvarDTO.class);
-        nyttForeldreansvar.setAnsvarlig(foreldre.get(1).getRelatertPerson());
-        relasjonService.setRelasjon(barn.getIdent(), nyttForeldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
-        relasjonService.setRelasjon(nyttForeldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
-        nyttForeldreansvar.setId(barn.getForeldreansvar().size() + 1);
-        barn.getForeldreansvar().addFirst(nyttForeldreansvar);
+                    var nyttForeldreansvar = mapperFacade.map(foreldreansvar, ForeldreansvarDTO.class);
+                    nyttForeldreansvar.setAnsvarlig(foreldre.get(1).getRelatertPerson());
+                    return relasjonService.setRelasjoner(barn.getIdent(), FORELDREANSVAR_FORELDER,
+                                    nyttForeldreansvar.getAnsvarlig(), FORELDREANSVAR_BARN)
+                            .thenReturn(nyttForeldreansvar)
+                            .zipWith(Mono.just(foreldre));
+                })
+                .flatMapMany(tuple -> {
 
-        foreldre.forEach(forelderBarnRelasjon ->
-                oppdaterRelatertAnsvar(foreldreansvar, barn, forelderBarnRelasjon.getRelatertPerson()));
+                    tuple.getT1().setId(barn.getForeldreansvar().size() + 1);
+                    barn.getForeldreansvar().addFirst(tuple.getT1());
+
+                    return Flux.fromIterable(tuple.getT2())
+                            .flatMap(forelderBarnRelasjon ->
+                                    oppdaterRelatertAnsvar(foreldreansvar, barn, forelderBarnRelasjon.getRelatertPerson()));
+                })
+                .then();
     }
 
-    private void makeAnsvarligUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
+    private Mono<Void> makeAnsvarligUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
 
         if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
             foreldreansvar.setAnsvarligUtenIdentifikator(new RelatertBiPersonDTO());
@@ -538,24 +588,6 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         if (isBlank(foreldreansvar.getAnsvarligUtenIdentifikator().getStatsborgerskap())) {
             foreldreansvar.getAnsvarligUtenIdentifikator().setStatsborgerskap("NOR");
-        }
-
-        var forespurtNavn =
-                nonNull(foreldreansvar.getAnsvarligUtenIdentifikator().getNavn()) ?
-                        foreldreansvar.getAnsvarligUtenIdentifikator().getNavn() : new PersonnavnDTO();
-
-        if (isBlank(forespurtNavn.getFornavn()) ||
-                isBlank(forespurtNavn.getMellomnavn()) ||
-                isBlank(forespurtNavn.getEtternavn())) {
-
-            genererNavnServiceConsumer.getNavn(1)
-                    .ifPresent(nyttNavn ->
-                            foreldreansvar.getAnsvarligUtenIdentifikator().setNavn(
-                                    PersonnavnDTO.builder()
-                                            .fornavn(blankCheck(forespurtNavn.getFornavn(), nyttNavn.getAdjektiv()))
-                                            .etternavn(blankCheck(forespurtNavn.getEtternavn(), nyttNavn.getSubstantiv()))
-                                            .mellomnavn(blankCheck(forespurtNavn.getMellomnavn(), nyttNavn.getAdverb()))
-                                            .build()));
         }
 
         if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator().getKjoenn())) {
@@ -567,52 +599,80 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                     FoedselsdatoUtility.getFoedselsdato(person)
                             .plusDays(RANDOM.nextInt(365)));
         }
+
+        var forespurtNavn =
+                nonNull(foreldreansvar.getAnsvarligUtenIdentifikator().getNavn()) ?
+                        foreldreansvar.getAnsvarligUtenIdentifikator().getNavn() : new PersonnavnDTO();
+
+        if (isBlank(forespurtNavn.getFornavn()) ||
+            isBlank(forespurtNavn.getMellomnavn()) ||
+            isBlank(forespurtNavn.getEtternavn())) {
+
+            return genererNavnServiceConsumer.getNavn()
+                    .doOnNext(nyttNavn ->
+                            foreldreansvar.getAnsvarligUtenIdentifikator().setNavn(
+                                    PersonnavnDTO.builder()
+                                            .fornavn(blankCheck(forespurtNavn.getFornavn(), nyttNavn.getAdjektiv()))
+                                            .etternavn(blankCheck(forespurtNavn.getEtternavn(), nyttNavn.getSubstantiv()))
+                                            .mellomnavn(blankCheck(forespurtNavn.getMellomnavn(), nyttNavn.getAdverb()))
+                                            .build()))
+                    .then();
+        }
+        return Mono.empty();
     }
 
-    private void setRelasjoner(List<BarnRelasjon> barnRelasjoner, ForeldreansvarDTO foreldreansvar, String person) {
+    private Mono<Void> setRelasjon(BarnRelasjon barnRelasjon, ForeldreansvarDTO foreldreansvar, String person) {
 
-        barnRelasjoner.forEach(relasjon -> {
-
-            relasjon.getBarn().getPerson().getForeldreansvar()
-                    .addFirst(ForeldreansvarDTO.builder()
-                            .ansvar(foreldreansvar.getAnsvar())
-                            .ansvarlig(relasjon.getAnsvarlig())
-                            .eksisterendePerson(foreldreansvar.getEksisterendePerson())
-                            .ansvarligUtenIdentifikator(foreldreansvar.getAnsvarligUtenIdentifikator())
-                            .kilde(foreldreansvar.getKilde())
-                            .master(foreldreansvar.getMaster())
-                            .id(relasjon.getBarn().getPerson().getForeldreansvar().stream()
+        barnRelasjon.getBarn().getPerson().getForeldreansvar()
+                .addFirst(ForeldreansvarDTO.builder()
+                        .ansvar(foreldreansvar.getAnsvar())
+                        .ansvarlig(barnRelasjon.getAnsvarlig())
+                        .eksisterendePerson(foreldreansvar.getEksisterendePerson())
+                        .ansvarligUtenIdentifikator(foreldreansvar.getAnsvarligUtenIdentifikator())
+                        .kilde(foreldreansvar.getKilde())
+                        .master(foreldreansvar.getMaster())
+                        .id(barnRelasjon.getBarn().getPerson().getForeldreansvar().stream()
                                     .max(Comparator.comparing(ForeldreansvarDTO::getId))
                                     .map(ForeldreansvarDTO::getId)
                                     .orElse(0) + 1)
-                            .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
-                            .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
-                            .build());
+                        .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
+                        .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
+                        .build());
 
-            if (isNotBlank(relasjon.getAnsvarlig())) {
-                foreldreansvar.setAnsvarssubjekt(relasjon.getBarn().getIdent());
-                foreldreansvar.setNyAnsvarlig(null);
-                relasjonService.setRelasjon(relasjon.getBarn().getIdent(), relasjon.getAnsvarlig(), FORELDREANSVAR_FORELDER);
-                relasjonService.setRelasjon(relasjon.getAnsvarlig(), relasjon.getBarn().getIdent(), FORELDREANSVAR_BARN);
-            }
+        return Mono.defer(() -> {
 
-            if (!person.equals(relasjon.getAnsvarlig())) {
-                personRepository.findByIdent(relasjon.ansvarlig)
-                        .ifPresent(ansvarlig -> ansvarlig.getPerson().getForeldreansvar()
-                                .addFirst(ForeldreansvarDTO.builder()
-                                        .ansvar(foreldreansvar.getAnsvar())
-                                        .ansvarssubjekt(relasjon.getBarn().getIdent())
-                                        .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
-                                        .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
-                                        .kilde(foreldreansvar.getKilde())
-                                        .master(foreldreansvar.getMaster())
-                                        .id(ansvarlig.getPerson().getForeldreansvar().stream()
-                                                .max(Comparator.comparing(ForeldreansvarDTO::getId))
-                                                .map(ForeldreansvarDTO::getId)
-                                                .orElse(0) + 1)
-                                        .build()));
-            }
-        });
+                    if (isNotBlank(barnRelasjon.getAnsvarlig())) {
+                        foreldreansvar.setAnsvarssubjekt(barnRelasjon.getBarn().getIdent());
+                        foreldreansvar.setNyAnsvarlig(null);
+                        return relasjonService.setRelasjoner(barnRelasjon.getBarn().getIdent(), FORELDREANSVAR_FORELDER,
+                                        barnRelasjon.getAnsvarlig(), FORELDREANSVAR_BARN)
+                                .thenReturn(barnRelasjon);
+                    }
+                    return Mono.just(barnRelasjon);
+                })
+                .flatMap(relasjon -> {
+
+                    if (!person.equals(relasjon.getAnsvarlig())) {
+                        return personRepository.findByIdent(relasjon.getAnsvarlig())
+                                .doOnNext(ansvarlig -> ansvarlig.getPerson().getForeldreansvar()
+                                        .addFirst(ForeldreansvarDTO.builder()
+                                                .ansvar(foreldreansvar.getAnsvar())
+                                                .ansvarssubjekt(relasjon.getBarn().getIdent())
+                                                .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
+                                                .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
+                                                .kilde(foreldreansvar.getKilde())
+                                                .master(foreldreansvar.getMaster())
+                                                .id(ansvarlig.getPerson().getForeldreansvar().stream()
+                                                            .max(Comparator.comparing(ForeldreansvarDTO::getId))
+                                                            .map(ForeldreansvarDTO::getId)
+                                                            .orElse(0) + 1)
+                                                .build()))
+                                .flatMap(personRepository::save)
+                                .then();
+                    }
+                    return Mono.empty();
+                })
+                .then();
     }
 
     @Data

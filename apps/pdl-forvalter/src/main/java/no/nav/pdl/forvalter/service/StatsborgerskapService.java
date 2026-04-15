@@ -2,16 +2,16 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -20,8 +20,10 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasLandkode;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -32,49 +34,61 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public List<StatsborgerskapDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        for (var type : person.getStatsborgerskap()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-                handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
-            }
-        }
-        return person.getStatsborgerskap();
+        return Flux.fromIterable(dbPerson.getPerson().getStatsborgerskap())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, dbPerson.getPerson()))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
+                })
+                .then(Mono.just(dbPerson));
     }
 
     @Override
-    public void validate(StatsborgerskapDTO statsborgerskap) {
+    public Mono<Void> validate(StatsborgerskapDTO statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !hasLandkode(statsborgerskap.getLandkode())) {
-            throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_LANDKODE_ERROR));
         }
 
         if (nonNull(statsborgerskap.getGyldigFraOgMed()) && nonNull(statsborgerskap.getGyldigTilOgMed()) &&
-                !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR);
+            !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
+            return Mono.error(new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR));
         }
+        return Mono.empty();
     }
 
-    private void handle(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
+    private Mono<StatsborgerskapDTO> handle(StatsborgerskapDTO statsborgerskap, PersonDTO person) {
+
+        return setLandkode(statsborgerskap, person)
+                .doOnNext(type -> {
+                    if (isNull(type.getGyldigFraOgMed()) &&
+                        isNull(type.getBekreftelsesdato()) &&
+                        (type.getMaster() == DbVersjonDTO.Master.PDL ||
+                        IdenttypeUtility.getIdenttype(person.getIdent()) == NPID)) {
+                        type.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
+                    }
+                });
+    }
+
+    private Mono<StatsborgerskapDTO> setLandkode(StatsborgerskapDTO statsborgerskap, PersonDTO person) {
 
         if (isBlank(statsborgerskap.getLandkode())) {
-            if (nonNull(innflytting)) {
-                statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
+            if (!person.getInnflytting().isEmpty() &&
+                isNotBlank(person.getInnflytting().getFirst().getFraflyttingsland())) {
+                statsborgerskap.setLandkode(person.getInnflytting().getFirst().getFraflyttingsland());
+                return Mono.just(statsborgerskap);
             } else if (FNR.equals(IdenttypeUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);
+                return Mono.just(statsborgerskap);
             } else {
-                statsborgerskap.setLandkode(kodeverkConsumer.getTilfeldigLand());
+                return kodeverkConsumer.getTilfeldigLand()
+                        .doOnNext(statsborgerskap::setLandkode)
+                        .thenReturn(statsborgerskap);
             }
         }
-
-        if (isNull(statsborgerskap.getGyldigFraOgMed()) &&
-                isNull(statsborgerskap.getBekreftelsesdato()) &&
-                statsborgerskap.getMaster() == DbVersjonDTO.Master.PDL) {
-            statsborgerskap.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
-        }
+        return Mono.just(statsborgerskap);
     }
 }
