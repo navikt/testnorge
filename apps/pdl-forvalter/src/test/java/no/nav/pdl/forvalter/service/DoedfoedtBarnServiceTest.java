@@ -5,11 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import reactor.test.StepVerifier;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class DoedfoedtBarnServiceTest {
@@ -24,9 +23,8 @@ class DoedfoedtBarnServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                doedfoedtBarnService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("DødfødtBarn: dato må oppgis"));
+        StepVerifier.create(doedfoedtBarnService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("DødfødtBarn: dato må oppgis")));
     }
 }

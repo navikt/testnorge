@@ -8,13 +8,13 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GenererNavnServiceCommand implements Callable<Mono<NavnDTO[]>> {
+public class GenererNavnServiceCommand implements Callable<Flux<NavnDTO>> {
 
     private final WebClient webClient;
     private final String url;
@@ -22,7 +22,7 @@ public class GenererNavnServiceCommand implements Callable<Mono<NavnDTO[]>> {
     private final String token;
 
     @Override
-    public Mono<NavnDTO[]> call() {
+    public Flux<NavnDTO> call() {
         return webClient
                 .get()
                 .uri(builder -> builder
@@ -33,7 +33,7 @@ public class GenererNavnServiceCommand implements Callable<Mono<NavnDTO[]>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(NavnDTO[].class)
+                .flatMapMany(Flux::fromArray)
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }

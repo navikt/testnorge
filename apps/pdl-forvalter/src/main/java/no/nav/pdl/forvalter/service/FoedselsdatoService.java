@@ -1,16 +1,19 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
@@ -20,41 +23,46 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FoedselsdatoService implements BiValidation<FoedselsdatoDTO, PersonDTO> {
 
-    public List<FoedselsdatoDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        for (var type : person.getFoedselsdato()) {
+        return Flux.fromIterable(dbPerson.getPerson().getFoedselsdato())
+                .filter(foedselsdato -> isTrue(foedselsdato.getIsNew()))
+                .flatMap(foedselsdato -> handle(foedselsdato, dbPerson.getIdent()))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
+                })
+                .collectList()
+                .doOnNext(foedselsdatoer -> {
 
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person.getIdent());
-
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-
-        person.setFoedselsdato(new ArrayList<>(person.getFoedselsdato()));
-        person.getFoedselsdato().sort(Comparator.comparing(FoedselsdatoDTO::getFoedselsaar).reversed());
-
-        renumberId(person.getFoedselsdato());
-
-        return person.getFoedselsdato();
+                    dbPerson.getPerson().getFoedselsdato().sort(Comparator.comparing(FoedselsdatoDTO::getFoedselsaar).
+                            reversed());
+                    renumberId(dbPerson.getPerson().getFoedselsdato());
+                })
+                .thenReturn(dbPerson);
     }
 
-    private void handle(FoedselsdatoDTO foedsel, String ident) {
+    private Mono<FoedselsdatoDTO> handle(FoedselsdatoDTO foedselsdato, String ident) {
 
-        if (isNull(foedsel.getFoedselsaar())) {
-            if (isNull(foedsel.getFoedselsdato())) {
-                foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+        if (isNull(foedselsdato.getFoedselsaar())) {
+            if (isNull(foedselsdato.getFoedselsdato())) {
+                foedselsdato.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
             }
 
-            foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
+            foedselsdato.setFoedselsaar(foedselsdato.getFoedselsdato().getYear());
         }
+
+        return Mono.just(foedselsdato);
     }
 
     @Override
-    public void validate(FoedselsdatoDTO artifact, PersonDTO personDTO) {
+    public Mono<Void> validate(FoedselsdatoDTO artifact, PersonDTO personDTO) {
 
-        // Ingen validering
+        if (nonNull(artifact.getFoedselsaar()) && nonNull(artifact.getFoedselsdato()) &&
+            artifact.getFoedselsaar() != artifact.getFoedselsdato().getYear()) {
+
+            return Mono.error(new InvalidRequestException("Foedselsår og foedselsdato må være konsistente"));
+        }
+        return Mono.empty();
     }
 }
