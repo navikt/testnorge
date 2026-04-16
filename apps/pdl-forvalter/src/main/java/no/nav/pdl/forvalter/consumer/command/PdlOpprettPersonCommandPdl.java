@@ -12,6 +12,7 @@ import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    public Mono<OrdreResponseDTO.HendelseDTO> call() {
+    public Flux<OrdreResponseDTO.HendelseDTO> call() {
         return webClient
                 .post()
                 .uri(builder -> builder.path(url)
@@ -45,7 +46,7 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .retrieve()
-                .bodyToMono(PdlBestillingResponse.class)
+                .bodyToFlux(PdlBestillingResponse.class)
                 .timeout(TIMEOUT)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                         .status(PdlStatus.OK)

@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -27,9 +25,10 @@ public class IdentitetController {
 
     private final IdentitetService identitetService;
 
+    @ResponseBody
     @GetMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Søk etter identitet i databasen basert på fragment av ident og/eller en eller flere navn")
-    public Flux<PersonIDDTO> getPerson(@Parameter(description = "Fragment av ident og/eller en eller flere navn")
+    public List<PersonIDDTO> getPerson(@Parameter(description = "Fragment av ident og/eller en eller flere navn")
                                        @RequestParam(required = false) String fragment,
                                        @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
                                        @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
@@ -45,10 +44,10 @@ public class IdentitetController {
     @PutMapping(value = "/{ident}/standalone/{standalone}")
     @Operation(description = "Oppdaterer angitt person med standalone satt (true/false).<br>" +
             "Når satt, blir dette håndtert som en ekstern person som ikke skal inkluderes ved sletting.")
-    public Mono<Void> updateStandalone(@Parameter(description = "Ident for testperson")
+    public void updateStandalone(@Parameter(description = "Ident for testperson")
                                  @PathVariable String ident,
-                                   @PathVariable Boolean standalone) {
+                                 @PathVariable Boolean standalone) {
 
-        return identitetService.updateStandalone(ident, standalone);
+        identitetService.updateStandalone(ident, standalone);
     }
 }

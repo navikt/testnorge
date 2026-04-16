@@ -1,10 +1,10 @@
 package no.nav.pdl.forvalter.mapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -26,6 +26,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
 
     private static final String LANDKODE_NORGE = "NOR";
     private static final String ADRESSE_TYPE_NOT_SUPPORTED = "KontaktinformasjonForDoedsbo: Ukjent bosted er ikke støttet";
+    private final KodeverkConsumer kodeverkConsumer;
 
     @Override
     public void register(MapperFactory factory) {
@@ -36,12 +37,11 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                     @Override
                     public void mapAtoB(BostedadresseDTO kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
 
-                        val poststedsnavn = (Map<String,String>) context.getProperty("poststedsnavn");
                         if (nonNull(kilde.getVegadresse())) {
                             destinasjon.setAdresselinje1(format("%s %s", kilde.getVegadresse().getAdressenavn(),
                                     kilde.getVegadresse().getHusnummer()));
                             destinasjon.setPostnummer(kilde.getVegadresse().getPostnummer());
-                            destinasjon.setPoststedsnavn(poststedsnavn.get(kilde.getVegadresse().getPostnummer()));
+                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getVegadresse().getPostnummer()));
                             destinasjon.setLandkode(LANDKODE_NORGE);
 
                         } else if (nonNull(kilde.getUtenlandskAdresse())) {
@@ -58,7 +58,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                                     kilde.getMatrikkeladresse().getGaardsnummer(),
                                     kilde.getMatrikkeladresse().getBruksnummer()));
                             destinasjon.setPostnummer(kilde.getMatrikkeladresse().getPostnummer());
-                            destinasjon.setPoststedsnavn(poststedsnavn.get(kilde.getMatrikkeladresse().getPostnummer()));
+                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getMatrikkeladresse().getPostnummer()));
                             destinasjon.setLandkode(LANDKODE_NORGE);
 
                         } else {
@@ -89,13 +89,12 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                     @Override
                     public void mapAtoB(Map kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
 
-                        val poststedsnavn = (Map<String,String>) context.getProperty("poststedsnavn");
-                        val adresselinjer = (List<String>) kilde.get("adresselinjer");
+                        var adresselinjer = (List<String>) kilde.get("adresselinjer");
                         destinasjon.setAdresselinje1(!adresselinjer.isEmpty() ? adresselinjer.getFirst() : "Ingen adresselinje funnet");
                         destinasjon.setAdresselinje2(adresselinjer.size() > 1 ? adresselinjer.get(1) : null);
                         destinasjon.setPostnummer((String) kilde.get("postnr"));
 
-                        destinasjon.setPoststedsnavn(poststedsnavn.get(destinasjon.getPostnummer()));
+                        destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()));
                         destinasjon.setLandkode(mapCountryCode((String) kilde.get("landkode")));
                     }
                 })

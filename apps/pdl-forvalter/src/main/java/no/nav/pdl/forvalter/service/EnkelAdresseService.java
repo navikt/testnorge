@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.Postboksadresse
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseIFrittFormatDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -49,64 +48,57 @@ public class EnkelAdresseService {
                 .build();
     }
 
-    public Mono<UtenlandskAdresseDTO> getUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse, String landkode, DbVersjonDTO.Master master) {
+    public UtenlandskAdresseDTO getUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse, String landkode, DbVersjonDTO.Master master) {
 
         if (utenlandskAdresse.isEmpty()) {
 
-            return getLandkode(isNotBlank(utenlandskAdresse.getLandkode()) ?
-                    utenlandskAdresse.getLandkode() : landkode)
-                        .map(kode -> UtenlandskAdresseDTO.builder()
-                                .adressenavnNummer(ADRESSE_NAVN_NUMMER)
-                                .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
-                                .bySted(ADRESSE_3_UTLAND)
-                                .postkode(ADRESSE_POSTKODE)
-                                .landkode(kode)
-                                .build());
+            return UtenlandskAdresseDTO.builder()
+                    .adressenavnNummer(ADRESSE_NAVN_NUMMER)
+                    .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
+                    .bySted(ADRESSE_3_UTLAND)
+                    .postkode(ADRESSE_POSTKODE)
+                    .landkode(getLandkode(isNotBlank(utenlandskAdresse.getLandkode()) ?
+                            utenlandskAdresse.getLandkode() : landkode))
+                    .build();
+
         } else {
 
             var oppdatertAdresse = mapperFacade.map(utenlandskAdresse, UtenlandskAdresseDTO.class);
 
             if (isBlank(oppdatertAdresse.getLandkode())) {
-                return getLandkode(landkode)
-                        .map(kode -> {
-                            oppdatertAdresse.setLandkode(kode);
-                            return oppdatertAdresse;
-                        });
+                oppdatertAdresse.setLandkode(getLandkode(landkode));
             }
 
-            return Mono.just(oppdatertAdresse);
+            return oppdatertAdresse;
         }
     }
 
-    public Mono<UtenlandskAdresseIFrittFormatDTO> getUtenlandskAdresse(UtenlandskAdresseIFrittFormatDTO utenlandskAdresse, String landkode) {
+    public UtenlandskAdresseIFrittFormatDTO getUtenlandskAdresse(UtenlandskAdresseIFrittFormatDTO utenlandskAdresse, String landkode) {
 
         if (utenlandskAdresse.isEmpty()) {
 
-            return getLandkode(
-                    isNotBlank(utenlandskAdresse.getLandkode()) ? utenlandskAdresse.getLandkode() : landkode)
-                    .map(kode -> UtenlandskAdresseIFrittFormatDTO.builder()
-                            .adresselinjer(List.of(ADRESSE_NAVN_NUMMER, ADRESSE_BY_STED))
-                            .postkode(ADRESSE_POSTKODE)
-                            .byEllerStedsnavn(ADRESSE_3_UTLAND)
-                            .landkode(kode)
-                            .build());
+            return UtenlandskAdresseIFrittFormatDTO.builder()
+                    .adresselinjer(List.of(ADRESSE_NAVN_NUMMER, ADRESSE_BY_STED))
+                    .postkode(ADRESSE_POSTKODE)
+                    .byEllerStedsnavn(ADRESSE_3_UTLAND)
+                    .landkode(getLandkode(isNotBlank(utenlandskAdresse.getLandkode()) ?
+                            utenlandskAdresse.getLandkode() : landkode))
+                    .build();
+
         } else {
             var oppdatertAdresse = mapperFacade.map(utenlandskAdresse, UtenlandskAdresseIFrittFormatDTO.class);
 
             if (isBlank(oppdatertAdresse.getLandkode())) {
-                return getLandkode(landkode).map(kode -> {
-                    oppdatertAdresse.setLandkode(kode);
-                    return oppdatertAdresse;
-                });
+                oppdatertAdresse.setLandkode(getLandkode(landkode));
             }
 
-            return Mono.just(oppdatertAdresse);
+            return oppdatertAdresse;
         }
     }
 
-    private Mono<String> getLandkode(String landkode) {
+    private String getLandkode(String landkode) {
 
-        return isNotBlank(landkode) && !"NOR".equals(landkode) ? Mono.just(landkode) :
+        return isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
                 kodeverkConsumer.getTilfeldigLand();
     }
 }

@@ -22,7 +22,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -115,7 +115,7 @@ public class PdlTestdataConsumer {
                 .map(List::getFirst);
     }
 
-    public Mono<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
+    public Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
 
         String body;
         try {
@@ -125,7 +125,7 @@ public class PdlTestdataConsumer {
             }
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
-            return Mono.just(
+            return Flux.just(
                     OrdreResponseDTO.HendelseDTO.builder()
                             .id(value.getBody().getId())
                             .status(PdlStatus.FEIL)
@@ -180,7 +180,7 @@ public class PdlTestdataConsumer {
                             accessToken.getTokenValue(),
                             value.getBody().getId()
                     ).call() :
-                    Mono.empty();
+                    Flux.empty();
         };
     }
 

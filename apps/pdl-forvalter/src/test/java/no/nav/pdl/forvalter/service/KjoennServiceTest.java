@@ -1,13 +1,11 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -31,81 +29,66 @@ class KjoennServiceTest {
     @Test
     void whenEmptyAndIdentIsKvinne_thenProvideKjoennIsKvinne() {
 
-        StepVerifier.create(kjoennService.convert(
-                        DbPerson.builder()
-                                .person(PersonDTO.builder()
-                                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
-                                        .ident(IDENT_KVINNE)
-                                        .build())
-                                .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getKjoenn().getFirst().getKjoenn(), is(equalTo(KVINNE))))
-                .verifyComplete();
+        var target = kjoennService.convert(
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
+                        .ident(IDENT_KVINNE)
+                        .build()).getFirst();
+
+        assertThat(target.getKjoenn(), is(equalTo(KVINNE)));
     }
 
     @Test
     void whenEmptyAndIdentIsMann_thenProvideKjoennIsMann() {
 
-        StepVerifier.create(kjoennService.convert(
-                        DbPerson.builder()
-                                .person(PersonDTO.builder()
-                                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
-                                        .ident(IDENT_MANN)
-                                        .build())
-                                .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getKjoenn().getFirst().getKjoenn(), is(equalTo(MANN))))
-                .verifyComplete();
+        var target = kjoennService.convert(
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
+                        .ident(IDENT_MANN)
+                        .build()).getFirst();
+
+        assertThat(target.getKjoenn(), is(equalTo(MANN)));
     }
 
     @Test
     void whenKjoennIsMannAndIdentIsKvinne_thenProvideKjoennIsMann() {
 
-        StepVerifier.create(kjoennService.convert(
-                        DbPerson.builder()
-                                .person(PersonDTO.builder()
-                                .kjoenn(List.of(KjoennDTO.builder()
-                                        .kjoenn(MANN)
-                                        .isNew(true)
-                                        .build()))
-                                .ident(IDENT_KVINNE)
-                                .build())
+        var target = kjoennService.convert(
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder()
+                                .kjoenn(MANN)
+                                .isNew(true)
                                 .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getKjoenn().getFirst().getKjoenn(), is(equalTo(MANN))))
-                .verifyComplete();
+                        .ident(IDENT_KVINNE)
+                        .build()).getFirst();
+
+        assertThat(target.getKjoenn(), is(equalTo(MANN)));
     }
 
     @Test
     void whenKjoennIsKvinneAndIdentIsMann_thenProvideKjoennIsKvinne() {
 
-        StepVerifier.create(kjoennService.convert(
-                        DbPerson.builder()
-                                .person(PersonDTO.builder()
-                                .kjoenn(List.of(KjoennDTO.builder()
-                                        .kjoenn(KVINNE)
-                                        .isNew(true)
-                                        .build()))
-                                .ident(IDENT_MANN)
-                                .build())
+        var target = kjoennService.convert(
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder()
+                                .kjoenn(KVINNE)
+                                .isNew(true)
                                 .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getKjoenn().getFirst().getKjoenn(), is(equalTo(KVINNE))))
-                .verifyComplete();
+                        .ident(IDENT_MANN)
+                        .build()).getFirst();
+
+        assertThat(target.getKjoenn(), is(equalTo(KVINNE)));
     }
 
     @Test
     void whenIdentIsId2032_thenProvideKjoennFromKjoennUtility() {
 
-        StepVerifier.create(kjoennService.convert(
-                        DbPerson.builder()
-                                .person(PersonDTO.builder()
-                                .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
-                                .ident(IDENT_ID2032)
-                                .build())
-                                .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getKjoenn().getFirst().getKjoenn(), is(in(KjoennDTO.Kjoenn.values()))))
-                .verifyComplete();
+        var target = kjoennService.convert(
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
+                        .ident(IDENT_ID2032)
+                        .build()).getFirst();
+
+        assertThat(target.getKjoenn(), is(in(KjoennDTO.Kjoenn.values())));
     }
 }

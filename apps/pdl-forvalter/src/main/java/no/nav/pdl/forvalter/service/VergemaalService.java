@@ -1,25 +1,23 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -37,51 +35,42 @@ public class VergemaalService implements Validation<VergemaalDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public Mono<DbPerson> convert(DbPerson dbPerson) {
+    public List<VergemaalDTO> convert(PersonDTO person) {
 
-        return Flux.fromIterable(dbPerson.getPerson().getVergemaal())
-                .filter(vergemaal -> isTrue(vergemaal.getIsNew()))
-                .flatMap(vergemaal -> handle(vergemaal, dbPerson.getIdent()))
-                .doOnNext(vergemaal -> {
-                    vergemaal.setKilde(getKilde(vergemaal));
-                    vergemaal.setMaster(getMaster(vergemaal, dbPerson.getPerson()));
-                })
-                .collectList()
-                .thenReturn(dbPerson);
+        for (var type : person.getVergemaal()) {
+
+            if (isTrue(type.getIsNew())) {
+
+                handle(type, person.getIdent());
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
+            }
+        }
+        return person.getVergemaal();
     }
 
-    public Mono<Void> validate(VergemaalDTO vergemaal) {
+    public void validate(VergemaalDTO vergemaal) {
 
         if (isNull(vergemaal.getVergemaalEmbete())) {
-            return Mono.error(new InvalidRequestException(VALIDATION_EMBETE_ERROR));
+            throw new InvalidRequestException(VALIDATION_EMBETE_ERROR);
         }
 
         if (nonNull(vergemaal.getGyldigFraOgMed()) && nonNull(vergemaal.getGyldigTilOgMed()) &&
-            !vergemaal.getGyldigFraOgMed().isBefore(vergemaal.getGyldigTilOgMed())) {
-            return Mono.error(new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR));
+                !vergemaal.getGyldigFraOgMed().isBefore(vergemaal.getGyldigTilOgMed())) {
+            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
         if (isNull(vergemaal.getSakType())) {
-            return Mono.error(new InvalidRequestException(VALIDATION_TYPE_ERROR));
+            throw new InvalidRequestException(VALIDATION_TYPE_ERROR);
         }
 
-        if (isNotBlank(vergemaal.getVergeIdent())) {
-            return personRepository.existsByIdent(vergemaal.getVergeIdent())
-                    .flatMap(exists -> isFalse(exists) ?
-                            Mono.error(new InvalidRequestException(format(VALIDATION_VERGEMAAL_ERROR, vergemaal.getVergeIdent()))) :
-                            Mono.empty());
+        if (isNotBlank(vergemaal.getVergeIdent()) &&
+                !personRepository.existsByIdent(vergemaal.getVergeIdent())) {
+            throw new InvalidRequestException(format(VALIDATION_VERGEMAAL_ERROR, vergemaal.getVergeIdent()));
         }
-        return Mono.empty();
     }
 
-    private Mono<VergemaalDTO> handle(VergemaalDTO vergemaal, String ident) {
-
-        return getVergeident(vergemaal, ident)
-                .flatMap(vm -> relasjonService.setRelasjoner(ident, RelasjonType.VERGE, vm.getVergeIdent(), RelasjonType.VERGE_MOTTAKER))
-                .thenReturn(vergemaal);
-    }
-
-    private Mono<VergemaalDTO> getVergeident(VergemaalDTO vergemaal, String ident) {
+    private void handle(VergemaalDTO vergemaal, String ident) {
 
         vergemaal.setEksisterendePerson(isNotBlank(vergemaal.getVergeIdent()));
 
@@ -92,8 +81,8 @@ public class VergemaalService implements Validation<VergemaalDTO> {
             }
 
             if (isNull(vergemaal.getNyVergeIdent().getAlder()) &&
-                isNull(vergemaal.getNyVergeIdent().getFoedtEtter()) &&
-                isNull(vergemaal.getNyVergeIdent().getFoedtFoer())) {
+                    isNull(vergemaal.getNyVergeIdent().getFoedtEtter()) &&
+                    isNull(vergemaal.getNyVergeIdent().getFoedtFoer())) {
 
                 vergemaal.getNyVergeIdent().setFoedtFoer(LocalDateTime.now().minusYears(18));
                 vergemaal.getNyVergeIdent().setFoedtEtter(LocalDateTime.now().minusYears(75));
@@ -101,12 +90,10 @@ public class VergemaalService implements Validation<VergemaalDTO> {
 
             EgenskaperFraHovedperson.kopierData(ident, vergemaal.getNyVergeIdent());
 
-            return createPersonService.execute(vergemaal.getNyVergeIdent())
-                    .map(createdPerson -> {
-                        vergemaal.setVergeIdent(createdPerson.getIdent());
-                        return vergemaal;
-                    });
+            vergemaal.setVergeIdent(createPersonService.execute(vergemaal.getNyVergeIdent()).getIdent());
         }
-        return Mono.just(vergemaal);
+
+        relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,
+                vergemaal.getVergeIdent(), RelasjonType.VERGE);
     }
 }

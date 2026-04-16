@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -20,7 +21,7 @@ public class PdlOpprettNpidCommand extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    public Mono<OrdreResponseDTO.HendelseDTO> call() {
+    public Flux<OrdreResponseDTO.HendelseDTO> call() {
         return webClient
                 .post()
                 .uri(builder -> builder
@@ -29,8 +30,8 @@ public class PdlOpprettNpidCommand extends PdlTestdataCommand {
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .contentType(MediaType.APPLICATION_JSON)
-                .exchangeToMono(response ->
-                        Mono.just(OrdreResponseDTO.HendelseDTO.builder()
+                .exchangeToFlux(response ->
+                        Flux.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(PdlStatus.OK)
                                 .build()))
                 .timeout(TIMEOUT)

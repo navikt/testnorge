@@ -17,10 +17,6 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class KodeverkCommand implements Callable<Mono<KodeverkDTO>> {
 
-    // Kodeverk oppdateres sjeldent, og det er ikke kritisk at det er oppdatert til enhver tid.
-    // Derfor settes cache-tiden til 500 minutter for å gi bra ytelse til kodeverk-kall.
-    private static final int KODEVERK_CACHE_MINUTES = 500;
-
     private final WebClient webClient;
     private final String kodeverknavn;
     private final String token;
@@ -40,6 +36,7 @@ public class KodeverkCommand implements Callable<Mono<KodeverkDTO>> {
                 .bodyToMono(KodeverkDTO.class)
                 .doFinally(value -> log.info("Kodeverk {} hentet", kodeverknavn))
                 .retryWhen(WebClientError.is5xxException())
-                .cache(Duration.ofMinutes(KODEVERK_CACHE_MINUTES));
+                .cache(Duration.ofMinutes(30));
     }
+
 }

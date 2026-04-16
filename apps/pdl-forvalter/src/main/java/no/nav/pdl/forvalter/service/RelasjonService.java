@@ -5,47 +5,86 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
+import no.nav.pdl.forvalter.exception.InternalServerException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 
 @Service
 @RequiredArgsConstructor
 public class RelasjonService {
 
+    private static final String DB_ERROR = "Person %s ikke funnet i database";
+
     private final RelasjonRepository relasjonRepository;
     private final PersonRepository personRepository;
 
-    public Mono<Void> setRelasjoner(String ident, RelasjonType relasjon, String identRelasjon, RelasjonType reverseRelasjon) {
+    public void setRelasjoner(String ident, RelasjonType relasjon, String identRelasjon, RelasjonType reverseRelasjon) {
 
-        return Mono.zip(fetchPerson(ident),
-                        fetchPerson(identRelasjon))
-                .flatMap(personer ->
-                        checkAndCreateRelasjon(personer.getT1(), personer.getT2(), relasjon)
-                                .then(nonNull(reverseRelasjon) ?
-                                        checkAndCreateRelasjon(personer.getT2(), personer.getT1(), reverseRelasjon) :
-                                        Mono.empty()))
-                .then();
+        var dbPersoner = checkAndCreateMissingPersons(ident, identRelasjon);
+
+        var hovedperson = dbPersoner.stream()
+                .filter(person -> person.getIdent().equals(ident))
+                .findFirst().orElseThrow(() -> new InternalServerException(
+                        String.format(DB_ERROR, ident)));
+        var relasjonPerson = dbPersoner.stream()
+                .filter(person -> person.getIdent().equals(identRelasjon))
+                .findFirst().orElseThrow(() -> new InternalServerException(
+                        String.format(DB_ERROR, identRelasjon)));
+
+        createRelasjon(relasjonPerson, hovedperson, relasjon);
+
+        if (nonNull(reverseRelasjon)) {
+            createRelasjon(hovedperson, relasjonPerson, reverseRelasjon);
+        }
     }
 
-    private Mono<DbPerson> fetchPerson(String ident) {
+    private List<DbPerson> checkAndCreateMissingPersons(String ident, String identRelasjon) {
 
-        return personRepository.findByIdent(ident)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException(String.format("Person med ident %s finnes ikke", ident))));
-    }
+        var dbPersoner = personRepository.findByIdentIn(List.of(ident, identRelasjon),
+                PageRequest.of(0, 10));
 
-    private Mono<DbRelasjon> checkAndCreateRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjonType) {
-
-        return relasjonRepository.findByPersonIdAndRelatertPersonIdAndRelasjonType(person1.getId(), person2.getId(), relasjonType)
-                .switchIfEmpty(Mono.just(DbRelasjon.builder()
-                                .personId(person1.getId())
-                                .relatertPersonId(person2.getId())
-                                .relasjonType(relasjonType)
-                                .sistOppdatert(now())
+        Stream.of(ident, identRelasjon)
+                .filter(id -> isTestnorgeIdent(id) &&
+                        dbPersoner.stream().noneMatch(dbPerson -> dbPerson.getIdent().equals(id)))
+                .forEach(id -> personRepository.save(DbPerson.builder()
+                        .ident(id)
+                        .person(PersonDTO.builder()
+                                .ident(id)
                                 .build())
-                        .flatMap(relasjonRepository::save));
+                        .sistOppdatert(now())
+                        .build()));
+
+        return personRepository.findByIdentIn(List.of(ident, identRelasjon),
+                PageRequest.of(0, 10));
+    }
+
+    public void setRelasjon(String ident, String identRelasjon, RelasjonType relasjon) {
+
+        setRelasjoner(identRelasjon, relasjon, ident, null);
+    }
+
+    private void createRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjon) {
+
+        if (relasjonRepository.findByPersonIdent(person1.getIdent()).stream().noneMatch(relasjon1 ->
+                person1.getPerson().getIdent().equals(relasjon1.getPerson().getIdent()) &&
+                        person2.getPerson().getIdent().equals(relasjon1.getRelatertPerson().getIdent()) &&
+                        relasjon.equals(relasjon1.getRelasjonType()))) {
+
+            relasjonRepository.save(DbRelasjon.builder()
+                    .person(person1)
+                    .relatertPerson(person2)
+                    .relasjonType(relasjon)
+                    .sistOppdatert(now())
+                    .build());
+        }
     }
 }

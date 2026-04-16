@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.utils.ArtifactUtils;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -13,7 +12,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.Folk
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -39,22 +37,22 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterPersonstatusDTO, PersonDTO> {
 
-    public Mono<DbPerson> convert(DbPerson dbPerson) {
+    public List<FolkeregisterPersonstatusDTO> convert(PersonDTO person) {
 
         var touched = new AtomicBoolean(false);
 
-        if (dbPerson.getPerson().isNotChanged() || isTestnorgeIdent(dbPerson.getPerson().getIdent()) || dbPerson.getPerson().getIdenttype() == NPID) {
-            return Mono.just(dbPerson);
+        if (person.isNotChanged() || isTestnorgeIdent(person.getIdent()) || person.getIdenttype() == NPID) {
+            return person.getFolkeregisterPersonstatus();
         }
 
-        dbPerson.getPerson().getFolkeregisterPersonstatus()
+        person.getFolkeregisterPersonstatus()
                 .forEach(status -> {
 
                     if (isTrue(status.getIsNew())) {
 
-                        handle(status, dbPerson.getPerson());
+                        handle(status, person);
                         status.setKilde(getKilde(status));
-                        status.setMaster(getMaster(status, dbPerson.getPerson()));
+                        status.setMaster(getMaster(status, person));
                         touched.set(true);
                     }
                 });
@@ -62,25 +60,25 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         if (!touched.get()) {
 
             var status = handle(FolkeregisterPersonstatusDTO.builder()
-                    .id(dbPerson.getPerson().getFolkeregisterPersonstatus().size() + 1)
+                    .id(person.getFolkeregisterPersonstatus().size() + 1)
                     .isNew(false)
                     .kilde("Dolly")
                     .master(Master.FREG)
-                    .build(), dbPerson.getPerson());
+                    .build(), person);
 
             if (nonNull(status.getStatus())) {
-                dbPerson.getPerson().getFolkeregisterPersonstatus().addFirst(status);
+                person.getFolkeregisterPersonstatus().addFirst(status);
             }
         }
 
-        setGyldigTilOgMed(dbPerson.getPerson());
-        return Mono.just(dbPerson);
+        setGyldigTilOgMed(person);
+        return person.getFolkeregisterPersonstatus();
     }
 
-    public Mono<DbPerson> update(DbPerson dbPerson) {
+    public List<FolkeregisterPersonstatusDTO> update(PersonDTO person) {
 
-        dbPerson.getPerson().setIsChanged(true);
-        return convert(dbPerson);
+        person.setIsChanged(true);
+        return convert(person);
     }
 
     private FolkeregisterPersonstatusDTO handle(FolkeregisterPersonstatusDTO personstatus, PersonDTO person) {
@@ -170,10 +168,9 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     }
 
     @Override
-    public Mono<Void> validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
+    public void validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
 
         // Ingen validering
-        return Mono.empty();
     }
 
     private static LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {
@@ -186,6 +183,16 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     }
 
     protected static void setGyldigTilOgMed(PersonDTO person) {
+
+        var newStatus = new ArrayList<>(person
+                .getFolkeregisterPersonstatus()
+                .stream()
+                .filter(status -> nonNull(status.getGyldigFraOgMed()))
+                .sorted(Comparator
+                        .comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed)
+                        .reversed())
+                .toList());
+        person.setFolkeregisterPersonstatus(newStatus);
 
         var folkeregisterPersonstatus = person.getFolkeregisterPersonstatus();
         ArtifactUtils.renumberId(folkeregisterPersonstatus);

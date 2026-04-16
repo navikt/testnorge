@@ -2,12 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HendelseIdRequest;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -15,11 +13,15 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -31,120 +33,133 @@ public class HendelseIdService {
 
     private final PersonRepository personRepository;
     private final PdlTestdataConsumer pdlTestdataConsumer;
-    private final RelasjonRepository relasjonRepository;
 
-    public Mono<Void> oppdaterPerson(OrdreResponseDTO response) {
+    public void oppdaterPerson(OrdreResponseDTO response) {
 
-        return Flux.concat(Mono.just(response.getHovedperson()),
-                        Flux.fromIterable(response.getRelasjoner()))
-                .flatMap(personHendelse -> personRepository.findByIdent(personHendelse.getIdent())
-                        .flatMapMany(dbPerson -> Flux.fromIterable(personHendelse.getOrdrer())
+        Stream.of(List.of(response.getHovedperson()),
+                        response.getRelasjoner())
+                .flatMap(Collection::stream)
+                .forEach(person -> personRepository.findByIdent(person.getIdent())
+                        .ifPresent(dbPerson -> person.getOrdrer().stream()
                                 .filter(OrdreResponseDTO.PdlStatusDTO::isDataElement)
-                                .flatMap(ordre -> {
+                                .forEach(ordre -> {
                                     try {
                                         var getter = PersonDTO.class.getMethod("get" + ordre.getInfoElement().getDescription());
-                                        val artifact = (List<DbVersjonDTO>) getter.invoke(dbPerson.getPerson());
-                                        return Flux.fromIterable(ordre.getHendelser())
-                                                .flatMap(hendelse -> Flux.fromIterable(artifact)
+                                        var artifact = (List<DbVersjonDTO>) getter.invoke(dbPerson.getPerson());
+                                        ordre.getHendelser()
+                                                .forEach(hendelse -> artifact.stream()
                                                         .filter(fact -> hendelse.getId().equals(fact.getId()))
-                                                        .doOnNext(fact ->
+                                                        .findFirst()
+                                                        .ifPresent(fact ->
                                                                 fact.setHendelseId(hendelse.getHendelseId())));
+
                                     } catch (NoSuchMethodException |
                                              InvocationTargetException |
                                              IllegalAccessException e) {
                                         log.error("Feilet å lagre hendelseId, {}", e.getMessage());
-                                        return Mono.empty();
                                     }
-                                })
-                        ))
-                .collectList()
-                .then();
+                                })));
     }
 
-    public Flux<DbVersjonDTO> getPdlHendelser(DbPerson dbPerson) {
+    public List<DbVersjonDTO> getPdlHendelser(String ident) {
 
-        return Mono.just(dbPerson)
+        return personRepository.findByIdent(ident)
                 .map(DbPerson::getPerson)
-                .flatMapMany(person -> Flux.fromArray(person.getClass().getMethods())
+                .map(person -> Arrays.stream(person.getClass().getMethods())
                         .filter(method -> method.getName().contains("get"))
-                        .flatMap(method -> {
+                        .map(method -> {
                             try {
-                                return Mono.just(method.invoke(person));
+                                return method.invoke(person);
                             } catch (IllegalAccessException | InvocationTargetException e) {
                                 log.error("Feilet å hente hendelseId, {}", e.getMessage());
-                                return Mono.empty();
+                                return null;
                             }
                         })
                         .filter(Objects::nonNull)
                         .filter(List.class::isInstance)
                         .map(value -> (List<DbVersjonDTO>) value)
-                        .flatMap(Flux::fromIterable)
+                        .flatMap(Collection::stream)
                         .filter(DbVersjonDTO::isPdlMaster)
-                        .filter(dbVersjonDTO -> isNotBlank(dbVersjonDTO.getHendelseId())));
+                        .filter(dbVersjonDTO -> isNotBlank(dbVersjonDTO.getHendelseId()))
+                        .toList())
+                .orElse(Collections.emptyList());
     }
 
-    public Mono<Void> deletePdlHendelser(DbPerson person) {
+    public void deletePdlHendelser(DbPerson person) {
 
         if (isTestnorgeIdent(person.getIdent())) {
-
-            return Flux.concat(
-                            getPdlHendelser(person)
-                                    .flatMap(opplysning -> buildHendelseRequest(person.getIdent(), opplysning)),
-                            relasjonRepository.findByPersonId(person.getId())
-                                    .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))
+            var relevanteHendelser = Stream.of(
+                            getPdlHendelser(person.getIdent()).stream()
+                                    .map(hendelse -> HendelseIdRequest.builder()
+                                            .ident(person.getIdent())
+                                            .hendelseId(hendelse.getHendelseId())
+                                            .build()),
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
                                     .map(DbPerson::getPerson)
-                                    .flatMap(relasjonPerson -> Flux.concat(
-                                            Flux.fromIterable(relasjonPerson.getSivilstand())
-                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
-                                            Flux.fromIterable(relasjonPerson.getForelderBarnRelasjon())
-                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert)),
-                                            Flux.fromIterable(relasjonPerson.getFullmakt())
-                                                    .map(relatert -> buildHendelseRequest(relasjonPerson.getIdent(), relatert))))
-                                    .flatMap(Flux::from))
+                                    .map(relatert -> getHendelser(relatert.getIdent(), relatert.getSivilstand()))
+                                    .flatMap(Collection::stream),
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
+                                    .map(DbPerson::getPerson)
+                                    .map(relatert -> getHendelser(relatert.getIdent(), relatert.getForelderBarnRelasjon()))
+                                    .flatMap(Collection::stream),
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
+                                    .map(DbPerson::getPerson)
+                                    .map(relatert -> getHendelser(relatert.getIdent(), relatert.getFullmakt()))
+                                    .flatMap(Collection::stream)
+                    )
+                    .flatMap(Function.identity())
+                    .toList();
+
+            Flux.fromIterable(relevanteHendelser)
                     .flatMap(pdlTestdataConsumer::deleteHendelse)
                     .collectList()
-                    .then();
+                    .block();
         }
-
-        return Mono.empty();
     }
 
-    private Mono<HendelseIdRequest> buildHendelseRequest(String ident, DbVersjonDTO opplysning) {
+    private List<HendelseIdRequest> getHendelser(String ident, List<? extends DbVersjonDTO> opplysninger) {
 
-        return Mono.just(opplysning)
+        return opplysninger.stream()
                 .filter(DbVersjonDTO::isPdlMaster)
-                .map(type -> HendelseIdRequest.builder()
+                .map(opplysning -> HendelseIdRequest.builder()
                         .ident(ident)
-                        .hendelseId(type.getHendelseId())
-                        .build());
+                        .hendelseId(opplysning.getHendelseId())
+                        .build())
+                .toList();
     }
 
-    public Mono<Void> deletePdlHendelse(String ident, String artifact, Integer id) {
+    public void deletePdlHendelse(String ident, String artifact, Integer id) {
 
         if (isTestnorgeIdent(ident)) {
 
-            return personRepository.findByIdent(ident)
+            var hendelse = personRepository.findByIdent(ident)
                     .map(DbPerson::getPerson)
-                    .flatMap(person -> {
+                    .map(person -> {
                         try {
-                            val method = person.getClass().getMethod("get" + artifact);
-                            return Mono.just(method.invoke(person));
+                            var method = person.getClass().getMethod("get" + artifact);
+                            return (List<DbVersjonDTO>) method.invoke(person);
                         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                             log.error("Feilet å hente get{} fra person med ident {}", artifact, ident);
-                            return Mono.empty();
+                            return null;
                         }
                     })
-                    .filter(List.class::isInstance)
-                    .map(value -> (List<DbVersjonDTO>) value)
-                    .flatMap(opplysninger -> Flux.fromIterable(opplysninger)
+                    .filter(Objects::nonNull)
+                    .flatMap(opplysninger -> opplysninger.stream()
                             .filter(opplysning -> id.equals(opplysning.getId()))
                             .filter(DbVersjonDTO::isPdlMaster)
                             .map(DbVersjonDTO::getHendelseId)
                             .filter(StringUtils::isNotBlank)
-                            .next()
-                            .flatMap(hendelseId -> pdlTestdataConsumer.deleteHendelse(ident, hendelseId)))
-                    .then();
+                            .findFirst())
+                    .orElse(null);
+
+            if (isNotBlank(hendelse)) {
+
+                pdlTestdataConsumer.deleteHendelse(ident, hendelse)
+                        .block();
+            }
         }
-        return Mono.empty();
     }
 }

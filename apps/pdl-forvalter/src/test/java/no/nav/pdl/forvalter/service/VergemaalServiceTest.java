@@ -9,15 +9,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,63 +34,60 @@ class VergemaalServiceTest {
     void whenEmbeteIsMissing_thenThrowExecption() {
 
         var request = VergemaalDTO.builder()
-                .isNew(true)
-                .build();
+                        .isNew(true)
+                        .build();
 
-        StepVerifier.create(
-                        vergemaalService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Embete for vergemål må angis")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                vergemaalService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Embete for vergemål må angis"));
     }
 
     @Test
     void whenTypeIsMissing_thenThrowExecption() {
 
         var request = VergemaalDTO.builder()
-                .vergemaalEmbete(VergemaalEmbete.FMAV)
-                .isNew(true)
-                .build();
+                        .vergemaalEmbete(VergemaalEmbete.FMAV)
+                        .isNew(true)
+                        .build();
 
-        StepVerifier.create(
-                        vergemaalService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Sakstype av vergemål må angis")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                vergemaalService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Sakstype av vergemål må angis"));
     }
 
     @Test
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
         var request = VergemaalDTO.builder()
-                .vergemaalEmbete(VergemaalEmbete.FMIN)
-                .gyldigFraOgMed(LocalDate.of(2012, 4, 5).atStartOfDay())
-                .gyldigTilOgMed(LocalDate.of(2012, 4, 4).atStartOfDay())
-                .isNew(true)
-                .build();
+                        .vergemaalEmbete(VergemaalEmbete.FMIN)
+                        .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2012, 04, 04).atStartOfDay())
+                        .isNew(true)
+                        .build();
 
-        StepVerifier.create(
-                        vergemaalService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom")));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                vergemaalService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }
 
     @Test
     void whenStatedPersonDoesNotExist_thenThrowExecption() {
 
-        when(personRepository.existsByIdent(IDENT)).thenReturn(Mono.just(false));
+        when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
         var request = VergemaalDTO.builder()
-                .vergemaalEmbete(VergemaalEmbete.FMNO)
-                .sakType(VergemaalSakstype.EMF)
-                .vergeIdent(IDENT)
-                .isNew(true)
-                .build();
+                        .vergemaalEmbete(VergemaalEmbete.FMNO)
+                        .sakType(VergemaalSakstype.EMF)
+                        .vergeIdent(IDENT)
+                        .isNew(true)
+                        .build();
 
-        StepVerifier.create(
-                        vergemaalService.validate(request))
-                .verifyErrorSatisfies(throwable -> {
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                vergemaalService.validate(request));
 
-                    verify(personRepository).existsByIdent(IDENT);
-                    assertThat(throwable.getMessage(), containsString(format("Vergeperson med ident %s ikke funnet i database", IDENT)));
-                });
+        assertThat(exception.getMessage(), containsString(format("Vergeperson med ident %s ikke funnet i database", IDENT)));
     }
 }

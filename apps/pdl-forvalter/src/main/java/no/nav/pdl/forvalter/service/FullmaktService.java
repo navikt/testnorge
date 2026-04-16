@@ -10,16 +10,16 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -30,47 +30,38 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public Mono<DbPerson> convert(DbPerson dbPerson) {
+    public List<FullmaktDTO> convert(PersonDTO person) {
 
-        return Flux.fromIterable(dbPerson.getPerson().getFullmakt())
-                .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, dbPerson.getIdent()))
-                .doOnNext(type -> {
-                    type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, dbPerson.getPerson()));
-                })
-                .collectList()
-                .thenReturn(dbPerson);
+        for (var type : person.getFullmakt()) {
+
+            if (isTrue(type.getIsNew())) {
+
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
+                handle(type, person.getIdent());
+            }
+        }
+        return person.getFullmakt();
     }
 
     @Override
-    public Mono<Void> validate(FullmaktDTO fullmakt, PersonDTO person) {
+    public void validate(FullmaktDTO fullmakt, PersonDTO person) {
 
-        return Mono.empty();
     }
 
-    private Mono<FullmaktDTO> handle(FullmaktDTO fullmakt, String ident) {
-
-        return getFullmaktPerson(fullmakt, ident)
-                .flatMap(fm -> relasjonService.setRelasjoner(ident,
-                        RelasjonType.FULLMAKTSGIVER, fm.getMotpartsPersonident(),
-                        RelasjonType.FULLMEKTIG).thenReturn(fm))
-                .doOnNext(fm -> fm.setMaster(Master.PDL));
-    }
-
-    private Mono<FullmaktDTO> getFullmaktPerson(FullmaktDTO fullmakt, String ident) {
+    private void handle(FullmaktDTO fullmakt, String ident) {
 
         fullmakt.setEksisterendePerson(isNotBlank(fullmakt.getMotpartsPersonident()));
 
-        if (isFalse(fullmakt.getEksisterendePerson())) {
+        if (isBlank(fullmakt.getMotpartsPersonident())) {
 
             if (isNull(fullmakt.getNyFullmektig())) {
                 fullmakt.setNyFullmektig(new PersonRequestDTO());
             }
 
             if (isNull(fullmakt.getNyFullmektig().getAlder()) &&
-                isNull(fullmakt.getNyFullmektig().getFoedtEtter()) &&
-                isNull(fullmakt.getNyFullmektig().getFoedtFoer())) {
+                    isNull(fullmakt.getNyFullmektig().getFoedtEtter()) &&
+                    isNull(fullmakt.getNyFullmektig().getFoedtFoer())) {
 
                 fullmakt.getNyFullmektig().setFoedtFoer(LocalDateTime.now().minusYears(18));
                 fullmakt.getNyFullmektig().setFoedtEtter(LocalDateTime.now().minusYears(75));
@@ -78,25 +69,25 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
             EgenskaperFraHovedperson.kopierData(ident, fullmakt.getNyFullmektig());
 
-            return createPersonService.execute(fullmakt.getNyFullmektig())
-                    .map(DbPerson::getPerson)
-                    .map(PersonDTO::getIdent)
-                    .doOnNext(fullmakt::setMotpartsPersonident)
-                    .thenReturn(fullmakt);
+            fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
+
         } else {
 
-            return personRepository.findByIdent(fullmakt.getMotpartsPersonident())
-                    .switchIfEmpty(Mono.just(DbPerson.builder()
+            var motpartPerson = new AtomicReference<DbPerson>();
+            personRepository.findByIdent(fullmakt.getMotpartsPersonident())
+                    .ifPresentOrElse(motpartPerson::set,
+                            () -> motpartPerson.set(personRepository.save(DbPerson.builder()
                                     .ident(fullmakt.getMotpartsPersonident())
                                     .person(PersonDTO.builder()
                                             .ident(fullmakt.getMotpartsPersonident())
                                             .build())
                                     .sistOppdatert(LocalDateTime.now())
-                                    .build())
-                            .flatMap(personRepository::save))
-                    .map(DbPerson::getIdent)
-                    .doOnNext(fullmakt::setMotpartsPersonident)
-                    .thenReturn(fullmakt);
+                                    .build())));
         }
+
+        relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
+                fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
+
+        fullmakt.setMaster(Master.PDL);
     }
 }

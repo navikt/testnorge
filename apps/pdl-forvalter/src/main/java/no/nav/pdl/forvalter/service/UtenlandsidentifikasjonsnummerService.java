@@ -1,11 +1,11 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -21,36 +21,35 @@ public class UtenlandsidentifikasjonsnummerService implements Validation<Utenlan
     private static final String VALIDATION_UTSTEDER_LAND_MISSING = "Utsteder land må oppgis";
     private static final String VALIDATION_LANDKODE_ILLEGAL_FORMAT = "Trebokstavers landkode er forventet på utstederland";
 
-    public Mono<DbPerson> convert(DbPerson dbPerson) {
+    public List<UtenlandskIdentifikasjonsnummerDTO> convert(PersonDTO person) {
 
-        return Flux.fromIterable(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer())
-                .filter(type -> isTrue(type.getIsNew()))
-                .doOnNext(type -> {
-                    type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, dbPerson.getPerson()));
-                })
-                .collectList()
-                .thenReturn(dbPerson);
+        for (var type : person.getUtenlandskIdentifikasjonsnummer()) {
+            if (isTrue(type.getIsNew())) {
+
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
+            }
+        }
+        return person.getUtenlandskIdentifikasjonsnummer();
     }
 
     @Override
-    public Mono<Void> validate(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
+    public void validate(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
 
         if (isBlank(identifikasjon.getIdentifikasjonsnummer())) {
-            return Mono.error(new InvalidRequestException(VALIDATION_ID_NUMMER_MISSING));
+            throw new InvalidRequestException(VALIDATION_ID_NUMMER_MISSING);
         }
 
         if (isNull(identifikasjon.getOpphoert())) {
-            return Mono.error(new InvalidRequestException(VALIDATION_OPPHOERT_MISSING));
+            throw new InvalidRequestException(VALIDATION_OPPHOERT_MISSING);
         }
 
         if (isNull(identifikasjon.getUtstederland())) {
-            return Mono.error(new InvalidRequestException(VALIDATION_UTSTEDER_LAND_MISSING));
+            throw new InvalidRequestException(VALIDATION_UTSTEDER_LAND_MISSING);
         }
 
         if (!identifikasjon.getUtstederland().matches("[A-Z]{3}")) {
-            return Mono.error(new InvalidRequestException(VALIDATION_LANDKODE_ILLEGAL_FORMAT));
+            throw new InvalidRequestException(VALIDATION_LANDKODE_ILLEGAL_FORMAT);
         }
-        return Mono.empty();
     }
 }
