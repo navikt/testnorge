@@ -100,7 +100,10 @@ export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading }) => {
 	if (!data) {
 		return null
 	}
-	const manglerFagsystemdata = data?.length < 1
+	if (!Array.isArray(data)) {
+		return null
+	}
+	const manglerFagsystemdata = data.length < 1
 
 	return (
 		<>

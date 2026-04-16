@@ -32,6 +32,9 @@ export const InstVisning = ({ data, loading, bestillingIdListe, tilgjengeligMilj
 	if (!data) {
 		return null
 	}
+	if (!Array.isArray(data)) {
+		return null
+	}
 
 	const manglerFagsystemdata = sjekkManglerInstData(data)
 

@@ -5,10 +5,6 @@ import { sjekkManglerApData } from '@/components/fagsystem/alderspensjon/visning
 import { sjekkManglerUforetrygdData } from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
-import {
-	sjekkManglerSykemeldingBestilling,
-	sjekkManglerSykemeldingData,
-} from '@/components/fagsystem/sykdom/visning/Visning'
 import { sjekkManglerYrkesskadeData } from '@/components/fagsystem/yrkesskader/visning/YrkesskaderVisning'
 import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
 import {
@@ -16,7 +12,6 @@ import {
 	harDokarkivBestilling,
 	harHistarkBestilling,
 	harMedlBestilling,
-	harSykemeldingBestilling,
 	harUdistubBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 
@@ -30,8 +25,6 @@ interface UseTimedOutParams {
 	uforetrygdData: any
 	brregstub: any
 	instData: any
-	sykemeldingData: any
-	sykemeldingBestilling: any
 	yrkesskadeData: any
 	arbeidsplassencvData: any
 	arbeidsplassencvError: any
@@ -58,8 +51,6 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		uforetrygdData,
 		brregstub,
 		instData,
-		sykemeldingData,
-		sykemeldingBestilling,
 		yrkesskadeData,
 		arbeidsplassencvData,
 		arbeidsplassencvError,
@@ -92,13 +83,6 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 	if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
 	if (brregstub && sjekkManglerBrregData(brregstub)) list.push('BRREG')
 	if (instData && sjekkManglerInstData(instData)) list.push('INST')
-	if (
-		sykemeldingData &&
-		sjekkManglerSykemeldingData(sykemeldingData) &&
-		harSykemeldingBestilling(bestillingerFagsystemer) &&
-		sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
-	)
-		list.push('SYKEMELDING')
 	if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) list.push('YRKESSKADE')
 	if (
 		harArbeidsplassenBestilling(bestillingerFagsystemer) &&

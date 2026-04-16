@@ -1,14 +1,16 @@
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { addDays, addHours, addWeeks } from 'date-fns'
 
 const initialValuesAktivitet = {
+	grad: null as unknown as number,
 	fom: new Date(),
 	tom: addWeeks(new Date(), 2),
 }
 
-export const NySykemelding = () => {
+export const Sykemelding = () => {
 	return (
 		<div className="flexbox--wrap">
 			<FormDollyFieldArray
@@ -31,6 +33,7 @@ export const NySykemelding = () => {
 						lastEntryTom = addHours(lastEntryTom, 2)
 					}
 					const newAktivitet = {
+						grad: null as unknown as number,
 						fom: addDays(lastEntryTom, 1),
 						tom: addWeeks(lastEntryTom, 2),
 					}
@@ -39,6 +42,7 @@ export const NySykemelding = () => {
 			>
 				{(path: string) => (
 					<>
+						<FormTextInput name={`${path}.grad`} label="Grad (%)" type="number" />
 						<FormDatepicker name={`${path}.fom`} label="F.o.m. dato" />
 						<FormDatepicker name={`${path}.tom`} label="T.o.m. dato" />
 					</>

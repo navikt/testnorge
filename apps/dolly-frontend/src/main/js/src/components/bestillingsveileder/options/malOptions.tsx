@@ -19,7 +19,6 @@ import {
 	initialArbeidsgiverOrg,
 	initialFartoy,
 } from '@/components/fagsystem/aareg/form/initialValues'
-import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
 import { FullmaktHandling } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
 
@@ -96,9 +95,10 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 		initialValuesMal.dokarkiv = getUpdatedDokarkiv(initialValuesMal.dokarkiv)
 	}
 	if (initialValuesMal.sykemelding?.syntSykemelding) {
-		initialValuesMal.sykemelding.detaljertSykemelding = getUpdatedSykemelding(
-			initialValuesMal.sykemelding.syntSykemelding,
-		)
+		delete initialValuesMal.sykemelding.syntSykemelding
+	}
+	if (initialValuesMal.sykemelding?.detaljertSykemelding) {
+		delete initialValuesMal.sykemelding.detaljertSykemelding
 	}
 	if (initialValuesMal.fullmakt) {
 		initialValuesMal.fullmakt = getUpdatedFullmaktData(initialValuesMal.fullmakt)
@@ -218,14 +218,12 @@ const getUpdatedSkattekortData = (skattekortData: any) => {
 	const newSkattekortData = Object.assign({}, skattekortData)
 	newSkattekortData.arbeidsgiverSkatt = newSkattekortData.arbeidsgiverSkatt?.map(
 		(arbeidsgiver: any) => {
-			if (arbeidsgiver?.arbeidsgiveridentifikator) {
-				const identifikator = Object.fromEntries(
-					Object.entries(arbeidsgiver.arbeidsgiveridentifikator).filter(
-						([key, value]) => value,
-					),
-				)
-				_.set(arbeidsgiver, 'arbeidsgiveridentifikator', identifikator)
-			}
+			const identifikator = arbeidsgiver?.arbeidsgiveridentifikator
+				? Object.fromEntries(
+						Object.entries(arbeidsgiver.arbeidsgiveridentifikator).filter(([key, value]) => value),
+					)
+				: {}
+			_.set(arbeidsgiver, 'arbeidsgiveridentifikator', identifikator)
 			const forskuddstrekk = arbeidsgiver?.arbeidstaker?.[0]?.skattekort?.forskuddstrekk?.map(
 				(forskuddstrekk: any) =>
 					forskuddstrekk
@@ -460,15 +458,6 @@ const getUpdatedBankkonto = (bankkonto: any) => {
 		}
 	}
 	return bankkonto
-}
-
-const getUpdatedSykemelding = (syntSykemelding: any) => {
-	let updatedSykemelding = initialValuesDetaljertSykemelding
-	updatedSykemelding.startDato = new Date()
-	updatedSykemelding.mottaker.orgNr = syntSykemelding.orgnummer
-	updatedSykemelding.perioder[0].fom = addDays(syntSykemelding.startDato, -7)
-	updatedSykemelding.perioder[0].tom = addDays(syntSykemelding.startDato, -1)
-	return updatedSykemelding
 }
 
 const updateKontaktType = (kontaktinfo: any) => {

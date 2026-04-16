@@ -22,6 +22,14 @@ export const useMatchMutate = () => {
 			}
 		}
 
-		return Promise.all(keysToMutate.map((key) => mutate(key, ...args)))
+		if (keysToMutate.length === 0) {
+			return Promise.resolve([])
+		}
+
+		const fetchPromises = keysToMutate.map((key) =>
+			mutate(key, ...args).catch(() => undefined),
+		)
+
+		return Promise.all(fetchPromises)
 	}
 }

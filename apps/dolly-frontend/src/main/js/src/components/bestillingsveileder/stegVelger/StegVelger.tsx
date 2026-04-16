@@ -50,7 +50,7 @@ const STEPS: StepDef[] = [
 const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 
-const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
+const manualMutateFields: string[] = []
 
 export const devEnabled =
 	window.location.hostname.includes('localhost') ||

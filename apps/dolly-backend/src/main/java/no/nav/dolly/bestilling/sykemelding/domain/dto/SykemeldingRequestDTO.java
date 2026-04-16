@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NySykemeldingRequestDTO {
+public class SykemeldingRequestDTO {
 
     private String ident;
     private List<Aktivitet> aktivitet;
@@ -25,6 +25,7 @@ public class NySykemeldingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Aktivitet {
+        private Integer grad;
         private LocalDate fom;
         private LocalDate tom;
     }

@@ -38,6 +38,7 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 		'Skattekortopplysninger OK': 'SKATTEKORTOPPLYSNINGER_OK',
 		'Ikke trekkplikt': 'IKKE_TREKKPLIKT',
 		'Ikke skattekort': 'IKKE_SKATTEKORT',
+		'Utgått d-nummer': 'UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT',
 	},
 	TILLEGGSOPPLYSNING: {
 		'Opphold på Svalbard': 'OPPHOLD_PAA_SVALBARD',
@@ -53,6 +54,7 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 		'Skattekortopplysninger OK': 'skattekortopplysningerOK',
 		'Ikke trekkplikt': 'ikkeTrekkplikt',
 		'Ikke skattekort': 'ikkeSkattekort',
+		'Utgått d-nummer': 'utgaattDnummerSkattekortForFoedselsnummerErLevert',
 	},
 	TILLEGGSOPPLYSNING_FRA_SOKOS: {
 		'Opphold på Svalbard': 'oppholdPaaSvalbard',

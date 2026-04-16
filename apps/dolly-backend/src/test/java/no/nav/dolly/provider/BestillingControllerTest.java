@@ -3,6 +3,7 @@ package no.nav.dolly.provider;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.service.BestillingEventPublisher;
 import no.nav.dolly.service.BestillingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,9 @@ class BestillingControllerTest {
 
     @Mock
     private BestillingService bestillingService;
+
+    @Mock
+    private BestillingEventPublisher bestillingEventPublisher;
 
     @InjectMocks
     private BestillingController bestillingController;
@@ -78,6 +82,93 @@ class BestillingControllerTest {
                     verify(bestillingService).cancelBestilling(BESTILLING_ID);
                     verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
                     assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldStreamCompletedBestillingAsSingleEvent() {
+
+        var bestillingEntity = new Bestilling();
+        var bestillingStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(true)
+                .antallLevert(5)
+                .antallIdenter(5)
+                .build();
+
+        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class))).thenReturn(bestillingStatus);
+
+        StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
+                .assertNext(sse -> {
+                    assertThat(sse.event(), is(equalTo("completed")));
+                    assertThat(sse.data().isFerdig(), is(true));
+                    assertThat(sse.data().getAntallLevert(), is(5));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldStreamProgressThenCompleteWhenBestillingFinishes() {
+
+        var bestillingEntity = new Bestilling();
+        var progressStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(false)
+                .antallLevert(2)
+                .antallIdenter(5)
+                .build();
+        var completedStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(true)
+                .antallLevert(5)
+                .antallIdenter(5)
+                .build();
+
+        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class)))
+                .thenReturn(progressStatus)
+                .thenReturn(completedStatus);
+
+        when(bestillingEventPublisher.subscribe(BESTILLING_ID))
+                .thenReturn(Flux.just(BESTILLING_ID));
+
+        StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
+                .assertNext(sse -> {
+                    assertThat(sse.event(), is(equalTo("progress")));
+                    assertThat(sse.data().getAntallLevert(), is(2));
+                })
+                .assertNext(sse -> {
+                    assertThat(sse.event(), is(equalTo("completed")));
+                    assertThat(sse.data().getAntallLevert(), is(5));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldStreamProgressWithFeil() {
+
+        var bestillingEntity = new Bestilling();
+        var bestillingStatus = RsBestillingStatus.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .ferdig(true)
+                .antallLevert(0)
+                .antallIdenter(5)
+                .feil("Feil ved opprettelse")
+                .build();
+
+        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class))).thenReturn(bestillingStatus);
+
+        StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
+                .assertNext(sse -> {
+                    assertThat(sse.event(), is(equalTo("completed")));
+                    assertThat(sse.data().getFeil(), is(equalTo("Feil ved opprettelse")));
                 })
                 .verifyComplete();
     }
