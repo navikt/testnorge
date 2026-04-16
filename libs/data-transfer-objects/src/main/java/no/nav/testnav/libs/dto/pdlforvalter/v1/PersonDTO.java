@@ -310,7 +310,6 @@ public class PersonDTO implements Serializable {
         return getAdressebeskyttelse().stream().anyMatch(AdressebeskyttelseDTO::isStrengtFortrolig);
     }
 
-    @JsonIgnore
     public boolean isStandalone() {
 
         return isTrue(standalone);

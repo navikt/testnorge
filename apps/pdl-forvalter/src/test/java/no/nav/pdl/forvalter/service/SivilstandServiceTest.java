@@ -385,6 +385,8 @@ class SivilstandServiceTest {
                         .build())
                 .build();
 
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
+
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result -> {
                     assertThat(result.getPerson().getSivilstand().get(0).getSivilstandsdato(), is(equalTo(skiltDato)));
@@ -415,6 +417,8 @@ class SivilstandServiceTest {
                         .build())
                 .build();
 
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
+
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result -> {
                     verify(createPersonService, never()).execute(any());
@@ -441,6 +445,8 @@ class SivilstandServiceTest {
                                         .build())))
                         .build())
                 .build();
+
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result ->
@@ -469,6 +475,8 @@ class SivilstandServiceTest {
                         .build())
                 .build();
 
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
+
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result ->
                         assertThat(result.getPerson().getSivilstand().getFirst().getRelatertVedSivilstand(), is(nullValue())))
@@ -494,6 +502,8 @@ class SivilstandServiceTest {
                         .build())
                 .build();
 
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
+
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result ->
                         assertThat(result.getPerson().getSivilstand().getFirst().getRelatertVedSivilstand(), is(nullValue())))
@@ -518,6 +528,8 @@ class SivilstandServiceTest {
                                         .build())))
                         .build())
                 .build();
+
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result ->
@@ -547,7 +559,7 @@ class SivilstandServiceTest {
         when(relasjonService.setRelasjoner(anyString(), any(), anyString(), any())).thenReturn(Mono.empty());
         when(personRepository.findByIdent(PARTNER_IDENT)).thenReturn(Mono.just(partnerDbPerson));
         when(mapperFacade.map(any(SivilstandDTO.class), eq(SivilstandDTO.class))).thenReturn(mappedSivilstand);
-        when(personRepository.save(any(DbPerson.class))).thenReturn(Mono.just(partnerDbPerson));
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         var dbPerson = DbPerson.builder()
                 .person(PersonDTO.builder()
@@ -652,7 +664,7 @@ class SivilstandServiceTest {
         when(relasjonService.setRelasjoner(anyString(), any(), anyString(), any())).thenReturn(Mono.empty());
         when(personRepository.findByIdent(NY_PARTNER_IDENT)).thenReturn(Mono.just(createdPartner));
         when(mapperFacade.map(any(SivilstandDTO.class), eq(SivilstandDTO.class))).thenReturn(mappedSivilstand);
-        when(personRepository.save(any(DbPerson.class))).thenReturn(Mono.just(createdPartner));
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         var dbPerson = DbPerson.builder()
                 .person(PersonDTO.builder()
@@ -822,7 +834,7 @@ class SivilstandServiceTest {
         when(relasjonService.setRelasjoner(anyString(), any(), anyString(), any())).thenReturn(Mono.empty());
         when(personRepository.findByIdent(PARTNER_IDENT)).thenReturn(Mono.just(partnerDbPerson));
         when(mapperFacade.map(any(SivilstandDTO.class), eq(SivilstandDTO.class))).thenReturn(mappedSivilstand);
-        when(personRepository.save(any(DbPerson.class))).thenReturn(Mono.just(partnerDbPerson));
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         var dbPerson = DbPerson.builder()
                 .person(PersonDTO.builder()
@@ -918,6 +930,8 @@ class SivilstandServiceTest {
                         .build())
                 .build();
 
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
+
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result ->
                         assertThat(result.getPerson().getSivilstand().getFirst().getRelatertVedSivilstand(), is(nullValue())))
@@ -988,6 +1002,8 @@ class SivilstandServiceTest {
                                 SivilstandDTO.builder().type(UGIFT).id(1).build())))
                         .build())
                 .build();
+
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result -> assertThat(result, is(dbPerson)))

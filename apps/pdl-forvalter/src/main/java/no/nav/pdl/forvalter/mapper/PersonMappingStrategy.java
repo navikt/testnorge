@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 
@@ -33,14 +34,19 @@ public class PersonMappingStrategy implements MappingStrategy {
                             destinasjon.setRelasjoner(relasjoner.stream()
                                     .filter(relasjon -> relasjon.getPersonId().equals(kilde.getId()))
                                     .map(relasjon -> {
-                                        val relatertPerson = relatertePersoner.get(relasjon.getRelatertPersonId());
-                                        return FullPersonDTO.RelasjonDTO.builder()
-                                                .id(relasjon.getId())
-                                                .relasjonType(relasjon.getRelasjonType())
-                                                .relatertPerson(relatertPerson.getPerson())
-                                                .sistOppdatert(relasjon.getSistOppdatert())
-                                                .build();
+                                        if (relatertePersoner.containsKey(relasjon.getRelatertPersonId())) {
+                                            val relatertPerson = relatertePersoner.get(relasjon.getRelatertPersonId());
+                                            return FullPersonDTO.RelasjonDTO.builder()
+                                                    .id(relasjon.getId())
+                                                    .relasjonType(relasjon.getRelasjonType())
+                                                    .relatertPerson(relatertPerson.getPerson())
+                                                    .sistOppdatert(relasjon.getSistOppdatert())
+                                                    .build();
+                                        } else {
+                                            return null;
+                                        }
                                     })
+                                    .filter(Objects::nonNull)
                                     .toList());
                         }
                     }

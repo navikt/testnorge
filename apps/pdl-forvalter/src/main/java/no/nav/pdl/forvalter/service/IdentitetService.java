@@ -2,8 +2,8 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.Paginering;
@@ -21,8 +21,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -82,36 +84,36 @@ public class IdentitetService {
                 .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
                 .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
                 .flatMap(personRepository::save)
-                .flatMap(this::setStandaloneRelasjoner);
-    }
-
-    private Mono<Void> setStandaloneRelasjoner(DbPerson person) {
-
-        return relasjonRepository.findByPersonId(person.getId())
-                .flatMap(relasjon -> personRepository.findById(relasjon.getRelatertPersonId()))
-                .flatMap(relasjonPerson -> setStandalonePerson(relasjonPerson, person.getIdent(), person.getPerson().isStandalone()))
-                .flatMap(personRepository::save)
+                .flatMapMany(this::setStandaloneRelasjoner)
                 .then();
     }
 
-    private Mono<DbPerson> setStandalonePerson(DbPerson person, String motpartsIdent, Boolean standalone) {
+    private Flux<DbPerson> setStandaloneRelasjoner(DbPerson person) {
 
-        return Mono.just(person)
-                .map(DbPerson::getPerson)
-                .flatMapMany(person1 ->
+        val relatertId = new AtomicReference<>(new HashSet<Long>());
+        return relasjonRepository.findByPersonId(person.getId())
+                .filter(relasjon -> !relatertId.get().contains(relasjon.getRelatertPersonId()))
+                .doOnNext(relasjon -> relatertId.get().add(relasjon.getRelatertPersonId()))
+                .flatMap(relasjon ->
+                        setStandalonePerson(relasjon.getRelatertPersonId(), person.getIdent(), person.getPerson().isStandalone()));
+    }
+
+    private Mono<DbPerson> setStandalonePerson(Long id, String motpartsIdent, Boolean standalone) {
+
+        return personRepository.findById(id)
+                .flatMap(dbPerson ->
                         Flux.fromArray(PersonDTO.class.getMethods())
                                 .filter(method -> method.getName().contains("get"))
+                                .filter(method -> method.getReturnType().equals(List.class))
                                 .flatMap(method -> {
                                     try {
-                                        return Mono.just(method.invoke(person1));
+                                        val opplysninger = (List<DbVersjonDTO>) method.invoke(dbPerson.getPerson());
+                                        return Flux.fromIterable(opplysninger);
                                     } catch (IllegalAccessException | InvocationTargetException e) {
                                         log.error("Feilet å utføre metodekall for {} ", method);
                                         return Mono.empty();
                                     }
                                 })
-                                .filter(List.class::isInstance)
-                                .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
-                                .flatMap(Flux::fromIterable)
                                 .doOnNext(opplysning -> {
                                     if (motpartsIdent.equals(opplysning.getIdentForRelasjon())) {
                                         try {
@@ -123,7 +125,9 @@ public class IdentitetService {
                                             log.error("Method setEksisterendePerson not found in {}", opplysning);
                                         }
                                     }
-                                }))
-                .reduce(person, (dbPerson, person1) -> dbPerson);
+                                })
+                                .collectList()
+                                .thenReturn(dbPerson))
+                .flatMap(personRepository::save);
     }
 }

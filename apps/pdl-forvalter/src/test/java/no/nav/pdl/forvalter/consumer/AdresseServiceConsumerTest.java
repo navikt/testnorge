@@ -10,7 +10,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -163,7 +162,6 @@ class AdresseServiceConsumerTest {
                 .verifyComplete();
     }
 
-    @Disabled("Test kjører ikke")
     @Test
     void shouldNotOverrideKommunenummerWhenDefaultVegadresseReturned() throws JsonProcessingException {
 
@@ -184,7 +182,7 @@ class AdresseServiceConsumerTest {
         StepVerifier.create(adresseServiceConsumer.getVegadresse(inputVegadresse, null))
                 .assertNext(result -> {
                     assertThat(result.getAdressenavn()).isEqualTo("FYRSTIKKALLÉEN");
-                    assertThat(result.getKommunenummer()).isEqualTo("1103");
+                    assertThat(result.getKommunenummer()).isEqualTo("0301");
                 })
                 .verifyComplete();
     }
@@ -252,7 +250,6 @@ class AdresseServiceConsumerTest {
                 .verifyComplete();
     }
 
-    @Disabled("Test kjører ikke")
     @Test
     void shouldReturnDefaultMatrikkeladresseWhenServiceReturnsEmpty() throws JsonProcessingException {
 
@@ -269,7 +266,7 @@ class AdresseServiceConsumerTest {
         StepVerifier.create(adresseServiceConsumer.getMatrikkeladresse(inputAdresse, null))
                 .assertNext(result -> {
                     assertThat(result.getTilleggsnavn()).isEqualTo("VALEN");
-                    assertThat(result.getKommunenummer()).isEqualTo("0301");
+                    assertThat(result.getKommunenummer()).isEqualTo("4626");
                     assertThat(result.getMatrikkelId()).isEqualTo("24867173");
                 })
                 .verifyComplete();
