@@ -66,6 +66,12 @@ const Visning = ({ data }) => {
 	)
 }
 
+const harMeningsfulleArenaData = (arenaData) => {
+	if (!arenaData || arenaData.error || arenaData.feilmelding) return false
+	if (arenaData.code === 'NotFound') return false
+	return true
+}
+
 const ARENASYNT = 'ARENASYNT'
 const SYNT_MILJOE = 'q2'
 const SYNT_INFO = 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
@@ -125,7 +131,7 @@ export const ArenaVisning = ({
 	}
 
 	const miljoerMedData = data
-		?.filter((arb) => arb.data && !arb.data.error && !arb.data.feilmelding)
+		?.filter((arb) => harMeningsfulleArenaData(arb.data))
 		?.map((arb) => arb.miljo)
 
 	if ((!miljoerMedData || miljoerMedData?.length < 1) && !harArenaBestilling) {
