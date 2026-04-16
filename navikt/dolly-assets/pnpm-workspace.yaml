@@ -3,6 +3,3 @@ minimumReleaseAgeExclude:
   # Midlertidig exclude for å fikse security vuln
   - lodash
   - lodash-es
-
-onlyBuiltDependencies:
-  - esbuild

@@ -532,7 +532,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 					{!iLaastGruppe && (
 						<Button
 							onClick={() => {
-								let personData = data
+								const personData = { ...data }
 								if (pdlforvalterPerson) {
 									personData.pdlforvalter = pdlforvalterPerson
 								}

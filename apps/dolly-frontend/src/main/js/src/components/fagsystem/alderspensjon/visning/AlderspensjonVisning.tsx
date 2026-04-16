@@ -16,7 +16,12 @@ import { mergeMiljoData } from '@/components/ui/miljoTabs/utils'
 import { isNumber } from 'lodash-es'
 
 export const sjekkManglerApData = (apData) => {
-	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
+	return (
+		apData?.length < 1 ||
+		apData?.every(
+			(miljoData) => !miljoData.data || miljoData.data.error || miljoData.data.feilmelding,
+		)
+	)
 }
 
 const getNavEnhetLabel = (navEnheter, navEnhetId) => {

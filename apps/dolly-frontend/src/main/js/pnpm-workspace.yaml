@@ -6,5 +6,4 @@ minimumReleaseAgeExclude:
 
 onlyBuiltDependencies:
   - '@parcel/watcher'
-  - esbuild
   - msw

@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import styled from 'styled-components'
+import React from 'react'
 
 const StyledOption = styled.div`
 	&.dolly-select {
@@ -28,17 +29,23 @@ const StyledOption = styled.div`
 	}
 `
 
-const Option = ({ children, isSelected, innerProps }) => (
-	<StyledOption
-		className={cx('dolly-select__option', {
-			'dolly-select__option_selected': isSelected,
-		})}
-		id={innerProps.id}
-		tabIndex={innerProps.tabIndex}
-		onClick={innerProps.onClick}
-	>
-		{children}
-	</StyledOption>
+const Option = React.memo(
+	({ children, isSelected, innerProps }) => (
+		<StyledOption
+			className={cx('dolly-select__option', {
+				'dolly-select__option_selected': isSelected,
+			})}
+			id={innerProps.id}
+			tabIndex={innerProps.tabIndex}
+			onClick={innerProps.onClick}
+		>
+			{children}
+		</StyledOption>
+	),
+	(prev, next) =>
+		prev.children === next.children &&
+		prev.isSelected === next.isSelected &&
+		prev.innerProps.id === next.innerProps.id,
 )
 
 export default Option

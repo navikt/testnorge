@@ -1,5 +1,5 @@
 import { createAction } from 'redux-actions'
-import { createSelector } from 'reselect'
+import { createSelector } from '@reduxjs/toolkit'
 import * as _ from 'lodash-es'
 
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
