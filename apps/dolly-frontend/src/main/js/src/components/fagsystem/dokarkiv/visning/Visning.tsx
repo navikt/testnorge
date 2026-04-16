@@ -49,6 +49,11 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 	}
 
 	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
+
+	if (!miljoerMedData?.some(Boolean)) {
+		return null
+	}
+
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo

@@ -124,7 +124,9 @@ export const ArenaVisning = ({
 		return null
 	}
 
-	const miljoerMedData = data?.filter((arb) => arb.data)?.map((arb) => arb.miljo)
+	const miljoerMedData = data
+		?.filter((arb) => arb.data && !arb.data.error && !arb.data.feilmelding)
+		?.map((arb) => arb.miljo)
 
 	if ((!miljoerMedData || miljoerMedData?.length < 1) && !harArenaBestilling) {
 		return null
