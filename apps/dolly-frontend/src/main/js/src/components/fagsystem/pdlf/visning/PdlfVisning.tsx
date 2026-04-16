@@ -64,17 +64,18 @@ const getKontoregisterBankkonto = (bankkontoData) => {
 }
 
 export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => {
+	const data = fagsystemData?.pdlforvalter
+	const ident = data?.person?.ident
+	const { pdlforvalterPerson } = usePdlForvalterPerson(ident)
+
 	if (loading?.pdlforvalter) {
 		return <Loading label="Laster PDL-data" />
 	}
 
-	const data = fagsystemData?.pdlforvalter
 	if (!data) {
 		return null
 	}
 
-	const ident = data?.person?.ident
-	const { pdlforvalterPerson } = usePdlForvalterPerson(ident)
 	const tmpPdlforvalter = pdlforvalterPerson ? { [ident]: pdlforvalterPerson } : {}
 
 	const bankkontoData = getBankkontoData(fagsystemData)

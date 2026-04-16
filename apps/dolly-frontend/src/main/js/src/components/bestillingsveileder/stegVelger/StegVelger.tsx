@@ -63,8 +63,6 @@ export const StegVelger = ({
 	initialValues: any
 	onSubmit: (values: any) => Promise<void> | void
 }) => {
-	'use no memo'
-
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const is = context.is || {}

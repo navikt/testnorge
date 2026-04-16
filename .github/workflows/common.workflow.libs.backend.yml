@@ -39,7 +39,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
-          fetch-depth: 0
+          fetch-depth: ${{ inputs.sonar-enabled && 0 || 1 }}
       - name: "Setup"
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.8.0
         with:
