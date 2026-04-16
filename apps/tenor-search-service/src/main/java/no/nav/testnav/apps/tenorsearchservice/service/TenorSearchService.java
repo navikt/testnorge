@@ -109,6 +109,7 @@ public class TenorSearchService {
 
         if (nonNull(searchData.getAvansert())) {
             builder
+                    .append(convertObject("harAvvikFdato", searchData.getAvansert().getHarAvvikFoedselsdato()))
                     .append(convertString("bostedsadresse", searchData.getAvansert().getBostedsadresse()))
                     .append(convertString("etternavn", searchData.getAvansert().getEtternavn()))
                     .append(convertObject("foedeland", searchData.getAvansert().getFoedeland()))

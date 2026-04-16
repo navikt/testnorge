@@ -142,6 +142,7 @@ public class TenorRequest {
         private VergemaalType vergemaalType;
         @Schema(description = "Verdi hentes fra felles kodeverk Landkoder")
         private List<String> statsborgerskap;
+        private Boolean harAvvikFoedselsdato;
         private Boolean harBostedsadresseHistorikk;
         private Boolean harDoedfoedtBarn;
         private Boolean harForeldreMedSammeKjoenn;
