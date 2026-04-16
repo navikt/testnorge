@@ -85,7 +85,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
-          fetch-depth: 0
+          fetch-depth: ${{ inputs.sonar-enabled && 0 || 1 }}
 
       - name: "Setup (pnpm)"
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
