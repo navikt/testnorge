@@ -1,6 +1,8 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { codeToNorskLabel, oversettBoolean } from '@/utils/DataFormatter'
 import React from 'react'
+import Panel from '@/components/ui/panel/Panel'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 export const BeregnetSkatt = ({ beregnetSkatt }: any) => {
 	return (
@@ -12,5 +14,23 @@ export const BeregnetSkatt = ({ beregnetSkatt }: any) => {
 				value={oversettBoolean(beregnetSkatt?.pensjonsgivendeInntekt)}
 			/>
 		</>
+	)
+}
+
+export const BeregnetSkattVisning = ({ beregnetSkattListe }: any) => {
+	if (!beregnetSkattListe || beregnetSkattListe.length < 1) {
+		return null
+	}
+
+	return (
+		<Panel heading="Beregnet skatt">
+			<div className="person-visning_content">
+				<DollyFieldArray data={beregnetSkattListe} nested>
+					{(beregnetSkatt: any) => {
+						return <BeregnetSkatt beregnetSkatt={beregnetSkatt} />
+					}}
+				</DollyFieldArray>
+			</div>
+		</Panel>
 	)
 }
