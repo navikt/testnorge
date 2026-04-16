@@ -13,7 +13,7 @@ import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/Fol
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
-import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { Arbeidsforhold } from '@/pages/tenorSoek/soekFormPartials/Arbeidsforhold'
 import { BeregnetSkatt } from '@/pages/tenorSoek/soekFormPartials/BeregnetSkatt'
 import { SummertSkattegrunnlag } from '@/pages/tenorSoek/soekFormPartials/SummertSkattegrunnlag'
@@ -37,6 +37,7 @@ const Soekefelt = styled.div`
 
 export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCategory }: any) => {
 	const { getValues, control, watch }: any = formMethods
+	const isAdmin = useErDollyAdmin()
 
 	const devEnabled =
 		window.location.hostname.includes('localhost') ||
@@ -305,7 +306,7 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 								</Table.Body>
 							</Table>
 						</Form>
-						{(devEnabled || erDollyAdmin()) && (
+						{(devEnabled || isAdmin) && (
 							<Suspense fallback={null}>
 								<DisplayFormState />
 							</Suspense>
