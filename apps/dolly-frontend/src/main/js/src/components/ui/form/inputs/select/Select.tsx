@@ -77,10 +77,28 @@ export const Select = ({
 	const ref = createRef()
 	const [inputValue, setInputValue] = useState('')
 	const isLargeList = options.length > LARGE_LIST_THRESHOLD
+	const val = formMethods?.watch(name)
+
+	const selectedValues = useMemo(() => {
+		if (!isLargeList) return new Set<string>()
+		const current = isMulti ? val : val != null ? [val] : []
+		const fromProp = isMulti ? (value ?? []) : value != null ? [value] : []
+		return new Set<string>([...current, ...fromProp].map(String))
+	}, [val, value, isMulti, isLargeList])
 
 	const displayedOptions = useMemo(() => {
 		if (!isLargeList) return options
-		if (!inputValue) return options.slice(0, MAX_DISPLAYED_OPTIONS)
+
+		if (!inputValue) {
+			const truncated = options.slice(0, MAX_DISPLAYED_OPTIONS)
+			if (selectedValues.size === 0) return truncated
+
+			const truncatedSet = new Set(truncated.map((o) => String(o.value)))
+			const missing = options.filter(
+				(o) => selectedValues.has(String(o.value)) && !truncatedSet.has(String(o.value)),
+			)
+			return missing.length > 0 ? [...missing, ...truncated] : truncated
+		}
 
 		const needle = inputValue.toLowerCase()
 		const matches = []
@@ -94,7 +112,7 @@ export const Select = ({
 			}
 		}
 		return matches
-	}, [options, inputValue, isLargeList])
+	}, [options, inputValue, isLargeList, selectedValues])
 
 	useEffect(() => {
 		if (autoFocus) {
@@ -108,7 +126,6 @@ export const Select = ({
 		}
 	}, [])
 
-	const val = formMethods?.watch(name)
 	let formValue = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
 		: options?.filter?.((o) => o?.value === val)
