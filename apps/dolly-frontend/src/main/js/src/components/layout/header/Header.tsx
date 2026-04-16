@@ -11,11 +11,12 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import { PersonDropdown } from '@/components/layout/header/PersonDropdown'
 import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
 import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
-import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { TeamVarsel } from '@/components/layout/header/TeamVarsel'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
+	const isAdmin = useErDollyAdmin()
 
 	if (loading) {
 		return <Loading label="Laster bruker" panel />
@@ -45,7 +46,7 @@ export default () => {
 					</NavLink>
 				)}
 				<DokumentasjonDropdown />
-				{erDollyAdmin() && <AdminDropdown />}
+				{isAdmin && <AdminDropdown />}
 			</div>
 			<TeamVarsel />
 			<BrukerDropdown />
