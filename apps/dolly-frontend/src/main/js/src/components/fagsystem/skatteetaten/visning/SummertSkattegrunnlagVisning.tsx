@@ -21,7 +21,7 @@ export const SummertSkattegrunnlag = ({ summertSkattegrunnlag }: any) => {
 				<TitleValue
 					title="Teknisk navn"
 					value={arrayToString(
-						summertSkattegrunnlag?.tekniskNavn?.map((navn) => codeToNorskLabel(navn)),
+						summertSkattegrunnlag?.tekniskNavn?.map((navn: string) => codeToNorskLabel(navn)),
 					)}
 					size="xlarge"
 				/>
