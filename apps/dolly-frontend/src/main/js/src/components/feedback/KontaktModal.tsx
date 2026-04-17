@@ -14,23 +14,62 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import SVG from 'react-inlinesvg'
 import FinnDolly from '@/assets/icons/custom/FinnDolly.svg?raw'
 import styled from 'styled-components'
-import * as RcTooltip from 'rc-tooltip'
+
+const FinnDollyWrapper = styled.a`
+	position: fixed;
+	right: 20px;
+	bottom: 0;
+	cursor: pointer;
+	text-decoration: none;
+
+	&:hover > div {
+		opacity: 1;
+		transform: scale(1);
+	}
+`
 
 const FinnDollyIcon = styled(SVG)`
 	max-width: 150px;
 	max-height: 115px;
-	cursor: pointer;
-	position: fixed;
-	right: 20px;
-	bottom: 0px;
+	display: block;
 `
 
-const FinnDollySpeechBubble = styled(RcTooltip.default)`
-	.rc-tooltip {
-		border-radius: 50%;
-		width: 150px;
-		height: 100px;
-		color: red;
+const Snakkeboble = styled.div`
+	position: absolute;
+	bottom: 90px;
+	right: 100px;
+	width: 260px;
+	padding: 15px;
+	background: var(--ax-bg-accent-strong);
+	border-radius: 50%;
+	text-align: center;
+	font-size: 1.125rem;
+	line-height: 1.3;
+	color: white;
+	box-shadow: var(--ax-shadow-dialog);
+	transform: scale(0);
+
+	&& {
+		h2 {
+			font-size: 1.4rem;
+			margin-top: 30px;
+			margin-bottom: 10px;
+		}
+		p {
+			margin-top: 0;
+		}
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: 10px;
+		right: 33px;
+		width: 30px;
+		height: 30px;
+		background: var(--ax-bg-accent-strong);
+		transform: rotate(15deg);
+		border-radius: 0 0 4px 0;
 	}
 `
 
@@ -104,18 +143,16 @@ export const KontaktModal = ({ closeModal }) => {
 					onAvbryt={closeModal}
 					center
 				/>
-				<a href="https://forms.office.com/e/yvdAVq6TD8" target="_blank">
-					<FinnDollySpeechBubble
-						overlay={
-							<span>
-								Hurra, du fant meg! Klikk på meg for å bli med i trekningen av en sprek t-skjorte.
-							</span>
-						}
-						placement="topLeft"
-					>
-						<FinnDollyIcon src={FinnDolly} role={'img'} />
-					</FinnDollySpeechBubble>
-				</a>
+				<FinnDollyWrapper href="https://forms.office.com/e/yvdAVq6TD8" target="_blank">
+					<Snakkeboble>
+						<h2>Hurra, du fant meg!</h2>
+						<p>
+							Klikk på meg for å bli med <br />i trekningen av en sprek <br />
+							t-skjorte.
+						</p>
+					</Snakkeboble>
+					<FinnDollyIcon src={FinnDolly} role={'img'} />
+				</FinnDollyWrapper>
 			</DollyModal>
 		</ErrorBoundary>
 	)
