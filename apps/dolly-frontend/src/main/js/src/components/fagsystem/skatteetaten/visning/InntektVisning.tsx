@@ -1,7 +1,5 @@
-import Panel from '@/components/ui/panel/Panel'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { arrayToString, codeToNorskLabel, oversettBoolean } from '@/utils/DataFormatter'
 
 export const Inntekt = ({ inntekt }: any) => {
@@ -25,23 +23,5 @@ export const Inntekt = ({ inntekt }: any) => {
 			/>
 			<TitleValue title="Har historikk" value={oversettBoolean(inntekt.harHistorikk)} />
 		</>
-	)
-}
-
-export const InntektVisning = ({ inntektListe }: any) => {
-	if (!inntektListe || inntektListe.length < 1) {
-		return null
-	}
-
-	return (
-		<Panel heading="Inntekt A-ordningen">
-			<div className="person-visning_content">
-				<DollyFieldArray data={inntektListe} nested>
-					{(inntekt: any) => {
-						return <Inntekt inntekt={inntekt} />
-					}}
-				</DollyFieldArray>
-			</div>
-		</Panel>
 	)
 }

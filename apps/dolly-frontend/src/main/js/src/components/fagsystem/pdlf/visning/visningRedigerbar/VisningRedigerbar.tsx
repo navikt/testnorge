@@ -41,7 +41,7 @@ import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
-import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 type VisningTypes = {
@@ -131,8 +131,9 @@ export const VisningRedigerbar = ({
 	const { refresh: refreshPdlForvalter } = usePdlForvalterPerson(ident)
 	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
+	const isAdmin = useErDollyAdmin()
 
-	const visFormState = devEnabled || erDollyAdmin()
+	const visFormState = devEnabled || isAdmin
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)

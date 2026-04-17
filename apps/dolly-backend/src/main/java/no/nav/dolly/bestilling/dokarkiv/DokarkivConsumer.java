@@ -5,19 +5,25 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetMiljoeCommand;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivPostCommand;
+import no.nav.dolly.bestilling.dokarkiv.command.DokarkivProxyUploadAppendCommand;
+import no.nav.dolly.bestilling.dokarkiv.command.DokarkivProxyUploadInitCommand;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.util.List;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @Slf4j
 @Service
@@ -37,6 +43,8 @@ public class DokarkivConsumer extends ConsumerStatus {
         this.tokenService = tokenService;
         this.webClient = webClient
                 .mutate()
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
@@ -58,6 +66,20 @@ public class DokarkivConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new DokarkivGetMiljoeCommand(webClient, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "dokarkiv_proxy_upload_init"})
+    public Mono<String> initProxyUpload() {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new DokarkivProxyUploadInitCommand(webClient, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "dokarkiv_proxy_upload_append"})
+    public Mono<Void> appendProxyChunk(String uploadId, String chunk) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new DokarkivProxyUploadAppendCommand(webClient, uploadId, chunk, token.getTokenValue()).call());
     }
 
     @Override

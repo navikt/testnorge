@@ -11,7 +11,7 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { showLabel } from '@/utils/DataFormatter'
 
 export const sjekkManglerPensjonavtaleData = (pensjonData) => {
-	return pensjonData?.length < 1
+	return pensjonData?.length < 1 || pensjonData?.every((m) => !m?.data || m?.data?.length < 1)
 }
 
 const Utbetalingsperioder = ({ utbetalingsperioder }) => {

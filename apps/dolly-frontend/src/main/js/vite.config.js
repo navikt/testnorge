@@ -1,9 +1,7 @@
 import { defineConfig } from 'vite'
-import viteTsconfigPaths from 'vite-tsconfig-paths'
 import proxyRoutes from './proxy-routes.json'
-import path from 'path'
-import EnvironmentPlugin from 'vite-plugin-environment'
-import react from '@vitejs/plugin-react'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
 import * as child from 'child_process'
 
 /** @type {import('vite').UserConfig} */
@@ -22,59 +20,66 @@ const createProxyConfig = (routes) => {
 	)
 }
 
-const ReactCompilerConfig = {
-	target: '19',
-}
+const styledComponentsPreset = () => ({
+	preset: () => ({
+		plugins: [
+			[
+				'babel-plugin-styled-components',
+				{
+					displayName: true,
+					ssr: false,
+					fileName: true,
+					meaninglessFileNames: ['index', 'styles'],
+				},
+			],
+		],
+	}),
+	rolldown: {
+		filter: {
+			code: /styled/,
+		},
+	},
+})
 
 export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
 		sourcemap: true,
-		minify: 'terser',
 		cssCodeSplit: false,
-		rollupOptions: {
+		rolldownOptions: {
 			external: ['./nais.js'],
 			output: {
 				sourcemapExcludeSources: false,
-				manualChunks(id) {
-					if (id.includes('node_modules') && !id.includes('navikt')) {
-						return id.toString().split('node_modules/')[1].split('/')[0].toString()
-					} else if (id.includes('navikt')) {
-						return 'navikt'
-					}
+				codeSplitting: {
+					groups: [
+						{
+							name: 'navikt',
+							test: /node_modules[\\/]@navikt/,
+							priority: 20,
+						},
+						{
+							name: 'vendor',
+							test: /node_modules/,
+							priority: 10,
+						},
+					],
 				},
 			},
 		},
-		terserOptions: {
-			sourceMap: true,
-			compress: {
-				drop_console: false,
-				drop_debugger: false,
-			},
-			mangle: {
-				keep_classnames: true,
-				keep_fnames: true,
-			},
-		},
 	},
-	css: {
-		preprocessorOptions: {
-			scss: {
-				api: 'modern-compiler',
-			},
-		},
+	define: {
+		'process.env.COMMIT_HASH': JSON.stringify((commitHash || '').trim()),
+		'process.env.GIT_BRANCH': JSON.stringify((gitBranch || '').trim()),
+		'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version || ''),
 	},
-	optimizeDeps: { exclude: ['node_modules/.cache', 'node_modules/.vite'] },
 	resolve: {
-		alias: {
-			'@': path.resolve(__dirname, './src'),
-			'#': path.resolve(__dirname, './playwright'),
-		},
+		tsconfigPaths: true,
 	},
 	server: mode === 'local-dev' && {
 		proxy: createProxyConfig(proxyRoutes),
 		port: 3000,
+		forwardConsole: true,
 	},
 	test: {
 		globals: true,
@@ -82,27 +87,9 @@ export default defineConfig(({ mode }) => ({
 		exclude: ['**/node_modules/**', '**/playwright/**'],
 	},
 	plugins: [
-		react({
-			babel: {
-				plugins: [
-					['babel-plugin-react-compiler', ReactCompilerConfig],
-					[
-						'babel-plugin-styled-components',
-						{
-							displayName: true,
-							ssr: false,
-							fileName: true,
-							meaninglessFileNames: ['index', 'styles'],
-						},
-					],
-				],
-			},
-		}),
-		viteTsconfigPaths(),
-		EnvironmentPlugin({
-			COMMIT_HASH: commitHash || '',
-			GIT_BRANCH: gitBranch || '',
-			APP_VERSION: process.env.npm_package_version || '',
+		react(),
+		babel({
+			presets: [reactCompilerPreset(), styledComponentsPreset()],
 		}),
 	],
 }))

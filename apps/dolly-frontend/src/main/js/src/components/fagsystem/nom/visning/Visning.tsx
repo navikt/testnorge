@@ -1,5 +1,5 @@
 import Loading from '@/components/ui/loading/Loading'
-import React from 'react'
+import React, { useEffect } from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -11,10 +11,20 @@ type NavAnsattVisningProps = {
 	nomData: any
 	nomLoading: boolean
 	ident: string
+	onSkjermingData?: (data: any) => void
 }
 
-export const NavAnsattVisning = ({ nomData, nomLoading, ident }: NavAnsattVisningProps) => {
+export const NavAnsattVisning = ({
+	nomData,
+	nomLoading,
+	ident,
+	onSkjermingData,
+}: NavAnsattVisningProps) => {
 	const { skjerming: skjermingData, loading: skjermingLoading } = useSkjerming(ident)
+
+	useEffect(() => {
+		onSkjermingData?.(skjermingData ?? null)
+	}, [skjermingData])
 
 	if (nomLoading || skjermingLoading) return <Loading label="Laster NOM-data" />
 

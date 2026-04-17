@@ -105,15 +105,8 @@ export type Bestillingsstatus = {
 }
 
 export const useDollyOrganisasjoner = (brukerId?: string) => {
-	if (!brukerId) {
-		return {
-			loading: false,
-			error: 'BrukerId mangler!',
-		}
-	}
-
 	const { data, isLoading, error } = useSWR<Organisasjon[], Error>(
-		getOrganisasjonerUrl(brukerId),
+		brukerId ? getOrganisasjonerUrl(brukerId) : null,
 		fetcher,
 	)
 
@@ -199,9 +192,15 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 
 	const organisasjonerMap = new Map<string, OrganisasjonForvalterData>()
 	if (data) {
-		data.forEach((org) => {
+		data.forEach((orgResult) => {
+			const org = Array.isArray(orgResult)
+				? (Object.assign({}, ...orgResult) as OrganisasjonForvalterData)
+				: orgResult
 			if (org && !_.isEmpty(org)) {
-				const orgnummer = org.q1?.organisasjonsnummer || org.q2?.organisasjonsnummer
+				const firstEnvData = Object.values(org).find(
+					(val) => val && typeof val === 'object' && 'organisasjonsnummer' in val,
+				) as any
+				const orgnummer = firstEnvData?.organisasjonsnummer
 				if (orgnummer) {
 					organisasjonerMap.set(orgnummer, org)
 				}
@@ -218,23 +217,14 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 		organisasjoner: dataFiltered,
 		loading: isLoading,
 		error: error,
+		hasBeenCalled: stableKeyRef.current !== null && !isLoading,
 	}
 }
 
-export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false) => {
-	if (!brukerId) {
-		return {
-			loading: false,
-			error: 'BrukerId mangler!',
-		}
-	}
+export const useOrganisasjonBestilling = (brukerId: string) => {
 	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
-		getOrganisasjonBestillingerUrl(brukerId),
+		brukerId ? getOrganisasjonBestillingerUrl(brukerId) : null,
 		fetcher,
-		{
-			refreshInterval: autoRefresh ? 4000 : 0,
-			dedupingInterval: autoRefresh ? 4000 : 0,
-		},
 	)
 
 	const bestillingerSorted = data
@@ -284,23 +274,11 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 		?.map((miljoe: { id: string }) => miljoe.id)
 		?.filter((miljoe: string) => !unsupportedEnvironments.includes(miljoe))
 
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
-
-	if (!harAaregBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const miljoer = miljoe ? [miljoe] : filteredEnvironments
+	const miljoer = miljoe ? [miljoe] : filteredEnvironments ?? []
+	const shouldFetch = !!(ident && harAaregBestilling && miljoer.length > 0)
 
 	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
-		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
+		shouldFetch ? [getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }] : null,
 		([urlList, headers]: [ReturnType<typeof getArbeidsforholdUrl>, Record<string, string>]) =>
 			multiFetcherAareg(urlList, headers),
 	)

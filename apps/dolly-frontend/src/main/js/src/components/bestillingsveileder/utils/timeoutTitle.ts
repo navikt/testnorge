@@ -8,7 +8,6 @@ const names: Record<string, string> = {
 	TP: 'Tjenestepensjon',
 	PEN_AP: 'Alderspensjon',
 	PEN_UT: 'Uføretrygd',
-	SYKEMELDING: 'Sykemelding',
 	YRKESSKADE: 'Yrkesskade',
 	BRREG: 'Brreg',
 	INST: 'Institusjonsopphold',

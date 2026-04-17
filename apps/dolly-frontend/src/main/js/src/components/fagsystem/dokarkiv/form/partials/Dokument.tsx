@@ -169,7 +169,9 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 			reader.onabort = () => console.warn('file reading was aborted')
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {
-				const binaryStr = reader.result?.slice(28)
+				const result = reader.result as string
+				const base64Index = result.indexOf(',') + 1
+				const binaryStr = result.slice(base64Index)
 				newDokumenter.push({
 					tittel: file.name,
 					brevkode: '',

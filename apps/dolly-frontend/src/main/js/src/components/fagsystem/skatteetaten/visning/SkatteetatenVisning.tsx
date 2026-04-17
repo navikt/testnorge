@@ -3,10 +3,11 @@ import Loading from '@/components/ui/loading/Loading'
 import Icon from '@/components/ui/icon/Icon'
 import * as _ from 'lodash-es'
 import { BrregErFrVisning } from '@/components/fagsystem/skatteetaten/visning/BrregErFrVisning'
-import { InntektVisning } from '@/components/fagsystem/skatteetaten/visning/InntektVisning'
 import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetaten/visning/TjenestepensjonsavtaleVisning'
 import { SkattemeldingVisning } from '@/components/fagsystem/skatteetaten/visning/SkattemeldingVisning'
 import { Alert, Link } from '@navikt/ds-react'
+import { BeregnetSkattVisning } from '@/components/fagsystem/skatteetaten/visning/BeregnetSkattVisning'
+import { SummertSkattegrunnlagVisning } from '@/components/fagsystem/skatteetaten/visning/SummertSkattegrunnlagVisning'
 
 type SkatteetatenVisningProps = {
 	data: {
@@ -34,16 +35,21 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 	const skattemeldingListe = tenorRelasjoner.skattemelding
 	const harSkattemelding = skattemeldingListe?.length > 0
 
-	const inntektListe = tenorRelasjoner.inntekt
-	const harInntekt = inntektListe?.length > 0
+	const beregnetSkattListe = tenorRelasjoner.beregnetSkatt
+	const harBeregnetSkatt = beregnetSkattListe?.length > 0
+
+	const summertSkattegrunnlagListe = tenorRelasjoner.summertSkattegrunnlag
+	const harSummertSkattegrunnlag = summertSkattegrunnlagListe?.length > 0
 
 	const getApiLink = () => {
 		if (harTjenestepensjonavtale) {
 			return 'https://skatteetaten.github.io/api-dokumentasjon/api/tjenestepensjonsavtale'
 		} else if (harSkattemelding) {
 			return 'https://skatteetaten.github.io/api-dokumentasjon/api/skattemelding'
-		} else if (harInntekt) {
-			return 'https://skatteetaten.github.io/api-dokumentasjon/api/inntekt'
+		} else if (harBeregnetSkatt) {
+			return 'https://skatteetaten.github.io/api-dokumentasjon/api/beregnetskatt'
+		} else if (harSummertSkattegrunnlag) {
+			return 'https://skatteetaten.github.io/api-dokumentasjon/api/summertskattegrunnlag'
 		} else {
 			return 'https://skatteetaten.github.io/api-dokumentasjon/api/aksjebeholdning'
 		}
@@ -64,7 +70,8 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 			<TjenestepensjonsavtaleVisning tpListe={tjenestepensjonavtaleListe} />
 			<BrregErFrVisning harDagligLederRolle={harDagligLederRolle} />
 			<SkattemeldingVisning skattemeldingListe={skattemeldingListe} />
-			<InntektVisning inntektListe={inntektListe} />
+			<BeregnetSkattVisning beregnetSkattListe={beregnetSkattListe} />
+			<SummertSkattegrunnlagVisning summertSkattegrunnlagListe={summertSkattegrunnlagListe} />
 		</div>
 	)
 }

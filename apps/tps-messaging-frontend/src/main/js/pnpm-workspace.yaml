@@ -5,5 +5,4 @@ minimumReleaseAgeExclude:
   - lodash-es
 
 onlyBuiltDependencies:
-  - esbuild
   - msw

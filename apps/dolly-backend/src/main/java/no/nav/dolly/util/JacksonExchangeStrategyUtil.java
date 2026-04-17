@@ -14,7 +14,7 @@ public final class JacksonExchangeStrategyUtil {
         return ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
-                            .maxInMemorySize(32 * 1024 * 1024);
+                            .maxInMemorySize(50 * 1024 * 1024);
                     config.defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
                     config.defaultCodecs()

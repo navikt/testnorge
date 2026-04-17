@@ -1,5 +1,5 @@
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
-import { createOptions } from '@/pages/tenorSoek/utils'
+import { createOptions, getInntektsaarOptions } from '@/pages/tenorSoek/utils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React from 'react'
 import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
@@ -8,16 +8,7 @@ export const Skattemelding = ({ handleChange }: any) => {
 	const { domain: skattemeldingstypeOptions, loading: loadingSkattemeldingstype } =
 		useTenorDomain('Skattemeldingstype')
 
-	const getInntektsaarOptions = () => {
-		const inntektsaarListe = []
-		const currentAar = new Date().getFullYear()
-		for (let aar = currentAar - 5; aar < currentAar; aar++) {
-			inntektsaarListe.push({ value: aar.toString(), label: aar.toString() })
-		}
-		return inntektsaarListe
-	}
-
-	const inntektsaarOptions = getInntektsaarOptions()
+	const inntektsaarOptions = getInntektsaarOptions(6)
 
 	return (
 		<SoekKategori>

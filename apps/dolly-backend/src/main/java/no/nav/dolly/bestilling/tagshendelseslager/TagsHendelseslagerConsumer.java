@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.command.HendelseslagerPublishCommand;
+import no.nav.dolly.bestilling.tagshendelseslager.command.TagsHentBolkCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsHenteCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsOpprettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsSlettingCommand;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -77,5 +79,12 @@ public class TagsHendelseslagerConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "tags_get_bolk"})
+    public Mono<Map<String, List<String>>> getTagsBolk(List<String> identer) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new TagsHentBolkCommand(webClient, identer, token.getTokenValue()).call());
     }
 }

@@ -163,9 +163,9 @@ export const AaregVisning = ({
 	const harArbeidsforholdBestilling = aaregBestillinger?.some((best) => best?.arbeidsgiver)
 	const arbeidsforhold = liste?.map((item) => ({
 		...item,
-		data: item?.data
-			?.map((data) => (erOpprettetAvDolly(data?.sporingsinformasjon?.opprettetAv) ? data : null))
-			?.filter((d) => d),
+		data: (Array.isArray(item?.data) ? item.data : []).filter((data) =>
+			erOpprettetAvDolly(data?.sporingsinformasjon?.opprettetAv),
+		),
 	}))
 	const filteredData =
 		tilgjengeligMiljoe && arbeidsforhold?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))

@@ -14,6 +14,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 class TeamIntegrationTest extends AbstractIntegrasjonTest {
@@ -32,12 +34,15 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
                 .brukertype(Bruker.Brukertype.AZURE)
                 .brukernavn("personlig bruker")
                 .build()).block();
+        assertNotNull(bruker);
 
         var brukerForTeam = createTeamBruker()
                 .block();
+        assertNotNull(brukerForTeam);
 
         var team = createTeam("Test Team", brukerForTeam, bruker)
                 .block();
+        assertNotNull(team);
 
         createTeamBruker(bruker, team)
                 .block();
@@ -50,6 +55,8 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     void getAllTeams_shouldReturnListOfTeams() {
 
         var teams = getAllTeams().collectList().block();
+        assertNotNull(teams);
+        assertThat(teams).isNotEmpty();
 
         webTestClient
                 .get()
@@ -67,6 +74,8 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     void getTeamById_shouldReturnTeam() {
 
         var teams = getAllTeams().collectList().block();
+        assertNotNull(teams);
+        assertThat(teams).isNotEmpty();
 
         webTestClient
                 .get()
@@ -104,16 +113,17 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     void updateTeam_shouldReturnUpdatedTeam() {
 
         var teams = getAllTeams().collectList().block();
+        assertNotNull(teams);
 
         webTestClient
                 .put()
                 .uri("/api/v1/team/" + teams.getFirst().getId())
                 .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(RsTeamUpdate.builder()
-                                .navn("Test Team 2")
-                                .beskrivelse("Test Team Description")
-                                .build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(RsTeamUpdate.builder()
+                        .navn("Test Team 2")
+                        .beskrivelse("Test Team Description")
+                        .build())
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -135,17 +145,21 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     }
 
     @Test
-    void addTeamMember_shouldReturnCreated()  {
+    void addTeamMember_shouldReturnCreated() {
+
+        var team = getAllTeams().blockFirst();
+        assertNotNull(team);
 
         var bruker2 = saveBruker(Bruker.builder()
                 .brukerId(UUID.randomUUID().toString())
                 .brukertype(Bruker.Brukertype.AZURE)
                 .brukernavn("personlig bruker 2")
                 .build()).block();
+        assertNotNull(bruker2);
 
         webTestClient
                 .post()
-                .uri("/api/v1/team/1/medlem/" + bruker2.getBrukerId())
+                .uri("/api/v1/team/" + team.getId() + "/medlem/" + bruker2.getBrukerId())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -154,12 +168,15 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
     @Test
     void removeTeamMember_shouldReturnNoContent() {
-
         var teams = getAllTeams().collectList().block();
+        assertNotNull(teams);
+        assertThat(teams).isNotEmpty();
 
+        var teamId = teams.getFirst().getId();
+        var userId = teams.getFirst().getBrukerId();
         webTestClient
                 .delete()
-                .uri("/api/v1/team/"+ teams.getFirst().getId()+ "/medlem/user1")
+                .uri("/api/v1/team/{teamId}/medlem/user{userId}", teamId, userId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()

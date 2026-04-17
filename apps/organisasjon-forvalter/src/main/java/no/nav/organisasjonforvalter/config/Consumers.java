@@ -3,6 +3,7 @@ package no.nav.organisasjonforvalter.config;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,23 @@ public class Consumers {
     private ServerProperties organisasjonBestillingService;
     private ServerProperties testnavOrganisasjonService;
     private ServerProperties testnavOrgnummerService;
+    private ExtendedServerProperties eregServices;
 
+    public static class ExtendedServerProperties extends ServerProperties {
 
+        public ServerProperties getMiljoe(String miljoe) {
+
+            val serverProperties = new ServerProperties();
+            if ("q2".equals(miljoe)) {
+                serverProperties.setUrl(getUrl().replace("-{miljoe}", ""));
+                serverProperties.setName(getName().replace("-{miljoe}", ""));
+            } else {
+                serverProperties.setUrl(getUrl().replace("{miljoe}", miljoe));
+                serverProperties.setName(getName().replace("{miljoe}", miljoe));
+            }
+            serverProperties.setCluster(getCluster());
+            serverProperties.setNamespace(getNamespace());
+            return serverProperties;
+        }
+    }
 }

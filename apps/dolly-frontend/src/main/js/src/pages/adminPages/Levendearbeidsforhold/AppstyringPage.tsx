@@ -1,16 +1,13 @@
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { Button, VStack } from '@navikt/ds-react'
 import { AppstyringTable } from '@/pages/adminPages/Levendearbeidsforhold/AppstyringTable'
-import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import React, { useEffect, useState } from 'react'
 import { FetchData, Jobbstatus } from '@/pages/adminPages/Levendearbeidsforhold/util/Typer'
 import { StatusBox } from '@/pages/adminPages/Levendearbeidsforhold/StatusBox'
 
 export default () => {
-	if (!erDollyAdmin()) {
-		return <AdminAccessDenied />
-	}
-
+	const isAdmin = useErDollyAdmin()
 	const [apiData, setApiData] = useState<Array<FetchData>>([])
 	const [statusData, setStatusData] = useState<Jobbstatus>({ nesteKjoring: '', status: false })
 	const [henterStatus, setHenterStatus] = useState(false)
@@ -106,6 +103,10 @@ export default () => {
 		hentParametere()
 		fetchStatusScheduler()
 	}, [])
+
+	if (!isAdmin) {
+		return <AdminAccessDenied />
+	}
 
 	return (
 		<>

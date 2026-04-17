@@ -1,31 +1,52 @@
 import { defineConfig } from 'vite';
-import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
-import { resolve } from 'path';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 
 /** @type {import('vite').UserConfig} */
+
+const styledComponentsPreset = () => ({
+  preset: () => ({
+    plugins: [
+      [
+        'babel-plugin-styled-components',
+        {
+          displayName: true,
+          ssr: false,
+          fileName: true,
+          meaninglessFileNames: ['index', 'styles'],
+        },
+      ],
+    ],
+  }),
+  rolldown: {
+    filter: {
+      code: /styled/,
+    },
+  },
+});
 
 export default defineConfig(({ mode }) => ({
   base: '/',
   build: {
     outDir: 'build',
     cssCodeSplit: false,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            return 'vendor';
-          }
+        codeSplitting: {
+          groups: [
+            {
+              name: 'vendor',
+              test: /node_modules/,
+              priority: 10,
+            },
+          ],
         },
       },
     },
   },
   resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-      '~': resolve(__dirname, './src'),
-    },
+    tsconfigPaths: true,
   },
   server: mode === 'local-dev' && {
     proxy: {
@@ -41,6 +62,13 @@ export default defineConfig(({ mode }) => ({
       },
     },
     port: 3000,
+    forwardConsole: true,
   },
-  plugins: [react(), svgr(), viteTsconfigPaths()],
+  plugins: [
+    react(),
+    babel({
+      presets: [reactCompilerPreset(), styledComponentsPreset()],
+    }),
+    svgr(),
+  ],
 }));

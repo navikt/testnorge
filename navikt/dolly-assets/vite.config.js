@@ -1,5 +1,4 @@
 import {defineConfig} from 'vite';
-import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import path from 'path'
 import react from '@vitejs/plugin-react';
@@ -15,7 +14,7 @@ export default defineConfig(({mode}) => ({
             formats: ['umd'],
             fileName: () => `dolly-assets.js`,
         },
-        rollupOptions: {
+        rolldownOptions: {
             external: ['react', 'react-dom', 'styled-components'],
             output: {
                 globals: {
@@ -28,11 +27,5 @@ export default defineConfig(({mode}) => ({
         outDir: 'dist',
         cssCodeSplit: false,
     },
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './src'),
-            '~': path.resolve(__dirname, './src'),
-        },
-    },
-    plugins: [react(), svgr(), viteTsconfigPaths()],
+    plugins: [react(), svgr()],
 }));

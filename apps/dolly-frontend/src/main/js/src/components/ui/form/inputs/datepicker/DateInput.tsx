@@ -62,11 +62,21 @@ export const DateInput = ({
 	value: controlledValue,
 	...props
 }: DateInputProps) => {
+	'use no memo'
 	const { register, formState, watch, setValue } = useFormContext() || {}
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
 	const fieldValue = name ? watch(name) : ''
 	const [formattedValue, setFormattedValue] = useState(fieldValue ? formatDate(fieldValue) : '')
+
+	const registerRef = React.useRef<{ onBlur?: any }>({})
+
+	useEffect(() => {
+		if (name && register) {
+			const { onBlur } = register(name)
+			registerRef.current = { onBlur }
+		}
+	}, [name, register])
 
 	useEffect(() => {
 		if (!fieldValue) {
@@ -75,8 +85,6 @@ export const DateInput = ({
 			setFormattedValue(formatDate(fieldValue))
 		}
 	}, [fieldValue])
-
-	const { onBlur: registerOnBlur } = name && register ? register(name) : {}
 
 	const error =
 		formState?.errors &&
@@ -98,7 +106,7 @@ export const DateInput = ({
 	}
 
 	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-		registerOnBlur?.(e)
+		registerRef.current.onBlur?.(e)
 		props.onBlur?.(e)
 		setFormattedValue(formatDate(e.target.value))
 	}

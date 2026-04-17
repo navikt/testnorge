@@ -24,6 +24,9 @@ spring:
         enabled: false # Running in dev-fss.
     vault:
       connection-timeout: 15000
+      config:
+        lifecycle:
+          lease-endpoints: legacy
       database:
         backend: postgresql/preprod-fss
         enabled: true

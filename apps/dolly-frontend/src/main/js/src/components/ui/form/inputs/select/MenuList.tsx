@@ -29,12 +29,6 @@ const MenuList: React.FC<MenuListProps> = ({ options, children, getValue }) => {
 	const selectedIndex = options.indexOf(value)
 	const rowCount = nodes.length
 
-	if (!Array.isArray(children) || rowCount <= 1) {
-		return <div>{children}</div>
-	}
-
-	const viewportHeight = rowCount >= ROWS ? ROWS * OPTION_HEIGHT : rowCount * OPTION_HEIGHT
-
 	const listRef = useRef<ListInstance | null>(null)
 
 	useEffect(() => {
@@ -43,6 +37,12 @@ const MenuList: React.FC<MenuListProps> = ({ options, children, getValue }) => {
 			listRef.current.scrollTo(scrollTop)
 		}
 	}, [selectedIndex, rowCount])
+
+	if (!Array.isArray(children) || rowCount <= 1) {
+		return <div>{children}</div>
+	}
+
+	const viewportHeight = rowCount >= ROWS ? ROWS * OPTION_HEIGHT : rowCount * OPTION_HEIGHT
 
 	return (
 		<div style={{ height: viewportHeight, width: '100%' }}>

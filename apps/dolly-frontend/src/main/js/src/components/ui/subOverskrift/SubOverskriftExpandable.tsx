@@ -34,11 +34,11 @@ export default function SubOverskriftExpandable({
 	isExpanded = false,
 	children,
 }: Props) {
+	const [expanded, setExpanded, setCollapsed] = useBoolean(isExpanded)
+
 	if (!label) {
 		return null
 	}
-
-	const [expanded, setExpanded, setCollapsed] = useBoolean(isExpanded)
 
 	return (
 		<>

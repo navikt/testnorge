@@ -5,7 +5,6 @@ import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
 	REGEX_BACKEND_TRANSAKSJONID,
-	REGEX_TESTNAV,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
@@ -56,7 +55,6 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 		if (prevCountRef.current !== null && prevCountRef.current > 0 && ikkeFerdigCount === 0) {
 			mutate(REGEX_BACKEND_GRUPPER)
 			mutate(REGEX_BACKEND_BESTILLINGER)
-			mutate(REGEX_TESTNAV)
 			mutate(REGEX_BACKEND_TRANSAKSJONID)
 			onGjenopprettDone?.()
 		}

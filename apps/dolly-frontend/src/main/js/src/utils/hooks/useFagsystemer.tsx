@@ -187,6 +187,7 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 
 	return {
 		data: miljoData?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
+		rawData: data,
 		loading: isLoading,
 		error: error,
 	}

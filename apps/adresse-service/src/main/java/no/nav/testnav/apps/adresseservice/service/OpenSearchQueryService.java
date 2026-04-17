@@ -12,6 +12,8 @@ import no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryBuilder;
 import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.ErrorCause;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -68,12 +71,21 @@ public class OpenSearchQueryService {
 
             return Mono.just(formatResponse(adresseSoekResponse, kilde, destinasjon));
 
+        } catch (OpenSearchException e) {
+            log.error("OpenSearch søkefeil: {}", e.getMessage(), e);
+
+            if (nonNull(e.response()) && nonNull(e.response().error())) {
+                log.error("OpenSearch feildetaljer: {}", e.response().error().rootCause().stream()
+                        .map(ErrorCause::reason)
+                        .collect(Collectors.joining(",")));
+            }
+            return Mono.error(e);
+
         } catch (IOException e) {
             log.error("Feil ved adressesøk i OpenSearch", e);
             return Mono.error(e);
         }
     }
-
 
     private <T, S> List<T> formatResponse(SearchResponse<JsonNode> response, S kilde, T destinasjon) {
 

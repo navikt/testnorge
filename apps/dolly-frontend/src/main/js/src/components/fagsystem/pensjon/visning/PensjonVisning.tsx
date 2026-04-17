@@ -54,6 +54,9 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 	if (!data) {
 		return null
 	}
+	if (!Array.isArray(data)) {
+		return null
+	}
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 

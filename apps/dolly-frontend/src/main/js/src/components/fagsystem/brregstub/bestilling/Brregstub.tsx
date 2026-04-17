@@ -13,12 +13,12 @@ type BrregProps = {
 }
 
 export const Brregstub = ({ brregstub }: BrregProps) => {
+	const { understatuserOptions } = useBrregUnderstatuser()
+	const { rollerOptions } = useBrregRoller()
+
 	if (!brregstub || isEmpty(brregstub)) {
 		return null
 	}
-
-	const { understatuserOptions } = useBrregUnderstatuser()
-	const { rollerOptions } = useBrregRoller()
 
 	const understatusLabel = (understatus: number) =>
 		understatuserOptions?.find((u) => u.value === understatus)?.label || understatus

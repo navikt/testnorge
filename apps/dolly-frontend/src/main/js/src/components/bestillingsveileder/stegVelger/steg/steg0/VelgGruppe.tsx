@@ -8,7 +8,6 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useEgneGrupper } from '@/utils/hooks/useGruppe'
-import Loading from '@/components/ui/loading/Loading'
 import { ifPresent } from '@/utils/YupValidations'
 
 type VelgGruppeProps = {
@@ -38,11 +37,7 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 	return (
 		<>
 			<h2>{title}</h2>
-			{loading ? (
-				<Loading label="Laster grupper ..." />
-			) : (
-				<VelgGruppeToggle fraGruppe={fraGruppe} grupper={grupper} />
-			)}
+			<VelgGruppeToggle fraGruppe={fraGruppe} grupper={grupper} loading={loading} />
 		</>
 	)
 }

@@ -5,13 +5,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.service.DokumentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +24,22 @@ import java.util.List;
 public class DokumentController {
 
     private final DokumentService dokumentService;
+
+    @Operation(description = "Initierer en dokument-opplasting og returnerer midlertidig upload-ID")
+    @PostMapping("/upload/init")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String initUpload() {
+
+        return dokumentService.initUpload();
+    }
+
+    @Operation(description = "Legger til en datachunk til en pågående opplasting")
+    @PostMapping("/upload/{uploadId}/append")
+    public void appendChunk(@PathVariable("uploadId") String uploadId,
+                            @RequestBody Map<String, String> body) {
+
+        dokumentService.appendChunk(uploadId, body.get("data"));
+    }
 
     @Operation(description = "Henter dokumenter basert på bestillingId")
     @GetMapping("/bestilling/{bestillingId}")

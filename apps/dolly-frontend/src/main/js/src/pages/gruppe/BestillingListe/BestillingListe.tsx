@@ -29,10 +29,11 @@ export default function BestillingListe({
 	gruppeId,
 	sideStoerrelse,
 }) {
+	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
+
 	if (!bestillingerById) {
 		return null
 	}
-	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
 	const bestillingListe = Object.values(bestillingerById)
 
 	if (bestillingListe.length === 0) {

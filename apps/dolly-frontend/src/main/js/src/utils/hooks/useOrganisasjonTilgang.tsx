@@ -25,14 +25,8 @@ export const useOrganisasjonMiljoe = () => {
 	const { brukerProfil } = useBrukerProfil()
 	const orgnummer = brukerProfil?.orgnummer
 
-	if (!orgnummer) {
-		return {
-			loading: false,
-		}
-	}
-
 	const { data, isLoading, error } = useSWR<OrganisasjonMiljoe, Error>(
-		getOrganisasjonMiljoeUrl(orgnummer),
+		orgnummer ? getOrganisasjonMiljoeUrl(orgnummer) : null,
 		fetcher,
 	)
 

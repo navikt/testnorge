@@ -168,7 +168,7 @@ ArbeidInntektPanel.initialValues = ({ set, opts, del, has }: any) => {
 			},
 		},
 		skattekort: {
-			label: 'Har skattekort',
+			label: 'Har skattekortopplysninger',
 			checked: has('skattekort'),
 			add: () =>
 				set('skattekort', {

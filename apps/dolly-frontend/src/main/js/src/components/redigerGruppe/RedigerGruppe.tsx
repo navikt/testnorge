@@ -27,7 +27,6 @@ const validation = Yup.object().shape({
 })
 
 export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
-	'use no memo' // Skip compilation for this component
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
 	const erRedigering = gruppeId !== undefined

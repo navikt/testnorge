@@ -7,6 +7,7 @@ import {
 	backendTransaksjonMock,
 	bestillingFragmentNavigerMock,
 	bestillingFragmentSearchMock,
+	bestillingMiljoerMock,
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
@@ -15,6 +16,7 @@ import {
 	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
 	gruppeFragmentSearchMock,
+	gruppeIdenterMock,
 	histarkMock,
 	instMock,
 	joarkDokumentMock,
@@ -68,9 +70,11 @@ const gruppeFragmentSearch = new RegExp(
 )
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 const bestillingFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/naviger\/1/)
-const hentGruppeEn = new RegExp(/\/api\/v1\/gruppe\/1/)
-const hentGruppeTo = new RegExp(/\/api\/v1\/gruppe\/2/)
+const hentGruppeEnIdenter = new RegExp(/\/api\/v1\/gruppe\/1\/identer/)
+const hentGruppeEn = new RegExp(/\/api\/v1\/gruppe\/1(?!\/identer)/)
+const hentGruppeTo = new RegExp(/\/api\/v1\/gruppe\/2(?!\/identer)/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
+const bestillingMiljoer = new RegExp(/dolly-backend\/api\/v1\/bestilling\/miljoer/)
 const pdlPersonBolk = new RegExp(/\/api\/v2\/personer\/identer/)
 const pdlPersonEnkelt = new RegExp(/person-service\/api\/v2\/personer\/ident/)
 const tpsMessaging = new RegExp(/testnav-tps-messaging-service\/api\/v1\/personer/)
@@ -131,9 +135,11 @@ const mockRoutes: RouteInfo[] = [
 	{ url: bestillingFragmentNaviger, response: bestillingFragmentNavigerMock },
 	{ url: hentGrupper, response: paginerteGrupperMock },
 	{ url: histark, response: histarkMock },
+	{ url: hentGruppeEnIdenter, response: gruppeIdenterMock },
 	{ url: hentGruppeEn, response: eksisterendeGruppeMock },
 	{ url: hentGruppeTo, response: nyGruppeMock },
 	{ url: hentGruppeBestilling, response: backendBestillingerMock },
+	{ url: bestillingMiljoer, response: bestillingMiljoerMock },
 	{ url: lagNyGruppe, response: nyGruppeMock },
 	{ url: pdlPersonBolk, response: pdlBulkpersonerMock },
 	{ url: pdlPersonEnkelt, response: pdlPersonEnkeltMock },

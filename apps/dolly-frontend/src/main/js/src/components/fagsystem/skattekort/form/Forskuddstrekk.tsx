@@ -78,6 +78,7 @@ const TrekktabellForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 				name={`${path}.trekktabell.antallMaanederForTrekk`}
 				label="Antall måneder for trekk"
 				type="number"
+				step={0.5}
 			/>
 		</>
 	)
@@ -98,6 +99,7 @@ const TrekkprosentForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 				name={`${path}.trekkprosent.antallMaanederForTrekk`}
 				label="Antall måneder for trekk"
 				type="number"
+				step={0.5}
 			/>
 		</>
 	)

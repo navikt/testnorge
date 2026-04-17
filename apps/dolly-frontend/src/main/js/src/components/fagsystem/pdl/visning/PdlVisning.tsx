@@ -40,6 +40,9 @@ export const PdlVisning = ({
 	loading = {},
 	miljoeVisning = false,
 }: PdlVisningProps) => {
+	const ident = pdlData?.hentPerson ? pdlData.ident : undefined
+	const { pdlforvalterPerson } = usePdlForvalterPerson(ident)
+
 	if (loading?.pdl || (miljoeVisning && loading)) {
 		return <Loading label="Laster PDL-data" />
 	}
@@ -47,7 +50,7 @@ export const PdlVisning = ({
 		return null
 	}
 
-	const { hentPerson, hentIdenter, hentGeografiskTilknytning, ident } = pdlData
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
 	const {
 		telefonnummer,
 		vergemaalEllerFremtidsfullmakt,
@@ -69,7 +72,6 @@ export const PdlVisning = ({
 
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 	const identtype = pdlfPerson?.identtype
-	const { pdlforvalterPerson } = usePdlForvalterPerson(ident)
 	const tmpPdlforvalter = pdlforvalterPerson ? { [ident]: pdlforvalterPerson } : {}
 
 	const gjeldendeIdent = hentIdenter?.identer?.find(

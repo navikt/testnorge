@@ -9,12 +9,20 @@ import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 @UtilityClass
 public class OpenSearchQueryUtils {
 
-    public static MatchQuery matchQuery(String field, Object value) {
+    public static MatchQuery matchQuery(String field, String value) {
 
         return QueryBuilders.match()
                 .field(field)
-                .query(FieldValue.of(value.toString()))
+                .query(FieldValue.of(value))
                 .fuzziness("AUTO")
+                .build();
+    }
+
+    public static MatchQuery matchQuery(String field, Long value) {
+
+        return QueryBuilders.match()
+                .field(field)
+                .query(FieldValue.of(value))
                 .build();
     }
 

@@ -2,7 +2,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -15,6 +15,20 @@ import {
 	initialTrekktabell,
 } from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
 import { validation } from '@/components/fagsystem/skattekort/form/validation'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { SkattekortData } from '@/components/fagsystem/skattekort/visning/Visning'
+import { ExpansionCard } from '@navikt/ds-react'
+import styled from 'styled-components'
+
+const StyledExpansionCard = styled.div`
+	margin-bottom: 20px;
+	.aksel-body-long--small {
+		line-height: unset;
+	}
+`
 
 export const initialArbeidsgiverSkatt = () => {
 	return {
@@ -36,6 +50,7 @@ export const skattekortAttributt = 'skattekort'
 
 export const SkattekortForm = () => {
 	const formMethods = useFormContext()
+	const opts: BestillingsveilederContextType = useContext(BestillingsveilederContext)
 
 	const { kodeverk: resultatstatus } = useSkattekortKodeverk('RESULTATSTATUS')
 	const { kodeverk: tilleggsopplysning } = useSkattekortKodeverk('TILLEGGSOPPLYSNING')
@@ -48,8 +63,12 @@ export const SkattekortForm = () => {
 	}
 
 	const isResultatOK = (index: number): boolean => {
+		const gyldigeResultater = [
+			'SKATTEKORTOPPLYSNINGER_OK',
+			'UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT',
+		]
 		const arbeidstaker = formMethods.watch('skattekort.arbeidsgiverSkatt')[index]?.arbeidstaker?.[0]
-		return arbeidstaker?.resultatPaaForespoersel === 'SKATTEKORTOPPLYSNINGER_OK'
+		return gyldigeResultater.includes(arbeidstaker?.resultatPaaForespoersel)
 	}
 
 	const isTilleggsopplysning = (index: number): boolean => {
@@ -62,6 +81,7 @@ export const SkattekortForm = () => {
 	const onBlurResultatPaaForespoersel = (path: string, index: number) => {
 		if (!isResultatOK(index)) {
 			formMethods.setValue(`${path}.arbeidstaker[0].tilleggsopplysning`, [])
+			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.utstedtDato`, null)
 			formMethods.setValue(`${path}.arbeidstaker[0].skattekort.forskuddstrekk`, [])
 		}
 	}
@@ -78,6 +98,9 @@ export const SkattekortForm = () => {
 		return new Date() < boundaryDate ? currentYear : currentYear + 1
 	}
 
+	const personFoerLeggTil = opts?.personFoerLeggTil
+	const eksisterendeSkattekort = personFoerLeggTil?.skattekort
+
 	return (
 		<Vis attributt={skattekortAttributt}>
 			<Panel
@@ -87,6 +110,18 @@ export const SkattekortForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [skattekortAttributt])}
 			>
 				<ErrorBoundary>
+					{eksisterendeSkattekort && eksisterendeSkattekort.length > 0 && (
+						<StyledExpansionCard>
+							<ExpansionCard size="small" aria-label="Eksisterende skattekort på person">
+								<ExpansionCard.Header>
+									<ExpansionCard.Title>Eksisterende skattekort på person</ExpansionCard.Title>
+								</ExpansionCard.Header>
+								<ExpansionCard.Content>
+									<SkattekortData liste={eksisterendeSkattekort} />
+								</ExpansionCard.Content>
+							</ExpansionCard>
+						</StyledExpansionCard>
+					)}
 					<FormDollyFieldArray
 						name="skattekort.arbeidsgiverSkatt"
 						header="Skattekort"
@@ -112,21 +147,21 @@ export const SkattekortForm = () => {
 										size="xsmall"
 										isClearable={false}
 									/>
-									<FormDatepicker
-										name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
-										label="Utstedt dato"
-									/>
+									{isResultatOK(index) && (
+										<FormDatepicker
+											name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
+											label="Utstedt dato"
+										/>
+									)}
 								</div>
-								{isResultatOK(index) && (
-									<FormSelect
-										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
-										label="Tilleggsopplysning"
-										options={tilleggsopplysning}
-										size="grow"
-										isMulti={true}
-										onBlur={() => onBlurTillegsinformasjon(path, index)}
-									/>
-								)}
+								<FormSelect
+									name={`${path}.arbeidstaker[0].tilleggsopplysning`}
+									label="Tilleggsopplysning"
+									options={tilleggsopplysning}
+									size="grow"
+									isMulti={true}
+									onBlur={() => onBlurTillegsinformasjon(path, index)}
+								/>
 								{isResultatOK(index) && !isTilleggsopplysning(index) && (
 									<ForskuddstrekkForm
 										formMethods={formMethods}

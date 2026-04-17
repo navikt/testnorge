@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class MatrikkeladresseRequest {
 
-    private String matrikkelId;
+    private Long matrikkelId;
 
     private String tilleggsnavn;
 

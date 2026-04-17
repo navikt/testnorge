@@ -13,8 +13,10 @@ import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/Fol
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
-import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { Arbeidsforhold } from '@/pages/tenorSoek/soekFormPartials/Arbeidsforhold'
+import { BeregnetSkatt } from '@/pages/tenorSoek/soekFormPartials/BeregnetSkatt'
+import { SummertSkattegrunnlag } from '@/pages/tenorSoek/soekFormPartials/SummertSkattegrunnlag'
 
 const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 
@@ -34,8 +36,8 @@ const Soekefelt = styled.div`
 `
 
 export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCategory }: any) => {
-	'use no memo' // Skip compilation for this component
 	const { getValues, control, watch }: any = formMethods
+	const isAdmin = useErDollyAdmin()
 
 	const devEnabled =
 		window.location.hostname.includes('localhost') ||
@@ -220,6 +222,39 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 											/>
 										</Table.HeaderCell>
 									</Table.ExpandableRow>
+									<Table.ExpandableRow content={<BeregnetSkatt handleChange={handleChange} />}>
+										<Table.HeaderCell>
+											<Header
+												title="Beregnet skatt"
+												paths={[
+													'beregnetSkatt.inntektsaar',
+													'beregnetSkatt.oppgjoerstype',
+													'beregnetSkatt.pensjonsgivendeInntekt',
+												]}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
+									<Table.ExpandableRow
+										content={<SummertSkattegrunnlag handleChange={handleChange} />}
+									>
+										<Table.HeaderCell>
+											<Header
+												title="Summert skattegrunnlag"
+												paths={[
+													'summertSkattegrunnlag.inntektsaar',
+													'summertSkattegrunnlag.stadietype',
+													'summertSkattegrunnlag.oppgjoerstype',
+													'summertSkattegrunnlag.tekniskNavn',
+													'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.fraOgMed',
+													'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.tilOgMed',
+												]}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
 									<Table.ExpandableRow
 										content={
 											<InntektAordningen
@@ -271,7 +306,7 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 								</Table.Body>
 							</Table>
 						</Form>
-						{(devEnabled || erDollyAdmin()) && (
+						{(devEnabled || isAdmin) && (
 							<Suspense fallback={null}>
 								<DisplayFormState />
 							</Suspense>

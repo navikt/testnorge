@@ -1,11 +1,3 @@
-dolly:
-  nais:
-    cluster: dev-fss
-    name: testnav-brregstub-reverse-proxy
-    variables:
-      - AZURE_NAV_APP_CLIENT_ID
-      - AZURE_NAV_APP_CLIENT_SECRET
-
 spring:
   config:
     import: "sm://"

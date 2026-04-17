@@ -30,10 +30,10 @@ public class ImportService {
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
         var miljoerAaSjekke = nonNull(miljoer) && !miljoer.isEmpty() ?
-                miljoerServiceConsumer.getOrgMiljoer().stream()
+                miljoerServiceConsumer.getOrgMiljoer().block().stream()
                         .filter(miljoer::contains)
                         .collect(Collectors.toSet()) :
-                miljoerServiceConsumer.getOrgMiljoer();
+                miljoerServiceConsumer.getOrgMiljoer().block();
 
           return organisasjonServiceConsumer.getStatus(Set.of(orgnummer), miljoerAaSjekke)
                   .map(Map::entrySet)

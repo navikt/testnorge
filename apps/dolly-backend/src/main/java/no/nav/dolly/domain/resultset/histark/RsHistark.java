@@ -75,5 +75,8 @@ public class RsHistark {
 
         @Schema(description = "Referanse til dokumentet")
         private Long dokumentReferanse;
+
+        @Schema(description = "Midlertidig referanse til opplastet dokument i minne")
+        private String uploadReferanse;
     }
 }

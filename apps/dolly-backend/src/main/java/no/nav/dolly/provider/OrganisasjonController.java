@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
-import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Set;
 
 import static no.nav.dolly.provider.OrganisasjonBestillingController.getStatus;
@@ -55,6 +53,7 @@ public class OrganisasjonController {
                 })
                 .flatMap(tuple ->
                         organisasjonClient.gjenopprett(tuple.getT3(), tuple.getT1())
+                                .doOnSuccess(v -> bestillingService.monitorDeployCompletion(tuple.getT1().getId()))
                                 .then(getStatus(tuple.getT1(), tuple.getT2().getOrganisasjonNummer())));
     }
 

@@ -49,7 +49,6 @@ export const DollyPagination = ({
 	const dispatch = useDispatch()
 
 	const pageChangeHandler = (page: number) => {
-		location.state = null
 		dispatch(setSidetall(page - 1))
 		setCurrentPage(page - 1)
 	}

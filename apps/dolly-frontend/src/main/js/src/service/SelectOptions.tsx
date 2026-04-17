@@ -860,11 +860,15 @@ const selectOptions = {
 
 	// Yrkesskader:
 	klassifisering: [
+		{ value: 'AVSLAG', label: 'Avslag' },
 		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
 		{ value: 'IMPORT', label: 'Import' },
+		{ value: 'IMPORT_PAPIR', label: 'Import papir' },
+		{ value: 'LARM_SYKDOM', label: 'Larm sykdom' },
 		{ value: 'MANUELL', label: 'Manuell' },
 		{ value: 'MELLOMSKADER', label: 'Mellomskader' },
 		{ value: 'MULIG_NULLSKADE', label: 'Mulig nullskade' },
+		{ value: 'RESTERENDE_SKADER', label: 'Resterende skader' },
 	],
 
 	tidstype: [

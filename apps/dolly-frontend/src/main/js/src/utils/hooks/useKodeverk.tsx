@@ -3,6 +3,7 @@ import * as _ from 'lodash-es'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { SortKodeverkArray } from '@/service/services/dolly/Utils'
 import useSWRImmutable from 'swr/immutable'
+import { useMemo } from 'react'
 
 type KodeverkListe = {
 	koder: Array<KodeverkType>
@@ -31,23 +32,25 @@ export const useKodeverk = (kodeverkNavn) => {
 		([url, headers]) => fetcher(url, headers),
 	)
 
-	const koder =
-		(_.isArray(data) &&
-			data[0]?.valutakode &&
-			data.map((kode) => ({
-				label: kode.valuta + ` (${kode.valutakode})`,
-				value: kode.valutakode,
-			}))) ||
-		_.cloneDeep(data?.koder)
+	const kodeverk = useMemo(() => {
+		if (isLoading || !data) return []
 
-	const kodeverkSortert = SortKodeverkArray({ koder: koder, name: kodeverkNavn })
+		const koder =
+			(_.isArray(data) &&
+				data[0]?.valutakode &&
+				data.map((kode) => ({
+					label: kode.valuta + ` (${kode.valutakode})`,
+					value: kode.valutakode,
+				}))) ||
+			_.cloneDeep(data?.koder)
+
+		const kodeverkSortert = SortKodeverkArray({ koder: koder, name: kodeverkNavn })
+
+		return SelectOptionsFormat.formatOptions(_.toLower(kodeverkNavn), kodeverkSortert, false)
+	}, [data, isLoading, kodeverkNavn])
 
 	return {
-		kodeverk: SelectOptionsFormat.formatOptions(
-			_.toLower(kodeverkNavn),
-			kodeverkSortert,
-			isLoading,
-		),
+		kodeverk,
 		loading: isLoading,
 		error: error,
 		mutate,

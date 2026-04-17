@@ -11,10 +11,10 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import {
 	useDollyFasteDataOrganisasjoner,
 	useDollyOrganisasjoner,
-	useOrganisasjonForvalter,
 } from '@/utils/hooks/useDollyOrganisasjoner'
-import { arbeidsgiverToggleValues, getOrgType, handleManualOrgChange } from '@/utils/OrgUtils'
+import { arbeidsgiverToggleValues, getOrgMiljoer, getOrgType } from '@/utils/OrgUtils'
 import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
+import { useOrganisasjonValidation } from '@/components/shared/ArbeidsforholdToggle/useOrganisasjonValidation'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -60,35 +60,25 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		formMethods.watch('inntektstub.inntektsinformasjon')?.length,
 	])
 
-	const [orgnummer, setOrgnummer] = useState(formMethods.watch(virksomhetPath) || null)
-	const { organisasjoner, loading, error } = useOrganisasjonForvalter([orgnummer])
-	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
+	const watchedOrgnr = formMethods.watch(virksomhetPath)
+	const isFritekst = typeArbeidsgiver === ArbeidsgiverTyper.fritekst
 
-	useEffect(() => {
-		if (!organisasjon) {
-			if (!loading) {
-				formMethods.setError(`manual.${opplysningspliktigPath}`, {
-					message: 'Fant ikke organisasjonen',
-				})
-			}
-			return
-		}
-		formMethods.clearErrors([`manual.${opplysningspliktigPath}`, `manual.${virksomhetPath}`])
-		handleManualOrgChange(
-			orgnummer,
-			formMethods,
-			virksomhetPath,
-			opplysningspliktigPath,
-			organisasjon,
-		)
-	}, [organisasjon, loading])
+	const { organisasjoner, loading, error } = useOrganisasjonValidation({
+		formMethods,
+		organisasjonPath: virksomhetPath,
+		watchedOrgnr,
+		useValidation: isFritekst,
+		parentPath: opplysningspliktigPath,
+	})
+
+	const orgMiljoer = getOrgMiljoer(organisasjoner?.[0])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
-		setOrgnummer(null)
 		formMethods.setValue(virksomhetPath, null)
 		formMethods.setValue(opplysningspliktigPath, null)
 		formMethods.clearErrors(`manual.${path}`)
+		formMethods.clearErrors(`manual.${virksomhetPath}`)
 		formMethods.clearErrors(path)
 	}
 
@@ -134,17 +124,19 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 						filterValidEnhetstyper={true}
 					/>
 				)}
-				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
+				{isFritekst && (
 					<OrganisasjonForvalterSelect
-						value={orgnummer}
+						value={watchedOrgnr}
 						path={virksomhetPath}
-						parentPath={opplysningspliktigPath}
-						success={formMethods.watch(virksomhetPath) && !error}
+						success={
+							organisasjoner?.length > 0 &&
+							!error &&
+							!formMethods.getFieldState(`manual.${virksomhetPath}`)?.error
+						}
+						miljoer={orgMiljoer}
 						loading={loading}
 						onTextBlur={(event) => {
-							formMethods.setValue(virksomhetPath, null)
-							formMethods.setValue(opplysningspliktigPath, null)
-							setOrgnummer(event.target.value)
+							formMethods.setValue(virksomhetPath, event.target.value || null)
 						}}
 					/>
 				)}

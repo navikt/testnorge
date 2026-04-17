@@ -34,6 +34,11 @@ consumers:
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/pdl
     cluster: dev-fss
+  testnav-person-service:
+    name: testnav-person-service
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/person-service
+    cluster: dev-gcp
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
     name: testnav-organisasjon-service

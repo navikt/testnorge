@@ -14,11 +14,11 @@ type KrrProps = {
 }
 
 export const Krrstub = ({ krrstub }: KrrProps) => {
+	const leverandoer = SelectOptionsOppslag.hentKrrLeverandoerer()
+
 	if (!krrstub) {
 		return null
 	}
-
-	const leverandoer = SelectOptionsOppslag.hentKrrLeverandoerer()
 
 	const leverandoerLabel = () =>
 		leverandoer?.value?.data?.find((leverandoer: any) => leverandoer.id === krrstub.sdpLeverandoer)

@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseRequest;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.existQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.matchQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -18,7 +19,7 @@ public class OpenSearchMatrikkeladresseQueryUtils {
 
     public static void addMatrikkelIdQuery(BoolQuery.Builder queryBuilder, MatrikkeladresseRequest request) {
 
-        if (isNotBlank(request.getMatrikkelId())) {
+        if (nonNull(request.getMatrikkelId())) {
 
             queryBuilder.must(q -> q.match(matchQuery("matrikkeladresse.id", request.getMatrikkelId())));
         }

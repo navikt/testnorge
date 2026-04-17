@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NyGruppe from './NyGruppe'
 import EksisterendeGruppe from '@/components/velgGruppe/EksisterendeGruppe'
 import { ToggleGroup } from '@navikt/ds-react'
@@ -11,6 +11,7 @@ import { runningE2ETest } from '@/service/services/Request'
 interface VelgGruppeToggleProps {
 	fraGruppe?: number
 	grupper?: any
+	loading?: boolean
 }
 
 export enum Gruppevalg {
@@ -19,14 +20,14 @@ export enum Gruppevalg {
 	NY = 'Ny',
 }
 
-export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) => {
+export const VelgGruppeToggle = ({ fraGruppe, grupper, loading }: VelgGruppeToggleProps) => {
 	const formMethods = useFormContext()
 
 	const harGrupper = grupper?.antallElementer > 0
 	const storedGruppevalg = formMethods?.watch('gruppevalg')
 	const harBrukerValg = formMethods?.watch('bruker')
 
-	const getInitialGruppevalg = () => {
+	const getGruppevalg = () => {
 		if (storedGruppevalg) {
 			return storedGruppevalg
 		}
@@ -36,10 +37,25 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) 
 		if (harGrupper || runningE2ETest()) {
 			return Gruppevalg.MINE
 		}
+		if (loading) {
+			return Gruppevalg.MINE
+		}
 		return Gruppevalg.NY
 	}
 
-	const [gruppevalg, setGruppevalg] = useState(getInitialGruppevalg())
+	const [gruppevalg, setGruppevalg] = useState(getGruppevalg())
+	const [hasInitialized, setHasInitialized] = useState(!loading)
+
+	useEffect(() => {
+		if (!loading && !hasInitialized) {
+			setHasInitialized(true)
+			const resolved = getGruppevalg()
+			if (resolved !== gruppevalg) {
+				setGruppevalg(resolved)
+				formMethods.setValue('gruppevalg', resolved)
+			}
+		}
+	}, [loading])
 
 	const handleToggleChange = (value: string) => {
 		const gruppeValgValue = value as Gruppevalg
@@ -94,7 +110,7 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) 
 			</ToggleGroup>
 
 			{gruppevalg === Gruppevalg.MINE && (
-				<EksisterendeGruppe fraGruppe={fraGruppe} grupper={grupper} />
+				<EksisterendeGruppe fraGruppe={fraGruppe} grupper={grupper} loading={loading} />
 			)}
 			{gruppevalg === Gruppevalg.ALLE && <AlleGrupper fraGruppe={fraGruppe} />}
 			{gruppevalg === Gruppevalg.NY && <NyGruppe />}

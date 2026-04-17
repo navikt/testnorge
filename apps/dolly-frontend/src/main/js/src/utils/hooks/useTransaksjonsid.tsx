@@ -7,22 +7,10 @@ const getTransaksjonsidUrl = (system, ident, bestillingsid) =>
 		: `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}`
 
 export const useTransaksjonsid = (system, ident, bestillingsid = null) => {
-	if (!system) {
-		return {
-			loading: false,
-			error: 'System mangler!',
-		}
-	}
-
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
+	const shouldFetch = !!(system && ident)
 
 	const { data, isLoading, error } = useSWR<any, Error>(
-		getTransaksjonsidUrl(system, ident, bestillingsid),
+		shouldFetch ? getTransaksjonsidUrl(system, ident, bestillingsid) : null,
 		fetcher,
 	)
 

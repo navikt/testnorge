@@ -37,6 +37,7 @@ type TextInputProps = {
 	'data-testid'?: string
 	useOnChange?: boolean
 	useControlled?: boolean
+	step?: number
 	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
 	onClick?: (event: React.MouseEvent<HTMLInputElement>) => void
@@ -60,14 +61,21 @@ export const TextInput = ({
 	style,
 	'data-testid': dataTestId,
 	useControlled = false,
+	step = undefined,
 	...props
 }: TextInputProps) => {
 	'use no memo' // Skip compilation for this component
 	const { register, formState, setValue, watch } = useFormContext() || {}
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
-	const { onChange: registerOnChange, onBlur: registerOnBlur } =
-		name && register ? register(name) : {}
+	const registerRef = useRef<{ onChange?: any; onBlur?: any }>({})
+
+	useEffect(() => {
+		if (name && register) {
+			const { onChange, onBlur } = register(name)
+			registerRef.current = { onChange, onBlur }
+		}
+	}, [name, register])
 
 	const initialValue = value ?? defaultValue ?? (name ? watch(name) || '' : '')
 	const [fieldValue, setFieldValue] = useState(initialValue)
@@ -106,7 +114,7 @@ export const TextInput = ({
 				setValue(name, newValue, { shouldDirty: true, shouldValidate: false })
 			}
 
-			registerOnChange?.(e)
+			registerRef.current.onChange?.(e)
 			props.onChange?.(e)
 
 			if (validateTimeoutRef.current) {
@@ -119,7 +127,7 @@ export const TextInput = ({
 				}
 			}, 400) // Validate after inactivity
 		},
-		[name, setValue, registerOnChange, props.onChange],
+		[name, setValue, props.onChange],
 	)
 
 	const handleBlur = useCallback(
@@ -129,7 +137,7 @@ export const TextInput = ({
 				validateTimeoutRef.current = null
 			}
 
-			registerOnBlur?.(e)
+			registerRef.current.onBlur?.(e)
 			props.onBlur?.(e)
 
 			if (name && setValue) {
@@ -138,7 +146,7 @@ export const TextInput = ({
 
 			props.afterChange?.(e)
 		},
-		[name, setValue, fieldValue, registerOnBlur, props.onBlur, props.afterChange],
+		[name, setValue, fieldValue, props.onBlur, props.afterChange],
 	)
 
 	useEffect(() => {
@@ -173,6 +181,7 @@ export const TextInput = ({
 				style={style}
 				data-testid={dataTestId}
 				readOnly={props.readOnly}
+				step={step}
 			/>
 
 			{icon && (

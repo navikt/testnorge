@@ -22,8 +22,13 @@ tasks.register('sonarqube') {
     dependsOn gradle.includedBuilds*.task(':sonarqube')
 }
 
+tasks.register('test') {
+    description = "Runs the test task for all included builds."
+    dependsOn gradle.includedBuilds*.task(':test')
+}
+
 tasks.register('dollyValidation') {
-    description = "Runs the dollyValidation task for all included application builds."
+    description = "Runs the dollyValidation task for all included builds."
     group = "verification"
     def targetBuilds = gradle.includedBuilds.findAll { includedBuild ->
         def parentDirName = includedBuild.projectDir.parentFile.name

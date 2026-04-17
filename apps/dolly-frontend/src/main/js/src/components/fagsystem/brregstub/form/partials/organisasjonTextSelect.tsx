@@ -76,7 +76,6 @@ export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonText
 		<OrganisasjonForvalterSelect
 			path={path}
 			value={org}
-			parentPath={parentPath}
 			success={organisasjoner?.length > 0 && !loading && !error}
 			loading={loading}
 			onTextBlur={(event) => {
