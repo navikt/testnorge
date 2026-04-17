@@ -11,6 +11,28 @@ import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '@/utils
 import { Textarea, VStack } from '@navikt/ds-react'
 import { Logger } from '@/logger/Logger'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import SVG from 'react-inlinesvg'
+import FinnDolly from '@/assets/icons/custom/FinnDolly.svg?raw'
+import styled from 'styled-components'
+import * as RcTooltip from 'rc-tooltip'
+
+const FinnDollyIcon = styled(SVG)`
+	max-width: 150px;
+	max-height: 115px;
+	cursor: pointer;
+	position: fixed;
+	right: 20px;
+	bottom: 0px;
+`
+
+const FinnDollySpeechBubble = styled(RcTooltip.default)`
+	.rc-tooltip {
+		border-radius: 50%;
+		width: 150px;
+		height: 100px;
+		color: red;
+	}
+`
 
 export const KontaktModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()
@@ -82,6 +104,18 @@ export const KontaktModal = ({ closeModal }) => {
 					onAvbryt={closeModal}
 					center
 				/>
+				<a href="https://forms.office.com/e/yvdAVq6TD8" target="_blank">
+					<FinnDollySpeechBubble
+						overlay={
+							<span>
+								Hurra, du fant meg! Klikk på meg for å bli med i trekningen av en sprek t-skjorte.
+							</span>
+						}
+						placement="topLeft"
+					>
+						<FinnDollyIcon src={FinnDolly} role={'img'} />
+					</FinnDollySpeechBubble>
+				</a>
 			</DollyModal>
 		</ErrorBoundary>
 	)
