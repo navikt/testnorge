@@ -122,30 +122,30 @@ public class PersonService {
                 .then(personRepository.findByIdent(ident))
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
                 .flatMap(dbPerson -> unhookEksternePersonerService.unhook(dbPerson)
-                        .thenReturn(dbPerson))
-                .flatMapMany(dbPerson -> Flux.concat(
-                                Flux.just(dbPerson.getId()),
-                                relasjonRepository.findByPersonId(dbPerson.getId())
-                                        .map(DbRelasjon::getRelatertPersonId))
-                        .flatMap(relatertPersonId -> personRepository.findById(relatertPersonId)
-                                // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
-                                .flatMap(relatertPerson -> aliasRepository.existsByTidligereIdent(relatertPerson.getIdent())
-                                        .zipWith(Mono.just(relatertPerson))))
-                        .filter(tuple -> isNotTrue(tuple.getT1())))
-                .reduce(new HashSet<String>(), (set, tuple) -> {
-                    set.add(tuple.getT2().getIdent());
-                    return set;
-                })
-                .flatMap(identerSomSkalSlettesHosPdl -> pdlTestdataConsumer.delete(identerSomSkalSlettesHosPdl)
-                        .thenReturn(identerSomSkalSlettesHosPdl))
-                .flatMap(identerSomSkalFriMarkeresIIdentpool ->
-                        identPoolConsumer.releaseIdents(identerSomSkalFriMarkeresIIdentpool, Bruker.PDLF)
-                                .thenReturn(identerSomSkalFriMarkeresIIdentpool))
-                .flatMap(identerSomSkalSlettesIRelasjoner -> relasjonRepository.deleteByPersonIdentIn(identerSomSkalSlettesIRelasjoner)
-                        .thenReturn(identerSomSkalSlettesIRelasjoner))
-                .flatMap(identerSomSkalSlettesIPdlForvalter -> personRepository.deleteByIdentIn(identerSomSkalSlettesIPdlForvalter)
-                        .thenReturn(identerSomSkalSlettesIPdlForvalter))
-                .doOnNext(identer -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
+                        .then(Mono.just(dbPerson)))
+//                .flatMapMany(dbPerson -> Flux.concat(
+//                                Flux.just(dbPerson.getId()),
+//                                relasjonRepository.findByPersonId(dbPerson.getId())
+//                                        .map(DbRelasjon::getRelatertPersonId))
+//                        .flatMap(relatertPersonId -> personRepository.findById(relatertPersonId)
+//                                // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
+//                                .flatMap(relatertPerson -> aliasRepository.existsByTidligereIdent(relatertPerson.getIdent())
+//                                        .zipWith(Mono.just(relatertPerson))))
+//                        .filter(tuple -> isNotTrue(tuple.getT1())))
+//                .reduce(new HashSet<String>(), (set, tuple) -> {
+//                    set.add(tuple.getT2().getIdent());
+//                    return set;
+//                })
+//                .flatMap(identerSomSkalSlettesHosPdl -> pdlTestdataConsumer.delete(identerSomSkalSlettesHosPdl)
+//                        .thenReturn(identerSomSkalSlettesHosPdl))
+//                .flatMap(identerSomSkalFriMarkeresIIdentpool ->
+//                        identPoolConsumer.releaseIdents(identerSomSkalFriMarkeresIIdentpool, Bruker.PDLF)
+//                                .thenReturn(identerSomSkalFriMarkeresIIdentpool))
+//                .flatMap(identerSomSkalSlettesIRelasjoner -> relasjonRepository.deleteByPersonIdentIn(identerSomSkalSlettesIRelasjoner)
+//                        .thenReturn(identerSomSkalSlettesIRelasjoner))
+//                .flatMap(identerSomSkalSlettesIPdlForvalter -> personRepository.deleteByIdentIn(identerSomSkalSlettesIPdlForvalter)
+//                        .thenReturn(identerSomSkalSlettesIPdlForvalter))
+//                .doOnNext(identer -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
                 .then();
     }
 

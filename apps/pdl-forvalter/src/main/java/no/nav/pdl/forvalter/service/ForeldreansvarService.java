@@ -388,7 +388,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                         return Mono.empty()
                                 .then();
                     }))
-                    .thenReturn(foreldreansvar);
+                    .then(Mono.just(foreldreansvar));
 
         } else {
             // hovedperson er barn
