@@ -17,7 +17,7 @@ export const sjekkManglerPensjonData = (pensjonData) => {
 }
 
 const getTittel = (data) => {
-	const inntektsaar = data?.map((inntekt) => inntekt.inntektAar)
+	const inntektsaar = data?.map((inntekt) => inntekt.InntektAar)
 	const foerste = Math.min(...inntektsaar)
 	const siste = Math.max(...inntektsaar)
 	return `Pensjonsgivende inntekter (${foerste} - ${siste})`
@@ -36,7 +36,7 @@ const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 			<DollyFieldArray data={inntekter} nested>
 				{(inntekt, idx) => (
 					<div className="person-visning_content" key={idx}>
-						<TitleValue title="Inntektsår" value={inntekt?.inntektAar} />
+						<TitleValue title="Inntektsår" value={inntekt?.InntektAar} />
 						<TitleValue title="Beløp" value={inntekt?.belop} />
 					</div>
 				)}
