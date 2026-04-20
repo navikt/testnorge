@@ -49,6 +49,7 @@ export default function PersonListe({
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
+	const [initialLoadDone, setInitialLoadDone] = useState(false)
 	const dispatch = useDispatch()
 	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
 
@@ -89,6 +90,12 @@ export default function PersonListe({
 		}
 		fetchPdlPersoner(identListe)
 	}, [identListe])
+
+	useEffect(() => {
+		if (!initialLoadDone && !isFetching && personListe?.length > 0) {
+			setInitialLoadDone(true)
+		}
+	}, [isFetching, personListe, initialLoadDone])
 
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
@@ -224,7 +231,7 @@ export default function PersonListe({
 		return column
 	})
 
-	if (isFetching || isLoading) {
+	if (!initialLoadDone && (isFetching || isLoading)) {
 		return <Loading label="Laster personer ..." panel />
 	}
 
