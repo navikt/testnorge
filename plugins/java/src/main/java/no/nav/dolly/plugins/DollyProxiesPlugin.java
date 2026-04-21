@@ -3,17 +3,15 @@ package no.nav.dolly.plugins;
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.ModuleDependency;
 import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.bundling.Jar;
+import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
-
-import java.util.HashMap;
 
 @SuppressWarnings("unused")
 public class DollyProxiesPlugin implements Plugin<Project> {
@@ -62,14 +60,7 @@ public class DollyProxiesPlugin implements Plugin<Project> {
         dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-actuator");
         dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-oauth2-resource-server");
         dependencies.add("implementation", "org.springframework.cloud:spring-cloud-starter-gateway-server-webflux");
-        dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-undertow");
-        var springBootStarterWebflux = (ModuleDependency) dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-webflux");
-        if (springBootStarterWebflux != null) {
-            var springBootStarterReactorNettyExclusion = new HashMap<String, String>();
-            springBootStarterReactorNettyExclusion.put("group", "org.springframework.boot");
-            springBootStarterReactorNettyExclusion.put("module", "spring-boot-starter-reactor-netty");
-            springBootStarterWebflux.exclude(springBootStarterReactorNettyExclusion);
-        }
+        dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-webflux");
         dependencies.add("runtimeOnly", "io.grpc:grpc-netty:" + versions.grpc);
         dependencies.add("runtimeOnly", "io.micrometer:micrometer-registry-prometheus");
         dependencies.add("testAnnotationProcessor", "org.projectlombok:lombok");
@@ -84,7 +75,12 @@ public class DollyProxiesPlugin implements Plugin<Project> {
             imports.mavenBom("org.springframework.boot:spring-boot-dependencies:" + versions.springBoot);
             imports.mavenBom("org.springframework.cloud:spring-cloud-dependencies:" + versions.springCloud);
             imports.mavenBom("org.springframework.session:spring-session-bom:" + versions.springSession);
+            imports.mavenBom("org.testcontainers:testcontainers-bom:" + versions.testcontainers);
         });
+
+        project.getTasks().withType(JavaCompile.class).configureEach(task ->
+                task.getOptions().getCompilerArgs().add("-parameters")
+        );
 
         project.getTasks().withType(Test.class).configureEach(test -> {
             test.useJUnitPlatform();
