@@ -93,6 +93,20 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
+    void shouldUseInjectedClockWhenCalculatingFoedtRangeFromAlder() {
+
+        stubClock();
+
+        var bestilling = buildBestilling(PersonDTO.builder().build());
+        bestilling.setAlder(18);
+
+        var result = relasjonerAlderService.fixRelasjonerAlder(bestilling);
+
+        assertThat(result.getFoedtFoer(), is(equalTo(LocalDateTime.of(2008, 4, 7, 12, 0))));
+        assertThat(result.getFoedtEtter(), is(equalTo(LocalDateTime.of(2007, 10, 7, 12, 0))));
+    }
+
+    @Test
     void shouldPreferAlderOverFoedselsdato() {
 
         stubClock();
