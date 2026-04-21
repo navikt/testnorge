@@ -1,13 +1,36 @@
 plugins {
     id "java-gradle-plugin"
-    id "groovy-gradle-plugin"
 }
 
 gradlePlugin {
     plugins {
-        dollyCheckerConfig {
-            id = 'no.nav.dolly.plugins.buildValidation'
-            implementationClass = 'no.nav.dolly.plugins.DollyBuildValidationPlugin'
+        dollyValidation {
+            id = "no.nav.dolly.plugins.buildValidation"
+            implementationClass = "no.nav.dolly.plugins.DollyBuildValidationPlugin"
+        }
+        dollyLibs {
+            id = "dolly-libs"
+            implementationClass = "no.nav.dolly.plugins.DollyLibsPlugin"
+        }
+        dollyLibsPublish {
+            id = "dolly-libs-publish"
+            implementationClass = "no.nav.dolly.plugins.DollyLibsPublishPlugin"
+        }
+        dollyApps {
+            id = "dolly-apps"
+            implementationClass = "no.nav.dolly.plugins.DollyAppsPlugin"
+        }
+        dollyProxies {
+            id = "dolly-proxies"
+            implementationClass = "no.nav.dolly.plugins.DollyProxiesPlugin"
+        }
+        dollySonar {
+            id = "dolly-sonar"
+            implementationClass = "no.nav.dolly.plugins.DollySonarPlugin"
+        }
+        dollyVersions {
+            id = "dolly-versions"
+            implementationClass = "no.nav.dolly.plugins.DollyVersionsPlugin"
         }
     }
 }
@@ -19,6 +42,6 @@ repositories {
 dependencies {
     implementation "io.spring.gradle:dependency-management-plugin:1.1.7"
     implementation "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:7.2.2.6593"
-    implementation "org.springframework.boot:spring-boot-gradle-plugin:3.4.1"
+    implementation "org.springframework.boot:spring-boot-gradle-plugin:3.5.10"
     implementation "org.yaml:snakeyaml:2.2"
 }

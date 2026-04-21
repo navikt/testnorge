@@ -30,7 +30,7 @@ import Steg0 from './steg/steg0/Steg0'
 import Steg1 from './steg/steg1/Steg1'
 import Steg2 from './steg/steg2/Steg2'
 import Steg3 from './steg/steg3/Steg3'
-import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { useMalFormSync } from './hooks/useMalFormSync'
 import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
 import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
@@ -63,10 +63,9 @@ export const StegVelger = ({
 	initialValues: any
 	onSubmit: (values: any) => Promise<void> | void
 }) => {
-	'use no memo'
-
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const isAdmin = useErDollyAdmin()
 	const is = context.is || {}
 	const erOrganisasjon: boolean = !!(
 		is.nyOrganisasjon ||
@@ -199,7 +198,7 @@ export const StegVelger = ({
 						<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 					</StepErrorBoundary>
 				</Suspense>
-				{(devEnabled || erDollyAdmin()) && (
+				{(devEnabled || isAdmin) && (
 					<Suspense>
 						<DisplayFormState />
 						<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />

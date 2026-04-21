@@ -32,3 +32,12 @@ export const createOptions = (
 		}))
 	}
 }
+
+export const getInntektsaarOptions = (antallAar = 5) => {
+	const inntektsaarListe = []
+	const currentAar = new Date().getFullYear()
+	for (let aar = currentAar - antallAar; aar < currentAar; aar++) {
+		inntektsaarListe.push({ value: aar.toString(), label: aar.toString() })
+	}
+	return inntektsaarListe
+}

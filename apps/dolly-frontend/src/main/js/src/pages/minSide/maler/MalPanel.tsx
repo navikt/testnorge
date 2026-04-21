@@ -47,7 +47,10 @@ export const MalPanel = ({
 		if (bestilling?.aareg?.find((arbforh: any) => arbforh?.amelding?.length > 0)) {
 			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
 		}
-		if (_.has(bestilling, 'sykemelding.syntSykemelding') || _.has(bestilling, 'sykemelding.detaljertSykemelding')) {
+		if (
+			_.has(bestilling, 'sykemelding.syntSykemelding') ||
+			_.has(bestilling, 'sykemelding.detaljertSykemelding')
+		) {
 			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder en sykemelding-type som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
 		}
 		if (_.has(bestilling, 'sigrunstub')) {

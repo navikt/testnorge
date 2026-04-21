@@ -6,9 +6,10 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import Loading from '@/components/ui/loading/Loading'
 
 export const SykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger }: any) => {
+	const fetched = useTsmSykemelding(ident?.ident)
 	const { sykemeldinger, error, loading } = initialSykemeldinger
 		? { sykemeldinger: initialSykemeldinger, error: null, loading: false }
-		: useTsmSykemelding(ident?.ident)
+		: fetched
 
 	const renderAktivitet = (sykemelding: any, idx: number) => (
 		<DollyFieldArray key={idx} data={sykemelding.aktivitet} nested>

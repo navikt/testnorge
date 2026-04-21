@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from '@reduxjs/toolkit'
 import { thunk } from 'redux-thunk'
 import { createPromise } from 'redux-promise-middleware'
 import gruppeReducer from '@/ducks/gruppe'

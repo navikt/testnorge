@@ -25,15 +25,16 @@ type Change = {
 export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = () => {
+	'use no memo'
 	const formMethods = useFormContext()
-	if (!formMethods.watch(krrAttributt)) {
-		return null
-	}
-
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch('krrstub.land'))
 	const [showInfoStripe, setShowInfoStripe] = useBoolean(false)
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
+
+	if (!formMethods.watch(krrAttributt)) {
+		return null
+	}
 
 	const mergedeLandkoder = landkoder?.map((landkode: Option) => {
 		const lookupLand = lookup.countries({ alpha2: landkode.value })?.[0]

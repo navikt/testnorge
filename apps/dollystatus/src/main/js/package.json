@@ -14,21 +14,20 @@
 		"react-use": "^17.6.0"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.29.0",
 		"@navikt/ds-css": "^7.40.0",
 		"@navikt/ds-icons": "^3.4.3",
 		"@navikt/ds-react": "^7.40.0",
+		"@rolldown/plugin-babel": "^0.2.2",
 		"@types/react": "^19.2.14",
-		"@vitejs/plugin-react": "^5.2.0",
-		"babel-plugin-styled-components": "^2.1.4",
-		"esbuild": "^0.27.7",
+		"@vitejs/plugin-react": "^6.0.1",
+		"babel-plugin-react-compiler": "^1.0.0",
 		"less": "^4.6.4",
 		"path-browserify": "^1.0.1",
 		"prettier": "^3.8.2",
-		"typescript": "^5.9.3",
-		"vite": "^7.3.2",
-		"vite-plugin-html": "^3.2.2",
-		"vite-plugin-svgr": "^4.5.0",
-		"vite-tsconfig-paths": "^6.1.1"
+		"typescript": "^6.0.2",
+		"vite": "^8.0.8",
+		"vite-plugin-svgr": "^5.2.0"
 	},
 	"scripts": {
 		"start": "vite --mode local-dev --port 3000 --open",

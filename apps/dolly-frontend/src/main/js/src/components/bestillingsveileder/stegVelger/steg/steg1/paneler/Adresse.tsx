@@ -19,7 +19,15 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
 	const opts: any = useContext(BestillingsveilederContext)
+	const { currentBruker } = useCurrentBruker()
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 	const testNorgePerson = opts?.identMaster === 'PDL'
+
+	if (sm.attrs.adressebeskyttelse) {
+		sm.attrs.adressebeskyttelse.label = bankIdBruker
+			? 'Adressebeskyttelse (kode 6)'
+			: 'Adressebeskyttelse (kode 6/7)'
+	}
 
 	return (
 		// @ts-ignore
@@ -58,8 +66,6 @@ AdressePanel.heading = 'Adresser'
 
 AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype, identMaster } = opts
-	const { currentBruker } = useCurrentBruker()
-	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
 	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
@@ -103,7 +109,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			},
 		},
 		adressebeskyttelse: {
-			label: bankIdBruker ? 'Adressebeskyttelse (kode 6)' : 'Adressebeskyttelse (kode 6/7)',
+			label: 'Adressebeskyttelse (kode 6/7)',
 			checked: has(paths.adressebeskyttelse),
 			add() {
 				set(paths.adressebeskyttelse, [getInitialAdressebeskyttelse(initialMaster)])

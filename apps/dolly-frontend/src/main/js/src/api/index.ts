@@ -1,6 +1,6 @@
 import { NotFoundError } from '@/error'
 import { Argument } from 'classnames'
-import originalFetch from 'isomorphic-fetch'
+const originalFetch = globalThis.fetch
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import { runningE2ETest } from '@/service/services/Request'
