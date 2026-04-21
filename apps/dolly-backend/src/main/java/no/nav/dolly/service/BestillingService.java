@@ -704,7 +704,7 @@ public class BestillingService {
             try {
                 var node = objectMapper.readTree(kriterier);
                 if (node instanceof ObjectNode objectNode) {
-                    objectNode.fields().forEachRemaining(entry -> {
+                    objectNode.properties().forEach(entry -> {
                         if (!merged.has(entry.getKey())) {
                             merged.set(entry.getKey(), entry.getValue());
                         }

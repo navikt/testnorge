@@ -30,7 +30,6 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String expressly = "5.0.0";
         public String guava = "33.4.8-jre";
         public String grpc = "1.76.0";
-        public String jackson = "2.19.0";
         public String jakartaActivation = "2.1.3";
         public String jakartaValidation = "3.1.0";
         public String jakartaXmlBindApi = "4.0.2";
