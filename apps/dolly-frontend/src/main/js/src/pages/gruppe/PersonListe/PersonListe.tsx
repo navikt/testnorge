@@ -18,6 +18,7 @@ import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningCo
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { Bestilling, useGruppeById } from '@/utils/hooks/useGruppe'
 import { useLocation } from 'react-router'
+import { usePdlfPersoner } from '@/utils/hooks/usePdlForvalter'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -70,6 +71,34 @@ export default function PersonListe({
 	const location = useLocation()
 
 	const personListe = sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search)
+
+	const pdlfIdenter = useMemo(() => personListe?.map((p) => p.identNr).join(','), [personListe])
+
+	const { pdlfPersoner } = usePdlfPersoner(pdlfIdenter)
+
+	if (pdlfPersoner) {
+		const pdlfMap = {}
+		pdlfPersoner.forEach((entry) => {
+			if (entry?.person?.ident) {
+				pdlfMap[entry.person.ident] = entry.person
+			}
+		})
+		personListe?.forEach((person) => {
+			const redigertPerson = pdlfMap[person?.identNr]
+			if (redigertPerson) {
+				const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
+				const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
+					? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
+					: ''
+				const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
+				if (!redigertPerson.doedsfall) {
+					person.alder = person.alder.split(' ')[0]
+				}
+				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
+				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
+			}
+		})
+	}
 
 	useEffect(() => {
 		const idents =
@@ -231,7 +260,7 @@ export default function PersonListe({
 		return column
 	})
 
-	if (!initialLoadDone && (isFetching || isLoading)) {
+	if ((isFetching || isLoading) && personListe?.length === 0) {
 		return <Loading label="Laster personer ..." panel />
 	}
 
