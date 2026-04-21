@@ -81,6 +81,7 @@ export const Sykemelding = () => {
 			<FormDollyFieldArray
 				name={`${basePath}.aktivitet`}
 				header="Periode"
+				canBeEmpty={false}
 				hjelpetekst={
 					isVanlig
 						? 'Det kan ikke være dager uten sykemelding mellom periodene. ' +
