@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": "src",
     "outDir": "lib",
     "jsx": "react",
     "sourceMap": true,

@@ -189,6 +189,7 @@ public class PersonExcelService {
                 .map(Arrays::asList)
                 .flatMap(Collection::stream)
                 .map(String::trim)
+                .distinct()
                 .toList();
     }
 
@@ -233,7 +234,7 @@ public class PersonExcelService {
                                         vegadresse.getBruksenhetsnummer()) : null,
                         String.format("%s %s %s", vegadresse.getPostnummer(),
                                 postnummer.get(vegadresse.getPostnummer()),
-                                isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : null))
+                                isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : ""))
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(COMMA_DELIM));
     }

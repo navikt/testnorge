@@ -21,13 +21,17 @@ class Inst {
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
-        var authenticationFilter = authenticationFilterService.getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.inst);
+
+        var authenticationFilter = authenticationFilterService
+                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.inst);
+
         return spec -> spec
                 .path("/inst/**")
                 .filters(f -> f
                         .stripPrefix(1)
                         .filter(authenticationFilter))
                 .uri(targets.inst);
+
     }
 
 }

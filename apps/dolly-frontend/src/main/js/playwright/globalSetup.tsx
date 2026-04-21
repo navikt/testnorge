@@ -7,6 +7,7 @@ import {
 	backendTransaksjonMock,
 	bestillingFragmentNavigerMock,
 	bestillingFragmentSearchMock,
+	bestillingMiljoerMock,
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
@@ -14,6 +15,8 @@ import {
 	eksisterendeGruppeMock,
 	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
+	gruppeFragmentSearchMock,
+	gruppeIdenterMock,
 	histarkMock,
 	instMock,
 	joarkDokumentMock,
@@ -51,7 +54,7 @@ type RouteInfo = {
 const api = new RegExp(/\/api\/v/)
 const weatherApi = new RegExp(/\/weatherapi\//)
 const miljoer = new RegExp(/\/miljoer/)
-const arenaMiljoer = new RegExp(/testnav-arena-forvalteren-proxy\/api\/v1\/miljoe/)
+const arenaMiljoer = new RegExp(/testnav-dolly-proxy\/arena\/api\/v1\/miljoe/)
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/\/profil\/bilde/)
@@ -62,11 +65,14 @@ const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/ident
 const bestillingFragmentSearch = new RegExp(
 	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
 )
+const gruppeFragmentSearch = new RegExp(/\/dolly-backend\/api\/v1\/gruppe\/soekGruppe\?fragment/)
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 const bestillingFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/naviger\/1/)
-const hentGruppeEn = new RegExp(/\/api\/v1\/gruppe\/1/)
-const hentGruppeTo = new RegExp(/\/api\/v1\/gruppe\/2/)
+const hentGruppeEnIdenter = new RegExp(/\/api\/v1\/gruppe\/1\/identer/)
+const hentGruppeEn = new RegExp(/\/api\/v1\/gruppe\/1(?!\/identer)/)
+const hentGruppeTo = new RegExp(/\/api\/v1\/gruppe\/2(?!\/identer)/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
+const bestillingMiljoer = new RegExp(/dolly-backend\/api\/v1\/bestilling\/miljoer/)
 const pdlPersonBolk = new RegExp(/\/api\/v2\/personer\/identer/)
 const pdlPersonEnkelt = new RegExp(/person-service\/api\/v2\/personer\/ident/)
 const tpsMessaging = new RegExp(/testnav-tps-messaging-service\/api\/v1\/personer/)
@@ -76,9 +82,9 @@ const kontoregister = new RegExp(/testnav-dolly-proxy\/kontoregister\/api/)
 const backendTransaksjon = new RegExp(/dolly-backend\/api\/v1\/transaksjonid/)
 const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/testnav-kodeverk-service\/api\/v1\/kodeverk\//)
-const dokarkivMiljoer = new RegExp(/testnav-dokarkiv-proxy\/rest\/miljoe/)
-const aareg = new RegExp(/testnav-aareg-proxy\/q1\/api\/v1\/arbeidstaker/)
-const arena = new RegExp(/testnav-arena-forvalteren-proxy\/q1\/arena/)
+const dokarkivMiljoer = new RegExp(/testnav-dolly-proxy\/dokarkiv\/rest\/miljoe/)
+const aareg = new RegExp(/testnav-dolly-proxy\/aareg\/q1\/api\/v1\/arbeidstaker/)
+const arena = new RegExp(/testnav-dolly-proxy\/arena\/q1\/arena/)
 const inst = new RegExp(/testnav-dolly-proxy\/inst\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
 const pensjon = new RegExp(/testnav-dolly-proxy\/pensjon\/api\/v1\/inntekt/)
@@ -122,13 +128,16 @@ const mockRoutes: RouteInfo[] = [
 	{ url: pensjonMiljoer, response: miljoeMock },
 	{ url: personFragmentSearch, response: personFragmentSearchMock },
 	{ url: bestillingFragmentSearch, response: bestillingFragmentSearchMock },
+	{ url: gruppeFragmentSearch, response: gruppeFragmentSearchMock },
 	{ url: personFragmentNaviger, response: personFragmentNavigerMock },
 	{ url: bestillingFragmentNaviger, response: bestillingFragmentNavigerMock },
 	{ url: hentGrupper, response: paginerteGrupperMock },
 	{ url: histark, response: histarkMock },
+	{ url: hentGruppeEnIdenter, response: gruppeIdenterMock },
 	{ url: hentGruppeEn, response: eksisterendeGruppeMock },
 	{ url: hentGruppeTo, response: nyGruppeMock },
 	{ url: hentGruppeBestilling, response: backendBestillingerMock },
+	{ url: bestillingMiljoer, response: bestillingMiljoerMock },
 	{ url: lagNyGruppe, response: nyGruppeMock },
 	{ url: pdlPersonBolk, response: pdlBulkpersonerMock },
 	{ url: pdlPersonEnkelt, response: pdlPersonEnkeltMock },

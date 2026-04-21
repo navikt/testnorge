@@ -18,6 +18,9 @@ import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDele
 import no.nav.testnav.altinn3tilgangservice.consumer.brreg.BrregConsumer;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -26,16 +29,26 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
+import java.net.URI;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Component
 public class AltinnConsumer {
+
+    @Value("${altinn.max-pages}")
+    private int maxPages;
 
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
@@ -57,6 +70,14 @@ public class AltinnConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(altinnConfig.getUrl())
+                .codecs(config -> {
+                    config.defaultCodecs()
+                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
+                    config.defaultCodecs()
+                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
+                    config.defaultCodecs()
+                            .maxInMemorySize(10 * 1024 * 1024);
+                })
                 .build();
         this.brregConsumer = brregConsumer;
         this.mapperFacade = mapperFacade;
@@ -71,7 +92,7 @@ public class AltinnConsumer {
     public Flux<Organisasjon> delete(String organisasjonsnummer) {
 
         return Flux.from(getAccessListMembers()
-                        .flatMapMany(value -> Flux.fromIterable(value.getData()))
+                        .flatMapMany(Flux::fromIterable)
                         .map(AltinnAccessListResponseDTO.AccessListMembershipDTO::getIdentifiers)
                         .collectList()
                         .map(data -> getIdentifier(data, organisasjonsnummer))
@@ -84,6 +105,7 @@ public class AltinnConsumer {
                                                         exchangeToken,
                                                         identifier,
                                                         altinnConfig).call())
+                                                .map(AltinnAccessListResponseDTO::getData)
                                                 .flatMapMany(this::convertToOrganisasjon) :
                                         Flux.just(Organisasjon.builder()
                                                 .organisasjonsnummer(organisasjonsnummer)
@@ -132,19 +154,55 @@ public class AltinnConsumer {
                 .flatMapIterable(list -> list);
     }
 
-    private Mono<AltinnAccessListResponseDTO> getAccessListMembers() {
+    private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers() {
 
         return maskinportenConsumer.getAccessToken()
                 .flatMap(this::exchangeToken)
-                .flatMap(exchangeToken -> new GetAccessListMembersCommand(
-                        webClient,
-                        exchangeToken,
-                        altinnConfig).call());
+                .flatMap(this::getAccessListMembers);
     }
 
-    private Flux<Organisasjon> convertToOrganisasjon(AltinnAccessListResponseDTO altInnResponse) {
+    private Mono<List<AltinnAccessListResponseDTO.AccessListMembershipDTO>> getAccessListMembers(String exchangeToken) {
 
-        return Flux.fromIterable(altInnResponse.getData())
+        var counter = new AtomicInteger(0);
+        return new GetAccessListMembersCommand(
+                webClient,
+                Optional.empty(),
+                exchangeToken,
+                altinnConfig).call()
+                .expand(response -> {
+
+                    if (nonNull(response.getLinks()) && isNotBlank(response.getLinks().getNext()) &&
+                        counter.getAndIncrement() < maxPages) {
+
+                        String continueToken;
+                        try {
+                            var nextUrl = URLDecoder.decode(response.getLinks().getNext(), UTF_8);
+                            var query = URI.create(nextUrl).getQuery();
+
+                            continueToken = Arrays.stream(query.split("&"))
+                                    .filter(param -> param.contains("token="))
+                                    .map(param -> param.split("=")[1])
+                                    .findFirst().orElse(null);
+
+                        } catch (IllegalArgumentException | NullPointerException e) {
+                            log.warn("Kunne ikke dekode neste-lenke for tilgangsliste-paginering\": {}", response.getLinks().getNext(), e);
+                            return Mono.empty();
+                        }
+
+                        return new GetAccessListMembersCommand(webClient, Optional.ofNullable(continueToken), exchangeToken, altinnConfig).call();
+
+                    } else {
+                        return Mono.empty();
+                    }
+                })
+                .map(AltinnAccessListResponseDTO::getData)
+                .flatMap(Flux::fromIterable)
+                .collectList();
+    }
+
+    private Flux<Organisasjon> convertToOrganisasjon(List<AltinnAccessListResponseDTO.AccessListMembershipDTO> altInnResponse) {
+
+        return Flux.fromIterable(altInnResponse)
                 .map(this::getOrgnummer)
                 .flatMap(brregConsumer::getEnhet)
                 .map(response -> mapperFacade.map(response, Organisasjon.class));

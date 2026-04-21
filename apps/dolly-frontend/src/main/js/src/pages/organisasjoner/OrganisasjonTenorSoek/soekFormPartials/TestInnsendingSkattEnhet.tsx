@@ -2,7 +2,7 @@ import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useTenorOrganisasjonDomain } from '@/utils/hooks/useTenorSoek'
-import { createOptions } from '@/pages/tenorSoek/utils'
+import { createOptions, getInntektsaarOptions } from '@/pages/tenorSoek/utils'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import styled from 'styled-components'
@@ -12,25 +12,16 @@ const StyledHjelpetekstDiv = styled.div`
 	margin-left: unset;
 	margin-top: 30px;
 
-	.navds-help-text {
-		margin-left: -10px;
-		margin-right: 10px;
+	.aksel-help-text {
+		margin-left: -20px;
+		margin-right: 20px;
 	}
 `
 
 export const TestInnsendingSkattEnhet = ({ handleChange }: any) => {
 	const { domain: grunnlagsdataOptions } = useTenorOrganisasjonDomain('Grunnlagsdata')
 
-	const getInntektsaarOptions = () => {
-		const inntektsaarListe = []
-		const currentAar = new Date().getFullYear()
-		for (let aar = currentAar - 4; aar < currentAar; aar++) {
-			inntektsaarListe.push({ value: aar.toString(), label: aar.toString() })
-		}
-		return inntektsaarListe
-	}
-
-	const inntektsaarOptions = getInntektsaarOptions()
+	const inntektsaarOptions = getInntektsaarOptions(4)
 
 	return (
 		<SoekKategori>

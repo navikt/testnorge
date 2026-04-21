@@ -7,8 +7,7 @@ on:
       - apps/inntektsmelding-generator-service/**
       - libs/data-transfer-objects/**
       - libs/reactive-core/**
-      - libs/servlet-core/**
-      - libs/servlet-security/**
+      - libs/reactive-security/**
       - libs/testing/**
       - plugins/**
 

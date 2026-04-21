@@ -301,6 +301,10 @@ export const initialVergemaal = {
 	nyVergeIdent: initialPdlPerson as unknown,
 	vergeIdent: null as unknown as string,
 	mandatType: null as unknown as string,
+	tjenesteomraade: [] as Array<{
+		tjenesteoppgave: string[]
+		tjenestevirksomhet: string
+	}>,
 	kilde: 'Dolly',
 	master: 'FREG',
 }

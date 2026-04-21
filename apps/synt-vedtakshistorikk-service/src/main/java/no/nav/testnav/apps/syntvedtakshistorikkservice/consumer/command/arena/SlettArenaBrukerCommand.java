@@ -28,7 +28,7 @@ public class SlettArenaBrukerCommand implements Callable<Mono<ResponseEntity<Jso
         return webClient
                 .delete()
                 .uri(builder -> builder
-                        .path("/api/v1/bruker")
+                        .path("/arena/api/v1/bruker")
                         .queryParam("miljoe", miljoe)
                         .queryParam("personident", personident)
                         .build())

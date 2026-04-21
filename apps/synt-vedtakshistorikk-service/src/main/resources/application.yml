@@ -4,7 +4,7 @@ spring:
     name: testnav-synt-vedtakshistorikk-service
     description: App som genererer syntetisk vedtakshistorikk(er), tilknytter dataen til testnorge ident(er) og sender historikken(e) til arena-forvalteren.
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -28,11 +28,6 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-arena-dagpenger
-  testnav-arena-forvalteren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-arena-forvalteren-proxy
-    url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
   testnav-dolly-search-service:
     cluster: dev-gcp
     namespace: dolly

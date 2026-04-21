@@ -28,7 +28,6 @@ class InsecureJwtServerToServerAutoConfiguration {
     @Profile("!test")
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass("no.nav.testnav.libs.servletsecurity.jwt.MultipleIssuersJwtDecoder")
-        // TODO: These two identical implementations should join forces.
     JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
         return new MultipleIssuersJwtDecoder(properties);
     }
@@ -37,7 +36,6 @@ class InsecureJwtServerToServerAutoConfiguration {
     @Profile("test")
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass("no.nav.testnav.libs.servletsecurity.jwt.NoopJwtDecoder")
-        // TODO: These two identical implementations should join forces.
     JwtDecoder jwtDecoderForTesting() {
         return new NoopJwtDecoder();
     }

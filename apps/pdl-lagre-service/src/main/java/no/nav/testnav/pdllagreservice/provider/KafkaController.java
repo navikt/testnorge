@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +41,7 @@ public class KafkaController {
 
     @SneakyThrows
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "/{listener}/stop")
+    @PostMapping(path = "/{listener}/stop")
     String stop(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
 
         var listenerContainer = kafkaRegistry.getListenerContainer(listener);
@@ -54,7 +55,7 @@ public class KafkaController {
 
     @SneakyThrows
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "/{listener}/start")
+    @PostMapping(path = "/{listener}/start")
     String start(@PathVariable(name = "listener") @Pattern(regexp = LISTENER_PATTERN) String listener) {
 
         var listenerContainer = kafkaRegistry.getListenerContainer(listener);

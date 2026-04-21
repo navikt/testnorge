@@ -8,6 +8,7 @@ import { FileObject, FileUpload, VStack } from '@navikt/ds-react'
 import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 import React, { useEffect, useState } from 'react'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { StyledVedlegg } from '@/components/fagsystem/dokarkiv/form/partials/Dokument'
 
 type Vedlegg = {
 	file: File
@@ -46,7 +47,9 @@ export const HistarkDokument = ({ path, formMethods }) => {
 			reader.onabort = () => console.warn('file reading was aborted')
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {
-				const binaryStr = reader.result?.slice(28)
+				const result = reader.result as string
+				const base64Index = result.indexOf(',') + 1
+				const binaryStr = result.slice(base64Index)
 				formMethods.setValue(`${path}.tittel`, fil.file?.name)
 				formMethods.setValue(`${path}.antallSider`, 1)
 				formMethods.setValue(`${path}.fysiskDokument`, binaryStr)
@@ -115,7 +118,7 @@ export const HistarkDokument = ({ path, formMethods }) => {
 					size={'xsmall'}
 				/>
 				<div className="flexbox--full-width">
-					<VStack gap="4" style={{ marginTop: '10px' }}>
+					<VStack gap="space-16" style={{ marginTop: '10px' }}>
 						<FileUpload.Dropzone
 							label="Last opp vedlegg til dokumentet"
 							accept=".pdf"
@@ -124,8 +127,7 @@ export const HistarkDokument = ({ path, formMethods }) => {
 							onSelect={setVedlegg}
 						/>
 						{vedlegg.map((file: FileObject) => (
-							<FileUpload.Item
-								as="li"
+							<StyledVedlegg
 								key={file.file?.name}
 								file={file.file}
 								button={{

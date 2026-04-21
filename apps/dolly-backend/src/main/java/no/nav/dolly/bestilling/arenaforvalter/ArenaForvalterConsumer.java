@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
@@ -22,7 +23,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -49,7 +50,7 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
             ObjectMapper objectMapper,
             WebClient webClient) {
 
-        serverProperties = consumers.getTestnavArenaForvalterenProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         this.webClient = webClient
                 .mutate()
@@ -139,7 +140,7 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-arena-forvalteren-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

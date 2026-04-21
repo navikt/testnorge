@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import { combineReducers, configureStore, Tuple } from '@reduxjs/toolkit'
 import { thunk } from 'redux-thunk'
 import { createPromise } from 'redux-promise-middleware'
 import gruppeReducer from '@/ducks/gruppe'
@@ -13,7 +13,6 @@ import finnPersonReducer from '@/ducks/finnPerson'
 import commonReducer from '@/ducks/common'
 import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
 import { createBrowserHistory } from 'history'
-import { configureStore, Tuple } from '@reduxjs/toolkit'
 
 const locationMiddleware = (reduxStore) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {

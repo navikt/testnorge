@@ -44,7 +44,7 @@ export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setP
 	}
 
 	return (
-		<Box background="surface-default" padding="4">
+		<Box background="default" padding="space-16">
 			<ToggleGroup
 				defaultValue={soekKategori}
 				onChange={(kategori: string) => setSoekKategori(kategori)}
@@ -52,12 +52,12 @@ export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setP
 			>
 				<ToggleGroup.Item
 					value={SoekKategorier.IDENT}
-					icon={<PersonIcon fontSize="1.5rem" />}
+					icon={<PersonIcon aria-hidden />}
 					label="Søk etter personident"
 				/>
 				<ToggleGroup.Item
 					value={SoekKategorier.ORGNR}
-					icon={<TenancyIcon fontSize="1.5rem" />}
+					icon={<TenancyIcon aria-hidden />}
 					label="Søk etter organisasjonsnummer"
 				/>
 			</ToggleGroup>

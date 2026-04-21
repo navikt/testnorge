@@ -13,9 +13,9 @@ public class SessionTimeoutCookieFilter implements WebFilter {
         exchange.getResponse().beforeCommit(() -> {
             var timeMillis = System.currentTimeMillis();
             return exchange.getSession().map(session -> timeMillis + session.getMaxIdleTime().toMillis()).map(
-                    expiryTime -> ResponseCookie.from("sessionExpiry", expiryTime.toString()).path("/").build()
+                    expiryTime -> ResponseCookie.from("sessionExpiry", expiryTime.toString()).path("/").sameSite("Lax").build()
             ).zipWith(Mono.just(
-                    ResponseCookie.from("serverTime", String.valueOf(timeMillis)).path("/").build()
+                    ResponseCookie.from("serverTime", String.valueOf(timeMillis)).path("/").sameSite("Lax").build()
             )).map(cookies -> {
                 exchange.getResponse().addCookie(cookies.getT1());
                 exchange.getResponse().addCookie(cookies.getT2());

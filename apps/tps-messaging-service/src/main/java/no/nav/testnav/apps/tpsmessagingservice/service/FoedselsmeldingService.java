@@ -8,6 +8,7 @@ import no.nav.testnav.apps.tpsmessagingservice.utils.ResponseStatus;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.FoedselsmeldingRequest;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.FoedselsmeldingResponse;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -20,21 +21,21 @@ public class FoedselsmeldingService {
     private final FoedselsmeldingBuilderService foedselsmeldingBuilderService;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
 
-    public FoedselsmeldingResponse sendFoedselsmelding(FoedselsmeldingRequest persondata, List<String> miljoer) {
+    public Mono<FoedselsmeldingResponse> sendFoedselsmelding(FoedselsmeldingRequest persondata, List<String> miljoer) {
 
-        if (miljoer.isEmpty()) {
-            miljoer = testmiljoerServiceConsumer.getMiljoer();
-        }
+        Mono<List<String>> miljoerMono = miljoer.isEmpty() ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        var skdMelding = foedselsmeldingBuilderService.build(persondata);
+        return miljoerMono.map(resolvedMiljoer -> {
+            var skdMelding = foedselsmeldingBuilderService.build(persondata);
 
-        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), miljoer);
-        prepareStatus(miljoerStatus);
+            var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), resolvedMiljoer);
+            prepareStatus(miljoerStatus);
 
-        return FoedselsmeldingResponse.builder()
-                .ident(persondata.getBarn().getIdent())
-                .miljoStatus(miljoerStatus)
-                .build();
+            return FoedselsmeldingResponse.builder()
+                    .ident(persondata.getBarn().getIdent())
+                    .miljoStatus(miljoerStatus)
+                    .build();
+        });
     }
 
     private void prepareStatus(Map<String, String> sentStatus) {

@@ -1,8 +1,5 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -16,18 +13,22 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -65,6 +67,10 @@ public class InntektsmeldingClient implements ClientRegister {
 
         return Mono.just(bestilling)
                 .filter(RsDollyBestilling::isExistInntekstsmelding)
+                .flatMap(bestilling1 -> oppdaterStatus(progress, bestilling.getEnvironments().stream()
+                        .map(miljoe -> STATUS_FMT.formatted(miljoe, getInfoVenter(SystemTyper.INNTKMELD.getBeskrivelse())))
+                        .collect(Collectors.joining(",")))
+                        .thenReturn(bestilling1))
                 .map(RsDollyBestilling::getInntektsmelding)
                 .flatMap(inntektsmelding -> Flux.fromIterable(bestilling.getEnvironments())
                         .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
@@ -77,6 +83,12 @@ public class InntektsmeldingClient implements ClientRegister {
                         .onErrorResume(error -> getErrors(error, bestilling.getEnvironments()))
                         .collect(Collectors.joining(","))
                         .flatMap(status -> oppdaterStatus(progress, status)));
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        // Inntektsmelding mangler pt. sletting
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
@@ -114,12 +126,6 @@ public class InntektsmeldingClient implements ClientRegister {
         return Flux.fromIterable(environments)
                 .map(env -> STATUS_FMT.formatted(env,
                         encodeStatus(WebClientError.describe(error).getMessage())));
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        // Inntektsmelding mangler pt. sletting
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

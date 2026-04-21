@@ -1,4 +1,5 @@
 import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { fetcher, multiFetcherAareg } from '@/api'
 import {
 	Organisasjon,
@@ -9,7 +10,7 @@ import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljo
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
-import { useEffect, useMemo, useRef } from 'react'
+import { useRef } from 'react'
 
 type MiljoDataListe = {
 	miljo: string
@@ -40,7 +41,7 @@ const getOrganisasjonForvalterUrl = (orgnummer: string) =>
 
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
-		url: `/testnav-aareg-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
+		url: `/testnav-dolly-proxy/aareg/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
 		miljo: miljoe,
 	}))
 }
@@ -104,15 +105,8 @@ export type Bestillingsstatus = {
 }
 
 export const useDollyOrganisasjoner = (brukerId?: string) => {
-	if (!brukerId) {
-		return {
-			loading: false,
-			error: 'BrukerId mangler!',
-		}
-	}
-
 	const { data, isLoading, error } = useSWR<Organisasjon[], Error>(
-		getOrganisasjonerUrl(brukerId),
+		brukerId ? getOrganisasjonerUrl(brukerId) : null,
 		fetcher,
 	)
 
@@ -174,50 +168,63 @@ const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
 }
 
 export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
-	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer?.length === 9)
-	const urls = filteredOrgnummere.map((orgnummer) =>
-		getOrganisasjonForvalterUrl(orgnummer as string),
+	const previousKeyRef = useRef<string | null>(null)
+	const stableKeyRef = useRef<string | null>(null)
+
+	const filtered = orgnummere.filter((orgnummer) => orgnummer?.length === 9) as string[]
+	const unique = [...new Set(filtered)]
+	const sorted = unique.sort()
+	const currentKey = sorted.length > 0 ? `org-forvalter:${sorted.join(',')}` : null
+
+	if (currentKey !== previousKeyRef.current) {
+		previousKeyRef.current = currentKey
+		stableKeyRef.current = currentKey
+	}
+
+	const { data, isLoading, error } = useSWRImmutable<OrganisasjonForvalterData[], Error>(
+		stableKeyRef.current,
+		(key: string) => {
+			const orgnummerList = key.replace('org-forvalter:', '').split(',')
+			const urlList = orgnummerList.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
+			return fetchAllOrganisasjoner(urlList)
+		},
 	)
 
-	const hasBeenCalledRef = useRef<boolean>(false)
-	useEffect(() => {
-		if (urls.length > 0) {
-			hasBeenCalledRef.current = true
-		}
-	}, [urls.length])
+	const organisasjonerMap = new Map<string, OrganisasjonForvalterData>()
+	if (data) {
+		data.forEach((orgResult) => {
+			const org = Array.isArray(orgResult)
+				? (Object.assign({}, ...orgResult) as OrganisasjonForvalterData)
+				: orgResult
+			if (org && !_.isEmpty(org)) {
+				const firstEnvData = Object.values(org).find(
+					(val) => val && typeof val === 'object' && 'organisasjonsnummer' in val,
+				) as any
+				const orgnummer = firstEnvData?.organisasjonsnummer
+				if (orgnummer) {
+					organisasjonerMap.set(orgnummer, org)
+				}
+			}
+		})
+	}
 
-	const { data, isLoading, error } = useSWR<OrganisasjonForvalterData[], Error>(
-		urls.length > 0 ? urls : null,
-		fetchAllOrganisasjoner,
-	)
-
-	const dataFiltered = useMemo(
-		() => (data ? data.filter((org) => org !== null && !_.isEmpty(org)) : []),
-		[data],
-	)
+	const dataFiltered = orgnummere
+		.filter((orgnummer) => orgnummer?.length === 9)
+		.map((orgnummer) => organisasjonerMap.get(orgnummer!))
+		.filter((org) => org !== undefined) as OrganisasjonForvalterData[]
 
 	return {
 		organisasjoner: dataFiltered,
 		loading: isLoading,
 		error: error,
-		hasBeenCalled: hasBeenCalledRef.current,
+		hasBeenCalled: stableKeyRef.current !== null && !isLoading,
 	}
 }
 
-export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false) => {
-	if (!brukerId) {
-		return {
-			loading: false,
-			error: 'BrukerId mangler!',
-		}
-	}
+export const useOrganisasjonBestilling = (brukerId: string) => {
 	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
-		getOrganisasjonBestillingerUrl(brukerId),
+		brukerId ? getOrganisasjonBestillingerUrl(brukerId) : null,
 		fetcher,
-		{
-			refreshInterval: autoRefresh ? 4000 : 0,
-			dedupingInterval: autoRefresh ? 4000 : 0,
-		},
 	)
 
 	const bestillingerSorted = data
@@ -267,23 +274,11 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 		?.map((miljoe: { id: string }) => miljoe.id)
 		?.filter((miljoe: string) => !unsupportedEnvironments.includes(miljoe))
 
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
-
-	if (!harAaregBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const miljoer = miljoe ? [miljoe] : filteredEnvironments
+	const miljoer = miljoe ? [miljoe] : (filteredEnvironments ?? [])
+	const shouldFetch = !!(ident && harAaregBestilling && miljoer.length > 0)
 
 	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
-		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
+		shouldFetch ? [getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }] : null,
 		([urlList, headers]: [ReturnType<typeof getArbeidsforholdUrl>, Record<string, string>]) =>
 			multiFetcherAareg(urlList, headers),
 	)

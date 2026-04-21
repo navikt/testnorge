@@ -20,7 +20,11 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.util.TestnorgeIdentUtility.isTestnorgeIdent;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
 @Slf4j
@@ -31,47 +35,84 @@ public class InntektstubClient implements ClientRegister {
     private static final int MAX_STATUS_LEN = 2048;
 
     private final InntektstubConsumer inntektstubConsumer;
-    private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (isNull(bestilling.getInntektstub()) || bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
+        return Mono.just(bestilling)
+                .flatMap(best -> {
+                    if (isTestnorgeIdent(dollyPerson.getIdent())) {
+                        return importFraTenor(dollyPerson, progress);
+                    } else {
+                        return nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty() ?
+                                oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
+                                        .then(Mono.just("")) :
+                                Mono.just("");
+                    }
+                })
+                .flatMap(status -> {
+                    if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
-            return Mono.empty();
-        }
+                        var context = MappingContextUtils.getMappingContext();
+                        context.setProperty("ident", dollyPerson.getIdent());
 
-        var context = MappingContextUtils.getMappingContext();
-        context.setProperty("ident", dollyPerson.getIdent());
+                        var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
+                                InntektsinformasjonWrapper.class, context);
 
-        var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
-                InntektsinformasjonWrapper.class, context);
+                        return inntektstubConsumer.getInntekter(dollyPerson.getIdent())
+                                .collectList()
+                                .flatMap(eksisterende ->
+                                        Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
+                                                .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
+                                                        entry.getAarMaaned().equals(nyinntekt.getAarMaaned()) &&
+                                                                entry.getVirksomhet().equals(nyinntekt.getVirksomhet()) &&
+                                                                entry.getInntektsliste().stream().anyMatch(gammelt -> nyinntekt.getInntektsliste().contains(gammelt))))
+                                                .collectList()
+                                                .flatMapMany(inntektstubConsumer::postInntekter)
+                                                .collectList()
+                                                .map(inntekter -> {
+                                                    log.info("Inntektstub respons {}", inntekter);
+                                                    return inntekter.stream()
+                                                            .map(Inntektsinformasjon::getFeilmelding)
+                                                            .noneMatch(StringUtils::isNotBlank) ? "OK" :
+                                                            "Feil= " + inntekter.stream()
+                                                                    .map(Inntektsinformasjon::getFeilmelding)
+                                                                    .filter(StringUtils::isNotBlank)
+                                                                    .map(ErrorStatusDecoder::encodeStatus)
+                                                                    .collect(Collectors.joining(","));
+                                                }));
+                    } else {
+                        return Mono.just(status);
+                    }
+                })
+                .flatMap(status -> isNotBlank(status) ? oppdaterStatus(progress, status) : Mono.empty());
+    }
 
-        return inntektstubConsumer.getInntekter(dollyPerson.getIdent())
-                .collectList()
-                .flatMap(eksisterende ->
-                        Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
-                        .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
-                                entry.getAarMaaned().equals(nyinntekt.getAarMaaned()) &&
-                                        entry.getVirksomhet().equals(nyinntekt.getVirksomhet()) &&
-                        entry.getInntektsliste().stream().anyMatch(gammelt -> nyinntekt.getInntektsliste().contains(gammelt))))
-                        .collectList()
-                        .flatMapMany(inntektstubConsumer::postInntekter)
-                        .collectList()
-                        .map(inntekter -> {
-                            log.info("Inntektstub respons {}", inntekter);
-                            return inntekter.stream()
-                                    .map(Inntektsinformasjon::getFeilmelding)
-                                    .noneMatch(StringUtils::isNotBlank) ? "OK" :
-                                    "Feil= " + inntekter.stream()
-                                            .map(Inntektsinformasjon::getFeilmelding)
-                                            .filter(StringUtils::isNotBlank)
-                                            .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
-                                            .collect(Collectors.joining(","));
-                        }))
-                .flatMap(status -> oppdaterStatus(progress, status));
+    private Mono<String> importFraTenor(DollyPerson dollyPerson, BestillingProgress progress) {
+
+        return inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), true)
+                .flatMap(checkResponse -> {
+                    if (checkResponse.getStatus().is2xxSuccessful()) {
+                        return oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
+                                .then(inntektstubConsumer.sjekkImporterInntekt(dollyPerson.getIdent(), false)
+                                        .flatMap(importResponse -> {
+                                            if (importResponse.getStatus().is2xxSuccessful()) {
+                                                log.info("Import av inntektsdata fra Tenor for {} utført", dollyPerson.getIdent());
+                                                return Mono.just("OK");
+                                            } else {
+                                                log.error("Import av inntektsdata fra Tenor for {} feilet: {}",
+                                                        dollyPerson.getIdent(), importResponse.getMessage());
+                                                return Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(
+                                                        "Import av inntektsdata feilet: " + importResponse.getMessage()));
+                                            }
+                                        }));
+                    } else {
+                        log.info("Inntekt for {} finnes ikke i Tenor.", dollyPerson.getIdent());
+                        return Mono.just("");
+                    }
+                });
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

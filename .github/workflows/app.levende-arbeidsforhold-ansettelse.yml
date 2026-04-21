@@ -9,7 +9,7 @@ on:
       - libs/reactive-core/**
       - libs/reactive-security/**
       - libs/security-core/**
-      - libs/servlet-insecure-security/**
+      - libs/reactive-standalone-security/**
       - libs/testing/**
       - plugins/**
 

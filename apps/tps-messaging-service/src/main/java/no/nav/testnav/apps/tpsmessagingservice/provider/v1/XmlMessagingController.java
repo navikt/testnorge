@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -21,16 +22,16 @@ public class XmlMessagingController {
 
     @PostMapping
     @Operation(description = "Send xml-melding til en kø")
-    public String sendXml(@RequestParam String queue,
-                          @RequestBody String xml) {
+    public Mono<String> sendXml(@RequestParam String queue,
+                                @RequestBody String xml) {
 
-        return xmlService.sendXml(xml, queue);
+        return Mono.just(xmlService.sendXml(xml, queue));
     }
 
     @GetMapping
     @Operation(description = "Henter relevante kø-navn")
-    public List<String> getQueues() {
+    public Mono<List<String>> getQueues() {
 
-        return xmlService.getQueues();
+        return Mono.just(xmlService.getQueues());
     }
 }

@@ -1,5 +1,13 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
+import {
+	Bestilling,
+	BestillingStatus,
+	BestillingStatusDetaljert,
+	BestillingStatusGruppe,
+} from '@/types/bestilling'
+
+export type { Bestilling, BestillingStatusGruppe, BestillingStatus, BestillingStatusDetaljert }
 
 const getGrupperUrl = (pageNo, pageSize, brukerId) =>
 	`/dolly-backend/api/v1/gruppe?pageNo=${pageNo}&pageSize=${pageSize}${
@@ -20,7 +28,7 @@ const getPaginertGruppeUrl = (
 	return `/dolly-backend/api/v1/gruppe/${gruppeId}/page/${pageNo}?pageSize=${pageSize}${sorting}`
 }
 
-const getHelGruppeUrl = (gruppeId: string) => `/dolly-backend/api/v1/gruppe/${gruppeId}`
+const getGruppeIdenterUrl = (gruppeId: string) => `/dolly-backend/api/v1/gruppe/${gruppeId}/identer`
 
 export type PaginertGruppe = {
 	antallElementer: number
@@ -29,6 +37,14 @@ export type PaginertGruppe = {
 	favoritter: Gruppe[]
 	pageNo: number
 	pageSize: number
+}
+
+export type GruppeIdent = {
+	ident: string
+	bestillingId: number[]
+	bestillinger: Bestilling[]
+	master: string
+	ibruk: boolean
 }
 
 export type Gruppe = {
@@ -41,8 +57,21 @@ export type Gruppe = {
 	opprettetAv: { brukernavn: string; navIdent: string }
 	datoEndret: Date
 	erEierAvGruppe: boolean
-	identer: any[]
+	identer: GruppeIdent[]
 	tags: string[]
+}
+
+export const useGruppeInfo = (gruppeId?: string) => {
+	const { data, isLoading, error } = useSWR<Gruppe, Error>(
+		gruppeId ? getPaginertGruppeUrl(gruppeId, 0, 1) : null,
+		fetcher,
+	)
+
+	return {
+		gruppeInfo: data,
+		loading: isLoading,
+		error: error,
+	}
 }
 
 export const useGruppeById = (
@@ -74,19 +103,19 @@ export const useGruppeById = (
 	}
 }
 
-export const useGruppeIdenter = (gruppeId) => {
-	const { data, isLoading, error } = useSWR<Gruppe, Error>(
-		gruppeId ? getHelGruppeUrl(gruppeId) : null,
+export type IdentMaster = {
+	ident: string
+	master: string
+}
+
+export const useGruppeIdenter = (gruppeId: string) => {
+	const { data, isLoading, error } = useSWR<IdentMaster[], Error>(
+		gruppeId ? getGruppeIdenterUrl(gruppeId) : null,
 		fetcher,
 	)
 
 	return {
-		identer: data?.identer?.map((person) => {
-			return {
-				ident: person.ident,
-				master: person.master,
-			}
-		}),
+		identer: data,
 		loading: !gruppeId ? false : isLoading,
 		error: !gruppeId ? 'GruppeId mangler!' : error,
 	}

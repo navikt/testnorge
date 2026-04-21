@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 @TestConfiguration(proxyBeanMethods = false)
 public class TestOpenSearchConfig {
 
+
     @Bean
     @Primary
     public OpenSearchClient opensearchClient() throws IOException {

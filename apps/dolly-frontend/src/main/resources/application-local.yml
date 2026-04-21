@@ -3,6 +3,11 @@ POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 server:
   port: 8020
 
+management:
+  health:
+    redis:
+      enabled: false
+
 spring:
   config:
     import: "sm://"
@@ -78,8 +83,6 @@ consumers:
     url: https://testnav-kodeverk-service.intern.dev.nav.no/
   testnav-tenor-search-service:
     url: https://testnav-tenor-search-service.intern.dev.nav.no
-  testnav-skattekort-service:
-    url: https://testnav-skattekort-service.intern.dev.nav.no
   testnav-levende-arbeidsforhold-ansettelse:
     url: https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no
   testnav-levende-arbeidsforhold-scheduler:

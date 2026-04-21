@@ -1,3 +1,13 @@
+app:
+  pdl:
+    elastic:
+      username: username
+      password: password
+    hendelse:
+      apikey: apikey
+  token-cache:
+    grace-period-seconds: 0
+
 management:
   endpoints:
     web:

@@ -7,14 +7,11 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
+import { Bestillingsvisning } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { useFormContext } from 'react-hook-form'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
-
-const Bestillingskriterier = React.lazy(
-	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
-)
 
 const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -82,7 +79,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 			{harAvhukedeAttributter(formMethods.getValues()) && (
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier ...'} />}>
-						<Bestillingskriterier bestilling={formMethods.getValues()} />
+						<Bestillingsvisning bestilling={formMethods.getValues()} />
 					</Suspense>
 				</div>
 			)}

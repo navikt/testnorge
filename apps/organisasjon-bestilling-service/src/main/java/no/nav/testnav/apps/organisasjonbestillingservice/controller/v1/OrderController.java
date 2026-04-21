@@ -2,6 +2,9 @@ package no.nav.testnav.apps.organisasjonbestillingservice.controller.v1;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.organisasjonbestillingservice.domain.v1.Order;
+import no.nav.testnav.apps.organisasjonbestillingservice.service.v1.OrderService;
+import no.nav.testnav.libs.dto.organisajonbestilling.v1.OrderDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,13 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Set;
-
-import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
-import no.nav.testnav.libs.dto.organisajonbestilling.v1.OrderDTO;
-import no.nav.testnav.apps.organisasjonbestillingservice.domain.v1.Order;
-import no.nav.testnav.apps.organisasjonbestillingservice.service.v1.OrderService;
 
 @Slf4j
 @RestController

@@ -1,11 +1,12 @@
 import { NotFoundError } from '@/error'
 import { Argument } from 'classnames'
-import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Logger } from '@/logger/Logger'
+
+const originalFetch = globalThis.fetch
 
 axios.defaults.timeout = 10000
 axios.defaults.validateStatus = (status) => {
@@ -19,7 +20,7 @@ const logoutOnForbidden = ['dolly-backend']
 export const multiFetcherAll = (urlListe, headers = null) =>
 	Promise.all(
 		urlListe.map((url) =>
-			fetcher(url, headers).then((result) => {
+			fetcher(url, headers, 0).then((result) => {
 				return result
 			}),
 		),
@@ -122,22 +123,6 @@ export const cvFetcher = (url, headers) => {
 		})
 }
 
-export const sykemeldingFetcher = (url, body) =>
-	axios
-		.post(url, body)
-		.then((res) => {
-			if (res.status === 404) {
-				return null
-			}
-			return res.data
-		})
-		.catch((reason) => {
-			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
-				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
-			}
-			throw new Error(`Henting av data fra ${url} feilet.`)
-		})
-
 export const identpoolFetcher = (url, body) =>
 	axios
 		.post(url, body, { timeout: 0 })
@@ -148,13 +133,10 @@ export const identpoolFetcher = (url, body) =>
 			throw new Error(error.message)
 		})
 
-export const fetcher = (url, headers?) =>
+export const fetcher = (url, headers?, timeout = 10000) =>
 	axios
-		.get(url, { headers: headers })
+		.get(url, { headers: headers, timeout: timeout })
 		.then((res) => {
-			if (res.status === 404) {
-				return null
-			}
 			return res.data
 		})
 		.catch((reason) => {
@@ -267,6 +249,18 @@ const fetchJson = (url: string, config: Config, body?: object): Promise =>
 		.then((data) => {
 			return data ? JSON.parse(data) : {}
 		})
+
+export const initDocumentUpload = (): Promise<string> =>
+	_fetch('/dolly-backend/api/v1/dokument/upload/init', { method: 'POST' }).then((response) =>
+		response.text(),
+	)
+
+export const appendDocumentChunk = (uploadId: string, data: string): Promise<void> =>
+	fetchJson(
+		`/dolly-backend/api/v1/dokument/upload/${uploadId}/append`,
+		{ method: 'POST' },
+		{ data },
+	)
 
 export default {
 	fetch: _fetch,

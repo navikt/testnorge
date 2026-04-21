@@ -14,7 +14,7 @@ import {
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { PersonVisningContent } from '@/components/fagsystem/inntektsmelding/visning/partials/personVisningContent'
 import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 const getHeader = (data: InntektsmeldingData) => {
 	const inntekt = data?.request?.inntekter?.[0]
@@ -28,13 +28,18 @@ const getHeader = (data: InntektsmeldingData) => {
 }
 
 export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
-	const virksomheter = data.map(
-		(inntekt) => inntekt.request?.inntekter?.[0]?.arbeidsgiver?.virksomhetsnummer,
+	const virksomheter = useMemo(
+		() => data.map((inntekt) => inntekt.request?.inntekter?.[0]?.arbeidsgiver?.virksomhetsnummer),
+		[data],
 	)
 
 	const { organisasjoner: virksomhetInfo } = useOrganisasjonForvalter(virksomheter)
-	const opplysningspliktigeOrg = virksomhetInfo?.map(
-		(virksomhet) => virksomhet?.q1?.juridiskEnhet || virksomhet?.q2?.juridiskEnhet,
+	const opplysningspliktigeOrg = useMemo(
+		() =>
+			virksomhetInfo?.map(
+				(virksomhet) => virksomhet?.q1?.juridiskEnhet || virksomhet?.q2?.juridiskEnhet,
+			) || [],
+		[virksomhetInfo],
 	)
 	const { organisasjoner: opplysningspliktigInfo } =
 		useOrganisasjonForvalter(opplysningspliktigeOrg)

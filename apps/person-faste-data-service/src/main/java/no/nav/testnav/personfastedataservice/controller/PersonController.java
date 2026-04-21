@@ -1,10 +1,15 @@
 package no.nav.testnav.personfastedataservice.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
+import no.nav.testnav.personfastedataservice.config.AllowedHosts;
+import no.nav.testnav.personfastedataservice.domain.Person;
+import no.nav.testnav.personfastedataservice.service.PersonService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +24,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
-import no.nav.testnav.personfastedataservice.config.AllowedHosts;
-import no.nav.testnav.personfastedataservice.domain.Person;
-import no.nav.testnav.personfastedataservice.service.PersonService;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -38,18 +37,18 @@ public class PersonController {
     public ResponseEntity<?> save(
             @RequestBody PersonDTO personDTO,
             @RequestHeader Gruppe gruppe,
-            ServerHttpRequest serverHttpRequest
+            HttpServletRequest httpServletRequest
     ) {
         var person = personService.save(new Person(personDTO), gruppe);
-        var requestUri = serverHttpRequest.getURI();
+        var requestUrl = httpServletRequest.getRequestURL().toString();
 
-        if (!allowedHosts.getHosts().contains(requestUri.getHost())) {
+        if (!allowedHosts.getHosts().contains(httpServletRequest.getServerName())) {
             return ResponseEntity
                     .status(403)
-                    .body("Host " + requestUri.getHost() + " er ikke tilatt. Tilatt hosts er " + allowedHosts.getHosts() + ".");
+                    .body("Host " + httpServletRequest.getServerName() + " er ikke tilatt. Tilatt hosts er " + allowedHosts.getHosts() + ".");
         }
 
-        var uri = new URI(requestUri + "/" + person.getIdent());
+        var uri = new URI(requestUrl + "/" + person.getIdent());
         return ResponseEntity
                 .created(uri)
                 .body(person.toDTO());

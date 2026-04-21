@@ -1,8 +1,5 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -30,6 +27,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -52,6 +52,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class DokarkivClient implements ClientRegister {
+
+    private static final int CHUNK_SIZE = 500_000;
 
     private final ApplicationConfig applicationConfig;
     private final DokarkivConsumer dokarkivConsumer;
@@ -83,6 +85,7 @@ public class DokarkivClient implements ClientRegister {
                                                         Flux.fromIterable(bestilling.getDokarkiv())
                                                                 .flatMap(dokarkiv ->
                                                                         buildRequest(dokarkiv, person, bestilling.getId())
+                                                                                .flatMap(this::uploadLargeDocumentsToProxy)
                                                                                 .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
                                                                 .collectList()
                                                                 .flatMap(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
@@ -95,6 +98,12 @@ public class DokarkivClient implements ClientRegister {
                                 ))
                         .collect(Collectors.joining(","))
                         .flatMap(status -> oppdaterStatus(progress, status)));
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        // Sletting er ikke støttet
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
@@ -171,12 +180,6 @@ public class DokarkivClient implements ClientRegister {
         }
     }
 
-    @Override
-    public void release(List<String> identer) {
-
-        // Sletting er ikke støttet
-    }
-
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
 
         return personServiceConsumer.getPdlPersoner(List.of(ident))
@@ -244,5 +247,42 @@ public class DokarkivClient implements ClientRegister {
                         }
                 );
         return transaksjoner;
+    }
+
+    private Mono<DokarkivRequest> uploadLargeDocumentsToProxy(DokarkivRequest request) {
+
+        var largeVariants = request.getDokumenter().stream()
+                .flatMap(dok -> dok.getDokumentvarianter().stream())
+                .filter(variant -> isNotBlank(variant.getFysiskDokument()) && variant.getFysiskDokument().length() > CHUNK_SIZE)
+                .toList();
+
+        if (largeVariants.isEmpty()) {
+            return Mono.just(request);
+        }
+
+        log.info("Laster opp {} store dokumentvarianter til proxy", largeVariants.size());
+
+        return Flux.fromIterable(largeVariants)
+                .flatMap(variant -> uploadSingleDocumentToProxy(variant.getFysiskDokument())
+                        .doOnNext(uploadId -> {
+                            variant.setUploadReferanse(uploadId);
+                            variant.setFysiskDokument(null);
+                        }))
+                .then(Mono.just(request));
+    }
+
+    private Mono<String> uploadSingleDocumentToProxy(String content) {
+
+        return dokarkivConsumer.initProxyUpload()
+                .flatMap(uploadId -> {
+                    var chunks = new ArrayList<String>();
+                    for (int i = 0; i < content.length(); i += CHUNK_SIZE) {
+                        chunks.add(content.substring(i, Math.min(i + CHUNK_SIZE, content.length())));
+                    }
+                    log.info("Dokarkiv proxy upload {}: {} chunks for {} tegn", uploadId, chunks.size(), content.length());
+                    return Flux.fromIterable(chunks)
+                            .concatMap(chunk -> dokarkivConsumer.appendProxyChunk(uploadId, chunk))
+                            .then(Mono.just(uploadId));
+                });
     }
 }

@@ -1,13 +1,10 @@
 package no.nav.dolly.bestilling.service;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
-import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterClient;
 import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
@@ -24,10 +21,10 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.opensearch.BestillingDokument;
-import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.opensearch.BestillingDokument;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -42,6 +39,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -104,6 +103,80 @@ public class DollyBestillingService {
         }
     }
 
+    private GjenopprettSteg fase1Klienter() {
+
+        return TagsHendelseslagerClient.class::isInstance;
+    }
+
+    private GjenopprettSteg fase2Klienter() {
+
+        var klienter = List.of(
+                KontoregisterClient.class,
+                PensjonforvalterClient.class,
+                AaregClient.class,
+                InntektstubClient.class);
+
+        return register -> klienter.stream()
+                .anyMatch(client -> client.isInstance(register));
+    }
+
+    private GjenopprettSteg fase3Klienter() {
+
+        return register ->
+                !fase1Klienter().apply(register) &&
+                        !fase2Klienter().apply(register);
+    }
+
+    private List<GjenopprettSteg> remainingFaser() {
+
+        return List.of(fase2Klienter(),
+                fase3Klienter());
+    }
+
+    private Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+                                                         GjenopprettSteg steg,
+                                                         BestillingProgress progress, boolean isOpprettEndre) {
+
+        return Flux.fromIterable(clientRegisters)
+                .filter(steg::apply)
+                .flatMap(clientRegister ->
+                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
+                    log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
+                            progress.getId(), error, throwable);
+                    return transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                })
+                .collectList()
+                .then(Mono.just(progress));
+    }
+
+    private Mono<BestillingProgress> endrePerson(Supplier<Mono<PdlResponse>> operasjon, BestillingProgress bestillingProgress) {
+
+        return transactionHelperService.persister(bestillingProgress, BestillingProgress::setPdlForvalterStatus,
+                        bestillingProgress.getPdlForvalterStatus())
+                .flatMap(progress1 -> operasjon.get())
+                .map(response -> {
+
+                    String status;
+                    if (nonNull(response.getStatus()) && response.getStatus().is2xxSuccessful()) {
+                        status = "OK";
+                    } else if (nonNull(response.getStatus())) {
+                        status = errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding());
+                    } else {
+                        status = "Feil= Ingen respons fra PDL-forvalter";
+                    }
+
+                    bestillingProgress.setPdlForvalterStatus(status);
+                    bestillingProgress.setIdent(response.getIdent());
+                    return status;
+                })
+                .flatMap(status -> transactionHelperService.persister(bestillingProgress,
+                                BestillingProgress::setPdlForvalterStatus, status)
+                        .thenReturn(bestillingProgress));
+    }
+
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
 
         try {
@@ -126,43 +199,6 @@ public class DollyBestillingService {
         }
     }
 
-    private GjenopprettSteg fase1Klienter() {
-
-        return TagsHendelseslagerClient.class::isInstance;
-    }
-
-    private GjenopprettSteg fase2Klienter() {
-
-        var klienter = List.of(
-                KontoregisterClient.class,
-                PensjonforvalterClient.class,
-                AaregClient.class,
-                InntektstubClient.class);
-
-        return register -> klienter.stream()
-                .anyMatch(client -> client.isInstance(register));
-    }
-
-    private GjenopprettSteg fase3Klienter() {
-
-        return ArenaForvalterClient.class::isInstance;
-    }
-
-    private GjenopprettSteg fase4Klienter() {
-
-        return register ->
-                !fase1Klienter().apply(register) &&
-                        !fase2Klienter().apply(register) &&
-                        !fase3Klienter().apply(register);
-    }
-
-    private List<GjenopprettSteg> remainingFaser() {
-
-        return List.of(fase2Klienter(),
-                fase3Klienter(),
-                fase4Klienter());
-    }
-
     protected Mono<BestillingProgress> gjenopprettKlienterStart(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
                                                                 BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -175,25 +211,6 @@ public class DollyBestillingService {
 
         return Flux.fromIterable(remainingFaser())
                 .concatMap(steg -> gjenopprettKlienter(dollyPerson, bestKriterier, steg, progress, isOpprettEndre))
-                .then(Mono.just(progress));
-    }
-
-    private Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                                         GjenopprettSteg steg,
-                                                         BestillingProgress progress, boolean isOpprettEndre) {
-
-        return Flux.fromIterable(clientRegisters)
-                .filter(steg::apply)
-                .flatMap(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
-                .onErrorResume(throwable -> {
-                    var description = WebClientError.describe(throwable);
-                    var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
-                    log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                            progress.getId(), error, throwable);
-                    return transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
-                })
-                .collectList()
                 .then(Mono.just(progress));
     }
 
@@ -292,31 +309,6 @@ public class DollyBestillingService {
         } else {
             return Mono.just(progress);
         }
-    }
-
-    private Mono<BestillingProgress> endrePerson(Supplier<Mono<PdlResponse>> operasjon, BestillingProgress bestillingProgress) {
-
-        return transactionHelperService.persister(bestillingProgress, BestillingProgress::setPdlForvalterStatus,
-                        bestillingProgress.getPdlForvalterStatus())
-                .flatMap(progress1 -> operasjon.get())
-                .map(response -> {
-
-                    String status;
-                    if (nonNull(response.getStatus()) && response.getStatus().is2xxSuccessful()) {
-                        status = "OK";
-                    } else if (nonNull(response.getStatus())) {
-                        status = errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding());
-                    } else {
-                        status = "Feil= Ingen respons fra PDL-forvalter";
-                    }
-
-                    bestillingProgress.setPdlForvalterStatus(status);
-                    bestillingProgress.setIdent(response.getIdent());
-                    return status;
-                })
-                .flatMap(status -> transactionHelperService.persister(bestillingProgress,
-                                BestillingProgress::setPdlForvalterStatus, status)
-                        .thenReturn(bestillingProgress));
     }
 
     protected Mono<BestillingProgress> sendOrdrePerson(BestillingProgress bestillingProgress) {

@@ -5,9 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +81,7 @@ public class RsDokarkiv {
         private String navn;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -137,6 +134,9 @@ public class RsDokarkiv {
             @Schema(description = "Referanse til dokumentet")
             private Long dokumentReferanse;
 
+            @Schema(description = "Midlertidig referanse til opplastet dokument i minne")
+            private String uploadReferanse;
+
             @Schema(description = """
                     ARKIV brukes for dokumentvarianter i menneskelesbart format (for eksempel PDFA).
                     Gosys og nav.no henter arkivvariant og viser denne til bruker.
@@ -158,6 +158,7 @@ public class RsDokarkiv {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Sak {

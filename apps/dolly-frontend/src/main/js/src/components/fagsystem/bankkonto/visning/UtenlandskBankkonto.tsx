@@ -78,7 +78,7 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 						value={data.tilfeldigKontonummer ? 'Ja' : ''}
 					/>
 					<TitleValue title={'Gyldig f.o.m.'} value={formatDate(data.gyldig)} />
-					<TitleValue title={'Swift kode'} value={data.swift} />
+					<TitleValue title={'BIC/SWIFT-kode'} value={data.swift} />
 					<TitleValue title={'Land'} kodeverk={GtKodeverk.LAND} value={data.landkode} />
 					<TitleValue title={'Banknavn'} value={data.banknavn} />
 					<TitleValue title={'Bankkode'} value={data.bankkode} />

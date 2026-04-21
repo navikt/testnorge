@@ -66,10 +66,6 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 	const [etternavnOptions, setetternavnOptions] = useState([])
 	const { data, navnInfo, mutate } = useGenererNavn(manuelleNavn)
 
-	if (!formMethods.watch(path)) {
-		return null
-	}
-
 	const refreshNavn = () => {
 		mutate()
 	}
@@ -79,6 +75,10 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 		setMellomnavnOptions(concatNavnMedTidligereValgt('mellomnavn', navnInfo, selectedMellomnavn))
 		setetternavnOptions(concatNavnMedTidligereValgt('etternavn', navnInfo, selectedEtternavn))
 	}, [data])
+
+	if (!formMethods.watch(path)) {
+		return null
+	}
 
 	const { fornavn, mellomnavn, etternavn } = formMethods.watch(path)
 
@@ -162,6 +162,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 					label="Har tilfeldig mellomnavn"
 					disabled={!_.isEmpty(selectedMellomnavn)}
 					checkboxMargin
+					wrapperSize="shrink"
 				/>
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
 			</div>

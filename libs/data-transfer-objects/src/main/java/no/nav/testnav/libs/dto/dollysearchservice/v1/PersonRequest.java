@@ -51,6 +51,9 @@ public class PersonRequest {
     private FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus personStatus;
     private Boolean harNyIdentitet;
 
+    private Integer antallStatsborgerskap;
+    private Integer antallRelasjoner;
+
     private AdresseRequest adresse;
 
     @Data
@@ -74,5 +77,18 @@ public class PersonRequest {
         private Boolean harBostedsadresse;
         private Boolean harKontaktadresse;
         private Boolean harOppholdsadresse;
+
+        private AdressehistorikkRequest adressehistorikk;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public static class AdressehistorikkRequest {
+
+        private Integer antallBostedsadresser;
+        private Integer antallKontaktadresser;
+        private Integer antallOppholdsadresser;
     }
 }

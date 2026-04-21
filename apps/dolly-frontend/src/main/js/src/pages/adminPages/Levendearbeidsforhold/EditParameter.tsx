@@ -61,7 +61,7 @@ export const EditParameter = ({ name, label, initialValue, options, data, setDat
 			<Button
 				onClick={openModal}
 				variant={'tertiary'}
-				icon={<PencilWritingIcon />}
+				icon={<PencilWritingIcon title="Rediger" />}
 				size={'small'}
 			/>
 			<ErrorBoundary>

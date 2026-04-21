@@ -5,9 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,8 +32,7 @@ public class RsHistark {
         return dokumenter;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -78,5 +75,8 @@ public class RsHistark {
 
         @Schema(description = "Referanse til dokumentet")
         private Long dokumentReferanse;
+
+        @Schema(description = "Midlertidig referanse til opplastet dokument i minne")
+        private String uploadReferanse;
     }
 }

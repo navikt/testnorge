@@ -15,7 +15,7 @@ import reactor.util.retry.Retry;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
-import static java.time.Duration.*;
+import static java.time.Duration.ofSeconds;
 import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.ARBEIDSPLASSEN_CALL_ID;
 
 @RequiredArgsConstructor
@@ -54,7 +54,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
                         .uuid(uuid)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(Retry.fixedDelay(25, ofSeconds(5))
+                .retryWhen(Retry.fixedDelay(10, ofSeconds(5))
                         .filter(throwable ->
                                 throwable instanceof WebClientResponseException.Forbidden forbidden &&
                                         (forbidden.getResponseBodyAsString().contains(FORBIDDEN_TEXT) ||

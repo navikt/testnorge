@@ -68,7 +68,7 @@ export const OrganisasjonTenorVisning = ({
 
 	return (
 		<OrganisasjonVisningWrapper>
-			<Box background="surface-default" padding="3" borderRadius="medium">
+			<Box background="default" padding="space-12" borderRadius="4">
 				<div className="flexbox--space">
 					<NavnHeader>{organisasjonData?.navn}</NavnHeader>
 				</div>

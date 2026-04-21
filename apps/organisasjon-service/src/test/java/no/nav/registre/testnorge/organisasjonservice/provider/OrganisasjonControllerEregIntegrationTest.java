@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.organisasjonservice.provider;
 
-import tools.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.DetaljerDTO;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.NavnDTO;
@@ -13,23 +12,21 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import tools.jackson.databind.ObjectMapper;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
 
 @DollySpringBootTest
 @ExtendWith(DollyWireMockExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
 class OrganisasjonControllerEregIntegrationTest {
 
     private static final String ORGNUMMER = "123456789";
     private static final String MILJO = "test";
     private static final String EREG_URL = "/api/{miljo}/v1/organisasjon/" + ORGNUMMER;
     @Autowired
-    private MockMvc mvc;
+    private WebTestClient webTestClient;
     @Autowired
     private ObjectMapper objectMapper;
     private OrganisasjonDTO organisasjonReponse;
@@ -57,9 +54,12 @@ class OrganisasjonControllerEregIntegrationTest {
                 .stubGet();
 
 
-        mvc.perform(get("/api/v1/organisasjoner/" + ORGNUMMER)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("miljo", MILJO));
+        webTestClient
+                .mutateWith(mockJwt())
+                .get()
+                .uri("/api/v1/organisasjoner/" + ORGNUMMER)
+                .header("miljo", MILJO)
+                .exchange();
 
         JsonWiremockHelper
                 .builder(objectMapper)

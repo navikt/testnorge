@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useRef, useState } from 'react'
 // @ts-ignore
 import './Kontaktinfo.less'
 import { KontaktModal } from '@/components/feedback/KontaktModal'
@@ -7,7 +8,6 @@ import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Popover } from '@navikt/ds-react'
-import { useRef, useState } from 'react'
 import { KontaktinfoPanel } from '@/components/feedback/KontaktinfoPanel'
 
 export const Kontaktinfo = () => {
@@ -30,7 +30,6 @@ export const Kontaktinfo = () => {
 				open={openState}
 				onClose={() => setOpenState(false)}
 				anchorEl={buttonRef.current}
-				arrow={false}
 				placement={'top-end'}
 				style={{ border: 'none' }}
 			>

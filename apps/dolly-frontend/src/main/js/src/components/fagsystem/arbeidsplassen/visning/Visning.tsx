@@ -14,11 +14,17 @@ import { KursVisning } from '@/components/fagsystem/arbeidsplassen/visning/parti
 import { SammendragVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/SammendragVisning'
 import { JobboenskerVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/JobboenskerVisning'
 import Panel from '@/components/ui/panel/Panel'
-import { HjemmelVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/HjemmelVisning'
 import styled from 'styled-components'
 import { PadlockLockedFillIcon } from '@navikt/aksel-icons'
 import { BodyLong } from '@navikt/ds-react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { ArbeidsplassenTypes } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
+
+type ArbeidsplassenVisningProps = {
+	data: ArbeidsplassenTypes
+	loading: boolean
+	error: any
+}
 
 const StyledCVVisning = styled.div`
 	margin-bottom: 20px;
@@ -35,7 +41,7 @@ const ForbiddenVisning = styled.div`
 	}
 `
 
-export const ArbeidsplassenVisning = ({ data, loading, error, hjemmel }) => {
+export const ArbeidsplassenVisning = ({ data, loading, error }: ArbeidsplassenVisningProps) => {
 	if (loading && !data && !error) return <Loading label="Laster CV" />
 
 	if (error?.status === 403)
@@ -80,7 +86,6 @@ export const ArbeidsplassenVisning = ({ data, loading, error, hjemmel }) => {
 				<FoererkortVisning data={data.foererkort} />
 				<KursVisning data={data.kurs} />
 				<SammendragVisning data={data.sammendrag} />
-				<HjemmelVisning hjemmel={hjemmel} />
 			</Panel>
 		</StyledCVVisning>
 	)

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { createSelector } from 'reselect'
+import { createSelector } from '@reduxjs/toolkit'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '@/ducks/fagsystem'
 import { createLoadingSelector } from '@/ducks/loading'
 import PersonVisning from '@/pages/gruppe/PersonVisning/PersonVisning'
@@ -31,7 +31,6 @@ const loadingSelector = createSelector(
 const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
 	data: selectDataForIdent(state, ownProps.personId),
-	tmpPersoner: state.redigertePersoner,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

@@ -23,6 +23,16 @@ const StyledConfettiExplosion = styled(ConfettiExplosion)`
 	text-align: center;
 `
 
+const FeedbackWrapper = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	.thumbs-rating {
+		margin-left: 15px;
+	}
+`
+
 const confettiDuration = 2800
 
 type ResultatProps = {
@@ -90,11 +100,13 @@ export default function BestillingResultat({
 						Bestillingen er stoppet
 					</Alert>
 				)}
-				<Feedback
-					label="Hvordan var din opplevelse med bruk av Dolly?"
-					feedbackFor="Bruk av Dolly etter bestilling"
-					etterBestilling={true}
-				/>
+				<FeedbackWrapper>
+					<Feedback
+						label="Hvordan var din opplevelse med bruk av Dolly?"
+						feedbackFor="Bruk av Dolly etter bestilling"
+						etterBestilling={true}
+					/>
+				</FeedbackWrapper>
 				{showConfetti && (
 					<div data-testid="confetti" style={{ display: 'flex', flexDirection: 'column' }}>
 						<StyledConfettiExplosion particleCount={70} force={0.3} duration={confettiDuration} />

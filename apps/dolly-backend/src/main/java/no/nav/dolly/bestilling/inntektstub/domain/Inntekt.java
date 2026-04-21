@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Inntekt {

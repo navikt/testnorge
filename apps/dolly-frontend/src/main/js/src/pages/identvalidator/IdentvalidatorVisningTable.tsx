@@ -82,7 +82,7 @@ export const IdentvalidatorVisningTable = ({ identListe }: IdentvalidatorVisning
 	}
 
 	return (
-		<Box background={'surface-default'} padding="6">
+		<Box background={'default'} padding="space-16">
 			<VStack gap="space-16">
 				<Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey)}>
 					<Table.Header>

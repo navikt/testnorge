@@ -12,6 +12,7 @@ import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.vault.core.VaultTemplate;
+import org.springframework.vault.core.lease.LeaseEndpoints;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
 import org.springframework.vault.core.lease.domain.RequestedSecret;
 import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
@@ -47,7 +48,8 @@ public class VaultDatabaseAutoConfiguration implements InitializingBean {
     public void afterPropertiesSet() {
 
         var secret = RequestedSecret.rotating(vaultDatabaseProperties.getBackend() + "/creds/" + vaultDatabaseProperties.getRole());
-        log.info("Setup vault lease for {}", secret);
+        log.info("Setup vault lease for {} with lease endpoints: {}", secret, LeaseEndpoints.Legacy);
+        container.setLeaseEndpoints(LeaseEndpoints.Legacy);
         container
                 .addLeaseListener(
                         event -> {
@@ -61,9 +63,12 @@ public class VaultDatabaseAutoConfiguration implements InitializingBean {
                                 if (dataSource.getHikariPoolMXBean() != null) {
                                     dataSource.getHikariPoolMXBean().softEvictConnections();
                                 }
-
                             }
                         });
+        container
+                .addErrorListener(
+                        (leaseEvent, exception) ->
+                                log.error("Vault lease error for {}: {}", leaseEvent.getSource(), exception.getMessage()));
         container.addRequestedSecret(secret);
 
     }

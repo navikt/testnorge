@@ -8,6 +8,7 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -33,7 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -65,6 +68,7 @@ public class BestillingService {
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final DokumentRepository dokumentRepository;
+    private final DokumentService dokumentService;
     private final IdentRepository identRepository;
     private final MalBestillingService malBestillingService;
     private final MiljoerConsumer miljoerConsumer;
@@ -126,6 +130,15 @@ public class BestillingService {
 
         return bestillingRepository.findByGruppeId(gruppeId)
                 .doOnNext(bestilling -> log.info("Bestilling {}", bestilling))
+                .filter(bestilling -> isNotBlank(bestilling.getMiljoer()))
+                .map(Bestilling::getMiljoer)
+                .flatMap(miljoer -> Flux.just(miljoer.split(",")))
+                .collect(toSet());
+    }
+
+    public Mono<Set<String>> fetchBestilteMiljoerByIds(List<Long> bestillingIds) {
+
+        return bestillingRepository.findByIdIn(bestillingIds)
                 .filter(bestilling -> isNotBlank(bestilling.getMiljoer()))
                 .map(Bestilling::getMiljoer)
                 .flatMap(miljoer -> Flux.just(miljoer.split(",")))
@@ -338,7 +351,7 @@ public class BestillingService {
                             .sistOppdatert(now())
                             .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer(), tuple.getT3()))
                             .opprettetFraId(bestillingId)
-                            .bestKriterier("{}")
+                            .bestKriterier(tuple.getT1().getBestKriterier())
                             .bruker(tuple.getT2())
                             .brukerId(tuple.getT2().getId())
                             .build());
@@ -360,12 +373,16 @@ public class BestillingService {
                 .flatMap(testident -> Mono.zip(
                         Mono.just(testident),
                         brukerService.fetchOrCreateBruker(),
-                        miljoerConsumer.getMiljoer()))
+                        miljoerConsumer.getMiljoer(),
+                        identRepository.getBestillingerByIdent(ident)
+                                .map(GruppeBestillingIdent::getBestkriterier)
+                                .collectList()
+                                .map(this::mergeBestKriterier)))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(tuple.getT1().getGruppeId())
                         .ident(ident)
                         .antallIdenter(1)
-                        .bestKriterier("{}")
+                        .bestKriterier(tuple.getT4())
                         .sistOppdatert(now())
                         .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .gjenopprettetFraIdent(ident)
@@ -390,7 +407,11 @@ public class BestillingService {
                         brukerService.fetchOrCreateBruker(),
                         identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                                 .collectList(),
-                        miljoerConsumer.getMiljoer()))
+                        miljoerConsumer.getMiljoer(),
+                        identRepository.getBestillingerFromGruppe(gruppeId)
+                                .map(GruppeBestillingIdent::getBestkriterier)
+                                .collectList()
+                                .map(this::mergeBestKriterier)))
                 .flatMap(tuple -> {
                     if (tuple.getT2().isEmpty()) {
                         return Mono.error(new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId)));
@@ -401,7 +422,7 @@ public class BestillingService {
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
                         .antallIdenter(tuple.getT2().size())
-                        .bestKriterier("{}")
+                        .bestKriterier(tuple.getT4())
                         .sistOppdatert(now())
                         .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .opprettetFraGruppeId(gruppeId)
@@ -579,6 +600,17 @@ public class BestillingService {
                                                     dokumentVariant.setFysiskDokument(null);
                                                     return id;
                                                 });
+                                    } else if (isNotBlank(dokumentVariant.getUploadReferanse())) {
+                                        var contents = dokumentService.resolveUpload(dokumentVariant.getUploadReferanse());
+                                        if (isNull(contents)) {
+                                            return Mono.error(new NotFoundException("Upload har utløpt for referanse: " + dokumentVariant.getUploadReferanse()));
+                                        }
+                                        return lagreDokument(contents, request.getId(), DokumentType.BESTILLING_DOKARKIV)
+                                                .map(id -> {
+                                                    dokumentVariant.setDokumentReferanse(id);
+                                                    dokumentVariant.setUploadReferanse(null);
+                                                    return id;
+                                                });
                                     }
                                     return Mono.just(0L);
                                 })))
@@ -595,6 +627,14 @@ public class BestillingService {
                             return lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
                                     .doOnNext(id -> dokument.setFysiskDokument(null));
+                        } else if (isNotBlank(dokument.getUploadReferanse())) {
+                            var contents = dokumentService.resolveUpload(dokument.getUploadReferanse());
+                            if (isNull(contents)) {
+                                return Mono.error(new NotFoundException("Upload har utløpt for referanse: " + dokument.getUploadReferanse()));
+                            }
+                            return lagreDokument(contents, request.getId(), DokumentType.BESTILLING_HISTARK)
+                                    .doOnNext(dokument::setDokumentReferanse)
+                                    .doOnNext(id -> dokument.setUploadReferanse(null));
                         }
                         return Mono.empty();
                     })
@@ -655,6 +695,26 @@ public class BestillingService {
 
         return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .collectList();
+    }
+
+    private String mergeBestKriterier(List<String> kriterierList) {
+
+        var merged = objectMapper.createObjectNode();
+        for (var kriterier : kriterierList) {
+            try {
+                var node = objectMapper.readTree(kriterier);
+                if (node instanceof ObjectNode objectNode) {
+                    objectNode.fields().forEachRemaining(entry -> {
+                        if (!merged.has(entry.getKey())) {
+                            merged.set(entry.getKey(), entry.getValue());
+                        }
+                    });
+                }
+            } catch (JacksonException e) {
+                log.warn("Kunne ikke parse bestKriterier: {}", kriterier, e);
+            }
+        }
+        return merged.isEmpty() ? "{}" : merged.toString();
     }
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {

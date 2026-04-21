@@ -12,9 +12,8 @@ import {
 import { onSuccess } from '@/ducks/utils/requestActions'
 import { successMiljoSelector } from '@/ducks/bestillingStatus'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
-import { formatAlder, formatKjonn } from '@/utils/DataFormatter'
+import { formatAlder, formatKjonn, getTypePerson } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
-import { getTypePerson } from '@/components/bestilling/sammendrag/kriterier/BestillingKriterieMapper'
 
 export const actions = createActions(
 	{
@@ -254,11 +253,14 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 		return null
 	}
 
-	const identListe = Object.values(identer).filter(
-		(gruppeIdent) =>
-			Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident) ||
-			Object.keys(fagsystem.pdl).includes(gruppeIdent.ident),
-	)
+	const identListe = Object.values(identer).filter((gruppeIdent) => {
+		if (gruppeIdent.master === 'PDLF') {
+			return gruppeIdent.ident in fagsystem.pdlforvalter
+		} else if (gruppeIdent.master === 'PDL') {
+			return gruppeIdent.ident in fagsystem.pdl
+		}
+		return false
+	})
 
 	return identListe.map((ident) => {
 		if (ident.master === 'PDLF') {

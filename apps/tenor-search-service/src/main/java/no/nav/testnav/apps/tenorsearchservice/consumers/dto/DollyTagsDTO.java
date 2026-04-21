@@ -27,4 +27,10 @@ public class DollyTagsDTO {
         return nonNull(tags) &&
                 tags.contains("DOLLY");
     }
+
+    public static boolean hasArenaSyntTag(List<String> tags) {
+
+        return nonNull(tags) &&
+                tags.contains("ARENASYNT");
+    }
 }

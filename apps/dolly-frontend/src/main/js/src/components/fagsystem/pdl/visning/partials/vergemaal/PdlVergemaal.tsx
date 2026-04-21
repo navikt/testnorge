@@ -4,8 +4,12 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
-import { VergemaalData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import {
+	TjenesteomraadeData,
+	VergemaalData,
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { Verge } from './Verge'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 type VergemaalProps = {
 	data: Array<VergemaalData>
@@ -38,6 +42,25 @@ export const Visning = ({ data }: VisningData) => {
 						title="Gyldig t.o.m."
 						value={formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
 					/>
+					{data.vergeEllerFullmektig?.tjenesteomraade &&
+						data.vergeEllerFullmektig.tjenesteomraade.length > 0 && (
+							<DollyFieldArray
+								data={data.vergeEllerFullmektig.tjenesteomraade}
+								header="Tjenesteområde"
+								nested
+								whiteBackground
+							>
+								{(tjenesteomraade: TjenesteomraadeData, idx: number) => (
+									<div className="person-visning_content" key={idx}>
+										<TitleValue title="Tjenesteoppgave" value={tjenesteomraade.tjenesteoppgave} />
+										<TitleValue
+											title="Tjenestevirksomhet"
+											value={tjenesteomraade.tjenestevirksomhet}
+										/>
+									</div>
+								)}
+							</DollyFieldArray>
+						)}
 					<Verge data={data.vergeEllerFullmektig} type={data.type} />
 				</div>
 			</ErrorBoundary>

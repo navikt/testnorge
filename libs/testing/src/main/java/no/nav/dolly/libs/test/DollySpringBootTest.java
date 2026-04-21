@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -28,6 +29,7 @@ import java.lang.annotation.Target;
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
 @Import(DollyTestSecurityConfiguration.class)
+@Inherited
 public @interface DollySpringBootTest {
 
     /**
@@ -35,6 +37,7 @@ public @interface DollySpringBootTest {
      * <p>Defaults to {@link SpringBootTest.WebEnvironment#RANDOM_PORT}.</p>
      */
     @AliasFor(annotation = SpringBootTest.class, attribute = "webEnvironment")
+    @SuppressWarnings("unused")
     SpringBootTest.WebEnvironment webEnvironment() default SpringBootTest.WebEnvironment.RANDOM_PORT;
 
     /**

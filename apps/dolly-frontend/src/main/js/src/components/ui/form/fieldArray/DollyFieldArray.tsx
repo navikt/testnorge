@@ -58,8 +58,9 @@ export const DollyFieldArrayWrapper = ({
 	hjelpetekst = null,
 	nested = false,
 	children,
+	...props
 }) => (
-	<div className="dfa">
+	<div className="dfa" {...props}>
 		{nested && header && (
 			<div className="dfa-blokk-nested_title">
 				<h3>{header}</h3>
@@ -224,6 +225,7 @@ export const FormDollyFieldArray = ({
 	errorText = null,
 	lockedEntriesLength = 0 as unknown as number,
 	leafOnlyDelete = false,
+	...props
 }) => {
 	const formMethods = useFormContext()
 	const { fields, append, remove } = useFieldArray({ control: formMethods.control, name })
@@ -251,7 +253,7 @@ export const FormDollyFieldArray = ({
 
 	return (
 		<ErrorBoundary>
-			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
+			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested} {...props}>
 				{fields.map((field, idx) => {
 					const curr = values[idx]
 					const path = `${name}.${idx}`
@@ -273,19 +275,19 @@ export const FormDollyFieldArray = ({
 					if (nested)
 						return (
 							<DollyFaBlokkNested
-								key={field.id}
+								key={field.key}
 								idx={idx}
 								handleRemove={handleRemove}
 								showDeleteButton={showDeleteButton}
 								whiteBackground={whiteBackground}
 							>
-								{children(path, idx, curr, number, field.id)}
+								{children(path, idx, curr, number, field.key)}
 							</DollyFaBlokkNested>
 						)
 					if (isOrganisasjon)
 						return (
 							<DollyFaBlokkOrg
-								key={field.id}
+								key={field.key}
 								idx={idx}
 								number={number}
 								header={header}
@@ -293,12 +295,12 @@ export const FormDollyFieldArray = ({
 								handleRemove={showDeleteButton ? handleRemove : null}
 								showDeleteButton={showDeleteButton}
 							>
-								{children(path, idx, curr, number, field.id)}
+								{children(path, idx, curr, number, field.key)}
 							</DollyFaBlokkOrg>
 						)
 					return (
 						<DollyFaBlokk
-							key={field.id}
+							key={field.key}
 							idx={idx}
 							number={number}
 							header={header}
@@ -307,7 +309,7 @@ export const FormDollyFieldArray = ({
 							showDeleteButton={showDeleteButton}
 							whiteBackground={whiteBackground}
 						>
-							{children(path, idx, curr, number, field.id)}
+							{children(path, idx, curr, number, field.key)}
 						</DollyFaBlokk>
 					)
 				})}

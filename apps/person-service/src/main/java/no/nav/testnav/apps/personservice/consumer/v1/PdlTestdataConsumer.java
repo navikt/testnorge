@@ -14,6 +14,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
@@ -39,20 +40,19 @@ public class PdlTestdataConsumer {
                 .build();
     }
 
-    public String ordrePerson(Person person, String kilde) {
+    public Mono<String> ordrePerson(Person person, String kilde) {
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
-        try {
-            var accessToken = tokenExchange.exchange(serverProperties).block();
-            opprettPerson(person, kilde, accessToken);
-            opprettNavn(person, kilde, accessToken);
-            opprettAdresse(person, kilde, accessToken);
-            opprettFoedsel(person, kilde, accessToken);
-            opprettTags(person, accessToken);
-        } catch (Exception e) {
-            throw new PdlCreatePersonException("Feil ved opprettelse person i PDL testdata", e);
-        }
-        return person.getIdent();
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(accessToken -> {
+                    opprettPerson(person, kilde, accessToken);
+                    opprettNavn(person, kilde, accessToken);
+                    opprettAdresse(person, kilde, accessToken);
+                    opprettFoedsel(person, kilde, accessToken);
+                    opprettTags(person, accessToken);
+                    return Mono.just(person.getIdent());
+                })
+                .onErrorMap(Exception.class, e -> new PdlCreatePersonException("Feil ved opprettelse person i PDL testdata", e));
     }
 
     private void opprettPerson(Person person, String kilde, AccessToken token) {

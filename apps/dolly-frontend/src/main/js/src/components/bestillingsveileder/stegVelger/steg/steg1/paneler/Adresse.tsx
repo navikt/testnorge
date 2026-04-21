@@ -19,7 +19,15 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
 	const opts: any = useContext(BestillingsveilederContext)
+	const { currentBruker } = useCurrentBruker()
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 	const testNorgePerson = opts?.identMaster === 'PDL'
+
+	if (sm.attrs.adressebeskyttelse) {
+		sm.attrs.adressebeskyttelse.label = bankIdBruker
+			? 'Adressebeskyttelse (kode 6)'
+			: 'Adressebeskyttelse (kode 6/7)'
+	}
 
 	return (
 		// @ts-ignore
@@ -36,7 +44,6 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 				<Attributt attr={sm.attrs.oppholdsadresse} />
 				<Attributt data-testid="attributt-kontaktadresse" attr={sm.attrs.kontaktadresse} />
 			</AttributtKategori>
-
 			<AttributtKategori title="Delt bosted" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.deltBosted}
@@ -45,9 +52,9 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 						'Vilkåret er at barn(a) har to foreldre med forskjellig norsk bostedsadresse.  Gjelder kun for master FREG.'
 					}
 					vis={!testNorgePerson}
+					wrapperSize="tight"
 				/>
 			</AttributtKategori>
-
 			<AttributtKategori title="Adressebeskyttelse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.adressebeskyttelse} />
 			</AttributtKategori>
@@ -59,8 +66,6 @@ AdressePanel.heading = 'Adresser'
 
 AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype, identMaster } = opts
-	const { currentBruker } = useCurrentBruker()
-	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
 	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
@@ -104,7 +109,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			},
 		},
 		adressebeskyttelse: {
-			label: bankIdBruker ? 'Adressebeskyttelse (kode 6)' : 'Adressebeskyttelse (kode 6/7)',
+			label: 'Adressebeskyttelse (kode 6/7)',
 			checked: has(paths.adressebeskyttelse),
 			add() {
 				set(paths.adressebeskyttelse, [getInitialAdressebeskyttelse(initialMaster)])

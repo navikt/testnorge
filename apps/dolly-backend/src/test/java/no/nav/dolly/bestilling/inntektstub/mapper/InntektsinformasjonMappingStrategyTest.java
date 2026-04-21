@@ -28,8 +28,6 @@ class InntektsinformasjonMappingStrategyTest {
     private static final Double BELOEP = 350000d;
     private static final Double ANTALL = 404d;
     private static final String BESKRIVELSE = "TULL";
-    private static final String AVLOENNING_TYPE = "PER VERS";
-    private static final String YRKE = "Skadedyrbekjemper";
     private static final String AARET_BETALINGEN_GJELDER_FOR = "1994";
     private static final int ANTALL_MAANEDER = 36;
 
@@ -56,9 +54,6 @@ class InntektsinformasjonMappingStrategyTest {
                 is(equalTo(AARET_BETALINGEN_GJELDER_FOR)));
         assertThat(result.getInntektsinformasjon().getFirst().getFradragsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
         assertThat(result.getInntektsinformasjon().getFirst().getFradragsliste().getFirst().getBeskrivelse(), is(equalTo(BESKRIVELSE)));
-        assertThat(result.getInntektsinformasjon().getFirst().getArbeidsforholdsliste().getFirst().getAvloenningstype(), is(equalTo(AVLOENNING_TYPE)));
-        assertThat(result.getInntektsinformasjon().getFirst().getArbeidsforholdsliste().getFirst().getArbeidsforholdstype(), is(equalTo(BESKRIVELSE)));
-        assertThat(result.getInntektsinformasjon().getFirst().getArbeidsforholdsliste().getFirst().getYrke(), is(equalTo(YRKE)));
         assertThat(result.getInntektsinformasjon().getFirst().getForskuddstrekksliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
         assertThat(result.getInntektsinformasjon().getFirst().getForskuddstrekksliste().getFirst().getBeskrivelse(), is(equalTo(BESKRIVELSE)));
     }
@@ -100,11 +95,6 @@ class InntektsinformasjonMappingStrategyTest {
                         .fradragsliste(singletonList(RsInntektsinformasjon.Fradrag.builder()
                                 .beloep(BELOEP)
                                 .beskrivelse(BESKRIVELSE)
-                                .build()))
-                        .arbeidsforholdsliste(singletonList(RsInntektsinformasjon.Arbeidsforhold.builder()
-                                .avloenningstype(AVLOENNING_TYPE)
-                                .arbeidsforholdstype(BESKRIVELSE)
-                                .yrke(YRKE)
                                 .build()))
                         .forskuddstrekksliste(singletonList(RsInntektsinformasjon.Forskuddstrekk.builder()
                                 .beloep(BELOEP)

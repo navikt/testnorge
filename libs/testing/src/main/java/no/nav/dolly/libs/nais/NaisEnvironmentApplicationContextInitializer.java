@@ -35,15 +35,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for local profile using Secret Manager");
         var properties = environment.getSystemProperties();
 
-        // Dynamically load any configured environment variables from NAIS pod.
-        try {
-            new NaisRuntimeEnvironmentConnector(environment)
-                    .getEnvironmentVariables()
-                    .forEach(properties::putIfAbsent);
-        } catch (NaisEnvironmentException e) {
-            log.warn("Failed to dynamically load environment variables using {}", NaisRuntimeEnvironmentConnector.class.getSimpleName(), e);
-        }
-
         // Enable all actuator endpoints.
         properties.putIfAbsent("management.endpoints.web.exposure.include", "*");
 

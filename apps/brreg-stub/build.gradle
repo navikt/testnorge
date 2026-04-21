@@ -61,9 +61,9 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
-    implementation "no.nav.common:auth"
-    implementation "no.nav.common:util"
-    implementation "no.nav.common:cxf:3.2025.11.10_14.07-a9f44944d7bc"
+    implementation "no.nav.common:auth:3.2026.04.08_08.37-229807cc181a"
+    implementation "no.nav.common:util:3.2026.04.08_08.37-229807cc181a"
+    implementation "no.nav.common:cxf:3.2026.04.08_08.37-229807cc181a"
 
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     implementation "jakarta.jws:jakarta.jws-api:3.0.0"

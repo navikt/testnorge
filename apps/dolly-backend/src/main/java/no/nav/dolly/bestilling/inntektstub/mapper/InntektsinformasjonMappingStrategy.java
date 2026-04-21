@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntekt;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Arbeidsforhold;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Forskuddstrekk;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Fradrag;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
@@ -65,7 +64,6 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                                         .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
                                                         .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
                                                         .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
-                                                        .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Arbeidsforhold.class))
                                                         .versjon(versjon.addAndGet(1))
                                                         .rapporteringsdato(historikk.getRapporteringsdato())
                                                         .build())

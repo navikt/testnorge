@@ -42,6 +42,7 @@ export default ({ journalpost, miljoe }: Props) => {
 	return (
 		<div className="person-visning_content">
 			<TitleValue title="Tittel" value={journalpost.tittel} />
+			<TitleValue title="Brevkode" value={journalpost.dokumenter?.[0]?.brevkode} />
 			<TitleValue title="Kanal" value={journalpost.kanal} />
 			<TitleValue title="Tema" value={journalpost.tema} />
 			<TitleValue
@@ -77,6 +78,7 @@ export default ({ journalpost, miljoe }: Props) => {
 					return (
 						<div key={idx} className="person-visning_content">
 							<TitleValue title="Tittel" value={dokument.tittel} />
+							<TitleValue title="Brevkode" value={dokument.brevkode} />
 							<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
 
 							<Button

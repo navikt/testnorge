@@ -35,8 +35,8 @@ spec:
         - application: logging
           namespace: nais-system
       external:
-        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektsmelding-generator-service.intern.dev.nav.no
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_15

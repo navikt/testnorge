@@ -2,9 +2,6 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
 import com.google.common.collect.Lists;
-import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.registre.sdforvalter.TestSecurityConfig;
-import no.nav.registre.sdforvalter.database.model.EregModel;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdforvalter.database.repository.EregRepository;
@@ -14,26 +11,7 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.Gruppe;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
-import no.nav.testnav.libs.testing.DollyWireMockExtension;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import tools.jackson.databind.ObjectMapper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DollySpringBootTest
-@ExtendWith(DollyWireMockExtension.class)
-@Import(TestSecurityConfig.class)
-class StaticDataControllerV1EregIntegrationTest {
+{
 
     private static final String EREG_API = "/api/v1/faste-data/ereg";
 

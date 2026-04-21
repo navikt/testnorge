@@ -83,29 +83,31 @@ export default () => {
 						<>Sjekk {brukerveiledning} hvis feilen vedvarer eller ta kontakt med Dolly.</>
 					</Alert>
 				)}
-				<NavButton
-					data-testid={TestComponentSelectors.BUTTON_LOGIN_NAV}
-					className="login-modal_button-nav"
-					variant={'primary'}
-					onClick={redirectOnClick(
-						runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login',
-						false,
-					)}
-				>
-					Logg inn med NAV epost
-				</NavButton>
-				<NavButton
-					data-testid={TestComponentSelectors.BUTTON_LOGIN_BANKID}
-					className="login-modal_button-bankid"
-					variant={'primary'}
-					onClick={redirectOnClick('/oauth2/authorization/idporten', true)}
-				>
-					Logg inn med BankId
-				</NavButton>
-				<Hjelpetekst placement={top} requestFeedback={false}>
-					For å ta i bruk BankId innlogging må du være tilknyttet en organisasjon som har tilgang
-					til Dolly. Ta kontakt med en administrator i din organisasjon hvis tilgang mangler.
-				</Hjelpetekst>
+				<div className="flexbox--justify-center flexbox--align-center">
+					<NavButton
+						data-testid={TestComponentSelectors.BUTTON_LOGIN_NAV}
+						className="login-modal_button-nav"
+						variant={'primary'}
+						onClick={redirectOnClick(
+							runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login',
+							false,
+						)}
+					>
+						Logg inn med NAV epost
+					</NavButton>
+					<NavButton
+						data-testid={TestComponentSelectors.BUTTON_LOGIN_BANKID}
+						className="login-modal_button-bankid"
+						variant={'primary'}
+						onClick={redirectOnClick('/oauth2/authorization/idporten', true)}
+					>
+						Logg inn med BankId
+					</NavButton>
+					<Hjelpetekst placement={top} requestFeedback={false}>
+						For å ta i bruk BankId innlogging må du være tilknyttet en organisasjon som har tilgang
+						til Dolly. Ta kontakt med en administrator i din organisasjon hvis tilgang mangler.
+					</Hjelpetekst>
+				</div>
 			</div>
 		</div>
 	)

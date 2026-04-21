@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
@@ -13,11 +13,10 @@ import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
-import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
-import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { Bestilling, useGruppeById } from '@/utils/hooks/useGruppe'
 import { useLocation } from 'react-router'
 
 const PersonIBrukButtonConnector = React.lazy(
@@ -33,6 +32,7 @@ const ikonTypeMap = {
 
 export default function PersonListe({
 	isFetching,
+	isLoading,
 	search,
 	gruppeId,
 	identer,
@@ -44,15 +44,28 @@ export default function PersonListe({
 	hovedperson,
 	iLaastGruppe,
 	fetchPdlPersoner,
-	tmpPersoner,
 	sorting,
 }: any) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
+	const [initialLoadDone, setInitialLoadDone] = useState(false)
 	const dispatch = useDispatch()
-	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeId)
 	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
+
+	const bestillingStatuser = useMemo(() => {
+		if (!gruppeInfo?.identer) {
+			return undefined
+		}
+		return gruppeInfo.identer
+			.flatMap((ident) => ident.bestillinger ?? [])
+			.filter((bestilling) => bestilling?.id !== undefined)
+			.sort((a, b) => (a.id < b.id ? 1 : -1))
+			.reduce<Record<number, Bestilling>>((acc, bestilling) => {
+				acc[bestilling.id] = bestilling
+				return acc
+			}, {})
+	}, [gruppeInfo?.identer])
 
 	const location = useLocation()
 
@@ -77,6 +90,12 @@ export default function PersonListe({
 		}
 		fetchPdlPersoner(identListe)
 	}, [identListe])
+
+	useEffect(() => {
+		if (!initialLoadDone && !isFetching && personListe?.length > 0) {
+			setInitialLoadDone(true)
+		}
+	}, [isFetching, personListe, initialLoadDone])
 
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
@@ -168,10 +187,7 @@ export default function PersonListe({
 			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => (
 				<Suspense fallback={<Loading label={'Laster...'} />}>
-					<PersonIBrukButtonConnector
-						data-testid={TestComponentSelectors.TOGGLE_PERSON_IBRUK}
-						ident={row.ident}
-					/>
+					<PersonIBrukButtonConnector ident={row.ident} />
 				</Suspense>
 			),
 		},
@@ -215,8 +231,8 @@ export default function PersonListe({
 		return column
 	})
 
-	if (isFetching && personListe?.length === 0) {
-		return <Loading label="Laster personer..." panel />
+	if (!initialLoadDone && (isFetching || isLoading)) {
+		return <Loading label="Laster personer ..." panel />
 	}
 
 	if (_.isEmpty(identer)) {
@@ -227,27 +243,6 @@ export default function PersonListe({
 					'søke opp og importere identer til gruppen.'
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
-
-	const updatePersonHeader = () => {
-		personListe.map((person) => {
-			const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
-			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
-			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
-				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
-				: ''
-			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
-
-			if (redigertPerson) {
-				if (!redigertPerson.doedsfall) {
-					person.alder = person.alder.split(' ')[0]
-				}
-				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
-				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
-			}
-		})
-	}
-
-	if (tmpPersoner) updatePersonHeader()
 
 	const onHeaderClick = (value) => {
 		const activeColumn = columns.filter(

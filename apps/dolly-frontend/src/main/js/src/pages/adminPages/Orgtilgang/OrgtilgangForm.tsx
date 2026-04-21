@@ -65,7 +65,7 @@ export const OrgtilgangForm = ({ mutate }: any) => {
 	}
 
 	return (
-		<Box background="surface-default" padding="4" style={{ marginBottom: '15px' }}>
+		<Box background="default" padding="space-16" style={{ marginBottom: '15px' }}>
 			<h2 style={{ marginTop: '5px' }}>Opprett tilgang</h2>
 			<FormProvider {...formMethods}>
 				<Form control={control} autoComplete={'off'} onSubmit={handleSubmit(onSubmit)}>

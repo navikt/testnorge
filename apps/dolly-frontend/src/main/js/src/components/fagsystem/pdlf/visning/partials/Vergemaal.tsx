@@ -2,16 +2,20 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, toTitleCase } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { PersonData, Relasjon, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import * as _ from 'lodash-es'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import React from 'react'
+
+type TjenesteomraadeType = {
+	tjenesteoppgave?: string[]
+	tjenestevirksomhet?: string
+}
 
 type Vergemaal = {
 	vergemaalEmbete?: string
@@ -20,12 +24,14 @@ type Vergemaal = {
 	vergeEllerFullmektig?: {
 		omfang?: string
 		motpartsPersonident?: string
+		tjenesteomraade?: Array<TjenesteomraadeType>
 	}
 	sakType?: string
 	type?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
 	vergeIdent?: string
+	tjenesteomraade?: Array<TjenesteomraadeType>
 	id: number
 }
 
@@ -72,6 +78,8 @@ const VergemaalLes = ({
 	)
 
 	const harFullmektig = vergemaalData.sakType === 'FRE'
+	const tjenesteomraadeListe =
+		vergemaalData.tjenesteomraade || vergemaalData.vergeEllerFullmektig?.tjenesteomraade
 
 	return (
 		<>
@@ -102,6 +110,23 @@ const VergemaalLes = ({
 					/>
 				)}
 			</div>
+			{tjenesteomraadeListe && tjenesteomraadeListe.length > 0 && (
+				<DollyFieldArray data={tjenesteomraadeListe} header="Tjenesteområde" nested whiteBackground>
+					{(tjenesteomraade: TjenesteomraadeType, toIdx: number) => (
+						<div className="person-visning_redigerbar" key={toIdx}>
+							<TitleValue title="Tjenestevirksomhet" value={tjenesteomraade.tjenestevirksomhet} />
+							<TitleValue
+								title="Tjenesteoppgaver"
+								value={
+									Array.isArray(tjenesteomraade.tjenesteoppgave)
+										? tjenesteomraade.tjenesteoppgave.map((val) => toTitleCase(val)).join(', ')
+										: toTitleCase(tjenesteomraade.tjenesteoppgave)
+								}
+							/>
+						</div>
+					)}
+				</DollyFieldArray>
+			)}
 			{(relasjonRedigert || relasjon) && (
 				<RelatertPerson
 					data={relasjonRedigert?.relatertPerson || relasjon?.relatertPerson}

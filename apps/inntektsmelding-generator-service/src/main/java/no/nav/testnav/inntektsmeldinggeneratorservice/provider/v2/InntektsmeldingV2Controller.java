@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 
 @Slf4j
@@ -27,7 +28,7 @@ public class InntektsmeldingV2Controller {
     private final MapperFacade mapperFacade;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<String> create(@RequestBody RsInntektsmelding request) {
+    public Mono<ResponseEntity<String>> create(@RequestBody RsInntektsmelding request) {
 
         log.info("Mottok inntektsmelding: {}", Json.pretty(request));
 
@@ -39,12 +40,12 @@ public class InntektsmeldingV2Controller {
 
         if (!XmlConverter.validate(xml)) {
             log.warn("Validering av opprett xml feilet");
-            return ResponseEntity
+            return Mono.just(ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Validering av opprett xml feilet");
+                    .body("Validering av opprett xml feilet"));
         }
         log.info("Genererte XML for inntektsmelding: {}", xml);
 
-        return ResponseEntity.ok(xml);
+        return Mono.just(ResponseEntity.ok(xml));
     }
 }

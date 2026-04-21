@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import Icon from '@/components/ui/icon/Icon'
 import { SearchField } from '@/components/searchField/SearchField'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -23,6 +22,7 @@ import { useReduxSelector } from '@/utils/hooks/useRedux'
 import { useForm } from 'react-hook-form'
 import OrganisasjonHeader from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeader'
 import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
+import { FileCheckmarkIcon, TenancyIcon } from '@navikt/aksel-icons'
 
 enum BestillingType {
 	NY = 'NY',
@@ -58,16 +58,16 @@ export default () => {
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) {
-			return 'Søk i bestillinger'
+			return `Søk i bestillinger (${shortcutKey})`
 		}
-		return 'Søk i organisasjoner'
+		return `Søk i organisasjoner (${shortcutKey})`
 	}
 
 	const antallBest = bestillinger?.length
 
-	const startBestilling = (values) => {
+	const startBestilling = (values, type = null) => {
 		navigate('/organisasjoner/bestilling', {
-			state: { opprettOrganisasjon: BestillingType.NY, ...values },
+			state: { opprettOrganisasjon: type ?? BestillingType.NY, ...values },
 		})
 	}
 
@@ -109,30 +109,23 @@ export default () => {
 						Opprett organisasjon
 					</NavButton>
 
-					<ToggleGroup
-						size={'small'}
-						onChange={byttVisning}
-						defaultValue={VISNING_ORGANISASJONER}
-						style={{ backgroundColor: '#ffffff' }}
-					>
-						<ToggleGroup.Item value={VISNING_ORGANISASJONER}>
-							<Icon size={13} kind={'organisasjon'} />
-							{`Organisasjoner (${antallOrg ? antallOrg : 0})`}
-						</ToggleGroup.Item>
-						<ToggleGroup.Item value={VISNING_BESTILLINGER}>
-							<Icon
-								size={13}
-								kind={visning === VISNING_BESTILLINGER ? 'bestilling-light' : 'bestilling'}
-							/>
-							{`Bestillinger (${antallBest ? antallBest : 0})`}
-						</ToggleGroup.Item>
+					<ToggleGroup size={'small'} onChange={byttVisning} defaultValue={VISNING_ORGANISASJONER}>
+						<ToggleGroup.Item
+							value={VISNING_ORGANISASJONER}
+							icon={<TenancyIcon aria-hidden />}
+							label={`Organisasjoner (${antallOrg ?? '0'})`}
+						/>
+						<ToggleGroup.Item
+							value={VISNING_BESTILLINGER}
+							icon={<FileCheckmarkIcon aria-hidden />}
+							label={`Bestillinger (${antallBest ?? '0'})`}
+						/>
 					</ToggleGroup>
 
 					<SearchField
-						style={{ width: '280px', marginRight: '-79px' }}
-						shortcutKey={shortcutKey}
 						placeholder={searchfieldPlaceholderSelector()}
 						setText={undefined}
+						size={'small'}
 						ref={searchInputRef}
 					/>
 				</div>
@@ -144,7 +137,8 @@ export default () => {
 						<OrganisasjonListe bestillinger={bestillinger} setAntallOrg={setAntallOrg} />
 					) : (
 						<TomOrgListe
-							startBestilling={() => startBestilling}
+							startBestilling={startBestilling}
+							values={formMethods.getValues()}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}
@@ -159,7 +153,8 @@ export default () => {
 						/>
 					) : (
 						<TomOrgListe
-							startBestilling={() => startBestilling}
+							startBestilling={startBestilling}
+							values={formMethods.getValues()}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}

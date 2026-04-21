@@ -1,5 +1,6 @@
 package no.nav.registre.varslingerservice.controller;
 
+
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.varslingerservice.repository.VarslingRepository;
 import no.nav.registre.varslingerservice.repository.model.VarslingModel;

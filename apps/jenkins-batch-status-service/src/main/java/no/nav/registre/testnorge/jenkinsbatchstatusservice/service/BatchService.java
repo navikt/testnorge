@@ -2,13 +2,14 @@ package no.nav.registre.testnorge.jenkinsbatchstatusservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.regex.Pattern;
-
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.JenkinsConsumer;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.OrganisasjonBestillingConsumer;
-import no.nav.registre.testnorge.jenkinsbatchstatusservice.retry.RetryConfig;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -16,25 +17,25 @@ import no.nav.registre.testnorge.jenkinsbatchstatusservice.retry.RetryConfig;
 public class BatchService {
     private final JenkinsConsumer jenkinsConsumer;
     private final OrganisasjonBestillingConsumer organisasjonBestillingConsumer;
-    private final RetryService retryService;
 
-    public void registerEregBestilling(String uuid, String miljo, Long itemId) {
+    public Mono<Void> registerEregBestilling(String uuid, String miljo, Long itemId) {
         log.info("Registerer ereg bestilling uuid {} og jenkins id {}.", uuid, itemId);
 
-        var id = organisasjonBestillingConsumer.save(uuid);
-        var retryConfig = new RetryConfig.Builder()
-                .setRetryAttempts(5)
-                .setSleepSeconds(10)
-                .build();
-
-
-        retryService.execute(retryConfig, () -> {
-            var jobNumber = jenkinsConsumer.getJobNumber(itemId);
-            log.info("Fant jobb nummer {} for besilling {}", jobNumber, uuid);
-            var log = jenkinsConsumer.getJobLog(jobNumber);
-            var jobId = findIDFromLog(log);
-            organisasjonBestillingConsumer.update(uuid, miljo, jobId, id);
-        });
+        return organisasjonBestillingConsumer.save(uuid)
+                .flatMap(id -> jenkinsConsumer.getJobNumber(itemId)
+                        .doOnNext(jobNumber -> log.info("Fant jobb nummer {} for bestilling {}", jobNumber, uuid))
+                        .flatMap(jenkinsConsumer::getJobLog)
+                        .map(this::findIDFromLog)
+                        .flatMap(jobId -> organisasjonBestillingConsumer.update(uuid, miljo, jobId, id))
+                        .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(10))
+                                .doBeforeRetry(signal -> log.warn(
+                                        "Operasjonen ikke utført, {} forsøk igjen.",
+                                        5 - signal.totalRetries(),
+                                        signal.failure())))
+                )
+                .doOnSuccess(v -> log.info("Ereg bestilling registrert for uuid {}.", uuid))
+                .doOnError(e -> log.error("Ereg bestilling feilet for uuid {}.", uuid, e))
+                .then();
     }
 
     private Long findIDFromLog(String value) {

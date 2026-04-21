@@ -25,10 +25,10 @@ import { PdlVergemaal } from '@/components/fagsystem/pdl/visning/partials/vergem
 import { getBankkontoData } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
 import React from 'react'
 import FullmaktVisning from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
+import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 
 type PdlVisningProps = {
 	pdlData: PdlData
-	tmpPersoner: any
 	fagsystemData?: any
 	loading?: any
 	miljoeVisning?: boolean
@@ -36,11 +36,13 @@ type PdlVisningProps = {
 
 export const PdlVisning = ({
 	pdlData,
-	tmpPersoner,
 	fagsystemData = {},
 	loading = {},
 	miljoeVisning = false,
 }: PdlVisningProps) => {
+	const ident = pdlData?.hentPerson ? pdlData.ident : undefined
+	const { pdlforvalterPerson } = usePdlForvalterPerson(ident)
+
 	if (loading?.pdl || (miljoeVisning && loading)) {
 		return <Loading label="Laster PDL-data" />
 	}
@@ -48,7 +50,7 @@ export const PdlVisning = ({
 		return null
 	}
 
-	const { hentPerson, hentIdenter, hentGeografiskTilknytning, ident } = pdlData
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
 	const {
 		telefonnummer,
 		vergemaalEllerFremtidsfullmakt,
@@ -70,7 +72,7 @@ export const PdlVisning = ({
 
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 	const identtype = pdlfPerson?.identtype
-	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+	const tmpPdlforvalter = pdlforvalterPerson ? { [ident]: pdlforvalterPerson } : {}
 
 	const gjeldendeIdent = hentIdenter?.identer?.find(
 		(id) => !id.historisk && id.gruppe === 'FOLKEREGISTERIDENT',

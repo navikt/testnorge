@@ -210,6 +210,14 @@ export const oversettBoolean = (value) => {
 	}
 }
 
+export const getTypePerson = (identNr: string) => {
+	if (!identNr) return null
+	if (parseInt(identNr?.charAt(2)) < 4) {
+		return 'Standard'
+	}
+	return parseInt(identNr?.charAt(2)) > 7 ? 'Test-Norge' : 'NAV-syntetisk'
+}
+
 export const gtTypeLabel = (gtType) => {
 	if (!gtType) {
 		return null

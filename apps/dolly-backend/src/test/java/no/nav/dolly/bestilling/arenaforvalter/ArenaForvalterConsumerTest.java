@@ -116,4 +116,5 @@ class ArenaForvalterConsumerTest extends AbstractConsumerTest {
                         arenaBruker.getStatus().is2xxSuccessful())
                 .verifyComplete();
     }
+
 }

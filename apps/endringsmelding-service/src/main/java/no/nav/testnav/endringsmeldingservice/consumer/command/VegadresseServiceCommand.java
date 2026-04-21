@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class VegadresseServiceCommand implements Callable<Flux<VegadresseDTO>> {
 
-    private static final String ADRESSER_VEG_URL = "/api/v1/adresser/veg";
+    private static final String ADRESSER_VEG_URL = "/api/v1/adresser/vegadresse";
 
     private final WebClient webClient;
     private final String token;

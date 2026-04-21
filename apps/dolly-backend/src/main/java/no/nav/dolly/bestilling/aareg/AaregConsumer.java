@@ -10,7 +10,7 @@ import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -33,7 +33,7 @@ public class AaregConsumer extends ConsumerStatus {
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder) {
 
-        serverProperties = consumers.getTestnavAaregProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -75,7 +75,7 @@ public class AaregConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-aareg-proxy";
+        return "testnav-dolly-proxy";
     }
 
 }

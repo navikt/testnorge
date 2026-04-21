@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
 
-	.navds-alert__wrapper {
+	.aksel-alert__wrapper {
 		hyphens: auto;
 		max-width: 100rem;
 	}

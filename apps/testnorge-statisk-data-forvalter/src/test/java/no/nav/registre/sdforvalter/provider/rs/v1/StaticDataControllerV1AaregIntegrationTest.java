@@ -1,28 +1,11 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
-import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.registre.sdforvalter.TestSecurityConfig;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.registre.sdforvalter.domain.AaregListe;
-import no.nav.testnav.libs.testing.DollyWireMockExtension;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import tools.jackson.databind.ObjectMapper;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DollySpringBootTest
-@ExtendWith(DollyWireMockExtension.class)
-@Import(TestSecurityConfig.class)
-class StaticDataControllerV1AaregIntegrationTest {
+{
 
     @Autowired
     private WebTestClient webTestClient;

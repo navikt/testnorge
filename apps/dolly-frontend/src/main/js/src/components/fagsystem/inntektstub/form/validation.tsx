@@ -1,12 +1,6 @@
 import * as Yup from 'yup'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
-import {
-	ifPresent,
-	messages,
-	requiredDate,
-	requiredNumber,
-	requiredString,
-} from '@/utils/YupValidations'
+import { ifPresent, messages, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 const unikOrgMndTest = (unikValidation: Yup.StringSchema<string, Yup.AnyObject>) => {
@@ -112,31 +106,6 @@ const forskuddstrekksliste = Yup.array().of(
 	}),
 )
 
-const arbeidsforholdsliste = Yup.array().of(
-	Yup.object({
-		arbeidsforholdstype: requiredString,
-		startdato: testDatoFom(
-			Yup.mixed().when('sluttdato', {
-				is: (val) => val !== undefined,
-				then: () => requiredDate,
-			}),
-			'sluttdato',
-		),
-		sluttdato: testDatoTom(Yup.string().nullable(), 'startdato'),
-		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number()
-			.transform((i, j) => (j === '' ? null : i))
-			.nullable(),
-		avloenningstype: Yup.string().nullable(),
-		yrke: Yup.string().nullable(),
-		arbeidstidsordning: Yup.string().nullable(),
-		stillingsprosent: Yup.number()
-			.transform((i, j) => (j === '' ? null : i))
-			.nullable(),
-		sisteLoennsendringsdato: Yup.string().nullable(),
-		sisteDatoForStillingsprosentendring: Yup.string().nullable(),
-	}),
-)
-
 export const validation = {
 	inntektstub: ifPresent(
 		'$inntektstub',
@@ -158,13 +127,11 @@ export const validation = {
 					inntektsliste: inntektsliste,
 					fradragsliste: fradragsliste,
 					forskuddstrekksliste: forskuddstrekksliste,
-					arbeidsforholdsliste: arbeidsforholdsliste,
 					historikk: Yup.array().of(
 						Yup.object({
 							inntektsliste: inntektsliste,
 							fradragsliste: fradragsliste,
 							forskuddstrekksliste: forskuddstrekksliste,
-							arbeidsforholdsliste: arbeidsforholdsliste,
 						}),
 					),
 				}),

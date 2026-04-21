@@ -1,7 +1,7 @@
 import useBoolean from '@/utils/hooks/useBoolean'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Button from '@/components/ui/button/Button'
-import BestillingSammendrag from '@/components/bestilling/sammendrag/BestillingSammendrag'
+import { BestillingSammendrag } from '@/components/bestilling/sammendrag/BestillingSammendrag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'

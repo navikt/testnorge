@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-organisasjon-mottak-service
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
+  main:
+    web-application-type: reactive
   config:
     import: "dolly-application.yml"
   security:

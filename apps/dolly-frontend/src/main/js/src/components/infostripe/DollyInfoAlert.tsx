@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { Alert } from '@navikt/ds-react'
-import { Close } from '@navikt/ds-icons'
-
+import { Alert, Button } from '@navikt/ds-react'
 import './DollyInfoAlert.less'
+import { XMarkIcon } from '@navikt/aksel-icons'
 
 type DollyInfoAlertType = {
 	id: number
@@ -20,16 +19,16 @@ export const DollyInfoAlert = ({ type, text, id, onHide }: DollyInfoAlertType) =
 		<div className="dolly-info-alert">
 			<Alert size={'small'} variant={type?.toLowerCase()} style={{ width: '100%' }}>
 				{text}
-			</Alert>
-			<span>
-				<Close
-					title="Lukk denne meldingen"
+				<Button
+					variant="tertiary"
+					size="small"
+					icon={<XMarkIcon title="Lukk" />}
 					onClick={() => {
 						setHide(true)
 						onHide(id)
 					}}
 				/>
-			</span>
+			</Alert>
 		</div>
 	)
 }

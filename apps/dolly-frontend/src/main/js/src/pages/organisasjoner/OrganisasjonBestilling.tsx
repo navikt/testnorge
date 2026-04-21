@@ -8,6 +8,7 @@ import { OrgStatus } from '@/components/fagsystem/organisasjoner/types'
 import Spinner from '@/components/ui/loading/Spinner'
 import { formatDateTime } from '@/utils/DataFormatter'
 import bestillingStatusMapper from '@/ducks/bestillingStatus/bestillingStatusMapper'
+import { organisasjonerSideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 type OrganisasjonBestillingProps = {
 	brukerId: string
@@ -92,6 +93,7 @@ export default function OrganisasjonBestilling({
 				data={bestillingStatuser}
 				columns={columns}
 				pagination
+				manualLocalStorageKey={organisasjonerSideStoerrelseLocalStorageKey}
 				iconItem={<BestillingIconItem />}
 				onExpand={(bestilling: OrgStatus) => {
 					return (

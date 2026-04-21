@@ -1,7 +1,0 @@
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}

@@ -25,7 +25,6 @@ public class OpenSearchQueryUtils {
     public static final String HISTORISK = "historisk";
     public static final String METADATA_HISTORISK = "metadata.historisk";
     public static final String FOLKEREGISTERIDENTIFIKATOR = "hentPerson.folkeregisteridentifikator";
-    public static final String NAVSPERSONIDENTIFIKATOR = "hentPerson.navspersonidentifikator";
     public static final String CONCAT = "%s.%s";
 
     public static RangeQuery rangeQuery(String field, Object value1, Object value2) {
@@ -34,6 +33,22 @@ public class OpenSearchQueryUtils {
                 .field(field)
                 .from(JsonData.of(value1))
                 .to(JsonData.of(value2))
+                .build();
+    }
+
+    public static RangeQuery rangeGteQuery(String field, Object gteData) {
+
+        return QueryBuilders.range()
+                .field(field)
+                .gte(JsonData.of(gteData))
+                .build();
+    }
+
+    public static RangeQuery rangeGtQuery(String field, Object gtData) {
+
+        return QueryBuilders.range()
+                .field(field)
+                .gt(JsonData.of(gtData))
                 .build();
     }
 
@@ -75,6 +90,24 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.nested()
                 .path(path)
                 .query(q -> q.range(rangeQuery(CONCAT.formatted(path, field), value1, value2)))
+                .scoreMode(ChildScoreMode.Avg)
+                .build();
+    }
+
+    public static NestedQuery nestedRangeGteQuery(String path, String field, Object gteValue) {
+
+        return QueryBuilders.nested()
+                .path(path)
+                .query(q -> q.range(rangeGteQuery(CONCAT.formatted(path, field), gteValue)))
+                .scoreMode(ChildScoreMode.Avg)
+                .build();
+    }
+
+    public static NestedQuery nestedRangeGtQuery(String path, String field, Object gtValue) {
+
+        return QueryBuilders.nested()
+                .path(path)
+                .query(q -> q.range(rangeGtQuery(CONCAT.formatted(path, field), gtValue)))
                 .scoreMode(ChildScoreMode.Avg)
                 .build();
     }

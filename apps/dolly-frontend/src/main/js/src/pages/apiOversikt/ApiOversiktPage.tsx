@@ -12,7 +12,7 @@ export default () => {
 		<>
 			<h1>API-oversikt</h1>
 			<p>Her finner du en oversikt over alle eksisterende APIer som benyttes i Dolly.</p>
-			<Box background="surface-default" padding="4">
+			<Box background="default" padding="space-16">
 				{loading ? (
 					<Loading label="Laster systemer ..." />
 				) : error ? (

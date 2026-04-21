@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,8 +13,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,8 +45,6 @@ public class RsInntektsinformasjon {
 
     private List<Forskuddstrekk> forskuddstrekksliste;
 
-    private List<Arbeidsforhold> arbeidsforholdsliste;
-
     private List<Historikk> historikk;
 
     private LocalDateTime rapporteringsdato;
@@ -76,10 +72,6 @@ public class RsInntektsinformasjon {
         return forskuddstrekksliste;
     }
 
-    public List<Arbeidsforhold> getArbeidsforholdsliste() {
-        return arbeidsforholdsliste;
-    }
-
     public List<Historikk> getHistorikk() {
         if (isNull(historikk)) {
             historikk = new ArrayList<>();
@@ -87,8 +79,7 @@ public class RsInntektsinformasjon {
         return historikk;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -100,8 +91,7 @@ public class RsInntektsinformasjon {
         private String beskrivelse;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -113,48 +103,8 @@ public class RsInntektsinformasjon {
         private String beskrivelse;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Arbeidsforhold {
-
-        @Schema(description = "Gyldige verdier finnes i kodeverket 'Arbeidsforholdstyper'")
-        private String arbeidsforholdstype;
-
-        @Schema(type = "LocalDateTime",
-                example = "yyyy-MM-dd")
-        private LocalDateTime startdato;
-
-        @Schema(type = "LocalDateTime",
-                example = "yyyy-MM-dd")
-        private LocalDateTime sluttdato;
-
-        private Double antallTimerPerUkeSomEnFullStillingTilsvarer;
-
-        @Schema(description = "Gyldige verdier finnes i kodeverket 'Avlønningstyper'")
-        private String avloenningstype;
-
-        @Schema(description = "Gyldige verdier finnes i kodeverket 'Yrker'")
-        private String yrke;
-
-        @Schema(description = "Gyldige verdier finnes i kodeverket 'Arbeidstidsordninger'")
-        private String arbeidstidsordning;
-
-        private Double stillingsprosent;
-
-        @Schema(type = "LocalDateTime",
-                example = "yyyy-MM-dd")
-        private LocalDateTime sisteLoennsendringsdato;
-
-        @Schema(type = "LocalDateTime",
-                example = "yyyy-MM-dd")
-        private LocalDateTime sisteDatoForStillingsprosentendring;
-    }
-
-    @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Historikk {
@@ -164,8 +114,6 @@ public class RsInntektsinformasjon {
         private List<Fradrag> fradragsliste;
 
         private List<Forskuddstrekk> forskuddstrekksliste;
-
-        private List<Arbeidsforhold> arbeidsforholdsliste;
 
         private LocalDateTime rapporteringsdato;
     }

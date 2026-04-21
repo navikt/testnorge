@@ -23,6 +23,6 @@ public class LegacyController {
     @Operation(description = "Søker opp Testnorge-personer som ikke finnes i Dolly.")
     public Flux<PersonDTO> searchPersoner(@RequestBody PersonSearch personSearch) {
 
-        return legacyService.searchPersoner(personSearch);
+        return Flux.fromIterable(legacyService.searchPersoner(personSearch));
     }
 }

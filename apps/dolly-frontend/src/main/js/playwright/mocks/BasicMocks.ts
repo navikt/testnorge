@@ -49,6 +49,11 @@ export const personFragmentSearchMock = [
 
 export const bestillingFragmentSearchMock = [{ id: 1, navn: 'Testytest' }]
 
+export const gruppeFragmentSearchMock = [
+	{ id: 1, navn: 'Testytest' },
+	{ id: 2, navn: 'Min testgruppe' },
+]
+
 export const kodeverkMock = {
 	name: 'Tema',
 	koder: [
@@ -788,31 +793,31 @@ export const brregstubMock = {
 
 export const pensjonMock = [
 	{
-		inntektAar: 2012,
+		InntektAar: 2012,
 		belop: 10457,
 	},
 	{
-		inntektAar: 2013,
+		InntektAar: 2013,
 		belop: 10850,
 	},
 	{
-		inntektAar: 2014,
+		InntektAar: 2014,
 		belop: 11253,
 	},
 	{
-		inntektAar: 2015,
+		InntektAar: 2015,
 		belop: 11533,
 	},
 	{
-		inntektAar: 2016,
+		InntektAar: 2016,
 		belop: 11821,
 	},
 	{
-		inntektAar: 2017,
+		InntektAar: 2017,
 		belop: 12020,
 	},
 	{
-		inntektAar: 2018,
+		InntektAar: 2018,
 		belop: 12345,
 	},
 ]
@@ -2084,6 +2089,15 @@ export const eksisterendeGruppeMock = {
 	identer: [testidentMock],
 	tags: [],
 }
+
+export const gruppeIdenterMock = [
+	{
+		ident: '12345678912',
+		master: 'PDLF',
+	},
+]
+
+export const bestillingMiljoerMock = ['q1', 'q2']
 
 export const laastGruppeMock = {
 	...eksisterendeGruppeMock,

@@ -11,11 +11,13 @@ import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
 import no.nav.dolly.bestilling.service.OpprettPersonerFraIdenterMedKriterierService;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.projection.RsGruppeFragment;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsIdentMaster;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
@@ -136,6 +139,14 @@ public class TestgruppeController {
         return testgruppeService.fetchPaginertTestgruppeById(gruppeId, 0, 2000, null, null);
     }
 
+    @GetMapping("/{gruppeId}/identer")
+    @Operation(description = "Hent kun ident og master for alle identer i en gruppe")
+    public Flux<RsIdentMaster> getGruppeIdenter(@PathVariable("gruppeId") Long gruppeId) {
+
+        return testgruppeService.getIdenterLightweight(gruppeId)
+                .map(ident -> new RsIdentMaster(ident.getIdent(), ident.getMaster()));
+    }
+
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     @Operation(description = "Hent testgrupper")
@@ -156,6 +167,13 @@ public class TestgruppeController {
 
         return testgruppeService.getAllTestgrupper(pageNo, pageSize);
 
+    }
+
+    @GetMapping("/soekGruppe")
+    @Operation(description = "Hent grupper basert på fragment")
+    public Flux<RsGruppeFragment> getGrupperByFragment(@RequestParam(value = "fragment") String fragment) {
+
+        return testgruppeService.fetchGruppeByFragment(fragment);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

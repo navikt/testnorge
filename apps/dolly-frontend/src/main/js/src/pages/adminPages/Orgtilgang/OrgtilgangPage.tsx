@@ -2,14 +2,15 @@ import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { OrgOversikt } from '@/pages/adminPages/Orgtilgang/OrgOversikt'
 import { OrgtilgangForm } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
 import { useOrganisasjonTilgang } from '@/utils/hooks/useOrganisasjonTilgang'
-import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { useErDollyAdmin } from '@/utils/DollyAdmin'
 
 export default () => {
-	if (!erDollyAdmin()) {
+	const isAdmin = useErDollyAdmin()
+	const { organisasjonTilgang, loading, error, mutate } = useOrganisasjonTilgang()
+
+	if (!isAdmin) {
 		return <AdminAccessDenied />
 	}
-
-	const { organisasjonTilgang, loading, error, mutate } = useOrganisasjonTilgang()
 
 	return (
 		<>

@@ -10,8 +10,8 @@ import { useForm } from 'react-hook-form'
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { DollyApi } from '@/service/Api'
-import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from './constants'
+import { getLabel } from '@/components/ui/soekForm/utils'
 
 export { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey }
 
@@ -35,10 +35,10 @@ const NavigateButton = styled(Button)`
 			height: 45px;
 			margin: 0 auto 5px auto;
 		}
+	}
 `
 
 export default () => {
-	'use no memo' // Skip compilation for this component
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
 	const lagreSoekRequestRef = useRef(lagreSoekRequest)
 
@@ -207,11 +207,12 @@ export default () => {
 		setRequest({ ...request })
 		setMarkertePersoner([])
 		mutate()
+
 		if (value?.length > 0) {
 			const request = value.map((i) => ({
 				path: path,
 				value: i,
-				label: label.includes(':') ? label : `${label}: ${codeToNorskLabel(i)}`,
+				label: getLabel(i, lagreSoekRequest, path, label),
 			}))
 			setLagreSoekRequest({
 				...lagreSoekRequest,

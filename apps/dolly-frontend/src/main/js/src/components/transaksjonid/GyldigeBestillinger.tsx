@@ -1,6 +1,9 @@
-import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
-
-export const erGyldig = (bestillingId: number, system: string, ident: string) => {
-	const { transaksjonsid, loading } = useTransaksjonsid(system, ident, bestillingId)
-	return !loading && transaksjonsid && transaksjonsid.length > 0
+export const harGyldigTransaksjonsid = (
+	bestillingId: number,
+	allTransaksjonsid: any[] | undefined,
+) => {
+	if (!allTransaksjonsid) return false
+	return allTransaksjonsid.some(
+		(t: any) => t.bestillingId === bestillingId && t.transaksjonId,
+	)
 }

@@ -1,31 +1,99 @@
 import useSWR from 'swr'
-import { fetcher } from '@/api'
+import axios from 'axios'
 
-const baseUrl = '/testnav-skattekort-service/api/v1'
+const skattekortBaseUrl = '/testnav-dolly-proxy/skattekort/api/v1/person'
 
-const getSkattekortUrl = (ident: string) => {
-	return `${baseUrl}/skattekort?ident=${ident}`
+interface SkattekortResponse {
+	utstedtDato?: string
+	inntektsaar: number
+	resultatForSkattekort: string
+	forskuddstrekkList: ForskuddstrekkDTO[]
+	tilleggsopplysningList?: string[]
 }
 
-const getKodeverkUrl = (kodeverkstype: string) => {
-	return `${baseUrl}/kodeverk?kodeverkstype=${kodeverkstype}`
+interface ForskuddstrekkDTO {
+	trekkode?: string
+	frikort?: FrikortDTO
+	prosentkort?: ProsentkortDTO
+	trekktabell?: TabellkortDTO
+}
+
+interface FrikortDTO {
+	frikortBeloep: number
+}
+
+interface ProsentkortDTO {
+	prosentSats: number
+	antallMndForTrekk?: number
+}
+
+interface TabellkortDTO {
+	tabell: string
+	prosentSats: number
+	antallMndForTrekk: number
+}
+
+const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
+	RESULTATSTATUS: {
+		'Skattekortopplysninger OK': 'SKATTEKORTOPPLYSNINGER_OK',
+		'Ikke trekkplikt': 'IKKE_TREKKPLIKT',
+		'Ikke skattekort': 'IKKE_SKATTEKORT',
+		'Utgått d-nummer': 'UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT',
+	},
+	TILLEGGSOPPLYSNING: {
+		'Opphold på Svalbard': 'OPPHOLD_PAA_SVALBARD',
+		'Kildeskatt på pensjon': 'KILDESKATT_PAA_PENSJON',
+		'Opphold i tiltakssone': 'OPPHOLD_I_TILTAKSSONE',
+	},
+	TREKKODE: {
+		'Lønn fra NAV': 'LOENN_FRA_NAV',
+		'Pensjon fra NAV': 'PENSJON_FRA_NAV',
+		'Uføretrygd fra NAV': 'UFOERETRYGD_FRA_NAV',
+	},
+	RESULTATSTATUS_FRA_SOKOS: {
+		'Skattekortopplysninger OK': 'skattekortopplysningerOK',
+		'Ikke trekkplikt': 'ikkeTrekkplikt',
+		'Ikke skattekort': 'ikkeSkattekort',
+		'Utgått d-nummer': 'utgaattDnummerSkattekortForFoedselsnummerErLevert',
+	},
+	TILLEGGSOPPLYSNING_FRA_SOKOS: {
+		'Opphold på Svalbard': 'oppholdPaaSvalbard',
+		'Kildeskatt på pensjon': 'kildeskattPaaPensjon',
+		'Opphold i tiltakssone': 'oppholdITiltakssone',
+	},
+	TREKKODE_FRA_SOKOS: {
+		'Lønn fra NAV': 'loennFraNAV',
+		'Pensjon fra NAV': 'pensjonFraNAV',
+		'Uføretrygd fra NAV': 'ufoeretrygdFraNAV',
+	},
 }
 
 export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) => {
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
+	const shouldFetch = Boolean(ident && harSkattekortBestilling)
 
-	if (!harSkattekortBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, isLoading, error } = useSWR<any, Error>(getSkattekortUrl(ident), fetcher)
+	const { data, isLoading, error } = useSWR<SkattekortResponse[], Error>(
+		shouldFetch ? [`${skattekortBaseUrl}/hent-skattekort`, ident] : null,
+		async ([url, fnr]: [string, string]) => {
+			try {
+				const res = await axios.post(
+					url,
+					{ fnr },
+					{
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					},
+				)
+				return res.data
+			} catch (e: unknown) {
+				if (axios.isAxiosError(e) && e.response?.status === 404) {
+					return null
+				}
+				throw e
+			}
+		},
+		{ errorRetryCount: 0, revalidateOnFocus: false },
+	)
 
 	return {
 		skattekortData: data,
@@ -35,18 +103,18 @@ export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) =
 }
 
 export const useSkattekortKodeverk = (kodeverkstype: string) => {
-	const { data, isLoading, error } = useSWR<any, Error>(getKodeverkUrl(kodeverkstype), fetcher)
+	const kodeverkData = SKATTEKORT_KODEVERK[kodeverkstype]
 
 	const koder =
-		data &&
-		Object.keys(data)?.map((key) => ({
+		kodeverkData &&
+		Object.keys(kodeverkData)?.map((key) => ({
 			label: key,
-			value: data[key],
+			value: kodeverkData[key],
 		}))
 
 	return {
 		kodeverk: koder,
-		loading: isLoading,
-		error: error,
+		loading: false,
+		error: null,
 	}
 }

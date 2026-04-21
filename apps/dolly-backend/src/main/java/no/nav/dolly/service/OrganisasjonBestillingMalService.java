@@ -141,7 +141,7 @@ public class OrganisasjonBestillingMalService {
 
     public static String getBruker(Map<Long, Bruker> brukere, Long brukerId) {
 
-        return nonNull(brukerId) ?
+        return nonNull(brukerId) && brukere.containsKey(brukerId) ?
                 brukere.get(brukerId).getBrukernavn() :
                 ANONYM;
     }

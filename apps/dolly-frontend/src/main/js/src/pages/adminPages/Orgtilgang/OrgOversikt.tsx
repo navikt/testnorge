@@ -56,7 +56,7 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 	}, [searchText])
 
 	return (
-		<Box background="surface-default" padding="4">
+		<Box background="default" padding="space-16">
 			<h2 style={{ marginTop: '5px' }}>Organisasjoner som har tilgang til Dolly</h2>
 			{error && (
 				<Alert variant={'error'} size={'small'}>
@@ -116,7 +116,11 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 						<Pagination
 							page={page}
 							onPageChange={setPage}
-							count={Math.ceil(filteredData?.length / rowsPerPage)}
+							count={
+								filteredData?.length >= rowsPerPage
+									? Math.ceil(filteredData?.length / rowsPerPage)
+									: 1
+							}
 							size="small"
 						/>
 					</VStack>

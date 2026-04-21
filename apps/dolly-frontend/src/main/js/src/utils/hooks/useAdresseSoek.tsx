@@ -37,7 +37,7 @@ const getQueryParms = (request: any) => {
 }
 
 const getAdresserUrl = (request: any) =>
-	`/testnav-adresse-service/api/v1/adresser/veg${getQueryParms(request)}`
+	`/testnav-adresse-service/api/v1/adresser/vegadresse${getQueryParms(request)}`
 
 const getMatrikkeladresserUrl = (request: any) =>
 	`/testnav-adresse-service/api/v1/adresser/matrikkeladresse${getQueryParms(request)}`

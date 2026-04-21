@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType
+	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 import { sendBestilling } from '@/ducks/bestilling'
@@ -26,27 +26,14 @@ export const Bestillingsveileder = () => {
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
 	const importPersoner = location?.state?.importPersoner
 
+	const defaultState = { antall: '1', identtype: 'FNR', id2032: false, mal: null }
+	const effectiveState = location.state ?? defaultState
+
 	const contextValue = useMemo(() => ({ showError, setShowError }), [showError, setShowError])
 
-	useEffect(() => {
-		if (navigateRoot) {
-			console.warn('Noe gikk galt med bestilling, returnerer til gruppeoversikt!')
-			navigate('/')
-		}
-	}, [navigateRoot])
-
-	if (!location.state) {
-		location.state = { antall: '1', identtype: 'FNR', id2032: false, mal: null }
-	}
-
-	if (!erOrganisasjon && !gruppeId && !importPersoner) {
-		setNavigateRoot(true)
-		return null
-	}
-
 	const [baseConfig, setBaseConfig] = useState<any>({
-		...location.state,
-		gruppeId: gruppeId ? parseInt(gruppeId, 10) : (location.state?.gruppeId ?? null),
+		...effectiveState,
+		gruppeId: gruppeId ? parseInt(gruppeId, 10) : (effectiveState?.gruppeId ?? null),
 	})
 	const options = useMemo(
 		() => deriveBestillingsveilederState(baseConfig, dollyEnvironments),
@@ -78,6 +65,18 @@ export const Bestillingsveileder = () => {
 		} catch (err: any) {
 			setError(err)
 		}
+	}
+
+	useEffect(() => {
+		if (navigateRoot) {
+			console.warn('Noe gikk galt med bestilling, returnerer til gruppeoversikt!')
+			navigate('/')
+		}
+	}, [navigateRoot])
+
+	if (!erOrganisasjon && !gruppeId && !importPersoner) {
+		setNavigateRoot(true)
+		return null
 	}
 
 	if (error) {

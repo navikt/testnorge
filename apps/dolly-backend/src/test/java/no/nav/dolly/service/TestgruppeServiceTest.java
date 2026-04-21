@@ -8,6 +8,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.projection.RsGruppeFragment;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -293,5 +294,100 @@ class TestgruppeServiceTest {
                     assertThat(contextArgumentCaptor.getValue().getProperty("antallIBruk"), is(1));
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldSearchByIdWhenFragmentIsNumeric() {
+
+        var fragment1 = new RsGruppeFragment(1L, "Testgruppe A");
+        when(testgruppeRepository.findByIdContaining("%1%")).thenReturn(Flux.just(fragment1));
+        when(testgruppeRepository.findByNavnContaining("")).thenReturn(Flux.empty());
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("1"))
+                .assertNext(result -> {
+                    assertThat(result.getId(), is(1L));
+                    assertThat(result.getNavn(), is("Testgruppe A"));
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository).findByIdContaining("%1%");
+        verify(testgruppeRepository).findByNavnContaining("");
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldSearchByNameWhenFragmentIsText() {
+
+        var fragment1 = new RsGruppeFragment(2L, "Testgruppe B");
+        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByNavnContaining("%Test%")).thenReturn(Flux.just(fragment1));
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Test"))
+                .assertNext(result -> {
+                    assertThat(result.getId(), is(2L));
+                    assertThat(result.getNavn(), is("Testgruppe B"));
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository).findByIdContaining("");
+        verify(testgruppeRepository).findByNavnContaining("%Test%");
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldSearchByBothIdAndNameWhenFragmentContainsBoth() {
+
+        var fragment1 = new RsGruppeFragment(5L, "Min gruppe");
+        when(testgruppeRepository.findByIdContainingAndNavnContaining("%5%", "%Min%")).thenReturn(Flux.just(fragment1));
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("5 Min"))
+                .assertNext(result -> {
+                    assertThat(result.getId(), is(5L));
+                    assertThat(result.getNavn(), is("Min gruppe"));
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository).findByIdContainingAndNavnContaining("%5%", "%Min%");
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldReturnEmptyWhenNoResults() {
+
+        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByNavnContaining("%ukjent%")).thenReturn(Flux.empty());
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("ukjent"))
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldReturnResultsSortedById() {
+
+        var fragment1 = new RsGruppeFragment(10L, "Gruppe A");
+        var fragment2 = new RsGruppeFragment(20L, "Gruppe B");
+        var fragment3 = new RsGruppeFragment(30L, "Gruppe C");
+        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByNavnContaining("%Gruppe%")).thenReturn(Flux.just(fragment3, fragment1, fragment2));
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Gruppe"))
+                .assertNext(result -> assertThat(result.getId(), is(10L)))
+                .assertNext(result -> assertThat(result.getId(), is(20L)))
+                .assertNext(result -> assertThat(result.getId(), is(30L)))
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldHandleMultipleWordTextSearch() {
+
+        var fragment1 = new RsGruppeFragment(7L, "Min Test Gruppe");
+        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByNavnContaining("%Min% %Test%")).thenReturn(Flux.just(fragment1));
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Min Test"))
+                .assertNext(result -> {
+                    assertThat(result.getId(), is(7L));
+                    assertThat(result.getNavn(), is("Min Test Gruppe"));
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository).findByNavnContaining("%Min% %Test%");
     }
 }

@@ -56,20 +56,18 @@ public class PensjonforvalterClient implements ClientRegister {
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
 
-        return Flux.from(pensjonforvalterConsumer.getMiljoer())
+        return oppdaterStatus(dollyPerson, progress, prepInitStatus(bestilteMiljoer.get()))
+                .then(Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {
                     bestilteMiljoer.set(bestilteMiljoer.get().stream()
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));
                     return Flux.just(bestilling)
-                            .flatMap(bestilling1 ->
-                                    oppdaterStatus(dollyPerson, progress, prepInitStatus(tilgjengeligeMiljoer))
-                                            .thenReturn(bestilling1))
                             .flatMap(bestilling1 -> pensjonPdlPersonService.getUtvidetPersondata(dollyPerson.getIdent())
                                     .flatMapMany(utvidetPersondata ->
                                             Flux.concat(
                                                     pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(),
-                                                            utvidetPersondata.getT1(), bestilling, utvidetPersondata.getT2(),
+                                                            utvidetPersondata, bestilling,
                                                             tilgjengeligeMiljoer, isOpprettEndre),
                                                     pensjonPensjonsdataService.lagrePensjonsdata(bestilling1,
                                                             dollyPerson.getIdent(), bestilteMiljoer.get()),
@@ -83,7 +81,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                 })
                 .collect(Collectors.joining(SEP))
-                .flatMap(status2 -> oppdaterStatus(dollyPerson, progress, status2));
+                .flatMap(status2 -> oppdaterStatus(dollyPerson, progress, status2)));
     }
 
     private Flux<String> getErrors(Set<String> miljoer, Throwable throwable) {

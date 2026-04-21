@@ -18,6 +18,7 @@ public class PensjonforvalterUtils {
 
     public static final String SEP = "$";
     public static final String IDENT = "ident";
+    public static final String MILJOE = "miljoe";
     public static final String MILJOER = "miljoer";
     public static final String NAV_ENHET = "navEnhetId";
     public static final String SYSTEM = "PESYS";

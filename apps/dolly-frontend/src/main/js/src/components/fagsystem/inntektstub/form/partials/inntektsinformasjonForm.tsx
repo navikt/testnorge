@@ -40,7 +40,7 @@ export default ({ path }: InntektsinformasjonForm) => {
 			<div className="flexbox--flex-wrap">
 				<Monthpicker
 					name={`${path}.sisteAarMaaned`}
-					label="År/måned"
+					label="Siste måned/år"
 					date={date}
 					handleDateChange={handleDateChange}
 				/>

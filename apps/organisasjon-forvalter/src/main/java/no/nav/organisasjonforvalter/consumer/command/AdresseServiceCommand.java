@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class AdresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
 
-    private static final String VEGADRESSE_URL = "/api/v1/adresser/veg";
+    private static final String VEGADRESSE_URL = "/api/v1/adresser/vegadresse";
 
     private final WebClient webClient;
     private final String query;

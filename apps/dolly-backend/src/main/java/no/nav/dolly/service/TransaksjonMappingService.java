@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsTransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class TransaksjonMappingService {
                 .filter(mapping -> (isBlank(miljoe) || miljoe.equals(mapping.getMiljoe())) &&
                         (isNull(bestillingId) || bestillingId.equals(mapping.getBestillingId())))
                 .collectList()
-                .thenReturn(true)
+                .map(exists -> !exists.isEmpty())
                 .switchIfEmpty(Mono.just(false));
     }
 

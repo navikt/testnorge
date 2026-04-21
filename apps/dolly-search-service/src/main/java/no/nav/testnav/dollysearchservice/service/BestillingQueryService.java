@@ -79,17 +79,17 @@ public class BestillingQueryService {
 
         try {
             var searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
-                .index(bestillingIndex)
-                .query(query)
-                .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
-                .size(QUERY_SIZE)
-                .timeout("3s")
-                .build(), BestillingIdenter.class);
+                    .index(bestillingIndex)
+                    .query(query)
+                    .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
+                    .size(QUERY_SIZE)
+                    .timeout("3s")
+                    .build(), BestillingIdenter.class);
 
             while (hasHits(searchResponse)) {
 
                 identer.addAll(getIdenter(searchResponse));
-                
+
                 var lastHit = searchResponse.hits().hits().getLast();
                 if (lastHit == null || lastHit.sort() == null) {
                     break;
@@ -132,8 +132,8 @@ public class BestillingQueryService {
     }
 
     private static boolean hasHits(SearchResponse<BestillingIdenter> response) {
-        return response.hits() != null 
-                && response.hits().hits() != null 
+        return response.hits() != null
+                && response.hits().hits() != null
                 && !response.hits().hits().isEmpty();
     }
 

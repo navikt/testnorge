@@ -5,6 +5,8 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import Panel from '@/components/ui/panel/Panel'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 
 export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
@@ -18,7 +20,12 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 
 	return (
 		<Vis attributt={path}>
-			<div className="flexbox--flex-wrap">
+			<Panel
+				heading={'Norsk bankkonto'}
+				iconType="bankkonto"
+				hasErrors={panelError(path)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [path])}
+			>
 				<FormSelect
 					placeholder={'Velg ...'}
 					options={validKontoOptions}
@@ -27,18 +34,17 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 					label={'Kontonummer'}
 					isDisabled={harTilfeldig}
 				/>
-				<div style={{ marginTop: '17px' }}>
+				<div style={{ marginTop: '25px' }}>
 					<FormCheckbox
 						name={`${path}.tilfeldigKontonummer`}
 						label="Har tilfeldig kontonummer"
 						afterChange={() => {
 							formMethods.trigger(`${path}.kontonummer`)
 						}}
-						size="medium"
 						disabled={kontonummer}
 					/>
 				</div>
-			</div>
+			</Panel>
 		</Vis>
 	)
 }

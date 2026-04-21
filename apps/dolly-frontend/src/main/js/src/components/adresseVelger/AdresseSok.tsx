@@ -8,19 +8,28 @@ import styled from 'styled-components'
 import { Button } from '@navikt/ds-react'
 
 type Props = {
-	onSubmit: (search: { fritekst?: string; postnummer?: string; kommunenummer?: string }) => void
+	onSubmit: (search: {
+		adressenavn?: string
+		husnummer?: number
+		husbokstav?: string
+		postnummer?: string
+		kommunenummer?: string
+	}) => void
 	loading?: boolean
 }
 
 const InputGroup = styled.div`
 	display: flex;
+	flex-wrap: wrap;
 `
 const HeaderGroup = styled.div`
 	display: flex;
 `
 
 export default ({ onSubmit, loading = false }: Props) => {
-	const [fritekst, setFritekst] = useState<string>('')
+	const [adressenavn, setAdressenavn] = useState<string>('')
+	const [husnummer, setHusnummer] = useState<string>(null)
+	const [husbokstav, setHusbokstav] = useState<string>(null)
 	const [postnummer, setPostnummer] = useState<string>(null)
 	const [kommunenummer, setKommunenummer] = useState<string>(null)
 
@@ -37,14 +46,30 @@ export default ({ onSubmit, loading = false }: Props) => {
 				<DollyTextInput
 					name="adressenavn"
 					label="Adressenavn"
-					value={fritekst}
-					onChange={(e: any) => setFritekst(e.target.value)}
+					value={adressenavn}
+					size="xlarge"
+					onChange={(e: any) => setAdressenavn(e.target.value)}
+				/>
+				<DollyTextInput
+					name="husnummer"
+					label="Husnummer"
+					value={husnummer}
+					size="small"
+					type="number"
+					onChange={(e: any) => setHusnummer(e ? e.target.value : null)}
+				/>
+				<DollyTextInput
+					name="husbokstav"
+					label="Husbokstav"
+					value={husbokstav}
+					size="small"
+					onChange={(e: any) => setHusbokstav(e ? e.target.value : null)}
 				/>
 				<DollySelect
 					name="postnummer"
 					label="Postnummer"
 					kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
-					size="grow"
+					size="large"
 					value={postnummer}
 					onChange={(e: any) => setPostnummer(e ? e.value : null)}
 				/>
@@ -52,13 +77,13 @@ export default ({ onSubmit, loading = false }: Props) => {
 					name="kommunenummer"
 					label="Kommunenummer"
 					kodeverk={AdresseKodeverk.Kommunenummer}
-					size="grow"
+					size="large"
 					value={kommunenummer}
 					onChange={(e: any) => setKommunenummer(e ? e.value : null)}
 				/>
 			</InputGroup>
 			<Button
-				onClick={() => onSubmit({ fritekst, postnummer, kommunenummer })}
+				onClick={() => onSubmit({ adressenavn, husnummer, husbokstav, postnummer, kommunenummer })}
 				disabled={loading}
 				loading={loading}
 			>

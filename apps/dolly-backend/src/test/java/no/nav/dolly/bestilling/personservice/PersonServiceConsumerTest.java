@@ -127,4 +127,3 @@ class PersonServiceConsumerTest extends AbstractConsumerTest {
                 .verifyComplete();
     }
 }
-

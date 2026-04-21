@@ -46,7 +46,7 @@ const instUrl = (ident, miljoer) =>
 
 const arenaUrl = (miljoer) =>
 	miljoer?.map((miljoe) => ({
-		url: `/testnav-arena-forvalteren-proxy/${miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse`,
+		url: `/testnav-dolly-proxy/arena/${miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse`,
 		miljo: miljoe,
 	}))
 
@@ -89,7 +89,6 @@ const histarkUrl = (transaksjonsid: any) => {
 }
 
 const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
-const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -188,6 +187,7 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 
 	return {
 		data: miljoData?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
+		rawData: data,
 		loading: isLoading,
 		error: error,
 	}
@@ -270,19 +270,6 @@ export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilli
 
 	return {
 		arbeidsplassencvData: data,
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useArbeidsplassencvHjemmel = (ident: string) => {
-	const { data, isLoading, error } = useSWR<any, Error>(
-		[arbeidsforholdcvHjemmelUrl, { fnr: ident }],
-		([url, headers]) => fetcher(url, headers),
-	)
-
-	return {
-		arbeidsplassencvHjemmel: data,
 		loading: isLoading,
 		error: error,
 	}

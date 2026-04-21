@@ -5,6 +5,7 @@ import no.nav.testnav.apps.apioversiktservice.service.ApiOversiktService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 
 @RequestMapping("/api/v1/apioversikt")
@@ -15,7 +16,7 @@ public class ApiOversiktController {
     private final ApiOversiktService apiOversiktService;
 
     @GetMapping
-    public JsonNode getApiOversikt() {
+    public Mono<JsonNode> getApiOversikt() {
 
         return apiOversiktService.getDokumeter();
     }

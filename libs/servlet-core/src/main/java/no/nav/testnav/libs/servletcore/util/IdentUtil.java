@@ -1,8 +1,8 @@
 package no.nav.testnav.libs.servletcore.util;
 
-import static java.lang.Integer.parseInt;
-
 import java.time.LocalDate;
+
+import static java.lang.Integer.parseInt;
 
 public class IdentUtil {
 

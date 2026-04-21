@@ -15,6 +15,7 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 altinn:
+  max-pages: 100
   api:
     url: ${ALTINN_URL}
   resource:

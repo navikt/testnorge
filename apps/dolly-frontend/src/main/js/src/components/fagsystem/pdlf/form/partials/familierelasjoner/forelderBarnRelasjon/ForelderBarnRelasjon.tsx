@@ -155,7 +155,7 @@ export const ForelderBarnRelasjonForm = ({
 					}}
 					size={'small'}
 					value={relatertPersonsRolle}
-					style={{ backgroundColor: '#ffffff' }}
+					style={{ marginBottom: '10px' }}
 				>
 					<ToggleGroup.Item value={RELASJON_BARN} style={{ marginRight: 0 }}>
 						{'Barn'}
@@ -181,6 +181,7 @@ export const ForelderBarnRelasjonForm = ({
 								id={`${path}.borIkkeSammen`}
 								label="Bor ikke sammen"
 								checkboxMargin
+								wrapperSize="shrink"
 							/>
 						)}
 					</>

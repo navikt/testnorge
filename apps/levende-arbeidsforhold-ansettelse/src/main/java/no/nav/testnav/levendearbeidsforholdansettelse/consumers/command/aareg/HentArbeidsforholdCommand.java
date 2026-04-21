@@ -9,7 +9,6 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -28,16 +27,12 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
     private final String token;
     private final String ident;
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
-
     @Override
     public Flux<Arbeidsforhold> call() {
         return webClient
                 .get()
                 .uri(builder -> builder
-                        .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
+                        .path("/aareg/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
                         .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning",
                                 "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold",
                                 "ordinaertArbeidsforhold")
@@ -50,8 +45,11 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
                 .bodyToFlux(Arbeidsforhold.class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.empty())
-                .onErrorResume(WebClientResponseException.class, error -> Mono.empty());
+                .onErrorResume(WebClientResponseException.NotFound.class, error -> Flux.empty());
+    }
+
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
 }

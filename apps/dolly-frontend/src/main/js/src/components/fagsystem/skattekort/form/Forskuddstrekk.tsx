@@ -25,26 +25,25 @@ type ForskuddstrekkProps = {
 
 const initialFrikort = {
 	frikort: {
-		trekkode: '',
-		frikortbeloep: null,
+		trekkode: 'LOENN_FRA_NAV',
+		frikortbeloep: 50000,
 	},
 }
 
 export const initialTrekktabell = {
 	trekktabell: {
-		trekkode: '',
-		tabelltype: '',
-		tabellnummer: '',
-		prosentsats: null,
-		antallMaanederForTrekk: null,
+		trekkode: 'LOENN_FRA_NAV',
+		tabellnummer: '8020',
+		prosentsats: 35.3,
+		antallMaanederForTrekk: 10.5,
 	},
 }
 
 const initialTrekkprosent = {
 	trekkprosent: {
-		trekkode: '',
-		prosentsats: null,
-		antallMaanederForTrekk: null,
+		trekkode: 'LOENN_FRA_NAV',
+		prosentsats: 50,
+		antallMaanederForTrekk: 12,
 	},
 }
 
@@ -64,8 +63,6 @@ const FrikortForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 }
 
 const TrekktabellForm = ({ path, trekkode }: ForskuddstrekkProps) => {
-	const { kodeverk: tabelltype } = useSkattekortKodeverk('TABELLTYPE')
-
 	return (
 		<>
 			<FormSelect
@@ -75,19 +72,13 @@ const TrekktabellForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 				size="xlarge"
 				isClearable={false}
 			/>
-			<FormSelect
-				name={`${path}.trekktabell.tabelltype`}
-				label="Tabelltype"
-				options={tabelltype}
-				size="large"
-				isClearable={false}
-			/>
 			<FormTextInput name={`${path}.trekktabell.tabellnummer`} label="Tabellnummer" type="number" />
 			<FormTextInput name={`${path}.trekktabell.prosentsats`} label="Prosentsats" type="number" />
 			<FormTextInput
 				name={`${path}.trekktabell.antallMaanederForTrekk`}
 				label="Antall måneder for trekk"
 				type="number"
+				step={0.5}
 			/>
 		</>
 	)
@@ -108,6 +99,7 @@ const TrekkprosentForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 				name={`${path}.trekkprosent.antallMaanederForTrekk`}
 				label="Antall måneder for trekk"
 				type="number"
+				step={0.5}
 			/>
 		</>
 	)

@@ -6,13 +6,16 @@ import { setSideStoerrelse, setSidetall } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router'
 import { Pagination } from '@navikt/ds-react'
+import { sideStoerrelseLocalStorageKey } from '@/utils/constants/localStorage'
 
 type PaginationProps = {
 	visSide?: number
-	gruppeDetaljer?: { pageSize: number; antallPages: number; antallElementer: number }
+	gruppeDetaljer?: { pageSize: number; antallPages: number; antallElementer?: number }
 	items: any[]
 	render: (arg0: any) => boolean | React.ReactChild
+	manualLocalStorageKey?: string | null
 }
+
 const ITEM_PER_PAGE = 10
 
 export const DollyPagination = ({
@@ -20,9 +23,16 @@ export const DollyPagination = ({
 	items,
 	render,
 	visSide = 1,
+	manualLocalStorageKey = null,
 }: PaginationProps) => {
 	const [currentPage, setCurrentPage] = useState(visSide)
-	const [currentPageSize, setCurrentPageSize] = useState(pageSize || ITEM_PER_PAGE)
+
+	const currentPageSizeFromStorage = localStorage.getItem(
+		manualLocalStorageKey ?? sideStoerrelseLocalStorageKey,
+	)
+	const [currentPageSize, setCurrentPageSize] = useState(
+		currentPageSizeFromStorage ? Number(currentPageSizeFromStorage) : (pageSize ?? ITEM_PER_PAGE),
+	)
 
 	const location = useLocation()
 
@@ -30,10 +40,15 @@ export const DollyPagination = ({
 		setCurrentPage(visSide)
 	})
 
+	useEffect(() => {
+		if (pageSize && pageSize !== currentPageSize) {
+			setCurrentPageSize(pageSize)
+		}
+	}, [pageSize])
+
 	const dispatch = useDispatch()
 
 	const pageChangeHandler = (page: number) => {
-		location.state = null
 		dispatch(setSidetall(page - 1))
 		setCurrentPage(page - 1)
 	}
@@ -43,6 +58,9 @@ export const DollyPagination = ({
 		dispatch(setSidetall(0))
 		setCurrentPage(0)
 		setCurrentPageSize(event.value)
+		if (manualLocalStorageKey) {
+			localStorage.setItem(manualLocalStorageKey, event.value?.toString())
+		}
 	}
 
 	const calculatePageCount = () => {

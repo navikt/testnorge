@@ -8,7 +8,7 @@ import { useToggle } from 'react-use'
 import dolly from '@/favicon.ico'
 import Icon from '@/components/ui/icon/Icon'
 import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
-import { Textarea } from '@navikt/ds-react'
+import { Textarea, VStack } from '@navikt/ds-react'
 import { Logger } from '@/logger/Logger'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
@@ -53,23 +53,25 @@ export const KontaktModal = ({ closeModal }) => {
 					)}
 
 					<div className="modal-input">
-						<Textarea
-							data-testid={TestComponentSelectors.INPUT_KONTAKT_MODAL}
-							value={melding}
-							label={'Melding'}
-							placeholder={'Forsøk å være så spesifikk som mulig'}
-							maxLength={MAX_LENGTH}
-							onChange={(event) => setMelding(event.target.value)}
-							error={melding.length > MAX_LENGTH && 'Meldingen inneholder for mange tegn'}
-							autoFocus
-						/>
-						<div className="skjemaelement textarea__container">
-							<DollyCheckbox
-								data-testid={TestComponentSelectors.CHECKBOX_KONTAKT_ANONYM}
-								label="Jeg ønsker å være anonym"
-								onChange={toggleAnonym}
+						<VStack gap="space-12">
+							<Textarea
+								data-testid={TestComponentSelectors.INPUT_KONTAKT_MODAL}
+								value={melding}
+								label={'Melding'}
+								placeholder={'Forsøk å være så spesifikk som mulig'}
+								maxLength={MAX_LENGTH}
+								onChange={(event) => setMelding(event.target.value)}
+								error={melding.length > MAX_LENGTH && 'Meldingen inneholder for mange tegn'}
+								autoFocus
 							/>
-						</div>
+							<div className="skjemaelement textarea__container">
+								<DollyCheckbox
+									data-testid={TestComponentSelectors.CHECKBOX_KONTAKT_ANONYM}
+									label="Jeg ønsker å være anonym"
+									onChange={toggleAnonym}
+								/>
+							</div>
+						</VStack>
 					</div>
 				</div>
 				<ModalActionKnapper

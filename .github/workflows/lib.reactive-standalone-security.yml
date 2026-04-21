@@ -1,0 +1,15 @@
+name: reactive-standalone-security
+
+on:
+  push:
+    paths:
+      - plugins/**
+      - libs/reactive-standalone-security/**
+      - .github/workflows/lib.reactive-standalone-security.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.libs.backend.yml
+    with:
+      working-directory: 'libs/reactive-standalone-security'
+    secrets: inherit

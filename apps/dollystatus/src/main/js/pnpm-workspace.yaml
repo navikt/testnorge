@@ -1,4 +1,5 @@
 minimumReleaseAge: 2880
-
-onlyBuiltDependencies:
-  - esbuild
+minimumReleaseAgeExclude:
+  # Midlertidig exclude for å fikse security vuln
+  - lodash
+  - lodash-es

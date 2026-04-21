@@ -1,6 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.projection.RsGruppeFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -19,6 +20,8 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
     Mono<Long> countByOpprettetAvId(Long brukerId);
 
     Flux<Testgruppe> findByOrderByIdDesc(Pageable pageable);
+
+    Mono<Void> deleteAll();
 
     @Modifying
     Mono<Void> deleteById(Long id);
@@ -52,4 +55,34 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
 
     @Modifying
     Mono<Testgruppe> save(Testgruppe testgruppe);
+
+    @Query("""
+            select g.id as id, g.navn as navn
+            from Gruppe g
+            where length(:id) > 0
+            and cast(g.id as VARCHAR) ilike :id
+            fetch first 10 rows only
+            """)
+    Flux<RsGruppeFragment> findByIdContaining(@Param("id") String id);
+
+    @Query("""
+            select g.id as id, g.navn as navn
+            from Gruppe g
+            where length(:gruppenavn) > 0
+            and g.navn ilike :gruppenavn
+            fetch first 10 rows only
+            """)
+    Flux<RsGruppeFragment> findByNavnContaining(@Param("gruppenavn") String gruppenavn);
+
+    @Query("""
+            select g.id as id, g.navn as navn
+            from Gruppe g
+            where cast(g.id as varchar) ilike :id
+            and g.navn ilike :gruppenavn
+            fetch first 10 rows only
+            """)
+    Flux<RsGruppeFragment> findByIdContainingAndNavnContaining(
+            @Param("id") String id,
+            @Param("gruppenavn") String gruppenavn
+    );
 }

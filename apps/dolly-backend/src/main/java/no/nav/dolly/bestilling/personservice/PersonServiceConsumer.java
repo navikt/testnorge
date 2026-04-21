@@ -9,7 +9,7 @@ import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -20,9 +20,12 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @Slf4j
@@ -68,7 +71,17 @@ public class PersonServiceConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersonerNoRetries(List<String> identer) {
 
-        return getPdlPersoner(identer, new AtomicInteger(MAX_RETRIES));
+        return getPdlPersoner(identer, new AtomicInteger(MAX_RETRIES))
+                .doOnNext(resultat -> {
+                    if (isNotBlank(resultat.getMessage())) {
+                        log.error("Feil mottatt fra person-service {} ved henting av identer {} ...",
+                                resultat.getMessage(),
+                                IntStream.range(0, 10)
+                                        .filter(i -> i < identer.size())
+                                        .mapToObj(identer::get)
+                                        .collect(Collectors.joining(", ")));
+                    }
+                });
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
@@ -89,8 +102,8 @@ public class PersonServiceConsumer extends ConsumerStatus {
                 .flatMap(resultat -> {
 
                     if (retry.get() < MAX_RETRIES &&
-                            (isNull(resultat.getData()) || resultat.getData().getHentPersonBolk().stream()
-                                    .anyMatch(data -> isNull(data.getPerson())))) {
+                        (isNull(resultat.getData()) || resultat.getData().getHentPersonBolk().stream()
+                                .anyMatch(data -> isNull(data.getPerson())))) {
 
                         return Flux.just(true)
                                 .doOnNext(melding ->

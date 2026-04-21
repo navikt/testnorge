@@ -3,9 +3,9 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.Duration;
@@ -37,8 +37,63 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         this.genererNavnServiceConsumer = genererNavnServiceConsumer;
     }
 
+    private String buildNavn(AdresseDTO.CoNavnDTO coNavn) {
+
+        return new StringBuilder()
+                .append("c/o ")
+                .append(coNavn.getFornavn())
+                .append(' ')
+                .append(isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() : "")
+                .append(isNotBlank(coNavn.getMellomnavn()) ? ' ' : "")
+                .append(coNavn.getEtternavn())
+                .toString();
+    }
+
     private static String blankCheck(String value, String defaultValue) {
         return isNotBlank(value) ? value : defaultValue;
+    }
+
+    private static void setPendingFromDato(List<? extends AdresseDTO> adresser) {
+
+        for (int i = adresser.size() - 1; i > 0; i--) {
+            if (isNull(adresser.get(i - 1).getGyldigFraOgMed()) && nonNull(adresser.get(i).getGyldigTilOgMed())) {
+                adresser.get(i - 1).setGyldigFraOgMed(adresser.get(i).getGyldigTilOgMed().plusDays(1));
+            }
+        }
+    }
+
+    private static void setGyldigFromDato(List<? extends AdresseDTO> adresser, int startIndex) {
+
+        if (startIndex == OUT_OF_BOUND) {
+            return;
+        }
+        var lowWaterMark = getIndexOfNextFromDate(adresser, startIndex);
+        var daysInterval = getWeightedDaysInterval(adresser, startIndex, lowWaterMark);
+        for (int i = startIndex - 1; i > lowWaterMark; i--) {
+            adresser.get(i).setGyldigFraOgMed(adresser.get(i + 1).getGyldigFraOgMed().plusDays(daysInterval));
+        }
+        setGyldigFromDato(adresser, lowWaterMark);
+    }
+
+    private static long getWeightedDaysInterval(List<? extends
+            AdresseDTO> adresser, int index1, int index2) {
+
+        var interval = Duration.between(adresser.get(index1).getGyldigFraOgMed(),
+                index2 == OUT_OF_BOUND ? LocalDateTime.now() :
+                        adresser.get(index2).getGyldigFraOgMed()).toDays();
+
+        return (interval - interval / (index1 - index2)) / (index1 - index2);
+    }
+
+    private static int getIndexOfNextFromDate(List<? extends
+            AdresseDTO> adresser, int index) {
+
+        for (var i = index - 1; i >= 0; i--) {
+            if (nonNull(adresser.get(i).getGyldigFraOgMed())) {
+                return i;
+            }
+        }
+        return OUT_OF_BOUND;
     }
 
     protected static void validateBruksenhet(String bruksenhet) {
@@ -80,19 +135,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         return null;
     }
 
-    private String buildNavn(AdresseDTO.CoNavnDTO coNavn) {
-
-        return new StringBuilder()
-                .append("c/o ")
-                .append(coNavn.getFornavn())
-                .append(' ')
-                .append(isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() : "")
-                .append(isNotBlank(coNavn.getMellomnavn()) ? ' ' : "")
-                .append(coNavn.getEtternavn())
-                .toString();
-    }
-
-
     protected void oppdaterAdressedatoer(List<? extends AdresseDTO> adresser, PersonDTO person) {
 
         if (!adresser.isEmpty()) {
@@ -105,50 +147,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
             var startIndex = adresser.size() - 1;
             setGyldigFromDato(adresser, startIndex);
         }
-    }
-
-    private static void setPendingFromDato(List<? extends AdresseDTO> adresser) {
-
-        for (int i = adresser.size() - 1; i > 0; i--) {
-            if (isNull(adresser.get(i - 1).getGyldigFraOgMed()) && nonNull(adresser.get(i).getGyldigTilOgMed())) {
-                adresser.get(i - 1).setGyldigFraOgMed(adresser.get(i).getGyldigTilOgMed().plusDays(1));
-            }
-        }
-    }
-
-    private static void setGyldigFromDato(List<? extends AdresseDTO> adresser, int startIndex) {
-
-        if (startIndex == OUT_OF_BOUND) {
-            return;
-        }
-        var lowWaterMark = getIndexOfNextFromDate(adresser, startIndex);
-        var daysInterval = getWeightedDaysInterval(adresser, startIndex, lowWaterMark);
-        for (int i = startIndex - 1; i > lowWaterMark; i--) {
-            adresser.get(i).setGyldigFraOgMed(adresser.get(i + 1).getGyldigFraOgMed().plusDays(daysInterval));
-        }
-        setGyldigFromDato(adresser, lowWaterMark);
-    }
-
-
-    private static long getWeightedDaysInterval(List<? extends
-            AdresseDTO> adresser, int index1, int index2) {
-
-        var interval = Duration.between(adresser.get(index1).getGyldigFraOgMed(),
-                index2 == OUT_OF_BOUND ? LocalDateTime.now() :
-                        adresser.get(index2).getGyldigFraOgMed()).toDays();
-
-        return (interval - interval / (index1 - index2)) / (index1 - index2);
-    }
-
-    private static int getIndexOfNextFromDate(List<? extends
-            AdresseDTO> adresser, int index) {
-
-        for (var i = index - 1; i >= 0; i--) {
-            if (nonNull(adresser.get(i).getGyldigFraOgMed())) {
-                return i;
-            }
-        }
-        return OUT_OF_BOUND;
     }
 
     protected String getMatrikkelId(AdresseDTO adresse, String ident, String matrikkelId) {
