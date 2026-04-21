@@ -33,9 +33,6 @@ public class DbAlias {
     @Column
     private Long personId;
 
-//    @ManyToOne(foreignKey = "personId")
-//    private DbPerson person;
-
     @Column
     private String tidligereIdent;
 

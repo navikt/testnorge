@@ -86,19 +86,19 @@ class OppholdServiceTest {
 
         var request = DbPerson.builder()
                 .person(PersonDTO.builder()
-                .ident(IDENT)
-                .opphold(List.of(OppholdDTO.builder()
-                                .oppholdFra(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .type(OPPLYSNING_MANGLER)
-                                .isNew(true)
-                                .build(),
-                        OppholdDTO.builder()
-                                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .oppholdTil(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .type(MIDLERTIDIG)
-                                .isNew(true)
-                                .build()))
-                .build())
+                        .ident(IDENT)
+                        .opphold(List.of(OppholdDTO.builder()
+                                        .oppholdFra(LocalDate.of(2020, 2, 3).atStartOfDay())
+                                        .type(OPPLYSNING_MANGLER)
+                                        .isNew(true)
+                                        .build(),
+                                OppholdDTO.builder()
+                                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                        .oppholdTil(LocalDate.of(2020, 2, 3).atStartOfDay())
+                                        .type(MIDLERTIDIG)
+                                        .isNew(true)
+                                        .build()))
+                        .build())
                 .build();
 
         StepVerifier.create(oppholdService.convert(request))
@@ -111,13 +111,13 @@ class OppholdServiceTest {
 
         StepVerifier.create(oppholdService.convert(DbPerson.builder()
                         .person(PersonDTO.builder()
-                        .ident(IDENT)
-                        .opphold(List.of(OppholdDTO.builder()
-                                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .type(OPPLYSNING_MANGLER)
-                                .isNew(true)
-                                .build()))
-                        .build())
+                                .ident(IDENT)
+                                .opphold(List.of(OppholdDTO.builder()
+                                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                        .type(OPPLYSNING_MANGLER)
+                                        .isNew(true)
+                                        .build()))
+                                .build())
                         .build()))
                 .assertNext(target -> assertThat(target.getPerson().getOpphold().getFirst().getOppholdFra(),
                         is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay()))))
@@ -129,22 +129,25 @@ class OppholdServiceTest {
 
         StepVerifier.create(oppholdService.convert(DbPerson.builder()
                         .person(PersonDTO.builder()
-                        .ident(IDENT)
-                        .opphold(List.of(OppholdDTO.builder()
-                                        .oppholdFra(LocalDate.of(2020, 2, 4).atStartOfDay())
-                                        .type(OPPLYSNING_MANGLER)
-                                        .isNew(true)
-                                        .build(),
-                                OppholdDTO.builder()
-                                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                        .type(MIDLERTIDIG)
-                                        .isNew(true)
-                                        .build()))
-                        .build())
+                                .ident(IDENT)
+                                .opphold(List.of(OppholdDTO.builder()
+                                                .oppholdFra(LocalDate.of(2020, 2, 4).atStartOfDay())
+                                                .type(OPPLYSNING_MANGLER)
+                                                .isNew(true)
+                                                .build(),
+                                        OppholdDTO.builder()
+                                                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                                .type(MIDLERTIDIG)
+                                                .isNew(true)
+                                                .build()))
+                                .build())
                         .build()))
-                .assertNext(target ->
-                        assertThat(target.getPerson().getOpphold().getFirst().getOppholdFra(),
-                                is(equalTo(LocalDate.of(2020, 2, 4).atStartOfDay()))))
+                .assertNext(target -> {
+                    assertThat(target.getPerson().getOpphold().getFirst().getOppholdFra(),
+                            is(equalTo(LocalDate.of(2020, 2, 4).atStartOfDay())));
+                    assertThat(target.getPerson().getOpphold().get(1).getOppholdTil(),
+                            is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay())));
+                })
                 .verifyComplete();
     }
 }

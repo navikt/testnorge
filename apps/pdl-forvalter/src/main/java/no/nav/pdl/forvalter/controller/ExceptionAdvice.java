@@ -22,8 +22,6 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ExceptionAdvice {
 
-    private static final String GATEWAY_ORIGINAL_REQUEST_URL = "org.springframework.web.reactive.HandlerMapping.pathWithinHandlerMapping";
-
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
@@ -40,7 +38,7 @@ public class ExceptionAdvice {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(InternalServerException.class)
+    @ExceptionHandler({InternalServerException.class, IllegalStateException.class})
     ExceptionInformation clientErrorException(ServerWebExchange serverWebExchange, InternalServerException exception) {
         return getExceptionInformation(serverWebExchange, exception);
     }
@@ -51,7 +49,7 @@ public class ExceptionAdvice {
                 .error(exception.getStatusText())
                 .status(exception.getStatusCode().value())
                 .message(exception.getStatusText())
-                .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
+                .path(serverWebExchange.getRequest().getPath().value())
                 .timestamp(LocalDateTime.now())
                 .build();
     }

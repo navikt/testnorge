@@ -24,7 +24,7 @@ public class JsonToPersonDTOConverter implements Converter<Json, PersonDTO> {
             return objectMapper.readValue(source.asString(), PersonDTO.class);
         } catch (Exception e) {
             log.error("Feil ved konvertering av JSON til PersonDTO: {}", e.getMessage(), e);
+            throw new IllegalStateException("Feil ved konvertering av JSON til PersonDTO", e);
         }
-        return null;
     }
 }
