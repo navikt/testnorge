@@ -32,7 +32,7 @@ dependencies {
 
     testImplementation "org.springframework.boot:spring-boot-starter-webmvc-test"
 
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
 }
 
 description = "varslinger-service"

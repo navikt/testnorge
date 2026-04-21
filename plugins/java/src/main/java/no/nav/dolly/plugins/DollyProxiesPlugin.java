@@ -66,7 +66,7 @@ public class DollyProxiesPlugin implements Plugin<Project> {
         dependencies.add("testAnnotationProcessor", "org.projectlombok:lombok");
         dependencies.add("testImplementation", project.getDependencies().platform("org.junit:junit-bom:" + versions.junit));
         dependencies.add("testImplementation", "org.springframework.boot:spring-boot-starter-test");
-        dependencies.add("testImplementation", "org.springframework.cloud:spring-cloud-contract-wiremock");
+        dependencies.add("testImplementation", "org.wiremock:wiremock-standalone:3.13.0");
         dependencies.add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher");
 
         var dependencyManagement = project.getExtensions().getByType(DependencyManagementExtension.class);

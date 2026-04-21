@@ -41,7 +41,7 @@ dependencies {
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     testImplementation "com.h2database:h2"
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
 }
 
 description = "organisasjon-forvalter"
