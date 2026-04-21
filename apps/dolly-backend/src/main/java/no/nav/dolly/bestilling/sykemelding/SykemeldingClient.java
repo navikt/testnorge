@@ -11,6 +11,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
+import no.nav.dolly.domain.resultset.sykemelding.SykmeldingType;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -89,15 +90,22 @@ public class SykemeldingClient implements ClientRegister {
     private Mono<SykemeldingResponseDTO> postNySykemelding(RsSykemelding.RsNySykemelding rsNySykemelding,
                                                            String ident) {
 
+        var type = isNull(rsNySykemelding.getType()) ? SykmeldingType.VANLIG : rsNySykemelding.getType();
+
         var aktivitet = rsNySykemelding.getAktivitet().stream()
                 .map(a -> SykemeldingRequestDTO.Aktivitet.builder()
                         .grad(a.getGrad())
+                        .reisetilskudd(a.getReisetilskudd())
                         .fom(a.getFom())
                         .tom(a.getTom())
                         .build())
                 .collect(Collectors.toList());
 
-        SykemeldingRequestDTO request = new SykemeldingRequestDTO(ident, aktivitet);
+        SykemeldingRequestDTO request = SykemeldingRequestDTO.builder()
+                .type(type)
+                .ident(ident)
+                .aktivitet(aktivitet)
+                .build();
 
         return sykemeldingConsumer.postTsmSykemelding(request);
     }

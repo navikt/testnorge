@@ -36,6 +36,7 @@ public class RsSykemelding {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class RsNySykemelding {
 
+        private SykmeldingType type;
         private List<Aktivitet> aktivitet;
 
         public List<Aktivitet> getAktivitet() {
@@ -53,6 +54,7 @@ public class RsSykemelding {
         public static class Aktivitet {
 
             private Integer grad;
+            private Boolean reisetilskudd;
             private LocalDate fom;
             private LocalDate tom;
         }

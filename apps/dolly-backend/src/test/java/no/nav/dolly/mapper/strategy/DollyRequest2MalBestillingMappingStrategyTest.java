@@ -61,6 +61,7 @@ import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
+import no.nav.dolly.domain.resultset.sykemelding.SykmeldingType;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
@@ -466,9 +467,11 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         var bestilling = RsDollyUtvidetBestilling.builder()
                 .sykemelding(RsSykemelding.builder()
                         .nySykemelding(RsSykemelding.RsNySykemelding.builder()
+                                .type(SykmeldingType.VANLIG)
                                 .aktivitet(List.of(
                                         RsSykemelding.RsNySykemelding.Aktivitet.builder()
                                                 .grad(50)
+                                                .reisetilskudd(true)
                                                 .fom(java.time.LocalDate.of(2025, 1, 1))
                                                 .tom(java.time.LocalDate.of(2025, 1, 14))
                                                 .build()))
@@ -478,7 +481,9 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
         var target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
 
+        assertThat(target.getSykemelding().getNySykemelding().getType(), is(equalTo(SykmeldingType.VANLIG)));
         assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getGrad(), is(equalTo(50)));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getReisetilskudd(), is(equalTo(true)));
         assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getFom(), is(equalTo(java.time.LocalDate.of(2025, 1, 1))));
         assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getTom(), is(equalTo(java.time.LocalDate.of(2025, 1, 14))));
     }
