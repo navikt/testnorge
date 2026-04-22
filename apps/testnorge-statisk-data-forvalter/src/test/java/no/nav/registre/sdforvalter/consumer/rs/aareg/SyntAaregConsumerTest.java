@@ -42,6 +42,7 @@ public class SyntAaregConsumerTest {
         this.mockWebServer.start();
         Dispatcher dispatcher = getDispatcher();
         mockWebServer.setDispatcher(dispatcher);
+        this.webClient = WebClient.create();
         syntAaregConsumer = new SyntAaregConsumer(webClient, 2, mockWebServer.url("/synt-aareg").toString());
     }
 
@@ -89,8 +90,8 @@ public class SyntAaregConsumerTest {
 
         syntAaregConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
-        assertThat(listAppender.list.size(), is(equalTo(1)));
-        assertThat(listAppender.list.getFirst().toString(), containsString("Feil under syntetisering"));
+        assertThat(listAppender.list.size(), is(equalTo(2)));
+        assertThat(listAppender.list.getLast().toString(), containsString("Feil under syntetisering"));
     }
 
     @AfterEach

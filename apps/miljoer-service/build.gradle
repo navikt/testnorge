@@ -26,4 +26,5 @@ dependencies {
 
     testImplementation "org.wiremock:wiremock-standalone:3.13.0"
     testImplementation "org.springframework.security:spring-security-test"
+    testImplementation "org.springframework.boot:spring-boot-webtestclient"
 }

@@ -12,8 +12,9 @@ sonarqube {
 
 dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations"
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
     implementation "tools.jackson.core:jackson-databind"
-    implementation "tools.jackson.dataformat:jackson-dataformat-xml"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
     implementation "jakarta.validation:jakarta.validation-api:$versions.jakartaValidation"
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"

@@ -1,15 +1,16 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
-import tools.jackson.core.JsonParser;
-import tools.jackson.databind.DeserializationContext;
-import tools.jackson.databind.ValueDeserializer;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class JsonDateDeserializer extends ValueDeserializer<LocalDateTime> {
+public class JsonDateDeserializer extends JsonDeserializer<LocalDateTime> {
 
     @Override
-    public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt) {
+    public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         return LocalDateTime.parse(jp.getValueAsString());
     }
 }

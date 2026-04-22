@@ -3,7 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

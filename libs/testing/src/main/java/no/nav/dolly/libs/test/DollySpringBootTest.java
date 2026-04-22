@@ -24,7 +24,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "spring.main.allow-bean-definition-overriding=true"
+)
 @AutoConfigureWebTestClient(timeout = "PT30S")
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
@@ -52,7 +55,7 @@ public @interface DollySpringBootTest {
      * <p>Defaults to an empty array.</p>
      */
     @AliasFor(annotation = SpringBootTest.class, attribute = "properties")
-    String[] properties() default {};
+    String[] properties() default {"spring.main.allow-bean-definition-overriding=true"};
 
     /**
      * {@inheritDoc}

@@ -17,5 +17,12 @@ public class JacksonAutoConfiguration {
     public CaseInsensitiveEnumModule caseInsensitiveEnumModule() {
         return new CaseInsensitiveEnumModule();
     }
-}
 
+    @Bean
+    @ConditionalOnMissingBean(com.fasterxml.jackson.databind.ObjectMapper.class)
+    public com.fasterxml.jackson.databind.ObjectMapper jackson2ObjectMapper() {
+        return new com.fasterxml.jackson.databind.ObjectMapper()
+                .findAndRegisterModules()
+                .disable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+}
