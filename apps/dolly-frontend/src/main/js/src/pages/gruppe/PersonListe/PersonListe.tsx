@@ -79,7 +79,7 @@ export default function PersonListe({
 	if (pdlfPersoner) {
 		const pdlfMap = {}
 		pdlfPersoner.forEach((entry) => {
-			if (entry?.person?.ident) {
+			if (entry?.person?.ident && entry?.person?.folkeregisterPersonstatus) {
 				pdlfMap[entry.person.ident] = entry.person
 			}
 		})
@@ -260,7 +260,7 @@ export default function PersonListe({
 		return column
 	})
 
-	if ((isFetching || isLoading) && personListe?.length === 0) {
+	if (isFetching || isLoading) {
 		return <Loading label="Laster personer ..." panel />
 	}
 
