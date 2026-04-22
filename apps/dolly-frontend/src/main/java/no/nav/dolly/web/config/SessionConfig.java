@@ -17,11 +17,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
@@ -106,7 +108,10 @@ class SessionConfig {
 
     @Bean
     RedisSerializer<Object> springSessionRedisSerializer() {
-        return new JdkSerializationRedisSerializer();
+        var mapper = JsonMapper.builder()
+                .addModules(SecurityJacksonModules.getModules(getClass().getClassLoader()))
+                .build();
+        return new GenericJacksonJsonRedisSerializer(mapper);
     }
 
 }

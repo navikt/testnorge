@@ -82,4 +82,3 @@ public class TokenExchange implements ExchangeToken {
                 .isBefore(Instant.now());
     }
 }
-

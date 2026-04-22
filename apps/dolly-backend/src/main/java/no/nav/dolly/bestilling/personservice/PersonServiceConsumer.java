@@ -92,10 +92,10 @@ public class PersonServiceConsumer extends ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .doOnError(error -> log.error("PersonServiceConsumer.getPdlPersoner: Token exchange feilet: {} - {}", 
                         error.getClass().getName(), error.getMessage(), error))
-                .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                        .flatMap(index -> new PdlPersonerGetCommand(webClient,
-                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
-                                token.getTokenValue()
+                .flatMapMany(token -> Flux.fromIterable(identer)
+                        .buffer(BLOCK_SIZE)
+                        .flatMap(identerBlokk -> new PdlPersonerGetCommand(webClient,
+                                identerBlokk, token.getTokenValue()
                         ).call()))
                 .doOnError(error -> log.error("PersonServiceConsumer.getPdlPersoner: Feil ved henting: {} - {}", 
                         error.getClass().getName(), error.getMessage(), error))

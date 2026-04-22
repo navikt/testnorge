@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Data
@@ -13,5 +14,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class FinnesDTO {
 
-    private Map<String, Boolean> iBruk;
+    @Builder.Default
+    private Map<String, Boolean> iBruk = Collections.emptyMap();
 }

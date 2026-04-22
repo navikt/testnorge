@@ -40,15 +40,18 @@ public class PdlFilterService {
                 )
                 .map(kilde -> {
                     var oversiktDTO = oversikt.copy();
+                    var iBrukMap = isNull(kilde.getT1().getIBruk())
+                            ? java.util.Collections.<String, Boolean>emptyMap()
+                            : kilde.getT1().getIBruk();
                     var personer = oversiktDTO.getData().getPersoner().stream()
                             .filter(person -> !hasDollyTag(kilde.getT2().getPersonerTags().get(person.getId())) ||
-                                    isTrue(kilde.getT1().getIBruk().get(person.getId())))
+                                    isTrue(iBrukMap.get(person.getId())))
                             .map(person -> TenorOversiktResponse.Person.builder()
                                     .id(person.getId())
                                     .fornavn(person.getFornavn())
                                     .etternavn(person.getEtternavn())
                                     .tenorRelasjoner(person.getTenorRelasjoner())
-                                    .iBruk(kilde.getT1().getIBruk().get(person.getId()))
+                                    .iBruk(iBrukMap.get(person.getId()))
                                     .iArenaSynt(hasArenaSyntTag(kilde.getT2().getPersonerTags().get(person.getId())))
                                     .build())
                             .toList();
