@@ -100,6 +100,9 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	if (initialValuesMal.sykemelding?.detaljertSykemelding) {
 		delete initialValuesMal.sykemelding.detaljertSykemelding
 	}
+	if (initialValuesMal.sykemelding?.nySykemelding && !initialValuesMal.sykemelding.nySykemelding.type) {
+		initialValuesMal.sykemelding.nySykemelding.type = 'VANLIG'
+	}
 	if (initialValuesMal.fullmakt) {
 		initialValuesMal.fullmakt = getUpdatedFullmaktData(initialValuesMal.fullmakt)
 	}
