@@ -18,7 +18,6 @@ import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningCo
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { Bestilling, useGruppeById } from '@/utils/hooks/useGruppe'
 import { useLocation } from 'react-router'
-import { usePdlfPersoner } from '@/utils/hooks/usePdlForvalter'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -50,6 +49,7 @@ export default function PersonListe({
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
+	const [initialLoadDone, setInitialLoadDone] = useState(false)
 	const dispatch = useDispatch()
 	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
 
@@ -71,34 +71,6 @@ export default function PersonListe({
 
 	const personListe = sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search)
 
-	const pdlfIdenter = useMemo(() => personListe?.map((p) => p.identNr).join(','), [personListe])
-
-	const { pdlfPersoner } = usePdlfPersoner(pdlfIdenter)
-
-	if (pdlfPersoner) {
-		const pdlfMap = {}
-		pdlfPersoner.forEach((entry) => {
-			if (entry?.person?.ident && entry?.person?.folkeregisterPersonstatus) {
-				pdlfMap[entry.person.ident] = entry.person
-			}
-		})
-		personListe?.forEach((person) => {
-			const redigertPerson = pdlfMap[person?.identNr]
-			if (redigertPerson) {
-				const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
-				const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
-					? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
-					: ''
-				const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
-				if (!redigertPerson.doedsfall) {
-					person.alder = person.alder.split(' ')[0]
-				}
-				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
-				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
-			}
-		})
-	}
-
 	useEffect(() => {
 		const idents =
 			identer &&
@@ -118,6 +90,12 @@ export default function PersonListe({
 		}
 		fetchPdlPersoner(identListe)
 	}, [identListe])
+
+	useEffect(() => {
+		if (!initialLoadDone && !isFetching && personListe?.length > 0) {
+			setInitialLoadDone(true)
+		}
+	}, [isFetching, personListe, initialLoadDone])
 
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
@@ -253,7 +231,7 @@ export default function PersonListe({
 		return column
 	})
 
-	if (isFetching || isLoading) {
+	if (!initialLoadDone && (isFetching || isLoading)) {
 		return <Loading label="Laster personer ..." panel />
 	}
 
