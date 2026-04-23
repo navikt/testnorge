@@ -13,7 +13,7 @@ public interface AliasRepository extends ReactiveCrudRepository<DbAlias, Long> {
 
     Mono<DbAlias> findByTidligereIdent(String ident);
 
-    Mono<DbAlias> findByPersonId(Long personId);
+    Flux<DbAlias> findByPersonId(Long personId);
 
     Flux<DbAlias> findByTidligereIdentIn(List<String> ident);
 

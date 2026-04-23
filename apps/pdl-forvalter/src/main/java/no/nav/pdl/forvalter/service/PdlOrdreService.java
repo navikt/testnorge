@@ -6,6 +6,7 @@ import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
@@ -263,7 +264,7 @@ public class PdlOrdreService {
 
     private Flux<Ordre> personOpprett(OpprettRequest oppretting) {
 
-        return getHistoriskePersoner(new ArrayList<>(), oppretting.getPerson(), true)
+        return getHistoriskePersoner(oppretting.getPerson())
                 .map(historiske -> OpprettIdent.builder()
                         .historiskeIdenter(historiske.stream()
                                 .map(DbPerson::getIdent)
@@ -281,33 +282,19 @@ public class PdlOrdreService {
                 .doOnNext(ordre -> log.info("Ordre for oppretting: {}", ordre));
     }
 
-    // Rekursiv metode som henter alle historiske personer basert på aliaser.
-    // Dersom en person har en alias som peker på en tidligere identitet,
-    // og denne igjen har en alias som peker på en enda tidligere identitet,
-    // vil alle disse bli hentet ut og lagt i listen.
-    // Listen vil inneholde alle historiske personer i rekkefølge fra den nyeste til den eldste.
-    private Mono<List<DbPerson>> getHistoriskePersoner(List<DbPerson> akkumulert, DbPerson hovedperson, Boolean ekisterer) {
 
-        if (isFalse(ekisterer)) {
-            return Mono.just(akkumulert);
-        }
+    private Mono<List<DbPerson>> getHistoriskePersoner(DbPerson hovedperson) {
 
-        return aliasRepository.existsByPersonId(hovedperson.getId())
-                .flatMap(exists -> isTrue(exists) ? aliasRepository.findByPersonId(hovedperson.getId())
-                        .flatMap(alias -> personRepository.findByIdent(alias.getTidligereIdent())
-                                .flatMap(dbPerson -> {
-                                    akkumulert.add(dbPerson);
-                                    return Mono.just(dbPerson)
-                                            .zipWith(Mono.just(exists));
-                                })) :
-                        Mono.just(hovedperson)
-                                .zipWith(Mono.just(exists)))
-                .flatMap(tuple -> getHistoriskePersoner(akkumulert, tuple.getT1(), tuple.getT2()));
+        return aliasRepository.findByPersonId(hovedperson.getId())
+                .map(DbAlias::getTidligereIdent)
+                .collectList()
+                .flatMapMany(personRepository::findByIdentIn)
+                .collectList();
     }
 
     private Flux<Ordre> npidMerge(OpprettRequest oppretting) {
 
-        return getHistoriskePersoner(new ArrayList<>(), oppretting.getPerson(), true)
+        return getHistoriskePersoner(oppretting.getPerson())
                 .flatMapMany(historiske -> deployService.createOrdre(PDL_PERSON_MERGE, oppretting.getPerson().getIdent(),
                         historiske.stream()
                                 .map(DbPerson::getIdent)

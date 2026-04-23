@@ -266,7 +266,7 @@ class PdlOrdreServiceTest {
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
         when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .thenReturn(Flux.just(dbRelatertPerson));
-        when(kodeverkConsumer.getFylkesmannsembeter()).thenReturn(Mono.just(new HashMap<String, String>()));
+        when(kodeverkConsumer.getFylkesmannsembeter()).thenReturn(Mono.just(new HashMap<>()));
 
         StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, true))
                 .assertNext(response -> {
@@ -371,9 +371,8 @@ class PdlOrdreServiceTest {
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, null))
-                .assertNext(response -> {
-                    assertThat(response.getRelasjoner(), hasSize(1));
-                })
+                .assertNext(response ->
+                        assertThat(response.getRelasjoner(), hasSize(1)))
                 .verifyComplete();
     }
 
@@ -494,10 +493,14 @@ class PdlOrdreServiceTest {
     private void stubDeployServiceDefaults() {
         when(deployService.createOrdre(any(PdlArtifact.class), anyString(), anyList())).thenReturn(Flux.empty());
         when(deployService.sendOrders(any())).thenReturn(Flux.empty());
+        when(aliasRepository.findByPersonId(any(Long.class))).thenReturn(Flux.empty());
+        when(personRepository.findByIdentIn(anyList())).thenReturn(Flux.empty());
     }
 
     private void stubDeployServiceForSlettingAndSendOrders(List<PdlStatusDTO> statuses) {
         when(deployService.createOrdre(any(PdlArtifact.class), anyString(), anyList())).thenReturn(Flux.empty());
         when(deployService.sendOrders(any())).thenReturn(Flux.fromIterable(statuses));
+        when(aliasRepository.findByPersonId(any(Long.class))).thenReturn(Flux.empty());
+        when(personRepository.findByIdentIn(anyList())).thenReturn(Flux.empty());
     }
 }
