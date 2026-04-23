@@ -245,7 +245,7 @@ public class SwopIdentsService {
                                                     .build())
                                             .thenReturn(personer))
                                             .flatMap(personer -> relasjonRepository.deleteByPersonIdentIn(List.of(oppdatertPerson2.getIdent()))
-                                                    .thenReturn(personer)))
+                                                    .then(Mono.just(personer))))
                             .flatMap(personer -> Flux.fromIterable(personer)
                                     .filter(person -> oppdatertPerson1.getIdent().equals(person.getIdent()))
                                     .next());

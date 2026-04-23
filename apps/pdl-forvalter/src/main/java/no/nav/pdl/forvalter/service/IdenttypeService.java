@@ -69,13 +69,16 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
         return Flux.fromIterable(nyeIdenter)
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> {
+                .concatMap(type -> {
                     type.setKilde(getKilde(type));
-                    type.setMaster(getMaster(type, person.getPerson()));
+                    type.setMaster(getMaster(type, nyPerson.get().getPerson()));
                     return handle(type, nyPerson.get())
+                            .doOnNext(oppdatertPerson ->
+                                    log.info("Swopper ident {} for person {}. Ny ident: {}",
+                                            type.getIdenttype(), person.getIdent(), oppdatertPerson.getIdent()))
                             .doOnNext(nyPerson::set);
                 })
-                .last(nyPerson.get());
+                .then(Mono.defer(() -> Mono.just(nyPerson.get())));
     }
 
     @Override
@@ -141,8 +144,8 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                     }
                 })
                 .flatMap(dbPerson -> swopIdentsService.execute(person.getIdent(), dbPerson.getIdent()))
-                .flatMap(dbPerson -> relasjonService.setRelasjoner(dbPerson.getIdent(), NY_IDENTITET,
-                                person.getIdent(), GAMMEL_IDENTITET)
+                .flatMap(dbPerson -> relasjonService.setRelasjoner(dbPerson.getIdent(), GAMMEL_IDENTITET,
+                                person.getIdent(), NY_IDENTITET)
                         .thenReturn(dbPerson));
     }
 
