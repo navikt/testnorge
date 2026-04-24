@@ -49,8 +49,22 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .doOnError(error -> log.error("[INNTEKT-TRACE] Token-exchange feilet for {}: {}",
                         inntekstsmelding.getArbeidstakerFnr(), error.getMessage(), error))
-                .flatMap(token -> new OpprettInntektsmeldingCommand(webClient,
-                        token.getTokenValue(), inntekstsmelding, callId).call());
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.error("[INNTEKT-TRACE] Token-exchange returnerte tomt svar for {} mot {}",
+                            inntekstsmelding.getArbeidstakerFnr(), serverProperties.getName());
+                    return Mono.empty();
+                }))
+                .flatMap(token -> {
+                    log.info("[INNTEKT-TRACE] Token mottatt for {}, sender request til {}",
+                            inntekstsmelding.getArbeidstakerFnr(), serverProperties.getUrl());
+                    return new OpprettInntektsmeldingCommand(webClient,
+                            token.getTokenValue(), inntekstsmelding, callId).call();
+                })
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.error("[INNTEKT-TRACE] Inntektsmelding-request returnerte tomt svar for {}",
+                            inntekstsmelding.getArbeidstakerFnr());
+                    return Mono.empty();
+                }));
     }
 
     @Override
