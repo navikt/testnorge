@@ -7,6 +7,7 @@ import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.plugins.JavaBasePlugin;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -30,17 +31,10 @@ public class DollyBuildValidationPlugin implements Plugin<Project> {
                     var rootDir = project.getRootDir();
                     task.getSettingsGradleFile().set(new File(rootDir, "settings.gradle"));
 
-                    // Set workflow file to either an app workflow or a proxy workflow.
-                    var workflowsDir = new File(rootDir, "../../.github/workflows");
-                    var appWorkflowFile = new File(workflowsDir, "app." + currentProjectName + ".yml");
-                    if (appWorkflowFile.exists()) {
-                        task.getWorkflowFile().set(appWorkflowFile);
-                    } else {
-                        var proxyWorkflowFile = new File(workflowsDir, "proxy." + currentProjectName + ".yml");
-                        if (proxyWorkflowFile.exists()) {
-                            task.getWorkflowFile().set(proxyWorkflowFile);
-                        }
-                    }
+                    // Set workflow file to either an app workflow, a proxy workflow, or a synt workflow.
+                    task
+                            .getWorkflowFile()
+                            .set(resolveWorkflowFile(rootDir, currentProjectName).orElse(null));
 
                     // Set our library names, based on project dependencies (e.g. build.gradle).
                     var libraries = project
@@ -61,6 +55,30 @@ public class DollyBuildValidationPlugin implements Plugin<Project> {
                         .getTasks()
                         .named(JavaBasePlugin.BUILD_TASK_NAME)
                         .configure(task -> task.dependsOn(dollyValidationTaskProvider)));
+
+    }
+
+    private static Optional<File> resolveWorkflowFile(File rootDir, String currentProjectName) {
+
+        var workflowsDir = new File(rootDir, "../../.github/workflows");
+
+        var appWorkflowFile = new File(workflowsDir, "app." + currentProjectName + ".yml");
+        if (appWorkflowFile.exists()) {
+            return Optional.of(appWorkflowFile);
+        }
+
+        var proxyWorkflowFile = new File(workflowsDir, "proxy." + currentProjectName + ".yml");
+        if (proxyWorkflowFile.exists()) {
+            return Optional.of(proxyWorkflowFile);
+        }
+
+
+        var syntWorkflowFile = new File(workflowsDir, "synt." + currentProjectName + ".yml");
+        if (syntWorkflowFile.exists()) {
+            return Optional.of(syntWorkflowFile);
+        }
+
+        return Optional.empty();
 
     }
 
