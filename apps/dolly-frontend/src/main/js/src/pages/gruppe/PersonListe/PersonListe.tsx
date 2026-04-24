@@ -69,35 +69,49 @@ export default function PersonListe({
 
 	const location = useLocation()
 
-	const personListe = sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search)
+	const basePersonListe = sokSelector(
+		selectPersonListe(identer, bestillingStatuser, fagsystem),
+		search,
+	)
 
-	const pdlfIdenter = useMemo(() => personListe?.map((p) => p.identNr).join(','), [personListe])
+	const pdlfIdenter = useMemo(
+		() => basePersonListe?.map((p) => p?.identNr).filter(Boolean).join(','),
+		[basePersonListe],
+	)
 
 	const { pdlfPersoner } = usePdlfPersoner(pdlfIdenter)
 
-	if (pdlfPersoner) {
-		const pdlfMap = {}
+	const personListe = useMemo(() => {
+		if (!pdlfPersoner) {
+			return basePersonListe
+		}
+		const pdlfMap: Record<string, any> = {}
 		pdlfPersoner.forEach((entry) => {
 			if (entry?.person?.ident && entry?.person?.folkeregisterPersonstatus) {
 				pdlfMap[entry.person.ident] = entry.person
 			}
 		})
-		personListe?.forEach((person) => {
-			const redigertPerson = pdlfMap[person?.identNr]
-			if (redigertPerson) {
-				const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
-				const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
-					? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
-					: ''
-				const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
-				if (!redigertPerson.doedsfall) {
-					person.alder = person.alder.split(' ')[0]
-				}
-				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
-				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
+		return basePersonListe.map((person) => {
+			if (!person) {
+				return person
+			}
+			const redigertPerson = pdlfMap[person.identNr]
+			if (!redigertPerson) {
+				return person
+			}
+			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
+			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
+				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
+				: ''
+			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
+			return {
+				...person,
+				alder: redigertPerson.doedsfall ? person.alder : person.alder.split(' ')[0],
+				kjonn: redigertPerson.kjoenn?.[0]?.kjoenn,
+				navn: `${fornavn} ${mellomnavn} ${etternavn}`,
 			}
 		})
-	}
+	}, [basePersonListe, pdlfPersoner])
 
 	useEffect(() => {
 		const idents =
