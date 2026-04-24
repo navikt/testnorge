@@ -1,19 +1,17 @@
 package no.nav.brregstub.config;
 
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.MapperFeature;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueDeserializer;
 import tools.jackson.databind.ValueSerializer;
-import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
 
 import java.time.LocalDate;
@@ -27,23 +25,24 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class JacksonConfig {
 
     @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        var simpleModule = new SimpleModule()
+    public SimpleModule brregDateTimeModule() {
+        return new SimpleModule()
                 .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer())
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
                 .addDeserializer(LocalDate.class, new LocalDateDeserializer())
                 .addSerializer(LocalDate.class, new LocalDateSerializer())
                 .addDeserializer(ZonedDateTime.class, new ZonedDateTimeDeserializer())
                 .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
-        return JsonMapper
-                .builder()
+    }
+
+    @Bean
+    public JsonMapperBuilderCustomizer jsonMapperBuilderCustomizer(SimpleModule brregDateTimeModule) {
+        return builder -> builder
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-                .addModule(simpleModule)
-                .build();
+                .addModule(brregDateTimeModule);
     }
 
     private static class LocalDateSerializer extends ValueSerializer<LocalDate> {
