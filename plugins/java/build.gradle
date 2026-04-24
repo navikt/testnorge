@@ -28,6 +28,10 @@ gradlePlugin {
             id = "dolly-sonar"
             implementationClass = "no.nav.dolly.plugins.DollySonarPlugin"
         }
+        dollySynt {
+            id = "dolly-synt"
+            implementationClass = "no.nav.dolly.plugins.DollySyntPlugin"
+        }
         dollyVersions {
             id = "dolly-versions"
             implementationClass = "no.nav.dolly.plugins.DollyVersionsPlugin"
