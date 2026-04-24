@@ -43,8 +43,8 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
     public Mono<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
-        log.info("[INNTEKT-TRACE] Inntektsmelding med ident {} callId {} sendt {}",
-                inntekstsmelding.getArbeidstakerFnr(), callId, inntekstsmelding);
+        log.info("[INNTEKT-TRACE] Inntektsmelding med ident {} callId {} sendt",
+                inntekstsmelding.getArbeidstakerFnr(), callId);
 
         return tokenService.exchange(serverProperties)
                 .doOnError(error -> log.error("[INNTEKT-TRACE] Token-exchange feilet for {}: {}",
@@ -54,17 +54,8 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
                             inntekstsmelding.getArbeidstakerFnr(), serverProperties.getName());
                     return Mono.empty();
                 }))
-                .flatMap(token -> {
-                    log.info("[INNTEKT-TRACE] Token mottatt for {}, sender request til {}",
-                            inntekstsmelding.getArbeidstakerFnr(), serverProperties.getUrl());
-                    return new OpprettInntektsmeldingCommand(webClient,
-                            token.getTokenValue(), inntekstsmelding, callId).call();
-                })
-                .switchIfEmpty(Mono.defer(() -> {
-                    log.error("[INNTEKT-TRACE] Inntektsmelding-request returnerte tomt svar for {}",
-                            inntekstsmelding.getArbeidstakerFnr());
-                    return Mono.empty();
-                }));
+                .flatMap(token -> new OpprettInntektsmeldingCommand(webClient,
+                        token.getTokenValue(), inntekstsmelding, callId).call());
     }
 
     @Override

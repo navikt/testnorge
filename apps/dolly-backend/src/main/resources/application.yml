@@ -24,6 +24,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
     web-application-type: reactive
+  reactor:
+    context-propagation: auto
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration
