@@ -30,11 +30,16 @@ public class JsonMapperConfig {
     private static final String YEAR_MONTH = "yyyy-MM";
 
     @Bean
-    public JsonMapperBuilderCustomizer jsonMapperBuilderCustomizer() {
+    public JsonMapperBuilderCustomizer jsonMapperBuilderCustomizer(
+            CaseInsensitiveEnumModule caseInsensitiveEnumModule,
+            SimpleModule dollyDateTimeModule) {
         return builder -> builder
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
-                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .addModule(caseInsensitiveEnumModule)
+                .addModule(dollyDateTimeModule);
     }
 
     @Bean
