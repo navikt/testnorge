@@ -146,17 +146,17 @@ public class InntektsmeldingClient implements ClientRegister {
         context.setProperty("ident", ident);
         context.setProperty("miljoe", miljoe);
         var inntektsmeldingRequest = mapperFacade.map(inntektsmelding, InntektsmeldingRequest.class, context);
-        log.info("Inntektsmelding mapped request for {} in {} - inntekter count: {}, source inntekter count: {}",
-                ident, miljoe, inntektsmeldingRequest.getInntekter().size(), inntektsmelding.getInntekter().size());
+        log.info("Sender inntektsmelding for {} i {} med {} inntekt(er)",
+                ident, miljoe, inntektsmeldingRequest.getInntekter().size());
 
         return inntektsmeldingConsumer
                 .postInntektsmelding(inntektsmeldingRequest)
-                .doOnNext(response -> log.info("Inntektsmelding response for {} in {} - dokumenter: {}, error: {}, status: {}",
-                        ident, miljoe, response.getDokumenter().size(), response.getError(), response.getStatus()))
+                .doOnNext(response -> log.info("Mottatt inntektsmelding-respons for {} i {} - dokumenter: {}, error: {}",
+                        ident, miljoe, response.getDokumenter().size(), response.getError()))
                 .flatMap(response -> {
                     if (isBlank(response.getError())) {
                         var mappings = getMapping(response, ident, bestillingid, miljoe, inntektsmeldingRequest);
-                        log.info("Inntektsmelding saving {} TransaksjonMapping(s) for {} in {}", mappings.size(), ident, miljoe);
+                        log.info("Lagrer {} TransaksjonMapping(er) for {} i {}", mappings.size(), ident, miljoe);
                         return transaksjonMappingService.saveAll(mappings)
                                 .thenReturn(miljoe + ":OK");
                     } else {

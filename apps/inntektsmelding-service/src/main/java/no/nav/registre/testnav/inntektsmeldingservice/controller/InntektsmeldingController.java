@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
-import io.swagger.v3.core.util.Json;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
@@ -38,12 +37,15 @@ public class InntektsmeldingController {
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request) {
 
-        log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.getArbeidstakerFnr(), request.getMiljoe(), Json.pretty(request));
+        log.info("Mottatt inntektsmelding-request for {} i {} med {} inntekt(er). Nav-Call-Id: {}",
+                request.getArbeidstakerFnr(), request.getMiljoe(), request.getInntekter().size(), navCallId);
 
         validerInntektsmelding(request);
 
         try {
             var prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
+            log.info("Inntektsmelding fullført for {} i {} med {} dokument(er). Nav-Call-Id: {}",
+                    request.getArbeidstakerFnr(), request.getMiljoe(), prosessertInntektDokuments.size(), navCallId);
             return new InntektsmeldingResponse(
                     request.getArbeidstakerFnr(),
                     prosessertInntektDokuments
@@ -52,6 +54,9 @@ public class InntektsmeldingController {
                             .toList()
             );
         } catch (WebClientResponseException.BadRequest ex) {
+            log.error("Bad request fra downstream for {} i {}. Nav-Call-Id: {} Body: {}",
+                    request.getArbeidstakerFnr(), request.getMiljoe(), navCallId,
+                    ex.getResponseBodyAsString(StandardCharsets.UTF_8));
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
         }
