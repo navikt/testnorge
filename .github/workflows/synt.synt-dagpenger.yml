@@ -6,6 +6,7 @@ on:
       - .github/workflows/synt.synt-dagpenger.yml
       - synt/synt-dagpenger/**
       - libs/testing/**
+      - libs/texas/**
       - plugins/**
 
 jobs:
