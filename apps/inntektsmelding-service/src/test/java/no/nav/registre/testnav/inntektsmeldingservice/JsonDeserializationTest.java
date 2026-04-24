@@ -1,11 +1,11 @@
 package no.nav.registre.testnav.inntektsmeldingservice;
 
-import tools.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -95,6 +95,25 @@ class JsonDeserializationTest {
         YtelseKodeListe result = objectMapper.readValue(json, YtelseKodeListe.class);
 
         assertThat(result).isEqualTo(YtelseKodeListe.PLEIEPENGER_BARN);
+    }
+
+    @Test
+    void shouldSerializeAndRoundTripYtelseKodeListe() throws Exception {
+        String serialized = objectMapper.writeValueAsString(YtelseKodeListe.PLEIEPENGER_BARN);
+        System.out.println("Jackson 3 serializes PLEIEPENGER_BARN as: " + serialized);
+
+        YtelseKodeListe deserialized = objectMapper.readValue(serialized, YtelseKodeListe.class);
+        assertThat(deserialized).isEqualTo(YtelseKodeListe.PLEIEPENGER_BARN);
+    }
+
+    @Test
+    void shouldSerializeAndRoundTripInntektsmeldingRequest() throws Exception {
+        InntektsmeldingRequest original = objectMapper.readValue(INNTEKTSMELDING_JSON, InntektsmeldingRequest.class);
+        String serialized = objectMapper.writeValueAsString(original);
+        System.out.println("Round-trip JSON: " + serialized);
+
+        InntektsmeldingRequest deserialized = objectMapper.readValue(serialized, InntektsmeldingRequest.class);
+        assertThat(deserialized.getInntekter().get(0).getYtelse()).isEqualTo(YtelseKodeListe.PLEIEPENGER_BARN);
     }
 }
 

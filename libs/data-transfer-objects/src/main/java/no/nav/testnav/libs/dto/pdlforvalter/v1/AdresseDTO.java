@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 public abstract class AdresseDTO extends DbVersjonDTO {
 
     private String adresseIdentifikatorFraMatrikkelen;
-    
+
     private LocalDateTime gyldigFraOgMed;
-    
+
     private LocalDateTime gyldigTilOgMed;
 
     @Schema(description = "For å sette coAdresseNavn, benytt opprettCoAdresseNavn")
