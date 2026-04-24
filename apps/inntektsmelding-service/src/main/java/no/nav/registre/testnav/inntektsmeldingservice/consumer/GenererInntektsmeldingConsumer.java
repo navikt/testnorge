@@ -31,12 +31,12 @@ public class GenererInntektsmeldingConsumer {
     }
 
     public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding) {
-        log.info("Sender inntektsmelding til generator-service for {}", inntektsmelding.getArbeidstakerFnr());
+        log.info("[INNTEKT-TRACE] Sender inntektsmelding til generator-service for {}", inntektsmelding.getArbeidstakerFnr());
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new GenererInntektsmeldingCommand(webClient, inntektsmelding, token.getTokenValue()).call())
-                .doOnNext(xml -> log.info("Mottatt XML fra generator-service for {}, lengde: {}",
+                .doOnNext(xml -> log.info("[INNTEKT-TRACE] Mottatt XML fra generator-service for {}, lengde: {}",
                         inntektsmelding.getArbeidstakerFnr(), xml != null ? xml.length() : 0))
-                .doOnError(error -> log.error("Feil fra generator-service for {}", inntektsmelding.getArbeidstakerFnr(), error))
+                .doOnError(error -> log.error("[INNTEKT-TRACE] Feil fra generator-service for {}", inntektsmelding.getArbeidstakerFnr(), error))
                 .block();
     }
 }
