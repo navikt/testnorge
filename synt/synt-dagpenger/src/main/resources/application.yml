@@ -1,0 +1,37 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    path: /api/api-docs
+    version: OPENAPI_3_0
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: false
+
+logging:
+  level:
+    root: INFO
+    no.nav.dolly: DEBUG
+
+server:
+  servlet:
+    context-path: /
+  shutdown: graceful
+
+app:
+  config:
+    bucket: ${APP_CONFIG_BUCKET:}
+    models: model_PERM,model_DAGO,model_LONN
+
+
+
+
+
+
