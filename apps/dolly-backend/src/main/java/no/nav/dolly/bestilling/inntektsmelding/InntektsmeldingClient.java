@@ -78,9 +78,13 @@ public class InntektsmeldingClient implements ClientRegister {
                                         postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
                                         Mono.just(miljoe + ":OK")))
                         .doOnNext(status ->
-                                log.info("Inntektsmelding status for {} ", status))
+                                log.info("[INNTEKT-TRACE] Inntektsmelding status for {} ", status))
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                        .onErrorResume(error -> getErrors(error, bestilling.getEnvironments()))
+                        .onErrorResume(error -> {
+                            log.error("[INNTEKT-TRACE] Feil i inntektsmelding-flyten for {}: {}",
+                                    dollyPerson.getIdent(), error.getMessage(), error);
+                            return getErrors(error, bestilling.getEnvironments());
+                        })
                         .collect(Collectors.joining(","))
                         .flatMap(status -> oppdaterStatus(progress, status)));
     }
