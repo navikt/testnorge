@@ -13,11 +13,13 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
@@ -30,11 +32,13 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
     public InntektsmeldingConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
+            ObjectMapper objectMapper,
+            WebClient webClient) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInntektsmeldingService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient.mutate()
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
