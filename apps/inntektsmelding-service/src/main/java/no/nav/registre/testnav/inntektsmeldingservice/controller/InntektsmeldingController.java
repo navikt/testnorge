@@ -59,6 +59,17 @@ public class InntektsmeldingController {
                     ex.getResponseBodyAsString(StandardCharsets.UTF_8));
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
+        } catch (WebClientResponseException ex) {
+            log.error("Downstream-feil ({}) for {} i {}. Nav-Call-Id: {} Body: {}",
+                    ex.getStatusCode(), request.getArbeidstakerFnr(), request.getMiljoe(), navCallId,
+                    ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
+        } catch (Exception ex) {
+            log.error("Uventet feil for {} i {}. Nav-Call-Id: {}",
+                    request.getArbeidstakerFnr(), request.getMiljoe(), navCallId, ex);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
         }
     }
 

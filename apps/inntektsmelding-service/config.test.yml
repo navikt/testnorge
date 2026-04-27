@@ -53,3 +53,21 @@ spec:
       memory: 1024Mi
   ingresses:
     - "https://testnav-inntektsmelding-service-dev.intern.dev.nav.no"
+  liveness:
+    path: /internal/health/liveness
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /internal/health/readiness
+    initialDelay: 30
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  prometheus:
+    enabled: true
+    path: /internal/metrics
