@@ -18,6 +18,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,10 +28,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import no.nav.pdl.forvalter.dto.OpprettRequest;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -502,5 +506,119 @@ class PdlOrdreServiceTest {
         when(deployService.sendOrders(any())).thenReturn(Flux.fromIterable(statuses));
         when(aliasRepository.findByPersonId(any(Long.class))).thenReturn(Flux.empty());
         when(personRepository.findByIdentIn(anyList())).thenReturn(Flux.empty());
+    }
+
+    @Nested
+    class IdentComparatorTest {
+
+        private static final String FNR_IDENT = "12045678901";
+        private static final String FNR_IDENT_2 = "10045678901";
+        private static final String DNR_IDENT = "52045678901";
+        private static final String DNR_IDENT_2 = "60045678901";
+        private static final String NPID_IDENT = "12245678901";
+        private static final String NPID_IDENT_2 = "12345678901";
+
+        private final PdlOrdreService.IdentComparator comparator = new PdlOrdreService.IdentComparator();
+
+        private OpprettRequest buildOpprettRequest(String ident) {
+            return OpprettRequest.builder()
+                    .person(DbPerson.builder().ident(ident).build())
+                    .build();
+        }
+
+        @Test
+        void shouldReturnZeroForSameIdenttype_FNR() {
+            var result = comparator.compare(
+                    buildOpprettRequest(FNR_IDENT),
+                    buildOpprettRequest(FNR_IDENT_2));
+
+            assertThat(result).isZero();
+        }
+
+        @Test
+        void shouldReturnZeroForSameIdenttype_DNR() {
+            var result = comparator.compare(
+                    buildOpprettRequest(DNR_IDENT),
+                    buildOpprettRequest(DNR_IDENT_2));
+
+            assertThat(result).isZero();
+        }
+
+        @Test
+        void shouldReturnZeroForSameIdenttype_NPID() {
+            var result = comparator.compare(
+                    buildOpprettRequest(NPID_IDENT),
+                    buildOpprettRequest(NPID_IDENT_2));
+
+            assertThat(result).isZero();
+        }
+
+        @Test
+        void shouldSortDnrBeforeFnr() {
+            var result = comparator.compare(
+                    buildOpprettRequest(DNR_IDENT),
+                    buildOpprettRequest(FNR_IDENT));
+
+            assertThat(result).isNegative();
+        }
+
+        @Test
+        void shouldSortFnrAfterDnr() {
+            var result = comparator.compare(
+                    buildOpprettRequest(FNR_IDENT),
+                    buildOpprettRequest(DNR_IDENT));
+
+            assertThat(result).isPositive();
+        }
+
+        @Test
+        void shouldSortFnrAfterNpid() {
+            var result = comparator.compare(
+                    buildOpprettRequest(NPID_IDENT),
+                    buildOpprettRequest(FNR_IDENT));
+
+            assertThat(result).isNegative();
+        }
+
+        @Test
+        void shouldSortNpidBeforeFnr() {
+            var result = comparator.compare(
+                    buildOpprettRequest(FNR_IDENT),
+                    buildOpprettRequest(NPID_IDENT));
+
+            assertThat(result).isPositive();
+        }
+
+        @Test
+        void shouldSortDnrAfterNpid() {
+            var result = comparator.compare(
+                    buildOpprettRequest(NPID_IDENT),
+                    buildOpprettRequest(DNR_IDENT));
+
+            assertThat(result).isNegative();
+        }
+
+        @Test
+        void shouldSortNpidBeforeDnr() {
+            var result = comparator.compare(
+                    buildOpprettRequest(DNR_IDENT),
+                    buildOpprettRequest(NPID_IDENT));
+
+            assertThat(result).isPositive();
+        }
+
+        @Test
+        void shouldSortListInCorrectOrder() {
+            var fnr = buildOpprettRequest(FNR_IDENT);
+            var dnr = buildOpprettRequest(DNR_IDENT);
+            var npid = buildOpprettRequest(NPID_IDENT);
+
+            var list = new ArrayList<>(List.of(npid, fnr, dnr));
+            list.sort(comparator);
+
+            assertThat(list.get(0).getPerson().getIdent()).isEqualTo(NPID_IDENT);
+            assertThat(list.get(1).getPerson().getIdent()).isEqualTo(DNR_IDENT);
+            assertThat(list.get(2).getPerson().getIdent()).isEqualTo(FNR_IDENT);
+        }
     }
 }

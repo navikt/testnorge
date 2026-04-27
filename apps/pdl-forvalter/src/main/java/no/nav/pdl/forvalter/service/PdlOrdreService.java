@@ -33,6 +33,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -55,6 +56,8 @@ import java.util.Set;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
@@ -219,16 +222,8 @@ public class PdlOrdreService {
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger) {
 
         return Flux.fromIterable(opprettinger)
-                .flatMap(oppretting -> aliasRepository.existsByPersonId(oppretting.getPerson().getId())
-                        .zipWith(Mono.just(oppretting)))
-                .reduce(new ArrayList<OpprettRequest>(), (sorterteOpprettinger, tuple) -> {
-                    if (isTrue(tuple.getT1())) {
-                        sorterteOpprettinger.addFirst(tuple.getT2());
-                    } else {
-                        sorterteOpprettinger.addLast(tuple.getT2());
-                    }
-                    return sorterteOpprettinger;
-                })
+                .sort(new IdentComparator())
+                .collectList()
                 .flatMap(sorterteOpprettinger -> Mono.zip(
                         Flux.fromIterable(sorterteOpprettinger)
                                 .flatMap(oppretting -> oppretting.isNotTestnorgeIdent() ?
@@ -409,5 +404,27 @@ public class PdlOrdreService {
                     context.setProperty("vergepersoner", tuple.getT2());
                     return Mono.just(context);
                 });
+    }
+
+    protected static class IdentComparator implements Comparator<OpprettRequest> {
+
+        @Override
+        public int compare(OpprettRequest o1, OpprettRequest o2) {
+
+            if (getIdenttype(o1.getPerson().getIdent()) ==
+                getIdenttype(o2.getPerson().getIdent())) {
+                return 0;
+
+            } else if (isNpidIdent(o1.getPerson().getIdent()) == !isNpidIdent(o2.getPerson().getIdent())) {
+                return isNpidIdent(o1.getPerson().getIdent()) ? -1 : 1;
+
+            } else if (getIdenttype(o1.getPerson().getIdent()) == Identtype.DNR &&
+                       getIdenttype(o2.getPerson().getIdent()) == Identtype.FNR) {
+                return -1;
+
+            } else {
+                return 1;
+            }
+        }
     }
 }
