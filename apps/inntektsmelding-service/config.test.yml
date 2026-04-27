@@ -35,13 +35,6 @@ spec:
       value: dev
   image: "{{image}}"
   port: 8080
-  gcp:
-    sqlInstances:
-      - type: POSTGRES_15
-        tier: db-custom-1-3840
-        name: testnav-inntektsmelding-service-dev
-        databases:
-          - name: testnav-inntektsmelding-service-dev
   replicas:
     min: 1
     max: 1
