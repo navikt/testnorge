@@ -22,6 +22,7 @@ import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -79,7 +80,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     }
 
     @Async
-    public void executeAsync(Bestilling bestilling) {
+    public void executeAsync(Bestilling bestilling, SecurityContext securityContext) {
 
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
@@ -92,7 +93,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 .flatMapMany(bestKriterier ->
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId())
                                 .flatMap(testident -> utfoergjenoppretting(bestKriterier, bestilling, testident), 3))
-                .contextWrite(reactiveSecurityContext())
+                .contextWrite(reactiveSecurityContext(securityContext))
                 .subscribe(progress -> log.info("Fullført gjenoppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> doFerdig(bestilling).subscribe());

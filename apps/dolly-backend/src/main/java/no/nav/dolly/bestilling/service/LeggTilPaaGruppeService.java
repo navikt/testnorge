@@ -21,6 +21,7 @@ import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -73,7 +74,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     }
 
     @Async
-    public void executeAsync(Bestilling bestilling) {
+    public void executeAsync(Bestilling bestilling, SecurityContext securityContext) {
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
 
@@ -82,7 +83,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .flatMapMany(request ->
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId())
                                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))
-                .contextWrite(reactiveSecurityContext())
+                .contextWrite(reactiveSecurityContext(securityContext))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)

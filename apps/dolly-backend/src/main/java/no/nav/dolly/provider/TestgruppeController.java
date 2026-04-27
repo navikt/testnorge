@@ -29,6 +29,8 @@ import no.nav.dolly.service.TestgruppeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -193,10 +195,10 @@ public class TestgruppeController {
 
         return bestillingService.saveBestilling(gruppeId, request,
                         request.getAntall(), null, request.getNavSyntetiskIdent(), request.getBeskrivelse())
-                .map(bestilling -> {
-                    opprettPersonerByKriterierService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> opprettPersonerByKriterierService.executeAsync(bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @Operation(description = "Opprett berikede testpersoner basert på eskisterende identer")
@@ -208,10 +210,10 @@ public class TestgruppeController {
 
         return bestillingService.saveBestilling(gruppeId, request,
                         request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter(), null, null)
-                .map(bestilling -> {
-                    opprettPersonerFraIdenterMedKriterierService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> opprettPersonerFraIdenterMedKriterierService.executeAsync(bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @Operation(description = "Importere testpersoner fra PDL og legg til berikning non-PDL artifacter")
@@ -222,10 +224,10 @@ public class TestgruppeController {
                                                                     @RequestBody RsDollyImportFraPdlRequest request) {
 
         return bestillingService.saveBestilling(gruppeId, request)
-                .map(bestilling -> {
-                    importAvPersonerFraPdlService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> importAvPersonerFraPdlService.executeAsync(bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @Operation(description = "Legg til berikning på alle i gruppe")
@@ -236,10 +238,10 @@ public class TestgruppeController {
                                                        @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
 
         return bestillingService.saveBestilling(gruppeId, request)
-                .map(bestilling -> {
-                    leggTilPaaGruppeService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> leggTilPaaGruppeService.executeAsync(bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
@@ -249,10 +251,10 @@ public class TestgruppeController {
                                                           @RequestParam(value = "miljoer", required = false) String miljoer) {
 
         return bestillingService.createBestillingForGjenopprettFraGruppe(gruppeId, miljoer)
-                .map(bestilling -> {
-                    gjenopprettGruppeService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> gjenopprettGruppeService.executeAsync(bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)

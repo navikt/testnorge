@@ -37,7 +37,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -179,9 +179,9 @@ public class DollyBestillingService {
                         .thenReturn(bestillingProgress));
     }
 
-    protected static reactor.util.context.Context reactiveSecurityContext() {
+    protected static reactor.util.context.Context reactiveSecurityContext(SecurityContext securityContext) {
         return ReactiveSecurityContextHolder.withSecurityContext(
-                Mono.justOrEmpty(SecurityContextHolder.getContext()));
+                Mono.just(securityContext));
     }
 
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {

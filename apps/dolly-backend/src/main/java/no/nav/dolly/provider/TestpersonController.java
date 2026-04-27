@@ -18,6 +18,8 @@ import no.nav.dolly.service.OrdreService;
 import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,10 +58,10 @@ public class TestpersonController {
     public Mono<RsBestillingStatus> endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
         return bestillingService.saveBestilling(request, ident)
-                .map(bestilling -> {
-                    oppdaterPersonService.oppdaterPersonAsync(request, bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> oppdaterPersonService.oppdaterPersonAsync(request, bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
@@ -89,10 +91,10 @@ public class TestpersonController {
     public Mono<RsBestillingStatus> gjenopprettTestident(@PathVariable String ident, @RequestParam(required = false) List<String> miljoer) {
 
         return bestillingService.createBestillingForGjenopprettFraIdent(ident, miljoer)
-                .map(bestilling -> {
-                    gjenopprettIdentService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> gjenopprettIdentService.executeAsync(bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @Operation(description = "Slett test ident")

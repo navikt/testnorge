@@ -16,6 +16,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -133,10 +135,10 @@ public class BestillingController {
     public Mono<RsBestillingStatus> gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
 
         return bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer)
-                .map(bestilling -> {
-                    gjenopprettBestillingService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .flatMap(bestilling -> ReactiveSecurityContextHolder.getContext()
+                        .defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                        .doOnNext(secCtx -> gjenopprettBestillingService.executeAsync(bestilling, secCtx))
+                        .map(secCtx -> mapperFacade.map(bestilling, RsBestillingStatus.class)));
     }
 
     @GetMapping(value = "/{bestillingId}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
