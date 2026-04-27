@@ -7,8 +7,8 @@ import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -43,17 +43,10 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
     public Mono<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
-        log.info("[INNTEKT-TRACE] Inntektsmelding med ident {} callId {} sendt",
-                inntekstsmelding.getArbeidstakerFnr(), callId);
+        log.info("Inntektsmelding med ident {} callId {} sendt {}",
+                inntekstsmelding.getArbeidstakerFnr(), callId, inntekstsmelding);
 
         return tokenService.exchange(serverProperties)
-                .doOnError(error -> log.error("[INNTEKT-TRACE] Token-exchange feilet for {}: {}",
-                        inntekstsmelding.getArbeidstakerFnr(), error.getMessage(), error))
-                .switchIfEmpty(Mono.defer(() -> {
-                    log.error("[INNTEKT-TRACE] Token-exchange returnerte tomt svar for {} mot {}",
-                            inntekstsmelding.getArbeidstakerFnr(), serverProperties.getName());
-                    return Mono.empty();
-                }))
                 .flatMap(token -> new OpprettInntektsmeldingCommand(webClient,
                         token.getTokenValue(), inntekstsmelding, callId).call());
     }

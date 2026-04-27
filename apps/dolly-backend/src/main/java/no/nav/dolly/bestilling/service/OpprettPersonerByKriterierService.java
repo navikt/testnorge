@@ -20,7 +20,6 @@ import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -74,7 +73,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     }
 
     @Async
-    public void executeAsync(Bestilling bestilling, SecurityContext securityContext) {
+    public void executeAsync(Bestilling bestilling) {
 
         log.info("Bestilling med id=#{} og type={} er startet i miljøer {} ...", bestilling.getId(), getBestillingType(bestilling), bestilling.getMiljoer());
 
@@ -85,7 +84,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 .filter(request -> isBlank(request.getFeil()))
                 .flatMapMany(request -> Flux.range(0, bestilling.getAntallIdenter())
                         .flatMap(index -> opprettPerson(bestilling, bestKriterier, originator), 3))
-                .contextWrite(reactiveSecurityContext(securityContext))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)

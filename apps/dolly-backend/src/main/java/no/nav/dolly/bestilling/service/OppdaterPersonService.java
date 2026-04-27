@@ -20,7 +20,6 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
@@ -70,14 +69,13 @@ public class OppdaterPersonService extends DollyBestillingService {
     }
 
     @Async
-    public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling, SecurityContext securityContext) {
+    public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         request.setId(bestilling.getId());
 
         identService.getTestIdent(bestilling.getIdent())
                 .flatMap(testident -> oppdaterPerson(bestilling, request, testident))
-                .contextWrite(reactiveSecurityContext(securityContext))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(request, bestilling)

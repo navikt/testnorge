@@ -36,8 +36,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -177,11 +175,6 @@ public class DollyBestillingService {
                 .flatMap(status -> transactionHelperService.persister(bestillingProgress,
                                 BestillingProgress::setPdlForvalterStatus, status)
                         .thenReturn(bestillingProgress));
-    }
-
-    protected static reactor.util.context.Context reactiveSecurityContext(SecurityContext securityContext) {
-        return ReactiveSecurityContextHolder.withSecurityContext(
-                Mono.just(securityContext));
     }
 
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {

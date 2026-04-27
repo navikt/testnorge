@@ -19,7 +19,6 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
@@ -75,7 +74,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
     }
 
     @Async
-    public void executeAsync(Bestilling bestilling, SecurityContext securityContext) {
+    public void executeAsync(Bestilling bestilling) {
 
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
@@ -107,7 +106,6 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                 gjenopprettKlienterFerdigstill(tuple.getT1(), bestillingRequest,
                                                         tuple.getT2(), false))
                                         .collectList()))
-                .contextWrite(reactiveSecurityContext(securityContext))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", bestilling.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> doFerdig(bestilling)
