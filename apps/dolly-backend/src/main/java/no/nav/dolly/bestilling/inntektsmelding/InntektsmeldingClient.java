@@ -78,10 +78,10 @@ public class InntektsmeldingClient implements ClientRegister {
                                         postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
                                         Mono.just(miljoe + ":OK")))
                         .doOnNext(status ->
-                                log.info("[INNTEKT-TRACE] Inntektsmelding status for {} ", status))
+                                log.info("Inntektsmelding status for {} ", status))
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                         .onErrorResume(error -> {
-                            log.error("[INNTEKT-TRACE] Feil i inntektsmelding-flyten for {}: {}",
+                            log.error("Feil i inntektsmelding-flyten for {}: {}",
                                     dollyPerson.getIdent(), error.getMessage(), error);
                             return getErrors(error, bestilling.getEnvironments());
                         })
@@ -150,21 +150,21 @@ public class InntektsmeldingClient implements ClientRegister {
         context.setProperty("ident", ident);
         context.setProperty("miljoe", miljoe);
         var inntektsmeldingRequest = mapperFacade.map(inntektsmelding, InntektsmeldingRequest.class, context);
-        log.info("[INNTEKT-TRACE] Sender inntektsmelding for {} i {} med {} inntekt(er)",
+        log.info("Sender inntektsmelding for {} i {} med {} inntekt(er)",
                 ident, miljoe, inntektsmeldingRequest.getInntekter().size());
 
         return inntektsmeldingConsumer
                 .postInntektsmelding(inntektsmeldingRequest)
-                .doOnNext(response -> log.info("[INNTEKT-TRACE] Mottatt inntektsmelding-respons for {} i {} - dokumenter: {}, error: {}",
+                .doOnNext(response -> log.info("Mottatt inntektsmelding-respons for {} i {} - dokumenter: {}, error: {}",
                         ident, miljoe, response.getDokumenter().size(), response.getError()))
                 .flatMap(response -> {
                     if (isBlank(response.getError())) {
                         var mappings = getMapping(response, ident, bestillingid, miljoe, inntektsmeldingRequest);
-                        log.info("[INNTEKT-TRACE] Lagrer {} TransaksjonMapping(er) for {} i {}", mappings.size(), ident, miljoe);
+                        log.info("Lagrer {} TransaksjonMapping(er) for {} i {}", mappings.size(), ident, miljoe);
                         return transaksjonMappingService.saveAll(mappings)
                                 .thenReturn(miljoe + ":OK");
                     } else {
-                        log.error("[INNTEKT-TRACE] Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
+                        log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
                                 inntektsmeldingRequest.getArbeidstakerFnr(), miljoe, response.getError());
 
                         return Mono.just(String.format(STATUS_FMT, miljoe,

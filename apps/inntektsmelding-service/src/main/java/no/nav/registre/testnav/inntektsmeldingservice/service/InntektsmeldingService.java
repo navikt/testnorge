@@ -39,7 +39,7 @@ public class InntektsmeldingService {
                 .stream()
                 .map(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr()))
                 .toList();
-        log.info("[INNTEKT-TRACE] Opprettet {} inntektsdokument(er) for {}, sender til dokmot. Nav-Call-Id: {}",
+        log.info("Opprettet {} inntektsdokument(er) for {}, sender til dokmot. Nav-Call-Id: {}",
                 dokumentListe.size(), request.getArbeidstakerFnr(), navCallId);
         return dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId);
     }
@@ -49,14 +49,14 @@ public class InntektsmeldingService {
             String ident) {
 
         var inntektsmelding = RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident);
-        log.info("[INNTEKT-TRACE] Genererer XML for {} med ytelse={}, aarsakTilInnsending={}",
+        log.info("Genererer XML for {} med ytelse={}, aarsakTilInnsending={}",
                 ident, inntektsmelding.getYtelse(), inntektsmelding.getAarsakTilInnsending());
 
         var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(inntektsmelding);
-        log.info("[INNTEKT-TRACE] Mottatt XML-respons for {}, lengde: {}", ident, xmlString != null ? xmlString.length() : 0);
+        log.info("Mottatt XML-respons for {}, lengde: {}", ident, xmlString != null ? xmlString.length() : 0);
 
         var model = repository.save(new InntektsmeldingModel());
-        log.info("[INNTEKT-TRACE] Lagret inntektsmelding med id {} for {}", model.getId(), ident);
+        log.info("Lagret inntektsmelding med id {} for {}", model.getId(), ident);
         return InntektDokument
                 .builder()
                 .arbeidstakerFnr(ident)

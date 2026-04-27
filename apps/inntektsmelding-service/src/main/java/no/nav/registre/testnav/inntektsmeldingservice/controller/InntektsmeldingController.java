@@ -37,14 +37,14 @@ public class InntektsmeldingController {
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request) {
 
-        log.info("[INNTEKT-TRACE] Mottatt inntektsmelding-request for {} i {} med {} inntekt(er). Nav-Call-Id: {}",
+        log.info("Mottatt inntektsmelding-request for {} i {} med {} inntekt(er). Nav-Call-Id: {}",
                 request.getArbeidstakerFnr(), request.getMiljoe(), request.getInntekter().size(), navCallId);
 
         validerInntektsmelding(request);
 
         try {
             var prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
-            log.info("[INNTEKT-TRACE] Inntektsmelding fullført for {} i {} med {} dokument(er). Nav-Call-Id: {}",
+            log.info("Inntektsmelding fullført for {} i {} med {} dokument(er). Nav-Call-Id: {}",
                     request.getArbeidstakerFnr(), request.getMiljoe(), prosessertInntektDokuments.size(), navCallId);
             return new InntektsmeldingResponse(
                     request.getArbeidstakerFnr(),
@@ -54,7 +54,7 @@ public class InntektsmeldingController {
                             .toList()
             );
         } catch (WebClientResponseException.BadRequest ex) {
-            log.error("[INNTEKT-TRACE] Bad request fra downstream for {} i {}. Nav-Call-Id: {} Body: {}",
+            log.error("Bad request fra downstream for {} i {}. Nav-Call-Id: {} Body: {}",
                     request.getArbeidstakerFnr(), request.getMiljoe(), navCallId,
                     ex.getResponseBodyAsString(StandardCharsets.UTF_8));
             throw new ResponseStatusException(
