@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
+
 @RequiredArgsConstructor
 @Slf4j
 public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponseDTO>> {
@@ -31,11 +33,19 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                 .bodyValue(request)
                 .retrieve()
                 .toEntity(SykemeldingResponseDTO.class)
-                .map(response -> SykemeldingResponseDTO.builder()
-                        .status(HttpStatus.resolve(response.getStatusCode().value()))
-                        .sykemeldingRequest(request)
-                        .ident(request.getIdent())
-                        .build())
+                .map(response -> {
+                    var body = response.getBody();
+                    var builder = SykemeldingResponseDTO.builder()
+                            .status(HttpStatus.resolve(response.getStatusCode().value()))
+                            .sykemeldingRequest(request)
+                            .ident(request.getIdent());
+                    if (nonNull(body)) {
+                        builder.sykmeldingId(body.getSykmeldingId())
+                                .type(body.getType())
+                                .aktivitet(body.getAktivitet());
+                    }
+                    return builder.build();
+                })
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> SykemeldingResponseDTO.of(WebClientError.describe(error), request.getIdent()));
 

@@ -4,6 +4,8 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { useTsmSykemelding } from '@/utils/hooks/useSykemelding'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import Loading from '@/components/ui/loading/Loading'
+import { sykmeldingTypeLabels } from '@/components/fagsystem/sykdom/SykemeldingTypes'
+import type { SykmeldingType } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 
 export const SykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger }: any) => {
 	const fetched = useTsmSykemelding(ident?.ident)
@@ -12,15 +14,34 @@ export const SykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger 
 		: fetched
 
 	const renderAktivitet = (sykemelding: any, idx: number) => (
-		<DollyFieldArray key={idx} data={sykemelding.aktivitet} nested>
-			{(aktivitet: any, idx: number) => (
-				<div key={idx} className="person-visning_content">
-					<TitleValue title="Grad (%)" value={aktivitet.grad} />
-					<TitleValue title="F.o.m. dato" value={formatDate(aktivitet.fom)} />
-					<TitleValue title="T.o.m. dato" value={formatDate(aktivitet.tom)} />
-				</div>
-			)}
-		</DollyFieldArray>
+		<div key={idx} style={{ marginBottom: '1rem', width: '100%' }}>
+			<div className="person-visning_content">
+				<TitleValue
+					title="Type"
+					value={
+						sykemelding.type
+							? sykmeldingTypeLabels[sykemelding.type as SykmeldingType] || sykemelding.type
+							: undefined
+					}
+				/>
+				{sykemelding.sykmeldingId && (
+					<TitleValue title="Sykmelding-ID" value={sykemelding.sykmeldingId} />
+				)}
+			</div>
+			<DollyFieldArray data={sykemelding.aktivitet} nested>
+				{(aktivitet: any, aIdx: number) => (
+					<div key={aIdx} className="person-visning_content">
+						<TitleValue title="Grad (%)" value={aktivitet.grad} />
+						<TitleValue
+							title="Reisetilskudd"
+							value={aktivitet.reisetilskudd ? 'Ja' : undefined}
+						/>
+						<TitleValue title="F.o.m. dato" value={formatDate(aktivitet.fom)} />
+						<TitleValue title="T.o.m. dato" value={formatDate(aktivitet.tom)} />
+					</div>
+				)}
+			</DollyFieldArray>
+		</div>
 	)
 
 	if (loading) {
@@ -35,13 +56,11 @@ export const SykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger 
 
 	return (
 		<React.Fragment>
-			<h3>Perioder</h3>
+			<h3>Sykemeldinger</h3>
 			<div className="person-visning_content">
-				<div className="person-visning_content">
-					{sykemeldinger?.[0] &&
-						sykemeldinger?.[0]?.aktivitet?.length > 0 &&
-						renderAktivitet(sykemeldinger?.[0], 0)}
-				</div>
+				{sykemeldinger?.map((sykemelding: any, idx: number) =>
+					sykemelding?.aktivitet?.length > 0 ? renderAktivitet(sykemelding, idx) : null,
+				)}
 			</div>
 		</React.Fragment>
 	)

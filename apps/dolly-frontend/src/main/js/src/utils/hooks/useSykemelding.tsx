@@ -1,12 +1,15 @@
 import { fetcher } from '@/api'
 import { AxiosError } from 'axios'
 import useSWR from 'swr'
+import type { SykmeldingType } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 
 type TsmSykemeldingResponse = {
 	sykmeldinger: Array<{
 		sykmeldingId: string
+		type: SykmeldingType
 		aktivitet: Array<{
 			grad?: number
+			reisetilskudd?: boolean
 			fom: any
 			tom: any
 		}>
