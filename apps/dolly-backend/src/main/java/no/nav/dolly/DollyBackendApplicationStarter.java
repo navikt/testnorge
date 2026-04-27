@@ -12,3 +12,4 @@ public class DollyBackendApplicationStarter {
                 .run(args);
     }
 }
+

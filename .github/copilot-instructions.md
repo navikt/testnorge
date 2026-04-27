@@ -66,3 +66,24 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 
 - Do not invent APIs not present.
 - Do not add libraries unless existing repo dependencies or utilities are insufficient.
+
+## Deploy-Test Tags in Commit Messages
+
+**IMPORTANT: Always append deploy-test tags when generating commit messages.**
+
+Check every file being committed. If any file path starts with one of the directories below, include that directory's tag. Include ALL matching tags — do not skip any.
+
+| If a changed file starts with...  | Then add this tag                    |
+|-----------------------------------|--------------------------------------|
+| `apps/bruker-service/`            | `#deploy-test-bruker-service`        |
+| `apps/dolly-backend/`             | `#deploy-test-dolly-backend`         |
+| `apps/dolly-frontend/`            | `#deploy-test-dolly-frontend`        |
+| `apps/dolly-search-service/`      | `#deploy-test-dolly-search-service`  |
+| `apps/inntektsmelding-service/`   | `#deploy-test-inntektsmelding-service` |
+| `apps/pdl-forvalter/`             | `#deploy-test-pdl-forvalter`         |
+| `apps/profil-api/`                | `#deploy-test-profil-api`            |
+| `apps/sykemelding-api/`           | `#deploy-test-sykemelding-api`       |
+| `apps/varslinger-service/`        | `#deploy-test-varslinger-service`    |
+
+Ignore files under `libs/`, `plugins/`, `proxies/`, `.github/`, or any other path not listed above.
+Place tags on separate lines at the end of the message body, before any `Co-authored-by` trailer.
