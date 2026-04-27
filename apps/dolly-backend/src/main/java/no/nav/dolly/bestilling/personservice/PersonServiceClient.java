@@ -50,6 +50,7 @@ public class PersonServiceClient {
     private static final String HENDELSER = "hendelser";
 
     private static final int TIMEOUT = 500;
+    private static final int TIMEOUT_BUFFER_SECONDS = 5; // Avoids race condition on timeout handling between syncPerson(...) and getPersonService(...).
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
@@ -71,7 +72,7 @@ public class PersonServiceClient {
                     return Mono.from(getIdentWithRelasjoner(dollyPerson, progress)
                             .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(),
                                     new PersonServiceResponse(), status))
-                            .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                            .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout() + TIMEOUT_BUFFER_SECONDS))
                             .onErrorResume(error -> getError(error, dollyPerson))
                             .doOnNext(status -> logStatus(status, startTime))
                             .collectList()

@@ -46,7 +46,7 @@ public class PdlApiConsumer {
             ObjectMapper objectMapper,
             WebClient webClient
     ) {
-        serverProperties = consumers.getPdlProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(
