@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.service;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -8,9 +7,9 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
@@ -22,6 +21,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -106,6 +106,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                 gjenopprettKlienterFerdigstill(tuple.getT1(), bestillingRequest,
                                                         tuple.getT2(), false))
                                         .collectList()))
+                .contextWrite(reactiveSecurityContext())
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", bestilling.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> doFerdig(bestilling)

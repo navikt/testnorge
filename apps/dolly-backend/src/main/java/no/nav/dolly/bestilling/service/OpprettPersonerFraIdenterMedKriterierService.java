@@ -88,6 +88,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                         availCheckService.checkAvailable(bestilling.getOpprettFraIdenter())
                                 .flatMap(avail -> opprettPerson(bestilling, bestKriterier, avail), 3))
 
+                .contextWrite(reactiveSecurityContext())
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(request, bestilling)

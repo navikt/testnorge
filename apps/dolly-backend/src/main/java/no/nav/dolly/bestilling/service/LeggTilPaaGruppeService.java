@@ -82,6 +82,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .flatMapMany(request ->
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId())
                                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))
+                .contextWrite(reactiveSecurityContext())
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)

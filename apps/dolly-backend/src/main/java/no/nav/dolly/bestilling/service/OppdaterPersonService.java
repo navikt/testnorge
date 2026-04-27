@@ -76,6 +76,7 @@ public class OppdaterPersonService extends DollyBestillingService {
 
         identService.getTestIdent(bestilling.getIdent())
                 .flatMap(testident -> oppdaterPerson(bestilling, request, testident))
+                .contextWrite(reactiveSecurityContext())
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(request, bestilling)

@@ -84,6 +84,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 .flatMapMany(request ->
                         Flux.fromArray(bestilling.getPdlImport().split(","))
                                 .flatMap(testnorgeIdent -> opprettPerson(bestilling, bestKriterier, testnorgeIdent), 3))
+                .contextWrite(reactiveSecurityContext())
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)

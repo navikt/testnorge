@@ -84,6 +84,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 .filter(request -> isBlank(request.getFeil()))
                 .flatMapMany(request -> Flux.range(0, bestilling.getAntallIdenter())
                         .flatMap(index -> opprettPerson(bestilling, bestKriterier, originator), 3))
+                .contextWrite(reactiveSecurityContext())
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         error -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)
