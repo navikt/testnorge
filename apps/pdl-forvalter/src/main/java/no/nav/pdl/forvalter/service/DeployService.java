@@ -42,9 +42,9 @@ public class DeployService {
                                         .build()));
     }
 
-    public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordres) {
+    public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordre) {
 
-        return pdlTestdataConsumer.send(ordres);
+        return pdlTestdataConsumer.send(ordre);
     }
 
     private List<? extends DbVersjonDTO> setOpprettet(List<? extends DbVersjonDTO> artifacter) {

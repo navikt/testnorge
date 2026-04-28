@@ -92,7 +92,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -147,7 +146,7 @@ public class PdlOrdreService {
                                     .build())
                             .collectList()
                             .flatMap(requesterTilOppretting ->
-                                    sendAlleInformasjonselementer(new ArrayList<>(requesterTilOppretting))
+                                    sendAlleInformasjonselementer(new ArrayList<>(requesterTilOppretting), ident)
                                             .collectList()
                                             .zipWith(Mono.just(requesterTilOppretting)));
                 })
@@ -219,10 +218,11 @@ public class PdlOrdreService {
                         VIOLATION_ALIAS_EXISTS.formatted(dbPerson.getIdent()))));
     }
 
-    private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger) {
+    private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger,
+                                                                              String hovedpersonIdent) {
 
         return Flux.fromIterable(opprettinger)
-                .sort(new IdentComparator())
+                .sort(new IdentComparator(hovedpersonIdent))
                 .collectList()
                 .flatMap(sorterteOpprettinger -> Mono.zip(
                         Flux.fromIterable(sorterteOpprettinger)
@@ -336,7 +336,11 @@ public class PdlOrdreService {
                 deployService.createOrdre(PDL_TILRETTELAGT_KOMMUNIKASJON, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class)),
                 deployService.createOrdre(PDL_DOEDFOEDT_BARN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDoedfoedtBarn()),
                 deployService.createOrdre(PDL_SIKKERHETSTILTAK, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getSikkerhetstiltak()),
-                deployService.createOrdre(PDL_NAVPERSONIDENTIFIKATOR, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavPersonIdentifikator())
+                deployService.createOrdre(PDL_NAVPERSONIDENTIFIKATOR, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavPersonIdentifikator().stream()
+                        .filter(navPersonIdentifikator -> isNpidIdent(oppretting.getPerson().getIdent()))
+                        .filter(navPersonIdentifikator -> Objects.equals(navPersonIdentifikator.getIdentifikator(),
+                                oppretting.getPerson().getIdent()))
+                        .toList())
         );
     }
 
@@ -406,14 +410,22 @@ public class PdlOrdreService {
                 });
     }
 
+    @RequiredArgsConstructor
     protected static class IdentComparator implements Comparator<OpprettRequest> {
+
+        private final String hovedpersonIdent;
 
         @Override
         public int compare(OpprettRequest o1, OpprettRequest o2) {
 
             if (getIdenttype(o1.getPerson().getIdent()) ==
                 getIdenttype(o2.getPerson().getIdent())) {
-                return 0;
+
+                if (o1.getPerson().getIdent().equals(hovedpersonIdent)) {
+                    return 1;
+                } else {
+                    return o2.getPerson().getIdent().equals(hovedpersonIdent) ? -1 : 0;
+                }
 
             } else if (isNpidIdent(o1.getPerson().getIdent()) == !isNpidIdent(o2.getPerson().getIdent())) {
                 return isNpidIdent(o1.getPerson().getIdent()) ? -1 : 1;

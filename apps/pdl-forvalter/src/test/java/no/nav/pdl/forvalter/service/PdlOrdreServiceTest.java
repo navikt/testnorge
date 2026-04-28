@@ -511,14 +511,16 @@ class PdlOrdreServiceTest {
     @Nested
     class IdentComparatorTest {
 
-        private static final String FNR_IDENT = "12045678901";
-        private static final String FNR_IDENT_2 = "10045678901";
-        private static final String DNR_IDENT = "52045678901";
-        private static final String DNR_IDENT_2 = "60045678901";
-        private static final String NPID_IDENT = "12245678901";
-        private static final String NPID_IDENT_2 = "12345678901";
+        private static final String FNR_IDENT = "12445678901";
+        private static final String FNR_IDENT_2 = "10445678901";
+        private static final String DNR_IDENT = "52445678901";
+        private static final String DNR_IDENT_2 = "60445678901";
+        private static final String NPID_IDENT = "12645678901";
+        private static final String NPID_IDENT_2 = "12745678901";
+        private static final String HOVEDPERSON_FNR = "10445678902";
 
-        private final PdlOrdreService.IdentComparator comparator = new PdlOrdreService.IdentComparator();
+        private final PdlOrdreService.IdentComparator comparator =
+                new PdlOrdreService.IdentComparator(HOVEDPERSON_FNR);
 
         private OpprettRequest buildOpprettRequest(String ident) {
             return OpprettRequest.builder()
@@ -527,7 +529,7 @@ class PdlOrdreServiceTest {
         }
 
         @Test
-        void shouldReturnZeroForSameIdenttype_FNR() {
+        void shouldReturnZeroForSameIdenttypeWhenNeitherIsHovedperson_FNR() {
             var result = comparator.compare(
                     buildOpprettRequest(FNR_IDENT),
                     buildOpprettRequest(FNR_IDENT_2));
@@ -536,7 +538,7 @@ class PdlOrdreServiceTest {
         }
 
         @Test
-        void shouldReturnZeroForSameIdenttype_DNR() {
+        void shouldReturnZeroForSameIdenttypeWhenNeitherIsHovedperson_DNR() {
             var result = comparator.compare(
                     buildOpprettRequest(DNR_IDENT),
                     buildOpprettRequest(DNR_IDENT_2));
@@ -545,12 +547,30 @@ class PdlOrdreServiceTest {
         }
 
         @Test
-        void shouldReturnZeroForSameIdenttype_NPID() {
+        void shouldReturnZeroForSameIdenttypeWhenNeitherIsHovedperson_NPID() {
             var result = comparator.compare(
                     buildOpprettRequest(NPID_IDENT),
                     buildOpprettRequest(NPID_IDENT_2));
 
             assertThat(result).isZero();
+        }
+
+        @Test
+        void shouldSortHovedpersonLastWhenO1IsHovedperson() {
+            var result = comparator.compare(
+                    buildOpprettRequest(HOVEDPERSON_FNR),
+                    buildOpprettRequest(FNR_IDENT));
+
+            assertThat(result).isPositive();
+        }
+
+        @Test
+        void shouldSortHovedpersonLastWhenO2IsHovedperson() {
+            var result = comparator.compare(
+                    buildOpprettRequest(FNR_IDENT),
+                    buildOpprettRequest(HOVEDPERSON_FNR));
+
+            assertThat(result).isNegative();
         }
 
         @Test
@@ -572,7 +592,7 @@ class PdlOrdreServiceTest {
         }
 
         @Test
-        void shouldSortFnrAfterNpid() {
+        void shouldSortNpidBeforeFnr() {
             var result = comparator.compare(
                     buildOpprettRequest(NPID_IDENT),
                     buildOpprettRequest(FNR_IDENT));
@@ -581,7 +601,7 @@ class PdlOrdreServiceTest {
         }
 
         @Test
-        void shouldSortNpidBeforeFnr() {
+        void shouldSortFnrAfterNpid() {
             var result = comparator.compare(
                     buildOpprettRequest(FNR_IDENT),
                     buildOpprettRequest(NPID_IDENT));
@@ -590,7 +610,7 @@ class PdlOrdreServiceTest {
         }
 
         @Test
-        void shouldSortDnrAfterNpid() {
+        void shouldSortNpidBeforeDnr() {
             var result = comparator.compare(
                     buildOpprettRequest(NPID_IDENT),
                     buildOpprettRequest(DNR_IDENT));
@@ -599,7 +619,7 @@ class PdlOrdreServiceTest {
         }
 
         @Test
-        void shouldSortNpidBeforeDnr() {
+        void shouldSortDnrAfterNpid() {
             var result = comparator.compare(
                     buildOpprettRequest(DNR_IDENT),
                     buildOpprettRequest(NPID_IDENT));
@@ -613,12 +633,39 @@ class PdlOrdreServiceTest {
             var dnr = buildOpprettRequest(DNR_IDENT);
             var npid = buildOpprettRequest(NPID_IDENT);
 
-            var list = new ArrayList<>(List.of(npid, fnr, dnr));
+            var list = new ArrayList<>(List.of(fnr, npid, dnr));
             list.sort(comparator);
 
             assertThat(list.get(0).getPerson().getIdent()).isEqualTo(NPID_IDENT);
             assertThat(list.get(1).getPerson().getIdent()).isEqualTo(DNR_IDENT);
             assertThat(list.get(2).getPerson().getIdent()).isEqualTo(FNR_IDENT);
+        }
+
+        @Test
+        void shouldSortHovedpersonLastAmongSameIdenttype() {
+            var hovedperson = buildOpprettRequest(HOVEDPERSON_FNR);
+            var fnr = buildOpprettRequest(FNR_IDENT);
+            var fnr2 = buildOpprettRequest(FNR_IDENT_2);
+
+            var list = new ArrayList<>(List.of(hovedperson, fnr, fnr2));
+            list.sort(comparator);
+
+            assertThat(list.get(2).getPerson().getIdent()).isEqualTo(HOVEDPERSON_FNR);
+        }
+
+        @Test
+        void shouldSortFullMixWithHovedpersonLast() {
+            var hovedperson = buildOpprettRequest(HOVEDPERSON_FNR);
+            var fnr = buildOpprettRequest(FNR_IDENT);
+            var dnr = buildOpprettRequest(DNR_IDENT);
+            var npid = buildOpprettRequest(NPID_IDENT);
+
+            var list = new ArrayList<>(List.of(hovedperson, fnr, dnr, npid));
+            list.sort(comparator);
+
+            assertThat(list.get(0).getPerson().getIdent()).isEqualTo(NPID_IDENT);
+            assertThat(list.get(1).getPerson().getIdent()).isEqualTo(DNR_IDENT);
+            assertThat(list.get(3).getPerson().getIdent()).isEqualTo(HOVEDPERSON_FNR);
         }
     }
 }

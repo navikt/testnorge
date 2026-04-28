@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -23,12 +25,13 @@ public class NavPersonIdentifikatorService implements Validation<NavPersonIdenti
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .thenReturn(dbPerson);
+                .then(Mono.just(dbPerson));
     }
 
     protected Mono<NavPersonIdentifikatorDTO> handle(NavPersonIdentifikatorDTO navPersonIdentifikator, DbPerson dbPerson) {
 
         navPersonIdentifikator.setIdentifikator(dbPerson.getIdent());
+        navPersonIdentifikator.setGyldigFraOgMed(LocalDate.now().minusWeeks(1));
         return Mono.just(navPersonIdentifikator);
     }
 
