@@ -1,7 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -16,6 +14,8 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
@@ -71,8 +71,8 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                     objectMapper.readTree(isNull(bestilling.getBestKriterier()) ||
                                             EMPTY_JSON.equals(bestilling.getBestKriterier()) ? EMPTY_JSON :
                                             bestilling.getBestKriterier()));
-                        } catch (JsonProcessingException e) {
-                            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                        } catch (JacksonException e) {
+                            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getOriginalMessage());
                         }
 
                         bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class));

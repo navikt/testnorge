@@ -144,7 +144,10 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 		(a: any) => a?.amelding?.length > 0,
 	)
 	const erGammelSyntSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.syntSykemelding')
-	const erGammelDetaljertSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.detaljertSykemelding')
+	const erGammelDetaljertSykemeldingMal = _.has(
+		valgtMal,
+		'data.bestilling.sykemelding.detaljertSykemelding',
+	)
 	const erLignetInntektMal = _.has(valgtMal, 'data.bestilling.sigrunstub')
 	const erUtdatertMal =
 		erGammelFullmaktMal ||

@@ -1,6 +1,5 @@
 package no.nav.dolly.consumer.dokumentarkiv;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetDokument;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.Consumers;
@@ -10,6 +9,7 @@ import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 

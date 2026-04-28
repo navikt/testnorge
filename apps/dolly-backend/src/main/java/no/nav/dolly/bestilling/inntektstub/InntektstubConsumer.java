@@ -1,11 +1,10 @@
 package no.nav.dolly.bestilling.inntektstub;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.bestilling.inntektstub.command.InntektstubCheckImportCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubGetCommand;
-import no.nav.dolly.bestilling.inntektstub.command.InntektstubCheckImportCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubPostCommand;
 import no.nav.dolly.bestilling.inntektstub.domain.CheckImportResponse;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.util.List;

@@ -1,11 +1,11 @@
 package no.nav.testnav.apps.tenorsearchservice.domain;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 

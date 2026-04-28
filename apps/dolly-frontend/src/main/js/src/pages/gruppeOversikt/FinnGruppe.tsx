@@ -4,7 +4,7 @@ import { DollyApi } from '@/service/Api'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { useReduxDispatch, useReduxSelector } from '@/utils/hooks/useRedux'
 import { setGruppeNavigerTil } from '@/ducks/finnPerson'
-import { SoekTypeValg, GroupedOption } from './NavigeringTypes'
+import { GroupedOption, SoekTypeValg } from './NavigeringTypes'
 
 type ResponsGruppe = {
 	data: [

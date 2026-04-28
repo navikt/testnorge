@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
 import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { UseFormReturn } from 'react-hook-form/dist/types'

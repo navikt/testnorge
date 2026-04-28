@@ -26,20 +26,20 @@ public class AltinnAccessListResponseDTO {
     private String feilmelding;
     private HttpStatus status;
 
-    public static Mono<AltinnAccessListResponseDTO> of(WebClientError.Description description) {
-        return Mono.just(AltinnAccessListResponseDTO
-                .builder()
-                .status(description.getStatus())
-                .feilmelding(description.getMessage())
-                .build());
-    }
-
     public List<AccessListMembershipDTO> getData() {
 
         if (isNull(data)) {
             data = new ArrayList<>();
         }
         return data;
+    }
+
+    public static Mono<AltinnAccessListResponseDTO> of(WebClientError.Description description) {
+        return Mono.just(AltinnAccessListResponseDTO
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .build());
     }
 
     @Data

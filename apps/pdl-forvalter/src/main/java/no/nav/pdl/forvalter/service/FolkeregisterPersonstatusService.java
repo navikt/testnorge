@@ -14,7 +14,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
@@ -79,6 +82,12 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
         person.setIsChanged(true);
         return convert(person);
+    }
+
+    @Override
+    public void validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
+
+        // Ingen validering
     }
 
     private FolkeregisterPersonstatusDTO handle(FolkeregisterPersonstatusDTO personstatus, PersonDTO person) {
@@ -167,12 +176,6 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                 person.getFolkeregisterPersonstatus().getFirst().getStatus() != status;
     }
 
-    @Override
-    public void validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
-
-        // Ingen validering
-    }
-
     private static LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {
 
         return person.getBostedsadresse().stream()
@@ -180,6 +183,28 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(FoedselsdatoUtility.getFoedselsdato(person));
+    }
+
+    private static void fixGyldigTilOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
+
+        if (statusA.getGyldigFraOgMed().isEqual(statusB.getGyldigFraOgMed())) {
+            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed().plusDays(1));
+
+        } else if (statusA.getGyldigFraOgMed().plusDays(1).isBefore(statusB.getGyldigFraOgMed())) {
+            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed().minusDays(1));
+
+        } else {
+            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed());
+        }
+    }
+
+    private static void fixGyldigFraOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
+
+        if (statusA.getGyldigTilOgMed().isAfter(statusB.getGyldigFraOgMed()) ||
+                statusA.getGyldigTilOgMed().isEqual(statusB.getGyldigFraOgMed())) {
+
+            statusB.setGyldigFraOgMed(statusA.getGyldigTilOgMed().plusDays(1));
+        }
     }
 
     protected static void setGyldigTilOgMed(PersonDTO person) {
@@ -208,27 +233,5 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             folkeregisterPersonstatus.getFirst().setGyldigTilOgMed(null);
         }
 
-    }
-
-    private static void fixGyldigTilOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
-
-        if (statusA.getGyldigFraOgMed().isEqual(statusB.getGyldigFraOgMed())) {
-            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed().plusDays(1));
-
-        } else if (statusA.getGyldigFraOgMed().plusDays(1).isBefore(statusB.getGyldigFraOgMed())) {
-            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed().minusDays(1));
-
-        } else {
-            statusA.setGyldigTilOgMed(statusB.getGyldigFraOgMed());
-        }
-    }
-
-    private static void fixGyldigFraOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
-
-        if (statusA.getGyldigTilOgMed().isAfter(statusB.getGyldigFraOgMed()) ||
-                statusA.getGyldigTilOgMed().isEqual(statusB.getGyldigFraOgMed())) {
-
-            statusB.setGyldigFraOgMed(statusA.getGyldigTilOgMed().plusDays(1));
-        }
     }
 }

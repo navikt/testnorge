@@ -7,8 +7,8 @@ import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoComma
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.dto.JournalpostDTO;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;

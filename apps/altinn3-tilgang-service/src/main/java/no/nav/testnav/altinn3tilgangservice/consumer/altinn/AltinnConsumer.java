@@ -47,15 +47,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Component
 public class AltinnConsumer {
 
-    @Value("${altinn.max-pages}")
-    private int maxPages;
-
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
     private final MaskinportenConsumer maskinportenConsumer;
     private final BrregConsumer brregConsumer;
+    @Value("${altinn.max-pages}")
+    private int maxPages;
 
     public AltinnConsumer(
             AltinnConfig altinnConfig,

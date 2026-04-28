@@ -55,6 +55,17 @@ class IdentpoolControllerComponentTest extends AbstractTestcontainer {
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
 
+    private static Ident createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {
+        return Ident.builder()
+                .identtype(identtype)
+                .personidentifikator(ident)
+                .rekvireringsstatus(rekvireringsstatus)
+                .kjoenn(Kjoenn.MANN)
+                .foedselsdato(LocalDate.of(1980, 10, day))
+                .syntetisk(isSyntetisk(ident))
+                .build();
+    }
+
     @BeforeEach
     void populerDatabaseMedTestidenter() {
 
@@ -363,16 +374,5 @@ class IdentpoolControllerComponentTest extends AbstractTestcontainer {
                     assertThat(ident1.getRekvirertAv(), is("test"));
                 })
                 .verifyComplete();
-    }
-
-    private static Ident createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {
-        return Ident.builder()
-                .identtype(identtype)
-                .personidentifikator(ident)
-                .rekvireringsstatus(rekvireringsstatus)
-                .kjoenn(Kjoenn.MANN)
-                .foedselsdato(LocalDate.of(1980, 10, day))
-                .syntetisk(isSyntetisk(ident))
-                .build();
     }
 }

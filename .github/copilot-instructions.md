@@ -11,7 +11,7 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 
 ## Java
 
-- Java: Match the versions already configured in the touched module; in this repo that is typically Spring Boot 3.x and Java 21.
+- Java: Spring Boot 4.x, Java 21, unless otherwise specified.
 - Java tests: JUnit 5, AssertJ, Mockito; name test methods: `should<Behavior>()`.
 - Null handling: prefer `Optional` only at API boundaries.
 - Keep functions small; extract private helpers.
@@ -29,8 +29,7 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 
 ## JS / React / TS:
 
-- JavaScript: Match the versions already configured in the touched module; in this repo that is typically React 19, TypeScript 5, React Router, React Hook Form, useSWR, and Styled Components.
-- Functional components,
+- Javascript: React 19, TypeScript 5, React Router, React Hook Form, useSWR, Styled components, functional components,
   hooks unless otherwise specified.
 - JavaScript tests: MSW, React Testing Library, Vitest, Playwright for e2e.
 - TypeScript interfaces should be explicit for props
@@ -57,7 +56,34 @@ Generate code for a Spring Boot + Gradle + Java backend and React (TypeScript) f
 - Handle API errors gracefully
 - Provide meaningful error messages to users
 
+## Terminal Usage
+
+- Chain multiple commands together using `&&` or `;` instead of running separate terminal commands
+- Use background processes (`isBackground=true`) for long-running tasks, then check output later
+- Minimize the number of terminal sessions created - prefer reusing existing sessions
+
 ## What NOT to do
 
 - Do not invent APIs not present.
 - Do not add libraries unless existing repo dependencies or utilities are insufficient.
+
+## Deploy-Test Tags in Commit Messages
+
+**IMPORTANT: Always append deploy-test tags when generating commit messages.**
+
+Check every file being committed. If any file path starts with one of the directories below, include that directory's tag. Include ALL matching tags — do not skip any.
+
+| If a changed file starts with...  | Then add this tag                    |
+|-----------------------------------|--------------------------------------|
+| `apps/bruker-service/`            | `#deploy-test-bruker-service`        |
+| `apps/dolly-backend/`             | `#deploy-test-dolly-backend`         |
+| `apps/dolly-frontend/`            | `#deploy-test-dolly-frontend`        |
+| `apps/dolly-search-service/`      | `#deploy-test-dolly-search-service`  |
+| `apps/inntektsmelding-service/`   | `#deploy-test-inntektsmelding-service` |
+| `apps/pdl-forvalter/`             | `#deploy-test-pdl-forvalter`         |
+| `apps/profil-api/`                | `#deploy-test-profil-api`            |
+| `apps/sykemelding-api/`           | `#deploy-test-sykemelding-api`       |
+| `apps/varslinger-service/`        | `#deploy-test-varslinger-service`    |
+
+Ignore files under `libs/`, `plugins/`, `proxies/`, `.github/`, or any other path not listed above.
+Place tags on separate lines at the end of the message body, before any `Co-authored-by` trailer.

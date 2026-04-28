@@ -1,8 +1,5 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -21,14 +18,17 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -80,9 +80,19 @@ public class InntektsmeldingClient implements ClientRegister {
                         .doOnNext(status ->
                                 log.info("Inntektsmelding status for {} ", status))
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                        .onErrorResume(error -> getErrors(error, bestilling.getEnvironments()))
+                        .onErrorResume(error -> {
+                            log.error("Feil i inntektsmelding-flyten for {}: {}",
+                                    dollyPerson.getIdent(), error.getMessage(), error);
+                            return getErrors(error, bestilling.getEnvironments());
+                        })
                         .collect(Collectors.joining(","))
                         .flatMap(status -> oppdaterStatus(progress, status)));
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        // Inntektsmelding mangler pt. sletting
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
@@ -122,12 +132,6 @@ public class InntektsmeldingClient implements ClientRegister {
                         encodeStatus(WebClientError.describe(error).getMessage())));
     }
 
-    @Override
-    public void release(List<String> identer) {
-
-        // Inntektsmelding mangler pt. sletting
-    }
-
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
         return transactionHelperService.persister(progress,
@@ -146,12 +150,18 @@ public class InntektsmeldingClient implements ClientRegister {
         context.setProperty("ident", ident);
         context.setProperty("miljoe", miljoe);
         var inntektsmeldingRequest = mapperFacade.map(inntektsmelding, InntektsmeldingRequest.class, context);
+        log.info("Sender inntektsmelding for {} i {} med {} inntekt(er)",
+                ident, miljoe, inntektsmeldingRequest.getInntekter().size());
 
         return inntektsmeldingConsumer
                 .postInntektsmelding(inntektsmeldingRequest)
+                .doOnNext(response -> log.info("Mottatt inntektsmelding-respons for {} i {} - dokumenter: {}, error: {}",
+                        ident, miljoe, response.getDokumenter().size(), response.getError()))
                 .flatMap(response -> {
                     if (isBlank(response.getError())) {
-                        return transaksjonMappingService.saveAll(getMapping(response, ident, bestillingid, miljoe, inntektsmeldingRequest))
+                        var mappings = getMapping(response, ident, bestillingid, miljoe, inntektsmeldingRequest);
+                        log.info("Lagrer {} TransaksjonMapping(er) for {} i {}", mappings.size(), ident, miljoe);
+                        return transaksjonMappingService.saveAll(mappings)
                                 .thenReturn(miljoe + ":OK");
                     } else {
                         log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
@@ -196,7 +206,7 @@ public class InntektsmeldingClient implements ClientRegister {
 
         try {
             return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere dokument fra inntektsmelding", e);
         }
         return null;
@@ -217,7 +227,7 @@ public class InntektsmeldingClient implements ClientRegister {
             } else {
                 return new TransaksjonmappingIdDTO();
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for inntektsmelding", e);
             return new TransaksjonmappingIdDTO();
         }

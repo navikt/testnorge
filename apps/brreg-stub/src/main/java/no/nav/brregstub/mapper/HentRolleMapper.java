@@ -58,52 +58,63 @@ public class HentRolleMapper {
         melding.setSameiere(mapTilSameiere(rsOrganisasjon));
         melding.setTjeneste(TJENESTE_NAVN);
 
+        if (melding.getKontaktperson() == null) {
+            melding.setKontaktperson(new Grunndata.Melding.Kontaktperson());
+        }
+        if (melding.getStyre() == null) {
+            melding.setStyre(new Grunndata.Melding.Styre());
+        }
+        if (melding.getDeltakere() == null) {
+            melding.setDeltakere(new Grunndata.Melding.Deltakere());
+        }
+        if (melding.getKomplementar() == null) {
+            melding.setKomplementar(new Grunndata.Melding.Komplementar());
+        }
+        if (melding.getSameiere() == null) {
+            melding.setSameiere(new Grunndata.Melding.Sameiere());
+        }
+
         return melding;
     }
 
     private static Grunndata.Melding.Kontaktperson mapTilKontaktperson(RsOrganisasjon rsOrganisasjon) {
+        var kontaktperson = new Grunndata.Melding.Kontaktperson();
         if (rsOrganisasjon.getKontaktperson() != null) {
-            var kontaktperson = new Grunndata.Melding.Kontaktperson();
             kontaktperson.getSamendring().add(mapTilSamendring(rsOrganisasjon.getKontaktperson(), RolleKode.KONT));
-            return kontaktperson;
         }
-        return null;
+        return kontaktperson;
     }
 
     private static Grunndata.Melding.Styre mapTilStyre(RsOrganisasjon rsOrganisasjon) {
+        var styre = new Grunndata.Melding.Styre();
         if (rsOrganisasjon.getStyre() != null) {
-            var styre = new Grunndata.Melding.Styre();
             styre.getSamendring().add(mapTilSamendring(rsOrganisasjon.getStyre(), RolleKode.STYR));
-            return styre;
         }
-        return null;
+        return styre;
     }
 
     private static Grunndata.Melding.Deltakere mapTilDeltakere(RsOrganisasjon rsOrganisasjon) {
+        var deltakere = new Grunndata.Melding.Deltakere();
         if (rsOrganisasjon.getDeltakere() != null) {
-            var deltakere = new Grunndata.Melding.Deltakere();
             deltakere.getSamendring().add(mapTilSamendring(rsOrganisasjon.getDeltakere(), RolleKode.DELT));
-            return deltakere;
         }
-        return null;
+        return deltakere;
     }
 
     private static Grunndata.Melding.Komplementar mapTilKomplementar(RsOrganisasjon rsOrganisasjon) {
+        var komplementar = new Grunndata.Melding.Komplementar();
         if (rsOrganisasjon.getKomplementar() != null) {
-            var komplementar = new Grunndata.Melding.Komplementar();
             komplementar.getSamendring().add(mapTilSamendring(rsOrganisasjon.getKomplementar(), RolleKode.KOMP));
-            return komplementar;
         }
-        return null;
+        return komplementar;
     }
 
     private static Grunndata.Melding.Sameiere mapTilSameiere(RsOrganisasjon rsOrganisasjon) {
+        var sameier = new Grunndata.Melding.Sameiere();
         if (rsOrganisasjon.getSameier() != null) {
-            var sameier = new Grunndata.Melding.Sameiere();
             sameier.getSamendring().add(mapTilSamendring(rsOrganisasjon.getSameier(), RolleKode.SAM));
-            return sameier;
         }
-        return null;
+        return sameier;
     }
 
     private static Grunndata.Melding.Eierkommune.Samendring mapTilSamendring(

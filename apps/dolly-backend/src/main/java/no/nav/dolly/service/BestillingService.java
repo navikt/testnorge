@@ -1,9 +1,5 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
@@ -38,6 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -57,7 +56,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @RequiredArgsConstructor
 public class BestillingService {
 
@@ -685,9 +683,9 @@ public class BestillingService {
     private String toJson(Object object) {
         try {
             if (nonNull(object)) {
-                return objectMapper.writer().writeValueAsString(object);
+                return objectMapper.writeValueAsString(object);
             }
-        } catch (JsonProcessingException | RuntimeException e) {
+        } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);
         }
         return null;
@@ -706,13 +704,13 @@ public class BestillingService {
             try {
                 var node = objectMapper.readTree(kriterier);
                 if (node instanceof ObjectNode objectNode) {
-                    objectNode.fields().forEachRemaining(entry -> {
+                    objectNode.properties().forEach(entry -> {
                         if (!merged.has(entry.getKey())) {
                             merged.set(entry.getKey(), entry.getValue());
                         }
                     });
                 }
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 log.warn("Kunne ikke parse bestKriterier: {}", kriterier, e);
             }
         }

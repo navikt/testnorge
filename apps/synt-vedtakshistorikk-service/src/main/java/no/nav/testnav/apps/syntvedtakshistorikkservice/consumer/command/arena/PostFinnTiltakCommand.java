@@ -15,7 +15,10 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 
 @RequiredArgsConstructor
 @Slf4j

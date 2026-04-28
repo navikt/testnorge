@@ -1,7 +1,6 @@
 package no.nav.testnav.pdllagreservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -12,8 +11,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
-import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,15 +27,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @RequiredArgsConstructor
 public class OpensearchStartup {
 
-    @Value("${opensearch.index.personer}")
-    private String personIndex;
-
-    @Value("${opensearch.index.adresser}")
-    private String adresserIndex;
-
     private final OpensearchParamsConsumer opensearchParamsConsumer;
     private final ObjectMapper objectMapper;
     private final OpenSearchClient openSearchClient;
+    @Value("${opensearch.index.personer}")
+    private String personIndex;
+    @Value("${opensearch.index.adresser}")
+    private String adresserIndex;
 
     @PostConstruct
     public void opensearchStartup() {
@@ -50,6 +48,19 @@ public class OpensearchStartup {
                         "/config/adresse_mapping.json"))
                 .then(Mono.fromRunnable(() -> log.info("OpenSearch database oppdatering ferdig")))
                 .block();
+    }
+
+    public JsonNode getJsonResource(String pathResource) {
+
+        val resource = new ClassPathResource(pathResource);
+        try (val reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
+            val contents = reader.lines().collect(Collectors.joining("\n"));
+            return objectMapper.readTree(contents);
+
+        } catch (IOException e) {
+            log.error("Lesing av json ressurs {} feilet", pathResource, e);
+            return null;
+        }
     }
 
     private Mono<Void> updateIndexSetting(String index, String settings, String mappings) {
@@ -75,18 +86,5 @@ public class OpensearchStartup {
             log.error("Feilet å gjøre setting for index {}", index, e);
         }
         return Mono.empty();
-    }
-
-    public JsonNode getJsonResource(String pathResource) {
-
-        val resource = new ClassPathResource(pathResource);
-        try (val reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
-            val contents = reader.lines().collect(Collectors.joining("\n"));
-            return objectMapper.readTree(contents);
-
-        } catch (IOException e) {
-            log.error("Lesing av json ressurs {} feilet", pathResource, e);
-            return null;
-        }
     }
 }

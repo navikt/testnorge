@@ -19,6 +19,7 @@ jobs:
     with:
       working-directory: "apps/inntektsmelding-service"
       deploy-tag: "#deploy-inntektsmelding-service"
+      deploy-tag-test: "#deploy-test-inntektsmelding-service"
     permissions:
       contents: read
       id-token: write

@@ -1,10 +1,9 @@
 package no.nav.registre.testnorge.organisasjonservice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import no.nav.registre.testnorge.organisasjonservice.consumer.EregConsumer;
 import no.nav.registre.testnorge.organisasjonservice.domain.Organisasjon;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service

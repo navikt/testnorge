@@ -7,22 +7,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessToken {
 
-    @JsonProperty
-    private final String access_token;
+    @JsonProperty("access_token")
+    private String accessToken;
 
     public AccessToken(String token) {
-        this.access_token = token;
+        this.accessToken = token;
     }
 
-    /**
-     * Used by jackson
-     */
     public AccessToken() {
-        access_token = null;
     }
 
     @JsonIgnore
     public String getTokenValue() {
-        return access_token;
+        return accessToken;
     }
 }

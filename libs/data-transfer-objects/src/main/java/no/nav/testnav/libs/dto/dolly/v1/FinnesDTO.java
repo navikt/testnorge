@@ -1,10 +1,12 @@
 package no.nav.testnav.libs.dto.dolly.v1;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Data
@@ -13,5 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class FinnesDTO {
 
-    private Map<String, Boolean> iBruk;
+    @JsonProperty("iBruk")
+    @Builder.Default
+    private Map<String, Boolean> iBruk = Collections.emptyMap();
 }

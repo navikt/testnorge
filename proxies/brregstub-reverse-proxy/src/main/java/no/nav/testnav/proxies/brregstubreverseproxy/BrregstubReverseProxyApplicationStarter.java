@@ -3,12 +3,10 @@ package no.nav.testnav.proxies.brregstubreverseproxy;
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.brregstubreverseproxy.config.Consumers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -23,13 +21,8 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 public class BrregstubReverseProxyApplicationStarter {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(BrregstubReverseProxyApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("brregstubReverseProxyRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
 //                                           AzureNavTokenService tokenService,
                                            Consumers consumers) {
@@ -49,5 +42,11 @@ public class BrregstubReverseProxyApplicationStarter {
                         .uri(consumers.getBrregstub().getUrl())
                 )
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(BrregstubReverseProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

@@ -1,20 +1,20 @@
 package no.nav.testnav.apps.personservice.consumer.v2;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.apps.personservice.config.Consumers;
 import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlBolkPersonCommand;
 import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlPersonGetCommand;
 import no.nav.testnav.apps.personservice.provider.v2.PdlMiljoer;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;

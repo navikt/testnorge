@@ -49,5 +49,5 @@ dependencies {
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
     testImplementation "no.nav.testnav.libs:integration-test"
     testImplementation "org.assertj:assertj-core:$versions.assertj"
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
 }

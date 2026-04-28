@@ -3,15 +3,11 @@ package no.nav.registre.testnorge.miljoerservice.provider;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
-
 @DollySpringBootTest
-@AutoConfigureWebTestClient
 class MiljoerControllerTest {
 
     @Autowired
@@ -21,7 +17,6 @@ class MiljoerControllerTest {
     void hentAktiveMiljoer() {
 
         webClient
-                .mutateWith(mockJwt())
                 .get()
                 .uri("/api/v1/miljoer")
                 .exchange()

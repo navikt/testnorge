@@ -1,7 +1,5 @@
 package no.nav.dolly.libs.texas;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -10,6 +8,8 @@ import org.springframework.security.oauth2.server.resource.introspection.OAuth2I
 import org.springframework.security.oauth2.server.resource.introspection.ReactiveOpaqueTokenIntrospector;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,8 +57,8 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
             // Extract all claims from the introspection result.
             var attributes = new HashMap<String, Object>();
             root
-                    .fields()
-                    .forEachRemaining(entry -> attributes.put(entry.getKey(), entry.getValue()));
+                    .properties()
+                    .forEach(entry -> attributes.put(entry.getKey(), entry.getValue()));
 
             // Build "scope" or "roles" claim in second argument, for role based authorization? Check token.
             return Mono.just(new OAuth2IntrospectionAuthenticatedPrincipal(attributes, Collections.emptyList()));

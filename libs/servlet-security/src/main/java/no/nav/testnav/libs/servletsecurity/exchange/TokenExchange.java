@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -12,6 +11,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.Base64;
@@ -23,16 +24,15 @@ import java.util.Map;
 @Service
 public class TokenExchange implements ExchangeToken {
 
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().build();
+
     private final GetAuthenticatedResourceServerType getAuthenticatedTypeAction;
     private final Map<ResourceServerType, ExchangeToken> exchanges = new HashMap<>();
     private final Map<String, AccessToken> tokenCache = new HashMap<>();
-    private final ObjectMapper objectMapper;
 
-    public TokenExchange(GetAuthenticatedResourceServerType getAuthenticatedTypeAction, List<TokenService> tokenServices,
-                         ObjectMapper objectMapper) {
+    public TokenExchange(GetAuthenticatedResourceServerType getAuthenticatedTypeAction, List<TokenService> tokenServices) {
         this.getAuthenticatedTypeAction = getAuthenticatedTypeAction;
         tokenServices.forEach(tokenService -> exchanges.put(tokenService.getType(), tokenService));
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class TokenExchange implements ExchangeToken {
         var chunks = accessToken.getTokenValue().split("\\.");
         var body = Base64.getDecoder().decode(chunks[1]);
 
-        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt())
+        return Instant.ofEpochSecond(OBJECT_MAPPER.readTree(body).get("exp").asInt())
                 .minusSeconds(300)
                 .isBefore(Instant.now());
     }

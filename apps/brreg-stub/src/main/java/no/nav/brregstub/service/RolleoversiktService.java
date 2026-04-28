@@ -1,7 +1,5 @@
 package no.nav.brregstub.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +18,7 @@ import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import no.nav.brregstub.mapper.HentRolleMapper;
 import no.nav.brregstub.mapper.RolleoversiktMapper;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -192,7 +191,7 @@ public class RolleoversiktService {
                 rolleutskrift.setJson(objectMapper.writeValueAsString(eksisterendeOrganisasjon));
             }
             rolleRepository.save(rolleutskrift);
-        } catch (JsonProcessingException e) {
+        } catch (tools.jackson.core.JacksonException e) {
             log.error("Kunne ikke lagre organisasjon med orgnummer {}", nyOrganisasjon.getOrgnr(), e);
         }
     }

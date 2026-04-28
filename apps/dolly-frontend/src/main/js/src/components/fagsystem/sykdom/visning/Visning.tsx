@@ -1,4 +1,3 @@
-import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Sykemelding } from '../SykemeldingTypes'
 import { harGyldigTransaksjonsid } from '@/components/transaksjonid/GyldigeBestillinger'
@@ -37,8 +36,7 @@ export const SykemeldingPanel = ({
 	)
 
 	const hasAnyData =
-		(sykemeldinger && sykemeldinger.length > 0) ||
-		(bestillinger && bestillinger.length > 0)
+		(sykemeldinger && sykemeldinger.length > 0) || (bestillinger && bestillinger.length > 0)
 
 	if ((loading || nySykemeldingLoading) && !hasAnyData) {
 		return <Loading label="Laster sykemelding-data" />
@@ -49,8 +47,7 @@ export const SykemeldingPanel = ({
 	}
 
 	const manglerFagsystemData =
-		sjekkManglerSykemeldingBestilling(bestillinger) &&
-		sykemeldinger?.length === 0
+		sjekkManglerSykemeldingBestilling(bestillinger) && sykemeldinger?.length === 0
 
 	let render: React.ReactNode
 
@@ -83,7 +80,6 @@ SykemeldingPanel.filterValues = (
 
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data?.sykemelding &&
-			harGyldigTransaksjonsid(bestilling.id, allTransaksjonsid),
+			bestilling.data?.sykemelding && harGyldigTransaksjonsid(bestilling.id, allTransaksjonsid),
 	)
 }

@@ -1,7 +1,5 @@
 package no.nav.pdl.forvalter.consumer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
@@ -28,6 +26,8 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -124,7 +124,7 @@ public class PdlTestdataConsumer {
                 artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
             body = objectMapper.writeValueAsString(artifact);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return Flux.just(
                     OrdreResponseDTO.HendelseDTO.builder()
                             .id(value.getBody().getId())

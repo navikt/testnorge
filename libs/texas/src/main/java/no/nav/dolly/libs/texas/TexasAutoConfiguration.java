@@ -1,6 +1,5 @@
 package no.nav.dolly.libs.texas;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -10,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.web.reactive.function.client.WebClient;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 
@@ -17,6 +17,14 @@ import java.util.Optional;
 @EnableConfigurationProperties(TexasConsumers.class)
 @Slf4j
 public class TexasAutoConfiguration {
+
+    private static String resolve(String url, String fallback, String message)
+            throws TexasException {
+        return Optional
+                .ofNullable(url)
+                .or(() -> Optional.ofNullable(System.getenv(fallback)))
+                .orElseThrow(() -> new TexasException(message));
+    }
 
     @Bean
     Texas texasService(
@@ -44,14 +52,6 @@ public class TexasAutoConfiguration {
     @Profile("test")
     ReactiveJwtDecoder noOpJwtDecoder() {
         return new NoopJwtDecoder();
-    }
-
-    private static String resolve(String url, String fallback, String message)
-            throws TexasException {
-        return Optional
-                .ofNullable(url)
-                .or(() -> Optional.ofNullable(System.getenv(fallback)))
-                .orElseThrow(() -> new TexasException(message));
     }
 
     @Bean

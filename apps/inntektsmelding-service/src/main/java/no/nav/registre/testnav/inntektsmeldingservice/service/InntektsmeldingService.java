@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.inntektsmeldingservice.service;
 
-import io.swagger.v3.core.util.Json;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +39,8 @@ public class InntektsmeldingService {
                 .stream()
                 .map(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr()))
                 .toList();
+        log.info("Opprettet {} inntektsdokument(er) for {}, sender til dokmot. Nav-Call-Id: {}",
+                dokumentListe.size(), request.getArbeidstakerFnr(), navCallId);
         return dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId);
     }
 
@@ -48,11 +49,14 @@ public class InntektsmeldingService {
             String ident) {
 
         var inntektsmelding = RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident);
-        log.info("Inntektsmelding json {}", Json.pretty(inntektsmelding));
+        log.info("Genererer XML for {} med ytelse={}, aarsakTilInnsending={}",
+                ident, inntektsmelding.getYtelse(), inntektsmelding.getAarsakTilInnsending());
 
         var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(inntektsmelding);
+        log.info("Mottatt XML-respons for {}, lengde: {}", ident, xmlString != null ? xmlString.length() : 0);
+
         var model = repository.save(new InntektsmeldingModel());
-        log.info("Inntektsmelding generert med id: {}.\n{}", model.getId(), xmlString);
+        log.info("Lagret inntektsmelding med id {} for {}", model.getId(), ident);
         return InntektDokument
                 .builder()
                 .arbeidstakerFnr(ident)

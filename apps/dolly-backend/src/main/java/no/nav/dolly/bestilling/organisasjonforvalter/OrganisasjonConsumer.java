@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.organisasjonforvalter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.command.GetOrganisasjonCommand;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
@@ -20,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.UUID;

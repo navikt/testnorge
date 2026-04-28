@@ -80,7 +80,7 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
 
         var testgruppe = createTestgruppe("gruppe", bruker).block();
 
-        var bestilling = RsDollyBestillingRequest
+        var bestillingBase = RsDollyBestillingRequest
                 .builder()
                 .environments(Set.of("q1", "q2"))
                 .aareg(List.of(
@@ -152,6 +152,13 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
                                                 .build())
                                 .build())
                 .build();
+
+        var bestilling = new RsDollyBestillingRequest();
+        bestilling.setAntall(1);
+        bestilling.setEnvironments(bestillingBase.getEnvironments());
+        bestilling.setAareg(bestillingBase.getAareg());
+        bestilling.setPdldata(bestillingBase.getPdldata());
+        bestilling.setInntektsmelding(bestillingBase.getInntektsmelding());
 
         webTestClient
                 .post()

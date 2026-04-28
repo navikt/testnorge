@@ -17,10 +17,7 @@ export const PersonDropdown = () => {
 	const location = useLocation()
 	const { currentBruker } = useCurrentBruker()
 
-	const isActive = useMemo(
-		() => activePaths.includes(location?.pathname),
-		[location?.pathname],
-	)
+	const isActive = useMemo(() => activePaths.includes(location?.pathname), [location?.pathname])
 
 	return (
 		<ActionMenuWrapper

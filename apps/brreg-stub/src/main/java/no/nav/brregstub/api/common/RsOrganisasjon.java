@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,4 +39,18 @@ public class RsOrganisasjon {
     private RsSamendring komplementar;
     @Valid
     private RsSamendring deltakere;
+
+    public List<Integer> getUnderstatuser() {
+        if (isNull(understatuser)) {
+            understatuser = new LinkedList<>();
+        }
+        return understatuser;
+    }
+
+    public Integer getHovedstatus() {
+        if (isNull(hovedstatus)) {
+            hovedstatus = 0;
+        }
+        return hovedstatus;
+    }
 }

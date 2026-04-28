@@ -1,7 +1,5 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +7,11 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.Arbeids
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,22 +26,19 @@ public class ArenaBrukerUtils {
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsIARBS;
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedFormidlingsgruppe;
 
-    private final ServiceUtils serviceUtils;
-
     static {
         aktivitestsfaserMedInnsatsARBS = new HashMap<>();
         aktivitestsfaserMedInnsatsIARBS = new HashMap<>();
         aktivitestsfaserMedFormidlingsgruppe = new HashMap<>();
-        URL resourceInnsatserARBS = Resources.getResource("files/ARBS_aktfase_til_innsats.json");
-        URL resourceInnsatserIARBS = Resources.getResource("files/IARBS_aktfase_til_innsats.json");
-        URL resourceFormidling = Resources.getResource("files/aktfase_til_formidling.json");
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Map<String, List<KodeMedSannsynlighet>> mapFormidling = objectMapper.readValue(resourceFormidling, new TypeReference<>() {
+        ObjectMapper objectMapper = JsonMapper.builder().build();
+        try (var formidlingStream = Resources.getResource("files/aktfase_til_formidling.json").openStream();
+             var arbsStream = Resources.getResource("files/ARBS_aktfase_til_innsats.json").openStream();
+             var iarbsStream = Resources.getResource("files/IARBS_aktfase_til_innsats.json").openStream()) {
+            Map<String, List<KodeMedSannsynlighet>> mapFormidling = objectMapper.readValue(formidlingStream, new TypeReference<>() {
             });
-            Map<String, List<KodeMedSannsynlighet>> mapARBS = objectMapper.readValue(resourceInnsatserARBS, new TypeReference<>() {
+            Map<String, List<KodeMedSannsynlighet>> mapARBS = objectMapper.readValue(arbsStream, new TypeReference<>() {
             });
-            Map<String, List<KodeMedSannsynlighet>> mapIARBS = objectMapper.readValue(resourceInnsatserIARBS, new TypeReference<>() {
+            Map<String, List<KodeMedSannsynlighet>> mapIARBS = objectMapper.readValue(iarbsStream, new TypeReference<>() {
             });
 
             aktivitestsfaserMedFormidlingsgruppe.putAll(mapFormidling);
@@ -51,6 +48,8 @@ public class ArenaBrukerUtils {
             log.error("Kunne ikke laste inn aktivitetsfase fordeling(er).", e);
         }
     }
+
+    private final ServiceUtils serviceUtils;
 
     public Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(String aktivitetsfase, String formidlingsgruppe) {
         if (formidlingsgruppe.equals("IARBS")) {
@@ -68,6 +67,16 @@ public class ArenaBrukerUtils {
         }
     }
 
+    public static List<String> hentIdentListe(
+            List<Arbeidsoeker> arbeidsoekere
+    ) {
+        if (arbeidsoekere.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).toList();
+    }
+
     private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(
             String aktivitetsfase,
             Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsats) {
@@ -77,15 +86,5 @@ public class ArenaBrukerUtils {
         } else {
             throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
         }
-    }
-
-    public static List<String> hentIdentListe(
-            List<Arbeidsoeker> arbeidsoekere
-    ) {
-        if (arbeidsoekere.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).toList();
     }
 }

@@ -1,23 +1,23 @@
 package no.nav.testnav.joarkdokumentservice.consumer.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.util.List;
 
-@Value
+@Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class JournalpostDTO {
 
-    Integer journalpostId;
-    String tittel;
-    String temanavn;
-    String behandlingstema;
-    String behandlingstemanavn;
-    AvsenderMottakerDTO avsenderMottaker;
-    List<DokumentDTO> dokumenter;
-    SakDTO sak;
-    String journalfoerendeEnhet;
+    private Integer journalpostId;
+    private String tittel;
+    private String temanavn;
+    private String behandlingstema;
+    private String behandlingstemanavn;
+    private AvsenderMottakerDTO avsenderMottaker;
+    private List<DokumentDTO> dokumenter;
+    private SakDTO sak;
+    private String journalfoerendeEnhet;
 }
