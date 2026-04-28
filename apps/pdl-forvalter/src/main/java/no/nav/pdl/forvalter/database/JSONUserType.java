@@ -53,6 +53,7 @@ public class JSONUserType implements UserType<PersonDTO> {
         objectMapper = JsonMapper.builder()
                 .addModule(simpleModule)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 .configure(MapperFeature.USE_GETTERS_AS_SETTERS, false)
                 .filterProvider(new SimpleFilterProvider().setFailOnUnknownId(false))
