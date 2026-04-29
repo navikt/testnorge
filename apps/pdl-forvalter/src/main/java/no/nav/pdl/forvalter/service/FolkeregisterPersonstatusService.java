@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
@@ -38,6 +38,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterPersonstatusDTO, PersonDTO> {
+
 
     public Mono<DbPerson> convert(DbPerson dbPerson) {
 
@@ -166,7 +167,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     private static boolean isNotCurrentStatus(FolkeregisterPersonstatus status, PersonDTO person) {
 
         return person.getFolkeregisterPersonstatus().isEmpty() ||
-                person.getFolkeregisterPersonstatus().getFirst().getStatus() != status;
+               person.getFolkeregisterPersonstatus().getFirst().getStatus() != status;
     }
 
     @Override
@@ -219,7 +220,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     private static void fixGyldigFraOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
 
         if (statusA.getGyldigTilOgMed().isAfter(statusB.getGyldigFraOgMed()) ||
-                statusA.getGyldigTilOgMed().isEqual(statusB.getGyldigFraOgMed())) {
+            statusA.getGyldigTilOgMed().isEqual(statusB.getGyldigFraOgMed())) {
 
             statusB.setGyldigFraOgMed(statusA.getGyldigTilOgMed().plusDays(1));
         }

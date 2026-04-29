@@ -21,6 +21,7 @@ public class IdenttypeUtility {
             return FNR;
         }
     }
+
     public static boolean isNotNpidIdent(String ident) {
 
         return !isNpidIdent(ident);

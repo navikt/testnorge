@@ -22,8 +22,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DbAlias {
 
-    private static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
-
     @Id
     private Long id;
 
