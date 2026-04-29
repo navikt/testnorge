@@ -134,7 +134,7 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 
 	const valgtMalValue = formMethods.watch('mal')
 	const valgtMal = malOptions.find((m) => m.value === valgtMalValue)
-	const bestillingData = valgtMal?.data?.bestilling || opts.mal?.bestilling
+	const bestillingData = valgtMal?.data?.bestilling || (valgtMalValue ? opts.mal?.bestilling : undefined)
 	const valgtMalTpsf = _.get(bestillingData, 'tpsf')
 	const erTpsfMal = tpsfAttributter.some((a) => _.has(valgtMalTpsf, a))
 	const erGammelFullmaktMal = _.has(bestillingData, 'pdldata.person.fullmakt.[0].omraader.[0]')
