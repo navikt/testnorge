@@ -12,6 +12,7 @@ public class YAMLUtil {
         objectMapper = YAMLMapper.builder()
                 .findAndAddModules()
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
                 .build();
     }
 
