@@ -22,7 +22,7 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String gcpSecretManager = "8.0.2";
 
         public String apacheAvro = "1.12.1";
-        public String apacheKafka = "4.0.0";
+        public String apacheKafka = "4.1.1";
         public String apachePoi = "5.5.1";
         public String assertj = "3.27.6";
         public String avroSerializer = "7.9.5";

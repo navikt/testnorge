@@ -24,7 +24,7 @@ public class Organisasjon {
 
         navn = dto.getNavn().getNavnelinje1();
         orgnummer = dto.getOrganisasjonsnummer();
-        juridiskEnhet = dto.getParents().isEmpty() ? null : dto.getParents().get(0).getOrganisasjonsnummer();
+        juridiskEnhet = dto.getParents() == null || dto.getParents().isEmpty() ? null : dto.getParents().get(0).getOrganisasjonsnummer();
         redigertnavn = dto.getNavn().getRedigertnavn();
         enhetType = dto.getDetaljer().getEnhetstype();
 
