@@ -262,8 +262,8 @@ public class PersonService {
     private Mono<Void> checkAlias(String ident) {
 
         return aliasRepository.findByTidligereIdent(ident)
-                .flatMap(eksisterendeIdent -> Mono.error(
-                        new InvalidRequestException(format(VIOLATION_ALIAS_EXISTS, ident))))
+                .flatMap(eksisterendeIdent -> personRepository.findById(eksisterendeIdent.getPersonId()))
+                .flatMap(dbPerson -> Mono.error(new InvalidRequestException(format(VIOLATION_ALIAS_EXISTS, dbPerson.getIdent()))))
                 .then();
     }
 

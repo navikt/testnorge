@@ -73,7 +73,6 @@ public class PersonArtifactService {
                 .flatMap(sikkerhetstiltakService::convert)
                 .flatMap(navPersonIdentifikatorService::convert)
                 .flatMap(folkeregisterPersonstatusService::convert)
-                .flatMap(identtypeService::convert)
-                .flatMap(folkeregisterPersonstatusService::convert);
+                .flatMap(identtypeService::convert);
     }
 }

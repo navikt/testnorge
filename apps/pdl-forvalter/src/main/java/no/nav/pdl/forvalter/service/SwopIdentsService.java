@@ -10,7 +10,6 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.utils.ArtifactUtils;
-import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -74,7 +73,7 @@ public class SwopIdentsService {
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
         person1.getPerson().setAdressebeskyttelse(person2.getPerson().getAdressebeskyttelse());
-        person1.getPerson().setFolkeregisterPersonstatus(person2.getPerson().getFolkeregisterPersonstatus());
+        person1.getPerson().getFolkeregisterPersonstatus().addAll(person2.getPerson().getFolkeregisterPersonstatus());
         if (isNpidIdent(person1.getIdent())) {
             person1.getPerson().setNavPersonIdentifikator(person2.getPerson().getNavPersonIdentifikator());
         }
@@ -123,7 +122,7 @@ public class SwopIdentsService {
         person1.getPerson().setNyident(null);
         person2.getPerson().setNyident(null);
 
-        if (person1.getPerson().getSivilstand().isEmpty() && FoedselsdatoUtility.isMyndig(person1.getPerson())) {
+        if (person1.getPerson().getSivilstand().isEmpty()) {
             person1.getPerson().setSivilstand(new ArrayList<>(List.of(SivilstandDTO.builder()
                     .id(1)
                     .type(Sivilstand.UGIFT)
