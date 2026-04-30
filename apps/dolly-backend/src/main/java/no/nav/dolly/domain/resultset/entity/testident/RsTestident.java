@@ -15,7 +15,7 @@ import java.util.List;
 public class RsTestident {
 
     private String ident;
-    private boolean ibruk;
+    private Boolean iBruk;
     private String beskrivelse;
     private List<Long> bestillingId;
     private Testident.Master master;
