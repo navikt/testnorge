@@ -190,7 +190,7 @@ export const TreffListe = ({
 					<PersonVisning
 						person={valgtPersonData?.data}
 						ident={valgtPerson?.id}
-						ibruk={valgtPerson?.ibruk}
+						iBruk={valgtPerson?.iBruk}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
 						inkluderPartnere={inkluderPartnere}
