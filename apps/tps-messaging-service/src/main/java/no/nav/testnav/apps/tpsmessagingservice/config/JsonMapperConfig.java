@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Configuration
 public class JsonMapperConfig {
 
-    @Bean
+    @Bean(name = "dollyDateTimeModule")
     public SimpleModule dollyDateTimeModule() {
         return new SimpleModule("dollyDateTimeModule")
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
@@ -57,10 +57,10 @@ public class JsonMapperConfig {
         @Override
         public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            if (isBlank(node.asString())) {
                 return null;
             }
-            return ZonedDateTime.parse(node.asText(), DateTimeFormatter.ISO_DATE_TIME);
+            return ZonedDateTime.parse(node.asString(), DateTimeFormatter.ISO_DATE_TIME);
         }
     }
 
@@ -68,10 +68,10 @@ public class JsonMapperConfig {
         @Override
         public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            if (isBlank(node.asString())) {
                 return null;
             }
-            String dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
+            String dateTime = node.asString().length() > 10 ? node.asString().substring(0, 10) : node.asString();
             return LocalDate.parse(dateTime);
         }
     }
@@ -80,10 +80,10 @@ public class JsonMapperConfig {
         @Override
         public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            if (isBlank(node.asString())) {
                 return null;
             }
-            String dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            String dateTime = node.asString().length() > 19 ? node.asString().substring(0, 19) : node.asString();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }
