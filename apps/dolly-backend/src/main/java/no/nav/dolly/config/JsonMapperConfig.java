@@ -2,9 +2,9 @@ package no.nav.dolly.config;
 
 import no.nav.testnav.libs.dto.jackson.v1.CaseInsensitiveEnumModule;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
@@ -14,6 +14,7 @@ import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueDeserializer;
 import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
 
 import java.time.Instant;
@@ -30,16 +31,20 @@ public class JsonMapperConfig {
 
     private static final String YEAR_MONTH = "yyyy-MM";
 
+
     @Bean
-    public JsonMapperBuilderCustomizer jsonMapperBuilderCustomizer(CaseInsensitiveEnumModule caseInsensitiveEnumModule, SimpleModule dollyDateTimeModule) {
-        return builder -> builder
+    @Primary
+    public JsonMapper jsonMapper() {
+        return JsonMapper.builder()
                 .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-                .addModule(caseInsensitiveEnumModule)
-                .addModule(dollyDateTimeModule);
+                .addModule(caseInsensitiveEnumModule())
+                .addModule(dollyDateTimeModule())
+                .build();
     }
+
 
     @Bean
     @ConditionalOnMissingBean

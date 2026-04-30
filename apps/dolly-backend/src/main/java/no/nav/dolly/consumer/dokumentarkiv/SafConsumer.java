@@ -1,5 +1,6 @@
 package no.nav.dolly.consumer.dokumentarkiv;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetDokument;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.Consumers;
@@ -9,9 +10,6 @@ import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
-
-import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Service
 public class SafConsumer {
@@ -23,7 +21,7 @@ public class SafConsumer {
     public SafConsumer(
             Consumers consumers,
             TokenExchange tokenService,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient) {
 
         serverProperties = consumers.getTestnavDollyProxy();
@@ -31,7 +29,7 @@ public class SafConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
     }
 
