@@ -17,6 +17,7 @@ public class KafkaContainerUtils {
 
         val factory = new ConcurrentKafkaListenerContainerFactory<K, V>();
         factory.setConsumerFactory(kafkaConsumerFactory);
+        factory.setBatchListener(true);
         factory.getContainerProperties().setAuthExceptionRetryInterval(Duration.ofMillis(msWait));
         factory.getContainerProperties().setSubBatchPerPartition(false);
         return factory;
