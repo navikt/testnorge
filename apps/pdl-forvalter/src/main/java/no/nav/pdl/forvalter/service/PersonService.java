@@ -36,9 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -125,24 +127,20 @@ public class PersonService {
                                 Flux.just(dbPerson.getId()),
                                 relasjonRepository.findByPersonId(dbPerson.getId())
                                         .map(DbRelasjon::getRelatertPersonId))
-                        .flatMap(relatertPersonId -> personRepository.findById(relatertPersonId)
-                                // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
-                                .flatMap(relatertPerson -> aliasRepository.existsByTidligereIdent(relatertPerson.getIdent())
-                                        .zipWith(Mono.just(relatertPerson))))
-                        .filter(tuple -> isNotTrue(tuple.getT1())))
-                .reduce(new HashSet<String>(), (set, tuple) -> {
-                    set.add(tuple.getT2().getIdent());
-                    return set;
-                })
+                        .flatMap(personRepository::findById)
+                        .map(DbPerson::getIdent))
+                .collect(Collectors.toCollection(HashSet::new))
                 .flatMap(identerSomSkalSlettesHosPdl -> pdlTestdataConsumer.delete(identerSomSkalSlettesHosPdl)
                         .thenReturn(identerSomSkalSlettesHosPdl))
                 .flatMap(identerSomSkalFriMarkeresIIdentpool ->
                         identPoolConsumer.releaseIdents(identerSomSkalFriMarkeresIIdentpool, Bruker.PDLF)
                                 .thenReturn(identerSomSkalFriMarkeresIIdentpool))
+                .flatMap(identerSomSkalSlettesIAliaser -> aliasRepository.deleteByIdentIn(identerSomSkalSlettesIAliaser)
+                        .then(Mono.just(identerSomSkalSlettesIAliaser)))
                 .flatMap(identerSomSkalSlettesIRelasjoner -> relasjonRepository.deleteByPersonIdentIn(identerSomSkalSlettesIRelasjoner)
-                        .thenReturn(identerSomSkalSlettesIRelasjoner))
+                        .then(Mono.just(identerSomSkalSlettesIRelasjoner)))
                 .flatMap(identerSomSkalSlettesIPdlForvalter -> personRepository.deleteByIdentIn(identerSomSkalSlettesIPdlForvalter)
-                        .thenReturn(identerSomSkalSlettesIPdlForvalter))
+                        .then(Mono.just(identerSomSkalSlettesIPdlForvalter)))
                 .doOnNext(identer -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
                 .then();
     }
@@ -155,17 +153,21 @@ public class PersonService {
         if (nonNull(identer) && !identer.isEmpty()) {
 
             return aliasRepository.findByTidligereIdentIn(identer)
-                    .map(DbAlias::getPersonId)
-                    .flatMap(personRepository::findById)
-                    .map(DbPerson::getIdent)
-                    .reduce(new HashSet<String>(), (set, ident) -> {
-                        set.add(ident);
-                        return set;
-                    })
-                    .map(identerFraAlias -> {
-                        val identerSet = new HashSet<>(identer);
-                        identerSet.removeAll(identerFraAlias);
-                        return identerSet;
+                    .collectList()
+                    .flatMap(historikk -> Mono.zip(
+                            Flux.fromIterable(historikk)
+                                    .map(DbAlias::getPersonId)
+                                    .flatMap(personRepository::findById)
+                                    .map(DbPerson::getIdent)
+                                    .collect(Collectors.toSet()),
+                            Flux.fromIterable(historikk)
+                                    .map(DbAlias::getTidligereIdent)
+                                    .collect(Collectors.toSet())))
+                    .map(oversikt -> {
+                        val query = new HashSet<>(identer);
+                        query.addAll(oversikt.getT1());
+                        query.removeAll(oversikt.getT2());
+                        return query;
                     })
                     .flatMapMany(personRepository::findByIdentInOrderBySistOppdatertDesc)
                     .collectList()

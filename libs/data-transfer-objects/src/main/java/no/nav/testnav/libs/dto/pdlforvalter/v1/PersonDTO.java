@@ -347,4 +347,7 @@ public class PersonDTO implements Serializable {
 
         return VALIDS.contains(beregnetRestSifferK1);
     }
+
+    public void getFol() {
+    }
 }

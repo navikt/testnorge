@@ -72,8 +72,19 @@ public class SwopIdentsService {
         person1.getPerson().getFalskIdentitet().addAll(person2.getPerson().getFalskIdentitet());
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
-        person1.getPerson().setAdressebeskyttelse(person2.getPerson().getAdressebeskyttelse());
-        person1.getPerson().getFolkeregisterPersonstatus().addAll(person2.getPerson().getFolkeregisterPersonstatus());
+
+        person2.getPerson().getAdressebeskyttelse().stream()
+                .filter(status -> person1.getPerson().getAdressebeskyttelse().stream()
+                        .noneMatch(s -> s.getGradering().equals(status.getGradering())))
+                .forEach(status -> person1.getPerson().getAdressebeskyttelse().add(status));
+        ArtifactUtils.renumberId(person1.getPerson().getAdressebeskyttelse());
+
+        person2.getPerson().getFolkeregisterPersonstatus().stream()
+                .filter(status -> person1.getPerson().getFolkeregisterPersonstatus().stream()
+                        .noneMatch(s -> s.getStatus().equals(status.getStatus())))
+                .forEach(status -> person1.getPerson().getFolkeregisterPersonstatus().add(status));
+        ArtifactUtils.renumberId(person1.getPerson().getFolkeregisterPersonstatus());
+
         if (isNpidIdent(person1.getIdent())) {
             person1.getPerson().setNavPersonIdentifikator(person2.getPerson().getNavPersonIdentifikator());
         }
