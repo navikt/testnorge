@@ -41,6 +41,7 @@ public class JsonMapperConfig {
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
                 .addModule(dollyDateTimeModule())
                 .build();
     }
