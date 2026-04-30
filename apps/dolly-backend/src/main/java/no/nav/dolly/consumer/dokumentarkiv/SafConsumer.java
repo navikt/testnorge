@@ -1,6 +1,5 @@
 package no.nav.dolly.consumer.dokumentarkiv;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetDokument;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.Consumers;
@@ -10,6 +9,9 @@ import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
+
+import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Service
 public class SafConsumer {
@@ -33,7 +35,7 @@ public class SafConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "saf_getDokument"})
+    @Timed(name = "providers", tags = { "operation", "saf_getDokument" })
     public Mono<DokarkivResponse> getDokument(String miljoe, String journalpostId, String dokumentInfoId, String variantFormat) {
 
         return tokenService.exchange(serverProperties)
