@@ -44,6 +44,7 @@ dependencies {
 
     implementation "org.ehcache:ehcache:3.10.8"
     implementation "com.fasterxml.jackson.core:jackson-core"
+    implementation "tools.jackson.core:jackson-databind"
 
     runtimeOnly "org.postgresql:r2dbc-postgresql"
     runtimeOnly "io.r2dbc:r2dbc-pool"

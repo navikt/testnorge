@@ -5,14 +5,14 @@ import React from 'react'
 type ListeValgProps = {
 	person: {
 		id: string
-		ibruk: boolean
+		iBruk: boolean
 	}
 	markertePersoner: Array<string>
 	setMarkertePersoner: Function
 }
 
 export const ListeValg = ({ person, markertePersoner, setMarkertePersoner }: ListeValgProps) => {
-	const { id, ibruk } = person
+	const { id, iBruk } = person
 
 	const handleChangeCheckbox = (val: any) => {
 		if (val?.target?.checked) {
@@ -22,7 +22,7 @@ export const ListeValg = ({ person, markertePersoner, setMarkertePersoner }: Lis
 		}
 	}
 
-	return ibruk ? (
+	return iBruk ? (
 		<NavigerTilPerson ident={id} />
 	) : (
 		<div

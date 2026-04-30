@@ -12,7 +12,7 @@ import lombok.Setter;
 public class IdentAttributesResponse {
 
     private String ident;
-    private boolean ibruk;
+    private Boolean iBruk;
     private String beskrivelse;
     private Long gruppeId;
 }

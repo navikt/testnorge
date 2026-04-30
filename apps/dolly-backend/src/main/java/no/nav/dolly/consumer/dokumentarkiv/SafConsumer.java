@@ -9,7 +9,7 @@ import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -23,7 +23,7 @@ public class SafConsumer {
     public SafConsumer(
             Consumers consumers,
             TokenExchange tokenService,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient) {
 
         serverProperties = consumers.getTestnavDollyProxy();
@@ -31,11 +31,11 @@ public class SafConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "saf_getDokument"})
+    @Timed(name = "providers", tags = { "operation", "saf_getDokument" })
     public Mono<DokarkivResponse> getDokument(String miljoe, String journalpostId, String dokumentInfoId, String variantFormat) {
 
         return tokenService.exchange(serverProperties)

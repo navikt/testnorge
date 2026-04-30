@@ -204,7 +204,7 @@ export default function PersonListe({
 			text: 'Brukt',
 			width: '15',
 			style: { paddingLeft: '3px' },
-			dataField: 'ibruk',
+			dataField: 'iBruk',
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => (
