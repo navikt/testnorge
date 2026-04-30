@@ -27,6 +27,7 @@ import org.json.XML;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collection;
 import java.util.List;
@@ -54,16 +55,16 @@ public class PersonService {
     private final ServicerutineConsumer servicerutineConsumer;
     private final JAXBContext requestContext;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final MapperFacade mapperFacade;
 
     public PersonService(ServicerutineConsumer servicerutineConsumer,
-                         ObjectMapper objectMapper,
+                         JsonMapper jsonMapper,
                          MapperFacade mapperFacade,
                          TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
 
         this.servicerutineConsumer = servicerutineConsumer;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.mapperFacade = mapperFacade;
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
         this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
@@ -85,7 +86,7 @@ public class PersonService {
 
             var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
 
-            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
+            return jsonMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
         }
     }
 

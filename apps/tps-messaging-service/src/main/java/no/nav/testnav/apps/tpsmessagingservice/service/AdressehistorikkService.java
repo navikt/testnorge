@@ -21,6 +21,7 @@ import org.json.XML;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,18 +39,18 @@ public class AdressehistorikkService {
     private final JAXBContext requestContext;
     private final ServicerutineConsumer servicerutineConsumer;
     private final MapperFacade mapperFacade;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public AdressehistorikkService(TestmiljoerServiceConsumer testmiljoerServiceConsumer,
                                    ServicerutineConsumer servicerutineConsumer,
                                    MapperFacade mapperFacade,
-                                   ObjectMapper objectMapper) throws JAXBException {
+                                   JsonMapper jsonMapper) throws JAXBException {
 
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
         this.requestContext = JAXBContext.newInstance(TpsServicerutineAksjonsdatoRequest.class);
         this.servicerutineConsumer = servicerutineConsumer;
         this.mapperFacade = mapperFacade;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
     }
 
     public Mono<List<AdressehistorikkDTO>> hentHistorikk(AdressehistorikkRequest request, List<String> miljoer) {
@@ -125,7 +126,7 @@ public class AdressehistorikkService {
         } else {
 
             var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
-            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS018Response.class);
+            return jsonMapper.readValue(jsonRoot.toString(), TpsServicerutineS018Response.class);
         }
     }
 }

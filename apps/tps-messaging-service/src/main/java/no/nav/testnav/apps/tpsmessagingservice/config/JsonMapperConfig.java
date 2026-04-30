@@ -2,13 +2,18 @@ package no.nav.testnav.apps.tpsmessagingservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.ValueDeserializer;
 import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.cfg.EnumFeature;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
 
 import java.time.LocalDate;
@@ -21,15 +26,24 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Configuration
 public class JsonMapperConfig {
 
-    @Bean(name = "dollyDateTimeModule")
-    public SimpleModule dollyDateTimeModule() {
-        return new SimpleModule("dollyDateTimeModule")
-                .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
-                .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
-                .addDeserializer(LocalDate.class, new DollyLocalDateDeserializer())
-                .addSerializer(LocalDate.class, new LocalDateSerializer())
-                .addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer())
-                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
+    @Bean
+    @Primary
+    public JsonMapper jsonMapper() {
+
+        return JsonMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .configure(EnumFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .addModule(new SimpleModule("dollyDateTimeModule")
+                        .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
+                        .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
+                        .addDeserializer(LocalDate.class, new DollyLocalDateDeserializer())
+                        .addSerializer(LocalDate.class, new LocalDateSerializer())
+                        .addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer())
+                        .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer()))
+                .build();
     }
 
     private static class LocalDateSerializer extends ValueSerializer<LocalDate> {
