@@ -20,7 +20,6 @@ import no.nav.tps.xjc.ctg.domain.s018.SRnavnType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDate;

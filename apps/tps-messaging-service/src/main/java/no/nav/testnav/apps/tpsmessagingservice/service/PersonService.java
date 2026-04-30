@@ -26,7 +26,6 @@ import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collection;
