@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.EnumFeature;
 import tools.jackson.dataformat.xml.XmlMapper;
 
 import java.util.HashMap;
@@ -49,6 +50,7 @@ public class IdentService {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
                 .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build();
