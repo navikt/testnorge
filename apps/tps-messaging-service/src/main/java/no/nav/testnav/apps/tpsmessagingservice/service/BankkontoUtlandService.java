@@ -14,6 +14,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class BankkontoUtlandService {
 
         Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        return miljoerMono.map(resolvedMiljoer -> {
+        return miljoerMono.publishOn(Schedulers.boundedElastic()).map(resolvedMiljoer -> {
             var context = new MappingContext.Factory().getContext();
             context.setProperty("ident", ident);
 

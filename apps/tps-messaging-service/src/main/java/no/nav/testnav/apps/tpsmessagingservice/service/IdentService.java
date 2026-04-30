@@ -11,6 +11,7 @@ import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.SerializationFeature;
@@ -66,7 +67,7 @@ public class IdentService {
                 ? (isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer))
                 : Mono.just(miljoer);
 
-        return miljoerMono.map(resolvedMiljoer -> {
+        return miljoerMono.publishOn(Schedulers.boundedElastic()).map(resolvedMiljoer -> {
             Map<String, TpsServicerutineM201Response> tpsResponse = new HashMap<>();
 
             if (isNull(miljoer) || !miljoer.contains("pp")) {

@@ -14,6 +14,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -62,7 +63,7 @@ public class EgenansattService {
 
         Mono<List<String>> miljoerMono = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        return miljoerMono.map(resolvedMiljoer -> {
+        return miljoerMono.publishOn(Schedulers.boundedElastic()).map(resolvedMiljoer -> {
             var context = new MappingContext.Factory().getContext();
             context.setProperty("ident", ident);
             context.setProperty("fraOgMed", fraOgMed);

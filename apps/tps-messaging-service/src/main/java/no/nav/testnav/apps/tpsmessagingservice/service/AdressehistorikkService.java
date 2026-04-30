@@ -20,6 +20,7 @@ import no.nav.tps.xjc.ctg.domain.s018.SRnavnType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
@@ -56,7 +57,7 @@ public class AdressehistorikkService {
 
         Mono<List<String>> miljoerMono = miljoer.isEmpty() ? testmiljoerServiceConsumer.getMiljoer() : Mono.just(miljoer);
 
-        return miljoerMono.map(resolvedMiljoer -> {
+        return miljoerMono.publishOn(Schedulers.boundedElastic()).map(resolvedMiljoer -> {
             var tpsPersoner = readFromTps(request.getIdent(),
                     nonNull(request.getAksjonsdato()) ? request.getAksjonsdato() : LocalDate.now(),
                     resolvedMiljoer);
