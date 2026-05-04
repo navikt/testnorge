@@ -37,7 +37,7 @@ export default class StepErrorBoundary extends React.Component<Props, { error: a
 			return (
 				<Alert variant="error" style={{ margin: '1rem 0' }}>
 					{chunkError
-						? 'En ny versjon av Dolly er akkurat sluppet. Siden bør lastes inn på nytt for å unngå problemer.'
+						? 'En ny versjon av Dolly er tilgjengelig. Siden bør lastes inn på nytt for å unngå problemer.'
 						: `Noe gikk galt ved visning av "${this.props.stepLabel}".`}
 					<div style={{ marginTop: '0.5rem' }}>
 						<Button variant="secondary" size="small" onClick={() => window.location.reload()}>

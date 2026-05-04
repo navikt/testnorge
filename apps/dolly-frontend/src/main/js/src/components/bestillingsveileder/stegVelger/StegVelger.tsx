@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext, useState } from 'react'
+import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -6,24 +6,21 @@ import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
 	REGEX_BACKEND_ORGANISASJONER,
-	useMatchMutate,
+	useMatchMutate
 } from '@/utils/hooks/useMutate'
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType,
+	BestillingsveilederContextType
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import {
-	ShowErrorContext,
-	ShowErrorContextType,
-} from '@/components/bestillingsveileder/ShowErrorContext'
+import { ShowErrorContext, ShowErrorContextType } from '@/components/bestillingsveileder/ShowErrorContext'
 import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
 import Loading from '@/components/ui/loading/Loading'
 import {
 	DollyIdentValidation,
-	DollyOrganisasjonValidation,
+	DollyOrganisasjonValidation
 } from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyIdentValidation'
 import { lazyWithPreload } from '@/utils/lazyWithPreload'
 import Steg0 from './steg/steg0/Steg0'
@@ -35,6 +32,13 @@ import { useMalFormSync } from './hooks/useMalFormSync'
 import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
 import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
 import StepErrorBoundary from './StepErrorBoundary'
+import { toast } from 'react-toastify'
+import {
+	clearBestillingFormState,
+	loadBestillingFormState,
+	saveBestillingFormState
+} from '@/utils/bestillingFormPersistence'
+import { BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
 
 interface StepDef {
 	component: React.ComponentType<any>
@@ -79,19 +83,47 @@ export const StegVelger = ({
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)
 	const [loading, setLoading] = useState(false)
-	const [step, setStep] = useState(0)
+
+	const [savedState] = useState(() => loadBestillingFormState())
+	const [step, setStep] = useState(savedState?.step ?? 0)
+
+	const effectiveInitialValues = savedState
+		? { ...savedState.formValues, dokarkiv: initialValues.dokarkiv, histark: initialValues.histark }
+		: initialValues
 
 	const CurrentStepComponent = STEPS[step].component
 	const stepMaxIndex = STEPS.length - 1
 	const formMethods = useForm({
 		mode: 'onChange',
-		defaultValues: initialValues,
+		defaultValues: effectiveInitialValues,
 		resolver: yupResolver(validationResolver),
 		context: context,
 	})
 	const stateModifier = useStateModifierFns(formMethods, setFormMutate, context)
 
 	const matchMutate = useMatchMutate()
+
+	useEffect(() => {
+		if (savedState) {
+			clearBestillingFormState()
+			toast.success('Fremgangen din ble gjenopprettet!', {
+				position: 'bottom-right',
+				autoClose: 5000,
+			})
+		}
+	}, [])
+
+	useEffect(() => {
+		const handler = () => {
+			try {
+				saveBestillingFormState(formMethods.getValues(), step)
+			} catch (e) {
+				console.error('Failed to save bestilling form state:', e)
+			}
+		}
+		window.addEventListener(BESTILLING_SAVE_EVENT, handler)
+		return () => window.removeEventListener(BESTILLING_SAVE_EVENT, handler)
+	}, [step])
 
 	const validationPaths = Object.keys(validationResolver.fields)
 
@@ -147,6 +179,7 @@ export const StegVelger = ({
 		}
 
 		setLoading(true)
+		clearBestillingFormState()
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
 		await onSubmit(values)
