@@ -109,6 +109,10 @@ export const StegVelger = ({
 			toast.success('Fremgangen din ble gjenopprettet!', {
 				position: 'bottom-right',
 				autoClose: 5000,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				containerId: 'global-toast',
 			})
 		}
 	}, [])

@@ -75,7 +75,7 @@ export const App = () => {
 			</main>
 			<Kontaktinfo />
 			<ToastConnector />
-			<ToastContainer position="bottom-right" theme="light" />
+			<ToastContainer containerId="global-toast" position="bottom-right" theme="light" />
 		</ErrorBoundary>
 	)
 }

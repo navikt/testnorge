@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
@@ -64,10 +65,12 @@ export const NewVersionToast = () => {
 				<VersionToastContent onReload={handleReload} showSaveMessage={isOnBestilling} />,
 				{
 					toastId: TOAST_ID,
-					autoClose: false,
-					closeOnClick: false,
 					position: 'bottom-right',
-					draggable: false,
+					autoClose: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					containerId: 'global-toast',
 				},
 			)
 		}
