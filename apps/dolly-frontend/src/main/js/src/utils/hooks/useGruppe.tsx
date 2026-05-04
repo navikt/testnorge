@@ -44,7 +44,7 @@ export type GruppeIdent = {
 	bestillingId: number[]
 	bestillinger: Bestilling[]
 	master: string
-	ibruk: boolean
+	iBruk: boolean
 }
 
 export type Gruppe = {

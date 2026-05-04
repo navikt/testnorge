@@ -4,9 +4,7 @@ import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
-import {
-	sykemeldingAttributt,
-} from '@/components/fagsystem/sykdom/form/constants'
+import { sykemeldingAttributt } from '@/components/fagsystem/sykdom/form/constants'
 
 export const panelError = (attributtPath) => {
 	const {

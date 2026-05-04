@@ -1,12 +1,12 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.ereg.v1.EregServicesResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
 
 import java.util.concurrent.Callable;
 

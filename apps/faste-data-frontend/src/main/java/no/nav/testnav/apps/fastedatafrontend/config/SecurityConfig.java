@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.fastedatafrontend.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -14,6 +15,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 class SecurityConfig {
 
     @Bean
+    @ConditionalOnMissingBean
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)

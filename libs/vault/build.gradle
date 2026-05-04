@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-flyway"
 
     implementation "org.springframework.cloud:spring-cloud-vault-config-databases"
 

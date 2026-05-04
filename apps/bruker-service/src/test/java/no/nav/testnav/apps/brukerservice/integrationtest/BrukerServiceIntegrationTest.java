@@ -1,7 +1,5 @@
 package no.nav.testnav.apps.brukerservice.integrationtest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.integrationtest.client.TokendingsClient;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
@@ -17,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
@@ -53,11 +53,11 @@ class BrukerServiceIntegrationTest {
                 .mutate()
                 .baseUrl(baseUrl)
                 .build();
-        objectMapper = new ObjectMapper();
+        objectMapper = JsonMapper.builder().build();
     }
 
     @Test
-    void should_create_new_user_login_change_username_and_then_delete_user() throws JsonProcessingException {
+    void should_create_new_user_login_change_username_and_then_delete_user() {
 
         mockBackEnd.enqueue(
                 new MockResponse().setResponseCode(200)

@@ -1,7 +1,5 @@
 package no.nav.testnav.apps.tenorsearchservice.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorRawResponse;
@@ -11,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -58,7 +58,7 @@ public class TenorResultMapperService {
                         .personer(map(response))
                         .build();
 
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 log.error("Feil ved konvertering av tenor respons {}", e.getMessage(), e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                         "Feil ved konvertering av tenor response: %s".formatted(e.getMessage()), e);

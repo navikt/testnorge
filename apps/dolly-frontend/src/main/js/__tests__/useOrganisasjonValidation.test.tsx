@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, Mock } from 'vitest'
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { useForm } from 'react-hook-form'
 import { useOrganisasjonValidation } from '@/components/shared/ArbeidsforholdToggle/useOrganisasjonValidation'
@@ -19,7 +19,9 @@ const mockHandleManualOrgChange = handleManualOrgChange as Mock
 const ORG_PATH = 'arbeidsgiver.orgnummer'
 const ERROR_PATH = `manual.${ORG_PATH}`
 
-const mockForvalterReturn = (overrides: Partial<ReturnType<typeof useOrganisasjonForvalter>> = {}) => {
+const mockForvalterReturn = (
+	overrides: Partial<ReturnType<typeof useOrganisasjonForvalter>> = {},
+) => {
 	mockUseOrganisasjonForvalter.mockReturnValue({
 		organisasjoner: [],
 		loading: false,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { OrgMiljoeVarsel } from '@/components/miljoVelger/OrgMiljoeVarsel'

@@ -1,10 +1,7 @@
 package no.nav.dolly.web.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.valkey.DefaultJedisClientConfig;
 import io.valkey.Jedis;
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -20,12 +17,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
+import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
@@ -66,10 +64,9 @@ class SessionConfig {
     TokenExchange tokenExchange(
             TokenXExchange tokenXExchange,
             AzureAdTokenExchange azureAdTokenExchange,
-            ClientRegistrationIdResolver clientRegistrationIdResolver,
-            ObjectMapper objectMapper) {
+            ClientRegistrationIdResolver clientRegistrationIdResolver) {
 
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
 
         tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
         tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
@@ -111,9 +108,10 @@ class SessionConfig {
 
     @Bean
     RedisSerializer<Object> springSessionRedisSerializer() {
-        var objectMapper = new ObjectMapper();
-        objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return new GenericJackson2JsonRedisSerializer(objectMapper);
+        var mapper = JsonMapper.builder()
+                .addModules(SecurityJacksonModules.getModules(getClass().getClassLoader()))
+                .build();
+        return new GenericJacksonJsonRedisSerializer(mapper);
     }
 
 }

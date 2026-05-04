@@ -134,18 +134,16 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 
 	const valgtMalValue = formMethods.watch('mal')
 	const valgtMal = malOptions.find((m) => m.value === valgtMalValue)
-	const valgtMalTpsf = _.get(valgtMal, 'data.bestilling.tpsf')
+	const bestillingData = valgtMal?.data?.bestilling || (valgtMalValue ? opts.mal?.bestilling : undefined)
+	const valgtMalTpsf = _.get(bestillingData, 'tpsf')
 	const erTpsfMal = tpsfAttributter.some((a) => _.has(valgtMalTpsf, a))
-	const erGammelFullmaktMal = _.has(
-		valgtMal,
-		'data.bestilling.pdldata.person.fullmakt.[0].omraader.[0]',
-	)
-	const erGammelAmeldingMal = !!_.get(valgtMal, 'data.bestilling.aareg', [])?.find(
+	const erGammelFullmaktMal = _.has(bestillingData, 'pdldata.person.fullmakt.[0].omraader.[0]')
+	const erGammelAmeldingMal = !!_.get(bestillingData, 'aareg', [])?.find(
 		(a: any) => a?.amelding?.length > 0,
 	)
-	const erGammelSyntSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.syntSykemelding')
-	const erGammelDetaljertSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.detaljertSykemelding')
-	const erLignetInntektMal = _.has(valgtMal, 'data.bestilling.sigrunstub')
+	const erGammelSyntSykemeldingMal = _.has(bestillingData, 'sykemelding.syntSykemelding')
+	const erGammelDetaljertSykemeldingMal = _.has(bestillingData, 'sykemelding.detaljertSykemelding')
+	const erLignetInntektMal = _.has(bestillingData, 'sigrunstub')
 	const erUtdatertMal =
 		erGammelFullmaktMal ||
 		erGammelAmeldingMal ||

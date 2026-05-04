@@ -4,7 +4,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { identerSearch } from '@/service/services/dollysearch/DollySearch'
 import { useReduxDispatch, useReduxSelector } from '@/utils/hooks/useRedux'
 import { navigerTilPerson } from '@/ducks/finnPerson'
-import { SoekTypeValg, GroupedOption } from './NavigeringTypes'
+import { GroupedOption, SoekTypeValg } from './NavigeringTypes'
 
 type Person = {
 	ident: string
@@ -153,8 +153,7 @@ export const usePersonSearch = () => {
 			options:
 				personer?.map((person) => ({
 					value: person.value as string,
-					label:
-						person.label?.length > 39 ? `${person.label?.substring(0, 36)}...` : person.label,
+					label: person.label?.length > 39 ? `${person.label?.substring(0, 36)}...` : person.label,
 					type: SoekTypeValg.PERSON,
 				})) ?? [],
 		}

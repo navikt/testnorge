@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.ApplicationConfig;

@@ -1,11 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetAap115Request;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetAapRequest;
@@ -19,7 +16,6 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.re
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetTvungenForvaltningRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetUngUfoerRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
-
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -29,9 +25,11 @@ import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Adresse;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Konto;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -41,16 +39,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.*;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.BEGRUNNELSE;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RequestUtils {
-
-    private final Random rand = new Random();
-    private final ServiceUtils serviceUtils;
 
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
@@ -63,18 +59,66 @@ public class RequestUtils {
 
         vedtakMedAktitivetskode = new HashMap<>();
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = JsonMapper.builder().build();
 
-        URL resourceAktivitetkoder = Resources.getResource("files/vedtak_til_aktivitetkode.json");
-
-        try {
-            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceAktivitetkoder, new TypeReference<>() {
+        try (var aktivitetkodeStream = Resources.getResource("files/vedtak_til_aktivitetkode.json").openStream()) {
+            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(aktivitetkodeStream, new TypeReference<>() {
             });
             vedtakMedAktitivetskode.putAll(map);
 
         } catch (IOException e) {
             log.error("Kunne ikke laste inn fordeling.", e);
         }
+    }
+
+    private final Random rand = new Random();
+    private final ServiceUtils serviceUtils;
+
+    public RettighetEndreDeltakerstatusRequest getRettighetEndreDeltakerstatusRequest(
+            String ident,
+            String miljoe,
+            NyttVedtakTiltak tiltaksdeltakelse,
+            String deltakerstatuskode
+    ) {
+        var vedtak = new NyttVedtakTiltak();
+        vedtak.setDeltakerstatusKode(deltakerstatuskode);
+        vedtak.setTiltakId(tiltaksdeltakelse.getTiltakId());
+
+        if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
+            List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
+            String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
+            vedtak.setAarsakKode(aarsakkode);
+        }
+
+        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(vedtak));
+        rettighetRequest.setPersonident(ident);
+        rettighetRequest.setMiljoe(miljoe);
+
+        return rettighetRequest;
+    }
+
+    public RettighetTiltaksaktivitetRequest getRettighetTiltaksaktivitetRequest(
+            String personident,
+            String miljoe,
+            String rettighetKode,
+            Vedtaksperiode vedtaksperiode
+    ) {
+        var statuskode = "BEHOV";
+        var aktivitetkode = serviceUtils.velgKodeBasertPaaSannsynlighet(
+                vedtakMedAktitivetskode.get(rettighetKode)).getKode();
+
+        var nyttVedtakTiltak = new NyttVedtakTiltak();
+        nyttVedtakTiltak.setAktivitetStatuskode(statuskode);
+        nyttVedtakTiltak.setAktivitetkode(aktivitetkode);
+        nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
+        nyttVedtakTiltak.setFraDato(vedtaksperiode.getFom());
+        nyttVedtakTiltak.setTilDato(vedtaksperiode.getTom());
+
+        var rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(nyttVedtakTiltak));
+        rettighetRequest.setPersonident(personident);
+        rettighetRequest.setMiljoe(miljoe);
+
+        return rettighetRequest;
     }
 
     public static RettighetAap115Request getRettighetAap115Request(
@@ -190,29 +234,6 @@ public class RequestUtils {
         return new FinnTiltakRequest(personident, miljoe, Collections.singletonList(vedtak));
     }
 
-    public RettighetEndreDeltakerstatusRequest getRettighetEndreDeltakerstatusRequest(
-            String ident,
-            String miljoe,
-            NyttVedtakTiltak tiltaksdeltakelse,
-            String deltakerstatuskode
-    ) {
-        var vedtak = new NyttVedtakTiltak();
-        vedtak.setDeltakerstatusKode(deltakerstatuskode);
-        vedtak.setTiltakId(tiltaksdeltakelse.getTiltakId());
-
-        if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
-            List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
-            String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
-            vedtak.setAarsakKode(aarsakkode);
-        }
-
-        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(vedtak));
-        rettighetRequest.setPersonident(ident);
-        rettighetRequest.setMiljoe(miljoe);
-
-        return rettighetRequest;
-    }
-
     public static RettighetTiltakspengerRequest getRettighetTiltakspengerRequest(
             String personident,
             String miljoe,
@@ -235,30 +256,6 @@ public class RequestUtils {
         vedtak.setBegrunnelse(BEGRUNNELSE);
 
         var rettighetRequest = new RettighetTilleggsytelseRequest(Collections.singletonList(vedtak));
-        rettighetRequest.setPersonident(personident);
-        rettighetRequest.setMiljoe(miljoe);
-
-        return rettighetRequest;
-    }
-
-    public RettighetTiltaksaktivitetRequest getRettighetTiltaksaktivitetRequest(
-            String personident,
-            String miljoe,
-            String rettighetKode,
-            Vedtaksperiode vedtaksperiode
-    ) {
-        var statuskode = "BEHOV";
-        var aktivitetkode = serviceUtils.velgKodeBasertPaaSannsynlighet(
-                vedtakMedAktitivetskode.get(rettighetKode)).getKode();
-
-        var nyttVedtakTiltak = new NyttVedtakTiltak();
-        nyttVedtakTiltak.setAktivitetStatuskode(statuskode);
-        nyttVedtakTiltak.setAktivitetkode(aktivitetkode);
-        nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
-        nyttVedtakTiltak.setFraDato(vedtaksperiode.getFom());
-        nyttVedtakTiltak.setTilDato(vedtaksperiode.getTom());
-
-        var rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(nyttVedtakTiltak));
         rettighetRequest.setPersonident(personident);
         rettighetRequest.setMiljoe(miljoe);
 

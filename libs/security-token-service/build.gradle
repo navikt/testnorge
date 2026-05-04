@@ -10,5 +10,6 @@ sonarqube {
 }
 
 dependencies {
+    implementation 'tools.jackson.core:jackson-databind'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }

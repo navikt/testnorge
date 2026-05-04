@@ -18,16 +18,16 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BESTILLING_KONTROLL")
+@Table(name = "bestilling_kontroll")
 public class BestillingKontroll implements Serializable {
 
     @Id
     private Long id;
 
-    @Column("BESTILLING_ID")
+    @Column("bestilling_id")
     private Long bestillingId;
 
-    @Column("STOPPET")
+    @Column("stoppet")
     private boolean stoppet;
 
     @Override

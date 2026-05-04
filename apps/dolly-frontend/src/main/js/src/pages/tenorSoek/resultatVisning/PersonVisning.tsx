@@ -17,7 +17,7 @@ import { SummertSkattegrunnlagVisning } from '@/pages/tenorSoek/resultatVisning/
 type PersonVisningProps = {
 	person: any
 	ident: string
-	ibruk: boolean
+	iBruk: boolean
 	loading: boolean
 	error: any
 	inkluderPartnere: boolean
@@ -41,7 +41,7 @@ const NavnHeader = styled.h2`
 export const PersonVisning = ({
 	person,
 	ident,
-	ibruk,
+	iBruk,
 	loading,
 	error,
 	inkluderPartnere,
@@ -68,7 +68,7 @@ export const PersonVisning = ({
 			<Box background="default" padding="space-12" borderRadius="4">
 				<div className="flexbox--space">
 					<NavnHeader>{personData?.visningnavn}</NavnHeader>
-					{ibruk ? (
+					{iBruk ? (
 						<NavigerTilPerson ident={ident} />
 					) : (
 						<ImporterValgtePersoner

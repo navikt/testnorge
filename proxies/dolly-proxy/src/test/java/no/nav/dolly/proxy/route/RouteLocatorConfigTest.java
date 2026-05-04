@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -220,6 +220,7 @@ class RouteLocatorConfigTest {
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
 
     }
+
 
     @Test
     void testBatch() {
@@ -673,7 +674,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2"})
+    @ValueSource(strings = { "q1", "q2" })
     void testPensjonAfp(String env) {
 
         var downstreamPath = "/api/mock-oppsett/test";
@@ -699,7 +700,7 @@ class RouteLocatorConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"q1", "q2"})
+    @ValueSource(strings = { "q1", "q2" })
     void testPensjonSamboer(String env) {
 
         var downstreamPath = "/api/samboer/test";

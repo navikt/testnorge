@@ -30,4 +30,5 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
 
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
+    testImplementation "org.springframework.boot:spring-boot-webtestclient"
 }

@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { renderHook, act, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, renderHook, waitFor } from '@testing-library/react'
 import { useEventSource } from '@/utils/hooks/useEventSource'
 
 type MockEventSource = {
@@ -188,9 +188,7 @@ describe('useEventSource', () => {
 	})
 
 	it('should set error on invalid JSON', async () => {
-		const { result } = renderHook(() =>
-			useEventSource<{ id: number }>('/api/stream', ['progress']),
-		)
+		const { result } = renderHook(() => useEventSource<{ id: number }>('/api/stream', ['progress']))
 
 		act(() => {
 			lastMockEventSource!.simulateOpen()
@@ -198,9 +196,7 @@ describe('useEventSource', () => {
 
 		const handlers = lastMockEventSource!.listeners.get('progress') || []
 		act(() => {
-			handlers.forEach((h) =>
-				h(new MessageEvent('progress', { data: 'not-valid-json' })),
-			)
+			handlers.forEach((h) => h(new MessageEvent('progress', { data: 'not-valid-json' })))
 		})
 
 		await waitFor(() => {
@@ -212,9 +208,7 @@ describe('useEventSource', () => {
 	it('should call onError callback', () => {
 		const onError = vi.fn()
 
-		renderHook(() =>
-			useEventSource('/api/stream', ['progress'], { onError }),
-		)
+		renderHook(() => useEventSource('/api/stream', ['progress'], { onError }))
 
 		act(() => {
 			lastMockEventSource!.simulateError(EventSource.CLOSED)

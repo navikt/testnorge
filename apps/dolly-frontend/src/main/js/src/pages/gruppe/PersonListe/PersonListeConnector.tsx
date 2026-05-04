@@ -3,10 +3,7 @@ import { actions as actionList, fetchPdlPersoner } from '@/ducks/fagsystem'
 import { createLoadingSelector } from '@/ducks/loading'
 import personListe from './PersonListe'
 
-const loadingSelector = createLoadingSelector([
-	actionList.getPDLPersoner,
-	actionList.getPdlForvalter,
-])
+const loadingSelector = createLoadingSelector([actionList.getPDLPersoner])
 
 const mapStateToProps = (state) => ({
 	search: state.search,

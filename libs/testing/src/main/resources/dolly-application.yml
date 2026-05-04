@@ -29,12 +29,13 @@ server:
   servlet:
     encoding:
       charset: UTF-8
-  error:
-    include-message: always
 
 spring:
   main:
     banner-mode: off
+  http:
+    codecs:
+      preferred-json-mapper: jackson
 
 springdoc:
   api-docs:

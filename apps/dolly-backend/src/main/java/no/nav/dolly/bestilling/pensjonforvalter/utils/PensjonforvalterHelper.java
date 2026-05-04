@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakDTO;
@@ -76,7 +76,7 @@ public class PensjonforvalterHelper {
 
         try {
             return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
         }
         return null;
@@ -123,7 +123,7 @@ public class PensjonforvalterHelper {
                         vedtak.setFom(nonNull(vedtak.getFom()) ? vedtak.getFom() : vedtak.getIverksettelsesdato());
                         vedtak.setUttaksgrad(nonNull(vedtak.getUttaksgrad()) ? vedtak.getUttaksgrad() : vedtak.getNyUttaksgrad());
                         return vedtak;
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                         log.error("Feil ved deserialisering av transaksjonId", e);
                         return basicAlderspensjonRequestDTO(ident, Set.of(miljoe));
                     }

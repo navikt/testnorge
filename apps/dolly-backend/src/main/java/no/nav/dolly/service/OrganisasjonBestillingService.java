@@ -1,8 +1,6 @@
 package no.nav.dolly.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
@@ -24,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -338,7 +337,7 @@ public class OrganisasjonBestillingService {
             if (nonNull(object)) {
                 return objectMapper.writer().writeValueAsString(object);
             }
-        } catch (JsonProcessingException | RuntimeException e) {
+        } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);
         }
         return null;

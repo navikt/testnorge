@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { soekBestillinger } from '@/pages/gruppeOversikt/FinnBestilling'
+import { DollyApi } from '@/service/Api'
 
 vi.mock('@/service/Api', () => ({
 	DollyApi: {
@@ -12,8 +13,6 @@ vi.mock('@/ducks/finnPerson', () => ({
 vi.mock('@/utils/hooks/useRedux', () => ({
 	useReduxDispatch: vi.fn(() => vi.fn()),
 }))
-
-import { DollyApi } from '@/service/Api'
 
 describe('soekBestillinger', () => {
 	it('should return empty array when tekst is empty', async () => {

@@ -1,8 +1,5 @@
 package no.nav.testnav.altinn3tilgangservice.consumer.altinn;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -22,12 +19,13 @@ import no.nav.testnav.altinn3tilgangservice.consumer.brreg.BrregConsumer;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.net.URLDecoder;
@@ -47,15 +45,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Component
 public class AltinnConsumer {
 
-    @Value("${altinn.max-pages}")
-    private int maxPages;
-
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
     private final MaskinportenConsumer maskinportenConsumer;
     private final BrregConsumer brregConsumer;
+    @Value("${altinn.max-pages}")
+    private int maxPages;
 
     public AltinnConsumer(
             AltinnConfig altinnConfig,
@@ -70,14 +67,8 @@ public class AltinnConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(altinnConfig.getUrl())
-                .codecs(config -> {
-                    config.defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
-                    config.defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
-                    config.defaultCodecs()
-                            .maxInMemorySize(10 * 1024 * 1024);
-                })
+                .codecs(config -> config.defaultCodecs()
+                        .maxInMemorySize(10 * 1024 * 1024))
                 .build();
         this.brregConsumer = brregConsumer;
         this.mapperFacade = mapperFacade;

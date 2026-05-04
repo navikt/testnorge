@@ -1,8 +1,8 @@
 package no.nav.dolly.opensearch.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -169,7 +169,7 @@ public class OpenSearchService {
             val jsonString = objectMapper.writeValueAsString(dokument);
             return objectMapper.readTree(jsonString);
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.warn("Feilet å serialisere bestillingDokument id {}, {}", dokument.getId(), e.getLocalizedMessage());
             return null;
         }

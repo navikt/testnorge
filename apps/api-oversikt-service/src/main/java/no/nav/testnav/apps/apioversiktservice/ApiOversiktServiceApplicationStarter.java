@@ -14,4 +14,4 @@ public class ApiOversiktServiceApplicationStarter {
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
-}
+} 

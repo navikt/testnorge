@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.personservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.personservice.command.PdlPersonerGetCommand;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.List;
@@ -42,14 +42,16 @@ public class PersonServiceConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            ObjectMapper objectMapper) {
+            JsonMapper jsonMapper) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
+        log.info("PersonServiceConsumer: Initialiserer med JsonMapper type: {}", 
+                jsonMapper != null ? jsonMapper.getClass().getName() : "null");
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
     }
 
@@ -85,12 +87,18 @@ public class PersonServiceConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer, AtomicInteger retry) {
 
+        log.info("PersonServiceConsumer.getPdlPersoner: Henter {} identer, retry={}", identer.size(), retry.get());
+        
         return tokenService.exchange(serverProperties)
+                .doOnError(error -> log.error("PersonServiceConsumer.getPdlPersoner: Token exchange feilet: {} - {}", 
+                        error.getClass().getName(), error.getMessage(), error))
                 .flatMapMany(token -> Flux.fromIterable(identer)
                         .buffer(BLOCK_SIZE)
                         .flatMap(identerBlokk -> new PdlPersonerGetCommand(webClient,
                                 identerBlokk, token.getTokenValue()
                         ).call()))
+                .doOnError(error -> log.error("PersonServiceConsumer.getPdlPersoner: Feil ved henting: {} - {}", 
+                        error.getClass().getName(), error.getMessage(), error))
                 .flatMap(resultat -> {
 
                     if (retry.get() < MAX_RETRIES &&

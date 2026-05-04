@@ -19,6 +19,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseUtlandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAntallBostedsadresserQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAntallKontaktadresserQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAntallOppholdsadresserQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAntallRelasjonerQuery;
@@ -26,7 +27,6 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addFoedselsdatoQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnummerQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAntallBostedsadresserQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedUkjentQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedsadresseQuery;

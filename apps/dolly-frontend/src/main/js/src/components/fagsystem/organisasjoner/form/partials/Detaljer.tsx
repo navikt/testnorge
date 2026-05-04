@@ -11,7 +11,6 @@ import { OrganisasjonKodeverk } from '@/config/kodeverk'
 import { Kontaktdata } from './Kontaktdata'
 import { Adresser } from './Adresser'
 import { ToggleGroup } from '@navikt/ds-react'
-import styled from 'styled-components'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type DetaljerProps = {

@@ -17,19 +17,19 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "TEAM_BRUKER")
+@Table(name = "team_bruker")
 public class TeamBruker {
 
     @Id
     private Long id;
 
-    @Column("TEAM_ID")
+    @Column("team_id")
     private Long teamId;
 
-    @Column("BRUKER_ID")
+    @Column("bruker_id")
     private Long brukerId;
 
-    @Column("OPPRETTET")
+    @Column("opprettet")
     private LocalDateTime opprettetTidspunkt;
 
     @Override

@@ -13,7 +13,7 @@ import {
 	SivilstandData,
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
-import { addDays, addMonths, isAfter, setDate, subYears } from 'date-fns'
+import { addMonths, isAfter, setDate, subYears } from 'date-fns'
 import {
 	initialArbeidsavtale,
 	initialArbeidsgiverOrg,
@@ -99,6 +99,9 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	}
 	if (initialValuesMal.sykemelding?.detaljertSykemelding) {
 		delete initialValuesMal.sykemelding.detaljertSykemelding
+	}
+	if (initialValuesMal.sykemelding?.nySykemelding && !initialValuesMal.sykemelding.nySykemelding.type) {
+		initialValuesMal.sykemelding.nySykemelding.type = 'VANLIG'
 	}
 	if (initialValuesMal.fullmakt) {
 		initialValuesMal.fullmakt = getUpdatedFullmaktData(initialValuesMal.fullmakt)
@@ -227,9 +230,7 @@ const getUpdatedSkattekortData = (skattekortData: any) => {
 			const forskuddstrekk = arbeidsgiver?.arbeidstaker?.[0]?.skattekort?.forskuddstrekk?.map(
 				(forskuddstrekk: any) =>
 					forskuddstrekk
-						? Object.fromEntries(
-								Object.entries(forskuddstrekk).filter(([key, value]) => value),
-							)
+						? Object.fromEntries(Object.entries(forskuddstrekk).filter(([key, value]) => value))
 						: forskuddstrekk,
 			)
 			_.set(arbeidsgiver, 'arbeidstaker[0].skattekort.forskuddstrekk', forskuddstrekk)

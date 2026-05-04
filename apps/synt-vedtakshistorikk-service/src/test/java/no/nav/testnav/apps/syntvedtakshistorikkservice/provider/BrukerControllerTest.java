@@ -5,9 +5,9 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaDagpengerSer
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService;
-import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,27 +29,20 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BrukerControllerTest {
 
-    @Mock
-    private IdentService identService;
-
-    @Mock
-    private ArenaDagpengerService arenaDagpengerService;
-
-    @Mock
-    private TagsService tagsService;
-
-    @Mock
-    private ArenaForvalterService arenaForvalterService;
-
-    @InjectMocks
-    private BrukerController brukerController;
-
-    private SyntetiserArenaRequest syntetiserArenaRequestSingle;
-
     private final String miljoe = "q2";
     private final String fnr1 = "10101010101";
     private final Arbeidsoeker arb1 = Arbeidsoeker.builder().personident(fnr1).build();
-
+    @Mock
+    private IdentService identService;
+    @Mock
+    private ArenaDagpengerService arenaDagpengerService;
+    @Mock
+    private TagsService tagsService;
+    @Mock
+    private ArenaForvalterService arenaForvalterService;
+    @InjectMocks
+    private BrukerController brukerController;
+    private SyntetiserArenaRequest syntetiserArenaRequestSingle;
     private NyeBrukereResponse singleResponse;
     private Map<String, NyeBrukereResponse> oppfoelgingResponse;
 

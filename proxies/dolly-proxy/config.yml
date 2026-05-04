@@ -97,6 +97,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp
+        - application: testnav-inntektsmelding-service-dev
+          cluster: dev-gcp
         - application: testnav-jenkins-batch-status-service
           cluster: dev-gcp
         - application: testnav-joark-dokument-service
@@ -140,6 +142,8 @@ spec:
         - application: ereg-services-q4
           namespace: arbeidsforhold
         - application: testnav-inntektsmelding-service
+          cluster: dev-gcp
+        - application: testnav-inntektsmelding-service-dev
           cluster: dev-gcp
         - application: testnav-joark-dokument-service
           cluster: dev-gcp
