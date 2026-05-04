@@ -20,14 +20,14 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -46,13 +46,13 @@ public class PdlTestdataConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final PersonServiceConsumer personServiceConsumer;
 
     public PdlTestdataConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             PersonServiceConsumer personServiceConsumer,
             WebClient webClient
     ) {
@@ -63,7 +63,7 @@ public class PdlTestdataConsumer {
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.personServiceConsumer = personServiceConsumer;
     }
 
@@ -115,7 +115,7 @@ public class PdlTestdataConsumer {
                 .map(List::getFirst);
     }
 
-    public Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
+    public Mono<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
 
         String body;
         try {
@@ -123,9 +123,9 @@ public class PdlTestdataConsumer {
             if (isNull(artifact.getFolkeregistermetadata())) {
                 artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
-            body = objectMapper.writeValueAsString(artifact);
+            body = jsonMapper.writeValueAsString(artifact);
         } catch (JacksonException e) {
-            return Flux.just(
+            return Mono.just(
                     OrdreResponseDTO.HendelseDTO.builder()
                             .id(value.getBody().getId())
                             .status(PdlStatus.FEIL)
@@ -180,7 +180,7 @@ public class PdlTestdataConsumer {
                             accessToken.getTokenValue(),
                             value.getBody().getId()
                     ).call() :
-                    Flux.empty();
+                    Mono.empty();
         };
     }
 

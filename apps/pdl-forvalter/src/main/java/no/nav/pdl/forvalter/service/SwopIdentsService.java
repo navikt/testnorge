@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
@@ -9,7 +10,6 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.utils.ArtifactUtils;
-import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -20,8 +20,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.List;
 import static java.time.LocalDateTime.now;
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNotNpidIdent;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
 
@@ -46,7 +48,7 @@ public class SwopIdentsService {
         return 'X' + ident.substring(1);
     }
 
-    private void swopOpplysninger(DbPerson person1, DbPerson person2) {
+    private Mono<Void> swopOpplysninger(DbPerson person1, DbPerson person2) {
 
         var person = person1.getPerson();
         person1.setPerson(person2.getPerson());
@@ -70,9 +72,22 @@ public class SwopIdentsService {
         person1.getPerson().getFalskIdentitet().addAll(person2.getPerson().getFalskIdentitet());
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
-        person1.getPerson().setAdressebeskyttelse(person2.getPerson().getAdressebeskyttelse());
-        person1.getPerson().setNavPersonIdentifikator(person2.getPerson().getNavPersonIdentifikator());
-        person1.getPerson().setFolkeregisterPersonstatus(person2.getPerson().getFolkeregisterPersonstatus());
+
+        person2.getPerson().getAdressebeskyttelse().stream()
+                .filter(status -> person1.getPerson().getAdressebeskyttelse().stream()
+                        .noneMatch(s -> s.getGradering().equals(status.getGradering())))
+                .forEach(status -> person1.getPerson().getAdressebeskyttelse().add(status));
+        ArtifactUtils.renumberId(person1.getPerson().getAdressebeskyttelse());
+
+        person2.getPerson().getFolkeregisterPersonstatus().stream()
+                .filter(status -> person1.getPerson().getFolkeregisterPersonstatus().stream()
+                        .noneMatch(s -> s.getStatus().equals(status.getStatus())))
+                .forEach(status -> person1.getPerson().getFolkeregisterPersonstatus().add(status));
+        ArtifactUtils.renumberId(person1.getPerson().getFolkeregisterPersonstatus());
+
+        if (isNpidIdent(person1.getIdent())) {
+            person1.getPerson().setNavPersonIdentifikator(person2.getPerson().getNavPersonIdentifikator());
+        }
 
         if (person1.getPerson().isStrengtFortrolig() || person2.getPerson().isStrengtFortrolig()) {
             person1.getPerson().setBostedsadresse(null);
@@ -118,8 +133,7 @@ public class SwopIdentsService {
         person1.getPerson().setNyident(null);
         person2.getPerson().setNyident(null);
 
-
-        if (person1.getPerson().getSivilstand().isEmpty() && FoedselsdatoUtility.isMyndig(person1.getPerson())) {
+        if (person1.getPerson().getSivilstand().isEmpty()) {
             person1.getPerson().setSivilstand(new ArrayList<>(List.of(SivilstandDTO.builder()
                     .id(1)
                     .type(Sivilstand.UGIFT)
@@ -129,23 +143,24 @@ public class SwopIdentsService {
                     .build())));
         }
 
-        relasjonRepository.saveAll(person2.getRelasjoner().stream()
+        return relasjonRepository.findByPersonId(person2.getId())
                 .map(relasjon -> DbRelasjon.builder()
-                        .person(person1)
-                        .relatertPerson(relasjon.getRelatertPerson())
+                        .personId(person1.getId())
+                        .relatertPersonId(relasjon.getRelatertPersonId())
                         .relasjonType(relasjon.getRelasjonType())
                         .sistOppdatert(now())
                         .build())
-                .toList());
+                .flatMap(relasjonRepository::save)
+                .then();
     }
 
     private void addInnvandretFra(PersonDTO person) {
 
         if (person.getInnflytting().isEmpty() &&
-                person.getStatsborgerskap().stream()
-                        .anyMatch(StatsborgerskapDTO::isNorskStatsborger) &&
-                person.getStatsborgerskap().stream()
-                        .anyMatch(StatsborgerskapDTO::isUtenlandskStatsborger)) {
+            person.getStatsborgerskap().stream()
+                    .anyMatch(StatsborgerskapDTO::isNorskStatsborger) &&
+            person.getStatsborgerskap().stream()
+                    .anyMatch(StatsborgerskapDTO::isUtenlandskStatsborger)) {
 
             person.getInnflytting().add(InnflyttingDTO.builder()
                     .fraflyttingsland(person.getBostedsadresse().stream()
@@ -169,9 +184,9 @@ public class SwopIdentsService {
     private void addBostedsadresse(PersonDTO person, BostedadresseDTO bostedsadresse) {
 
         if (person.getBostedsadresse().stream()
-                .noneMatch(BostedadresseDTO::isAdresseUtland) && bostedsadresse.isAdresseUtland() ||
-                person.getBostedsadresse().stream()
-                        .noneMatch(BostedadresseDTO::isAdresseNorge) && bostedsadresse.isAdresseNorge()) {
+                    .noneMatch(BostedadresseDTO::isAdresseUtland) && bostedsadresse.isAdresseUtland() ||
+            person.getBostedsadresse().stream()
+                    .noneMatch(BostedadresseDTO::isAdresseNorge) && bostedsadresse.isAdresseNorge()) {
 
             if (!person.getBostedsadresse().isEmpty()) {
                 person.getBostedsadresse().getFirst().setGyldigFraOgMed(now());
@@ -188,9 +203,9 @@ public class SwopIdentsService {
     private void addStatsborgerskap(PersonDTO person, StatsborgerskapDTO statsborgerskap) {
 
         if (person.getStatsborgerskap().stream()
-                .noneMatch(StatsborgerskapDTO::isNorskStatsborger) && statsborgerskap.isNorskStatsborger() ||
-                person.getStatsborgerskap().stream()
-                        .noneMatch(StatsborgerskapDTO::isUtenlandskStatsborger) && statsborgerskap.isUtenlandskStatsborger()) {
+                    .noneMatch(StatsborgerskapDTO::isNorskStatsborger) && statsborgerskap.isNorskStatsborger() ||
+            person.getStatsborgerskap().stream()
+                    .noneMatch(StatsborgerskapDTO::isUtenlandskStatsborger) && statsborgerskap.isUtenlandskStatsborger()) {
 
             person.getStatsborgerskap().add(mapperFacade.map(statsborgerskap, StatsborgerskapDTO.class));
 
@@ -198,48 +213,54 @@ public class SwopIdentsService {
         }
     }
 
-    public PersonDTO execute(String ident1, String ident2) {
+    public Mono<DbPerson> execute(String ident1, String ident2) {
 
-        var personer = personRepository.findByIdentIn(List.of(ident1, ident2),
-                PageRequest.of(0, 10));
-        var person1 = personer.stream()
-                .filter(person -> ident1.equals(person.getIdent()))
-                .findFirst();
-        var person2 = personer.stream()
-                .filter(person -> ident2.equals(person.getIdent()))
-                .findFirst();
+        return personRepository.findByIdentInOrderBySistOppdatertDesc(List.of(ident1, ident2))
+                .collectList()
+                .flatMap(personer -> Mono.zip(
+                        Mono.justOrEmpty(personer.stream()
+                                .filter(person -> ident1.equals(person.getIdent()))
+                                .findFirst()),
+                        Mono.justOrEmpty(personer.stream()
+                                .filter(person -> ident2.equals(person.getIdent()))
+                                .findFirst())
+                ))
+                .flatMap(tuple -> {
 
-        if (person1.isPresent() && person2.isPresent()) {
+                    val person1 = tuple.getT1();
+                    val person2 = tuple.getT2();
 
-            person1.get().setIdent(opaqifyIdent(ident1));
-            person2.get().setIdent(opaqifyIdent(ident2));
-            personRepository.saveAll(List.of(person1.get(), person2.get()));
+                    person1.setIdent(opaqifyIdent(ident1));
+                    person2.setIdent(opaqifyIdent(ident2));
+                    return personRepository.saveAll(List.of(person1, person2))
+                            .collectList()
+                            .flatMap(personer -> Mono.zip(
+                                    Mono.justOrEmpty(personer.stream()
+                                            .filter(person -> person1.getId().equals(person.getId()))
+                                            .findFirst()),
+                                    Mono.justOrEmpty(personer.stream()
+                                            .filter(person -> person2.getId().equals(person.getId()))
+                                            .findFirst())));
+                })
+                .flatMap(savedPersons -> {
 
-            var oppdatertePersoner = personRepository.findByIdIn(List.of(person1.get().getId(), person2.get().getId()));
-            var oppdatertPerson1 = oppdatertePersoner.stream()
-                    .filter(person -> person1.get().getId().equals(person.getId()))
-                    .findFirst();
-            var oppdatertPerson2 = oppdatertePersoner.stream()
-                    .filter(person -> person2.get().getId().equals(person.getId()))
-                    .findFirst();
+                    val oppdatertPerson1 = savedPersons.getT1();
+                    val oppdatertPerson2 = savedPersons.getT2();
 
-            if (oppdatertPerson1.isPresent() && oppdatertPerson2.isPresent()) {
-                swopOpplysninger(oppdatertPerson1.get(), oppdatertPerson2.get());
-
-                personRepository.saveAll(List.of(person1.get(), person2.get()));
-
-                aliasRepository.save(DbAlias.builder()
-                        .tidligereIdent(ident1)
-                        .person(oppdatertPerson1.get())
-                        .sistOppdatert(now())
-                        .build());
-
-                relasjonRepository.deleteAll(person2.get().getRelasjoner());
-
-                return person1.get().getPerson();
-            }
-        }
-
-        return null;
+                    return swopOpplysninger(oppdatertPerson1, oppdatertPerson2)
+                            .then(Mono.defer(() -> personRepository.saveAll(List.of(oppdatertPerson1, oppdatertPerson2))
+                                    .collectList()))
+                            .flatMap(personer -> aliasRepository.save(DbAlias.builder()
+                                            .tidligereIdent(ident1)
+                                            .personId(oppdatertPerson1.getId())
+                                            .sistOppdatert(now())
+                                            .build())
+                                    .thenReturn(personer))
+                            .flatMap(personer -> relasjonRepository.deleteByPersonIdentIn(List.of(oppdatertPerson2.getIdent()))
+                                    .then(Mono.just(personer)))
+                            .flatMap(personer -> Flux.fromIterable(personer)
+                                    .filter(person -> oppdatertPerson1.getIdent().equals(person.getIdent()))
+                                    .next());
+                });
     }
 }
