@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HendelseIdRequest;
@@ -19,7 +18,6 @@ import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Objects;
 
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -70,12 +68,11 @@ public class HendelseIdService {
                         .flatMap(method -> {
                             try {
                                 return Mono.just(method.invoke(person));
-                            } catch (IllegalAccessException | InvocationTargetException e) {
+                            } catch (NullPointerException | IllegalAccessException | InvocationTargetException e) {
                                 log.error("Feilet å hente hendelseId, {}", e.getMessage());
                                 return Mono.empty();
                             }
                         })
-                        .filter(Objects::nonNull)
                         .filter(List.class::isInstance)
                         .map(value -> (List<DbVersjonDTO>) value)
                         .flatMap(Flux::fromIterable)
