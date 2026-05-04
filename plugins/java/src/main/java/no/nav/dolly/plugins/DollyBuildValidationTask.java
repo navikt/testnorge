@@ -6,15 +6,23 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.TaskAction;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -105,9 +113,10 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
 
     private boolean validateGitHubWorkflowTriggers(Logger log, Set<String> libraryNames) {
 
+        var currentProjectName = getCurrentProjectName().get();
         var workflowFile = getWorkflowFile().getAsFile().getOrNull();
         if (workflowFile == null) {
-            log.error("Neither app.{}.yml nor proxy.{}.yml workflow found for project {} in /.github/workflows", getCurrentProjectName().get(), getCurrentProjectName().get(), getCurrentProjectName().get());
+            log.error("Neither app.{}.yml nor proxy.{}.yml nor synt.{}.yml workflow found for project {} in /.github/workflows", currentProjectName, currentProjectName, currentProjectName, currentProjectName);
             return true;
         }
 
@@ -127,7 +136,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
                 log.warn("Workflow {} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
                 return false; // Log a warning, but don't fail the build. It might be intentionally set to only build manually.
             }
-            return verifyTriggers(log, getCurrentProjectName().get(), workflowFile.getName(), libraryNames, triggerPaths);
+            return verifyTriggers(log, currentProjectName, workflowFile.getName(), libraryNames, triggerPaths);
 
         } catch (IOException e) {
             log.error("Error reading workflow file {}", workflowFile.getName(), e);
@@ -195,7 +204,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
         // Check for trigger on the project itself.
         var foundTriggerOnProject = triggerPaths
                 .stream()
-                .anyMatch(path -> path.equals("apps/" + currentProjectName + "/**") || path.equals("proxies/" + currentProjectName + "/**"));
+                .anyMatch(path -> triggerOnCodebaseExists(currentProjectName, path));
         if (!foundTriggerOnProject) {
             log.warn("Workflow /.github/workflows/{} is missing trigger on its own codebase", workflowFilename);
             errors = true;
@@ -213,7 +222,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
         // Check for trigger on workflow file.
         var foundTriggerOnWorkflow = triggerPaths
                 .stream()
-                .anyMatch(path -> path.equals(".github/workflows/app." + currentProjectName + ".yml") || path.equals(".github/workflows/proxy." + currentProjectName + ".yml"));
+                .anyMatch(path -> triggerOnWorkflowFileExists(currentProjectName, path));
         if (!foundTriggerOnWorkflow) {
             log.warn("Workflow /.github/workflows/{} is missing trigger on itself", workflowFilename);
             errors = true;
@@ -221,6 +230,18 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
 
         return errors;
 
+    }
+
+    private static boolean triggerOnWorkflowFileExists(String currentProjectName, String path) {
+        return path.equals(".github/workflows/app." + currentProjectName + ".yml") ||
+                path.equals(".github/workflows/proxy." + currentProjectName + ".yml") ||
+                path.equals(".github/workflows/synt." + currentProjectName + ".yml");
+    }
+
+    private static boolean triggerOnCodebaseExists(String currentProjectName, String path) {
+        return path.equals("apps/" + currentProjectName + "/**") ||
+                path.equals("proxies/" + currentProjectName + "/**") ||
+                path.equals("synt/" + currentProjectName + "/**");
     }
 
 }

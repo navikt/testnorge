@@ -1,0 +1,25 @@
+plugins {
+    id "dolly-synt"
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:testing"
+    implementation "no.nav.testnav.libs:texas"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+
+    implementation "com.microsoft.onnxruntime:onnxruntime:$versions.onnxruntime"
+
+    testImplementation "org.testcontainers:junit-jupiter"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-synt-dagpenger"
+        property "sonar.projectName", "testnav-synt-dagpenger"
+    }
+}

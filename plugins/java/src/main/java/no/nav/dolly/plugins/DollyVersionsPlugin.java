@@ -44,6 +44,7 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String logback = "8.1";
         public String mq = "4.0.5";
         public String okhttp = "4.12.0";
+        public String onnxruntime = "1.22.0";
         public String opensearch = "1.8.2";
         public String opensearchClient = "2.26.0";
         public String orika = "1.5.4";
