@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
@@ -28,6 +27,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -46,13 +46,13 @@ public class PdlTestdataConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final PersonServiceConsumer personServiceConsumer;
 
     public PdlTestdataConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             PersonServiceConsumer personServiceConsumer,
             WebClient webClient
     ) {
@@ -63,7 +63,7 @@ public class PdlTestdataConsumer {
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.personServiceConsumer = personServiceConsumer;
     }
 
@@ -123,9 +123,9 @@ public class PdlTestdataConsumer {
             if (isNull(artifact.getFolkeregistermetadata())) {
                 artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
-            body = objectMapper.writeValueAsString(artifact);
+            body = jsonMapper.writeValueAsString(artifact);
         } catch (JacksonException e) {
-            return Flux.just(
+            return Mono.just(
                     OrdreResponseDTO.HendelseDTO.builder()
                             .id(value.getBody().getId())
                             .status(PdlStatus.FEIL)

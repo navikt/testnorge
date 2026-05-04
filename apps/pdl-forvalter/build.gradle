@@ -38,4 +38,5 @@ dependencies {
     implementation "org.flywaydb:flyway-database-postgresql"
 
     implementation "tools.jackson.core:jackson-core"
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
 }
