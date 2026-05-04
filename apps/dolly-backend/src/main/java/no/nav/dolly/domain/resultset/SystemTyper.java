@@ -24,6 +24,7 @@ public enum SystemTyper {
     INNTK("Inntektstub (INNTK)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     INST2("Institusjonsopphold (INST2)"),
+    KELVIN_AAP("Kelvin AAP"),
     KONTOREGISTER("Bankkontoregister"),
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
     MEDL("Medlemskap (MEDL)"),
