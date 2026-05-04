@@ -1,5 +1,7 @@
 import React from 'react'
 import { Logger } from '@/logger/Logger'
+import { Alert, Button } from '@navikt/ds-react'
+import { isChunkLoadError } from '@/utils/chunkErrorUtils'
 
 interface Props {
 	children: React.ReactNode
@@ -14,6 +16,12 @@ export default class StepErrorBoundary extends React.Component<Props, { error: a
 		return { error }
 	}
 
+	componentDidUpdate(prevProps: Props) {
+		if (prevProps.stepIndex !== this.props.stepIndex) {
+			this.setState({ error: null })
+		}
+	}
+
 	componentDidCatch(error: any, info: any) {
 		console.error('StepErrorBoundary', this.props.stepIndex, this.props.stepLabel, error?.message)
 		Logger.error({
@@ -24,7 +32,21 @@ export default class StepErrorBoundary extends React.Component<Props, { error: a
 	}
 
 	render() {
-		if (this.state.error) return null
+		if (this.state.error) {
+			const chunkError = isChunkLoadError(this.state.error)
+			return (
+				<Alert variant="error" style={{ margin: '1rem 0' }}>
+					{chunkError
+						? 'En ny versjon av Dolly er akkurat sluppet. Siden bør lastes inn på nytt for å unngå problemer.'
+						: `Noe gikk galt ved visning av "${this.props.stepLabel}".`}
+					<div style={{ marginTop: '0.5rem' }}>
+						<Button variant="secondary" size="small" onClick={() => window.location.reload()}>
+							Last inn siden på nytt
+						</Button>
+					</div>
+				</Alert>
+			)
+		}
 		return this.props.children
 	}
 }

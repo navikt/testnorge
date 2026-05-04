@@ -4,7 +4,7 @@ import './appError.less'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { CSSProperties, useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import { isChunkLoadError, handleChunkErrorWithReload } from '@/utils/chunkErrorUtils'
 
 type Props = {
 	style?: CSSProperties | undefined
@@ -12,16 +12,10 @@ type Props = {
 	stackTrace: string
 }
 export const AppError = ({ error, stackTrace, style }: Props) => {
-	const navigate = useNavigate()
-	const errorsRequiringReload = [
-		'Failed to fetch dynamically imported module',
-		'Unable to preload CSS',
-	]
-
 	useEffect(() => {
 		console.error('Ukjent error i Dolly: ' + error)
-		if (errorsRequiringReload.some((e) => error?.toString()?.includes(e))) {
-			navigate(0)
+		if (isChunkLoadError(error)) {
+			handleChunkErrorWithReload()
 		}
 	}, [error])
 

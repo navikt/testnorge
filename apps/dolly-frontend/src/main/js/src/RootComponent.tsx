@@ -18,6 +18,7 @@ import allRoutes from '@/allRoutes'
 import React, { useEffect } from 'react'
 import { locationChange } from '@/ducks/finnPerson'
 import BrukerPage from '@/pages/brukerPage'
+import { handleChunkErrorWithReload, isChunkLoadError } from '@/utils/chunkErrorUtils'
 
 const ErrorView = () => {
 	console.error('Applikasjonen har støtt på en feil')
@@ -41,14 +42,15 @@ const ErrorView = () => {
 		})
 	}
 
-	const errors = [
-		'Failed to fetch dynamically imported module',
-		'Unable to preload CSS',
-		"Cannot destructure property of 'register'",
-	]
+	if (isChunkLoadError(error)) {
+		const didReload = handleChunkErrorWithReload()
+		if (didReload) return null
+	}
 
-	if (errors.some((e) => error?.message?.includes(e))) {
-		console.error('Navigating to login due to module/resource loading error')
+	const authErrors = ["Cannot destructure property of 'register'"]
+
+	if (authErrors.some((e) => error?.message?.includes(e))) {
+		console.error('Navigating to login due to auth-related error')
 		navigateToLogin(error?.message)
 	}
 	return <AppError error={error} stackTrace={error.stackTrace} />

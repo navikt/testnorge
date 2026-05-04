@@ -194,7 +194,7 @@ export const StegVelger = ({
 					{JSON.stringify(formMethods.getValues('pdldata.person.sivilstand'))}
 				</div>
 				<Suspense fallback={<Loading label="Laster komponenter" />}>
-					<StepErrorBoundary stepIndex={step} stepLabel={labels[step].label}>
+					<StepErrorBoundary key={step} stepIndex={step} stepLabel={labels[step].label}>
 						<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 					</StepErrorBoundary>
 				</Suspense>

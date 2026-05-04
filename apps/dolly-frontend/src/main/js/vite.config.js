@@ -3,6 +3,8 @@ import proxyRoutes from './proxy-routes.json'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import * as child from 'child_process'
+import * as fs from 'fs'
+import * as path from 'path'
 
 /** @type {import('vite').UserConfig} */
 
@@ -38,6 +40,16 @@ const styledComponentsPreset = () => ({
 		filter: {
 			code: /styled/,
 		},
+	},
+})
+
+const versionJsonPlugin = () => ({
+	name: 'generate-version-json',
+	closeBundle() {
+		const versionData = JSON.stringify({
+			commitHash: (commitHash || '').trim(),
+		})
+		fs.writeFileSync(path.resolve(__dirname, 'build', 'version.json'), versionData)
 	},
 })
 
@@ -91,5 +103,6 @@ export default defineConfig(({ mode }) => ({
 		babel({
 			presets: [reactCompilerPreset(), styledComponentsPreset()],
 		}),
+		versionJsonPlugin(),
 	],
 }))
