@@ -9,6 +9,69 @@
 <body>
 <div id='root'></div>
 <div id='react-select-root'></div>
+<script>
+(function() {
+	var MAX_RETRIES = 5;
+	var RETRY_KEY = 'dolly-deploy-retry-count';
+	var RETRY_TIME_KEY = 'dolly-deploy-retry-time';
+	var RETRY_DELAY_MS = 3000;
+	var RETRY_WINDOW_MS = 120000;
+
+	function getRetryState() {
+		var count = parseInt(sessionStorage.getItem(RETRY_KEY) || '0', 10);
+		var lastTime = parseInt(sessionStorage.getItem(RETRY_TIME_KEY) || '0', 10);
+		if (Date.now() - lastTime > RETRY_WINDOW_MS) return { count: 0, expired: true };
+		return { count: count, expired: false };
+	}
+
+	function showDeployMessage(retriesUsed) {
+		var root = document.getElementById('root');
+		if (!root) return;
+		root.innerHTML =
+			'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:Source Sans Pro,Arial,sans-serif;text-align:center;padding:2rem">' +
+			'<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0067c5" stroke-width="2"><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M7.76 7.76L4.93 4.93"/></svg>' +
+			'<h2 style="margin:1rem 0 0.5rem;color:#262626">Dolly oppdateres</h2>' +
+			'<p style="color:#595959;max-width:400px">En ny versjon av Dolly er under utrulling. Siden laster automatisk på nytt om noen sekunder.</p>' +
+			(retriesUsed < MAX_RETRIES
+				? '<p style="color:#888;font-size:0.875rem">Forsøk ' + retriesUsed + ' av ' + MAX_RETRIES + '</p>'
+				: '<p style="color:#888;font-size:0.875rem">Utrulling tar litt lenger enn vanlig. Prøv igjen om et øyeblikk.</p>') +
+			'<button onclick="sessionStorage.removeItem(\'' + RETRY_KEY + '\');sessionStorage.removeItem(\'' + RETRY_TIME_KEY + '\');location.reload()" ' +
+			'style="margin-top:1.5rem;padding:0.75rem 1.5rem;background:#0067c5;color:#fff;border:none;border-radius:4px;font-size:1rem;cursor:pointer">' +
+			'Last inn på nytt</button></div>';
+	}
+
+	function handleAssetError() {
+		var state = getRetryState();
+		var count = state.expired ? 0 : state.count;
+		if (count < MAX_RETRIES) {
+			sessionStorage.setItem(RETRY_KEY, String(count + 1));
+			sessionStorage.setItem(RETRY_TIME_KEY, String(Date.now()));
+			showDeployMessage(count + 1);
+			setTimeout(function() {
+				window.location.replace(window.location.pathname + '?_r=' + Date.now());
+			}, RETRY_DELAY_MS);
+		} else {
+			showDeployMessage(MAX_RETRIES);
+			sessionStorage.removeItem(RETRY_KEY);
+			sessionStorage.removeItem(RETRY_TIME_KEY);
+		}
+	}
+
+	var handled = false;
+	window.addEventListener('error', function(event) {
+		if (handled) return;
+		var el = event.target;
+		if (el && (el.tagName === 'SCRIPT' || el.tagName === 'LINK')) {
+			var src = el.src || el.href || '';
+			if (src.indexOf('/assets/') !== -1) {
+				handled = true;
+				event.preventDefault();
+				handleAssetError();
+			}
+		}
+	}, true);
+})();
+</script>
 <script src='/src/index.tsx' type='module'></script>
 </body>
 </html>
