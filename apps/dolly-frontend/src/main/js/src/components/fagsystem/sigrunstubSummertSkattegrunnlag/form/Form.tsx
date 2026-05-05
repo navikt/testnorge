@@ -1,6 +1,6 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -60,7 +60,7 @@ export const SigrunstubSummertSkattegrunnlagForm = () => {
 		<Vis attributt={sigrunstubSummertSkattegrunnlagAttributt}>
 			<Panel
 				heading="Summert skattegrunnlag (Sigrun)"
-				hasErrors={panelError(sigrunstubSummertSkattegrunnlagAttributt)}
+				hasErrors={usePanelError(sigrunstubSummertSkattegrunnlagAttributt)}
 				iconType="sigrun"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [
 					sigrunstubSummertSkattegrunnlagAttributt,

@@ -2,7 +2,7 @@ import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
@@ -33,7 +33,7 @@ const DokarkivForm = () => {
 		<Vis attributt={dokarkivAttributt}>
 			<Panel
 				heading="Dokumenter (Joark)"
-				hasErrors={panelError(dokarkivAttributt)}
+				hasErrors={usePanelError(dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formMethods.getValues(), [dokarkivAttributt])}

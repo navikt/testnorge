@@ -6,7 +6,7 @@ import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 
 export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
@@ -23,7 +23,7 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 			<Panel
 				heading={'Norsk bankkonto'}
 				iconType="bankkonto"
-				hasErrors={panelError(path)}
+				hasErrors={usePanelError(path)}
 				startOpen={erForsteEllerTest(formMethods.getValues(), [path])}
 			>
 				<FormSelect

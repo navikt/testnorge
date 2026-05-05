@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { validation } from '@/components/fagsystem/tjenestepensjon/form/validation'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { YtelseForm } from '@/components/fagsystem/tjenestepensjon/form/partials/ytelseForm'
@@ -47,7 +47,7 @@ export const TjenestepensjonForm = () => {
 		<Vis attributt={tpPath}>
 			<Panel
 				heading="Tjenestepensjon"
-				hasErrors={panelError(tpPath)}
+				hasErrors={usePanelError(tpPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [tpPath])}
 				informasjonstekst={hjelpetekst}

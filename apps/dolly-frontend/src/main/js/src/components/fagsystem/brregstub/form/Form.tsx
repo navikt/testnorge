@@ -3,7 +3,7 @@ import { ifPresent, requiredDate, requiredNumber, requiredString } from '@/utils
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { EnheterForm } from './partials/enheterForm'
 import { useFormContext } from 'react-hook-form'
 import { useBrregUnderstatuser } from '@/utils/hooks/useBrreg'
@@ -22,7 +22,7 @@ export const BrregstubForm = () => {
 		<Vis attributt={brregAttributt}>
 			<Panel
 				heading="Brønnøysundregistrene"
-				hasErrors={panelError(brregAttributt)}
+				hasErrors={usePanelError(brregAttributt)}
 				iconType="brreg"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [brregAttributt])}
 			>

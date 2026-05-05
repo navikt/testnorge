@@ -3,7 +3,7 @@ import { validation } from '@/components/fagsystem/pensjonsavtale/form/validatio
 import { useFormContext } from 'react-hook-form'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -21,7 +21,7 @@ export const PensjonsavtaleForm = () => {
 		<Vis attributt={avtalePath}>
 			<Panel
 				heading="Pensjonsavtale"
-				hasErrors={panelError(avtalePath)}
+				hasErrors={usePanelError(avtalePath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [avtalePath])}
 				informasjonstekst={hjelpetekst}

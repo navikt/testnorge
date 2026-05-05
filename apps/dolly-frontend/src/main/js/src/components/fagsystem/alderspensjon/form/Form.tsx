@@ -1,5 +1,5 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useContext, useEffect, useState } from 'react'
@@ -208,7 +208,7 @@ export const AlderspensjonForm = () => {
 		<Vis attributt={alderspensjonPath}>
 			<Panel
 				heading="Alderspensjon"
-				hasErrors={panelError(alderspensjonPath)}
+				hasErrors={usePanelError(alderspensjonPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [alderspensjonPath])}
 			>
