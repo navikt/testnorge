@@ -17,11 +17,12 @@ import java.util.concurrent.Callable;
 
 import static java.time.Duration.ofSeconds;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class AapBehandlingStatusPostCommand implements Callable<Mono<AapStatusResponse>> {
 
     private static final String AAP_OPPRETT_URL = "/kelvin-aap/api/test/behandlingStatus";
+
     private final WebClient webClient;
     private final String ident;
     private final String token;

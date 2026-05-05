@@ -17,11 +17,12 @@ import java.util.concurrent.Callable;
 
 import static java.time.Duration.ofSeconds;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class AapOpprettOgFullfoerPostCommand implements Callable<Mono<AapOpprettResponse>> {
 
     private static final String AAP_OPPRETT_URL = "/kelvin-aap/api/test/opprettOgFullfoerBehandling";
+
     private final WebClient webClient;
     private final AapOpprettRequest aapOpprettRequest;
     private final String token;
