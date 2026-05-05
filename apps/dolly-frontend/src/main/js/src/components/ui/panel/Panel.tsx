@@ -11,6 +11,7 @@ import {
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
 import { useContext } from 'react'
+import { InlineMessage } from '@navikt/ds-react'
 
 export default function Panel({
 	startOpen = false,
@@ -66,10 +67,9 @@ export default function Panel({
 
 				{informasjonstekst && <Hjelpetekst>{informasjonstekst}</Hjelpetekst>}
 				{hasErrors && errorContext.showError && (
-					<div className="dolly-panel-heading_error">
-						<Icon size={16} kind="report-problem-triangle" />
+					<InlineMessage status="error" size="small" style={{ marginLeft: '10px' }}>
 						Feil i felter
-					</div>
+					</InlineMessage>
 				)}
 				<span className="dolly-panel-heading_buttons">
 					{checkAttributeArray && (

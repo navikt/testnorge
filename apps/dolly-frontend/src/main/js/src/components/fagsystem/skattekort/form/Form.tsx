@@ -1,5 +1,5 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React, { useContext } from 'react'
@@ -105,7 +105,7 @@ export const SkattekortForm = () => {
 		<Vis attributt={skattekortAttributt}>
 			<Panel
 				heading="Nav skattekort"
-				hasErrors={panelError(skattekortAttributt)}
+				hasErrors={usePanelError(skattekortAttributt)}
 				iconType="skattekort"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [skattekortAttributt])}
 			>

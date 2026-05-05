@@ -4,11 +4,11 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as _ from 'lodash-es'
-import { Alert } from '@navikt/ds-react'
 import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const errorPaths = [
 	`arenaforvalter.aap115[0].fraDato`,
@@ -46,9 +46,9 @@ export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path:
 	return (
 		<React.Fragment>
 			{!opts?.is?.leggTil && !opts?.is?.importTestnorge && feilmelding && (
-				<Alert variant={'warning'} style={{ marginBottom: '20px' }}>
+				<StyledAlert variant={'warning'} size={'small'}>
 					{feilmelding}
-				</Alert>
+				</StyledAlert>
 			)}
 			<div className="flexbox--flex-wrap">
 				<FormSelect

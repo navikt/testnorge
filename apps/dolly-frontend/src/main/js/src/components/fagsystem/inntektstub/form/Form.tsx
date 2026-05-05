@@ -1,6 +1,6 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { validation } from './validation'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import InntektsinformasjonForm from './partials/inntektsinformasjonForm'
@@ -39,7 +39,7 @@ export const InntektstubForm = () => {
 		<Vis attributt={inntektstubAttributt}>
 			<Panel
 				heading="A-ordningen (Inntektstub)"
-				hasErrors={panelError(inntektstubAttributt)}
+				hasErrors={usePanelError(inntektstubAttributt)}
 				iconType="inntektstub"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [inntektstubAttributt])}
 			>

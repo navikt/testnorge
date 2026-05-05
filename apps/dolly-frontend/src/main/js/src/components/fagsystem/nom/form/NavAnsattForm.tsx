@@ -1,6 +1,6 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { NomForm } from '@/components/fagsystem/nom/form/NomForm'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import React from 'react'
@@ -18,7 +18,7 @@ export const NavAnsatt = () => {
 		<Vis attributt={panelPaths}>
 			<Panel
 				heading="Nav-ansatt"
-				hasErrors={panelError(panelPaths)}
+				hasErrors={usePanelError(panelPaths)}
 				iconType="nav"
 				startOpen={
 					erForsteEllerTest(formMethods.getValues(), nomdataPath) ||

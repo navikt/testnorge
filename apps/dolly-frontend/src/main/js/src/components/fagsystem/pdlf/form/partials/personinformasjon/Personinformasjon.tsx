@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { Sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import {
@@ -73,7 +73,7 @@ export const Personinformasjon = ({ formMethods }) => {
 		<Vis attributt={panelPaths}>
 			<Panel
 				heading="Personinformasjon"
-				hasErrors={panelError(panelPaths)}
+				hasErrors={usePanelError(panelPaths)}
 				iconType={'personinformasjon'}
 				startOpen={erForsteEllerTest(formMethods.getValues(), panelPaths)}
 			>

@@ -1,7 +1,7 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { useFormContext } from 'react-hook-form'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialMocksvar } from '@/components/fagsystem/afpOffentlig/initialValues'
 import { useMuligeDirektekall, useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
@@ -41,7 +41,7 @@ export const AfpOffentligForm = () => {
 		<Vis attributt={afpOffentligPath}>
 			<Panel
 				heading="AFP offentlig"
-				hasErrors={panelError(afpOffentligPath)}
+				hasErrors={usePanelError(afpOffentligPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [afpOffentligPath])}
 			>

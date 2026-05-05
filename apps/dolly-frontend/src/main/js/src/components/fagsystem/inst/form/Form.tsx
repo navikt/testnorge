@@ -1,6 +1,6 @@
 import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -40,7 +40,7 @@ export const InstForm = () => {
 		<Vis attributt={instAttributt}>
 			<Panel
 				heading="Institusjonsopphold"
-				hasErrors={panelError(instAttributt)}
+				hasErrors={usePanelError(instAttributt)}
 				iconType="institusjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [instAttributt])}
 			>

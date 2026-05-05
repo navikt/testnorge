@@ -1,7 +1,7 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { useFormContext } from 'react-hook-form'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useArbeidssoekerTyper } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -38,7 +38,7 @@ export const ArbeidssoekerregisteretForm = () => {
 		<Vis attributt={arbeidssoekerregisteretAttributt}>
 			<Panel
 				heading="Arbeidssøkerregisteret"
-				hasErrors={panelError(arbeidssoekerregisteretAttributt)}
+				hasErrors={usePanelError(arbeidssoekerregisteretAttributt)}
 				iconType="cv"
 				informasjonstekst="Informasjonen i arbeidssøkerregisteret har en levetid på 21 dager fra innsending. Denne kan fornyes ved innsending på ny (gjenopprett)."
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidssoekerregisteretAttributt])}

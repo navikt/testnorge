@@ -1,4 +1,4 @@
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import React, { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
@@ -33,7 +33,7 @@ export const UforetrygdForm = () => {
 		<Vis attributt={uforetrygdPath}>
 			<Panel
 				heading="Uføretrygd"
-				hasErrors={panelError(uforetrygdPath)}
+				hasErrors={usePanelError(uforetrygdPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [uforetrygdPath])}
 			>
