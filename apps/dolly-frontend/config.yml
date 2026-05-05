@@ -79,6 +79,12 @@ spec:
           namespace: nais-system
       external:
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
+  startup:
+    path: /
+    initialDelay: 10
+    periodSeconds: 5
+    failureThreshold: 30
+    timeout: 2
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

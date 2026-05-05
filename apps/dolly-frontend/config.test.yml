@@ -84,6 +84,12 @@ spec:
       command:
         - sleep
         - "5"
+  startup:
+    path: /
+    initialDelay: 10
+    periodSeconds: 5
+    failureThreshold: 30
+    timeout: 2
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
