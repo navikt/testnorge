@@ -21,6 +21,7 @@ class RouteLocatorConfig {
     private final Histark histark;
     private final Inntektstub inntektstub;
     private final Inst inst;
+    private final KelvinAap kelvinAap;
     private final Kontoregister kontoregister;
     private final Skattekort skattekort;
     private final Krrstub krrstub;
@@ -60,6 +61,7 @@ class RouteLocatorConfig {
                 .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
                 .route("inst", inst.build())
+                .route("kelvin-aap", kelvinAap.build())
                 .route("kontoregister", kontoregister.build())
                 .route("skattekort", skattekort.build())
                 .route("krrstub", krrstub.build())
