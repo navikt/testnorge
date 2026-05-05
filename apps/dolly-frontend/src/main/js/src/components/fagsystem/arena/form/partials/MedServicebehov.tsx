@@ -4,7 +4,6 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as _ from 'lodash-es'
-import { Alert } from '@navikt/ds-react'
 import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
