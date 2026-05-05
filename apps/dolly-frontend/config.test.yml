@@ -73,6 +73,17 @@ spec:
   port: 8080
   ingresses:
     - "https://dolly-frontend-dev.intern.dev.nav.no"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  terminationGracePeriodSeconds: 60
+  preStopHook:
+    exec:
+      command:
+        - sleep
+        - "5"
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

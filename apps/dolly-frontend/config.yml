@@ -30,6 +30,17 @@ spec:
   ingresses:
     - "https://dolly.intern.dev.nav.no"
     - "https://dolly.ekstern.dev.nav.no"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  terminationGracePeriodSeconds: 60
+  preStopHook:
+    exec:
+      command:
+        - sleep
+        - "5"
   accessPolicy:
     outbound:
       rules:
