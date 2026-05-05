@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
@@ -23,7 +23,7 @@ const VersionToastContent = ({
 	<StyledContent>
 		<span>
 			En ny versjon av Dolly er tilgjengelig.
-			{showSaveMessage && ' Fremgangen din lagres automatisk.'}
+			{showSaveMessage && ' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
 		</span>
 		<Button variant="tertiary" size="xsmall" onClick={onReload}>
 			Oppdater nå
@@ -55,26 +55,20 @@ export const NewVersionToast = () => {
 
 		if (toastShownRef.current) {
 			toast.update(TOAST_ID, {
-				render: (
-					<VersionToastContent onReload={handleReload} showSaveMessage={isOnBestilling} />
-				),
+				render: <VersionToastContent onReload={handleReload} showSaveMessage={isOnBestilling} />,
 			})
 		} else {
 			toastShownRef.current = true
-			toast.info(
-				<VersionToastContent onReload={handleReload} showSaveMessage={isOnBestilling} />,
-				{
-					toastId: TOAST_ID,
-					position: 'bottom-right',
-					autoClose: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					containerId: 'global-toast',
-				},
-			)
+			toast.info(<VersionToastContent onReload={handleReload} showSaveMessage={isOnBestilling} />, {
+				toastId: TOAST_ID,
+				position: 'bottom-right',
+				autoClose: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			})
 		}
 	}, [isNewVersionAvailable, isOnBestilling])
 
-	return null
+	return <ToastContainer theme={'light'} />
 }

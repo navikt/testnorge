@@ -6,8 +6,6 @@ import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
 import { Kontaktinfo } from '@/components/feedback/Kontaktinfo'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
@@ -75,7 +73,6 @@ export const App = () => {
 			</main>
 			<Kontaktinfo />
 			<ToastConnector />
-			<ToastContainer containerId="global-toast" position="bottom-right" theme="light" />
 		</ErrorBoundary>
 	)
 }

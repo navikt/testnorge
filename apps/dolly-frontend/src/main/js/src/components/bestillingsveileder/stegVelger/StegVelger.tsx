@@ -6,21 +6,24 @@ import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
 	REGEX_BACKEND_ORGANISASJONER,
-	useMatchMutate
+	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType
+	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { ShowErrorContext, ShowErrorContextType } from '@/components/bestillingsveileder/ShowErrorContext'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
 import Loading from '@/components/ui/loading/Loading'
 import {
 	DollyIdentValidation,
-	DollyOrganisasjonValidation
+	DollyOrganisasjonValidation,
 } from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyIdentValidation'
 import { lazyWithPreload } from '@/utils/lazyWithPreload'
 import Steg0 from './steg/steg0/Steg0'
@@ -36,7 +39,7 @@ import { toast } from 'react-toastify'
 import {
 	clearBestillingFormState,
 	loadBestillingFormState,
-	saveBestillingFormState
+	saveBestillingFormState,
 } from '@/utils/bestillingFormPersistence'
 import { BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
 
@@ -106,13 +109,12 @@ export const StegVelger = ({
 	useEffect(() => {
 		if (savedState) {
 			clearBestillingFormState()
-			toast.success('Fremgangen din ble gjenopprettet!', {
+			toast.success('Endringene dine ble gjenopprettet!', {
 				position: 'bottom-right',
 				autoClose: 5000,
 				closeOnClick: true,
 				pauseOnHover: true,
 				draggable: true,
-				containerId: 'global-toast',
 			})
 		}
 	}, [])
