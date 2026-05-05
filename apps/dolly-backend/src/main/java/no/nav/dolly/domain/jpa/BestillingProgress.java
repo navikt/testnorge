@@ -130,6 +130,9 @@ public class BestillingProgress implements Serializable {
     @Column("nom_status")
     private String nomStatus;
 
+    @Column("kelvin_aap_status")
+    private String kelvinAapStatus;
+
     @Column("master")
     private Master master;
 

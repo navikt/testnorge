@@ -582,6 +582,7 @@ public class BestillingService {
                                     .tpsMessaging(request2.getTpsMessaging())
                                     .udistub(request2.getUdistub())
                                     .yrkesskader(request2.getYrkesskader())
+                                    .kelvinAap(request2.getKelvinAap())
                                     .build());
                             return Mono.just(isNotBlank(bestKriterier) ? bestKriterier : "{}");
                         }));

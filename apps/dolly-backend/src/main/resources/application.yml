@@ -27,7 +27,7 @@ spring:
   reactor:
     context-propagation: auto
   flyway:
-    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
   mvc:
@@ -42,9 +42,6 @@ spring:
   jackson:
     parser:
       include-source-in-location: true
-    deserialization:
-      fail-on-null-for-primitives: false
-      fail-on-unknown-properties: false
   http:
     codecs:
       max-in-memory-size: 50MB
