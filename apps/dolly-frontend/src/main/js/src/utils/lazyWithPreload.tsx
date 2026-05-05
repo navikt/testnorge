@@ -5,21 +5,12 @@ type PreloadableComponent<T extends React.ComponentType<any>> = LazyExoticCompon
 	preload: () => void
 }
 
-export const retryImport = <T,>(
-	factory: () => Promise<T>,
-	retries = 2,
-	delay = 1000,
-): Promise<T> =>
+export const retryImport = <T,>(factory: () => Promise<T>): Promise<T> =>
 	factory().catch((error: unknown) => {
-		if (retries <= 0) {
-			if (isChunkLoadError(error)) {
-				handleChunkErrorWithReload()
-			}
-			throw error
+		if (isChunkLoadError(error)) {
+			handleChunkErrorWithReload()
 		}
-		return new Promise<T>((resolve) => setTimeout(resolve, delay)).then(() =>
-			retryImport(factory, retries - 1, delay * 2),
-		)
+		throw error
 	})
 
 export function lazyWithPreload<T extends React.ComponentType<any>>(

@@ -26,7 +26,7 @@ export const isChunkLoadError = (error: unknown): boolean => {
 const RELOAD_SESSION_KEY = 'dolly-reloaded-for-chunk-error'
 
 export const reloadPage = () => {
-	window.location.reload()
+	window.location.replace(window.location.pathname + '?_r=' + Date.now())
 }
 
 export const handleChunkErrorWithReload = (reload: () => void = reloadPage): boolean => {
