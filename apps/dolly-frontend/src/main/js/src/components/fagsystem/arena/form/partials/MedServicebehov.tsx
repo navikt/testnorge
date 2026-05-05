@@ -9,6 +9,7 @@ import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const errorPaths = [
 	`arenaforvalter.aap115[0].fraDato`,
@@ -46,9 +47,9 @@ export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path:
 	return (
 		<React.Fragment>
 			{!opts?.is?.leggTil && !opts?.is?.importTestnorge && feilmelding && (
-				<Alert variant={'warning'} style={{ marginBottom: '20px' }}>
+				<StyledAlert variant={'warning'} size={'small'}>
 					{feilmelding}
-				</Alert>
+				</StyledAlert>
 			)}
 			<div className="flexbox--flex-wrap">
 				<FormSelect
