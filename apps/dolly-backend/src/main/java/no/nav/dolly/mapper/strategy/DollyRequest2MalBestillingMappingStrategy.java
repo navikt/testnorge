@@ -76,6 +76,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
+                .field("kelvinAap", "kelvinAap")
                 .field("krrstub", "krrstub")
                 .field("medl", "medl")
                 .field("navSyntetiskIdent", "navSyntetiskIdent")

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -44,7 +46,7 @@ public class AapStatusResponse {
 
         private Loenn loenn;
         private AfpDTO afp;
-        private Stoenad stoenad;
+        private List<Stoenad> stoenad;
     }
 
     @Data

@@ -16,6 +16,7 @@ import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
@@ -72,4 +73,5 @@ public class BestilteKriterier {
     private RsArbeidssoekerregisteret arbeidssoekerregisteret;
     private List<EtterlatteYtelse> etterlatteYtelser;
     private RsNomData nomdata;
+    private RsKelvinAapRequestDTO kelvinAap;
 }

@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.kelvinaap.command;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -29,6 +30,8 @@ public class AapOpprettOgFullfoerPostCommand implements Callable<Mono<AapOpprett
 
     @Override
     public Mono<AapOpprettResponse> call() {
+
+        log.info("Oppretter AAP: {}", Json.pretty(aapOpprettRequest));
 
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path(AAP_OPPRETT_URL)

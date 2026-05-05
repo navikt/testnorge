@@ -39,6 +39,7 @@ public class KelvinAapClient implements ClientRegister {
                 .flatMap(kelvinAap -> kelvinAapConsumer.readAap(dollyPerson.getIdent())
                         .zipWith(Mono.just(kelvinAap)))
                 .flatMap(kelvinAap -> {
+                    log.info("Hentet AAP for ident {} {}", dollyPerson.getIdent(), kelvinAap.getT1());
                     if (nonNull(kelvinAap.getT1().getStatus())) {
                         val errStatus = "FEIL ved henting av AAP for ident: %s, %s %s".formatted(
                                 dollyPerson.getIdent(), kelvinAap.getT1().getStatus(), kelvinAap.getT1().getError());
@@ -61,7 +62,6 @@ public class KelvinAapClient implements ClientRegister {
                                         return "FEIL: %s %s".formatted(response.getStatus(), response.getError());
                                     }
                                 });
-
                     }
                 })
                 .flatMap(status -> oppdaterStatus(progress, status));

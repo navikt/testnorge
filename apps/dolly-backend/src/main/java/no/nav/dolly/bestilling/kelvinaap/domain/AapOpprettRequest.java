@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,7 +28,7 @@ public class AapOpprettRequest {
 
         private AfpDTO afp;
         private Loenn loenn;
-        private Stoenad stoenad;
+        private List<Stoenad> stoenad;
     }
 
     @Data
