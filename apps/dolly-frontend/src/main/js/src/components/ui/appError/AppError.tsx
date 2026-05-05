@@ -4,7 +4,6 @@ import './appError.less'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { CSSProperties, useEffect } from 'react'
-import { isChunkLoadError, handleChunkErrorWithReload } from '@/utils/chunkErrorUtils'
 
 type Props = {
 	style?: CSSProperties | undefined
@@ -14,9 +13,6 @@ type Props = {
 export const AppError = ({ error, stackTrace, style }: Props) => {
 	useEffect(() => {
 		console.error('Ukjent error i Dolly: ' + error)
-		if (isChunkLoadError(error)) {
-			handleChunkErrorWithReload()
-		}
 	}, [error])
 
 	return (

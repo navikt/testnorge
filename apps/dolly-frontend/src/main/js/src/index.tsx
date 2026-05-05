@@ -6,9 +6,6 @@ import '@navikt/ds-css'
 import '@/styles/main.less'
 import { RootComponent } from '@/RootComponent'
 import { runningE2ETest } from '@/service/services/Request'
-import { clearChunkReloadState } from '@/utils/chunkErrorUtils'
-
-clearChunkReloadState()
 
 async function enableMocking() {
 	if (process.env.NODE_ENV !== 'test' || runningE2ETest()) {

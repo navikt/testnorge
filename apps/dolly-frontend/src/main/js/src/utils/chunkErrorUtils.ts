@@ -22,26 +22,3 @@ export const isChunkLoadError = (error: unknown): boolean => {
 		message.toLowerCase().includes(pattern.toLowerCase()),
 	)
 }
-
-const RELOAD_SESSION_KEY = 'dolly-reloaded-for-chunk-error'
-
-export const reloadPage = () => {
-	window.location.replace(window.location.pathname + '?_r=' + Date.now())
-}
-
-export const handleChunkErrorWithReload = (reload: () => void = reloadPage): boolean => {
-	const hasAlreadyReloaded = sessionStorage.getItem(RELOAD_SESSION_KEY) === 'true'
-
-	if (hasAlreadyReloaded) {
-		sessionStorage.removeItem(RELOAD_SESSION_KEY)
-		return false
-	}
-
-	sessionStorage.setItem(RELOAD_SESSION_KEY, 'true')
-	reload()
-	return true
-}
-
-export const clearChunkReloadState = () => {
-	sessionStorage.removeItem(RELOAD_SESSION_KEY)
-}

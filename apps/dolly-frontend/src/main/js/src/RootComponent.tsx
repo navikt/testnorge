@@ -18,7 +18,6 @@ import allRoutes from '@/allRoutes'
 import React, { useEffect } from 'react'
 import { locationChange } from '@/ducks/finnPerson'
 import BrukerPage from '@/pages/brukerPage'
-import { handleChunkErrorWithReload, isChunkLoadError } from '@/utils/chunkErrorUtils'
 
 const ErrorView = () => {
 	console.error('Applikasjonen har støtt på en feil')
@@ -40,11 +39,6 @@ const ErrorView = () => {
 				Object.entries(sessionStorage).map(([k, v]) => [k, v.substring(0, 100)]),
 			),
 		})
-	}
-
-	if (isChunkLoadError(error)) {
-		const didReload = handleChunkErrorWithReload()
-		if (didReload) return null
 	}
 
 	const authErrors = ["Cannot destructure property of 'register'"]
