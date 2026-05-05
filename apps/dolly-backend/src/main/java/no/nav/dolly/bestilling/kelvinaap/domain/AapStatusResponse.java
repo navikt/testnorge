@@ -1,21 +1,40 @@
-package no.nav.dolly.domain.resultset.kelvinaap;
+package no.nav.dolly.bestilling.kelvinaap.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsKelvinAapRequestDTO {
+public class AapStatusResponse {
 
-    private AndreUtbetalingerDTO andreUtbetalinger;
+    private String saksnummer;
+    private String behandlingStatus;
+    private Boolean ferdig;
+    private Soeknad soeknad;
 
-    private Boolean erStudent;
-    private Boolean harMedlemskap;
-    private Boolean harYrkesskade;
+    private HttpStatus status;
+    private String error;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Soeknad {
+
+        private Boolean erStudent;
+        private Boolean harYrkesskade;
+        private Boolean harMedlemskap;
+
+        private AndreUtbetalingerDTO andreUtbetalinger;
+        private Loenn loenn;
+        private AfpDTO afp;
+        private Stoenad stoenad;
+    }
 
     @Data
     @Builder
@@ -23,8 +42,8 @@ public class RsKelvinAapRequestDTO {
     @AllArgsConstructor
     public static class AndreUtbetalingerDTO {
 
-        private AfpDTO afp;
         private Loenn loenn;
+        private AfpDTO afp;
         private Stoenad stoenad;
     }
 

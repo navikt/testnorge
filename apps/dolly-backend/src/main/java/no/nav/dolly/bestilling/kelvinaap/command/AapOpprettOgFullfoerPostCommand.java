@@ -21,7 +21,7 @@ import static java.time.Duration.ofSeconds;
 @Slf4j
 public class AapOpprettOgFullfoerPostCommand implements Callable<Mono<AapOpprettResponse>> {
 
-    private static final String AAP_OPPRETT_URL = "/kelvin-aap/api/test/opprettOgFullforBehandling";
+    private static final String AAP_OPPRETT_URL = "/kelvin-aap/api/test/opprettOgFullfoerBehandling";
     private final WebClient webClient;
     private final AapOpprettRequest aapOpprettRequest;
     private final String token;

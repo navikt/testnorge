@@ -36,19 +36,32 @@ public class KelvinAapClient implements ClientRegister {
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getKelvinAap()))
                 .map(RsDollyBestilling::getKelvinAap)
-                .map(kelvinAap -> {
-                    val context = MappingContextUtils.getMappingContext();
-                    context.setProperty("ident", dollyPerson.getIdent());
-                    return mapperFacade.map(kelvinAap, AapOpprettRequest.class, context);
-                })
-                .flatMap(kelvinAapConsumer::createAap)
-                .map(response -> {
-                    if (isNotBlank(response.getSaksnummer())) {
-                        log.info("AAP opprettet for ident {}: saksnummer {}", dollyPerson.getIdent(), response);
-                        return "OK";
+                .flatMap(kelvinAap -> kelvinAapConsumer.readAap(dollyPerson.getIdent())
+                        .zipWith(Mono.just(kelvinAap)))
+                .flatMap(kelvinAap -> {
+                    if (nonNull(kelvinAap.getT1().getStatus())) {
+                        val errStatus = "FEIL ved henting av AAP for ident: %s, %s %s".formatted(
+                                dollyPerson.getIdent(), kelvinAap.getT1().getStatus(), kelvinAap.getT1().getError());
+                        log.error(errStatus);
+                        return Mono.just(errStatus);
+                    } else if (nonNull(kelvinAap.getT1().getSoeknad())) {
+                        log.info("AAP behandling for ident {} finnes allerede: {}", dollyPerson.getIdent(), kelvinAap.getT1());
+                        return Mono.just("OK");
                     } else {
-                        log.error("Feil ved oppretting av AAP for ident {}: {}", dollyPerson.getIdent(), response);
-                        return "FEIL: %s %s".formatted(response.getStatus(), response.getError());
+                        val context = MappingContextUtils.getMappingContext();
+                        context.setProperty("ident", dollyPerson.getIdent());
+                        var aapOpprettRequest = mapperFacade.map(kelvinAap.getT2(), AapOpprettRequest.class, context);
+                        return kelvinAapConsumer.createAap(aapOpprettRequest)
+                                .map(response -> {
+                                    if (isNotBlank(response.getSaksnummer())) {
+                                        log.info("AAP opprettet for ident {}: saksnummer {}", dollyPerson.getIdent(), response);
+                                        return "OK";
+                                    } else {
+                                        log.error("Feil ved oppretting av AAP for ident {}: {}", dollyPerson.getIdent(), response);
+                                        return "FEIL: %s %s".formatted(response.getStatus(), response.getError());
+                                    }
+                                });
+
                     }
                 })
                 .flatMap(status -> oppdaterStatus(progress, status));

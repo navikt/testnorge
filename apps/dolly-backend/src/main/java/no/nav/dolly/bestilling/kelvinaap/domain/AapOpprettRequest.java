@@ -45,14 +45,14 @@ public class AapOpprettRequest {
 
     public enum Stoenad {
         AFP,
-        INTRODUKSJONSSTØNAD,
-        KVALIFISERINGSSTØNAD,
-        LÅN,
+        INTRODUKSJONSSTOENAD,
+        KVALIFISERINGSSTOENAD,
+        LAN,
         NEI,
-        OMSORGSSTØNAD,
+        OMSORGSSTOENAD,
         STIPEND,
         UTLAND,
         VERV,
-        ØKONOMISK_SOSIALHJELP
+        OEKONOMISK_SOSIALHJELP
     }
 }

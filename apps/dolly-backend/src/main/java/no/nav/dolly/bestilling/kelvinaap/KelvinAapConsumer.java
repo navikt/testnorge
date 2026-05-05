@@ -1,9 +1,11 @@
 package no.nav.dolly.bestilling.kelvinaap;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.kelvinaap.command.AapBehandlingStatusPostCommand;
 import no.nav.dolly.bestilling.kelvinaap.command.AapOpprettOgFullfoerPostCommand;
 import no.nav.dolly.bestilling.kelvinaap.domain.AapOpprettRequest;
 import no.nav.dolly.bestilling.kelvinaap.domain.AapOpprettResponse;
+import no.nav.dolly.bestilling.kelvinaap.domain.AapStatusResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
@@ -42,5 +44,11 @@ public class KelvinAapConsumer {
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
                         new AapOpprettOgFullfoerPostCommand(webClient, request, token.getTokenValue()).call());
+    }
+
+    public Mono<AapStatusResponse> readAap(String ident) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new AapBehandlingStatusPostCommand(webClient, ident, token.getTokenValue()).call());
     }
 }
