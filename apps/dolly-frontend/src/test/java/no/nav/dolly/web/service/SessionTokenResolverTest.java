@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -39,6 +40,9 @@ class SessionTokenResolverTest {
     @Mock
     private ReactiveOAuth2AuthorizedClientManager authorizedClientManager;
 
+    @Mock
+    private ObjectProvider<ReactiveOAuth2AuthorizedClientManager> authorizedClientManagerProvider;
+
     private SessionTokenResolver sessionTokenResolver;
     private ServerWebExchange exchange;
 
@@ -67,7 +71,8 @@ class SessionTokenResolverTest {
 
     @BeforeEach
     void setUp() {
-        sessionTokenResolver = new SessionTokenResolver(authorizedClientManager);
+        when(authorizedClientManagerProvider.getIfAvailable()).thenReturn(authorizedClientManager);
+        sessionTokenResolver = new SessionTokenResolver(authorizedClientManagerProvider);
         exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/").build());
     }
 

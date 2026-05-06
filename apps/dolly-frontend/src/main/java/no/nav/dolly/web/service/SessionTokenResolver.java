@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.Oauth2AuthenticationToken;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
 import no.nav.testnav.libs.securitycore.domain.Token;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -30,7 +31,7 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @RequiredArgsConstructor
 public class SessionTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
-    private final ReactiveOAuth2AuthorizedClientManager authorizedClientManager;
+    private final ObjectProvider<ReactiveOAuth2AuthorizedClientManager> authorizedClientManagerProvider;
 
     @Override
     public Mono<Token> getToken(ServerWebExchange exchange) {
@@ -39,13 +40,17 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                 .getContext()
                 .map(SecurityContext::getAuthentication).flatMap(authentication -> {
                             if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
+                                var manager = authorizedClientManagerProvider.getIfAvailable();
+                                if (manager == null) {
+                                    return Mono.error(new IllegalStateException("OAuth2 client manager ikke tilgjengelig"));
+                                }
                                 var authorizeRequest = OAuth2AuthorizeRequest
                                         .withClientRegistrationId(authenticationToken.getAuthorizedClientRegistrationId())
                                         .principal(authenticationToken)
                                         .attribute(ServerWebExchange.class.getName(), exchange)
                                         .build();
 
-                                return authorizedClientManager.authorize(authorizeRequest)
+                                return manager.authorize(authorizeRequest)
                                         .map(this::toToken)
                                         .switchIfEmpty(Mono.error(new CredentialsExpiredException("Klarte ikke å fornye token")));
                             } else if (authentication instanceof JwtAuthenticationToken) {

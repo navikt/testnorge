@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -114,6 +115,7 @@ class SessionConfig {
     }
 
     @Bean
+    @ConditionalOnBean(ReactiveClientRegistrationRepository.class)
     ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
             ReactiveClientRegistrationRepository clientRegistrationRepository,
             ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
