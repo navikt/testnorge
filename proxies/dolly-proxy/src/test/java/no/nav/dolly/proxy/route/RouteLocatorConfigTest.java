@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWebTestClient(timeout = "30000")
 class RouteLocatorConfigTest {
 
-    private static final String jwt = JWT
+    private static final String TOKEN = JWT
             .create()
             .withExpiresAt(Date.from(Instant.now().plusSeconds(TimeUnit.MINUTES.toSeconds(5))))
             .sign(Algorithm.none());
@@ -68,15 +68,15 @@ class RouteLocatorConfigTest {
     private WebTestClient webClient;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         when(tokenExchange.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
+                .thenReturn(Mono.just(new AccessToken(TOKEN)));
         when(navTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
+                .thenReturn(Mono.just(new AccessToken(TOKEN)));
         when(trygdeetatenTokenService.exchange(any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
+                .thenReturn(Mono.just(new AccessToken(TOKEN)));
         when(tokenXService.exchange(any(), any()))
-                .thenReturn(Mono.just(new AccessToken(jwt)));
+                .thenReturn(Mono.just(new AccessToken(TOKEN)));
     }
 
     @DynamicPropertySource
@@ -145,7 +145,7 @@ class RouteLocatorConfigTest {
                     .expectBody(String.class).isEqualTo(responseBody);
 
             wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath))
-                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
             wireMockServer.verify(0, getRequestedFor(urlEqualTo(downstreamPath)));
 
         } else {
@@ -165,7 +165,7 @@ class RouteLocatorConfigTest {
                     .expectBody(String.class).isEqualTo(responseBody);
 
             wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                    .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
             wireMockServer.verify(0, postRequestedFor(urlEqualTo(downstreamPath)));
 
         }
@@ -294,7 +294,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -351,7 +351,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -424,7 +424,57 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
+
+    }
+
+    @Test
+    void testKelvinAapGet() {
+
+        var downstreamPath = "/api/test/behandlingStatus";
+        var responseBody = "Success from mocked kelvin-aap";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/kelvin-aap" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("application/json")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
+
+    }
+
+    @Test
+    void testKelvinAapPost() {
+
+        var downstreamPath = "/api/test/opprettOgFullfoerBehandling";
+        var responseBody = "{\"saksnummer\": \"SAK-123456\"}";
+
+        wireMockServer.stubFor(post(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(responseBody)));
+
+        webClient
+                .post()
+                .uri("/kelvin-aap" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("application/json")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -449,7 +499,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -474,7 +524,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -500,7 +550,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -525,7 +575,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -578,7 +628,7 @@ class RouteLocatorConfigTest {
                         .expectBody(String.class).isEqualTo(responseBody);
 
                 wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
             }
 
@@ -599,7 +649,7 @@ class RouteLocatorConfigTest {
                         .expectBody(String.class).isEqualTo(responseBody);
 
                 wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
             }
 
@@ -641,7 +691,7 @@ class RouteLocatorConfigTest {
                         .expectBody(String.class).isEqualTo(responseBody);
 
                 wireMockServer.verify(1, getRequestedFor(urlEqualTo(url))
-                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
             }
 
@@ -696,7 +746,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -722,7 +772,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -748,7 +798,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
 
     }
@@ -798,7 +848,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -823,7 +873,7 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
-                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + jwt)));
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
