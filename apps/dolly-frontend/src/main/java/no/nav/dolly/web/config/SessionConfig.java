@@ -40,7 +40,7 @@ import java.time.Duration;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
-@EnableRedisWebSession
+@EnableRedisWebSession(maxInactiveIntervalInSeconds = 10800)
 @Import({
         AzureAdTokenExchange.class,
         TokenXExchange.class,
