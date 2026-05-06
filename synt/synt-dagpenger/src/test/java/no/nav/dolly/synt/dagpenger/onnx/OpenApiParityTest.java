@@ -27,7 +27,7 @@ class OpenApiParityTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private DagpengerGeneratorService dagpengerGeneratorService;
+    private DagpengevedtakGenerator dagpengevedtakGenerator;
 
     @Test
     void shouldExposeLegacyCompatibleOpenApiContract() throws IOException {

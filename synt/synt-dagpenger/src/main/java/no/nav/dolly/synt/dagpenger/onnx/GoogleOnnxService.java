@@ -17,7 +17,7 @@ class GoogleOnnxService implements OnnxService {
     @Value("${app.config.bucket:}")
     private final String bucket;
 
-    private final DagpengerGeneratorService dagpengerGeneratorService;
+    private final DagpengevedtakGenerator dagpenger;
 
     GoogleOnnxService(String bucket) {
         if (!StringUtils.hasLength(bucket)) {
@@ -25,14 +25,14 @@ class GoogleOnnxService implements OnnxService {
         }
         this.bucket = bucket;
         // TODO: Download and prepare models, then create a dagpengerGeneratorService with those.
-        this.dagpengerGeneratorService = new DagpengerGeneratorService(null); // Placeholder, replace with actual model path
+        this.dagpenger = new DagpengevedtakGenerator(null); // Placeholder, replace with actual model path
     }
 
     @Override
     public List<DagpengevedtakDto> generateVedtak(String rettighet, List<String> startDates) {
 
         var rettighetType = RettighetType.valueOf(rettighet.toUpperCase(Locale.ROOT));
-        return dagpengerGeneratorService.generateVedtak(rettighetType, startDates).stream()
+        return dagpenger.generateVedtak(rettighetType, startDates).stream()
                 .map(VedtakMapper::fromPrediction)
                 .collect(Collectors.toList());
 

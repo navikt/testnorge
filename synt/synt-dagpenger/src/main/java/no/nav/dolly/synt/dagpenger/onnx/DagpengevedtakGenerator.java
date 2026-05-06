@@ -24,14 +24,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class DagpengerGeneratorService {
+class DagpengevedtakGenerator {
 
     private static final String MODEL_FILENAME_REGEX = ".*_(DAGO|PERM)_.*\\.onnx$";
 
     private final Map<RettighetType, Path> modelByRettighet;
     private final OrtEnvironment environment;
 
-    DagpengerGeneratorService(Path modelDirectory) {
+    DagpengevedtakGenerator(Path modelDirectory) {
         this.modelByRettighet = discoverOneModelPerRettighet(modelDirectory);
         this.environment = OrtEnvironment.getEnvironment();
     }

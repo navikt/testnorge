@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 class LocalOnnxService implements OnnxService {
 
-    private final DagpengerGeneratorService dagpengerGeneratorService = new DagpengerGeneratorService(modelDirectoryFromClasspath());
+    private final DagpengevedtakGenerator dagpenger = new DagpengevedtakGenerator(modelDirectoryFromClasspath());
 
     private static Path modelDirectoryFromClasspath() {
 
@@ -65,7 +65,7 @@ class LocalOnnxService implements OnnxService {
     public List<DagpengevedtakDto> generateVedtak(String rettighet, List<String> startDates) {
 
         var rettighetType = RettighetType.valueOf(rettighet.toUpperCase(Locale.ROOT));
-        return dagpengerGeneratorService.generateVedtak(rettighetType, startDates)
+        return dagpenger.generateVedtak(rettighetType, startDates)
                 .stream()
                 .map(VedtakMapper::fromPrediction)
                 .collect(Collectors.toList());
