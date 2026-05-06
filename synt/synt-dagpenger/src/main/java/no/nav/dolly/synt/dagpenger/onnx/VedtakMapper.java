@@ -1,4 +1,4 @@
-package no.nav.dolly.synt.dagpenger.model;
+package no.nav.dolly.synt.dagpenger.onnx;
 
 import lombok.experimental.UtilityClass;
 import no.nav.dolly.synt.dagpenger.dto.BarnListeDto;
@@ -11,7 +11,6 @@ import no.nav.dolly.synt.dagpenger.dto.KodeVerdiDto;
 import no.nav.dolly.synt.dagpenger.dto.PeriodeDto;
 import no.nav.dolly.synt.dagpenger.dto.TaptArbeidstidDto;
 import no.nav.dolly.synt.dagpenger.dto.VilkaarDto;
-import no.nav.dolly.synt.dagpenger.onnx.MinimalDagpengevedtak;
 
 import java.time.LocalDate;
 import java.util.List;

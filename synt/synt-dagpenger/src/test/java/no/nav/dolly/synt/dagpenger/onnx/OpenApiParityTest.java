@@ -1,10 +1,9 @@
-package no.nav.dolly.synt.dagpenger;
+package no.nav.dolly.synt.dagpenger.onnx;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.dolly.synt.dagpenger.onnx.DagpengerInferenceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -28,7 +27,7 @@ class OpenApiParityTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private DagpengerInferenceService dagpengerInferenceService;
+    private DagpengerGeneratorService dagpengerGeneratorService;
 
     @Test
     void shouldExposeLegacyCompatibleOpenApiContract() throws IOException {

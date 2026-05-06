@@ -7,6 +7,7 @@ import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
 import ai.onnxruntime.TensorInfo;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,25 +23,41 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Service;
 
-@Service
-public class OnnxDagpengerService implements DagpengerInferenceService {
+class DagpengerGeneratorService {
 
     private static final String MODEL_FILENAME_REGEX = ".*_(DAGO|PERM)_.*\\.onnx$";
 
-    private final Path modelDir;
     private final Map<RettighetType, Path> modelByRettighet;
     private final OrtEnvironment environment;
 
-    public OnnxDagpengerService(Path modelDirectory) {
-        this.modelDir = modelDirectory;
-        this.modelByRettighet = discoverOneModelPerRettighet(modelDir);
+    DagpengerGeneratorService(Path modelDirectory) {
+        this.modelByRettighet = discoverOneModelPerRettighet(modelDirectory);
         this.environment = OrtEnvironment.getEnvironment();
     }
 
-    @Override
-    public OnnxPrediction infer(RettighetType rettighet, LocalDate vedtakDate) {
+    List<MinimalDagpengevedtak> generateVedtak(RettighetType rettighet, List<String> vedtakStartDatoer) {
+        return vedtakStartDatoer.stream()
+                .map(LocalDate::parse)
+                .map(date -> toVedtak(rettighet, date))
+                .toList();
+    }
+
+    private MinimalDagpengevedtak toVedtak(RettighetType rettighet, LocalDate date) {
+        OnnxPrediction prediction = infer(rettighet, date);
+        return new MinimalDagpengevedtak(
+                rettighet.name(),
+                "GENERERT_ONNX",
+                date.toString(),
+                date.toString(),
+                prediction.modelFile(),
+                prediction.predictedLabel(),
+                prediction.confidence(),
+                prediction.probabilities()
+        );
+    }
+
+    OnnxPrediction infer(RettighetType rettighet, LocalDate vedtakDate) {
         Path modelPath = Optional.ofNullable(modelByRettighet.get(rettighet))
                 .orElseThrow(() -> new IllegalArgumentException("No ONNX model found for rettighet " + rettighet));
 
@@ -49,7 +66,7 @@ public class OnnxDagpengerService implements DagpengerInferenceService {
             int featureCount = resolveFeatureCount(session, inputName);
             float[] featureVector = buildFeatureVector(vedtakDate, featureCount);
 
-            try (OnnxTensor inputTensor = OnnxTensor.createTensor(environment, new float[][] {featureVector});
+            try (OnnxTensor inputTensor = OnnxTensor.createTensor(environment, new float[][]{featureVector});
                  OrtSession.Result result = session.run(Map.of(inputName, inputTensor))) {
 
                 String label = extractLabel(result).orElse("UNKNOWN");
@@ -70,7 +87,7 @@ public class OnnxDagpengerService implements DagpengerInferenceService {
         }
     }
 
-    static float[] buildFeatureVector(LocalDate date, int featureCount) {
+    private static float[] buildFeatureVector(LocalDate date, int featureCount) {
         float[] features = new float[Math.max(1, featureCount)];
         features[0] = date.getYear();
         if (features.length > 1) {
@@ -84,7 +101,6 @@ public class OnnxDagpengerService implements DagpengerInferenceService {
         }
         return features;
     }
-
 
     private static Map<RettighetType, Path> discoverOneModelPerRettighet(Path modelDirectory) {
         Map<RettighetType, List<Path>> grouped = new EnumMap<>(RettighetType.class);
@@ -195,19 +211,6 @@ public class OnnxDagpengerService implements DagpengerInferenceService {
 
         return new HashMap<>();
     }
-
-    @Override
-    public Path getModelDir() {
-        return modelDir;
-    }
-
-    @Override
-    public Map<RettighetType, String> getSelectedModels() {
-        return modelByRettighet.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFileName().toString()));
-    }
 }
-
-
 
 

@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.synt.dagpenger.dto.DagpengevedtakDto;
-import no.nav.dolly.synt.dagpenger.model.ModelService;
+import no.nav.dolly.synt.dagpenger.onnx.OnnxService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +26,9 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Tag(name = "Syntetisering")
-public class DagpengevedtakController {
+class DagpengevedtakController {
 
-    private final ModelService modelService;
+    private final OnnxService onnxService;
 
     @PostMapping(value = "/vedtak/{rettighet}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
@@ -50,7 +50,7 @@ public class DagpengevedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = DagpengevedtakDto.class)))
             )
     )
-    public ResponseEntity<List<DagpengevedtakDto>> generateVedtak(
+    ResponseEntity<List<DagpengevedtakDto>> generateVedtak(
             @PathVariable
             @Parameter(
                     name = "rettighet",
@@ -60,6 +60,7 @@ public class DagpengevedtakController {
             )
             String rettighet,
             @RequestBody List<String> startDates) {
-        return ResponseEntity.ok(modelService.generateVedtak(rettighet, startDates));
+        return ResponseEntity.ok(onnxService.generateVedtak(rettighet, startDates));
     }
+
 }
