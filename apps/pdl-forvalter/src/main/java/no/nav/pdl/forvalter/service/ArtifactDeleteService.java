@@ -335,7 +335,8 @@ public class ArtifactDeleteService {
                                         deleteRelasjonerService.deleteRelasjoner(dbPerson, slettePerson, KONTAKT_FOR_DOEDSBO)
                                                 .then(Mono.just(slettePerson)))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, doedsbo.getPersonSomKontakt().isEksisterendePerson())
-                                        .then(Mono.just(dbPerson)))))
+                                        .then(Mono.just(dbPerson))))
+                        .switchIfEmpty(Mono.just(dbPerson)))
                 .doOnNext(dbPerson ->
                         dbPerson.getPerson().setKontaktinformasjonForDoedsbo(
                                 dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
