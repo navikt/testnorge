@@ -50,7 +50,7 @@ import java.util.LinkedHashMap;
         bearerFormat = "JWT",
         extensions = @Extension(properties = @ExtensionProperty(name = "x-bearerInfoFunc", value = "libs.security.decode_token"))
 )
-public class OpenApiConfig implements WebFilter {
+class OpenApiConfig implements WebFilter {
 
     @Bean
     OpenApiCustomizer apiV1PathNormalizer() {
@@ -81,18 +81,28 @@ public class OpenApiConfig implements WebFilter {
 
     }
 
+    /**
+     * Redirect {@code /swagger} to the Swagger UI, for convenience.
+     *
+     * @see WebFilter#filter(ServerWebExchange, WebFilterChain)
+     */
     @Override
     @NonNull
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
+
         if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
             return chain
-                    .filter(exchange.mutate()
-                            .request(exchange.getRequest()
-                                    .mutate().path("/swagger-ui.html").build())
+                    .filter(exchange
+                            .mutate()
+                            .request(exchange
+                                    .getRequest()
+                                    .mutate()
+                                    .path("/swagger-ui.html")
+                                    .build())
                             .build());
         }
-
         return chain.filter(exchange);
+
     }
 
 }
