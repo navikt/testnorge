@@ -18,6 +18,7 @@ export const PersonDropdown = () => {
 	const { currentBruker } = useCurrentBruker()
 
 	const isActive = useMemo(() => activePaths.includes(location?.pathname), [location?.pathname])
+	const notBankidUser = currentBruker?.brukertype !== 'BANKID'
 
 	return (
 		<ActionMenuWrapper
@@ -34,19 +35,21 @@ export const PersonDropdown = () => {
 					<Icon kind="person" fontSize="1.5rem" />
 					<DropdownStyledLink href="/gruppe">Mine personer</DropdownStyledLink>
 				</PreloadableActionMenuItem>
-				<PreloadableActionMenuItem
-					route="/dollysoek"
-					dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK}
-					style={{ color: '#212529' }}
-				>
-					<Icon kind="search" fontSize="1.5rem" />
-					<DropdownStyledLink
-						onClick={() => localStorage.removeItem(dollySoekLocalStorageKey)}
-						href="/dollysoek"
+				{notBankidUser && (
+					<PreloadableActionMenuItem
+						route="/dollysoek"
+						dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK}
+						style={{ color: '#212529' }}
 					>
-						Søk i Dolly
-					</DropdownStyledLink>
-				</PreloadableActionMenuItem>
+						<Icon kind="search" fontSize="1.5rem" />
+						<DropdownStyledLink
+							onClick={() => localStorage.removeItem(dollySoekLocalStorageKey)}
+							href="/dollysoek"
+						>
+							Søk i Dolly
+						</DropdownStyledLink>
+					</PreloadableActionMenuItem>
+				)}
 				<PreloadableActionMenuItem
 					route="/tenorpersoner"
 					dataTestId={TestComponentSelectors.BUTTON_HEADER_TENOR}
@@ -63,7 +66,7 @@ export const PersonDropdown = () => {
 						Søk i Tenor (Test-Norge)
 					</DropdownStyledLink>
 				</PreloadableActionMenuItem>
-				{currentBruker?.brukertype === 'AZURE' && (
+				{notBankidUser && (
 					<PreloadableActionMenuItem route="/identvalidator" style={{ color: '#212529' }}>
 						<Icon kind="arena" fontSize="1.5rem" />
 						<DropdownStyledLink href="/identvalidator">Valider identer</DropdownStyledLink>
