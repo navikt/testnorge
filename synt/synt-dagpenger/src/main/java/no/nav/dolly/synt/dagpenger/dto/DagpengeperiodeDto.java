@@ -22,5 +22,6 @@ public class DagpengeperiodeDto {
     private String begrunnelseTellerendring;
     private String nullstillPeriodeteller;
     private String nullstillPermitteringsteller;
+
 }
 

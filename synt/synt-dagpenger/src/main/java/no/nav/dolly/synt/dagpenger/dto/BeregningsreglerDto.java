@@ -15,5 +15,6 @@ public class BeregningsreglerDto {
 
     private String oppfyllerKravTilFangstOgFiske;
     private String harAvtjentVernepliktSiste3Av12Mnd;
+
 }
 

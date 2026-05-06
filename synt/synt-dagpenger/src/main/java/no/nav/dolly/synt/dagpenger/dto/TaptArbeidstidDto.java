@@ -16,5 +16,6 @@ public class TaptArbeidstidDto {
     private String anvendtRegelKode;
     private Number fastsattArbeidstid;
     private Number naavaerendeArbeidstid;
+
 }
 

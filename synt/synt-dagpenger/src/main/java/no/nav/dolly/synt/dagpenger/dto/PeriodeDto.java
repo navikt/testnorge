@@ -15,5 +15,6 @@ public class PeriodeDto {
 
     private String fom;
     private String tom;
+
 }
 

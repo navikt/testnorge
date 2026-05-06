@@ -17,6 +17,7 @@ public class KodeVerdiDto {
 
     private String kode;
     private String verdi;
+
 }
 
 

@@ -15,5 +15,6 @@ public class InntektsperiodeDto {
 
     private String forsteManed;
     private String sisteManed;
+
 }
 

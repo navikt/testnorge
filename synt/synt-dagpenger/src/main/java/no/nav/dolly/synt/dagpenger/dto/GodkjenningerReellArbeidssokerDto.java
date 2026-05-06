@@ -16,5 +16,6 @@ public class GodkjenningerReellArbeidssokerDto {
     private String godkjentLokalArbeidssoker;
     private String godkjentDeltidssoker;
     private String godkjentUtdanning;
+
 }
 

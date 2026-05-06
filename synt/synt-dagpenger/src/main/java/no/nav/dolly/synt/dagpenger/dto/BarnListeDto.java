@@ -18,6 +18,7 @@ import java.util.List;
 public class BarnListeDto {
 
     private List<KodeVerdiDto> barn;
+
 }
 
 

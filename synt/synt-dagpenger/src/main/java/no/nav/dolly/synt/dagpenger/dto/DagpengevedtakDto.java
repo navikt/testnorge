@@ -33,6 +33,7 @@ public class DagpengevedtakDto {
     private List<KodeVerdiDto> reellArbeidssoker;
     private List<BarnListeDto> barnListe;
     private List<KodeVerdiDto> permittering;
+
 }
 
 

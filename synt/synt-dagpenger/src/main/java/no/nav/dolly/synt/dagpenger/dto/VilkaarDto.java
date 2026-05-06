@@ -17,6 +17,7 @@ public class VilkaarDto {
 
     private String kode;
     private String status;
+
 }
 
 
