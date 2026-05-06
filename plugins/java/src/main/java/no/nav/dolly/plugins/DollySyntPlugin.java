@@ -4,12 +4,10 @@ import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ModuleDependency;
-import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.bundling.Jar;
-import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
 
@@ -95,23 +93,7 @@ public class DollySyntPlugin implements Plugin<Project> {
             imports.mavenBom("org.springframework.session:spring-session-bom:" + versions.springSession);
         });
 
-        project
-                .getTasks()
-                .withType(Test.class)
-                .configureEach(test -> {
-                    test.useJUnitPlatform();
-                    test.jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED");
-                    test.doFirst(task -> project
-                            .getConfigurations()
-                            .getByName("testRuntimeClasspath")
-                            .getResolvedConfiguration()
-                            .getResolvedArtifacts()
-                            .stream()
-                            .map(ResolvedArtifact::getFile)
-                            .filter(f -> f.getName().contains("byte-buddy-agent"))
-                            .findFirst()
-                            .ifPresent(file -> test.getJvmArgs().add("-javaagent:" + file)));
-                });
+        MockitoAgentSupport.configureTests(project);
 
         project.afterEvaluate(p -> {
             var bootJarTask = p.getTasks().findByName("bootJar");
