@@ -40,15 +40,15 @@ public class RsKelvinAapRequestDTO {
     }
 
     public enum Loenn {
-        Ja,
-        Nei
+        JA,
+        NEI
     }
 
     public enum Stoenad {
         AFP,
         INTRODUKSJONSSTOENAD,
         KVALIFISERINGSSTOENAD,
-        LAN,
+        LAAN,
         NEI,
         OMSORGSSTOENAD,
         STIPEND,
