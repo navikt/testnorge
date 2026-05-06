@@ -76,6 +76,14 @@ system:
       url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/post
     delete:
       url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/delete
+  - register: kelvinApp
+    namespace: aap
+    kubernetes-name: behandlingsflyt
+    cluster: dev-gcp
+    read:
+      url: https://behandlingsflyt.intern.dev.nav.no/swagger-ui/index.html#/Behandlingsflyt/getBehandlingsflyt
+    write:
+      url: https://behandlingsflyt.intern.dev.nav.no/swagger-ui/index.html#/Behandlingsflyt/postBehandlingsflyt
   - register: kodeverk
     namespace: team-rocket
     kubernetes-name: kodeverk-api
