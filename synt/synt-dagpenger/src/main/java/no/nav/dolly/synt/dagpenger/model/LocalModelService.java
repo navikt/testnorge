@@ -16,9 +16,13 @@ class LocalModelService implements ModelService {
 
     @Override
     public List<DagpengevedtakDto> generateVedtak(String rettighet, List<String> startDates) {
-        RettighetType rettighetType = RettighetType.valueOf(rettighet.toUpperCase(Locale.ROOT));
-        return dagpengerGeneratorBean.generateVedtak(rettighetType, startDates).stream()
+
+        var rettighetType = RettighetType.valueOf(rettighet.toUpperCase(Locale.ROOT));
+        return dagpengerGeneratorBean.generateVedtak(rettighetType, startDates)
+                .stream()
                 .map(VedtakMapper::fromPrediction)
                 .collect(Collectors.toList());
+
     }
+
 }
