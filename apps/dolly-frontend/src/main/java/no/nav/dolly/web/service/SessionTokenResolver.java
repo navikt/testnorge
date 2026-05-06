@@ -9,14 +9,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -29,7 +30,7 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @RequiredArgsConstructor
 public class SessionTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
-    private final ServerOAuth2AuthorizedClientRepository clientRepository;
+    private final ReactiveOAuth2AuthorizedClientManager authorizedClientManager;
 
     @Override
     public Mono<Token> getToken(ServerWebExchange exchange) {
@@ -38,32 +39,15 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                 .getContext()
                 .map(SecurityContext::getAuthentication).flatMap(authentication -> {
                             if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
-                                return clientRepository.loadAuthorizedClient(
-                                                authenticationToken.getAuthorizedClientRegistrationId(),
-                                                authenticationToken,
-                                                exchange)
-                                        .publishOn(Schedulers.boundedElastic())
-                                        .mapNotNull(oAuth2AuthorizedClient -> {
-                                            var expiresAt = oAuth2AuthorizedClient
-                                                    .getAccessToken()
-                                                    .getExpiresAt();
-                                            if (expiresAt != null && expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
-                                                log.warn("Auth client har utløpt, fjerner den som authenticated");
-                                                authenticationToken.setAuthenticated(false);
-                                                authenticationToken.eraseCredentials();
-                                                clientRepository.removeAuthorizedClient(
-                                                        oAuth2AuthorizedClient.getClientRegistration().getRegistrationId(),
-                                                        authenticationToken,
-                                                        exchange).block();
-                                                return null;
-                                            }
-                                            return Token.builder()
-                                                    .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
-                                                    .expiresAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt())
-                                                    .refreshTokenValue(nonNull(oAuth2AuthorizedClient.getRefreshToken()) ? oAuth2AuthorizedClient.getRefreshToken().getTokenValue() : null)
-                                                    .clientCredentials(false)
-                                                    .build();
-                                        });
+                                var authorizeRequest = OAuth2AuthorizeRequest
+                                        .withClientRegistrationId(authenticationToken.getAuthorizedClientRegistrationId())
+                                        .principal(authenticationToken)
+                                        .attribute(ServerWebExchange.class.getName(), exchange)
+                                        .build();
+
+                                return authorizedClientManager.authorize(authorizeRequest)
+                                        .map(this::toToken)
+                                        .switchIfEmpty(Mono.error(new CredentialsExpiredException("Klarte ikke å fornye token")));
                             } else if (authentication instanceof JwtAuthenticationToken) {
 
                                 return getJwtAuthenticationToken()
@@ -79,6 +63,19 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                 );
     }
 
+    private Token toToken(OAuth2AuthorizedClient authorizedClient) {
+        var builder = Token.builder()
+                .accessTokenValue(authorizedClient.getAccessToken().getTokenValue())
+                .expiresAt(authorizedClient.getAccessToken().getExpiresAt())
+                .clientCredentials(false);
+
+        if (nonNull(authorizedClient.getRefreshToken())) {
+            builder.refreshTokenValue(authorizedClient.getRefreshToken().getTokenValue());
+        }
+
+        return builder.build();
+    }
+
     private Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
         return ReactiveSecurityContextHolder
                 .getContext()
@@ -86,11 +83,13 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                 .map(SecurityContext::getAuthentication)
                 .map(JwtAuthenticationToken.class::cast)
                 .doOnError(throwable -> log.error("Klarte ikke hente Jwt Auth Token: ", throwable))
-                .doOnSuccess(jwtAuthenticationToken -> {
+                .handle((jwtAuthenticationToken, sink) -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
                     if (expiresAt == null || expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
-                        throw new CredentialsExpiredException("Jwt er utløpt eller utløper innen kort tid");
+                        sink.error(new CredentialsExpiredException("Jwt er utløpt eller utløper innen kort tid"));
+                    } else {
+                        sink.next(jwtAuthenticationToken);
                     }
                 });
     }
