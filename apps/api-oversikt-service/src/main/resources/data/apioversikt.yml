@@ -157,6 +157,12 @@ system:
     cluster: dev-fss
     read:
       url: https://norg2.intern.dev.nav.no/norg2/api
+  - register: skattekort
+    kubernetes-name: sokos-skattekort
+    namespace: okonomi
+    cluster: dev-gcp
+    write:
+      url: https://sokos-skattekort.intern.dev.nav.no/api/v1/person/docs
   - register: skjermingsregister
     kubernetes-name: skjermede-personer
     namespace: nom
@@ -169,12 +175,6 @@ system:
     cluster: dev-gcp
     write:
       url: https://sigrun-skd-stub.intern.dev.nav.no/swagger-ui/index.html?urls.primaryName=Endepunkter+for+testdata
-  - register: skattekort
-    kubernetes-name: sokos-skattekort
-    namespace: okonomi
-    cluster: dev-gcp
-    write:
-      url: https://sokos-skattekort.intern.dev.nav.no/api/v1/person/docs
   - register: sykemelding
     kubernetes-name: syfosmregler
     namespace: teamsykmelding
