@@ -76,6 +76,14 @@ system:
       url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/post
     delete:
       url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/delete
+  - register: kelvin-aap
+    namespace: aap
+    kubernetes-name: behandlingsflyt
+    cluster: dev-gcp
+    read:
+      url: https://aap-behandlingsflyt.intern.dev.nav.no/swagger-ui/index.html#/Dolly/post_api_test_behandlingStatus
+    write:
+      url: https://aap-behandlingsflyt.intern.dev.nav.no/swagger-ui/index.html#/Dolly/post_api_test_opprettOgFullfoerBehandling
   - register: kodeverk
     namespace: team-rocket
     kubernetes-name: kodeverk-api
@@ -149,6 +157,12 @@ system:
     cluster: dev-fss
     read:
       url: https://norg2.intern.dev.nav.no/norg2/api
+  - register: skattekort
+    kubernetes-name: sokos-skattekort
+    namespace: okonomi
+    cluster: dev-gcp
+    write:
+      url: https://sokos-skattekort.intern.dev.nav.no/api/v1/person/docs
   - register: skjermingsregister
     kubernetes-name: skjermede-personer
     namespace: nom
