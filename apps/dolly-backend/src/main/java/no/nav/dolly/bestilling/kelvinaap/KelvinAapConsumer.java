@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.kelvinaap;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.kelvinaap.command.AapBehandlingStatusPostCommand;
 import no.nav.dolly.bestilling.kelvinaap.command.AapOpprettOgFullfoerPostCommand;
 import no.nav.dolly.bestilling.kelvinaap.domain.AapOpprettRequest;
@@ -18,7 +19,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class KelvinAapConsumer {
+public class KelvinAapConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -50,5 +51,15 @@ public class KelvinAapConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new AapBehandlingStatusPostCommand(webClient, ident, token.getTokenValue()).call());
+    }
+
+    @Override
+    public String serviceUrl() {
+        return serverProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-dolly-proxy";
     }
 }

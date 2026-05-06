@@ -21,7 +21,7 @@ import static java.time.Duration.ofSeconds;
 @RequiredArgsConstructor
 public class AapBehandlingStatusPostCommand implements Callable<Mono<AapStatusResponse>> {
 
-    private static final String AAP_OPPRETT_URL = "/kelvin-aap/api/test/behandlingStatus";
+    private static final String AAP_STATUS_URL = "/kelvin-aap/api/test/behandlingStatus";
 
     private final WebClient webClient;
     private final String ident;
@@ -31,7 +31,7 @@ public class AapBehandlingStatusPostCommand implements Callable<Mono<AapStatusRe
     public Mono<AapStatusResponse> call() {
 
         return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path(AAP_OPPRETT_URL)
+                .uri(uriBuilder -> uriBuilder.path(AAP_STATUS_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromValue(AapStatusRequest.builder()

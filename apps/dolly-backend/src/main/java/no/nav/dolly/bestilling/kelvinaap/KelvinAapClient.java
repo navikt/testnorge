@@ -55,7 +55,7 @@ public class KelvinAapClient implements ClientRegister {
                         return kelvinAapConsumer.createAap(aapOpprettRequest)
                                 .map(response -> {
                                     if (isNotBlank(response.getSaksnummer())) {
-                                        log.info("AAP opprettet for ident {}: saksnummer {}", dollyPerson.getIdent(), response);
+                                        log.info("AAP opprettet for ident {}: saksnummer {}", dollyPerson.getIdent(), response.getSaksnummer());
                                         return "OK";
                                     } else {
                                         log.error("Feil ved oppretting av AAP for ident {}: {}", dollyPerson.getIdent(), response);
