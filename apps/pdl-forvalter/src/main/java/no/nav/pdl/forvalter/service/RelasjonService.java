@@ -5,12 +5,14 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,19 @@ public class RelasjonService {
     private Mono<DbPerson> fetchPerson(String ident) {
 
         return personRepository.findByIdent(ident)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException(String.format("Person med ident %s finnes ikke", ident))));
+                .switchIfEmpty(Mono.defer(() -> {
+                    if (isTestnorgeIdent(ident)) {
+                        return personRepository.save(DbPerson.builder()
+                                .ident(ident)
+                                .person(PersonDTO.builder()
+                                        .ident(ident)
+                                        .build())
+                                .sistOppdatert(now())
+                                .build());
+                    } else {
+                        return Mono.error(new IllegalArgumentException(String.format("Person med ident %s finnes ikke", ident)));
+                    }
+                }));
     }
 
     private Mono<DbRelasjon> checkAndCreateRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjonType) {

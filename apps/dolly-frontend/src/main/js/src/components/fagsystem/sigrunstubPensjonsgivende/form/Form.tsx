@@ -1,6 +1,6 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React, { useEffect } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -61,7 +61,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 		<Vis attributt={sigrunstubPensjonsgivendeAttributt}>
 			<Panel
 				heading="Pensjonsgivende inntekt (Sigrun)"
-				hasErrors={panelError(sigrunstubPensjonsgivendeAttributt)}
+				hasErrors={usePanelError(sigrunstubPensjonsgivendeAttributt)}
 				iconType="sigrun"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunstubPensjonsgivendeAttributt])}
 			>

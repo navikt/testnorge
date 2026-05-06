@@ -1,5 +1,5 @@
 import { ArbeidserfaringForm } from '@/components/fagsystem/arbeidsplassen/form/partials/ArbeidserfaringForm'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import React, { useContext } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
@@ -35,7 +35,7 @@ export const ArbeidsplassenForm = () => {
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel
 				heading="Nav CV"
-				hasErrors={panelError(arbeidsplassenAttributt)}
+				hasErrors={usePanelError(arbeidsplassenAttributt)}
 				iconType="cv"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>

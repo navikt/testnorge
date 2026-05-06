@@ -7,7 +7,7 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
 import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
@@ -40,7 +40,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 			<Panel
 				heading={'Utenlandsk bankkonto'}
 				iconType="bankkonto"
-				hasErrors={panelError(path)}
+				hasErrors={usePanelError(path)}
 				startOpen={erForsteEllerTest(formMethods.getValues(), [path])}
 			>
 				<div className="flexbox--flex-wrap">

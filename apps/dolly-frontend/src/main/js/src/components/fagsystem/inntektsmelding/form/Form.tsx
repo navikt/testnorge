@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -111,7 +111,7 @@ export const InntektsmeldingForm = () => {
 		<Vis attributt={inntektsmeldingAttributt}>
 			<Panel
 				heading="Inntektsmelding (fra Altinn)"
-				hasErrors={panelError(inntektsmeldingAttributt)}
+				hasErrors={usePanelError(inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
 				startOpen={erForsteEllerTest(formMethods.getValues(), [inntektsmeldingAttributt])}

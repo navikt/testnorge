@@ -3,7 +3,7 @@ import * as _ from 'lodash-es'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { MedServicebehov } from './partials/MedServicebehov'
 import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/AlertInntektskomponentenRequired'
@@ -36,7 +36,7 @@ export const ArenaForm = () => {
 		<Vis attributt={arenaPath}>
 			<Panel
 				heading="Arbeidsytelser"
-				hasErrors={panelError(arenaPath)}
+				hasErrors={usePanelError(arenaPath)}
 				iconType="arena"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arenaPath])}
 			>

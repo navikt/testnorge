@@ -9,11 +9,9 @@
     </springProfile>
 
     <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger"/>
-    <logger level="TRACE" name="no.nav.dolly.bestilling.histark.HistarkConsumer"/>
-    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger"/>
     <logger level="TRACE" name="org.jetbrains.nativecerts"/>
     <logger level="TRACE" name="com.intellij.util.net.ssl"/>
     <logger level="ERROR" name="reactor.netty.transport.TransportConnector"/>
     <logger level="DEBUG" name="reactor.netty.http.client.HttpClient"/>
-    <logger level="DEBUG" name="no.nav.testnav.libs.reactivecore.logging.WebClientLogger"/>
+<!--    <logger level="DEBUG" name="no.nav.testnav.libs.reactivecore.logging.WebClientLogger"/>-->
 </configuration>
