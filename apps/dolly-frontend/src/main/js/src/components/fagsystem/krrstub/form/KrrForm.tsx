@@ -4,7 +4,7 @@ import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Sele
 import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
@@ -80,7 +80,7 @@ export const KrrstubForm = () => {
 		<Vis attributt={krrAttributt}>
 			<Panel
 				heading="Kontakt- og reservasjonsregisteret"
-				hasErrors={panelError(krrAttributt)}
+				hasErrors={usePanelError(krrAttributt)}
 				iconType="krr"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [krrAttributt])}
 			>

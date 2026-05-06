@@ -1,7 +1,7 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { validation } from './validation'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
@@ -23,7 +23,7 @@ export const UdistubForm = () => {
 		<Vis attributt={attrPaths}>
 			<Panel
 				heading="UDI"
-				hasErrors={panelError(attrPaths)}
+				hasErrors={usePanelError(attrPaths)}
 				iconType="udi"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [udiAttributt])}
 			>

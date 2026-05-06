@@ -1,6 +1,6 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
@@ -25,7 +25,7 @@ export const Identifikasjon = ({ formMethods }: IdentifikasjonValues) => {
 		<Vis attributt={identifikasjonAttributter}>
 			<Panel
 				heading="Identifikasjon"
-				hasErrors={panelError(identifikasjonAttributter)}
+				hasErrors={usePanelError(identifikasjonAttributter)}
 				iconType="identifikasjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), identifikasjonAttributter)}
 			>

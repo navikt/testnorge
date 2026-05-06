@@ -112,7 +112,7 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		'arenaforvalter.kvalifiseringsgruppe',
 		sisteBestillingServicebehov || null,
 	]
-	const AKTIVERINGDATO = ['arenaforvalter.aktiveringDato', null]
+	const AKTIVERINGDATO = ['arenaforvalter.aktiveringDato', runningE2ETest() ? new Date(2022, 0) : null]
 
 	return {
 		aap115: {
@@ -123,8 +123,8 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 					[
 						'arenaforvalter.aap115[0]',
 						{
-							fraDato: runningE2ETest() ? new Date(2020, 1) : null,
-							tilDato: runningE2ETest() ? new Date(2020, 2) : null,
+							fraDato: runningE2ETest() ? new Date(2022, 5) : null,
+							tilDato: runningE2ETest() ? new Date(2022, 8) : null,
 						},
 					],
 					MED_SERVICEBEHOV,
@@ -147,8 +147,8 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 					[
 						'arenaforvalter.aap[0]',
 						{
-							fraDato: runningE2ETest() ? new Date(2021, 1) : null,
-							tilDato: runningE2ETest() ? new Date(2022, 1) : null,
+							fraDato: runningE2ETest() ? new Date(2024, 0) : null,
+							tilDato: runningE2ETest() ? new Date(2024, 5) : null,
 						},
 					],
 					MED_SERVICEBEHOV,
@@ -173,8 +173,8 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 						{
 							vedtakstype: 'O',
 							rettighetKode: 'DAGO',
-							fraDato: runningE2ETest() ? new Date(2023, 1) : null,
-							tilDato: runningE2ETest() ? new Date(2023, 2) : null,
+							fraDato: runningE2ETest() ? new Date(2025, 0) : null,
+							tilDato: runningE2ETest() ? new Date(2025, 5) : null,
 							mottattDato: null,
 						},
 					],

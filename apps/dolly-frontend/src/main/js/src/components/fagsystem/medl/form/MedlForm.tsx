@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -44,7 +44,7 @@ export const MedlForm = () => {
 		<Vis attributt={MedlAttributt}>
 			<Panel
 				heading="Medlemskap (MEDL)"
-				hasErrors={panelError(MedlAttributt)}
+				hasErrors={usePanelError(MedlAttributt)}
 				iconType="calendar"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(getValues(), [MedlAttributt])}
