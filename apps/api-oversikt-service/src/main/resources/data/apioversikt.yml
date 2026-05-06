@@ -76,7 +76,7 @@ system:
       url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/post
     delete:
       url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/delete
-  - register: kelvinAap
+  - register: kelvin-aap
     namespace: aap
     kubernetes-name: behandlingsflyt
     cluster: dev-gcp
