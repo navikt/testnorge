@@ -1,19 +1,27 @@
-import { useState } from 'react'
-import { Button, GlobalAlert } from '@navikt/ds-react'
+import { useEffect, useState } from 'react'
+import { Alert, Button, GlobalAlert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 import { useLocation } from 'react-router'
 
 export const BESTILLING_SAVE_EVENT = 'dolly-save-and-reload'
+export const BESTILLING_RESTORED_EVENT = 'dolly-form-restored'
 
 const isBestillingPath = (pathname: string) =>
 	pathname.includes('/bestilling') || pathname.includes('/importer')
 
-export const NewVersionBanner = () => {
+export const AppBanner = () => {
 	const { isNewVersionAvailable } = useVersionCheck()
 	const location = useLocation()
 	const isOnBestilling = isBestillingPath(location.pathname)
 	const [dismissed, setDismissed] = useState(false)
+	const [showRestored, setShowRestored] = useState(false)
+
+	useEffect(() => {
+		const handler = () => setShowRestored(true)
+		window.addEventListener(BESTILLING_RESTORED_EVENT, handler)
+		return () => window.removeEventListener(BESTILLING_RESTORED_EVENT, handler)
+	}, [])
 
 	const handleReload = () => {
 		if (isBestillingPath(window.location.pathname)) {
@@ -22,37 +30,47 @@ export const NewVersionBanner = () => {
 		window.location.reload()
 	}
 
-	if (!isNewVersionAvailable || dismissed) return null
+	const showVersion = isNewVersionAvailable && !dismissed
+
+	if (!showVersion && !showRestored) return null
 
 	return (
 		<StickyAlertWrapper>
-			<GlobalAlert status="announcement">
-				<GlobalAlert.Header>
-					<GlobalAlert.Title as="h2">Ny versjon tilgjengelig</GlobalAlert.Title>
-					<GlobalAlert.CloseButton onClick={() => setDismissed(true)} />
-				</GlobalAlert.Header>
-				<GlobalAlert.Content>
-					<StyledContent>
-						<span>
-							En ny versjon av Dolly er tilgjengelig.
-							{isOnBestilling && ' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
-						</span>
-						<Button variant="tertiary" size="xsmall" onClick={handleReload}>
-							Oppdater nå
-						</Button>
-					</StyledContent>
-				</GlobalAlert.Content>
-			</GlobalAlert>
+			{showVersion && (
+				<GlobalAlert status="announcement">
+					<GlobalAlert.Header>
+						<GlobalAlert.Title as="h2">Ny versjon tilgjengelig</GlobalAlert.Title>
+						<GlobalAlert.CloseButton onClick={() => setDismissed(true)} />
+					</GlobalAlert.Header>
+					<GlobalAlert.Content>
+						<StyledContent>
+							<span>
+								En ny versjon av Dolly er tilgjengelig.
+								{isOnBestilling &&
+									' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
+							</span>
+							<Button variant="tertiary" size="xsmall" onClick={handleReload}>
+								Oppdater nå
+							</Button>
+						</StyledContent>
+					</GlobalAlert.Content>
+				</GlobalAlert>
+			)}
+			{showRestored && (
+				<Alert variant="success" closeButton onClose={() => setShowRestored(false)}>
+					Endringene dine ble gjenopprettet!
+				</Alert>
+			)}
 		</StickyAlertWrapper>
 	)
 }
 
-export const StickyAlertWrapper = styled.div`
+const StickyAlertWrapper = styled.div`
 	position: sticky;
 	top: 0;
 	z-index: 1000;
 	max-width: 940px;
-	margin: 0 auto 10px;
+	margin: 10px auto 10px;
 `
 
 const StyledContent = styled.div`

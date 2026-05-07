@@ -8,7 +8,7 @@ import {
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
-import { Alert, Stepper } from '@navikt/ds-react'
+import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
@@ -40,7 +40,10 @@ import {
 	loadBestillingFormState,
 	saveBestillingFormState,
 } from '@/utils/bestillingFormPersistence'
-import { BESTILLING_SAVE_EVENT, StickyAlertWrapper } from '@/components/versionBanner/NewVersionBanner'
+import {
+	BESTILLING_RESTORED_EVENT,
+	BESTILLING_SAVE_EVENT,
+} from '@/components/versionBanner/NewVersionBanner'
 
 interface StepDef {
 	component: React.ComponentType<any>
@@ -85,7 +88,6 @@ export const StegVelger = ({
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)
 	const [loading, setLoading] = useState(false)
-	const [restoredAlert, setRestoredAlert] = useState(false)
 
 	const [savedState] = useState(() => loadBestillingFormState())
 	const [step, setStep] = useState(savedState?.step ?? 0)
@@ -109,7 +111,7 @@ export const StegVelger = ({
 	useEffect(() => {
 		if (savedState) {
 			clearBestillingFormState()
-			setRestoredAlert(true)
+			window.dispatchEvent(new CustomEvent(BESTILLING_RESTORED_EVENT))
 		}
 	}, [])
 
@@ -222,13 +224,6 @@ export const StegVelger = ({
 					))}
 				</Stepper>
 				<BestillingsveilederHeader context={context} formMethods={formMethods} />
-				{restoredAlert && (
-					<StickyAlertWrapper>
-						<Alert variant="success" closeButton onClose={() => setRestoredAlert(false)}>
-							Endringene dine ble gjenopprettet!
-						</Alert>
-					</StickyAlertWrapper>
-				)}
 				<div style={{ display: 'none' }} data-testid="stegevelger-form-snapshot">
 					mal:{malWatch}|identtype:{identtypeWatch}|id2032:{String(id2032Watch)}|sivilstand:
 					{JSON.stringify(formMethods.getValues('pdldata.person.sivilstand'))}

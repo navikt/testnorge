@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { NewVersionBanner, BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
+import { AppBanner, BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
 import React from 'react'
 import { MemoryRouter } from 'react-router'
 
@@ -34,7 +34,7 @@ describe('NewVersionBanner', () => {
 
 		const { container } = render(
 			<MemoryRouter initialEntries={['/']}>
-				<NewVersionBanner />
+				<AppBanner />
 			</MemoryRouter>,
 		)
 
@@ -47,7 +47,7 @@ describe('NewVersionBanner', () => {
 		expect(() =>
 			render(
 				<MemoryRouter initialEntries={['/']}>
-					<NewVersionBanner />
+					<AppBanner />
 				</MemoryRouter>,
 			),
 		).not.toThrow()
@@ -61,7 +61,7 @@ describe('NewVersionBanner', () => {
 
 		render(
 			<MemoryRouter initialEntries={['/gruppe/1/bestilling']}>
-				<NewVersionBanner />
+				<AppBanner />
 			</MemoryRouter>,
 		)
 
@@ -75,7 +75,7 @@ describe('NewVersionBanner', () => {
 
 		render(
 			<MemoryRouter initialEntries={['/']}>
-				<NewVersionBanner />
+				<AppBanner />
 			</MemoryRouter>,
 		)
 
@@ -87,7 +87,7 @@ describe('NewVersionBanner', () => {
 
 		render(
 			<MemoryRouter initialEntries={['/']}>
-				<NewVersionBanner />
+				<AppBanner />
 			</MemoryRouter>,
 		)
 
@@ -104,7 +104,7 @@ describe('NewVersionBanner', () => {
 
 		render(
 			<MemoryRouter initialEntries={['/gruppe/1/importer']}>
-				<NewVersionBanner />
+				<AppBanner />
 			</MemoryRouter>,
 		)
 

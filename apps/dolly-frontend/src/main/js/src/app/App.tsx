@@ -18,7 +18,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
 import { RouteChangeHandler } from '@/RootComponent'
 import { NavigationTitle } from '@/NavigationTitle'
-import { NewVersionBanner } from '@/components/versionBanner/NewVersionBanner'
+import { AppBanner } from '@/components/versionBanner/NewVersionBanner'
 
 const logout = (feilmelding: string) => {
 	console.error('Kritisk feil i Dolly, logger ut: ', feilmelding)
@@ -60,7 +60,7 @@ export const App = () => {
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
-			<NewVersionBanner />
+			<AppBanner />
 			<InfoStripe />
 			<main>
 				<ErrorBoundary>
