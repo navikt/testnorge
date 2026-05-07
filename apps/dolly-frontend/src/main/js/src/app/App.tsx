@@ -57,10 +57,10 @@ export const App = () => {
 	return (
 		<ErrorBoundary>
 			<RouteChangeHandler />
-			<NewVersionBanner />
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
+			<NewVersionBanner />
 			<InfoStripe />
 			<main>
 				<ErrorBoundary>
