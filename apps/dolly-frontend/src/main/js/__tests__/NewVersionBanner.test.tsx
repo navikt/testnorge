@@ -8,22 +8,16 @@ vi.mock('@/utils/hooks/useVersionCheck', () => ({
 	useVersionCheck: vi.fn(),
 }))
 
-vi.mock('@navikt/ds-react', async () => {
-	const actual = await vi.importActual<Record<string, unknown>>('@navikt/ds-react')
-	const MockGlobalAlert = ({ children, status }: any) => (
-		<div data-testid="global-alert" data-status={status}>{children}</div>
+vi.mock('@navikt/aksel-icons', () => {
+	return new Proxy(
+		{},
+		{
+			get: (_target, name) => {
+				if (typeof name !== 'string' || name === '__esModule') return undefined
+				return (props: any) => <svg data-testid={`icon-${name}`} {...props} />
+			},
+		},
 	)
-	MockGlobalAlert.Header = ({ children }: any) => <div>{children}</div>
-	MockGlobalAlert.Title = ({ children }: any) => <h2>{children}</h2>
-	MockGlobalAlert.Content = ({ children }: any) => <div>{children}</div>
-	MockGlobalAlert.CloseButton = ({ onClick }: any) => (
-		<button data-testid="close-alert" onClick={onClick}>Close</button>
-	)
-	return {
-		...actual,
-		GlobalAlert: MockGlobalAlert,
-		Button: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
-	}
 })
 
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
@@ -47,16 +41,17 @@ describe('NewVersionBanner', () => {
 		expect(container.innerHTML).toBe('')
 	})
 
-	it('should render alert when new version is available', () => {
+	it('should render GlobalAlert without errors when new version is available', () => {
 		mockedUseVersionCheck.mockReturnValue({ isNewVersionAvailable: true })
 
-		render(
-			<MemoryRouter initialEntries={['/']}>
-				<NewVersionBanner />
-			</MemoryRouter>,
-		)
+		expect(() =>
+			render(
+				<MemoryRouter initialEntries={['/']}>
+					<NewVersionBanner />
+				</MemoryRouter>,
+			),
+		).not.toThrow()
 
-		expect(screen.getByTestId('global-alert')).toBeDefined()
 		expect(screen.getByText('Ny versjon tilgjengelig')).toBeDefined()
 		expect(screen.getByText('Oppdater nå')).toBeDefined()
 	})
@@ -96,10 +91,25 @@ describe('NewVersionBanner', () => {
 			</MemoryRouter>,
 		)
 
-		expect(screen.getByTestId('global-alert')).toBeDefined()
+		expect(screen.getByText('Ny versjon tilgjengelig')).toBeDefined()
 
-		fireEvent.click(screen.getByTestId('close-alert'))
+		const closeButton = screen.getByRole('button', { name: /lukk/i })
+		fireEvent.click(closeButton)
 
-		expect(screen.queryByTestId('global-alert')).toBeNull()
+		expect(screen.queryByText('Ny versjon tilgjengelig')).toBeNull()
+	})
+
+	it('should include importer path as bestilling context', () => {
+		mockedUseVersionCheck.mockReturnValue({ isNewVersionAvailable: true })
+
+		render(
+			<MemoryRouter initialEntries={['/gruppe/1/importer']}>
+				<NewVersionBanner />
+			</MemoryRouter>,
+		)
+
+		expect(
+			screen.getByText(/Alle endringene dine vil bli lagret før siden lastes inn igjen/),
+		).toBeDefined()
 	})
 })

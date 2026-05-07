@@ -25,7 +25,7 @@ export const NewVersionBanner = () => {
 	if (!isNewVersionAvailable || dismissed) return null
 
 	return (
-		<GlobalAlert status="info">
+		<GlobalAlert status="announcement">
 			<GlobalAlert.Header>
 				<GlobalAlert.Title as="h2">Ny versjon tilgjengelig</GlobalAlert.Title>
 				<GlobalAlert.CloseButton onClick={() => setDismissed(true)} />
