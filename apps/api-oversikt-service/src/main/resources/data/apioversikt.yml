@@ -176,13 +176,12 @@ system:
     write:
       url: https://sigrun-skd-stub.intern.dev.nav.no/swagger-ui/index.html?urls.primaryName=Endepunkter+for+testdata
   - register: sykemelding
-    kubernetes-name: syfosmregler
-    namespace: teamsykmelding
+    kubernetes-name: tsm-input-dolly
+    namespace: tsm
     cluster: dev-gcp
     write:
-      url:
-      - https://syfosmregler.intern.dev.nav.no/openapi
-      - QA.Q1_SYFOSMMOTTAK.INPUT
+      url: https://tsm-input-dolly.intern.dev.nav.no
+      description: https://tsm-input-dolly.intern.dev.nav.no/swagger-ui
   - register: udistub
     kubernetes-name: testnav-udi-stub
     namespace: dolly
@@ -192,5 +191,6 @@ system:
   - register: yrkesskade
     kubernetes-name: yrkesskade-datagenerator-service
     namespace: yrkesskade
-    url: https://yrkesskade-datagenerator-service.intern.dev.nav.no/swagger-ui/index.html
+    url: https://yrkesskade-datagenerator-service.intern.dev.nav.no
+    description: https://yrkesskade-datagenerator-service.intern.dev.nav.no/swagger-ui/index.html
     cluster: dev-gcp

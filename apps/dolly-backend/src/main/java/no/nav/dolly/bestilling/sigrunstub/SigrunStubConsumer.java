@@ -5,6 +5,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubLignetDeleteCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubPensjonsgivendeDeleteCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubSummertSkattgrunnlagDeleteCommand;
+import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPostImportCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPostSummertSkattegrunnlagCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPutCommand;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
@@ -30,8 +31,14 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Component
 public class SigrunStubConsumer extends ConsumerStatus {
 
-    private static final String SIGRUN_STUB_LIGNET_INNTEKT_URL = "/sigrunstub/api/v1/lignetinntekt";
-    private static final String SIGRUN_STUB_PENSJONSGIVENDE_INNTEKT_URL = "/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden";
+    private static final String PREFIX = "/sigrunstub";
+    private static final String PREFIX_V1 = PREFIX + "/api/v1";
+    private static final String LIGNET_INNTEKT_URL = PREFIX_V1 + "/lignetinntekt";
+    private static final String PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden";
+    private static final String IMPORT_SUMMERT_SKATTEGRUNNLAG_URL = PREFIX_V1 + "/summertskattegrunnlag/import";
+    private static final String IMPORT_PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden/import";
+    private static final String IMPORT_CHECK_SUMMERT_SKATTEGRUNNLAG_URL = PREFIX_V1 + "/summertskattegrunnlag/import/check";
+    private static final String IMPORT_CHECK_PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden/import/check";
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;
@@ -87,7 +94,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
         log.info("Put lignet inntekt til Sigrunstub med data {}", request);
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new SigurunstubPutCommand(webClient, SIGRUN_STUB_LIGNET_INNTEKT_URL, request, token.getTokenValue()).call());
+                .flatMap(token -> new SigurunstubPutCommand(webClient, LIGNET_INNTEKT_URL, request, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_createPensjonsgivendeInntekt"})
@@ -96,7 +103,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
         log.info("Put pensjonsgivende inntekt til Sigrunstub med data {}", request);
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new SigurunstubPutCommand(webClient, SIGRUN_STUB_PENSJONSGIVENDE_INNTEKT_URL,
+                .flatMap(token -> new SigurunstubPutCommand(webClient, PENSJONSGIVENDE_INNTEKT_URL,
                         request, token.getTokenValue()).call());
     }
 
@@ -108,6 +115,46 @@ public class SigrunStubConsumer extends ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
                         new SigurunstubPostSummertSkattegrunnlagCommand(webClient, request, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "sigrun_importPensjonsgivendeForFolketrygden"})
+    public Mono<SigrunstubResponse> importPensjonsgivendeInntektForFolketrygden(String ident) {
+
+        log.info("Import pensjonsgivendeInntekt for folketrygden for {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token ->
+                        new SigurunstubPostImportCommand(webClient, IMPORT_PENSJONSGIVENDE_INNTEKT_URL, ident, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "sigrun_importSummertSkattegrunnlag"})
+    public Mono<SigrunstubResponse> importSummertSkattegrunnlag(String ident) {
+
+        log.info("Import summert skattegrunnlag for {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token ->
+                        new SigurunstubPostImportCommand(webClient, IMPORT_SUMMERT_SKATTEGRUNNLAG_URL, ident, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "sigrun_importCheckPensjonsgivendeForFolketrygden"})
+    public Mono<SigrunstubResponse> importCheckPensjonsgivendeInntektForFolketrygden(String ident) {
+
+        log.info("Import-check pensjonsgivendeInntekt for folketrygden for {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token ->
+                        new SigurunstubPostImportCommand(webClient, IMPORT_CHECK_PENSJONSGIVENDE_INNTEKT_URL, ident, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "sigrun_importCheckSummertSkattegrunnlag"})
+    public Mono<SigrunstubResponse> importCheckSummertSkattegrunnlag(String ident) {
+
+        log.info("Import-check summert skattegrunnlag for {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token ->
+                        new SigurunstubPostImportCommand(webClient, IMPORT_CHECK_SUMMERT_SKATTEGRUNNLAG_URL, ident, token.getTokenValue()).call());
     }
 
     @Override
