@@ -55,6 +55,7 @@ import {
 	harInntektsmeldingBestilling,
 	harInntektstubBestilling,
 	harInstBestilling,
+	harKelvinAapBestilling,
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
@@ -113,6 +114,7 @@ import { useNomData } from '@/utils/hooks/useNom'
 import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
+import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -261,6 +263,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 		arbeidsplassencvData,
 		error: arbeidsplassencvError,
 	} = useArbeidsplassencvData(ident.ident, harArbeidsplassenBestilling(bestillingerFagsystemer))
+
+	const {
+		loading: loadingKelvinAapBehandlingStatus,
+		kelvinAapData,
+		error: kelvinAapBehandlingStatusError,
+	} = useKelvinAapBehandlingStatus(ident.ident, harKelvinAapBestilling(bestillingerFagsystemer))
 
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
