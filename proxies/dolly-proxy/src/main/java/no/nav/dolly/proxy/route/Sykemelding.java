@@ -24,12 +24,12 @@ class Sykemelding {
 
         var bearerAuthenticationFilter = authenticationFilterService
                 .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE,
-                        NAME, targets.getKelvinAap());
+                        NAME, targets.getSykemelding());
 
         return spec -> spec
                 .path("/sykemelding/**")
                 .filters(f -> f.stripPrefix(1)
                         .filter(bearerAuthenticationFilter))
-                .uri(targets.sykemelding);
+                .uri(targets.getSykemelding());
     }
 }
