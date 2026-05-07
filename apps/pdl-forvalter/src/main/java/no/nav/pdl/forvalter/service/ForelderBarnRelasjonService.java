@@ -72,7 +72,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
         return Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, dbPerson.getPerson()))
+                .concatMap(type -> handle(type, dbPerson.getPerson()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));

@@ -57,8 +57,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
 
         return Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, dbPerson.getPerson()))
-                .filter(Objects::nonNull)
+                .concatMap(type -> handle(type, dbPerson.getPerson()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
