@@ -41,7 +41,7 @@ public class VergemaalService implements Validation<VergemaalDTO> {
 
         return Flux.fromIterable(dbPerson.getPerson().getVergemaal())
                 .filter(vergemaal -> isTrue(vergemaal.getIsNew()))
-                .flatMap(vergemaal -> handle(vergemaal, dbPerson.getIdent()))
+                .concatMap(vergemaal -> handle(vergemaal, dbPerson.getIdent()))
                 .doOnNext(vergemaal -> {
                     vergemaal.setKilde(getKilde(vergemaal));
                     vergemaal.setMaster(getMaster(vergemaal, dbPerson.getPerson()));
