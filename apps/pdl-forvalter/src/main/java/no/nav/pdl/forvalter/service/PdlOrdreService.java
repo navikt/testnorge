@@ -92,6 +92,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -129,6 +130,7 @@ public class PdlOrdreService {
                                                                          .noneMatch(ekstern -> ekstern.equals(dbPerson1.getIdent()))),
                                     Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                                             .filter(ForelderBarnRelasjonDTO::hasBarn)
+                                            .filter(relasjon -> isNotBlank(relasjon.getRelatertPerson()))
                                             .map(ForelderBarnRelasjonDTO::getRelatertPerson)
                                             .flatMap(personRepository::findByIdent)
                                             .map(DbPerson::getPerson)
@@ -179,6 +181,7 @@ public class PdlOrdreService {
                                 .filter(SivilstandDTO::isEksisterendePerson)
                                 .map(SivilstandDTO::getRelatertVedSivilstand),
                         Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
+                                .filter(relasjon -> isNotBlank(relasjon.getRelatertPerson()))
                                 .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
                                 .map(ForelderBarnRelasjonDTO::getRelatertPerson),
                         Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
@@ -191,12 +194,13 @@ public class PdlOrdreService {
                                 .filter(FullmaktDTO::isEksisterendePerson)
                                 .map(FullmaktDTO::getMotpartsPersonident),
                         Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
+                                .filter(kontaktinformasjon -> nonNull(kontaktinformasjon.getPersonSomKontakt()))
                                 .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                .filter(Objects::nonNull)
                                 .filter(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::isEksisterendePerson)
                                 .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer),
                         Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
                                 .filter(ForelderBarnRelasjonDTO::hasBarn)
+                                .filter(relasjon -> isNotBlank(relasjon.getRelatertPerson()))
                                 .map(ForelderBarnRelasjonDTO::getRelatertPerson)
                                 .flatMap(personRepository::findByIdent)
                                 .map(DbPerson::getPerson)
