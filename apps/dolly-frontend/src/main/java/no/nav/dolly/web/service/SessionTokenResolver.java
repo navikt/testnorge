@@ -23,6 +23,7 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 
@@ -41,7 +42,7 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                 .map(SecurityContext::getAuthentication).flatMap(authentication -> {
                             if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
                                 var manager = authorizedClientManagerProvider.getIfAvailable();
-                                if (manager == null) {
+                                if (isNull(manager)) {
                                     return Mono.error(new IllegalStateException("OAuth2 client manager ikke tilgjengelig"));
                                 }
                                 var authorizeRequest = OAuth2AuthorizeRequest
@@ -91,7 +92,7 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                 .handle((jwtAuthenticationToken, sink) -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
-                    if (expiresAt == null || expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
+                    if (isNull(expiresAt) || expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
                         sink.error(new CredentialsExpiredException("Jwt er utløpt eller utløper innen kort tid"));
                     } else {
                         sink.next(jwtAuthenticationToken);

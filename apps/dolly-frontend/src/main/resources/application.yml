@@ -5,7 +5,7 @@ spring:
     name: dolly-frontend
     allow-circular-references: true
   session:
-    timeout: 8h
+    timeout: 3h
   config:
     import: "dolly-application.yml"
   codec:
