@@ -81,8 +81,5 @@
     "pnpm": ">=8.0.0",
     "npm": "please-use-pnpm",
     "yarn": "please-use-pnpm"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "msw"]
   }
 }
