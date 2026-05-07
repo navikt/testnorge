@@ -36,7 +36,7 @@ class RouteLocatorConfig {
 
     @Bean("dollyProxyRouteLocator")
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-    RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder, Sykemelding sykemelding) {
         return builder
                 .routes()
                 .route("aareg-read-q1", aareg.build(Aareg.SpecialCase.Q1, false))
@@ -81,6 +81,7 @@ class RouteLocatorConfig {
                 .route("saf-q4", saf.build(Saf.SpecialCase.Q4))
                 .route("sigrunstub", sigrunstub.build())
                 .route("skjermingsregister", skjermingsregister.build())
+                .route("sykemelding", sykemelding.build())
                 .route("udistub", udistub.build())
                 .build();
     }
