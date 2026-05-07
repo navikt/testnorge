@@ -31,9 +31,9 @@ import static no.nav.dolly.util.TestnorgeIdentUtility.isTestnorgeIdent;
 public class SigrunStubClient implements ClientRegister {
 
     private static final String IDENT = "ident";
-    private static final String SIGRUNSTUB_SUMMERT = "SIGRUN_SUMMERT: %s";
-    private static final String SIGRUNSTUB_PENSJONSGIVENDE = "SIGRUN_PENSJONSGIVENDE: %s";
-    private static final String SIGRUNSTUB_LIGNET = "SIGRUN_LIGNET: %s ";
+    private static final String SIGRUNSTUB_SUMMERT = "SIGRUN_SUMMERT:%s";
+    private static final String SIGRUNSTUB_PENSJONSGIVENDE = "SIGRUN_PENSJONSGIVENDE:%s";
+    private static final String SIGRUNSTUB_LIGNET = "SIGRUN_LIGNET:%s ";
 
     private final SigrunStubConsumer sigrunStubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;

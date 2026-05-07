@@ -31,12 +31,14 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Component
 public class SigrunStubConsumer extends ConsumerStatus {
 
-    private static final String SIGRUNSTUB_LIGNET_INNTEKT_URL = "/sigrunstub/api/v1/lignetinntekt";
-    private static final String SIGRUNSTUB_PENSJONSGIVENDE_INNTEKT_URL = "/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden";
-    private static final String SIGRUNSTUB_IMPORT_SUMMERT_SKATTEGRUNNLAG_URL = "/sigrunstub/api/v1/summertskattegrunnlag/import";
-    private static final String SIGRUNSTUB_IMPORT_PENSJONSGIVENDE_INNTEKT_URL = "/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden/import";
-    private static final String SIGRUNSTUB_IMPORT_CHECK_SUMMERT_SKATTEGRUNNLAG_URL = "/sigrunstub/api/v1/summertskattegrunnlag/import/check";
-    private static final String SIGRUNSTUB_IMPORT_CHECK_PENSJONSGIVENDE_INNTEKT_URL = "/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden/import/check";
+    private static final String PREFIX = "/sigrunstub";
+    private static final String PREFIX_V1 = PREFIX + "/api/v1";
+    private static final String LIGNET_INNTEKT_URL = PREFIX_V1 + "/lignetinntekt";
+    private static final String PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden";
+    private static final String IMPORT_SUMMERT_SKATTEGRUNNLAG_URL = PREFIX_V1 + "/summertskattegrunnlag/import";
+    private static final String IMPORT_PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden/import";
+    private static final String IMPORT_CHECK_SUMMERT_SKATTEGRUNNLAG_URL = PREFIX_V1 + "/summertskattegrunnlag/import/check";
+    private static final String IMPORT_CHECK_PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden/import/check";
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;
@@ -92,7 +94,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
         log.info("Put lignet inntekt til Sigrunstub med data {}", request);
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new SigurunstubPutCommand(webClient, SIGRUNSTUB_LIGNET_INNTEKT_URL, request, token.getTokenValue()).call());
+                .flatMap(token -> new SigurunstubPutCommand(webClient, LIGNET_INNTEKT_URL, request, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_createPensjonsgivendeInntekt"})
@@ -101,7 +103,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
         log.info("Put pensjonsgivende inntekt til Sigrunstub med data {}", request);
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new SigurunstubPutCommand(webClient, SIGRUNSTUB_PENSJONSGIVENDE_INNTEKT_URL,
+                .flatMap(token -> new SigurunstubPutCommand(webClient, PENSJONSGIVENDE_INNTEKT_URL,
                         request, token.getTokenValue()).call());
     }
 
@@ -122,7 +124,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
-                        new SigurunstubPostImportCommand(webClient, SIGRUNSTUB_IMPORT_PENSJONSGIVENDE_INNTEKT_URL, ident, token.getTokenValue()).call());
+                        new SigurunstubPostImportCommand(webClient, IMPORT_PENSJONSGIVENDE_INNTEKT_URL, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_importSummertSkattegrunnlag"})
@@ -132,7 +134,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
-                        new SigurunstubPostImportCommand(webClient, SIGRUNSTUB_IMPORT_SUMMERT_SKATTEGRUNNLAG_URL, ident, token.getTokenValue()).call());
+                        new SigurunstubPostImportCommand(webClient, IMPORT_SUMMERT_SKATTEGRUNNLAG_URL, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_importPensjonsgivendeForFolketrygden"})
@@ -142,7 +144,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
-                        new SigurunstubPostImportCommand(webClient, SIGRUNSTUB_IMPORT_CHECK_PENSJONSGIVENDE_INNTEKT_URL, ident, token.getTokenValue()).call());
+                        new SigurunstubPostImportCommand(webClient, IMPORT_CHECK_PENSJONSGIVENDE_INNTEKT_URL, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_importSummertSkattegrunnlag"})
@@ -152,7 +154,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
-                        new SigurunstubPostImportCommand(webClient, SIGRUNSTUB_IMPORT_CHECK_SUMMERT_SKATTEGRUNNLAG_URL, ident, token.getTokenValue()).call());
+                        new SigurunstubPostImportCommand(webClient, IMPORT_CHECK_SUMMERT_SKATTEGRUNNLAG_URL, ident, token.getTokenValue()).call());
     }
 
     @Override
