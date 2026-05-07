@@ -8,6 +8,8 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import * as React from 'react'
+import * as Yup from 'yup'
+import { ifPresent, requiredBoolean } from '@/utils/YupValidations'
 
 export const KelvinAapForm = () => {
 	const formMethods = useFormContext()
@@ -65,4 +67,22 @@ export const KelvinAapForm = () => {
 			</Panel>
 		</Vis>
 	)
+}
+
+KelvinAapForm.validation = {
+	kelvinAap: ifPresent(
+		'$kelvinAap',
+		Yup.object({
+			andreUtbetalinger: Yup.object({
+				afp: Yup.object({
+					hvemBetaler: Yup.string(),
+				}),
+				loenn: Yup.string(),
+				stoenad: Yup.array().of(Yup.string()).min(1, 'Velg minst én stønad'),
+			}),
+			erStudent: requiredBoolean,
+			harMedlemskap: requiredBoolean,
+			harYrkesskade: requiredBoolean,
+		}),
+	),
 }
