@@ -50,8 +50,6 @@ on:
     secrets:
       NAV_TOKEN:
         required: true
-      READER_TOKEN:
-        required: true
       SONAR_TOKEN:
         required: true
 
@@ -105,7 +103,7 @@ jobs:
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: pnpm install --frozen-lockfile
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Build (Node)"
         working-directory: ${{ inputs.working-directory }}/src/main/js
