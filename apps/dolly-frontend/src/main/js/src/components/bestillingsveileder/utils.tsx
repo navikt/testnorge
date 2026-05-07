@@ -70,6 +70,7 @@ export const rootPaths = [
 	'inntektstub',
 	'instdata',
 	'krrstub',
+	'kelvinAap',
 	'arenaforvalter',
 	'udistub',
 	'inntektsmelding',

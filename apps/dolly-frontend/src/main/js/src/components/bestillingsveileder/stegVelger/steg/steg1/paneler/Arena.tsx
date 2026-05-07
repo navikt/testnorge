@@ -125,12 +125,14 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		runningE2ETest() ? new Date(2022, 0) : null,
 	]
 
+	const harMedlemskap = opts?.identtype === 'FNR'
+
 	return {
 		kelvinAap: {
 			label: 'AAP',
 			checked: has('kelvinAap'),
 			add() {
-				set('kelvinAap', initialKelvinAap)
+				set('kelvinAap', { ...initialKelvinAap, harMedlemskap: harMedlemskap })
 			},
 			remove() {
 				del('kelvinAap')
