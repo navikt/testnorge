@@ -6,14 +6,14 @@ on:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
         required: true
-    secrets:
-      READER_TOKEN:
-        required: true
 
 jobs:
   playwright-tests:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     strategy:
       fail-fast: false
       matrix:
@@ -36,7 +36,7 @@ jobs:
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: pnpm install --frozen-lockfile
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get Playwright version
         id: playwright-version
         working-directory: ${{ inputs.working-directory }}/src/main/js
@@ -66,6 +66,10 @@ jobs:
     if: ${{ !cancelled() }}
     needs: [ playwright-tests ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Setup pnpm
@@ -84,7 +88,7 @@ jobs:
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: pnpm install --frozen-lockfile
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0

@@ -7,9 +7,6 @@ on:
         description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
         required: true
         default: "apps/dolly-frontend"
-    secrets:
-      READER_TOKEN:
-        required: true
   workflow_dispatch:
     inputs:
       working-directory:
@@ -21,6 +18,9 @@ jobs:
   vitest:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Setup pnpm
@@ -38,7 +38,7 @@ jobs:
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
         run: pnpm install --frozen-lockfile
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get Playwright version
         id: playwright-version
         working-directory: ${{ inputs.working-directory || github.event.inputs.working-directory }}/src/main/js
