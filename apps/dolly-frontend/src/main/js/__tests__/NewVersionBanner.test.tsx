@@ -1,79 +1,64 @@
-import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
-import { render } from '@testing-library/react'
-import { NewVersionToast, BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
+import { describe, expect, it, vi, afterEach } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { NewVersionBanner, BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
 import React from 'react'
-import { toast } from 'react-toastify'
 import { MemoryRouter } from 'react-router'
 
 vi.mock('@/utils/hooks/useVersionCheck', () => ({
 	useVersionCheck: vi.fn(),
 }))
 
-vi.mock('react-toastify', () => ({
-	toast: {
-		info: vi.fn(),
-		update: vi.fn(),
-		dismiss: vi.fn(),
-	},
-	ToastContainer: () => null,
-}))
+vi.mock('@navikt/ds-react', async () => {
+	const actual = await vi.importActual<Record<string, unknown>>('@navikt/ds-react')
+	const MockGlobalAlert = ({ children, status }: any) => (
+		<div data-testid="global-alert" data-status={status}>{children}</div>
+	)
+	MockGlobalAlert.Header = ({ children }: any) => <div>{children}</div>
+	MockGlobalAlert.Title = ({ children }: any) => <h2>{children}</h2>
+	MockGlobalAlert.Content = ({ children }: any) => <div>{children}</div>
+	MockGlobalAlert.CloseButton = ({ onClick }: any) => (
+		<button data-testid="close-alert" onClick={onClick}>Close</button>
+	)
+	return {
+		...actual,
+		GlobalAlert: MockGlobalAlert,
+		Button: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
+	}
+})
 
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 
 const mockedUseVersionCheck = vi.mocked(useVersionCheck)
-const mockedToast = vi.mocked(toast)
 
-describe('NewVersionToast', () => {
+describe('NewVersionBanner', () => {
 	afterEach(() => {
 		vi.clearAllMocks()
 	})
 
-	it('should not show toast when no new version is available', () => {
+	it('should not render when no new version is available', () => {
 		mockedUseVersionCheck.mockReturnValue({ isNewVersionAvailable: false })
 
-		render(
-			<MemoryRouter initialEntries={['/gruppe/1/bestilling']}>
-				<NewVersionToast />
+		const { container } = render(
+			<MemoryRouter initialEntries={['/']}>
+				<NewVersionBanner />
 			</MemoryRouter>,
 		)
 
-		expect(mockedToast.info).not.toHaveBeenCalled()
+		expect(container.innerHTML).toBe('')
 	})
 
-	it('should show toast when new version is available', () => {
+	it('should render alert when new version is available', () => {
 		mockedUseVersionCheck.mockReturnValue({ isNewVersionAvailable: true })
 
 		render(
 			<MemoryRouter initialEntries={['/']}>
-				<NewVersionToast />
+				<NewVersionBanner />
 			</MemoryRouter>,
 		)
 
-		expect(mockedToast.info).toHaveBeenCalledWith(
-			expect.anything(),
-			expect.objectContaining({
-				toastId: 'dolly-new-version',
-				autoClose: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				position: 'bottom-right',
-			}),
-		)
-	})
-
-	it('should create toast with onReload handler that calls reload', () => {
-		mockedUseVersionCheck.mockReturnValue({ isNewVersionAvailable: true })
-
-		render(
-			<MemoryRouter initialEntries={['/']}>
-				<NewVersionToast />
-			</MemoryRouter>,
-		)
-
-		const toastCall = mockedToast.info.mock.calls[0]
-		const toastContent = toastCall[0] as React.ReactElement
-		expect((toastContent as any).props.onReload).toBeTypeOf('function')
+		expect(screen.getByTestId('global-alert')).toBeDefined()
+		expect(screen.getByText('Ny versjon tilgjengelig')).toBeDefined()
+		expect(screen.getByText('Oppdater nå')).toBeDefined()
 	})
 
 	it('should show save message when on bestilling path', () => {
@@ -81,13 +66,13 @@ describe('NewVersionToast', () => {
 
 		render(
 			<MemoryRouter initialEntries={['/gruppe/1/bestilling']}>
-				<NewVersionToast />
+				<NewVersionBanner />
 			</MemoryRouter>,
 		)
 
-		const toastCall = mockedToast.info.mock.calls[0]
-		const toastContent = toastCall[0] as React.ReactElement
-		expect((toastContent as any).props.showSaveMessage).toBe(true)
+		expect(
+			screen.getByText(/Alle endringene dine vil bli lagret før siden lastes inn igjen/),
+		).toBeDefined()
 	})
 
 	it('should not show save message on non-bestilling path', () => {
@@ -95,12 +80,26 @@ describe('NewVersionToast', () => {
 
 		render(
 			<MemoryRouter initialEntries={['/']}>
-				<NewVersionToast />
+				<NewVersionBanner />
 			</MemoryRouter>,
 		)
 
-		const toastCall = mockedToast.info.mock.calls[0]
-		const toastContent = toastCall[0] as React.ReactElement
-		expect((toastContent as any).props.showSaveMessage).toBe(false)
+		expect(screen.queryByText(/Alle endringene dine vil bli lagret/)).toBeNull()
+	})
+
+	it('should dismiss when close button is clicked', () => {
+		mockedUseVersionCheck.mockReturnValue({ isNewVersionAvailable: true })
+
+		render(
+			<MemoryRouter initialEntries={['/']}>
+				<NewVersionBanner />
+			</MemoryRouter>,
+		)
+
+		expect(screen.getByTestId('global-alert')).toBeDefined()
+
+		fireEvent.click(screen.getByTestId('close-alert'))
+
+		expect(screen.queryByTestId('global-alert')).toBeNull()
 	})
 })

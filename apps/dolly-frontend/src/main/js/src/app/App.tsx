@@ -5,7 +5,6 @@ import Loading from '@/components/ui/loading/Loading'
 import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
 import { Kontaktinfo } from '@/components/feedback/Kontaktinfo'
-import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
@@ -19,7 +18,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
 import { RouteChangeHandler } from '@/RootComponent'
 import { NavigationTitle } from '@/NavigationTitle'
-import { NewVersionToast } from '@/components/versionBanner/NewVersionBanner'
+import { NewVersionBanner } from '@/components/versionBanner/NewVersionBanner'
 
 const logout = (feilmelding: string) => {
 	console.error('Kritisk feil i Dolly, logger ut: ', feilmelding)
@@ -58,7 +57,7 @@ export const App = () => {
 	return (
 		<ErrorBoundary>
 			<RouteChangeHandler />
-			<NewVersionToast />
+			<NewVersionBanner />
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
@@ -72,7 +71,6 @@ export const App = () => {
 				</ErrorBoundary>
 			</main>
 			<Kontaktinfo />
-			<ToastConnector />
 		</ErrorBoundary>
 	)
 }

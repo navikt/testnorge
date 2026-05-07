@@ -1,74 +1,53 @@
-import { useEffect, useRef } from 'react'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { Button } from '@navikt/ds-react'
+import { useEffect, useRef, useState } from 'react'
+import { Button, GlobalAlert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 import { useLocation } from 'react-router'
 
 export const BESTILLING_SAVE_EVENT = 'dolly-save-and-reload'
 
-const TOAST_ID = 'dolly-new-version'
-
 const isBestillingPath = (pathname: string) =>
 	pathname.includes('/bestilling') || pathname.includes('/importer')
 
-const VersionToastContent = ({
-	onReload,
-	showSaveMessage,
-}: {
-	onReload: () => void
-	showSaveMessage: boolean
-}) => (
-	<StyledContent>
-		<span>
-			En ny versjon av Dolly er tilgjengelig.
-			{showSaveMessage && ' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
-		</span>
-		<Button variant="tertiary" size="xsmall" onClick={onReload}>
-			Oppdater nå
-		</Button>
-	</StyledContent>
-)
+export const NewVersionBanner = () => {
+	const { isNewVersionAvailable } = useVersionCheck()
+	const location = useLocation()
+	const isOnBestilling = isBestillingPath(location.pathname)
+	const [dismissed, setDismissed] = useState(false)
+
+	const handleReload = () => {
+		if (isBestillingPath(window.location.pathname)) {
+			window.dispatchEvent(new CustomEvent(BESTILLING_SAVE_EVENT))
+		}
+		window.location.reload()
+	}
+
+	if (!isNewVersionAvailable || dismissed) return null
+
+	return (
+		<GlobalAlert status="info">
+			<GlobalAlert.Header>
+				<GlobalAlert.Title as="h2">Ny versjon tilgjengelig</GlobalAlert.Title>
+				<GlobalAlert.CloseButton onClick={() => setDismissed(true)} />
+			</GlobalAlert.Header>
+			<GlobalAlert.Content>
+				<StyledContent>
+					<span>
+						En ny versjon av Dolly er tilgjengelig.
+						{isOnBestilling &&
+							' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
+					</span>
+					<Button variant="tertiary" size="xsmall" onClick={handleReload}>
+						Oppdater nå
+					</Button>
+				</StyledContent>
+			</GlobalAlert.Content>
+		</GlobalAlert>
+	)
+}
 
 const StyledContent = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 `
-
-export const NewVersionToast = () => {
-	const { isNewVersionAvailable } = useVersionCheck()
-	const location = useLocation()
-	const isOnBestilling = isBestillingPath(location.pathname)
-	const toastShownRef = useRef(false)
-
-	useEffect(() => {
-		if (!isNewVersionAvailable) return
-
-		const handleReload = () => {
-			if (isBestillingPath(window.location.pathname)) {
-				window.dispatchEvent(new CustomEvent(BESTILLING_SAVE_EVENT))
-			}
-			window.location.reload()
-		}
-
-		if (toastShownRef.current) {
-			toast.update(TOAST_ID, {
-				render: <VersionToastContent onReload={handleReload} showSaveMessage={isOnBestilling} />,
-			})
-		} else {
-			toastShownRef.current = true
-			toast.info(<VersionToastContent onReload={handleReload} showSaveMessage={isOnBestilling} />, {
-				toastId: TOAST_ID,
-				position: 'bottom-right',
-				autoClose: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-			})
-		}
-	}, [isNewVersionAvailable, isOnBestilling])
-
-	return <ToastContainer theme={'light'} />
-}

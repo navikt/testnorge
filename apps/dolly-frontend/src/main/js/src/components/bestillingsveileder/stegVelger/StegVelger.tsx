@@ -8,7 +8,7 @@ import {
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
-import { Stepper } from '@navikt/ds-react'
+import { Alert, Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
@@ -35,7 +35,6 @@ import { useMalFormSync } from './hooks/useMalFormSync'
 import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
 import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
 import StepErrorBoundary from './StepErrorBoundary'
-import { toast } from 'react-toastify'
 import {
 	clearBestillingFormState,
 	loadBestillingFormState,
@@ -86,6 +85,7 @@ export const StegVelger = ({
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const [restoredAlert, setRestoredAlert] = useState(false)
 
 	const [savedState] = useState(() => loadBestillingFormState())
 	const [step, setStep] = useState(savedState?.step ?? 0)
@@ -109,13 +109,7 @@ export const StegVelger = ({
 	useEffect(() => {
 		if (savedState) {
 			clearBestillingFormState()
-			toast.success('Endringene dine ble gjenopprettet!', {
-				position: 'bottom-right',
-				autoClose: 5000,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-			})
+			setRestoredAlert(true)
 		}
 	}, [])
 
@@ -228,6 +222,11 @@ export const StegVelger = ({
 					))}
 				</Stepper>
 				<BestillingsveilederHeader context={context} formMethods={formMethods} />
+				{restoredAlert && (
+					<Alert variant="success" closeButton onClose={() => setRestoredAlert(false)}>
+						Endringene dine ble gjenopprettet!
+					</Alert>
+				)}
 				<div style={{ display: 'none' }} data-testid="stegevelger-form-snapshot">
 					mal:{malWatch}|identtype:{identtypeWatch}|id2032:{String(id2032Watch)}|sivilstand:
 					{JSON.stringify(formMethods.getValues('pdldata.person.sivilstand'))}
