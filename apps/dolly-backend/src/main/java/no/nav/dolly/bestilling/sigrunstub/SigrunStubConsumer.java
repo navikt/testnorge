@@ -120,7 +120,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "sigrun_importPensjonsgivendeForFolketrygden"})
     public Mono<SigrunstubResponse> importPensjonsgivendeInntektForFolketrygden(String ident) {
 
-        log.info("Import pensjonsgivendeInnetekt for folketrygden for {}", ident);
+        log.info("Import pensjonsgivendeInntekt for folketrygden for {}", ident);
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
@@ -140,7 +140,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "sigrun_importCheckPensjonsgivendeForFolketrygden"})
     public Mono<SigrunstubResponse> importCheckPensjonsgivendeInntektForFolketrygden(String ident) {
 
-        log.info("Import-check pensjonsgivendeInnetekt for folketrygden for {}", ident);
+        log.info("Import-check pensjonsgivendeInntekt for folketrygden for {}", ident);
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
