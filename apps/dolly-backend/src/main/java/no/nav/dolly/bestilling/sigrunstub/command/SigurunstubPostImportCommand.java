@@ -49,6 +49,6 @@ public class SigurunstubPostImportCommand implements Callable<Mono<SigrunstubRes
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error -> SigrunstubResponse.of(WebClientError.describe(error), null));
+                .onErrorResume(error -> SigrunstubResponse.of(WebClientError.describe(error), ident));
     }
 }

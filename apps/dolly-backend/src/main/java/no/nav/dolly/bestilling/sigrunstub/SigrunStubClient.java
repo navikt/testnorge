@@ -33,7 +33,7 @@ public class SigrunStubClient implements ClientRegister {
     private static final String IDENT = "ident";
     private static final String SIGRUNSTUB_SUMMERT = "SIGRUN_SUMMERT:%s";
     private static final String SIGRUNSTUB_PENSJONSGIVENDE = "SIGRUN_PENSJONSGIVENDE:%s";
-    private static final String SIGRUNSTUB_LIGNET = "SIGRUN_LIGNET:%s ";
+    private static final String SIGRUNSTUB_LIGNET = "SIGRUN_LIGNET:%s";
 
     private final SigrunStubConsumer sigrunStubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -57,9 +57,10 @@ public class SigrunStubClient implements ClientRegister {
                     if (isTestnorgeIdent(dollyPerson.getIdent())) {
                         return sigrunStubConsumer.importCheckSummertSkattegrunnlag(dollyPerson.getIdent())
                                 .filter(SigrunstubResponse::isOK)
-                                .then(sigrunStubConsumer.importSummertSkattegrunnlag(dollyPerson.getIdent()))
-                                .map(this::getStatus)
-                                .map(SIGRUNSTUB_SUMMERT::formatted);
+                                .flatMap(status ->
+                                        sigrunStubConsumer.importSummertSkattegrunnlag(dollyPerson.getIdent())
+                                                .map(this::getStatus)
+                                                .map(SIGRUNSTUB_SUMMERT::formatted));
                     } else {
                         return Mono.empty();
                     }
@@ -90,7 +91,7 @@ public class SigrunStubClient implements ClientRegister {
                     if (isTestnorgeIdent(dollyPerson.getIdent())) {
                         return sigrunStubConsumer.importCheckPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent())
                                 .filter(SigrunstubResponse::isOK)
-                                .then(sigrunStubConsumer.importPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent()))
+                                .flatMap(status -> sigrunStubConsumer.importPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent()))
                                 .map(this::getStatus)
                                 .map(SIGRUNSTUB_PENSJONSGIVENDE::formatted);
                     } else {
@@ -99,20 +100,20 @@ public class SigrunStubClient implements ClientRegister {
                 }),
 
                 Mono.just(bestilling)
-                .filter(bestilling2 -> !bestilling2.getSigrunstubPensjonsgivende().isEmpty())
-                .map(RsDollyUtvidetBestilling::getSigrunstubPensjonsgivende)
-                .flatMap(pensjonsgivende -> {
+                        .filter(bestilling2 -> !bestilling2.getSigrunstubPensjonsgivende().isEmpty())
+                        .map(RsDollyUtvidetBestilling::getSigrunstubPensjonsgivende)
+                        .flatMap(pensjonsgivende -> {
 
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty(IDENT, dollyPerson.getIdent());
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty(IDENT, dollyPerson.getIdent());
 
-                    var skattegrunnlag =
-                            mapperFacade.mapAsList(pensjonsgivende, SigrunstubPensjonsgivendeInntektRequest.class, context);
+                            var skattegrunnlag =
+                                    mapperFacade.mapAsList(pensjonsgivende, SigrunstubPensjonsgivendeInntektRequest.class, context);
 
-                    return sigrunStubConsumer.updatePensjonsgivendeInntekt(skattegrunnlag)
-                            .map(this::getStatus)
-                            .map(SIGRUNSTUB_PENSJONSGIVENDE::formatted);
-                }));
+                            return sigrunStubConsumer.updatePensjonsgivendeInntekt(skattegrunnlag)
+                                    .map(this::getStatus)
+                                    .map(SIGRUNSTUB_PENSJONSGIVENDE::formatted);
+                        }));
     }
 
     private Flux<String> doLignetInntekt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
