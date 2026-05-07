@@ -137,7 +137,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
                         new SigurunstubPostImportCommand(webClient, IMPORT_SUMMERT_SKATTEGRUNNLAG_URL, ident, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "sigrun_importPensjonsgivendeForFolketrygden"})
+    @Timed(name = "providers", tags = {"operation", "sigrun_importCheckPensjonsgivendeForFolketrygden"})
     public Mono<SigrunstubResponse> importCheckPensjonsgivendeInntektForFolketrygden(String ident) {
 
         log.info("Import-check pensjonsgivendeInnetekt for folketrygden for {}", ident);
@@ -147,7 +147,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
                         new SigurunstubPostImportCommand(webClient, IMPORT_CHECK_PENSJONSGIVENDE_INNTEKT_URL, ident, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "sigrun_importSummertSkattegrunnlag"})
+    @Timed(name = "providers", tags = {"operation", "sigrun_importCheckSummertSkattegrunnlag"})
     public Mono<SigrunstubResponse> importCheckSummertSkattegrunnlag(String ident) {
 
         log.info("Import-check summert skattegrunnlag for {}", ident);
