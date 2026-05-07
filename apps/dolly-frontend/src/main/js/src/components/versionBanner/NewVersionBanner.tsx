@@ -25,7 +25,7 @@ export const NewVersionBanner = () => {
 	if (!isNewVersionAvailable || dismissed) return null
 
 	return (
-		<StickyWrapper>
+		<StickyAlertWrapper>
 			<GlobalAlert status="announcement">
 				<GlobalAlert.Header>
 					<GlobalAlert.Title as="h2">Ny versjon tilgjengelig</GlobalAlert.Title>
@@ -35,8 +35,7 @@ export const NewVersionBanner = () => {
 					<StyledContent>
 						<span>
 							En ny versjon av Dolly er tilgjengelig.
-							{isOnBestilling &&
-								' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
+							{isOnBestilling && ' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
 						</span>
 						<Button variant="tertiary" size="xsmall" onClick={handleReload}>
 							Oppdater nå
@@ -44,16 +43,16 @@ export const NewVersionBanner = () => {
 					</StyledContent>
 				</GlobalAlert.Content>
 			</GlobalAlert>
-		</StickyWrapper>
+		</StickyAlertWrapper>
 	)
 }
 
-const StickyWrapper = styled.div`
+export const StickyAlertWrapper = styled.div`
 	position: sticky;
 	top: 0;
 	z-index: 1000;
 	max-width: 940px;
-	margin: 0 auto;
+	margin: 0 auto 10px;
 `
 
 const StyledContent = styled.div`

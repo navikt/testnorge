@@ -40,7 +40,7 @@ import {
 	loadBestillingFormState,
 	saveBestillingFormState,
 } from '@/utils/bestillingFormPersistence'
-import { BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
+import { BESTILLING_SAVE_EVENT, StickyAlertWrapper } from '@/components/versionBanner/NewVersionBanner'
 
 interface StepDef {
 	component: React.ComponentType<any>
@@ -223,9 +223,11 @@ export const StegVelger = ({
 				</Stepper>
 				<BestillingsveilederHeader context={context} formMethods={formMethods} />
 				{restoredAlert && (
-					<Alert variant="success" closeButton onClose={() => setRestoredAlert(false)}>
-						Endringene dine ble gjenopprettet!
-					</Alert>
+					<StickyAlertWrapper>
+						<Alert variant="success" closeButton onClose={() => setRestoredAlert(false)}>
+							Endringene dine ble gjenopprettet!
+						</Alert>
+					</StickyAlertWrapper>
 				)}
 				<div style={{ display: 'none' }} data-testid="stegevelger-form-snapshot">
 					mal:{malWatch}|identtype:{identtypeWatch}|id2032:{String(id2032Watch)}|sivilstand:
