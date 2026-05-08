@@ -15,7 +15,6 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
-import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static no.nav.dolly.util.TestnorgeIdentUtility.isTestnorgeIdent;
 
 @Log4j2
 @Service
@@ -31,6 +31,9 @@ import static java.util.Objects.isNull;
 public class SigrunStubClient implements ClientRegister {
 
     private static final String IDENT = "ident";
+    private static final String SIGRUNSTUB_SUMMERT = "SIGRUN_SUMMERT:%s";
+    private static final String SIGRUNSTUB_PENSJONSGIVENDE = "SIGRUN_PENSJONSGIVENDE:%s";
+    private static final String SIGRUNSTUB_LIGNET = "SIGRUN_LIGNET:%s";
 
     private final SigrunStubConsumer sigrunStubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -48,44 +51,69 @@ public class SigrunStubClient implements ClientRegister {
                 .flatMap(resultat -> oppdaterStatus(progress, resultat));
     }
 
-    private Publisher<String> doSummertSkattegrunnlag(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+    private Flux<String> doSummertSkattegrunnlag(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
 
-        return Flux.just(bestilling)
-                .filter(bestilling1 -> !bestilling1.getSigrunstubSummertSkattegrunnlag().isEmpty())
-                .map(RsDollyUtvidetBestilling::getSigrunstubSummertSkattegrunnlag)
-                .flatMap(summertSkattegrunnlag -> {
+        return Flux.merge(Mono.defer(() -> {
+                    if (isTestnorgeIdent(dollyPerson.getIdent())) {
+                        return sigrunStubConsumer.importCheckSummertSkattegrunnlag(dollyPerson.getIdent())
+                                .filter(SigrunstubResponse::isOK)
+                                .flatMap(status ->
+                                        sigrunStubConsumer.importSummertSkattegrunnlag(dollyPerson.getIdent())
+                                                .map(this::getStatus)
+                                                .map(SIGRUNSTUB_SUMMERT::formatted));
+                    } else {
+                        return Mono.empty();
+                    }
+                }),
 
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty(IDENT, dollyPerson.getIdent());
+                Mono.just(bestilling)
+                        .filter(bestilling1 -> !bestilling1.getSigrunstubSummertSkattegrunnlag().isEmpty())
+                        .map(RsDollyUtvidetBestilling::getSigrunstubSummertSkattegrunnlag)
+                        .flatMap(summertSkattegrunnlag -> {
 
-                    var skattegrunnlag = SigrunstubSummertskattegrunnlagRequest.builder()
-                            .summertskattegrunnlag(
-                                    mapperFacade.mapAsList(summertSkattegrunnlag, Summertskattegrunnlag.class, context)
-                            ).build();
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty(IDENT, dollyPerson.getIdent());
 
-                    return sigrunStubConsumer.createSigrunstubSummertSkattegrunnlag(skattegrunnlag)
-                            .map(this::getStatus)
-                            .map(status -> "SIGRUN_SUMMERT:" + status);
-                });
+                            var skattegrunnlag = SigrunstubSummertskattegrunnlagRequest.builder()
+                                    .summertskattegrunnlag(
+                                            mapperFacade.mapAsList(summertSkattegrunnlag, Summertskattegrunnlag.class, context)
+                                    ).build();
+
+                            return sigrunStubConsumer.createSigrunstubSummertSkattegrunnlag(skattegrunnlag)
+                                    .map(this::getStatus)
+                                    .map(SIGRUNSTUB_SUMMERT::formatted);
+                        }));
     }
 
     private Flux<String> doPensjonsgivendeInntekt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
 
-        return Flux.just(bestilling)
-                .filter(bestilling2 -> !bestilling2.getSigrunstubPensjonsgivende().isEmpty())
-                .map(RsDollyUtvidetBestilling::getSigrunstubPensjonsgivende)
-                .flatMap(pensjonsgivende -> {
+        return Flux.merge(Mono.defer(() -> {
+                    if (isTestnorgeIdent(dollyPerson.getIdent())) {
+                        return sigrunStubConsumer.importCheckPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent())
+                                .filter(SigrunstubResponse::isOK)
+                                .flatMap(status -> sigrunStubConsumer.importPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent()))
+                                .map(this::getStatus)
+                                .map(SIGRUNSTUB_PENSJONSGIVENDE::formatted);
+                    } else {
+                        return Mono.empty();
+                    }
+                }),
 
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty(IDENT, dollyPerson.getIdent());
+                Mono.just(bestilling)
+                        .filter(bestilling2 -> !bestilling2.getSigrunstubPensjonsgivende().isEmpty())
+                        .map(RsDollyUtvidetBestilling::getSigrunstubPensjonsgivende)
+                        .flatMap(pensjonsgivende -> {
 
-                    var skattegrunnlag =
-                            mapperFacade.mapAsList(pensjonsgivende, SigrunstubPensjonsgivendeInntektRequest.class, context);
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty(IDENT, dollyPerson.getIdent());
 
-                    return sigrunStubConsumer.updatePensjonsgivendeInntekt(skattegrunnlag)
-                            .map(this::getStatus)
-                            .map(status -> "SIGRUN_PENSJONSGIVENDE:" + status);
-                });
+                            var skattegrunnlag =
+                                    mapperFacade.mapAsList(pensjonsgivende, SigrunstubPensjonsgivendeInntektRequest.class, context);
+
+                            return sigrunStubConsumer.updatePensjonsgivendeInntekt(skattegrunnlag)
+                                    .map(this::getStatus)
+                                    .map(SIGRUNSTUB_PENSJONSGIVENDE::formatted);
+                        }));
     }
 
     private Flux<String> doLignetInntekt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
@@ -103,7 +131,7 @@ public class SigrunStubClient implements ClientRegister {
 
                     return sigrunStubConsumer.updateLignetInntekt(skattegrunnlag)
                             .map(this::getStatus)
-                            .map(status -> "SIGRUN_LIGNET:" + status);
+                            .map(SIGRUNSTUB_LIGNET::formatted);
                 });
     }
 
