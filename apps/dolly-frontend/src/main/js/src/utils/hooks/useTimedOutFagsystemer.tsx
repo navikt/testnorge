@@ -49,6 +49,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		uforetrygdData,
 		brregstub,
 		instData,
+		poppData,
 		yrkesskadeData,
 		arbeidsplassencvData,
 		arbeidsplassencvError,
@@ -76,6 +77,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 	)
 		list.push('AAREG')
 
+	//if (poppData && sjekkManglerPensjonData(poppData)) list.push('POPP')
 	if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) list.push('TP')
 	if (apData && sjekkManglerApData(apData)) list.push('PEN_AP')
 	if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
