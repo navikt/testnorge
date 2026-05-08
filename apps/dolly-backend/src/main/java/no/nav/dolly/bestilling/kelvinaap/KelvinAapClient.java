@@ -38,7 +38,7 @@ public class KelvinAapClient implements ClientRegister {
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getKelvinAap()))
                 .flatMap(bestilling1 -> oppdaterStatus(progress, getInfoVenter(KELVIN_AAP.getBeskrivelse()))
-                        .then(Mono.just(bestilling1)))
+                        .thenReturn(bestilling1))
                 .map(RsDollyBestilling::getKelvinAap)
                 .flatMap(kelvinAap -> kelvinAapConsumer.readAap(dollyPerson.getIdent())
                         .zipWith(Mono.just(kelvinAap)))
