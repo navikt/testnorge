@@ -79,7 +79,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         return Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
                 .filter(type -> isTrue(type.getIsNew()))
-                .flatMap(type -> handle(type, dbPerson.getIdent()))
+                .concatMap(type -> handle(type, dbPerson.getIdent()))
                 .doOnNext(type -> {
                     type.setKilde(getKilde(type));
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
