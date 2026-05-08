@@ -1,5 +1,4 @@
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
-import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerApData } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { sjekkManglerUforetrygdData } from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
@@ -45,7 +44,6 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		data,
 		ident,
 		arbeidsforhold,
-		poppData,
 		tpDataForhold,
 		apData,
 		uforetrygdData,
@@ -77,7 +75,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 			aaregError)
 	)
 		list.push('AAREG')
-	if (poppData && sjekkManglerPensjonData(poppData)) list.push('POPP')
+
 	if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) list.push('TP')
 	if (apData && sjekkManglerApData(apData)) list.push('PEN_AP')
 	if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
