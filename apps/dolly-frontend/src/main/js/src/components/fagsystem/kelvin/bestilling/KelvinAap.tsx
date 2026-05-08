@@ -5,8 +5,13 @@ import {
 } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 export const KelvinAap = ({ kelvinAap }) => {
+	if (!kelvinAap || isEmpty(kelvinAap)) {
+		return null
+	}
+
 	return (
 		<div className="bestilling-visning">
 			<ErrorBoundary>
