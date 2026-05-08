@@ -37,7 +37,7 @@ export const AppBanner = () => {
 	return (
 		<StickyAlertWrapper>
 			{showVersion && (
-				<GlobalAlert status="announcement">
+				<StyledGlobalAlert status="announcement">
 					<GlobalAlert.Header>
 						<GlobalAlert.Title as="h2">Ny versjon tilgjengelig</GlobalAlert.Title>
 						<GlobalAlert.CloseButton onClick={() => setDismissed(true)} />
@@ -54,7 +54,7 @@ export const AppBanner = () => {
 							</Button>
 						</StyledContent>
 					</GlobalAlert.Content>
-				</GlobalAlert>
+				</StyledGlobalAlert>
 			)}
 			{showRestored && (
 				<Alert variant="success" closeButton onClose={() => setShowRestored(false)}>
@@ -73,8 +73,22 @@ const StickyAlertWrapper = styled.div`
 	margin: 10px auto 10px;
 `
 
+const StyledGlobalAlert = styled(GlobalAlert)`
+	.navds-global-alert__header {
+		justify-content: center;
+		position: relative;
+
+		.navds-global-alert__close-button {
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+	}
+`
+
 const StyledContent = styled.div`
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 0.5rem;
 `
