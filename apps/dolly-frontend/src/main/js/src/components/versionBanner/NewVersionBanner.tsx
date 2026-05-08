@@ -74,15 +74,19 @@ const StickyAlertWrapper = styled.div`
 `
 
 const StyledGlobalAlert = styled(GlobalAlert)`
-	.navds-global-alert__header {
+	.aksel-base-alert__header {
 		justify-content: center;
 		position: relative;
+	}
 
-		.navds-global-alert__close-button {
-			position: absolute;
-			right: 0;
-			top: 0;
-		}
+	.aksel-base-alert__title {
+		text-align: center;
+	}
+
+	.aksel-base-alert__close-button {
+		position: absolute;
+		right: 0;
+		top: 0;
 	}
 `
 
