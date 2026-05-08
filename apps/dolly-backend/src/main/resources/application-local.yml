@@ -46,9 +46,6 @@ consumers:
     url: https://testnav-person-service.intern.dev.nav.no
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
-  testnav-sykemelding-api:
-    name: testnav-sykemelding-api-dev
-    url: https://testnav-sykemelding-api-dev.intern.dev.nav.no
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.intern.dev.nav.no
   testnav-arbeidsplassencv-proxy:
@@ -66,5 +63,3 @@ consumers:
     url: https://etterlatte-testdata.intern.dev.nav.no
   nom-proxy:
     url: https://testnav-nom-proxy.intern.dev.nav.no
-  testnav-sykemelding-proxy:
-    url: https://testnav-sykemelding-proxy.intern.dev.nav.no

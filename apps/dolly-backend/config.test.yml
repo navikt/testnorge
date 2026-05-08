@@ -35,10 +35,6 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
-        - application: testnav-sykemelding-api-dev
-        - application: testnav-synt-sykemelding-api
-        - application: testnav-synt-sykemelding-api-dev
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api-dev
         - application: etterlatte-testdata
@@ -47,7 +43,6 @@ spec:
           namespace: nais-system
         - application: testnav-yrkesskade-proxy
         - application: testnav-nom-proxy
-        - application: testnav-sykemelding-proxy
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
       external:

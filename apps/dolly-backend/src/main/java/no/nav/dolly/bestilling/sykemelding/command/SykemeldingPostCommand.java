@@ -18,7 +18,7 @@ import static java.util.Objects.nonNull;
 @Slf4j
 public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponseDTO>> {
 
-    private static final String TSM_SYKEMELDING_URL = "/tsm/api/sykmelding";
+    private static final String TSM_SYKEMELDING_URL = "/sykemelding/api/sykmelding";
 
     private final WebClient webClient;
     private final SykemeldingRequestDTO request;
