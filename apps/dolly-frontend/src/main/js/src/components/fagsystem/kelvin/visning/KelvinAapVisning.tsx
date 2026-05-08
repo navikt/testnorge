@@ -5,8 +5,13 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { arrayToString, codeToNorskLabel, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import React from 'react'
+import { KelvinAapVisningTypes } from '@/components/fagsystem/kelvin/initialValues'
 
-export const KelvinAapVisning = ({ data, loading, harKelvinAapBestilling }) => {
+export const KelvinAapVisning = ({
+	data,
+	loading,
+	harKelvinAapBestilling,
+}: KelvinAapVisningTypes) => {
 	if (loading) {
 		return <Loading label="Laster Nav AAP ytelse ..." />
 	}

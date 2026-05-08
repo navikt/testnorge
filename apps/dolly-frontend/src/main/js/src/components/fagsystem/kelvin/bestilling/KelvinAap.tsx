@@ -6,8 +6,9 @@ import {
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { KelvinAapTypes } from '@/components/fagsystem/kelvin/initialValues'
 
-export const KelvinAap = ({ kelvinAap }) => {
+export const KelvinAap = ({ kelvinAap }: { kelvinAap: KelvinAapTypes }) => {
 	if (!kelvinAap || isEmpty(kelvinAap)) {
 		return null
 	}
