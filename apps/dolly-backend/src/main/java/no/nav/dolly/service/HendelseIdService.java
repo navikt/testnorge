@@ -2,7 +2,7 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.projection.HendelseIdFragment;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.util.Comparator;
 
 @Slf4j
 @Service
@@ -23,11 +21,10 @@ public class HendelseIdService {
 
     public Mono<JsonNode> getHendelserForIdent(String ident) {
 
-        return bestillingProgressRepository.findByIdent(ident)
+        return bestillingProgressRepository.findHendelseIdFragmentByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException("Ident %s ikke funnet".formatted(ident))))
-                .sort(Comparator.comparing(BestillingProgress::getId).reversed())
                 .next()
-                .map(BestillingProgress::getPdlOrdreStatus)
+                .map(HendelseIdFragment::getPdlOrdreStatus)
                 .map(jsonMapper::readTree);
     }
 
