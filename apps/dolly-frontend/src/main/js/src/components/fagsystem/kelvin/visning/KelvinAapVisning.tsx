@@ -15,6 +15,7 @@ export const KelvinAapVisning = ({
 	if (loading) {
 		return <Loading label="Laster Nav AAP ytelse ..." />
 	}
+
 	if (!data && !harKelvinAapBestilling) {
 		return null
 	}
