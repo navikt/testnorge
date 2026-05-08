@@ -10,59 +10,82 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import * as React from 'react'
 import * as Yup from 'yup'
 import { ifPresent, requiredBoolean } from '@/utils/YupValidations'
+import styled from 'styled-components'
+import { useEffect } from 'react'
+
+const CheckboxWrapper = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+
+	&& {
+		.dolly-form-input {
+			min-width: 0;
+			flex-grow: 0;
+		}
+	}
+`
 
 export const KelvinAapForm = () => {
 	const formMethods = useFormContext()
 
 	const andreUtbetalingerPath = `${kelvinAapPath}.andreUtbetalinger`
 
+	const harAfp = formMethods
+		.getValues(`${kelvinAapPath}.andreUtbetalinger.stoenad`)
+		?.includes('AFP')
+
+	useEffect(() => {
+		if (!harAfp) {
+			formMethods.setValue(`${kelvinAapPath}.andreUtbetalinger.afp.hvemBetaler`, '')
+		}
+	}, [harAfp])
+
 	return (
 		<Vis attributt={kelvinAapPath}>
 			<Panel
-				heading="Kelvin AAP"
+				heading="Nav AAP ytelse"
 				hasErrors={usePanelError(kelvinAapPath)}
 				iconType="arena"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [kelvinAapPath])}
 			>
+				<h3 style={{ marginTop: 0 }}>Generelt</h3>
+				<CheckboxWrapper>
+					<FormCheckbox name={`${kelvinAapPath}.erStudent`} label="Er student" size="small" />
+					<FormCheckbox
+						name={`${kelvinAapPath}.harMedlemskap`}
+						label="Har medlemskap i folketrygden"
+						size="small"
+					/>
+					<FormCheckbox
+						name={`${kelvinAapPath}.harYrkesskade`}
+						label="Har yrkesskade"
+						size="small"
+					/>
+				</CheckboxWrapper>
+				<h3>Andre ytelser/utbetalinger (samordning)</h3>
+				<div className={'flexbox--full-width'}>
+					<FormSelect
+						name={`${andreUtbetalingerPath}.stoenad`}
+						label="Stønad"
+						options={Options('kelvinAapStoenad')}
+						size="grow"
+						isMulti
+					/>
+				</div>
 				<div className={'flexbox--flex-wrap'}>
-					{/*TODO: Stoenad er paakrevd*/}
-					<h3 style={{ marginTop: 0 }}>Opprett og fullfør behandling</h3>
-					<div className={'flexbox--full-width'}>
-						<FormSelect
-							name={`${andreUtbetalingerPath}.stoenad`}
-							label="Stønad"
-							options={Options('kelvinAapStoenad')}
-							size="grow"
-							isMulti
+					{harAfp && (
+						<FormTextInput
+							name={`${andreUtbetalingerPath}.afp.hvemBetaler`}
+							label="Hvem betaler (AFP)"
 						/>
-					</div>
-					<FormTextInput name={`${andreUtbetalingerPath}.afp.hvemBetaler`} label="Hvem betaler" />
+					)}
 					<FormSelect
 						name={`${andreUtbetalingerPath}.loenn`}
 						label="Lønn"
 						options={Options('jaNei')}
 						size="xsmall"
 					/>
-					<div className={'flexbox--flex-wrap'}>
-						<FormCheckbox
-							name={`${kelvinAapPath}.erStudent`}
-							label="Er student"
-							size="small"
-							checkboxMargin
-						/>
-						<FormCheckbox
-							name={`${kelvinAapPath}.harMedlemskap`}
-							label="Har medlemskap"
-							size="small"
-							checkboxMargin
-						/>
-						<FormCheckbox
-							name={`${kelvinAapPath}.harYrkesskade`}
-							label="Har yrkesskade"
-							size="small"
-							checkboxMargin
-						/>
-					</div>
 				</div>
 			</Panel>
 		</Vis>

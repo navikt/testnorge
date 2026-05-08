@@ -15,25 +15,35 @@ export const KelvinAap = ({ kelvinAap }) => {
 	return (
 		<div className="bestilling-visning">
 			<ErrorBoundary>
-				<BestillingTitle>Kelvin AAP</BestillingTitle>
+				<BestillingTitle>Nav AAP ytelse</BestillingTitle>
 				<div className="bestilling-blokk">
-					<TitleValue
-						title="Stønad"
-						value={arrayToString(
-							kelvinAap.andreUtbetalinger.stoenad?.map((stoenad) =>
-								showLabel('kelvinAapStoenad', stoenad),
-							),
-						)}
-					/>
+					<h3>Generelt</h3>
 					<BestillingData>
-						<TitleValue title="Hvem betaler" value={kelvinAap.andreUtbetalinger.afp?.hvemBetaler} />
+						<TitleValue title="Er student" value={oversettBoolean(kelvinAap.erStudent)} />
+						<TitleValue
+							title="Har medlemskap i folketrygden"
+							value={oversettBoolean(kelvinAap.harMedlemskap)}
+						/>
+						<TitleValue title="Har yrkesskade" value={oversettBoolean(kelvinAap.harYrkesskade)} />
+					</BestillingData>
+					<h3>Andre ytelser/utbetalinger (samordning)</h3>
+					<BestillingData>
+						<TitleValue
+							title="Stønad"
+							value={arrayToString(
+								kelvinAap.andreUtbetalinger.stoenad?.map((stoenad) =>
+									showLabel('kelvinAapStoenad', stoenad),
+								),
+							)}
+						/>
+						<TitleValue
+							title="Hvem betaler (AFP)"
+							value={kelvinAap.andreUtbetalinger.afp?.hvemBetaler}
+						/>
 						<TitleValue
 							title="Lønn"
 							value={showLabel('jaNei', kelvinAap.andreUtbetalinger.loenn)}
 						/>
-						<TitleValue title="Er student" value={oversettBoolean(kelvinAap.erStudent)} />
-						<TitleValue title="Har medlemskap" value={oversettBoolean(kelvinAap.harMedlemskap)} />
-						<TitleValue title="Har yrkesskade" value={oversettBoolean(kelvinAap.harYrkesskade)} />
 					</BestillingData>
 				</div>
 			</ErrorBoundary>

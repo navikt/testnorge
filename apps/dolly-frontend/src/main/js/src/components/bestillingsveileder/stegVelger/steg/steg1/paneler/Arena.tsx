@@ -10,7 +10,6 @@ import {
 import { useContext } from 'react'
 import { initialKelvinAap, kelvinAapPath } from '@/components/fagsystem/kelvin/initialValues'
 
-//TODO: Bytte navn til ArbeidsytelserPanel?
 export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 
@@ -42,11 +41,21 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, [arenaPath, kelvinAapPath])}
 		>
 			<AttributtKategori title="Kelvin" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.kelvinAap} disabled={sm.attrs.aap.checked} />
+				<Attributt
+					attr={sm.attrs.kelvinAap}
+					disabled={
+						sm.attrs.ingenYtelser.checked ||
+						sm.attrs.aap115.checked ||
+						sm.attrs.aap.checked ||
+						sm.attrs.dagpenger.checked ||
+						sm.attrs.ikkeServicebehov.checked
+					}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title={'Aktiv bruker (Arena)'} attr={sm.attrs}>
 				<Attributt
 					disabled={
+						sm.attrs.kelvinAap.checked ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
@@ -57,22 +66,28 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+						sm.attrs.kelvinAap.checked ||
+						sm.attrs.ikkeServicebehov.checked ||
+						sm.attrs.ingenYtelser.checked ||
+						!syntetisk
 					}
 					attr={sm.attrs.aap115}
 				/>
 				<Attributt
 					disabled={
+						sm.attrs.kelvinAap.checked ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
-						sm.attrs.kelvinAap.checked ||
 						!syntetisk
 					}
 					attr={sm.attrs.aap}
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+						sm.attrs.kelvinAap.checked ||
+						sm.attrs.ikkeServicebehov.checked ||
+						sm.attrs.ingenYtelser.checked ||
+						!syntetisk
 					}
 					attr={sm.attrs.dagpenger}
 				/>
@@ -81,6 +96,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title={'Inaktiv bruker (Arena)'} attr={sm.attrs}>
 				<Attributt
 					disabled={
+						sm.attrs.kelvinAap.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap.checked ||
 						sm.attrs.aap115.checked ||
@@ -129,7 +145,7 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 
 	return {
 		kelvinAap: {
-			label: 'AAP',
+			label: 'Nav AAP ytelse',
 			checked: has('kelvinAap'),
 			add() {
 				set('kelvinAap', { ...initialKelvinAap, harMedlemskap: harMedlemskap })
