@@ -47,7 +47,7 @@ BrregstubForm.validation = {
 	brregstub: ifPresent(
 		'$brregstub',
 		Yup.object({
-			understatuser: Yup.array().of(Yup.number()).required('Velg minst én understatus'),
+			understatuser: Yup.array().of(Yup.number()).min(1, 'Velg minst én understatus'),
 			enheter: Yup.array().of(
 				Yup.object({
 					rolle: requiredString,
