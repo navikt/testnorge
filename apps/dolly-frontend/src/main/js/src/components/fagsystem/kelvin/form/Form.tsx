@@ -98,9 +98,9 @@ KelvinAapForm.validation = {
 		Yup.object({
 			andreUtbetalinger: Yup.object({
 				afp: Yup.object({
-					hvemBetaler: Yup.string(),
+					hvemBetaler: Yup.string().nullable(),
 				}),
-				loenn: Yup.string(),
+				loenn: Yup.string().nullable(),
 				stoenad: Yup.array().of(Yup.string()).min(1, 'Velg minst én stønad'),
 			}),
 			erStudent: requiredBoolean,
