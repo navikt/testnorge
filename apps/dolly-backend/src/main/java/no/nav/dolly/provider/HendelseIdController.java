@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 
+import java.util.List;
+
 @RequestMapping("/api/v1/hendelseid")
 @RestController
 @RequiredArgsConstructor
@@ -20,13 +22,13 @@ public class HendelseIdController {
     @GetMapping("/ident/{ident}")
     public Mono<JsonNode> getHendelserForIdent(@PathVariable String ident) {
 
-        return hendelseIdService.getHendelserForIdent(ident);
+        return hendelseIdService.getOrdreStatus(ident);
     }
 
     @GetMapping("/ident/{ident}/opplysningstype/{opplysningstype}")
-    public Mono<JsonNode> getHendelserForOpplysningstype(@PathVariable String ident, @PathVariable PdlArtifact opplysningstype) {
+    public Mono<List<JsonNode>> getHendelserForOpplysningstype(@PathVariable String ident, @PathVariable PdlArtifact opplysningstype) {
 
-        return hendelseIdService.getHendelserForIdent(ident, opplysningstype);
+        return hendelseIdService.getOrdrerByArtifact(ident, opplysningstype);
     }
 
     @GetMapping("/ident/{ident}/opplysningstype/{opplysningstype}/id/{id}")
@@ -34,6 +36,6 @@ public class HendelseIdController {
                                                              @PathVariable PdlArtifact opplysningstype,
                                                              @PathVariable Integer id) {
 
-        return hendelseIdService.getHendelserForIdent(ident, opplysningstype, id);
+        return hendelseIdService.getHendelseById(ident, opplysningstype, id);
     }
 }

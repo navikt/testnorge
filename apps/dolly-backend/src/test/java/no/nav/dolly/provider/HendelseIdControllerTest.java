@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,13 +35,13 @@ class HendelseIdControllerTest {
 
         var jsonNode = JSON_MAPPER.readTree("""
                 {"hovedperson":{"ordrer":[]}}""");
-        when(hendelseIdService.getHendelserForIdent(IDENT))
+        when(hendelseIdService.getOrdreStatus(IDENT))
                 .thenReturn(Mono.just(jsonNode));
 
         StepVerifier.create(hendelseIdController.getHendelserForIdent(IDENT))
                 .assertNext(node -> {
                     assertThat(node.path("hovedperson").path("ordrer").isArray()).isTrue();
-                    verify(hendelseIdService).getHendelserForIdent(IDENT);
+                    verify(hendelseIdService).getOrdreStatus(IDENT);
                 })
                 .verifyComplete();
     }
@@ -47,7 +49,7 @@ class HendelseIdControllerTest {
     @Test
     void shouldPropagateNotFoundForIdent() {
 
-        when(hendelseIdService.getHendelserForIdent(IDENT))
+        when(hendelseIdService.getOrdreStatus(IDENT))
                 .thenReturn(Mono.error(new NotFoundException("Ident %s ikke funnet".formatted(IDENT))));
 
         StepVerifier.create(hendelseIdController.getHendelserForIdent(IDENT))
@@ -60,13 +62,13 @@ class HendelseIdControllerTest {
 
         var jsonNode = JSON_MAPPER.readTree("""
                 {"infoElement":"PDL_NAVN","hendelser":[]}""");
-        when(hendelseIdService.getHendelserForIdent(IDENT, PdlArtifact.PDL_NAVN))
-                .thenReturn(Mono.just(jsonNode));
+        when(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN))
+                .thenReturn(Mono.just(List.of(jsonNode)));
 
         StepVerifier.create(hendelseIdController.getHendelserForOpplysningstype(IDENT, PdlArtifact.PDL_NAVN))
-                .assertNext(node -> {
-                    assertThat(node.path("infoElement").asString()).isEqualTo("PDL_NAVN");
-                    verify(hendelseIdService).getHendelserForIdent(IDENT, PdlArtifact.PDL_NAVN);
+                .assertNext(noder -> {
+                    assertThat(noder.getFirst().path("infoElement").asString()).isEqualTo("PDL_NAVN");
+                    verify(hendelseIdService).getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN);
                 })
                 .verifyComplete();
     }
@@ -74,7 +76,7 @@ class HendelseIdControllerTest {
     @Test
     void shouldReturnEmptyForUnknownOpplysningstype() {
 
-        when(hendelseIdService.getHendelserForIdent(IDENT, PdlArtifact.PDL_KJOENN))
+        when(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_KJOENN))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(hendelseIdController.getHendelserForOpplysningstype(IDENT, PdlArtifact.PDL_KJOENN))
@@ -86,13 +88,13 @@ class HendelseIdControllerTest {
 
         var jsonNode = JSON_MAPPER.readTree("""
                 {"id":42,"data":"test"}""");
-        when(hendelseIdService.getHendelserForIdent(IDENT, PdlArtifact.PDL_NAVN, 42))
+        when(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 42))
                 .thenReturn(Mono.just(jsonNode));
 
         StepVerifier.create(hendelseIdController.getHendelserForOpplysningstypeOgId(IDENT, PdlArtifact.PDL_NAVN, 42))
                 .assertNext(node -> {
                     assertThat(node.path("id").asInt()).isEqualTo(42);
-                    verify(hendelseIdService).getHendelserForIdent(IDENT, PdlArtifact.PDL_NAVN, 42);
+                    verify(hendelseIdService).getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 42);
                 })
                 .verifyComplete();
     }
@@ -100,7 +102,7 @@ class HendelseIdControllerTest {
     @Test
     void shouldReturnEmptyForUnknownId() {
 
-        when(hendelseIdService.getHendelserForIdent(IDENT, PdlArtifact.PDL_NAVN, 99))
+        when(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 99))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(hendelseIdController.getHendelserForOpplysningstypeOgId(IDENT, PdlArtifact.PDL_NAVN, 99))
