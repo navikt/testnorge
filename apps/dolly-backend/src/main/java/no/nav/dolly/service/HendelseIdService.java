@@ -11,6 +11,8 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,9 @@ public class HendelseIdService {
         return bestillingProgressRepository.findHendelseIdFragmentByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException("Ident %s ikke funnet".formatted(ident))))
                 .next()
+                .flatMap(fragment -> isNotBlank(fragment.getPdlOrdreStatus()) ?
+                        Mono.just(fragment) :
+                        Mono.error(new NotFoundException("HendelseId for ident %s ikke funnet".formatted(ident))))
                 .map(HendelseIdFragment::getPdlOrdreStatus)
                 .map(jsonMapper::readTree);
     }
@@ -31,11 +36,13 @@ public class HendelseIdService {
     public Mono<JsonNode> getHendelserForIdent(String ident, PdlArtifact pdlArtifact) {
 
         return getHendelserForIdent(ident)
-                .map(jsonNode -> jsonNode.get("hovedperson").get("ordrer"))
+                .map(jsonNode -> jsonNode.path("hovedperson").path("ordrer"))
                 .flatMap(ordrer -> {
-                    for (JsonNode node : ordrer) {
-                        if (pdlArtifact.name().equals(node.get("infoElement").asString())){
-                            return Mono.just(node);
+                    if (ordrer.isArray()) {
+                        for (JsonNode node : ordrer) {
+                            if (pdlArtifact.name().equals(node.path("infoElement").asString())) {
+                                return Mono.just(node);
+                            }
                         }
                     }
                     return Mono.empty();
@@ -45,11 +52,13 @@ public class HendelseIdService {
     public Mono<JsonNode> getHendelserForIdent(String ident, PdlArtifact pdlArtifact, Integer id) {
 
         return getHendelserForIdent(ident, pdlArtifact)
-                .map(jsonNode -> jsonNode.get("hendelser"))
+                .map(jsonNode -> jsonNode.path("hendelser"))
                 .flatMap(hendelser -> {
-                    for (JsonNode node : hendelser) {
-                        if (id.equals(node.get("id").asInt())){
-                            return Mono.just(node);
+                    if (hendelser.isArray()) {
+                        for (JsonNode node : hendelser) {
+                            if (id.equals(node.path("id").asInt())) {
+                                return Mono.just(node);
+                            }
                         }
                     }
                     return Mono.empty();
