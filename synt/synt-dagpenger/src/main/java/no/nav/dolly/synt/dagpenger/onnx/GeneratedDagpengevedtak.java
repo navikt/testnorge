@@ -2,7 +2,7 @@ package no.nav.dolly.synt.dagpenger.onnx;
 
 import java.util.Map;
 
-public record MinimalDagpengevedtak(
+public record GeneratedDagpengevedtak(
         String rettighetKode,
         String vedtaktypeKode,
         String datoMottatt,

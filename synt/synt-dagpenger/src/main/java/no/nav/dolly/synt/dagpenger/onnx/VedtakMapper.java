@@ -19,7 +19,7 @@ import java.util.Map;
 @UtilityClass
 class VedtakMapper {
 
-    static DagpengevedtakDto fromPrediction(MinimalDagpengevedtak prediction) {
+    static DagpengevedtakDto fromPrediction(GeneratedDagpengevedtak prediction) {
 
         var fomDate = LocalDate.parse(prediction.datoMottatt());
         var tomDate = fomDate.plusWeeks(26);

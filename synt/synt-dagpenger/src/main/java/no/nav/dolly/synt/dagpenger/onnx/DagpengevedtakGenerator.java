@@ -1,8 +1,6 @@
 package no.nav.dolly.synt.dagpenger.onnx;
 
-import ai.onnxruntime.NodeInfo;
 import ai.onnxruntime.OnnxTensor;
-import ai.onnxruntime.OnnxValue;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
@@ -36,7 +34,7 @@ class DagpengevedtakGenerator {
         this.environment = OrtEnvironment.getEnvironment();
     }
 
-    List<MinimalDagpengevedtak> generateVedtak(RettighetType rettighet, List<String> vedtakStartDatoer) {
+    List<GeneratedDagpengevedtak> generateVedtak(RettighetType rettighet, List<String> vedtakStartDatoer) {
 
         return vedtakStartDatoer
                 .stream()
@@ -46,10 +44,10 @@ class DagpengevedtakGenerator {
 
     }
 
-    private MinimalDagpengevedtak toVedtak(RettighetType rettighet, LocalDate date) {
+    private GeneratedDagpengevedtak toVedtak(RettighetType rettighet, LocalDate date) {
 
         var prediction = infer(rettighet, date);
-        return new MinimalDagpengevedtak(
+        return new GeneratedDagpengevedtak(
                 rettighet.name(),
                 "GENERERT_ONNX",
                 date.toString(),
