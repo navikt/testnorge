@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -47,7 +48,7 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.just(fragment));
 
-        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT))
+        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT, null))
                 .assertNext(node -> assertThat(node.path("hovedperson").path("ordrer").isArray()).isTrue())
                 .verifyComplete();
     }
@@ -58,7 +59,7 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.empty());
 
-        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT))
+        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT, null))
                 .expectErrorSatisfies(error -> {
                     assertThat(error).isInstanceOf(NotFoundException.class);
                     assertThat(error.getMessage()).contains(IDENT);
@@ -76,7 +77,7 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.just(fragment));
 
-        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT))
+        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT, null))
                 .expectErrorSatisfies(error -> {
                     assertThat(error).isInstanceOf(NotFoundException.class);
                     assertThat(error.getMessage()).contains("HendelseId");
@@ -100,7 +101,7 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.just(first, second));
 
-        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT))
+        StepVerifier.create(hendelseIdService.getOrdreStatus(IDENT, null))
                 .assertNext(node -> assertThat(node.path("source").asString()).isEqualTo("first"))
                 .verifyComplete();
     }
@@ -120,7 +121,7 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.just(fragment));
 
-        StepVerifier.create(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN))
+        StepVerifier.create(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN, null))
                 .assertNext(noder -> assertThat(noder.getFirst().path("infoElement").asString()).isEqualTo("PDL_NAVN"))
                 .verifyComplete();
     }
@@ -145,7 +146,7 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.just(fragment));
 
-        StepVerifier.create(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN))
+        StepVerifier.create(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN, null))
                 .assertNext(noder -> assertThat(noder).isEmpty())
                 .verifyComplete();
     }
@@ -156,7 +157,7 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.empty());
 
-        StepVerifier.create(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN))
+        StepVerifier.create(hendelseIdService.getOrdrerByArtifact(IDENT, PdlArtifact.PDL_NAVN, null))
                 .expectError(NotFoundException.class)
                 .verify();
     }
@@ -175,36 +176,26 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.just(fragment));
 
-        StepVerifier.create(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 2))
+        StepVerifier.create(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 2, null))
                 .assertNext(node -> assertThat(node.path("data").asString()).isEqualTo("b"))
                 .verifyComplete();
     }
 
-    @Test
-    void shouldReturnEmptyWhenNoMatchingHendelseId() {
-
-        var json = """
-                {"hovedperson":{"ordrer":[
-                    {"infoElement":"PDL_NAVN","hendelser":[{"id":1},{"id":2}]}
-                ]}}""";
-        var fragment = HendelseIdFragment.builder()
-                .ident(IDENT)
-                .pdlOrdreStatus(json)
-                .build();
-        when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
-                .thenReturn(Flux.just(fragment));
-
-        StepVerifier.create(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 99))
-                .verifyComplete();
+    static Stream<Arguments> shouldThrowNotFoundWhenHendelseIdNotResolved() {
+        return Stream.of(
+                Arguments.of("""
+                        {"hovedperson":{"ordrer":[{"infoElement":"PDL_NAVN","hendelser":[{"id":1},{"id":2}]}]}}""", 99),
+                Arguments.of("""
+                        {"hovedperson":{"ordrer":[{"infoElement":"PDL_NAVN"}]}}""", 1),
+                Arguments.of("""
+                        {"hovedperson":{"ordrer":[{"infoElement":"PDL_KJOENN","hendelser":[{"id":1}]}]}}""", 1)
+        );
     }
 
-    @Test
-    void shouldReturnEmptyWhenHendelserIsMissing() {
+    @ParameterizedTest
+    @MethodSource
+    void shouldThrowNotFoundWhenHendelseIdNotResolved(String json, int id) {
 
-        var json = """
-                {"hovedperson":{"ordrer":[
-                    {"infoElement":"PDL_NAVN"}
-                ]}}""";
         var fragment = HendelseIdFragment.builder()
                 .ident(IDENT)
                 .pdlOrdreStatus(json)
@@ -212,25 +203,8 @@ class HendelseIdServiceTest {
         when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
                 .thenReturn(Flux.just(fragment));
 
-        StepVerifier.create(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 1))
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldReturnEmptyWhenPdlArtifactNotFound() {
-
-        var json = """
-                {"hovedperson":{"ordrer":[
-                    {"infoElement":"PDL_KJOENN","hendelser":[{"id":1}]}
-                ]}}""";
-        var fragment = HendelseIdFragment.builder()
-                .ident(IDENT)
-                .pdlOrdreStatus(json)
-                .build();
-        when(bestillingProgressRepository.findHendelseIdFragmentByIdent(IDENT))
-                .thenReturn(Flux.just(fragment));
-
-        StepVerifier.create(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, 1))
-                .verifyComplete();
+        StepVerifier.create(hendelseIdService.getHendelseById(IDENT, PdlArtifact.PDL_NAVN, id, null))
+                .expectError(NotFoundException.class)
+                .verify();
     }
 }
