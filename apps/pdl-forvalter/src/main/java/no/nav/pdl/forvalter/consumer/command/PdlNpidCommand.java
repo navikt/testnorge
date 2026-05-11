@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlMergeNpidCommand extends PdlTestdataCommand {
+public class PdlNpidCommand extends PdlTestdataCommand {
 
     private final WebClient webClient;
     private final String url;

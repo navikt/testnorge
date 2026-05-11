@@ -12,7 +12,7 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
-import no.nav.pdl.forvalter.dto.MergeIdent;
+import no.nav.pdl.forvalter.dto.NpidIdentDTO;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OpprettRequest;
 import no.nav.pdl.forvalter.dto.Ordre;
@@ -76,6 +76,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADR
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_NAVPERSONIDENTIFIKATOR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_NPID_SPLIT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
@@ -90,8 +91,8 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_TILRETTELA
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -240,24 +241,31 @@ public class PdlOrdreService {
                                 .collectList(),
                         Flux.fromIterable(sorterteOpprettinger)
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
+                                .filter(OpprettRequest::isNpidIdent)
+                                .flatMap(this::npidSplit)
+                                .collectList(),
+                        Flux.fromIterable(sorterteOpprettinger)
+                                .filter(OpprettRequest::isNotTestnorgeIdent)
                                 .flatMap(this::personOpprett)
                                 .collectList(),
                         Flux.fromIterable(sorterteOpprettinger)
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
+                                .filter(OpprettRequest::isNpidIdent)
                                 .flatMap(this::npidMerge)
                                 .collectList(),
                         Flux.fromIterable(sorterteOpprettinger)
                                 .flatMap(oppretting -> aliasRepository.existsByPersonId(oppretting.getPerson().getId())
                                         .zipWith(Mono.just(oppretting)))
-                                .filter(exist -> isFalse(exist.getT1()))
+                                .filter(exist -> isTrue(exist.getT1()))
                                 .flatMap(oppretting -> getOrdrer(oppretting.getT2()))
                                 .collectList()))
                 .flatMapMany(tuple -> deployService.sendOrders(
                         OrdreRequest.builder()
                                 .sletting(tuple.getT1())
-                                .oppretting(tuple.getT2())
-                                .merge(tuple.getT3())
-                                .opplysninger(tuple.getT4())
+                                .split(tuple.getT2())
+                                .oppretting(tuple.getT3())
+                                .merge(tuple.getT4())
+                                .opplysninger(tuple.getT5())
                                 .build()));
     }
 
@@ -281,7 +289,6 @@ public class PdlOrdreService {
                 .doOnNext(ordre -> log.info("Ordre for oppretting: {}", ordre));
     }
 
-
     private Mono<List<DbPerson>> getHistoriskePersoner(DbPerson hovedperson) {
 
         return aliasRepository.findByPersonId(hovedperson.getId())
@@ -291,17 +298,30 @@ public class PdlOrdreService {
                 .collectList();
     }
 
+    private Mono<DbPerson> getAktivPerson(DbPerson historiskPerson) {
+
+        return aliasRepository.findByTidligereIdent(historiskPerson.getIdent())
+                .map(DbAlias::getPersonId)
+                .flatMap(personRepository::findById);
+    }
+
+    private Flux<Ordre> npidSplit(OpprettRequest oppretting) {
+
+        return getAktivPerson(oppretting.getPerson())
+                .flatMapMany(aktiv -> deployService.createOrdre(PDL_NPID_SPLIT, oppretting.getPerson().getIdent(),
+                        List.of(NpidIdentDTO.builder()
+                                        .otherIdent(aktiv.getIdent())
+                                        .build())))
+                .doOnNext(ordre -> log.info("Ordre for npid-split: {}", ordre));
+    }
+
     private Flux<Ordre> npidMerge(OpprettRequest oppretting) {
 
-        return getHistoriskePersoner(oppretting.getPerson())
-                .flatMapMany(historiske -> deployService.createOrdre(PDL_PERSON_MERGE, oppretting.getPerson().getIdent(),
-                        historiske.stream()
-                                .map(DbPerson::getIdent)
-                                .filter(IdenttypeUtility::isNpidIdent)
-                                .map(ident -> MergeIdent.builder()
-                                        .npid(ident)
-                                        .build())
-                                .toList()))
+        return getAktivPerson(oppretting.getPerson())
+                .flatMapMany(aktiv -> deployService.createOrdre(PDL_PERSON_MERGE, oppretting.getPerson().getIdent(),
+                        List.of(NpidIdentDTO.builder()
+                                        .otherIdent(aktiv.getIdent())
+                                        .build())))
                 .doOnNext(ordre -> log.info("Ordre for npid-merge: {}", ordre));
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
 public class OrdreRequest {
 
     private List<Ordre> sletting;
+    private List<Ordre> split;
     private List<Ordre> oppretting;
     private List<Ordre> merge;
     private List<Ordre> opplysninger;
