@@ -1,4 +1,4 @@
-package no.nav.dolly.synt.dagpenger.controller;
+package no.nav.dolly.synt.dagpenger.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
