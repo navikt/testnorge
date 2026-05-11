@@ -90,7 +90,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return Flux.fromIterable(alleForeldreansvar)
                 .flatMap(type -> Flux.fromIterable(person.getPerson().getForeldreansvar())
                         .filter(ansvar -> Objects.equals(type.getId(), ansvar.getId()))
-                        .flatMap(foreldreansvar -> {
+                        .concatMap(foreldreansvar -> {
                             if (isTrue(foreldreansvar.getIsNew())) {
 
                                 foreldreansvar.setKilde(getKilde(foreldreansvar));
