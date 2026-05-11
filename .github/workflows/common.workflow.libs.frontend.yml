@@ -77,8 +77,8 @@ jobs:
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           echo "Current branch: $BRANCH_NAME"
 
-          PACKAGE_NAME=$(pnpm pkg get name | sed "s/[\"']//g")
-          CURRENT_VERSION=$(pnpm pkg get version | sed "s/[\"']//g")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
           
           echo "Package: $PACKAGE_NAME"
           echo "Current version in package.json: $CURRENT_VERSION"
@@ -96,7 +96,7 @@ jobs:
           
             echo "Bumping patch version..."
             pnpm version patch --no-git-tag-version
-            CURRENT_VERSION=$(pnpm pkg get version | sed "s/[\"']//g")
+            CURRENT_VERSION=$(node -p "require('./package.json').version")
             echo "New version after bump: $CURRENT_VERSION"
             git add package.json pnpm-lock.yaml
             git commit -m "chore: bump to $CURRENT_VERSION [skip ci]"

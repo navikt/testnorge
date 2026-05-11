@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-assets",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "description": "Dolly assets for our frontend applications",
   "type": "module",
   "main": "lib/index.js",
