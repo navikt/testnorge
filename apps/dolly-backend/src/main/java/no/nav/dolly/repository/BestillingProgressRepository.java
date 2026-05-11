@@ -1,6 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.projection.HendelseIdFragment;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,6 +30,14 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
 
     @Modifying
     Mono<Void> deleteByBestillingId(Long bestillingId);
+
+    @Query("""
+            select bp.id, bp.bestilling_id, bp.ident, bp.pdl_ordre_status
+            from bestilling_progress bp
+            where bp.ident = :ident
+            order by bp.id desc
+            """)
+    Flux<HendelseIdFragment> findHendelseIdFragmentByIdent(String ident);
 
     Flux<BestillingProgress> findByIdent(String ident);
     Flux<BestillingProgress> findByIdentIn(List<String> identer);
