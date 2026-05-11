@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 
 @Service
 @Profile("prod")
-class GoogleOnnxService implements OnnxService {
+class OnnxBucketService implements OnnxService {
 
     @Value("${app.config.bucket:}")
     private final String bucket;
 
     private final DagpengevedtakGenerator dagpenger;
 
-    GoogleOnnxService(String bucket) {
+    OnnxBucketService(String bucket) {
         if (!StringUtils.hasLength(bucket)) {
             throw new IllegalStateException("app.config.bucket must be configured");
         }

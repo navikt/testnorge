@@ -15,12 +15,9 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
-@Profile({
-        "local",
-        "test"}
-)
+@Profile("local")
 @Slf4j
-class LocalOnnxService implements OnnxService {
+class OnnxLocalService implements OnnxService {
 
     private final DagpengevedtakGenerator dagpenger = new DagpengevedtakGenerator(modelDirectoryFromClasspath());
 
