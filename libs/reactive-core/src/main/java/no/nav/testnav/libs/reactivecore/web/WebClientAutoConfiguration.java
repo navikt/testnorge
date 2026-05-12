@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.reactivecore.web;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micrometer.observation.ObservationRegistry;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollChannelOption;
@@ -30,6 +31,7 @@ class WebClientAutoConfiguration {
 
     private static JsonMapper createDefaultJsonMapper() {
         return JsonMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
