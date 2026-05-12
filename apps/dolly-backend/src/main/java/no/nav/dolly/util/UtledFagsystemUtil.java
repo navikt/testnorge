@@ -52,7 +52,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
-public class UtledFagsystemResolver {
+public class UtledFagsystemUtil {
 
     public static List<SystemTyper> resolve(BestilteKriterier kriterier, Bestilling bestilling) {
 
@@ -116,15 +116,19 @@ public class UtledFagsystemResolver {
         if (nonNull(kriterier.getYrkesskader()) && !kriterier.getYrkesskader().isEmpty()) result.add(YRKESSKADE);
         if (nonNull(kriterier.getNomdata())) result.add(NOM);
         if (nonNull(kriterier.getArbeidssoekerregisteret())) result.add(ARBEIDSSOEKERREGISTERET);
-        if (nonNull(kriterier.getEtterlatteYtelser()) && !kriterier.getEtterlatteYtelser().isEmpty()) result.add(ETTERLATTE);
+        if (nonNull(kriterier.getEtterlatteYtelser()) && !kriterier.getEtterlatteYtelser().isEmpty())
+            result.add(ETTERLATTE);
         if (nonNull(kriterier.getKelvinAap())) result.add(KELVIN_AAP);
         if (nonNull(kriterier.getSigrunstub()) && !kriterier.getSigrunstub().isEmpty()) result.add(SIGRUN_LIGNET);
-        if (nonNull(kriterier.getSigrunstubPensjonsgivende()) && !kriterier.getSigrunstubPensjonsgivende().isEmpty()) result.add(SIGRUN_PENSJONSGIVENDE);
-        if (nonNull(kriterier.getSigrunstubSummertSkattegrunnlag()) && !kriterier.getSigrunstubSummertSkattegrunnlag().isEmpty()) result.add(SIGRUN_SUMMERT);
+        if (nonNull(kriterier.getSigrunstubPensjonsgivende()) && !kriterier.getSigrunstubPensjonsgivende().isEmpty())
+            result.add(SIGRUN_PENSJONSGIVENDE);
+        if (nonNull(kriterier.getSigrunstubSummertSkattegrunnlag()) && !kriterier.getSigrunstubSummertSkattegrunnlag().isEmpty())
+            result.add(SIGRUN_SUMMERT);
         if (harSkjerming(kriterier) || harTpsMessagingEgenansatt(kriterier)) result.add(SKJERMINGSREGISTER);
         if (nonNull(kriterier.getBankkonto()) ||
                 nonNull(kriterier.getSkjerming()) ||
-                (nonNull(kriterier.getPdldata()) && nonNull(kriterier.getPdldata().getPerson()))) result.add(TPS_MESSAGING);
+                (nonNull(kriterier.getPdldata()) && nonNull(kriterier.getPdldata().getPerson())))
+            result.add(TPS_MESSAGING);
     }
 
     private boolean harSkjerming(BestilteKriterier kriterier) {

@@ -13,7 +13,7 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.dolly.util.UtledFagsystemResolver;
+import no.nav.dolly.util.UtledFagsystemUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -157,7 +157,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
         try {
             var kriterier = objectMapper.readValue(bestKriterierJson, BestilteKriterier.class);
-            var utledteFagsystemer = UtledFagsystemResolver.resolve(kriterier, bestilling);
+            var utledteFagsystemer = UtledFagsystemUtil.resolve(kriterier, bestilling);
             var eksisterendeIds = bestillingStatus.getStatus().stream()
                     .map(RsStatusRapport::getId)
                     .collect(Collectors.toSet());
