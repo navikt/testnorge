@@ -8,14 +8,20 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
+import no.nav.dolly.domain.resultset.BestilteKriterier;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.dolly.util.UtledFagsystemResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
@@ -67,11 +73,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
                         var ident = (String) context.getProperty("ident");
+                        var bestKriterierJson = getBestKriterierJson(bestilling);
+
                         try {
-                            bestillingStatus.setBestilling(
-                                    objectMapper.readTree(isNull(bestilling.getBestKriterier()) ||
-                                            EMPTY_JSON.equals(bestilling.getBestKriterier()) ? EMPTY_JSON :
-                                            bestilling.getBestKriterier()));
+                            bestillingStatus.setBestilling(objectMapper.readTree(bestKriterierJson));
                         } catch (JacksonException e) {
                             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getOriginalMessage());
                         }
@@ -118,6 +123,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKelvinAapStatusMap(progresser));
+
+                        if (!bestilling.isFerdig()) {
+                            utledFagsystemer(bestillingStatus, bestKriterierJson, bestilling);
+                        }
                     }
                 })
                 .exclude("bruker")
@@ -135,5 +144,34 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
+    }
+
+    private String getBestKriterierJson(Bestilling bestilling) {
+
+        return isNull(bestilling.getBestKriterier()) || EMPTY_JSON.equals(bestilling.getBestKriterier())
+                ? EMPTY_JSON
+                : bestilling.getBestKriterier();
+    }
+
+    private void utledFagsystemer(RsBestillingStatus bestillingStatus, String bestKriterierJson, Bestilling bestilling) {
+
+        try {
+            var kriterier = objectMapper.readValue(bestKriterierJson, BestilteKriterier.class);
+            var utledteFagsystemer = UtledFagsystemResolver.resolve(kriterier, bestilling);
+            var eksisterendeIds = bestillingStatus.getStatus().stream()
+                    .map(RsStatusRapport::getId)
+                    .collect(Collectors.toSet());
+
+            utledteFagsystemer.stream()
+                    .filter(type -> !eksisterendeIds.contains(type))
+                    .map(type -> RsStatusRapport.builder()
+                            .id(type)
+                            .navn(type.getBeskrivelse())
+                            .statuser(List.of())
+                            .build())
+                    .forEach(bestillingStatus.getStatus()::add);
+        } catch (JacksonException e) {
+            log.warn("Kunne ikke utlede fagsystemer fra bestKriterier: {}", e.getOriginalMessage());
+        }
     }
 }
