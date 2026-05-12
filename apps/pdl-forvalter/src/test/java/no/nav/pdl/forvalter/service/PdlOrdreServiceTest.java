@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
+import no.nav.pdl.forvalter.dto.OpprettRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
@@ -28,10 +29,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import no.nav.pdl.forvalter.dto.OpprettRequest;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -155,6 +153,7 @@ class PdlOrdreServiceTest {
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
         when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
         when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -229,6 +228,7 @@ class PdlOrdreServiceTest {
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
         when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
         when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -268,9 +268,6 @@ class PdlOrdreServiceTest {
         when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
-        when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList()))
-                .thenReturn(Flux.just(dbRelatertPerson));
-        when(kodeverkConsumer.getFylkesmannsembeter()).thenReturn(Mono.just(new HashMap<>()));
 
         StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, true))
                 .assertNext(response -> {
@@ -371,6 +368,7 @@ class PdlOrdreServiceTest {
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
         when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
         when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
