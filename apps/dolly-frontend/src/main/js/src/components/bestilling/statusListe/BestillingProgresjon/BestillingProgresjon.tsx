@@ -12,8 +12,7 @@ import { BestillingStatus } from '@/components/bestilling/statusListe/Bestilling
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	calculateProgress,
-	getExpectedFagsystemer,
-	mergeStatusWithExpected,
+	sortFagsystemer,
 } from '@/components/bestilling/statusListe/BestillingProgresjon/fagsystemUtils'
 
 type ProgresjonProps = {
@@ -105,23 +104,17 @@ export const BestillingProgresjon = ({
 		}
 	}
 
-	const expectedFagsystemer = useMemo(
-		() => (!erOrganisasjon ? getExpectedFagsystemer(data?.bestilling) : []),
-		[data?.bestilling, erOrganisasjon],
-	)
+	const statusList = data?.status || []
 
-	const mergedStatus = useMemo(
-		() => mergeStatusWithExpected(data?.status || [], expectedFagsystemer),
-		[data?.status, expectedFagsystemer],
-	)
+	const displayStatus = useMemo(() => sortFagsystemer(statusList), [statusList])
 
 	const progress = useMemo(() => {
 		const { percent, text } = calculateProgress({
 			antallIdenter,
 			antallLevert,
 			erOrganisasjon,
-			statusList: mergedStatus,
-			expectedTotal: expectedFagsystemer.length,
+			statusList: displayStatus,
+			totalFagsystemer: statusList.length,
 		})
 
 		let title: string
@@ -144,8 +137,8 @@ export const BestillingProgresjon = ({
 		erSykemelding,
 		erOrganisasjon,
 		orgStatus,
-		mergedStatus,
-		expectedFagsystemer,
+		displayStatus,
+		statusList,
 	])
 
 	if (loading) {
@@ -167,7 +160,7 @@ export const BestillingProgresjon = ({
 			</div>
 			<div>
 				<BestillingStatus
-					bestilling={{ ...data, status: mergedStatus }}
+					bestilling={{ ...data, status: displayStatus }}
 					erOrganisasjon={erOrganisasjon}
 				/>
 			</div>

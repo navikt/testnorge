@@ -90,10 +90,12 @@ export const BestillingStatus = ({
 	return (
 		<div style={{ marginTop: '15px' }}>
 			{sortFagsystemer(bestilling?.status || []).map((fagsystem, idx) => {
+				const statuser = fagsystem?.statuser || []
+
 				const oppretter =
 					(erOrganisasjon && !bestilling.ferdig) ||
-					!fagsystem?.statuser?.length ||
-					fagsystem?.statuser?.some((status) => {
+					!statuser.length ||
+					statuser.some((status) => {
 						return (
 							status?.melding?.includes('Info') ||
 							// Ereg statuser for oppretting
@@ -106,22 +108,18 @@ export const BestillingStatus = ({
 					})
 
 				const infoString = ['Info', 'INFO', 'info']
-				const infoListe = fagsystem?.statuser?.filter((s) =>
-					infoString.some((i) => s?.melding?.includes(i)),
-				)
+				const infoListe = statuser.filter((s) => infoString.some((i) => s?.melding?.includes(i)))
 
 				const advarselString = ['Advarsel', 'ADVARSEL', 'advarsel']
-				const advarselListe = fagsystem?.statuser?.filter((s) =>
+				const advarselListe = statuser.filter((s) =>
 					advarselString.some((i) => s?.melding?.includes(i)),
 				)
 
 				const feilString = ['Feil', 'FEIL', 'feil']
-				const feilListe = fagsystem?.statuser?.filter((s) =>
-					feilString.some((i) => s?.melding?.includes(i)),
-				)
+				const feilListe = statuser.filter((s) => feilString.some((i) => s?.melding?.includes(i)))
 
 				const getMelding = () => {
-					if (fagsystem?.statuser?.every((s) => s?.melding === 'OK')) {
+					if (statuser.every((s) => s?.melding === 'OK')) {
 						return null
 					} else {
 						return infoListe.concat(advarselListe, feilListe)
@@ -134,8 +132,8 @@ export const BestillingStatus = ({
 				const antallBestilteIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter
 
 				const getOkIdenter = () => {
-					const miljouavhengig = fagsystem?.statuser?.find((s) => s?.melding === 'OK')?.identer
-					const miljoavhengig = fagsystem?.statuser?.find((s) => s?.melding === 'OK')?.detaljert
+					const miljouavhengig = statuser.find((s) => s?.melding === 'OK')?.identer
+					const miljoavhengig = statuser.find((s) => s?.melding === 'OK')?.detaljert
 					if (miljouavhengig) {
 						return miljouavhengig.filter((ident) => ident)
 					}
@@ -153,7 +151,7 @@ export const BestillingStatus = ({
 							{oppretter ? (
 								<Spinner size={24} margin="0px" />
 							) : (
-								<Icon kind={iconType(fagsystem.statuser, bestilling.feil, bestilling.ferdig)} />
+								<Icon kind={iconType(statuser, bestilling.feil, bestilling.ferdig)} />
 							)}
 						</StatusIcon>
 						<div style={{ width: '96%', marginBottom: marginBottom }}>
