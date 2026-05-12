@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
@@ -50,12 +49,10 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
@@ -255,7 +252,8 @@ public class PdlOrdreService {
                         Flux.fromIterable(sorterteOpprettinger)
                                 .flatMap(oppretting -> aliasRepository.existsByPersonId(oppretting.getPerson().getId())
                                         .zipWith(Mono.just(oppretting)))
-                                .filter(exist -> isTrue(exist.getT1()))
+                                .filter(exist -> exist.getT2().isNotNpidIdent() ||
+                                                 isTrue(exist.getT1()))
                                 .flatMap(oppretting -> getOrdrer(oppretting.getT2()))
                                 .collectList()))
                 .flatMapMany(tuple -> deployService.sendOrders(

@@ -29,4 +29,10 @@ public class OpprettRequest {
 
         return IdenttypeUtility.isNpidIdent(person.getIdent());
     }
+
+    @JsonIgnore
+    public boolean isNotNpidIdent() {
+
+        return !isNpidIdent();
+    }
 }
