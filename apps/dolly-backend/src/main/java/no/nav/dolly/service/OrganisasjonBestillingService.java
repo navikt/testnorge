@@ -172,6 +172,7 @@ public class OrganisasjonBestillingService {
                                 .miljoer(join(",", status.getEnvironments()))
                                 .bestKriterier(toJson(status.getBestilling()))
                                 .bruker(bruker)
+                                .brukerId(bruker.getId())
                                 .build()))
                 .flatMap(organisasjonBestillingRepository::save);
     }
