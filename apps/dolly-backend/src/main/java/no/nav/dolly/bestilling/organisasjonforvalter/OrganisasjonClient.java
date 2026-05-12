@@ -86,10 +86,16 @@ public class OrganisasjonClient {
                         .organisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")))
                         .build())
                 .doOnNext(saved -> bestillingEventPublisher.publishOrg(bestilling.getId()))
-                .then(deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer))
-                .onErrorResume(throwable ->
-                        organisasjonBestillingService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(throwable))
-                                .then(organisasjonProgressService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(throwable))));
+                .doOnSuccess(saved ->
+                        deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer)
+                                .onErrorResume(throwable ->
+                                        organisasjonBestillingService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(throwable))
+                                                .then(organisasjonProgressService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(throwable))))
+                                .subscribe(
+                                        null,
+                                        error -> log.error("Feil ved deploy av gjenopprettet organisasjon bestilling {}", bestilling.getId(), error)
+                                ))
+                .then();
     }
 
     public void release(List<String> ignored) {

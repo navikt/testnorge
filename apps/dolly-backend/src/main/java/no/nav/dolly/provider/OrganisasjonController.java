@@ -53,15 +53,10 @@ public class OrganisasjonController {
                             .flatMap(bestilling ->
                                     Mono.zip(Mono.just(bestilling), Mono.just(bestillingStatus), Mono.just(request)));
                 })
-                .flatMap(tuple -> {
+                .flatMap(tuple ->
                         organisasjonClient.gjenopprett(tuple.getT3(), tuple.getT1())
                                 .doOnSuccess(v -> bestillingService.monitorDeployCompletion(tuple.getT1().getId()))
-                                .subscribe(
-                                        null,
-                                        error -> log.error("Feil ved gjenopprett av organisasjon bestilling {}", tuple.getT1().getId(), error)
-                                );
-                        return getStatus(tuple.getT1(), tuple.getT2().getOrganisasjonNummer());
-                });
+                                .then(getStatus(tuple.getT1(), tuple.getT2().getOrganisasjonNummer())));
     }
 
     @GetMapping()
