@@ -145,7 +145,7 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 
 	return {
 		kelvinAap: {
-			label: 'Nav AAP ytelse',
+			label: 'AAP-ytelse',
 			checked: has('kelvinAap'),
 			add() {
 				set('kelvinAap', { ...initialKelvinAap, harMedlemskap: harMedlemskap })
