@@ -21,7 +21,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -74,6 +73,7 @@ public class SykemeldingClient implements ClientRegister {
     }
 
     private String getStatus(SykemeldingResponseDTO status) {
+
         log.info("Sykemelding response for {} mottatt, {}", status.getIdent(), Json.pretty(status));
         return status.getStatus().is2xxSuccessful()
                 ? "OK"
@@ -100,7 +100,7 @@ public class SykemeldingClient implements ClientRegister {
                         .fom(a.getFom())
                         .tom(a.getTom())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         SykemeldingRequestDTO request = SykemeldingRequestDTO.builder()
                 .type(type)
