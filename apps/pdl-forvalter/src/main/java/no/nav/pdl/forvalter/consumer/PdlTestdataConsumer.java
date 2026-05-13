@@ -13,6 +13,7 @@ import no.nav.pdl.forvalter.dto.HendelseIdRequest;
 import no.nav.pdl.forvalter.dto.NpidIdentDTO;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
@@ -35,8 +36,10 @@ import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_NPID_SPLIT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING_HENDELSEID;
 
@@ -92,7 +95,18 @@ public class PdlTestdataConsumer {
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.fromIterable(identer)
                         .flatMap(ident -> new PdlDeleteCommandPdl(webClient,
-                                getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
+                                getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()
+                                //TBD venter på nytt endepunkt fra PDL
+//                                .flatMap(hendelse -> {
+//                                    if (isNpidIdent(ident)) {
+//                                        return new PdlNpidCommand(webClient,
+//                                                getBestillingUrl().get(PDL_NPID_SPLIT),
+//                                                ident, null, accessToken.getTokenValue()).call();
+//                                    } else {
+//                                        return Mono.just(hendelse);
+//                                    }
+//                                })
+                        ))
                 .collectList();
     }
 
