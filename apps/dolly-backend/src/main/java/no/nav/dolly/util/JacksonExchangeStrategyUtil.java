@@ -1,5 +1,6 @@
 package no.nav.dolly.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.json.JacksonJsonDecoder;
@@ -55,6 +56,7 @@ public final class JacksonExchangeStrategyUtil {
 
     private static JsonMapper createDefaultJsonMapper() {
         return JsonMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
