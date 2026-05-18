@@ -29,8 +29,11 @@ export default function GjenopprettBestilling(props) {
 				const key = `/dolly-backend/api/v1/organisasjon/bestilling/bestillingsstatus?brukerId=${brukerId}`
 				void globalMutate(
 					key,
-					(current: any[]) =>
-						current ? [...current, newBestilling] : [newBestilling],
+					(current: any[]) => {
+						if (!current) return [newBestilling]
+						if (current.some((b) => b.id === newBestilling.id)) return current
+						return [...current, newBestilling]
+					},
 				)
 			}
 		}
