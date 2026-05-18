@@ -8,7 +8,12 @@ const IN_PROGRESS_MESSAGES = [
 	'Pågående',
 ]
 
-const PINNED_IDS = new Set(['PDLIMPORT', 'PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
+const PRIORITY_ORDER: Record<string, number> = {
+	PDL_FORVALTER: 0,
+	PDLIMPORT: 0,
+	PDL_ORDRE: 1,
+	PDL_PERSONSTATUS: 2,
+}
 
 const IMPORT_HIDDEN_IDS = new Set(['PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
 
@@ -20,10 +25,12 @@ export const filterImportSubSteps = (statusList: any[]) => {
 
 export const sortFagsystemer = (list: any[]) => {
 	const filtered = filterImportSubSteps(list)
-	const pinned = filtered.filter((s) => PINNED_IDS.has(s.id))
-	const rest = filtered.filter((s) => !PINNED_IDS.has(s.id))
-	rest.sort((a, b) => (a.navn || '').localeCompare(b.navn || '', 'nb'))
-	return [...pinned, ...rest]
+	return filtered.sort((a, b) => {
+		const priorityA = PRIORITY_ORDER[a.id] ?? Number.MAX_SAFE_INTEGER
+		const priorityB = PRIORITY_ORDER[b.id] ?? Number.MAX_SAFE_INTEGER
+		if (priorityA !== priorityB) return priorityA - priorityB
+		return (a.navn || '').localeCompare(b.navn || '', 'nb')
+	})
 }
 
 export const calculateProgress = ({
@@ -45,7 +52,7 @@ export const calculateProgress = ({
 	if (!erOrganisasjon && antallIdenter === 1 && totalFagsystemer > 0) {
 		const completedCount = statusList.filter((fagsystem) => {
 			if (!fagsystem?.statuser?.length) return false
-			return !fagsystem.statuser.some((s) =>
+			return !fagsystem.statuser.some((s: any) =>
 				IN_PROGRESS_MESSAGES.some((msg) => s?.melding?.includes(msg)),
 			)
 		}).length

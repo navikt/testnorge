@@ -100,7 +100,7 @@ export const BestillingProgresjon = ({
 		cancelBestilling(bestillingID, erOrganisasjon)
 		if (!hasFinished) {
 			setHasFinished(true)
-			onFinishBestilling?.(data)
+			onFinishBestilling?.({ ...data, ferdig: true, stoppet: true })
 		}
 	}
 

@@ -6,8 +6,10 @@ import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.SystemTyper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
@@ -54,6 +56,13 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @UtilityClass
 public class UtledFagsystemUtil {
 
+    private static final Map<SystemTyper, Integer> PRIORITY_ORDER = Map.of(
+            PDL_FORVALTER, 0,
+            PDLIMPORT, 0,
+            PDL_ORDRE, 1,
+            PDL_PERSONSTATUS, 2
+    );
+
     public static List<SystemTyper> resolve(BestilteKriterier kriterier, Bestilling bestilling) {
 
         Set<SystemTyper> result = EnumSet.noneOf(SystemTyper.class);
@@ -62,7 +71,31 @@ public class UtledFagsystemUtil {
         utledPensjonTyper(result, kriterier);
         utledFagsystemTyper(result, kriterier);
 
-        return new ArrayList<>(result);
+        if (isNotBlank(bestilling.getGjenopprettetFraIdent())) {
+            result.remove(PDL_FORVALTER);
+        }
+
+        return sortFagsystemer(new ArrayList<>(result));
+    }
+
+    public static <T> void sortStatusList(List<T> list, java.util.function.Function<T, SystemTyper> idExtractor) {
+
+        list.sort(Comparator.<T, Integer>comparing(
+                item -> PRIORITY_ORDER.getOrDefault(idExtractor.apply(item), Integer.MAX_VALUE)
+        ).thenComparing(
+                item -> {
+                    var id = idExtractor.apply(item);
+                    return id != null ? id.getBeskrivelse() : "";
+                }
+        ));
+    }
+
+    private List<SystemTyper> sortFagsystemer(List<SystemTyper> list) {
+
+        list.sort(Comparator.<SystemTyper, Integer>comparing(
+                type -> PRIORITY_ORDER.getOrDefault(type, Integer.MAX_VALUE)
+        ).thenComparing(SystemTyper::getBeskrivelse));
+        return list;
     }
 
     private void utledPdlTyper(Set<SystemTyper> result, BestilteKriterier kriterier, Bestilling bestilling) {

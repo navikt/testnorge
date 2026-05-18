@@ -127,6 +127,8 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         if (!bestilling.isFerdig()) {
                             utledFagsystemer(bestillingStatus, bestKriterierJson, bestilling);
                         }
+
+                        UtledFagsystemUtil.sortStatusList(bestillingStatus.getStatus(), RsStatusRapport::getId);
                     }
                 })
                 .exclude("bruker")
