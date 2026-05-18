@@ -176,6 +176,8 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                                                      .max(Comparator.comparing(SivilstandDTO::getId))
                                                      .map(SivilstandDTO::getId)
                                                      .orElse(0) + 1);
+                    relatertSivilstand.setKilde(getKilde(relatertSivilstand));
+                    relatertSivilstand.setMaster(getMaster(relatertSivilstand, relatertPerson.getPerson()));
 
                     relatertPerson.getPerson().getSivilstand().addFirst(relatertSivilstand);
 
