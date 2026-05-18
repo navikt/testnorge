@@ -44,7 +44,7 @@ export const KelvinAapForm = () => {
 	return (
 		<Vis attributt={kelvinAapPath}>
 			<Panel
-				heading="AAP-ytelse"
+				heading="Kelvin AAP-ytelse"
 				hasErrors={usePanelError(kelvinAapPath)}
 				iconType="arena"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [kelvinAapPath])}
