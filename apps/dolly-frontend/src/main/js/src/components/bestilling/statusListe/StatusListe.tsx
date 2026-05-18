@@ -19,24 +19,35 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 	const [ferdigBestillinger, setFerdigBestillinger] = useState([])
 
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
-		const nyBestillingListe = Object.values(bestillinger).filter(
-			(bestilling) =>
-				!bestilling?.ferdig ||
-				(bestilling?.ferdig && nyeBestillinger.some((best) => best?.id === bestilling?.id)),
-		)
-		setNyeBestillinger(nyBestillingListe)
+		setNyeBestillinger((prevNye) => {
+			const currentBestillinger = Object.values(bestillinger)
+			const currentIds = new Set(currentBestillinger.map((b) => b?.id))
+
+			const fromList = currentBestillinger.filter(
+				(bestilling) =>
+					!bestilling?.ferdig ||
+					(bestilling?.ferdig && prevNye.some((best) => best?.id === bestilling?.id)),
+			)
+
+			const inProgressMissing = prevNye.filter(
+				(b) => b?.id && !currentIds.has(b.id) && !b?.ferdig,
+			)
+
+			return [...fromList, ...inProgressMissing]
+		})
 	}
 
 	const onFinishBestilling = (bestilling) => {
-		if (!ferdigBestillinger.find((b) => b.id === bestilling.id) && bestilling?.ferdig) {
-			setFerdigBestillinger(ferdigBestillinger.concat([bestilling]))
-			setNyeBestillinger(nyeBestillinger.filter((nye) => bestilling.id !== nye.id))
-		}
+		setFerdigBestillinger((prev) => {
+			if (prev.find((b) => b.id === bestilling.id) || !bestilling?.ferdig) return prev
+			return prev.concat([bestilling])
+		})
+		setNyeBestillinger((prev) => prev.filter((nye) => bestilling.id !== nye.id))
 	}
 
 	const lukkBestilling = (id) => {
-		setNyeBestillinger(nyeBestillinger.filter((nye) => id !== nye.id))
-		setFerdigBestillinger(ferdigBestillinger.filter((ferdig) => id !== ferdig.id))
+		setNyeBestillinger((prev) => prev.filter((nye) => id !== nye.id))
+		setFerdigBestillinger((prev) => prev.filter((ferdig) => id !== ferdig.id))
 	}
 
 	useEffect(() => {
@@ -53,7 +64,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 
 	const ikkeFerdig = nyeBestillinger.map((bestilling) => (
 		<BestillingProgresjon
-			key={bestilling.sistOppdatert}
+			key={bestilling.id}
 			bestillingID={bestilling.id}
 			erOrganisasjon={_.has(bestilling, 'organisasjonNummer')}
 			cancelBestilling={cancelBestilling}

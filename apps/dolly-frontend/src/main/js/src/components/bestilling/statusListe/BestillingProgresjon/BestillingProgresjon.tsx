@@ -120,9 +120,6 @@ export const BestillingProgresjon = ({
 		let title: string
 		if (isFerdig) {
 			title = 'FERDIG'
-		} else if (erSykemelding) {
-			title =
-				'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
 		} else if (erOrganisasjon) {
 			title = `AKTIV BESTILLING (${orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'})`
 		} else {
