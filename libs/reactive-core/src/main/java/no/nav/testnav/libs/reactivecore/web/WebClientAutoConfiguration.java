@@ -83,7 +83,7 @@ class WebClientAutoConfiguration {
                                         .pendingAcquireMaxCount(10000)
                                         .pendingAcquireTimeout(Duration.ofSeconds(300))
                                         .build())
-                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15000)
                                 .option(ChannelOption.SO_KEEPALIVE, true)
                                 .option(EpollChannelOption.TCP_KEEPIDLE, 300)
                                 .option(EpollChannelOption.TCP_KEEPINTVL, 60)
