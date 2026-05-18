@@ -1,0 +1,59 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: synthdata-arena-dagpenger
+  namespace: dolly
+  labels:
+    team: dolly
+  annotations:
+    nais.io/run-as-user: "65532" # The nonroot user.
+spec:
+  image: {{image}}
+  liveness:
+    path: "/internal/health/liveness"
+    port: 8080
+    initialDelay: 120
+    periodSeconds: 30
+    timeout: 60
+    failureThreshold: 10
+  readiness:
+    path: "/internal/health/readiness"
+    port: 8080
+    initialDelay: 120
+    periodSeconds: 30
+    timeout: 60
+    failureThreshold: 10
+  prometheus:
+    enabled: true
+    path: /metrics
+  replicas:
+    min: 1
+    max: 2
+    cpuThresholdPercentage: 50
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 2048Mi
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-oversikt-frontend
+        - application: team-dolly-lokal-app
+        - application: testnav-synt-vedtakshistorikk-service
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
+  gcp:
+    buckets:
+      - name: synthdata-dagpenger-model-bucket
+  ingresses:
+    - "https://synthdata-arena-dagpenger.intern.dev.nav.no"
+
