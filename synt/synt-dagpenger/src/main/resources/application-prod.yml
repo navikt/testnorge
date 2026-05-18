@@ -25,6 +25,14 @@ server:
     context-path: /
   shutdown: graceful
 
+app:
+  config:
+    bucket: synthdata-dagpenger-model-bucket
+    models:
+     - model_PERM
+     - model_DAGO
+     - model_LONN
+
 
 
 
