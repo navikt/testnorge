@@ -1,31 +1,38 @@
 package no.nav.dolly.synt.dagpenger.onnx;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.synt.dagpenger.SyntDagpengerApplication;
+import no.nav.dolly.synt.dagpenger.bucket.BucketUtils;
 import no.nav.dolly.synt.dagpenger.dto.DagpengevedtakDto;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
 @Profile("prod")
+@Slf4j
+@RequiredArgsConstructor
 class OnnxBucketService implements OnnxService {
 
-    @Value("${app.config.bucket:}")
-    private final String bucket;
+    private final SyntDagpengerApplication.Config config;
+    private DagpengevedtakGenerator dagpenger;
 
-    private final DagpengevedtakGenerator dagpenger;
-
-    OnnxBucketService(String bucket) {
-        if (!StringUtils.hasLength(bucket)) {
-            throw new IllegalStateException("app.config.bucket must be configured");
+    @PostConstruct
+    void initialize() {
+        try {
+            var modelDirectory = BucketUtils.download(config.getBucket(), config.getModels(), "synt-dagpenger-models-");
+            this.dagpenger = new DagpengevedtakGenerator(modelDirectory);
+            log.info("Successfully initialized ONNX models from GCS bucket: {}", config.getBucket());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to download models from GCP", e);
         }
-        this.bucket = bucket;
-        // TODO: Download and prepare models, then create a dagpengerGeneratorService with those.
-        this.dagpenger = new DagpengevedtakGenerator(null); // Placeholder, replace with actual model path
     }
 
     @Override
