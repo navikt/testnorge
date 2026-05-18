@@ -16,7 +16,7 @@ export const KelvinAap = ({ kelvinAap }: { kelvinAap: KelvinAapTypes }) => {
 	return (
 		<div className="bestilling-visning">
 			<ErrorBoundary>
-				<BestillingTitle>AAP-ytelse</BestillingTitle>
+				<BestillingTitle>Kelvin AAP-ytelse</BestillingTitle>
 				<div className="bestilling-blokk">
 					<h3>Generelt</h3>
 					<BestillingData>
