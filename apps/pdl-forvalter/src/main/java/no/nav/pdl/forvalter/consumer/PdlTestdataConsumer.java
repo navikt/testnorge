@@ -76,6 +76,7 @@ public class PdlTestdataConsumer {
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.concat(
                         Flux.fromIterable(orders.getSletting())
+                                .parallel()
                                 .flatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getSplit())
                                 .flatMap(order -> order.apply(accessToken)),
@@ -84,6 +85,7 @@ public class PdlTestdataConsumer {
                         Flux.fromIterable(orders.getMerge())
                                 .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOpplysninger())
+                                .parallel()
                                 .flatMap(order -> order.apply(accessToken))
                 ));
     }
