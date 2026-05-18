@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.arenaforvalter.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
@@ -10,6 +8,8 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collection;
 import java.util.Map;
@@ -99,10 +99,10 @@ public class ArenaStatusUtil {
         }
 
         try {
-            var status = new ObjectMapper().readValue(jsonFeilmelding, Map.class);
+            var status = JsonMapper.builder().build().readValue(jsonFeilmelding, Map.class);
             return status.containsKey("message") ? (String) status.get("message") : jsonFeilmelding;
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.warn("Feilet å dekode json status fra Arena: {}", jsonFeilmelding);
             return jsonFeilmelding;
         }

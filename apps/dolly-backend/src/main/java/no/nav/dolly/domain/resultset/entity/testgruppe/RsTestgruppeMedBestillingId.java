@@ -1,7 +1,11 @@
 package no.nav.dolly.domain.resultset.entity.testgruppe;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 
@@ -34,7 +38,7 @@ public class RsTestgruppeMedBestillingId extends RsTestgruppe {
     public static class IdentBestilling {
 
         private String ident;
-        private boolean iBruk;
+        private Boolean iBruk;
         private String beskrivelse;
         private List<Long> bestillingId;
         private List<RsBestillingStatus> bestillinger;

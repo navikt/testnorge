@@ -38,6 +38,12 @@ consumers:
 spring:
   config:
     import: "classpath:dolly-application.yml"
+  main:
+    web-application-type: reactive
+  flyway:
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   security:
     oauth2:
       resourceserver:

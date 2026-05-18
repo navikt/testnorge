@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
@@ -10,8 +11,7 @@ import no.nav.registre.sdforvalter.domain.KrrListe;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DollySpringBootTest
 @AutoConfigureMockMvc()
-@AutoConfigureWireMock(port = 0)
+@WireMockTest
 //@Import(JwtDecoderConfig.class)
 class StaticDataControllerV1KrrIntegrationTest {
 

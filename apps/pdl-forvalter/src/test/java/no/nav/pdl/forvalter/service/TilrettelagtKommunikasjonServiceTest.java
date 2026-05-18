@@ -5,11 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import reactor.test.StepVerifier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class TilrettelagtKommunikasjonServiceTest {
@@ -24,10 +23,10 @@ class TilrettelagtKommunikasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Språk for taletolk og/eller tegnspråktolk må oppgis"));
+        StepVerifier.create(
+                        tilrettelagtKommunikasjonService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Språk for taletolk og/eller tegnspråktolk må oppgis")));
     }
 
     @Test
@@ -38,10 +37,10 @@ class TilrettelagtKommunikasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
+        StepVerifier.create(
+                        tilrettelagtKommunikasjonService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk")));
     }
 
     @Test
@@ -52,9 +51,9 @@ class TilrettelagtKommunikasjonServiceTest {
                 .isNew(true)
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
+        StepVerifier.create(
+                        tilrettelagtKommunikasjonService.validate(request))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk")));
     }
 }

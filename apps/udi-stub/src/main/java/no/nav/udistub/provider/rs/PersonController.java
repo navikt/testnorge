@@ -1,7 +1,5 @@
 package no.nav.udistub.provider.rs;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class PersonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonControllerResponse opprettPerson(@RequestBody UdiPerson udiPerson) throws JsonProcessingException {
+    public PersonControllerResponse opprettPerson(@RequestBody UdiPerson udiPerson) throws JacksonException {
         log.info("Mottatt request opprettPerson: {}", objectMapper.writeValueAsString(udiPerson));
         return PersonControllerResponse.builder()
                 .person(personService.opprettPerson(udiPerson))
@@ -46,7 +46,7 @@ public class PersonController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonControllerResponse oppdaterPerson(@RequestBody UdiPerson udiPerson) throws JsonProcessingException {
+    public PersonControllerResponse oppdaterPerson(@RequestBody UdiPerson udiPerson) throws JacksonException {
         log.info("Mottatt request oppdaterPerson: {}", objectMapper.writeValueAsString(udiPerson));
         return PersonControllerResponse.builder()
                 .person(personService.oppdaterPerson(udiPerson))

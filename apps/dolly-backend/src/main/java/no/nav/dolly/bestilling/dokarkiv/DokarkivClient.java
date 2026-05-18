@@ -1,8 +1,5 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -30,6 +27,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
@@ -97,6 +98,12 @@ public class DokarkivClient implements ClientRegister {
                                 ))
                         .collect(Collectors.joining(","))
                         .flatMap(status -> oppdaterStatus(progress, status)));
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        // Sletting er ikke støttet
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
@@ -173,12 +180,6 @@ public class DokarkivClient implements ClientRegister {
         }
     }
 
-    @Override
-    public void release(List<String> identer) {
-
-        // Sletting er ikke støttet
-    }
-
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
 
         return personServiceConsumer.getPdlPersoner(List.of(ident))
@@ -226,7 +227,7 @@ public class DokarkivClient implements ClientRegister {
 
         try {
             return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
         }
         return null;
@@ -240,7 +241,7 @@ public class DokarkivClient implements ClientRegister {
                         {
                             try {
                                 transaksjoner.add(objectMapper.treeToValue(node, TransaksjonIdDTO.class));
-                            } catch (JsonProcessingException e) {
+                            } catch (JacksonException e) {
                                 log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
                             }
                         }

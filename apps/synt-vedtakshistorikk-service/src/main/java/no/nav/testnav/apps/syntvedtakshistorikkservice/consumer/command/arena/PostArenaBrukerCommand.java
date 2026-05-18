@@ -19,19 +19,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.EIER;
 
 @RequiredArgsConstructor
 @Slf4j
 public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>> {
 
+    private static final ParameterizedTypeReference<Map<String, List<NyBruker>>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final WebClient webClient;
     private final List<NyBruker> nyeBrukere;
     private final String token;
-
-    private static final ParameterizedTypeReference<Map<String, List<NyBruker>>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
-    };
 
     @Override
     public Mono<NyeBrukereResponse> call() {

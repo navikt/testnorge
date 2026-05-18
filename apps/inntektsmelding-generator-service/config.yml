@@ -27,6 +27,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp
+        - application: testnav-inntektsmelding-service-dev
+          cluster: dev-gcp
     outbound:
       rules:
         - application: logging

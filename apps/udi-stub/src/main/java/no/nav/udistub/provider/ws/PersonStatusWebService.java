@@ -1,7 +1,5 @@
 package no.nav.udistub.provider.ws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.xml.bind.JAXBElement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +9,8 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import v1.mt_1067_nav.no.udi.DeepPingFault;
 import v1.mt_1067_nav.no.udi.HentPersonstatusFault;
 import v1.mt_1067_nav.no.udi.HentPersonstatusRequestType;
@@ -61,7 +61,7 @@ public class PersonStatusWebService {
             throws HentPersonstatusFault {
         try {
             log.info("Mottatt WS hentPersonstatus request: {}", objectMapper.writeValueAsString(request.getValue()));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.warn("Kunne ikke serialisere WS hentPersonstatus request til JSON", e);
         }
         var hentPersonstatusResponse =
@@ -77,7 +77,7 @@ public class PersonStatusWebService {
             throws HentUtvidetPersonstatusFault {
         try {
             log.info("Mottatt WS hentUtvidetPersonstatus request: {}", objectMapper.writeValueAsString(request.getValue()));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.warn("Kunne ikke serialisere WS hentUtvidetPersonstatus request til JSON", e);
         }
         var hentUtvidetPersonstatusResponse =

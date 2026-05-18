@@ -27,26 +27,26 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("GRUPPE")
+@Table("gruppe")
 public class Testgruppe implements Serializable {
 
     @Id
     private Long id;
 
     @Version
-    @Column("VERSJON")
+    @Column("versjon")
     private Long versjon;
 
-    @Column("NAVN")
+    @Column("navn")
     private String navn;
 
-    @Column("HENSIKT")
+    @Column("hensikt")
     private String hensikt;
 
-    @Column("OPPRETTET_AV")
+    @Column("opprettet_av")
     private Long opprettetAvId;
 
-    @Column("SIST_ENDRET_AV")
+    @Column("sist_endret_av")
     private Long sistEndretAvId;
 
     @Transient
@@ -55,16 +55,16 @@ public class Testgruppe implements Serializable {
     @Transient
     private Bruker sistEndretAv;
 
-    @Column("DATO_ENDRET")
+    @Column("dato_endret")
     private LocalDate datoEndret;
 
-    @Column("ER_LAAST")
+    @Column("er_laast")
     private Boolean erLaast;
 
-    @Column("LAAST_BESKRIVELSE")
+    @Column("laast_beskrivelse")
     private String laastBeskrivelse;
 
-    @Column("TAGS")
+    @Column("tags")
     private String tags;
 
     public List<Tags> getTags() {

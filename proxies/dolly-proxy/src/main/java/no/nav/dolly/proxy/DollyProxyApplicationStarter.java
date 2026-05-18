@@ -19,5 +19,4 @@ public class DollyProxyApplicationStarter {
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
-
 }

@@ -1,16 +1,16 @@
 {
 	"name": "status-frontend",
-	"version": "1.2.7",
+	"version": "1.2.8",
 	"type": "module",
 	"private": true,
 	"dependencies": {
 		"classnames": "^2.5.1",
 		"css-select": "^6.0.0",
 		"prop-types": "^15.8.1",
-		"react": "^19.2.5",
-		"react-dom": "^19.2.5",
-		"react-inlinesvg": "^4.3.0",
-		"react-router-dom": "^7.14.0",
+		"react": "^19.2.6",
+		"react-dom": "^19.2.6",
+		"react-inlinesvg": "^4.4.1",
+		"react-router-dom": "^7.15.0",
 		"react-use": "^17.6.0"
 	},
 	"devDependencies": {
@@ -18,15 +18,15 @@
 		"@navikt/ds-css": "^7.40.0",
 		"@navikt/ds-icons": "^3.4.3",
 		"@navikt/ds-react": "^7.40.0",
-		"@rolldown/plugin-babel": "^0.2.2",
+		"@rolldown/plugin-babel": "^0.2.3",
 		"@types/react": "^19.2.14",
 		"@vitejs/plugin-react": "^6.0.1",
 		"babel-plugin-react-compiler": "^1.0.0",
 		"less": "^4.6.4",
 		"path-browserify": "^1.0.1",
-		"prettier": "^3.8.2",
-		"typescript": "^6.0.2",
-		"vite": "^8.0.8",
+		"prettier": "^3.8.3",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.11",
 		"vite-plugin-svgr": "^5.2.0"
 	},
 	"scripts": {

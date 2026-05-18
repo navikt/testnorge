@@ -15,7 +15,7 @@ import reactor.util.retry.Retry;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
-import static java.time.Duration.*;
+import static java.time.Duration.ofSeconds;
 import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.ARBEIDSPLASSEN_CALL_ID;
 
 @RequiredArgsConstructor

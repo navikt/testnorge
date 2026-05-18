@@ -2,7 +2,7 @@ import { useFormContext } from 'react-hook-form'
 import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import {
 	initialYrkesskade,
 	initialYrkesskadePeriode,
@@ -122,7 +122,7 @@ export const YrkesskaderForm = () => {
 		<Vis attributt={yrkesskaderAttributt}>
 			<Panel
 				heading="Yrkesskader"
-				hasErrors={panelError(yrkesskaderAttributt)}
+				hasErrors={usePanelError(yrkesskaderAttributt)}
 				// @ts-ignore
 				iconType="sykdom"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [yrkesskaderAttributt])}

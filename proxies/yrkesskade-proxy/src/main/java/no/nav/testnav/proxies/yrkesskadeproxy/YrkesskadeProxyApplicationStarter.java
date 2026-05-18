@@ -8,6 +8,7 @@ import no.nav.testnav.proxies.yrkesskadeproxy.config.Consumers;
 import no.nav.testnav.proxies.yrkesskadeproxy.consumer.FakedingsConsumer;
 import no.nav.testnav.proxies.yrkesskadeproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -22,13 +23,8 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 public class YrkesskadeProxyApplicationStarter {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(YrkesskadeProxyApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("yrkesskadeRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            GatewayFilter tokenxAuthenticationFilter,
                                            Consumers consumers) {
@@ -44,7 +40,14 @@ public class YrkesskadeProxyApplicationStarter {
                 .build();
     }
 
-    @Bean
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(YrkesskadeProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
+
+    @Bean("yrkesskadeTokenxAuthenticationFilter")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     GatewayFilter tokenxAuthenticationFilter(
             TokenXService tokenService,
             FakedingsConsumer fakedingsConsumer,

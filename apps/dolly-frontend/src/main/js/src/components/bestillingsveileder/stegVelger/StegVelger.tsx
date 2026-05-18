@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext, useState } from 'react'
+import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -35,6 +35,15 @@ import { useMalFormSync } from './hooks/useMalFormSync'
 import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
 import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
 import StepErrorBoundary from './StepErrorBoundary'
+import {
+	clearBestillingFormState,
+	loadBestillingFormState,
+	saveBestillingFormState,
+} from '@/utils/bestillingFormPersistence'
+import {
+	BESTILLING_RESTORED_EVENT,
+	BESTILLING_SAVE_EVENT,
+} from '@/components/versionBanner/NewVersionBanner'
 
 interface StepDef {
 	component: React.ComponentType<any>
@@ -79,19 +88,44 @@ export const StegVelger = ({
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)
 	const [loading, setLoading] = useState(false)
-	const [step, setStep] = useState(0)
+
+	const [savedState] = useState(() => loadBestillingFormState())
+	const [step, setStep] = useState(savedState?.step ?? 0)
+
+	const effectiveInitialValues = savedState
+		? { ...savedState.formValues, dokarkiv: initialValues.dokarkiv, histark: initialValues.histark }
+		: initialValues
 
 	const CurrentStepComponent = STEPS[step].component
 	const stepMaxIndex = STEPS.length - 1
 	const formMethods = useForm({
 		mode: 'onChange',
-		defaultValues: initialValues,
+		defaultValues: effectiveInitialValues,
 		resolver: yupResolver(validationResolver),
 		context: context,
 	})
 	const stateModifier = useStateModifierFns(formMethods, setFormMutate, context)
 
 	const matchMutate = useMatchMutate()
+
+	useEffect(() => {
+		if (savedState) {
+			clearBestillingFormState()
+			window.dispatchEvent(new CustomEvent(BESTILLING_RESTORED_EVENT))
+		}
+	}, [])
+
+	useEffect(() => {
+		const handler = () => {
+			try {
+				saveBestillingFormState(formMethods.getValues(), step)
+			} catch (e) {
+				console.error('Failed to save bestilling form state:', e)
+			}
+		}
+		window.addEventListener(BESTILLING_SAVE_EVENT, handler)
+		return () => window.removeEventListener(BESTILLING_SAVE_EVENT, handler)
+	}, [step])
 
 	const validationPaths = Object.keys(validationResolver.fields)
 
@@ -147,6 +181,7 @@ export const StegVelger = ({
 		}
 
 		setLoading(true)
+		clearBestillingFormState()
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
 		await onSubmit(values)

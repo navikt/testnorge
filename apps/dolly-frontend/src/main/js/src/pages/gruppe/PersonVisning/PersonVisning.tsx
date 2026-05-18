@@ -55,6 +55,7 @@ import {
 	harInntektsmeldingBestilling,
 	harInntektstubBestilling,
 	harInstBestilling,
+	harKelvinAapBestilling,
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
@@ -72,13 +73,10 @@ import {
 	sjekkManglerApData,
 } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
-import * as _ from 'lodash-es'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import {
-	SykemeldingPanel,
-} from '@/components/fagsystem/sykdom/visning/Visning'
+import { SykemeldingPanel } from '@/components/fagsystem/sykdom/visning/Visning'
 import {
 	sjekkManglerUforetrygdData,
 	UforetrygdVisning,
@@ -116,6 +114,8 @@ import { useNomData } from '@/utils/hooks/useNom'
 import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
+import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
+import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -265,6 +265,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 		error: arbeidsplassencvError,
 	} = useArbeidsplassencvData(ident.ident, harArbeidsplassenBestilling(bestillingerFagsystemer))
 
+	const {
+		loading: loadingKelvinAapBehandlingStatus,
+		kelvinAapData,
+		error: kelvinAapBehandlingStatusError,
+	} = useKelvinAapBehandlingStatus(ident.ident, harKelvinAapBestilling(bestillingerFagsystemer))
+
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
 		harArenaBestilling(bestillingerFagsystemer) ||
@@ -293,7 +299,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harAfpOffentligBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingSykemeldingData, data: sykemeldingData, rawData: sykemeldingRawData } = useTransaksjonIdData(
+	const {
+		loading: loadingSykemeldingData,
+		data: sykemeldingData,
+		rawData: sykemeldingRawData,
+	} = useTransaksjonIdData(
 		ident.ident,
 		'SYKEMELDING',
 		harSykemeldingBestilling(bestillingerFagsystemer),
@@ -311,7 +321,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harYrkesskaderBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingInntektsmeldingData, data: inntektsmeldingData, rawData: inntektsmeldingRawData } = useTransaksjonIdData(
+	const {
+		loading: loadingInntektsmeldingData,
+		data: inntektsmeldingData,
+		rawData: inntektsmeldingRawData,
+	} = useTransaksjonIdData(
 		ident.ident,
 		'INNTKMELD',
 		harInntektsmeldingBestilling(bestillingerFagsystemer),
@@ -331,7 +345,10 @@ const PersonVisning = (props: PersonVisningProps) => {
 
 	const skjermingRef = useRef<any>(null)
 
-	const gruppeIdenterAsync = useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
+	const gruppeIdenterAsync = useAsync(
+		async () => DollyApi.getGruppeById(gruppeId),
+		[DollyApi.getGruppeById],
+	)
 	const gruppeIdenter = gruppeIdenterAsync.value?.data?.identer?.map((person: any) => person.ident)
 
 	const navigate = useNavigate()
@@ -706,6 +723,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					loading={afpOffentligLoading}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe || ''}
+				/>
+				<KelvinAapVisning
+					data={kelvinAapData}
+					loading={loadingKelvinAapBehandlingStatus}
+					harKelvinAapBestilling={harKelvinAapBestilling(bestillingerFagsystemer)}
 				/>
 				<ArenaVisning
 					data={arenaData}

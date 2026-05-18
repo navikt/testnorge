@@ -3,15 +3,15 @@ package no.nav.testnav.libs.reactivesessionsecurity.resolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.Token;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-
-import java.time.ZonedDateTime;
 
 import static java.util.Objects.nonNull;
 
@@ -19,35 +19,36 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @RequiredArgsConstructor
 public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
-    private final ReactiveOAuth2AuthorizedClientService auth2AuthorizedClientService;
+    private final ReactiveOAuth2AuthorizedClientManager authorizedClientManager;
 
     @Override
     public Mono<Token> getToken(ServerWebExchange exchange) {
         return oauth2AuthenticationToken(ReactiveSecurityContextHolder
                 .getContext()
                 .map(SecurityContext::getAuthentication))
-                .flatMap(oAuth2AuthenticationToken -> auth2AuthorizedClientService.loadAuthorizedClient(
-                                oAuth2AuthenticationToken.getAuthorizedClientRegistrationId(),
-                                oAuth2AuthenticationToken.getPrincipal().getName())
-                        .publishOn(Schedulers.boundedElastic())
-                        .mapNotNull(oAuth2AuthorizedClient -> {
-                                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
-                                        log.warn("Auth client har utløpt, fjerner den som authenticated");
-                                        oAuth2AuthenticationToken.setAuthenticated(false);
-                                        oAuth2AuthenticationToken.eraseCredentials();
-                                        auth2AuthorizedClientService.removeAuthorizedClient(
-                                                        oAuth2AuthorizedClient.getClientRegistration().getRegistrationId(),
-                                                        oAuth2AuthenticationToken.getPrincipal().getName())
-                                                .block();
-                                        return null;
-                                    }
-                                    return Token.builder()
-                                            .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
-                                            .expiresAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt())
-                                            .refreshTokenValue(nonNull(oAuth2AuthorizedClient.getRefreshToken()) ? oAuth2AuthorizedClient.getRefreshToken().getTokenValue() : null)
-                                            .clientCredentials(false)
-                                            .build();
-                                }
-                        ));
+                .flatMap(oAuth2AuthenticationToken -> {
+                    var authorizeRequest = OAuth2AuthorizeRequest
+                            .withClientRegistrationId(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())
+                            .principal(oAuth2AuthenticationToken)
+                            .attribute(ServerWebExchange.class.getName(), exchange)
+                            .build();
+
+                    return authorizedClientManager.authorize(authorizeRequest)
+                            .map(this::toToken)
+                            .switchIfEmpty(Mono.error(new CredentialsExpiredException("Klarte ikke å fornye token")));
+                });
+    }
+
+    private Token toToken(OAuth2AuthorizedClient authorizedClient) {
+        var builder = Token.builder()
+                .accessTokenValue(authorizedClient.getAccessToken().getTokenValue())
+                .expiresAt(authorizedClient.getAccessToken().getExpiresAt())
+                .clientCredentials(false);
+
+        if (nonNull(authorizedClient.getRefreshToken())) {
+            builder.refreshTokenValue(authorizedClient.getRefreshToken().getTokenValue());
+        }
+
+        return builder.build();
     }
 }

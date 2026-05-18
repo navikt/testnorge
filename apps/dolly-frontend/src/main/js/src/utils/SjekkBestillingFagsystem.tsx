@@ -22,6 +22,7 @@ type Fagsystem = {
 	histark?: boolean
 	arbeidssoekerregisteret?: boolean
 	arbeidsplassenCV?: boolean
+	kelvinAap?: boolean
 	arenaforvalter?: boolean
 	sykemelding?: boolean
 	yrkesskader?: boolean
@@ -97,6 +98,9 @@ export const harArbeidssoekerregisteretBestilling = (
 
 export const harArbeidsplassenBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.arbeidsplassenCV)
+
+export const harKelvinAapBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.kelvinAap)
 
 export const harArenaBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.arenaforvalter)

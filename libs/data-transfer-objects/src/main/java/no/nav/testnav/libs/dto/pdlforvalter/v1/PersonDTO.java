@@ -310,7 +310,6 @@ public class PersonDTO implements Serializable {
         return getAdressebeskyttelse().stream().anyMatch(AdressebeskyttelseDTO::isStrengtFortrolig);
     }
 
-    @JsonIgnore
     public boolean isStandalone() {
 
         return isTrue(standalone);
@@ -347,5 +346,8 @@ public class PersonDTO implements Serializable {
         final int beregnetRestSifferK1 = (vektetK1 + Character.getNumericValue(ident.charAt(9))) % 11;
 
         return VALIDS.contains(beregnetRestSifferK1);
+    }
+
+    public void getFol() {
     }
 }

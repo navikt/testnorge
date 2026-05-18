@@ -2,19 +2,19 @@ package no.nav.testnav.libs.dto.organisasjon.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class AdresseDTO {
-    String kommunenummer;
-    String adresselinje1;
-    String adresselinje2;
-    String adresselinje3;
-    String landkode;
-    String postnummer;
-    String poststed;
+    private String kommunenummer;
+    private String adresselinje1;
+    private String adresselinje2;
+    private String adresselinje3;
+    private String landkode;
+    private String postnummer;
+    private String poststed;
 }

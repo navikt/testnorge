@@ -9,7 +9,6 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -23,7 +22,7 @@ public class PdlMergeNpidCommand extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    public Flux<OrdreResponseDTO.HendelseDTO> call() {
+    public Mono<OrdreResponseDTO.HendelseDTO> call() {
         return webClient
                 .post()
                 .uri(builder -> builder
@@ -33,8 +32,8 @@ public class PdlMergeNpidCommand extends PdlTestdataCommand {
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .contentType(MediaType.APPLICATION_JSON)
-                .exchangeToFlux(response ->
-                        Flux.just(OrdreResponseDTO.HendelseDTO.builder()
+                .exchangeToMono(response ->
+                        Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(PdlStatus.OK)
                                 .build()))
                 .timeout(TIMEOUT)

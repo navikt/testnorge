@@ -1,18 +1,12 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.KodeMedSannsynlighet;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils;
-
-import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -20,13 +14,16 @@ import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,47 +32,38 @@ import java.util.Objects;
 import java.util.Random;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.datoerOverlapper;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.vedtakOverlapperIkkeVedtaksperioder;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getVedtakperioderForAapSekvenser;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getTiltakSekvenser;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTilleggsytelseRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTiltaksdeltakelseRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTiltakspengerRequest;
-
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getTiltakSekvenser;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getVedtakperioderForAapSekvenser;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArenaTiltakService {
 
-    private final Random rand = new Random();
-    private final ServiceUtils serviceUtils;
-    private final RequestUtils requestUtils;
-    private final ArenaForvalterService arenaForvalterService;
-
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
     private static final Map<String, Map<String, List<String>>> innsatsTilTiltakKoder;
-
     private static final List<String> AVBRUTT_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVLYST", "AVBRUTT"));
 
     static {
         adminkodeTilDeltakerstatus = new HashMap<>();
         innsatsTilTiltakKoder = new HashMap<>();
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = JsonMapper.builder().build();
 
-        URL resourceDeltakerstatus = Resources.getResource("files/adminkode_til_deltakerstatus_endring.json");
-        URL resourceOversikt = Resources.getResource("files/innsats_til_tiltakkode.json");
-
-        try {
-            Map<String, List<KodeMedSannsynlighet>> mapDeltakerstatus = objectMapper.readValue(resourceDeltakerstatus, new TypeReference<>() {
+        try (var deltakerstatusStream = Resources.getResource("files/adminkode_til_deltakerstatus_endring.json").openStream();
+             var oversiktStream = Resources.getResource("files/innsats_til_tiltakkode.json").openStream()) {
+            Map<String, List<KodeMedSannsynlighet>> mapDeltakerstatus = objectMapper.readValue(deltakerstatusStream, new TypeReference<>() {
             });
             adminkodeTilDeltakerstatus.putAll(mapDeltakerstatus);
 
-            Map<String, Map<String, List<String>>> oversiktMap = objectMapper.readValue(resourceOversikt, new TypeReference<>() {
+            Map<String, Map<String, List<String>>> oversiktMap = objectMapper.readValue(oversiktStream, new TypeReference<>() {
             });
             innsatsTilTiltakKoder.putAll(oversiktMap);
 
@@ -83,6 +71,11 @@ public class ArenaTiltakService {
             log.error("Kunne ikke laste inn fordeling.", e);
         }
     }
+
+    private final Random rand = new Random();
+    private final ServiceUtils serviceUtils;
+    private final RequestUtils requestUtils;
+    private final ArenaForvalterService arenaForvalterService;
 
     public void oppdaterTiltaksdeltakelse(
             Vedtakshistorikk historikk,
@@ -250,6 +243,29 @@ public class ArenaTiltakService {
         historikk.setBarnetillegg(nyeBarnetillegg);
     }
 
+    public List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
+            List<NyttVedtakTiltak> vedtaksliste,
+            List<NyttVedtakAap> aapVedtak
+    ) {
+        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
+            return vedtaksliste;
+        }
+
+        var relatedVedtak = getVedtakperioderForAapSekvenser(aapVedtak);
+
+        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
+
+        for (var vedtak : vedtaksliste) {
+            var vedtaksperiode = new Vedtaksperiode(vedtak.getFraDato(), vedtak.getTilDato());
+            if (vedtakOverlapperIkkeVedtaksperioder(vedtaksperiode, relatedVedtak) &&
+                    vedtakHarIkkeOverlappOver100Prosent(vedtak, nyeVedtak)) {
+                nyeVedtak.add(vedtak);
+            }
+        }
+
+        return nyeVedtak;
+    }
+
     private List<NyttVedtakTiltak> oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
             List<NyttVedtakTiltak> vedtaksliste,
             List<NyttVedtakTiltak> tiltaksdeltakelser
@@ -315,29 +331,6 @@ public class ArenaTiltakService {
             }
         }
         return null;
-    }
-
-    public List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
-            List<NyttVedtakTiltak> vedtaksliste,
-            List<NyttVedtakAap> aapVedtak
-    ) {
-        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
-            return vedtaksliste;
-        }
-
-        var relatedVedtak = getVedtakperioderForAapSekvenser(aapVedtak);
-
-        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
-
-        for (var vedtak : vedtaksliste) {
-            var vedtaksperiode = new Vedtaksperiode(vedtak.getFraDato(), vedtak.getTilDato());
-            if (vedtakOverlapperIkkeVedtaksperioder(vedtaksperiode, relatedVedtak) &&
-                    vedtakHarIkkeOverlappOver100Prosent(vedtak, nyeVedtak)) {
-                nyeVedtak.add(vedtak);
-            }
-        }
-
-        return nyeVedtak;
     }
 
     private List<NyttVedtakTiltak> removeOverlappingTiltakSequences(List<NyttVedtakTiltak> vedtaksliste) {

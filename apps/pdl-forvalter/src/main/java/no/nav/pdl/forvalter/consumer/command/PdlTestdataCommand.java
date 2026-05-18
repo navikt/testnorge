@@ -3,12 +3,12 @@ package no.nav.pdl.forvalter.consumer.command;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-public abstract class PdlTestdataCommand implements Callable<Flux<OrdreResponseDTO.HendelseDTO>> {
+public abstract class PdlTestdataCommand implements Callable<Mono<OrdreResponseDTO.HendelseDTO>> {
 
     static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
     static final String TEMA = "Tema";

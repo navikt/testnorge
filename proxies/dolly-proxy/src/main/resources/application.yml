@@ -47,6 +47,7 @@ app:
     histark: https://histarkimport.dev.intern.nav.no
     inntektstub: http://inntektstub.team-inntekt
     inst: http://opphold-testdata.team-rocket.svc.nais.local
+    kelvin-aap: https://aap-behandlingsflyt.intern.dev.nav.no
     kontoregister: https://sokos-kontoregister-person.intern.dev.nav.no
     skattekort: https://sokos-skattekort.intern.dev.nav.no
     krrstub: https://digdir-krr-stub.intern.dev.nav.no

@@ -93,7 +93,6 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments, tilgjengeligeMi
 							<span>{getMiljoer(pensjonEnvironments)}</span>
 						</li>
 					)}
-
 				</ul>
 			</StyledAlert>
 			{pensjonforvalter && bestillingsdata?.environments?.includes('q4') && (

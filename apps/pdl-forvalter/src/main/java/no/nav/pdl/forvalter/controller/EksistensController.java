@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
@@ -23,7 +22,6 @@ public class EksistensController {
 
     private final EksistensService eksistensService;
 
-    @ResponseBody
     @GetMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Sjekk om ident(er) er gyldig(e) og tilgjengelig(e) for oppretting av ny(e) person(er)")
     public Flux<AvailibilityResponseDTO> getIdentAvailability(@Parameter(description = "Ident(er) som skal sjekkes")

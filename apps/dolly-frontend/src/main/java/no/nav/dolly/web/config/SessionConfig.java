@@ -1,10 +1,9 @@
 package no.nav.dolly.web.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.jwk.JWK;
 import io.valkey.DefaultJedisClientConfig;
 import io.valkey.Jedis;
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
+import lombok.SneakyThrows;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -12,6 +11,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,16 +20,27 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
+import org.springframework.security.jackson.SecurityJacksonModules;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.endpoint.NimbusJwtClientAuthenticationParametersConverter;
+import org.springframework.security.oauth2.client.endpoint.OAuth2RefreshTokenGrantRequest;
+import org.springframework.security.oauth2.client.endpoint.WebClientReactiveRefreshTokenTokenResponseClient;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
+import tools.jackson.databind.json.JsonMapper;
+
+import java.time.Duration;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
-@EnableRedisWebSession
+@EnableRedisWebSession(maxInactiveIntervalInSeconds = 10800)
 @Import({
         AzureAdTokenExchange.class,
         TokenXExchange.class,
@@ -66,10 +77,9 @@ class SessionConfig {
     TokenExchange tokenExchange(
             TokenXExchange tokenXExchange,
             AzureAdTokenExchange azureAdTokenExchange,
-            ClientRegistrationIdResolver clientRegistrationIdResolver,
-            ObjectMapper objectMapper) {
+            ClientRegistrationIdResolver clientRegistrationIdResolver) {
 
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
 
         tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
         tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
@@ -109,11 +119,43 @@ class SessionConfig {
         return new WebSessionServerOAuth2AuthorizedClientRepository();
     }
 
+    @SneakyThrows
+    @Bean
+    @ConditionalOnBean(ReactiveClientRegistrationRepository.class)
+    ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
+            ReactiveClientRegistrationRepository clientRegistrationRepository,
+            ServerOAuth2AuthorizedClientRepository authorizedClientRepository,
+            @Value("${IDPORTEN_CLIENT_JWK:}") String idportenClientJwk) {
+
+        var refreshTokenResponseClient = new WebClientReactiveRefreshTokenTokenResponseClient();
+        if (!idportenClientJwk.isBlank()) {
+            var jwk = JWK.parse(idportenClientJwk);
+            var converter = new NimbusJwtClientAuthenticationParametersConverter<OAuth2RefreshTokenGrantRequest>(
+                    clientRegistration -> jwk);
+            refreshTokenResponseClient.addParametersConverter(converter);
+        }
+
+        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
+                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
+                        .authorizationCode()
+                        .refreshToken(configurer -> configurer
+                                .clockSkew(Duration.ofSeconds(120))
+                                .accessTokenResponseClient(refreshTokenResponseClient))
+                        .build();
+
+        var manager = new DefaultReactiveOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientRepository);
+        manager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return manager;
+    }
+
     @Bean
     RedisSerializer<Object> springSessionRedisSerializer() {
-        var objectMapper = new ObjectMapper();
-        objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return new GenericJackson2JsonRedisSerializer(objectMapper);
+        var mapper = JsonMapper.builder()
+                .addModules(SecurityJacksonModules.getModules(getClass().getClassLoader()))
+                .build();
+        return new GenericJacksonJsonRedisSerializer(mapper);
     }
 
 }

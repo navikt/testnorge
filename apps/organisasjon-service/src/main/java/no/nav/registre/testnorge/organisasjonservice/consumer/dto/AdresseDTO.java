@@ -2,25 +2,25 @@ package no.nav.registre.testnorge.organisasjonservice.consumer.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
-@Value
-@NoArgsConstructor(force = true)
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class AdresseDTO {
     @JsonProperty
-    String adresselinje1;
+    private String adresselinje1;
     @JsonProperty
-    String adresselinje2;
+    private String adresselinje2;
     @JsonProperty
-    String adresselinje3;
+    private String adresselinje3;
     @JsonProperty
-    String kommunenummer;
+    private String kommunenummer;
     @JsonProperty
-    String landkode;
+    private String landkode;
     @JsonProperty
-    String postnummer;
+    private String postnummer;
     @JsonProperty
-    String poststed;
+    private String poststed;
 }

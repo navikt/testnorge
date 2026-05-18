@@ -1,7 +1,5 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
@@ -11,10 +9,16 @@ import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSes
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolver;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.session.ReactiveSessionRepository;
 import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 
@@ -30,18 +34,15 @@ import java.util.concurrent.ConcurrentHashMap;
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
-@RequiredArgsConstructor
 public class OidcInMemorySessionConfiguration {
 
-    private final SessionProperties sessionProperties;
+    @Value("${spring.session.timeout:15m}")
+    private Duration sessionTimeout;
 
     @Bean
-    public ReactiveSessionRepository reactiveSessionRepository() {
+    public ReactiveSessionRepository<?> reactiveSessionRepository() {
         OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
-        int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
-                ? Duration.ofMinutes(15)
-                : sessionProperties.getTimeout()
-        ).toSeconds();
+        int defaultMaxInactiveInterval = (int) sessionTimeout.toSeconds();
         sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
         log.info("Set in-memory session max inactive to {} seconds.", defaultMaxInactiveInterval);
         return sessionRepository;
@@ -49,13 +50,31 @@ public class OidcInMemorySessionConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    public ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
+            ReactiveClientRegistrationRepository clientRegistrationRepository,
+            ReactiveOAuth2AuthorizedClientService authorizedClientService) {
+
+        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
+                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
+                        .authorizationCode()
+                        .refreshToken(configurer -> configurer.clockSkew(Duration.ofSeconds(120)))
+                        .build();
+
+        var manager = new AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientService);
+        manager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return manager;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public TokenExchange tokenExchange(
             TokenXExchange tokenXExchange,
             AzureAdTokenExchange azureAdTokenExchange,
-            ClientRegistrationIdResolver clientRegistrationIdResolver,
-            ObjectMapper objectMapper) {
+            ClientRegistrationIdResolver clientRegistrationIdResolver) {
 
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
         tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
         tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
 

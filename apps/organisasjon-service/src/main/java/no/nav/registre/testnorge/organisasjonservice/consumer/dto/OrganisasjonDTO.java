@@ -5,37 +5,39 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Value
+@Data
 @Builder
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class OrganisasjonDTO {
-    @JsonProperty(required = true)
-    String organisasjonsnummer;
-    @JsonProperty(required = true)
+    @JsonProperty
+    private String organisasjonsnummer;
+    @JsonProperty
     @JsonAlias({"virksomhetDetaljer", "juridiskEnhetDetaljer", "organisasjonsleddDetaljer"})
-    DetaljerDTO detaljer;
-    @JsonProperty(required = true)
-    NavnDTO navn;
-    @JsonProperty(required = true)
-    String type;
+    private DetaljerDTO detaljer;
+    @JsonProperty
+    private NavnDTO navn;
+    @JsonProperty
+    private String type;
     @JsonProperty
     @JsonAlias({"inngaarIJuridiskEnheter"})
-    List<OrganisasjonDTO> parents = new ArrayList<>();
+    @Builder.Default
+    private List<OrganisasjonDTO> parents = new ArrayList<>();
     @JsonProperty
-    OrganisasjonDetaljerDTO organisasjonDetaljer;
+    private OrganisasjonDetaljerDTO organisasjonDetaljer;
     @JsonProperty
     @JsonAlias({"driverVirksomheter"})
-    List<OrganisasjonDTO> children = new ArrayList<>();
+    @Builder.Default
+    private List<OrganisasjonDTO> children = new ArrayList<>();
 }

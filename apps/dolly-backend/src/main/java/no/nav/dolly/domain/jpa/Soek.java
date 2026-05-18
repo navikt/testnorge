@@ -18,28 +18,23 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "SOEK")
+@Table(name = "soek")
 public class Soek implements Serializable {
 
     @Id
     private Long id;
 
-    @Column("SOEK_VERDI")
+    @Column("soek_verdi")
     private String soekVerdi;
 
-    @Column("OPPRETTET")
+    @Column("opprettet")
     private LocalDateTime opprettetTidspunkt;
 
-    @Column("BRUKER_ID")
+    @Column("bruker_id")
     private Long brukerId;
 
-    @Column("SOEK_TYPE")
+    @Column("soek_type")
     private SoekType soekType;
-
-    public enum SoekType {
-        DOLLY,
-        TENOR
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -62,5 +57,10 @@ public class Soek implements Serializable {
                 ", brukerId=" + brukerId +
                 ", soekType=" + soekType +
                 '}';
+    }
+
+    public enum SoekType {
+        DOLLY,
+        TENOR
     }
 }

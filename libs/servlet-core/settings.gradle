@@ -5,6 +5,7 @@ plugins {
 rootProject.name = 'servlet-core'
 
 includeBuild "../../plugins/java"
+includeBuild "../../libs/data-transfer-objects"
 
 develocity {
     buildScan {

@@ -1,19 +1,18 @@
 package no.nav.dolly.bestilling.inntektsmelding.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class InntektsmeldingRequestTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
     @Test
-    void testJsonSerializationOfNaturalYtelseDetaljer()
-            throws JsonProcessingException {
+    void testJsonSerializationOfNaturalYtelseDetaljer() {
 
         for (NaturalytelseType type : NaturalytelseType.values()) {
             var detail = new InntektsmeldingRequest.NaturalYtelseDetaljer();

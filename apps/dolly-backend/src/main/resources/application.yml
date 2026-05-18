@@ -11,8 +11,6 @@ server:
     servlet:
       encoding:
         charset: UTF-8
-  error:
-    include-message: always
   max-http-request-header-size: 128KB
 
 spring:
@@ -26,8 +24,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
     web-application-type: reactive
+  reactor:
+    context-propagation: auto
   flyway:
-    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
   mvc:

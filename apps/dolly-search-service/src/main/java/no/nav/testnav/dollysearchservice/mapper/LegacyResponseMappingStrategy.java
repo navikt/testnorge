@@ -1,7 +1,5 @@
 package no.nav.testnav.dollysearchservice.mapper;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -9,6 +7,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.dollysearchservice.dto.Person;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
@@ -44,6 +44,56 @@ public class LegacyResponseMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+    }
+
+    private void mapDoedsdato(PersonDTO personDTO, Person person) {
+
+        person.getHentPerson().getDoedsfall().stream()
+                .filter(doedsfall -> nonNull(doedsfall.getDoedsdato()))
+                .findFirst()
+                .ifPresent(doedsfall -> personDTO.setDoedsfall(PersonDTO.DoedsfallDTO.builder()
+                        .doedsdato(doedsfall.getDoedsdato())
+                        .build()));
+    }
+
+    private void mapInnflyttingTilNorge(PersonDTO personDTO, Person person) {
+
+        person.getHentPerson().getInnflyttingTilNorge().stream()
+                .findFirst()
+                .ifPresent(innflyttingTilNorge -> personDTO.setInnfyttingTilNorge(PersonDTO.InnflyttingTilNorgeDTO.builder()
+                        .fraflyttingsland(innflyttingTilNorge.getFraflyttingsland())
+                        .fraflyttingsstedIUtlandet(innflyttingTilNorge.getFraflyttingsstedIUtlandet())
+                        .build()));
+    }
+
+    private void mapUtflyttingFraNorge(PersonDTO personDTO, Person person) {
+
+        person.getHentPerson().getUtflyttingFraNorge().stream()
+                .findFirst()
+                .ifPresent(utflyttingFraNorge -> personDTO.setUtfyttingFraNorge(PersonDTO.UtfyttingFraNorgeDTO.builder()
+                        .tilflyttingsland(utflyttingFraNorge.getTilflyttingsland())
+                        .tilflyttingsstedIUtlandet(utflyttingFraNorge.getTilflyttingsstedIUtlandet())
+                        .utflyttingsdato(utflyttingFraNorge.getUtflyttingsdato())
+                        .build()));
+    }
+
+    private void mapForelderBarnRelasjoner(PersonDTO personDTO, Person person) {
+
+        if (!person.getHentPerson().getForelderBarnRelasjon().isEmpty()) {
+            personDTO.setForelderBarnRelasjoner(PersonDTO.ForelderBarnRelasjonDTO.builder()
+                            .barn(person.getHentPerson().getForelderBarnRelasjon().stream()
+                                    .filter(Person.ForelderBarnRelasjon::isBarn)
+                                    .map(Person.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                    .toList())
+                            .foreldre(person.getHentPerson().getForelderBarnRelasjon().stream()
+                                    .filter(Person.ForelderBarnRelasjon::isForelder)
+                                    .map(forelderBarnRelasjon -> PersonDTO.ForelderDTO.builder()
+                                            .ident(forelderBarnRelasjon.getRelatertPersonsIdent())
+                                            .rolle(forelderBarnRelasjon.getRelatertPersonsRolle().name())
+                                            .build())
+                                    .toList())
+                            .build());
+        }
     }
 
     private static void mapIdent(PersonDTO personDTO, Person person) {
@@ -126,56 +176,6 @@ public class LegacyResponseMappingStrategy implements MappingStrategy {
                             .gyldighetstidspunkt(personstatus.getFolkeregistermetadata().getGyldighetstidspunkt())
                             .build())
                     .toList());
-        }
-    }
-
-    private void mapDoedsdato(PersonDTO personDTO, Person person) {
-
-        person.getHentPerson().getDoedsfall().stream()
-                .filter(doedsfall -> nonNull(doedsfall.getDoedsdato()))
-                .findFirst()
-                .ifPresent(doedsfall -> personDTO.setDoedsfall(PersonDTO.DoedsfallDTO.builder()
-                        .doedsdato(doedsfall.getDoedsdato())
-                        .build()));
-    }
-
-    private void mapInnflyttingTilNorge(PersonDTO personDTO, Person person) {
-
-        person.getHentPerson().getInnflyttingTilNorge().stream()
-                .findFirst()
-                .ifPresent(innflyttingTilNorge -> personDTO.setInnfyttingTilNorge(PersonDTO.InnflyttingTilNorgeDTO.builder()
-                        .fraflyttingsland(innflyttingTilNorge.getFraflyttingsland())
-                        .fraflyttingsstedIUtlandet(innflyttingTilNorge.getFraflyttingsstedIUtlandet())
-                        .build()));
-    }
-
-    private void mapUtflyttingFraNorge(PersonDTO personDTO, Person person) {
-
-        person.getHentPerson().getUtflyttingFraNorge().stream()
-                .findFirst()
-                .ifPresent(utflyttingFraNorge -> personDTO.setUtfyttingFraNorge(PersonDTO.UtfyttingFraNorgeDTO.builder()
-                        .tilflyttingsland(utflyttingFraNorge.getTilflyttingsland())
-                        .tilflyttingsstedIUtlandet(utflyttingFraNorge.getTilflyttingsstedIUtlandet())
-                        .utflyttingsdato(utflyttingFraNorge.getUtflyttingsdato())
-                        .build()));
-    }
-
-    private void mapForelderBarnRelasjoner(PersonDTO personDTO, Person person) {
-
-        if (!person.getHentPerson().getForelderBarnRelasjon().isEmpty()) {
-            personDTO.setForelderBarnRelasjoner(PersonDTO.ForelderBarnRelasjonDTO.builder()
-                            .barn(person.getHentPerson().getForelderBarnRelasjon().stream()
-                                    .filter(Person.ForelderBarnRelasjon::isBarn)
-                                    .map(Person.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                    .toList())
-                            .foreldre(person.getHentPerson().getForelderBarnRelasjon().stream()
-                                    .filter(Person.ForelderBarnRelasjon::isForelder)
-                                    .map(forelderBarnRelasjon -> PersonDTO.ForelderDTO.builder()
-                                            .ident(forelderBarnRelasjon.getRelatertPersonsIdent())
-                                            .rolle(forelderBarnRelasjon.getRelatertPersonsRolle().name())
-                                            .build())
-                                    .toList())
-                            .build());
         }
     }
 }

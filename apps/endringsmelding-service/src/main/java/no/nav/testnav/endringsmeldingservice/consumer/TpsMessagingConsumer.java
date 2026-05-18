@@ -1,9 +1,14 @@
 package no.nav.testnav.endringsmeldingservice.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.endringsmeldingservice.config.Consumers;
-import no.nav.testnav.endringsmeldingservice.consumer.command.*;
+import no.nav.testnav.endringsmeldingservice.consumer.command.GetAdressehistorikkCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.GetEksistererPersonCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.HentPersondataCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.SendKansellerDoedsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.domain.IdenterRequest;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdressehistorikkDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdressehistorikkRequest;
@@ -17,11 +22,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,26 +40,17 @@ public class TpsMessagingConsumer {
     public TpsMessagingConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper,
             WebClient webClient
     ) {
         serverProperties = consumers.getTpsMessagingService();
         this.accessTokenService = tokenExchange;
-        ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
-                .codecs(config -> {
-                    config.defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                    config.defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                }).build();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
-    public Flux<TpsIdentStatusDTO> hentMiljoer(IdenterRequest body) { // Skal ryddes til slutt
+    public Flux<TpsIdentStatusDTO> hentMiljoer(IdenterRequest body) {
         return accessTokenService
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, body.ident(), accessToken.getTokenValue()).call());

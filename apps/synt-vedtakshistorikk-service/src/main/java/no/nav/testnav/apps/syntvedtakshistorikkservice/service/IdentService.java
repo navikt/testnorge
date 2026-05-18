@@ -1,12 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.DollySearchServiceConsumer;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
@@ -14,13 +12,18 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonSearch;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
-import java.net.URL;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -30,21 +33,16 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class IdentService {
 
-    private final DollySearchServiceConsumer dollySearchServiceConsumer;
-    private final ArenaForvalterService arenaForvalterService;
-    private final PdlProxyConsumer pdlProxyConsumer;
-    private final Random RANDOM = new SecureRandom();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
     private static final String BOSATT_STATUS = "BOSATT";
     private static final List<IdentMedKontonr> IDENTER_MED_KONTONR;
 
     static {
-        ObjectMapper objectMapper = new ObjectMapper();
-        URL resourceIdenterMedKontonr = Resources.getResource("files/identer_med_kontonr.json");
+        ObjectMapper objectMapper = JsonMapper.builder().build();
         IDENTER_MED_KONTONR = new ArrayList<>();
-        try {
-            Collection<IdentMedKontonr> identCollection = objectMapper.readValue(resourceIdenterMedKontonr, new TypeReference<>() {
+        try (var inputStream = Resources.getResource("files/identer_med_kontonr.json").openStream()) {
+            Collection<IdentMedKontonr> identCollection = objectMapper.readValue(inputStream, new TypeReference<>() {
             });
             IDENTER_MED_KONTONR.addAll(identCollection);
 
@@ -52,6 +50,11 @@ public class IdentService {
             log.error("Kunne ikke laste inn identer med kontonr.", e);
         }
     }
+
+    private final DollySearchServiceConsumer dollySearchServiceConsumer;
+    private final ArenaForvalterService arenaForvalterService;
+    private final PdlProxyConsumer pdlProxyConsumer;
+    private final Random RANDOM = new SecureRandom();
 
     public List<PersonDTO> getUtvalgteIdenterIAldersgruppe(
             int antallNyeIdenter,
@@ -119,6 +122,25 @@ public class IdentService {
         return utvalgteIdenter;
     }
 
+    public Kontoinfo getIdentMedKontoinformasjon() {
+        var ident = IDENTER_MED_KONTONR.get(RANDOM.nextInt(IDENTER_MED_KONTONR.size()));
+        var pdlPerson = pdlProxyConsumer.getPdlPerson(ident.getIdent());
+        if (isNull(pdlPerson) || isNull(pdlPerson.getData())) return null;
+        var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
+        var boadresseInfo = pdlPerson.getData().getHentPerson().getBostedsadresse();
+
+        return Kontoinfo.builder()
+                .fnr(ident.getIdent())
+                .fornavn(navnInfo.isEmpty() ? "" : navnInfo.getFirst().getFornavn())
+                .mellomnavn(navnInfo.isEmpty() || isNull(navnInfo.getFirst().getMellomnavn()) ? "" : navnInfo.getFirst().getMellomnavn())
+                .etternavn(navnInfo.isEmpty() ? "" : navnInfo.getFirst().getEtternavn())
+                .kontonummer(ident.getKontonummer())
+                .adresseLinje1(getAdresseLinje(boadresseInfo))
+                .postnr(boadresseInfo.isEmpty() ? "" : boadresseInfo.getFirst().getVegadresse().getPostnummer())
+                .landkode("NO")
+                .build();
+    }
+
     private boolean validBarn(List<String> barn, LocalDate tidligsteDatoBarnetillegg) {
         if (isNull(barn) || barn.isEmpty()) return false;
         var pdlBolk = pdlProxyConsumer.getPdlPersoner(barn);
@@ -147,25 +169,6 @@ public class IdentService {
         }
 
         return false;
-    }
-
-    public Kontoinfo getIdentMedKontoinformasjon() {
-        var ident = IDENTER_MED_KONTONR.get(RANDOM.nextInt(IDENTER_MED_KONTONR.size()));
-        var pdlPerson = pdlProxyConsumer.getPdlPerson(ident.getIdent());
-        if (isNull(pdlPerson) || isNull(pdlPerson.getData())) return null;
-        var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
-        var boadresseInfo = pdlPerson.getData().getHentPerson().getBostedsadresse();
-
-        return Kontoinfo.builder()
-                .fnr(ident.getIdent())
-                .fornavn(navnInfo.isEmpty() ? "" : navnInfo.getFirst().getFornavn())
-                .mellomnavn(navnInfo.isEmpty() || isNull(navnInfo.getFirst().getMellomnavn()) ? "" : navnInfo.getFirst().getMellomnavn())
-                .etternavn(navnInfo.isEmpty() ? "" : navnInfo.getFirst().getEtternavn())
-                .kontonummer(ident.getKontonummer())
-                .adresseLinje1(getAdresseLinje(boadresseInfo))
-                .postnr(boadresseInfo.isEmpty() ? "" : boadresseInfo.getFirst().getVegadresse().getPostnummer())
-                .landkode("NO")
-                .build();
     }
 
     private String getAdresseLinje(List<PdlPerson.Boadresse> boadresse) {

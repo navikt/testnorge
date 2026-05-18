@@ -1,6 +1,5 @@
 package no.nav.brregstub.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.brregstub.api.common.RsOrganisasjon;
@@ -12,6 +11,7 @@ import no.nav.brregstub.generated.GrunndataUtskrift;
 import no.nav.brregstub.mapper.HentRolleMapper;
 import no.nav.brregstub.mapper.RolleoversiktMapper;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 @AllArgsConstructor

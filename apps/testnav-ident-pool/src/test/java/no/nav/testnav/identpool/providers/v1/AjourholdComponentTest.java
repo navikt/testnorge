@@ -57,6 +57,36 @@ class AjourholdComponentTest extends AbstractTestcontainer {
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
 
+    private String readSqlFile() throws IOException {
+
+        var resource = new ClassPathResource(DB_FILE);
+        var bytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    private Flux<TpsStatusDTO> getTpsStatus() {
+
+        var identer = Set.of(
+                "14496205422",
+                "14496208650",
+                "14496201087",
+                "14496209444",
+                "14496205260",
+                "14496209282",
+                "14496200889",
+                "14496201834",
+                "14496202628",
+                "14496206801",
+                "14496201672",
+                "14496204205");
+
+        return Flux.fromIterable(identer)
+                .map(ident -> TpsStatusDTO.builder()
+                        .ident(ident)
+                        .inUse(true)
+                        .build());
+    }
+
     @BeforeEach
     void populerDatabaseMedTestidenter() throws IOException {
 
@@ -141,35 +171,5 @@ class AjourholdComponentTest extends AbstractTestcontainer {
                 .as(StepVerifier::create)
                 .expectNext(4380L)
                 .verifyComplete();
-    }
-
-    private String readSqlFile() throws IOException {
-
-        var resource = new ClassPathResource(DB_FILE);
-        var bytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
-        return new String(bytes, StandardCharsets.UTF_8);
-    }
-
-    private Flux<TpsStatusDTO> getTpsStatus() {
-
-        var identer = Set.of(
-                "14496205422",
-                "14496208650",
-                "14496201087",
-                "14496209444",
-                "14496205260",
-                "14496209282",
-                "14496200889",
-                "14496201834",
-                "14496202628",
-                "14496206801",
-                "14496201672",
-                "14496204205");
-
-        return Flux.fromIterable(identer)
-                .map(ident -> TpsStatusDTO.builder()
-                        .ident(ident)
-                        .inUse(true)
-                        .build());
     }
 }

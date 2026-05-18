@@ -4,7 +4,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { identerSearch } from '@/service/services/dollysearch/DollySearch'
 import { useReduxDispatch, useReduxSelector } from '@/utils/hooks/useRedux'
 import { navigerTilPerson } from '@/ducks/finnPerson'
-import { SoekTypeValg, GroupedOption } from './NavigeringTypes'
+import { GroupedOption, SoekTypeValg } from './NavigeringTypes'
 
 type Person = {
 	ident: string
@@ -148,13 +148,26 @@ export const usePersonSearch = () => {
 			setPdlIdenter(state.pdlIdenter)
 			setPdlAktoerer(state.pdlAktoerer)
 		})
+
+		// Sjekk hvilke identer som blir returnert baade fra pdl og pdlf
+		const duplicateValues = new Set(
+			personer
+				?.filter((person) => personer.filter((p) => p.value === person.value).length > 1)
+				.map((person) => person.value),
+		)
+
+		// Filtrer ut personer som returneres fra baade pdl og pdlf, og har mangelfulle data
+		const filtrertePersoner =
+			personer?.filter(
+				(person) => !(person.label?.includes('UKJENT') && duplicateValues.has(person.value)),
+			) || []
+
 		return {
 			label: 'Personer',
 			options:
-				personer?.map((person) => ({
+				filtrertePersoner?.map((person) => ({
 					value: person.value as string,
-					label:
-						person.label?.length > 39 ? `${person.label?.substring(0, 36)}...` : person.label,
+					label: person.label?.length > 39 ? `${person.label?.substring(0, 36)}...` : person.label,
 					type: SoekTypeValg.PERSON,
 				})) ?? [],
 		}

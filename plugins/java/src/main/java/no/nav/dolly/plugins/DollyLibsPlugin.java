@@ -5,6 +5,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaLibraryPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
 
@@ -45,7 +46,12 @@ public class DollyLibsPlugin implements Plugin<Project> {
         dependencyManagement.imports(imports -> {
             imports.mavenBom("org.springframework.boot:spring-boot-dependencies:" + versions.springBoot);
             imports.mavenBom("org.springframework.cloud:spring-cloud-dependencies:" + versions.springCloud);
+            imports.mavenBom("org.testcontainers:testcontainers-bom:" + versions.testcontainers);
         });
+
+        project.getTasks().withType(JavaCompile.class).configureEach(task ->
+                task.getOptions().getCompilerArgs().add("-parameters")
+        );
 
         var dependencies = project.getDependencies();
         dependencies.add("annotationProcessor", "org.projectlombok:lombok");

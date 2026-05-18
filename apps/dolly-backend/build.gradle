@@ -34,6 +34,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation "org.springframework.retry:spring-retry"
+    implementation "org.springframework.boot:spring-boot-flyway"
 
     implementation "org.opensearch.client:opensearch-java:$versions.opensearchClient"
     implementation "org.apache.httpcomponents.client5:httpclient5"
@@ -43,7 +44,8 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine"
 
     implementation "org.ehcache:ehcache:3.10.8"
-    implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
+    implementation "com.fasterxml.jackson.core:jackson-core"
+    implementation "tools.jackson.core:jackson-databind"
 
     runtimeOnly "org.postgresql:r2dbc-postgresql"
     runtimeOnly "io.r2dbc:r2dbc-pool"
@@ -67,7 +69,7 @@ dependencies {
     testImplementation "org.testcontainers:junit-jupiter:1.21.3"
     testImplementation "org.testcontainers:postgresql:1.21.3"
 
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
 
     implementation "net.java.dev.jna:jna:5.14.0"
 }

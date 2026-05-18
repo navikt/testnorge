@@ -44,7 +44,7 @@ dependencies {
 
     implementation "com.h2database:h2"
 
-    implementation "org.apache.httpcomponents.client5:httpclient5:5.4.1"
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.3'
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
@@ -52,7 +52,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.springframework.boot:spring-boot-starter-webmvc-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
 }

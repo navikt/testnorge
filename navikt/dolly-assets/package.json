@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-assets",
-  "version": "1.4.8",
+  "version": "1.4.10",
   "description": "Dolly assets for our frontend applications",
   "type": "module",
   "main": "lib/index.js",
@@ -14,8 +14,8 @@
   "license": "MIT",
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.1",
-    "prettier": "^3.8.2",
-    "vite": "^8.0.8",
+    "prettier": "^3.8.3",
+    "vite": "^8.0.11",
     "vite-plugin-svgr": "^5.2.0"
   },
   "repository": {

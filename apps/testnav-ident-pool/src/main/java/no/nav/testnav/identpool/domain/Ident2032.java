@@ -21,40 +21,40 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PERSONIDENTIFIKATOR2032")
+@Table(name = "personidentifikator2032")
 public class Ident2032 {
 
     @Id
-    @Column("ID")
+    @Column("id")
     private Long id;
 
     @NotNull
-    @Column("IDENTTYPE")
+    @Column("identtype")
     private Identtype identtype;
 
     @NotNull
-    @Column("PERSONIDENTIFIKATOR")
+    @Column("personidentifikator")
     private String personidentifikator;
 
     @NotNull
-    @Column("DATO_IDENTIFIKATOR")
+    @Column("dato_identifikator")
     private String datoIdentifikator;
 
     @NotNull
-    @Column("INDIVIDNUMMER")
+    @Column("individnummer")
     private Integer individnummer;
 
-    @Column("FOEDSELSDATO")
+    @Column("foedselsdato")
     private LocalDate foedselsdato;
 
-    @Column("ALLOKERT")
+    @Column("allokert")
     private Boolean allokert;
 
-    @Column("DATO_ALLOKERT")
+    @Column("dato_allokert")
     private LocalDate datoAllokert;
 
     @Version
-    @Column("VERSJON")
+    @Column("versjon")
     private Integer versjon;
 
     @JsonIgnore

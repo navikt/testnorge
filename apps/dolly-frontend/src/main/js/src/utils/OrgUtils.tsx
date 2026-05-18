@@ -3,9 +3,7 @@ import { OrganisasjonForvalterData } from '@/service/services/organisasjonforval
 
 export const getOrgMiljoer = (org: OrganisasjonForvalterData | undefined): string[] => {
 	if (!org) return []
-	return Object.keys(org).filter(
-		(key) => (org as Record<string, any>)[key]?.organisasjonsnummer,
-	)
+	return Object.keys(org).filter((key) => (org as Record<string, any>)[key]?.organisasjonsnummer)
 }
 
 export const arbeidsgiverToggleValues = [

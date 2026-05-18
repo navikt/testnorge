@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pensjonforvalter.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
@@ -30,6 +29,8 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +56,8 @@ class PensjonPensjonsdataServiceTest {
 
     private static final String IDENT = "11111111111";
 
+    private static final ObjectMapper objectMapper = JsonMapper.builder().build();
+
     @Mock
     private TransaksjonMappingRepository transaksjonMappingRepository;
 
@@ -63,15 +66,41 @@ class PensjonPensjonsdataServiceTest {
 
     @Spy
     private PensjonforvalterHelper pensjonforvalterHelper =
-            new PensjonforvalterHelper(new ErrorStatusDecoder(new ObjectMapper()),
-                    new ObjectMapper(),
-                    new TransaksjonMappingService(transaksjonMappingRepository, new ObjectMapper()));
+            new PensjonforvalterHelper(new ErrorStatusDecoder(objectMapper),
+                    objectMapper,
+                    new TransaksjonMappingService(transaksjonMappingRepository, objectMapper));
 
     @Mock
     private MapperFacade mapperFacade;
 
     @InjectMocks
     private PensjonPensjonsdataService pensjonPensjonsdataService;
+
+    private static PensjonData.TpOrdning getTpOrdningWithYtelser(String ordning, List<PensjonData.TpYtelse> ytelser) {
+
+        return PensjonData.TpOrdning.builder()
+                .ordning(ordning)
+                .ytelser(ytelser)
+                .build();
+    }
+
+    static class PensjonforvalterClientTestUtil {
+
+        static PensjonforvalterResponse getPensjonforvalterResponse(int httpStatusCode, String... miljoe) {
+
+            var response = new PensjonforvalterResponse();
+            var status = new ArrayList<PensjonforvalterResponse.ResponseEnvironment>();
+
+            var statusResponse = new PensjonforvalterResponse.Response();
+            statusResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus(httpStatusCode == 200 ? "OK" : "FEIL", httpStatusCode));
+
+            Arrays.stream(miljoe).forEach(m -> status.add(new PensjonforvalterResponse.ResponseEnvironment(m, statusResponse)));
+
+            response.setStatus(status);
+
+            return response;
+        }
+    }
 
     @BeforeEach
     void setup() {
@@ -362,31 +391,5 @@ class PensjonPensjonsdataServiceTest {
         assertThat(resultat.getStatus().get(1).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
         assertThat(resultat.getStatus().get(2).getMiljo(), is(equalTo("T3")));
         assertThat(resultat.getStatus().get(2).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
-    }
-
-    static class PensjonforvalterClientTestUtil {
-
-        static PensjonforvalterResponse getPensjonforvalterResponse(int httpStatusCode, String... miljoe) {
-
-            var response = new PensjonforvalterResponse();
-            var status = new ArrayList<PensjonforvalterResponse.ResponseEnvironment>();
-
-            var statusResponse = new PensjonforvalterResponse.Response();
-            statusResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus(httpStatusCode == 200 ? "OK" : "FEIL", httpStatusCode));
-
-            Arrays.stream(miljoe).forEach(m -> status.add(new PensjonforvalterResponse.ResponseEnvironment(m, statusResponse)));
-
-            response.setStatus(status);
-
-            return response;
-        }
-    }
-
-    private static PensjonData.TpOrdning getTpOrdningWithYtelser(String ordning, List<PensjonData.TpYtelse> ytelser) {
-
-        return PensjonData.TpOrdning.builder()
-                .ordning(ordning)
-                .ytelser(ytelser)
-                .build();
     }
 }

@@ -41,14 +41,10 @@ const ErrorView = () => {
 		})
 	}
 
-	const errors = [
-		'Failed to fetch dynamically imported module',
-		'Unable to preload CSS',
-		"Cannot destructure property of 'register'",
-	]
+	const authErrors = ["Cannot destructure property of 'register'"]
 
-	if (errors.some((e) => error?.message?.includes(e))) {
-		console.error('Navigating to login due to module/resource loading error')
+	if (authErrors.some((e) => error?.message?.includes(e))) {
+		console.error('Navigating to login due to auth-related error')
 		navigateToLogin(error?.message)
 	}
 	return <AppError error={error} stackTrace={error.stackTrace} />

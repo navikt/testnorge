@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.sigrunstub.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -80,7 +80,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
                             destinasjon.setPensjonsgivendeInntekt(
                                     objectMapper.readTree(
                                             objectMapper.writeValueAsString(kilde.getPensjonsgivendeInntekt())));
-                        } catch (JsonProcessingException e) {
+                        } catch (JacksonException e) {
                             log.error("Feilet å gjøre {} om til JSON", kilde.getPensjonsgivendeInntekt());
                         }
                     }

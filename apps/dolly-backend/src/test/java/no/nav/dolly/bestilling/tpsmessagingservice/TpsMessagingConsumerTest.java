@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
@@ -9,6 +7,8 @@ import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -24,12 +24,18 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final List<String> MILJOER = List.of("q1", "q2");
-
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
+    private final Random randomKontonummer = new SecureRandom();
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Random randomKontonummer = new SecureRandom();
+    private void stubPostUtenlandskBankkontoData() {
+
+        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
+                .willReturn(ok()
+                        .withBody("[{\"miljoe\" : \"q1\", \"status\" : \"OK\"}]")
+                        .withHeader("Content-Type", "application/json")));
+    }
 
     @Test
     void createUtenlandskbankkonto_OK() {
@@ -67,10 +73,10 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
                                 .collectList()
                                 .as(StepVerifier::create)
                                 .assertNext(response ->
-                                    assertThat(response)
-                                            .isNotNull()
-                                            .extracting(list -> list.getFirst().getStatus())
-                                            .isEqualTo("OK")
+                                        assertThat(response)
+                                                .isNotNull()
+                                                .extracting(list -> list.getFirst().getStatus())
+                                                .isEqualTo("OK")
                                 )
                                 .verifyComplete()
                 );
@@ -78,13 +84,7 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
         var sendtBankkontoer = WireMock.getAllServeEvents()
                 .stream()
                 .map(e -> e.getRequest().getBodyAsString())
-                .map(s -> {
-                    try {
-                        return objectMapper.readValue(s, BankkontonrUtlandDTO.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(s -> objectMapper.readValue(s, BankkontonrUtlandDTO.class))
                 .toList();
 
         var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().toList();
@@ -92,14 +92,6 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
         AssertionsForInterfaceTypes
                 .assertThat(forskjelligeBankkontoer)
                 .hasSameSizeAs(sendtBankkontoer);
-    }
-
-    private void stubPostUtenlandskBankkontoData() {
-
-        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
-                .willReturn(ok()
-                        .withBody("[{\"miljoe\" : \"q1\", \"status\" : \"OK\"}]")
-                        .withHeader("Content-Type", "application/json")));
     }
 
 }

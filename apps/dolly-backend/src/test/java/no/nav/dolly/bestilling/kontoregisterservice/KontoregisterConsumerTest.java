@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.kontoregisterservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.testnav.libs.dto.kontoregister.v1.HentKontoRequestDTO;
@@ -12,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -28,18 +28,9 @@ class KontoregisterConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final String KONTONUMMER = "1234567890";
-
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @AfterEach
-    void cleanUp() {
-        WireMock
-                .getAllServeEvents()
-                .forEach(e -> WireMock.removeServeEvent(e.getId()));
-    }
 
     private static String hentKontoResponse() {
         return "{\n" +
@@ -58,6 +49,13 @@ class KontoregisterConsumerTest extends AbstractConsumerTest {
                 "        \"bankadresse3\": \"string\"\n" +
                 "    }\n" +
                 "}";
+    }
+
+    @AfterEach
+    void cleanUp() {
+        WireMock
+                .getAllServeEvents()
+                .forEach(e -> WireMock.removeServeEvent(e.getId()));
     }
 
     @Test
@@ -123,13 +121,7 @@ class KontoregisterConsumerTest extends AbstractConsumerTest {
         var hentBankkontoer = WireMock.getAllServeEvents()
                 .stream()
                 .map(e -> e.getRequest().getBodyAsString())
-                .map(s -> {
-                    try {
-                        return objectMapper.readValue(s, HentKontoRequestDTO.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(s -> objectMapper.readValue(s, HentKontoRequestDTO.class))
                 .toList();
 
         hentBankkontoer

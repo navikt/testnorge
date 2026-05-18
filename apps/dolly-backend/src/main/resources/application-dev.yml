@@ -20,6 +20,9 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
+  testnav-inntektsmelding-service:
+    name: testnav-inntektsmelding-service-dev
+    url: http://testnav-inntektsmelding-service-dev.dolly.svc.cluster.local
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: http://testnav-pdl-forvalter-dev.dolly.svc.cluster.local

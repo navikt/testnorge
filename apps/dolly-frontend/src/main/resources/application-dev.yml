@@ -2,6 +2,8 @@
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
 
 spring:
+  session:
+    timeout: 3h
   data:
     redis:
       host: ${VALKEY_HOST_SESSION_DEV}

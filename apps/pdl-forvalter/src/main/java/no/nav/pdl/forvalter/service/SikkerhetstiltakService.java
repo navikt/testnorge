@@ -1,15 +1,15 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -31,56 +31,55 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
     private static final String VALIDATION_PERSONIDENT_ERROR = "Sikkerhetstiltak: NAV personident må angis";
     private static final String VALIDATION_ENHET_ERROR = "Sikkerhetstiltak: Enhet må angis";
 
-    public List<SikkerhetstiltakDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        for (var type : person.getSikkerhetstiltak()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                type.setKilde(getKilde(type));
-                type.setMaster(Master.PDL);
-            }
-        }
-
-        person.setSikkerhetstiltak(new ArrayList<>(person.getSikkerhetstiltak()));
-        person.getSikkerhetstiltak().sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
-        renumberId(person.getSikkerhetstiltak());
-
-        return person.getSikkerhetstiltak();
+        return Flux.fromIterable(dbPerson.getPerson().getSikkerhetstiltak())
+                .filter(type -> isTrue(type.getIsNew()))
+                .doOnNext(type -> {
+                     type.setKilde(getKilde(type));
+                     type.setMaster(Master.PDL);
+                })
+                .then(Mono.defer(() -> {
+                    dbPerson.getPerson().getSikkerhetstiltak()
+                            .sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
+                    renumberId(dbPerson.getPerson().getSikkerhetstiltak());
+                    return Mono.just(dbPerson);
+                }));
     }
 
-    public void validate(SikkerhetstiltakDTO sikkerhetstiltak) {
+    public Mono<Void> validate(SikkerhetstiltakDTO sikkerhetstiltak) {
 
         if (isNull(sikkerhetstiltak.getTiltakstype())) {
-            throw new InvalidRequestException(VALIDATION_TILTAKSTYPE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_TILTAKSTYPE_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getBeskrivelse())) {
-            throw new InvalidRequestException(VALIDATION_BESKRIVELSE_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_BESKRIVELSE_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getGyldigFraOgMed())) {
-            throw new InvalidRequestException(VALIDATION_GYLDIGFOM_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_GYLDIGFOM_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_GYLDIGTOM_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_GYLDIGTOM_ERROR));
         }
 
         if (sikkerhetstiltak.getGyldigFraOgMed().isAfter(sikkerhetstiltak.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR));
         }
 
         if (isNull(sikkerhetstiltak.getKontaktperson())) {
-            throw new InvalidRequestException(VALIDATION_KONTAKTPERSON_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_KONTAKTPERSON_ERROR));
         }
 
         if (isBlank(sikkerhetstiltak.getKontaktperson().getPersonident())) {
-            throw new InvalidRequestException(VALIDATION_PERSONIDENT_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_PERSONIDENT_ERROR));
         }
 
         if (nonNull(sikkerhetstiltak.getKontaktperson()) && isBlank(sikkerhetstiltak.getKontaktperson().getEnhet())) {
-            throw new InvalidRequestException(VALIDATION_ENHET_ERROR);
+            return Mono.error(new InvalidRequestException(VALIDATION_ENHET_ERROR));
         }
+        return Mono.empty();
     }
 }
