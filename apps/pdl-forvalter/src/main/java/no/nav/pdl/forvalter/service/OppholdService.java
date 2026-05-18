@@ -58,14 +58,21 @@ public class OppholdService implements Validation<OppholdDTO> {
 
         for (var i = 0; i < opphold.size(); i++) {
             if (i + 1 < opphold.size()) {
-                if (isNull(opphold.get(i + 1).getOppholdTil()) &&
-                        !opphold.get(i).getOppholdFra().isAfter(opphold.get(i + 1).getOppholdFra().plusDays(1)) ||
-                        (nonNull(opphold.get(i + 1).getOppholdTil()) &&
-                                !opphold.get(i).getOppholdFra().isAfter(opphold.get(i + 1).getOppholdTil()))) {
+                var current = opphold.get(i);
+                var next = opphold.get(i + 1);
+
+                if (isNull(current.getOppholdFra())) {
+                    continue;
+                }
+
+                if ((isNull(next.getOppholdTil()) && nonNull(next.getOppholdFra()) &&
+                        !current.getOppholdFra().isAfter(next.getOppholdFra().plusDays(1))) ||
+                        (nonNull(next.getOppholdTil()) &&
+                                !current.getOppholdFra().isAfter(next.getOppholdTil()))) {
                     return Mono.error(new InvalidRequestException(VALIDATION_OPPHOLD_OVELAP_ERROR));
                 }
-                if (isNull(opphold.get(i + 1).getOppholdTil())) {
-                    opphold.get(i + 1).setOppholdTil(opphold.get(i).getOppholdFra().minusDays(1));
+                if (isNull(next.getOppholdTil())) {
+                    next.setOppholdTil(current.getOppholdFra().minusDays(1));
                 }
             }
         }
