@@ -71,7 +71,7 @@ public class UtledFagsystemUtil {
         utledPensjonTyper(result, kriterier);
         utledFagsystemTyper(result, kriterier);
 
-        if (isNotBlank(bestilling.getGjenopprettetFraIdent())) {
+        if (isNotBlank(bestilling.getGjenopprettetFraIdent()) || nonNull(bestilling.getOpprettetFraId())) {
             result.remove(PDL_FORVALTER);
         }
 

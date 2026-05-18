@@ -182,7 +182,11 @@ public class BestillingController {
                 + status.getAntallLevert() + ":"
                 + status.getSistOppdatert() + ":"
                 + (status.getFeil() != null ? status.getFeil().length() : 0) + ":"
-                + status.getStatus().size();
+                + status.getStatus().stream()
+                        .map(s -> s.getId() + "=" + (s.getStatuser() != null && !s.getStatuser().isEmpty()
+                                ? s.getStatuser().getFirst().getMelding()
+                                : ""))
+                        .collect(java.util.stream.Collectors.joining(","));
     }
 
     private ServerSentEvent<RsBestillingStatus> toBestillingSse(RsBestillingStatus status) {
