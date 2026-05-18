@@ -11,8 +11,13 @@ import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.OpprettRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PdlStatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
@@ -42,6 +47,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -504,6 +510,580 @@ class PdlOrdreServiceTest {
         when(deployService.sendOrders(any())).thenReturn(Flux.fromIterable(statuses));
         when(aliasRepository.findByPersonId(any(Long.class))).thenReturn(Flux.empty());
         when(personRepository.findByIdentIn(anyList())).thenReturn(Flux.empty());
+    }
+
+    @Test
+    void shouldCollectEksternePersonerFromKontaktinformasjonForDoedsbo() {
+
+        var kontaktperson = KontaktinformasjonForDoedsboDTO.KontaktpersonDTO.builder()
+                .identifikasjonsnummer(RELATERT_PERSON_IDENT)
+                .eksisterendePerson(true)
+                .build();
+
+        var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
+                .personSomKontakt(kontaktperson)
+                .build();
+
+        var hovedPersonDTO = buildMinimalPersonDTO();
+        hovedPersonDTO.setKontaktinformasjonForDoedsbo(new ArrayList<>(List.of(kontaktinfo)));
+
+        var dbHovedperson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, hovedPersonDTO);
+
+        var dbRelasjon = DbRelasjon.builder()
+                .personId(HOVEDPERSON_ID)
+                .relatertPersonId(RELATERT_PERSON_ID)
+                .build();
+
+        var relatertPersonDTO = buildMinimalPersonDTO();
+        var dbRelatertPerson = buildDbPerson(RELATERT_PERSON_ID, RELATERT_PERSON_IDENT, relatertPersonDTO);
+
+        stubBasicSendFlow(dbHovedperson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
+        when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, true))
+                .assertNext(response -> {
+                    assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT)));
+                    assertThat(response.getRelasjoner(), is(empty()));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCollectEksternePersonerFromChildrenForeldreansvarAndre() {
+
+        var barnIdent = "11223344556";
+
+        var forelderBarnRelasjon = ForelderBarnRelasjonDTO.builder()
+                .relatertPerson(barnIdent)
+                .relatertPersonsRolle(ForelderBarnRelasjonDTO.Rolle.BARN)
+                .build();
+
+        var hovedPersonDTO = buildMinimalPersonDTO();
+        hovedPersonDTO.setForelderBarnRelasjon(new ArrayList<>(List.of(forelderBarnRelasjon)));
+
+        var dbHovedperson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, hovedPersonDTO);
+
+        var barnForeldreansvar = ForeldreansvarDTO.builder()
+                .ansvar(ForeldreansvarDTO.Ansvar.ANDRE)
+                .ansvarlig(RELATERT_PERSON_IDENT)
+                .eksisterendePerson(true)
+                .build();
+
+        var barnPersonDTO = buildMinimalPersonDTO();
+        barnPersonDTO.setForeldreansvar(new ArrayList<>(List.of(barnForeldreansvar)));
+
+        var dbBarn = buildDbPerson(3L, barnIdent, barnPersonDTO);
+
+        var dbRelasjon = DbRelasjon.builder()
+                .personId(HOVEDPERSON_ID)
+                .relatertPersonId(RELATERT_PERSON_ID)
+                .build();
+
+        var relatertPersonDTO = buildMinimalPersonDTO();
+        var dbRelatertPerson = buildDbPerson(RELATERT_PERSON_ID, RELATERT_PERSON_IDENT, relatertPersonDTO);
+
+        stubBasicSendFlow(dbHovedperson);
+        when(personRepository.findByIdent(barnIdent)).thenReturn(Mono.just(dbBarn));
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
+        when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, true))
+                .assertNext(response -> {
+                    assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT)));
+                    assertThat(response.getRelasjoner(), is(empty()));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSendOrdreWithNamesUppercased() {
+
+        var navn = NavnDTO.builder()
+                .id(1)
+                .fornavn("ola")
+                .mellomnavn("mellom")
+                .etternavn("nordmann")
+                .build();
+
+        var personDTO = buildMinimalPersonDTO();
+        personDTO.setNavn(new ArrayList<>(List.of(navn)));
+
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_NAVN),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT),
+                argThat(list -> {
+                    if (list.isEmpty()) return false;
+                    var n = (NavnDTO) list.getFirst();
+                    return "OLA".equals(n.getFornavn()) &&
+                           "MELLOM".equals(n.getMellomnavn()) &&
+                           "NORDMANN".equals(n.getEtternavn());
+                }));
+    }
+
+    @Test
+    void shouldSendOrdreUsingFoedestedWhenPresent() {
+
+        var foedested = FoedestedDTO.builder()
+                .id(1)
+                .foedeland("NOR")
+                .build();
+
+        var foedsel = FoedselDTO.builder()
+                .id(1)
+                .foedeland("SWE")
+                .build();
+
+        var personDTO = buildMinimalPersonDTO();
+        personDTO.setFoedested(new ArrayList<>(List.of(foedested)));
+        personDTO.setFoedsel(new ArrayList<>(List.of(foedsel)));
+
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_FOEDESTED),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT),
+                argThat(list -> !list.isEmpty() && list.getFirst() instanceof FoedestedDTO));
+    }
+
+    @Test
+    void shouldFallbackToFoedselWhenFoedestedIsEmpty() {
+
+        var foedsel = FoedselDTO.builder()
+                .id(1)
+                .foedeland("SWE")
+                .build();
+
+        var personDTO = buildMinimalPersonDTO();
+        personDTO.setFoedsel(new ArrayList<>(List.of(foedsel)));
+
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+        var mappedFoedested = FoedestedDTO.builder().foedeland("SWE").build();
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(mapperFacade.mapAsList(any(Iterable.class), any(Class.class))).thenReturn(new ArrayList<>());
+        when(mapperFacade.mapAsList(anyList(), org.mockito.ArgumentMatchers.eq(FoedestedDTO.class)))
+                .thenReturn(List.of(mappedFoedested));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_FOEDESTED),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT),
+                argThat(list -> !list.isEmpty() && list.getFirst() instanceof FoedestedDTO));
+    }
+
+    @Test
+    void shouldFallbackToFoedselForFoedselsdatoWhenFoedselsdatoIsEmpty() {
+
+        var foedsel = FoedselDTO.builder()
+                .id(1)
+                .foedeland("NOR")
+                .build();
+
+        var personDTO = buildMinimalPersonDTO();
+        personDTO.setFoedsel(new ArrayList<>(List.of(foedsel)));
+
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+        var mappedFoedselsdato = FoedselDTO.builder().foedeland("NOR").build();
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(mapperFacade.mapAsList(any(Iterable.class), any(Class.class))).thenReturn(new ArrayList<>());
+        when(mapperFacade.mapAsList(anyList(), org.mockito.ArgumentMatchers.eq(FoedselDTO.class)))
+                .thenReturn(List.of(mappedFoedselsdato));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_FOEDSELSDATO),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT),
+                argThat(list -> !list.isEmpty() && list.getFirst() instanceof FoedselDTO));
+    }
+
+    @Test
+    void shouldFilterForeldreansvarAnsvarssubjektInGetOrdrer() {
+
+        var foreldreansvarMedSubjekt = ForeldreansvarDTO.builder()
+                .id(1)
+                .ansvar(ForeldreansvarDTO.Ansvar.FELLES)
+                .ansvarssubjekt("99988877766")
+                .build();
+
+        var foreldreansvarUtenSubjekt = ForeldreansvarDTO.builder()
+                .id(2)
+                .ansvar(ForeldreansvarDTO.Ansvar.MOR)
+                .build();
+
+        var personDTO = buildMinimalPersonDTO();
+        personDTO.setForeldreansvar(new ArrayList<>(List.of(foreldreansvarMedSubjekt, foreldreansvarUtenSubjekt)));
+
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_FORELDREANSVAR),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT),
+                argThat(list -> list.size() == 1 &&
+                        ((ForeldreansvarDTO) list.getFirst()).getAnsvar() == ForeldreansvarDTO.Ansvar.MOR));
+    }
+
+    @Test
+    void shouldFilterSivilstandSamboerInGetOrdrer() {
+
+        var sivilstandEkteskap = SivilstandDTO.builder()
+                .id(1)
+                .type(SivilstandDTO.Sivilstand.GIFT)
+                .build();
+
+        var sivilstandSamboer = SivilstandDTO.builder()
+                .id(2)
+                .type(SivilstandDTO.Sivilstand.SAMBOER)
+                .build();
+
+        var personDTO = buildMinimalPersonDTO();
+        personDTO.setSivilstand(new ArrayList<>(List.of(sivilstandEkteskap, sivilstandSamboer)));
+
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_SIVILSTAND),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT),
+                argThat(list -> list.size() == 1 &&
+                        ((SivilstandDTO) list.getFirst()).getType() == SivilstandDTO.Sivilstand.GIFT));
+    }
+
+    @Test
+    void shouldReturnPersonHendelserForHovedpersonOnly() {
+
+        var hovedpersonStatus = PdlStatusDTO.builder()
+                .ident(HOVEDPERSON_IDENT)
+                .infoElement(PdlArtifact.PDL_NAVN)
+                .hendelser(List.of(OrdreResponseDTO.HendelseDTO.builder()
+                        .id(1)
+                        .hendelseId("h1")
+                        .build()))
+                .build();
+
+        var relatertStatus = PdlStatusDTO.builder()
+                .ident(RELATERT_PERSON_IDENT)
+                .infoElement(PdlArtifact.PDL_KJOENN)
+                .hendelser(List.of(OrdreResponseDTO.HendelseDTO.builder()
+                        .id(2)
+                        .hendelseId("h2")
+                        .build()))
+                .build();
+
+        var personDTO = buildMinimalPersonDTO();
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        stubDeployServiceForSlettingAndSendOrders(List.of(hovedpersonStatus, relatertStatus));
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response -> {
+                    assertThat(response.getHovedperson().getOrdrer(), hasSize(1));
+                    assertThat(response.getHovedperson().getOrdrer().getFirst().getInfoElement(),
+                            is(equalTo(PdlArtifact.PDL_NAVN)));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDistributeHendelserToCorrectRelasjon() {
+
+        var hovedPersonDTO = buildMinimalPersonDTO();
+        var dbHovedperson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, hovedPersonDTO);
+
+        var relatertPersonDTO = buildMinimalPersonDTO();
+        var dbRelatertPerson = buildDbPerson(RELATERT_PERSON_ID, RELATERT_PERSON_IDENT, relatertPersonDTO);
+
+        var dbRelasjon = DbRelasjon.builder()
+                .personId(HOVEDPERSON_ID)
+                .relatertPersonId(RELATERT_PERSON_ID)
+                .build();
+
+        var relatertStatus = PdlStatusDTO.builder()
+                .ident(RELATERT_PERSON_IDENT)
+                .infoElement(PdlArtifact.PDL_KJOENN)
+                .hendelser(List.of(OrdreResponseDTO.HendelseDTO.builder()
+                        .id(2)
+                        .hendelseId("h2")
+                        .build()))
+                .build();
+
+        stubBasicSendFlow(dbHovedperson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
+        when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
+        stubDeployServiceForSlettingAndSendOrders(List.of(relatertStatus));
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response -> {
+                    assertThat(response.getHovedperson().getOrdrer(), is(empty()));
+                    assertThat(response.getRelasjoner(), hasSize(1));
+                    assertThat(response.getRelasjoner().getFirst().getOrdrer(), hasSize(1));
+                    assertThat(response.getRelasjoner().getFirst().getOrdrer().getFirst().getInfoElement(),
+                            is(equalTo(PdlArtifact.PDL_KJOENN)));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSendAllArtifactTypesInGetOrdrer() {
+
+        var personDTO = buildMinimalPersonDTO();
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_ADRESSEBESKYTTELSE),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_DOEDSFALL),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_NAVN),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_KJOENN),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_STATSBORGERSKAP),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_BOSTEDADRESSE),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_KONTAKTADRESSE),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_OPPHOLDSADRESSE),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_INNFLYTTING),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_UTFLYTTING),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_DELTBOSTED),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_FORELDREANSVAR),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_FORELDRE_BARN_RELASJON),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_SIVILSTAND),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_TELEFONUMMER),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_OPPHOLD),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_DOEDFOEDT_BARN),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_SIKKERHETSTILTAK),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+    }
+
+    @Test
+    void shouldSendSlettingBeforeOppretting() {
+
+        var personDTO = buildMinimalPersonDTO();
+        var dbPerson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, personDTO);
+
+        stubBasicSendFlow(dbPerson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT))))
+                .verifyComplete();
+
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_SLETTING),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).createOrdre(
+                org.mockito.ArgumentMatchers.eq(PdlArtifact.PDL_OPPRETT_PERSON),
+                org.mockito.ArgumentMatchers.eq(HOVEDPERSON_IDENT), anyList());
+        verify(deployService).sendOrders(any());
+    }
+
+    @Test
+    void shouldHandleMultipleRelatertePersoner() {
+
+        var thirdPersonIdent = "33344455567";
+        var thirdPersonId = 3L;
+
+        var hovedPersonDTO = buildMinimalPersonDTO();
+        var dbHovedperson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, hovedPersonDTO);
+
+        var relatert1DTO = buildMinimalPersonDTO();
+        var dbRelatertPerson1 = buildDbPerson(RELATERT_PERSON_ID, RELATERT_PERSON_IDENT, relatert1DTO);
+
+        var relatert2DTO = buildMinimalPersonDTO();
+        var dbRelatertPerson2 = buildDbPerson(thirdPersonId, thirdPersonIdent, relatert2DTO);
+
+        var dbRelasjon1 = DbRelasjon.builder()
+                .personId(HOVEDPERSON_ID)
+                .relatertPersonId(RELATERT_PERSON_ID)
+                .build();
+
+        var dbRelasjon2 = DbRelasjon.builder()
+                .personId(HOVEDPERSON_ID)
+                .relatertPersonId(thirdPersonId)
+                .build();
+
+        stubBasicSendFlow(dbHovedperson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon1, dbRelasjon2));
+        when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson1));
+        when(personRepository.findById(thirdPersonId)).thenReturn(Mono.just(dbRelatertPerson2));
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByPersonId(thirdPersonId)).thenReturn(Mono.just(false));
+        when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
+        when(aliasRepository.findByTidligereIdent(thirdPersonIdent)).thenReturn(Mono.empty());
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response -> {
+                    assertThat(response.getHovedperson().getIdent(), is(equalTo(HOVEDPERSON_IDENT)));
+                    assertThat(response.getRelasjoner(), hasSize(2));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldNotDuplicateRelatertPersonInResponse() {
+
+        var hovedPersonDTO = buildMinimalPersonDTO();
+        var dbHovedperson = buildDbPerson(HOVEDPERSON_ID, HOVEDPERSON_IDENT, hovedPersonDTO);
+
+        var relatertPersonDTO = buildMinimalPersonDTO();
+        var dbRelatertPerson = buildDbPerson(RELATERT_PERSON_ID, RELATERT_PERSON_IDENT, relatertPersonDTO);
+
+        var dbRelasjon1 = DbRelasjon.builder()
+                .personId(HOVEDPERSON_ID)
+                .relatertPersonId(RELATERT_PERSON_ID)
+                .build();
+
+        var dbRelasjon2 = DbRelasjon.builder()
+                .personId(HOVEDPERSON_ID)
+                .relatertPersonId(RELATERT_PERSON_ID)
+                .build();
+
+        stubBasicSendFlow(dbHovedperson);
+        when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon1, dbRelasjon2));
+        when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
+        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
+        stubDeployServiceDefaults();
+        when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(pdlOrdreService.send(HOVEDPERSON_IDENT, false))
+                .assertNext(response ->
+                        assertThat(response.getRelasjoner(), hasSize(1)))
+                .verifyComplete();
     }
 
     @Nested

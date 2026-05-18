@@ -37,7 +37,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
@@ -303,23 +302,26 @@ public class PdlOrdreService {
     }
 
     private Flux<Ordre> npidSplit(OpprettRequest oppretting) {
-        return npidOrdre(oppretting, PDL_NPID_SPLIT, "npid-split");
+
+            return deployService.createOrdre(PDL_NPID_SPLIT, oppretting.getPerson().getIdent(),
+                            List.of(NpidIdentDTO.builder()
+                                    .otherIdent(null)
+                                    .build()))
+                    .doOnNext(ordre -> log.info("Ordre for npid-split: {}", ordre));
     }
 
     private Flux<Ordre> npidMerge(OpprettRequest oppretting) {
-        return npidOrdre(oppretting, PDL_PERSON_MERGE, "npid-merge");
-    }
 
-    private Flux<Ordre> npidOrdre(OpprettRequest oppretting, PdlArtifact artifact, String description) {
         return getAktivPerson(oppretting.getPerson())
-                .flatMapMany(aktiv -> deployService.createOrdre(artifact, oppretting.getPerson().getIdent(),
+                .flatMapMany(aktiv -> deployService.createOrdre(PDL_PERSON_MERGE, oppretting.getPerson().getIdent(),
                         List.of(NpidIdentDTO.builder()
                                 .otherIdent(aktiv.getIdent())
                                 .build())))
-                .doOnNext(ordre -> log.info("Ordre for {}: {}", description, ordre));
+                .doOnNext(ordre -> log.info("Ordre for npid-merge: {}", ordre));
     }
 
     private Flux<Ordre> getOrdrer(OpprettRequest oppretting) {
+
         var ident = oppretting.getPerson().getIdent();
         var person = oppretting.getPerson().getPerson();
         return Flux.concat(
