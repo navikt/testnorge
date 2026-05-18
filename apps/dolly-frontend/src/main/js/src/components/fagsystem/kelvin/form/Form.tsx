@@ -48,6 +48,7 @@ export const KelvinAapForm = () => {
 				hasErrors={usePanelError(kelvinAapPath)}
 				iconType="arena"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [kelvinAapPath])}
+				informasjonstekst="Feltene gjelder hva bruker fyller ut i søknaden."
 			>
 				<h3 style={{ marginTop: 0 }}>Generelt</h3>
 				<CheckboxWrapper>
