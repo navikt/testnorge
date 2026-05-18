@@ -48,7 +48,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_OPPRETT_PERSON_URL = PDL_BESTILLING_URL + "/opprettperson";
 
     private static final String PDL_MERGE_NPID_URL = "/pdl-testdata/api/v1/npid/merge";
-    private static final String PDL_NPID_SPLIT_URL = "/pdl-testdata/api/v1/npid/split";
+    private static final String PDL_NPID_SPLIT_URL = "/pdl-testdata/api/v1/npid/splitAll";
 
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_BOSTEDADRESSE_URL = PDL_BESTILLING_URL + "/bostedsadresse";
