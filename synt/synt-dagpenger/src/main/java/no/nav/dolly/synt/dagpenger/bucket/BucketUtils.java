@@ -10,6 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 @UtilityClass
@@ -42,6 +44,7 @@ public class BucketUtils {
     public Path download(String bucket, List<String> models, String tempDirPrefix)
             throws IOException {
 
+        var started =  Instant.now();
         var targetDir = Files.createTempDirectory(tempDirPrefix);
         targetDir.toFile().deleteOnExit();
 
@@ -50,7 +53,8 @@ public class BucketUtils {
             if (downloaded == 0) {
                 throw new IllegalStateException("No ONNX model files found in GCS bucket: " + bucket);
             }
-            log.info("Downloaded {} model(s) from GCS bucket {} to {}", downloaded, bucket, targetDir);
+            var durationInMillis =  Duration.between(started, Instant.now()).toMillis();
+            log.info("Downloaded {} model(s) from GCS bucket {} to {} in {}ms", downloaded, bucket, targetDir, durationInMillis);
         } catch (Exception e) {
             throw new IOException("Failed to download from GCS bucket %s".formatted(bucket), e);
         }
