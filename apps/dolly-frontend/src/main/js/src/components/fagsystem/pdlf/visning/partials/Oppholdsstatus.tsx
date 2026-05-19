@@ -4,6 +4,7 @@ import { formatDate, uppercaseAndUnderscoreToCapitalized } from '@/utils/DataFor
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { OppholdData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import React from 'react'
 
 type Data = {
 	data: OppholdData
@@ -15,19 +16,18 @@ type DataListe = {
 
 export const Visning = ({ data }: Data) => {
 	return (
-		<>
-			<div className="person-visning_content">
-				<ErrorBoundary>
-					<TitleValue title="Oppholdstillatelse fra dato" value={formatDate(data?.oppholdFra)} />
-					<TitleValue title="Oppholdstillatelse til dato" value={formatDate(data?.oppholdTil)} />
-					<TitleValue
-						title="Type oppholdstillatelse"
-						value={uppercaseAndUnderscoreToCapitalized(data?.type)}
-						size={'medium'}
-					/>
-				</ErrorBoundary>
-			</div>
-		</>
+		<div className="person-visning_content">
+			<ErrorBoundary>
+				<TitleValue title="Oppholdstillatelse fra dato" value={formatDate(data?.oppholdFra)} />
+				<TitleValue title="Oppholdstillatelse til dato" value={formatDate(data?.oppholdTil)} />
+				<TitleValue
+					title="Type oppholdstillatelse"
+					value={uppercaseAndUnderscoreToCapitalized(data?.type)}
+					size={'medium'}
+				/>
+				<TitleValue title="ID" value={data?.id} />
+			</ErrorBoundary>
+		</div>
 	)
 }
 

@@ -14,7 +14,7 @@ import {
 import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getInitialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { formatDate } from '@/utils/DataFormatter'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -91,6 +91,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 							title="Master"
 							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
 						/>
+						<TitleValue title="ID" value={kontaktadresseData.id} />
 					</div>
 				</>
 			)}
@@ -126,6 +127,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 							title="Master"
 							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
 						/>
+						<TitleValue title="ID" value={kontaktadresseData.id} />
 					</div>
 				</>
 			)}
@@ -160,6 +162,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 							title="Master"
 							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
 						/>
+						<TitleValue title="ID" value={kontaktadresseData.id} />
 					</div>
 				</>
 			)}
