@@ -51,15 +51,23 @@ export const BestillingStatus = ({
 		feil: 'report-problem-triangle',
 	}
 
-	const iconType = (statuser: Status[], feil: string, ferdig: boolean) => {
+	const iconType = (
+		statuser: Status[],
+		feil: string,
+		ferdig: boolean,
+		okIdenterCount?: number,
+		totalIdenter?: number,
+	) => {
 		if (feil) {
 			return IconTypes.feil
 		}
 		if (!statuser?.length || (erOrganisasjon && !ferdig)) {
 			return IconTypes.oppretter
 		}
-		// Alle statuser er OK
 		if (statuser.every((status) => status.melding === 'OK')) {
+			if (totalIdenter && totalIdenter > 1 && okIdenterCount < totalIdenter) {
+				return IconTypes.avvik
+			}
 			return IconTypes.suksess
 		} else if (
 			statuser.some(
@@ -72,9 +80,7 @@ export const BestillingStatus = ({
 			)
 		) {
 			return IconTypes.oppretter
-		}
-		// Denne statusmeldingen gir kun avvik
-		else if (
+		} else if (
 			statuser.some(
 				(status) =>
 					status?.melding?.toLowerCase()?.includes('tidsavbrudd') ||
@@ -83,7 +89,6 @@ export const BestillingStatus = ({
 		) {
 			return IconTypes.avvik
 		}
-		// Avvik eller error
 		return statuser.some((status) => status?.melding === 'OK') ? IconTypes.avvik : IconTypes.feil
 	}
 
@@ -154,7 +159,15 @@ export const BestillingStatus = ({
 							{oppretter ? (
 								<Spinner size={24} margin="0px" />
 							) : (
-								<Icon kind={iconType(statuser, bestilling.feil, bestilling.ferdig)} />
+								<Icon
+									kind={iconType(
+										statuser,
+										bestilling.feil,
+										bestilling.ferdig,
+										getOkIdenter().length,
+										antallBestilteIdenter,
+									)}
+								/>
 							)}
 						</StatusIcon>
 						<div style={{ width: '96%', marginBottom: marginBottom }}>
