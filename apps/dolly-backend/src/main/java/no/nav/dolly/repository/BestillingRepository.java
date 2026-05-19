@@ -1,6 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
@@ -131,4 +132,34 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Integer> stopAllUnfinished();
 
     Flux<Bestilling> findByIdIn(List<Long> id);
+
+    @Query("""
+            select count(*) personer,
+                   b.sist_oppdatert::date dato,
+                   case
+                      when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
+                      when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
+                      when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
+                      else 'NYBESTILLING'
+                   end as gjenopprettStatus,
+                   case
+                      when lower(bp.pdl_person_status) not like 'synkronisering%' then 'FEIL'
+                      when lower(bp.pdl_forvalter_status) like '%feil%' then 'FEIL'
+                      when lower(bp.pdl_ordre_status) like '%feil%' then 'FEIL'
+                      else 'OK'
+                   end as pdlStatus,
+                   case
+                      when lower(bp.aareg_status) like '%feil%' then 'FEIL'
+                      else 'OK'
+                   end as aaregStatus,
+                   case
+                      when lower(bp.pensjonforvalter_status) like '%feil%' then 'FEIL'
+                      else 'OK'
+                   end as penStatus
+            from bestilling b
+            join bestilling_progress bp on b.id = bp.bestilling_id
+            group by dato, gjenopprettStatus, pdlStatus, aaregStatus, penStatus
+            order by dato desc
+            """)
+    Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
 }
