@@ -92,13 +92,32 @@ export const BestillingStatus = ({
 			{sortFagsystemer(bestilling?.status || []).map((fagsystem, idx) => {
 				const statuser = fagsystem?.statuser || []
 
+				const antallBestilteIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter
+
+				const getOkIdenter = () => {
+					const miljouavhengig = statuser.find((s) => s?.melding === 'OK')?.identer
+					const miljoavhengig = statuser.find((s) => s?.melding === 'OK')?.detaljert
+					if (miljouavhengig) {
+						return miljouavhengig.filter((ident) => ident)
+					}
+					if (miljoavhengig) {
+						return [...new Set(miljoavhengig.flatMap((miljo) => miljo?.identer))]?.filter(
+							(ident) => ident,
+						)
+					}
+					return []
+				}
+
 				const oppretter =
 					(erOrganisasjon && !bestilling.ferdig) ||
 					!statuser.length ||
+					(!erOrganisasjon &&
+						antallBestilteIdenter > 1 &&
+						!bestilling.ferdig &&
+						getOkIdenter().length < antallBestilteIdenter) ||
 					statuser.some((status) => {
 						return (
 							status?.melding?.includes('Info') ||
-							// Ereg statuser for oppretting
 							status?.melding?.includes('ADDING_TO_QUEUE') ||
 							status?.melding?.includes('RUNNING') ||
 							status?.melding?.includes('PENDING_COMPLETE') ||
@@ -128,22 +147,6 @@ export const BestillingStatus = ({
 
 				// @ts-ignore
 				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
-
-				const antallBestilteIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter
-
-				const getOkIdenter = () => {
-					const miljouavhengig = statuser.find((s) => s?.melding === 'OK')?.identer
-					const miljoavhengig = statuser.find((s) => s?.melding === 'OK')?.detaljert
-					if (miljouavhengig) {
-						return miljouavhengig.filter((ident) => ident)
-					}
-					if (miljoavhengig) {
-						return [...new Set(miljoavhengig.flatMap((miljo) => miljo?.identer))]?.filter(
-							(ident) => ident,
-						)
-					}
-					return []
-				}
 
 				return (
 					<FagsystemStatus key={idx} style={{ alignItems: 'flex-start' }}>
