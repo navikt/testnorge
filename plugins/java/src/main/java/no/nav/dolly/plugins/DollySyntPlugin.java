@@ -14,7 +14,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModel;
 import java.util.HashMap;
 
 @SuppressWarnings("unused")
-public class DollyAppsPlugin implements Plugin<Project> {
+public class DollySyntPlugin implements Plugin<Project> {
 
     @Override
     @SuppressWarnings("Duplicates") // We're intentionally explicit, even if it means duplicating code.
@@ -33,7 +33,7 @@ public class DollyAppsPlugin implements Plugin<Project> {
         plugins.apply(JavaPlugin.class);
         plugins.apply("org.springframework.boot");
 
-        project.setGroup("no.nav.testnav.apps");
+        project.setGroup("no.nav.testnav.synt");
 
         var idea = project.getExtensions().getByType(IdeaModel.class).getModule();
         idea.setDownloadJavadoc(true);
@@ -65,10 +65,12 @@ public class DollyAppsPlugin implements Plugin<Project> {
         dependencies.add("compileOnly", "org.projectlombok:lombok");
         dependencies.add("developmentOnly", "org.springframework.boot:spring-boot-devtools");
         dependencies.add("implementation", "com.google.cloud:spring-cloud-gcp-starter-secretmanager:" + versions.gcpSecretManager);
+        dependencies.add("implementation", "com.google.cloud:google-cloud-storage:" + versions.gcpStorage);
         dependencies.add("implementation", "net.logstash.logback:logstash-logback-encoder:" + versions.logback);
         dependencies.add("implementation", "org.glassfish.expressly:expressly:" + versions.expressly);
         dependencies.add("implementation", "org.hibernate.validator:hibernate-validator");
         dependencies.add("implementation", "org.json:json:" + versions.json);
+        dependencies.add("implementation", "com.microsoft.onnxruntime:onnxruntime:" + versions.onnxruntime);
         dependencies.add("implementation", "org.projectlombok:lombok");
         dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-actuator");
         dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-webflux");
