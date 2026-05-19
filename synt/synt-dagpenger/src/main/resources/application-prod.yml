@@ -1,29 +1,10 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: always
-
-springdoc:
-  api-docs:
-    path: /api/api-docs
-    version: OPENAPI_3_0
-  swagger-ui:
-    path: /swagger-ui.html
-  show-actuator: false
-
-logging:
-  level:
-    root: INFO
-    no.nav.dolly: DEBUG
-
-server:
-  servlet:
-    context-path: /
-  shutdown: graceful
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
 
 app:
   config:
