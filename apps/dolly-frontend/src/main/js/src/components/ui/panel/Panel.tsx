@@ -21,7 +21,7 @@ export default function Panel({
 	children = null as any,
 	checkAttributeArray = null,
 	uncheckAttributeArray = null,
-	informasjonstekst = null,
+	informasjonstekst = null as unknown as string,
 	iconType = null as unknown as string,
 	forceOpen = false,
 	setPanelOpen = null,
