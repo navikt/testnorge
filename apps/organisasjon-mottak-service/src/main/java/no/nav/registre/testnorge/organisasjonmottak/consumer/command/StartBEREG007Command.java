@@ -82,9 +82,8 @@ public class StartBEREG007Command implements Callable<Long> {
                     .exchangeToMono(response -> {
                         try {
                             if (!response.statusCode().is2xxSuccessful()) {
-                                return Mono.error(new RuntimeException("Klarer ikke å opprette organiasasjonen. Http status: " + response.statusCode()));
+                                return Mono.error(new RuntimeException("Klarer ikke å opprette organisation. Http status: " + response.statusCode()));
                             }
-
                             var location = response.headers().asHttpHeaders().getLocation();
                             if (location == null) {
                                 return Mono.error(new RuntimeException("Klarer ikke å finne location"));
