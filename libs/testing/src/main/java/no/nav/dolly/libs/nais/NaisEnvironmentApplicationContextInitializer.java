@@ -1,10 +1,10 @@
 package no.nav.dolly.libs.nais;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.lang.NonNull;
 
 import java.util.stream.Stream;
 
