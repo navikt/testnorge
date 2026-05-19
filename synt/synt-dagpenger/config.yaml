@@ -51,6 +51,9 @@ spec:
       rules:
         - application: logging
           namespace: nais-system
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   gcp:
     buckets:
       - name: synthdata-dagpenger-model-bucket
