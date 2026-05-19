@@ -51,15 +51,23 @@ export const BestillingStatus = ({
 		feil: 'report-problem-triangle',
 	}
 
-	const iconType = (statuser: Status[], feil: string, ferdig: boolean) => {
+	const iconType = (
+		statuser: Status[],
+		feil: string,
+		ferdig: boolean,
+		okIdenterCount?: number,
+		totalIdenter?: number,
+	) => {
 		if (feil) {
 			return IconTypes.feil
 		}
 		if (!statuser?.length || (erOrganisasjon && !ferdig)) {
 			return IconTypes.oppretter
 		}
-		// Alle statuser er OK
 		if (statuser.every((status) => status.melding === 'OK')) {
+			if (totalIdenter && totalIdenter > 1 && okIdenterCount < totalIdenter) {
+				return IconTypes.avvik
+			}
 			return IconTypes.suksess
 		} else if (
 			statuser.some(
@@ -72,9 +80,7 @@ export const BestillingStatus = ({
 			)
 		) {
 			return IconTypes.oppretter
-		}
-		// Denne statusmeldingen gir kun avvik
-		else if (
+		} else if (
 			statuser.some(
 				(status) =>
 					status?.melding?.toLowerCase()?.includes('tidsavbrudd') ||
@@ -83,59 +89,19 @@ export const BestillingStatus = ({
 		) {
 			return IconTypes.avvik
 		}
-		// Avvik eller error
 		return statuser.some((status) => status?.melding === 'OK') ? IconTypes.avvik : IconTypes.feil
 	}
 
 	return (
 		<div style={{ marginTop: '15px' }}>
 			{sortFagsystemer(bestilling?.status || []).map((fagsystem, idx) => {
-				const oppretter =
-					(erOrganisasjon && !bestilling.ferdig) ||
-					!fagsystem?.statuser?.length ||
-					fagsystem?.statuser?.some((status) => {
-						return (
-							status?.melding?.includes('Info') ||
-							// Ereg statuser for oppretting
-							status?.melding?.includes('ADDING_TO_QUEUE') ||
-							status?.melding?.includes('RUNNING') ||
-							status?.melding?.includes('PENDING_COMPLETE') ||
-							status?.melding?.includes('Deployer') ||
-							status?.melding?.includes('Pågående')
-						)
-					})
-
-				const infoString = ['Info', 'INFO', 'info']
-				const infoListe = fagsystem?.statuser?.filter((s) =>
-					infoString.some((i) => s?.melding?.includes(i)),
-				)
-
-				const advarselString = ['Advarsel', 'ADVARSEL', 'advarsel']
-				const advarselListe = fagsystem?.statuser?.filter((s) =>
-					advarselString.some((i) => s?.melding?.includes(i)),
-				)
-
-				const feilString = ['Feil', 'FEIL', 'feil']
-				const feilListe = fagsystem?.statuser?.filter((s) =>
-					feilString.some((i) => s?.melding?.includes(i)),
-				)
-
-				const getMelding = () => {
-					if (fagsystem?.statuser?.every((s) => s?.melding === 'OK')) {
-						return null
-					} else {
-						return infoListe?.concat(advarselListe, feilListe)
-					}
-				}
-
-				// @ts-ignore
-				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
+				const statuser = fagsystem?.statuser || []
 
 				const antallBestilteIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter
 
 				const getOkIdenter = () => {
-					const miljouavhengig = fagsystem?.statuser?.find((s) => s?.melding === 'OK')?.identer
-					const miljoavhengig = fagsystem?.statuser?.find((s) => s?.melding === 'OK')?.detaljert
+					const miljouavhengig = statuser.find((s) => s?.melding === 'OK')?.identer
+					const miljoavhengig = statuser.find((s) => s?.melding === 'OK')?.detaljert
 					if (miljouavhengig) {
 						return miljouavhengig.filter((ident) => ident)
 					}
@@ -147,13 +113,61 @@ export const BestillingStatus = ({
 					return []
 				}
 
+				const oppretter =
+					(erOrganisasjon && !bestilling.ferdig) ||
+					!statuser.length ||
+					(!erOrganisasjon &&
+						antallBestilteIdenter > 1 &&
+						!bestilling.ferdig &&
+						getOkIdenter().length < antallBestilteIdenter) ||
+					statuser.some((status) => {
+						return (
+							status?.melding?.includes('Info') ||
+							status?.melding?.includes('ADDING_TO_QUEUE') ||
+							status?.melding?.includes('RUNNING') ||
+							status?.melding?.includes('PENDING_COMPLETE') ||
+							status?.melding?.includes('Deployer') ||
+							status?.melding?.includes('Pågående')
+						)
+					})
+
+				const infoString = ['Info', 'INFO', 'info']
+				const infoListe = statuser.filter((s) => infoString.some((i) => s?.melding?.includes(i)))
+
+				const advarselString = ['Advarsel', 'ADVARSEL', 'advarsel']
+				const advarselListe = statuser.filter((s) =>
+					advarselString.some((i) => s?.melding?.includes(i)),
+				)
+
+				const feilString = ['Feil', 'FEIL', 'feil']
+				const feilListe = statuser.filter((s) => feilString.some((i) => s?.melding?.includes(i)))
+
+				const getMelding = () => {
+					if (statuser.every((s) => s?.melding === 'OK')) {
+						return null
+					} else {
+						return infoListe?.concat(advarselListe, feilListe)
+					}
+				}
+
+				// @ts-ignore
+				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
+
 				return (
 					<FagsystemStatus key={idx} style={{ alignItems: 'flex-start' }}>
 						<StatusIcon>
 							{oppretter ? (
 								<Spinner size={24} margin="0px" />
 							) : (
-								<Icon kind={iconType(fagsystem.statuser, bestilling.feil, bestilling.ferdig)} />
+								<Icon
+									kind={iconType(
+										statuser,
+										bestilling.feil,
+										bestilling.ferdig,
+										getOkIdenter().length,
+										antallBestilteIdenter,
+									)}
+								/>
 							)}
 						</StatusIcon>
 						<div style={{ width: '96%', marginBottom: marginBottom }}>
