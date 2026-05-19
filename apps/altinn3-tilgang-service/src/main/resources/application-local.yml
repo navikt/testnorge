@@ -6,7 +6,7 @@ spring:
   cache:
     type: none
   config:
-    import: "sm://"
+    import: "sm@"
   flyway:
     enabled: true
     locations: classpath:db/migration

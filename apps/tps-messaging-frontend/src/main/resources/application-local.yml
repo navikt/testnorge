@@ -5,7 +5,7 @@ server:
 
 spring:
   config:
-    import: "sm://"
+    import: "sm@"
 
 consumers:
   tps-messaging-service:
