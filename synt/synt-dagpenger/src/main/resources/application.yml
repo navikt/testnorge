@@ -1,11 +1,6 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: always
+spring:
+  config:
+    import: "dolly-application.yml"
 
 springdoc:
   api-docs:
@@ -24,9 +19,3 @@ server:
   servlet:
     context-path: /
   shutdown: graceful
-
-
-
-
-
-
