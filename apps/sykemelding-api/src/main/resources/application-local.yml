@@ -17,7 +17,7 @@ consumers:
 
 spring:
   config:
-    import: "sm://"
+    import: "sm@"
   security:
     oauth2:
       resourceserver:
