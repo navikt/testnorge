@@ -7,11 +7,11 @@ spring:
     baseline-on-migrate: true
     url: jdbc:postgresql://localhost:5432/testnav-identpool-local
     user: testnav-identpool-local
-    password: ${sm\://testnav-identpool-local}
+    password: ${sm@testnav-identpool-local}
   r2dbc:
     url: r2dbc:postgres://localhost:5432/testnav-identpool-local
     username: testnav-identpool-local
-    password: ${sm\://testnav-identpool-local}
+    password: ${sm@testnav-identpool-local}
 
 consumers:
   tps-messaging-service:
