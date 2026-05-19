@@ -40,7 +40,6 @@ class SecurityConfig {
                                 "/swagger",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
-                                "/api/api-docs/**",
                                 "/v3/api-docs/**",
                                 "/webjars/**").permitAll()
                         .anyExchange().authenticated())

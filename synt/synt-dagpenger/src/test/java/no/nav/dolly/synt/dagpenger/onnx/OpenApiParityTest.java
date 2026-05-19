@@ -114,7 +114,7 @@ class OpenApiParityTest {
 
         var body = webTestClient
                 .get()
-                .uri("/api/api-docs")
+                .uri("/v3/api-docs")
                 .exchange()
                 .expectStatus()
                 .isOk()
