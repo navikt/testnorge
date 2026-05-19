@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nav.no/system/os/entiteter/statusmelding"
+           version="1.0"
+           xmlns:statusmelding="http://nav.no/system/os/entiteter/statusmelding"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+    <xs:annotation>
+        <xs:documentation>Entitet for statusmelding</xs:documentation>
+        <xs:documentation>Tilsvarende baksystemets FE469-RTV-LOGG databasetabell</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType name="status">
+        <xs:annotation>
+            <xs:documentation>Entitet for statusmelding ang. forløp. Opp til konsument å vurdere situasjon.</xs:documentation>
+            <xs:documentation>Referanse ID 469MMEL</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="systemId" type="xs:string" minOccurs="0"/>
+            <xs:element name="kodeMelding" type="xs:string" minOccurs="0"/>
+            <xs:element name="alvorlighetsgrad" minOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="00" />
+                        <xs:enumeration value="04" />
+                        <xs:enumeration value="08" />
+                        <xs:enumeration value="12" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="beskrMelding" type="xs:string" minOccurs="0"/>
+            <xs:element name="sqlKode" type="xs:string" minOccurs="0"/>
+            <xs:element name="sqlState" type="xs:string" minOccurs="0"/>
+            <xs:element name="sqlMelding" type="xs:string" minOccurs="0"/>
+            <xs:element name="mqCompletionKode" type="xs:string" minOccurs="0"/>
+            <xs:element name="mqReasonKode" type="xs:string" minOccurs="0"/>
+            <xs:element name="programId" type="xs:string" minOccurs="0"/>
+            <xs:element name="sectionNavn" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
