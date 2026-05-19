@@ -53,8 +53,8 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
         return getFullmaktPerson(fullmakt, ident)
                 .flatMap(fm -> relasjonService.setRelasjoner(ident,
-                        RelasjonType.FULLMAKTSGIVER, fm.getMotpartsPersonident(),
-                        RelasjonType.FULLMEKTIG).thenReturn(fm))
+                        RelasjonType.FULLMEKTIG, fm.getMotpartsPersonident(),
+                        RelasjonType.FULLMAKTSGIVER).thenReturn(fm))
                 .doOnNext(fm -> fm.setMaster(Master.PDL));
     }
 
