@@ -32,6 +32,7 @@ class RouteLocatorConfig {
     private final Saf saf;
     private final Sigrunstub sigrunstub;
     private final Skjermingsregister skjermingsregister;
+    private final Sykemelding sykemelding;
     private final Udistub udistub;
 
     @Bean("dollyProxyRouteLocator")
@@ -81,8 +82,8 @@ class RouteLocatorConfig {
                 .route("saf-q4", saf.build(Saf.SpecialCase.Q4))
                 .route("sigrunstub", sigrunstub.build())
                 .route("skjermingsregister", skjermingsregister.build())
+                .route("sykemelding", sykemelding.build())
                 .route("udistub", udistub.build())
                 .build();
     }
-
 }

@@ -33,7 +33,7 @@ public class SykemeldingConsumer extends ConsumerStatus {
             WebClient webClient) {
 
         this.tokenService = accessTokenService;
-        serverProperties = consumers.getTestnavSykemeldingProxy();
+        serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))

@@ -44,6 +44,7 @@ class Targets {
     String saf;
     String sigrunstub;
     String skjermingsregister;
+    String sykemelding;
     String udistub;
 
 }
