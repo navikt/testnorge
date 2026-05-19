@@ -27,14 +27,14 @@ public class BucketUtils {
      * For example, with prefix {@code "model_PERM"}, the file
      * {@code "model_PERM_bean_model_distributions_col_32.onnx"} will match.
      *
-     * @param bucket the GCS bucket name; must exist and be readable with current credentials
-     * @param models list of model filename prefixes to match; at least one must result in a matching file
+     * @param bucket        the GCS bucket name; must exist and be readable with current credentials
+     * @param models        list of model filename prefixes to match; at least one must result in a matching file
      * @param tempDirPrefix prefix for the temporary directory name (e.g., {@code "myapp-models-"});
      *                      the OS will append random characters to ensure uniqueness
      * @return a {@link Path} pointing to the temporary directory containing downloaded models;
-     *         guaranteed to be non-empty
-     * @throws IOException if the GCS bucket cannot be accessed, no files match the prefixes,
-     *                     or file I/O operations fail
+     * guaranteed to be non-empty
+     * @throws IOException           if the GCS bucket cannot be accessed, no files match the prefixes,
+     *                               or file I/O operations fail
      * @throws IllegalStateException if no ONNX model files are found in the bucket matching
      *                               any of the provided prefixes
      * @see StorageOptions#getDefaultInstance()
@@ -52,7 +52,7 @@ public class BucketUtils {
             }
             log.info("Downloaded {} model(s) from GCS bucket {} to {}", downloaded, bucket, targetDir);
         } catch (Exception e) {
-            log.warn("Failed to close GCS storage client", e);
+            throw new IOException("Failed to download from GCS bucket %s".formatted(bucket), e);
         }
 
         return targetDir;
