@@ -12,17 +12,11 @@ spec:
   liveness:
     path: "/internal/health/liveness"
     port: 8080
-    initialDelay: 120
-    periodSeconds: 30
-    timeout: 60
-    failureThreshold: 10
+    initialDelay: 30
   readiness:
     path: "/internal/health/readiness"
     port: 8080
-    initialDelay: 120
-    periodSeconds: 30
-    timeout: 60
-    failureThreshold: 10
+    initialDelay: 30
   prometheus:
     enabled: true
     path: /metrics
