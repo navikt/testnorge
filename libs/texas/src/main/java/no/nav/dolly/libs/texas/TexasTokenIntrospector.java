@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.server.resource.introspection.Reactiv
 import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -71,10 +72,7 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
             }
 
             // Extract all claims from the introspection result.
-            var attributes = new HashMap<String, Object>();
-            root
-                    .properties()
-                    .forEach(entry -> attributes.put(entry.getKey(), entry.getValue()));
+            var attributes = objectMapper.convertValue(root, new TypeReference<HashMap<String, Object>>() {});
 
             // Build "scope" or "roles" claim in second argument, for role based authorization? Check token.
             return Mono.just(new OAuth2IntrospectionAuthenticatedPrincipal(attributes, Collections.emptyList()));
