@@ -12,7 +12,6 @@ app:
     models:
      - model_PERM
      - model_DAGO
-     - model_LONN
 
 
 
