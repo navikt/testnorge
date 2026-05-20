@@ -30,9 +30,11 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Transactional
@@ -181,9 +183,9 @@ public class BestillingController {
         return status.isFerdig() + ":"
                 + status.getAntallLevert() + ":"
                 + status.getSistOppdatert() + ":"
-                + (status.getFeil() != null ? status.getFeil().length() : 0) + ":"
+                + (isNotBlank(status.getFeil()) ? status.getFeil().length() : 0) + ":"
                 + status.getStatus().stream()
-                        .map(s -> s.getId() + "=" + (s.getStatuser() != null && !s.getStatuser().isEmpty()
+                        .map(s -> s.getId() + "=" + (nonNull(s.getStatuser()) && !s.getStatuser().isEmpty()
                                 ? s.getStatuser().getFirst().getMelding()
                                 : ""))
                         .collect(java.util.stream.Collectors.joining(","));

@@ -85,7 +85,7 @@ public class UtledFagsystemUtil {
         ).thenComparing(
                 item -> {
                     var id = idExtractor.apply(item);
-                    return id != null ? id.getBeskrivelse() : "";
+                    return nonNull(id) ? id.getBeskrivelse() : "";
                 }
         ));
     }
