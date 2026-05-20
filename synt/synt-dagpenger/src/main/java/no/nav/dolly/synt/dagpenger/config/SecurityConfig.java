@@ -31,7 +31,8 @@ class SecurityConfig {
     @Bean
     @Profile("prod")
     SecurityWebFilterChain prodFilterChain(ServerHttpSecurity httpSecurity) {
-        return httpSecurity
+        return tokenIntrospector
+                .withOpaqueTokenSecurity(httpSecurity)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorize -> authorize
                         .pathMatchers(
@@ -43,7 +44,6 @@ class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/webjars/**").permitAll()
                         .anyExchange().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(opaque -> opaque.introspector(tokenIntrospector)))
                 .build();
     }
 
