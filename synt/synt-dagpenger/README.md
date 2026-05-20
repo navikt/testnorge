@@ -4,4 +4,4 @@ En enkel wrapper rundt konvertert ONNX-modell.
 
 ## Lokal kjøring
 * [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)
-* [Buckets.]() # TODO: Skriv dokumentasjon for bucket-tilgang.
+* [Modeller.](../../docs/modules/ROOT/pages/local/local_models.adoc)
