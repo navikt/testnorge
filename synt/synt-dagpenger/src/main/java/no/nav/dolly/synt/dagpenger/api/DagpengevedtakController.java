@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.synt.dagpenger.dto.DagpengevedtakDto;
 import no.nav.dolly.synt.dagpenger.onnx.OnnxService;
 import org.springframework.http.MediaType;
@@ -26,6 +27,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Tag(name = "Syntetisering")
+@Slf4j
 class DagpengevedtakController {
 
     private final OnnxService onnxService;
@@ -60,7 +62,11 @@ class DagpengevedtakController {
             )
             String rettighet,
             @RequestBody List<String> startDates) {
-        return ResponseEntity.ok(onnxService.generateVedtak(rettighet, startDates));
+
+        var generated = onnxService.generateVedtak(rettighet, startDates);
+        log.info("Generated {} result(s) based on request for {} with {} start date(s)", generated.size(), rettighet, startDates.size());
+        return ResponseEntity.ok(generated);
+
     }
 
 }
