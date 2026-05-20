@@ -27,11 +27,11 @@ class DagpengevedtakGenerator {
     private static final String MODEL_FILENAME_REGEX = ".*_(DAGO|PERM)_.*\\.onnx$";
 
     private final Map<RettighetType, Path> modelByRettighet;
-    private final OrtEnvironment environment;
+    private final OrtEnvironment environment = OrtEnvironment.getEnvironment();
+    private final Map<RettighetType, OrtSession> sessionByRettighet = new EnumMap<>(RettighetType.class);
 
     DagpengevedtakGenerator(Path modelDirectory) {
         this.modelByRettighet = discoverOneModelPerRettighet(modelDirectory);
-        this.environment = OrtEnvironment.getEnvironment();
     }
 
     List<GeneratedDagpengevedtak> generateVedtak(RettighetType rettighet, List<String> vedtakStartDatoer) {
@@ -65,8 +65,9 @@ class DagpengevedtakGenerator {
         var modelPath = Optional
                 .ofNullable(modelByRettighet.get(rettighet))
                 .orElseThrow(() -> new IllegalArgumentException("No ONNX model found for rettighet " + rettighet));
-        try (var session = environment.createSession(modelPath.toString(), new OrtSession.SessionOptions())) {
+        var session = getOrCreateSession(rettighet, modelPath);
 
+        try {
             var inputName = session
                     .getInputNames()
                     .iterator()
@@ -84,11 +85,11 @@ class DagpengevedtakGenerator {
                 var confidence = probabilities.isEmpty()
                         ? 0.0
                         : probabilities
-                          .values()
-                          .stream()
-                          .mapToDouble(Double::doubleValue)
-                          .max()
-                          .orElse(0.0);
+                        .values()
+                        .stream()
+                        .mapToDouble(Double::doubleValue)
+                        .max()
+                        .orElse(0.0);
                 return new OnnxPrediction(
                         modelPath.getFileName().toString(),
                         label,
@@ -96,12 +97,24 @@ class DagpengevedtakGenerator {
                         probabilities
                 );
 
+
             }
 
         } catch (OrtException e) {
             throw new IllegalStateException("ONNX inference failed for model " + modelPath, e);
         }
 
+    }
+
+    private OrtSession getOrCreateSession(RettighetType rettighet, Path modelPath) {
+        return sessionByRettighet
+                .computeIfAbsent(rettighet, ignored -> {
+                    try {
+                        return environment.createSession(modelPath.toString(), new OrtSession.SessionOptions());
+                    } catch (OrtException e) {
+                        throw new IllegalStateException("Failed to create ONNX session for " + rettighet, e);
+                    }
+                });
     }
 
     private static float[] buildFeatureVector(LocalDate date, int featureCount) {
