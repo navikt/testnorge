@@ -97,7 +97,7 @@ export const BestillingStatus = ({
 			{sortFagsystemer(bestilling?.status || []).map((fagsystem, idx) => {
 				const statuser = fagsystem?.statuser || []
 
-				const antallBestilteIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter
+				const antallBestilteIdenter = bestilling?.antallIdenter
 
 				const getOkIdenter = () => {
 					const miljouavhengig = statuser.find((s) => s?.melding === 'OK')?.identer
