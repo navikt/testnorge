@@ -8,8 +8,7 @@ import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
+import tools.jackson.databind.JsonNode;
 
 @Slf4j
 @Service
@@ -34,10 +33,10 @@ public class OrganisasjonForvalterConsumer {
                 .build();
     }
 
-    public Mono<Map<String, Map<String, Object>>> getOrganisasjoner(String orgNummer) {
+    public Mono<JsonNode> getOrganisasjoner(String orgNummer) {
 
-        return tokenExchange.exchange(serverProperties).flatMap(
-                        token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
                                 String.format("orgnummer=%s", orgNummer), token.getTokenValue()).call());
     }
 }
