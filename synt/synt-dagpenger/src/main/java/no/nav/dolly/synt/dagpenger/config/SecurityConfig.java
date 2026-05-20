@@ -33,17 +33,6 @@ class SecurityConfig {
     SecurityWebFilterChain prodFilterChain(ServerHttpSecurity httpSecurity) {
         return tokenIntrospector
                 .withOpaqueTokenSecurity(httpSecurity)
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(authorize -> authorize
-                        .pathMatchers(
-                                "/internal/**",
-                                "/metrics",
-                                "/swagger",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/webjars/**").permitAll()
-                        .anyExchange().authenticated())
                 .build();
     }
 

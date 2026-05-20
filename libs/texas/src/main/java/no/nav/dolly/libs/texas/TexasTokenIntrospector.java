@@ -14,9 +14,11 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * A custom token introspector that uses the Texas service to validate tokens.
@@ -27,6 +29,17 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
+
+    private static final String[] ALLOWED_ENDPOINTS = new String[]{
+            "/error",
+            "/internal/**",
+            "/swagger",
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/webjars/**"
+    };
 
     private final Texas texas;
     private final ObjectMapper objectMapper;
@@ -73,20 +86,36 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
 
     }
 
+
     /**
-     * Configures the given {@link ServerHttpSecurity} for opaque token-based OAuth2 resource server authentication.
+     * Applies opaque token-based resource server security to the given {@link ServerHttpSecurity} builder.
      *
-     * <p>This method sets up the security configuration to:
+     * <p>The following is configured on the builder:
      * <ul>
-     *   <li>Use this introspector to validate incoming opaque tokens via the Texas service.</li>
-     *   <li>Return HTTP 401 Unauthorized for authentication failures.</li>
-     *   <li>Return HTTP 403 Forbidden for authorization failures.</li>
+     *   <li>Exception handling: unauthenticated requests receive {@code 401 Unauthorized};
+     *       authenticated but unauthorised requests receive {@code 403 Forbidden}.</li>
+     *   <li>CSRF protection is disabled, as the resource server is stateless.</li>
+     *   <li>Authorization rules: a fixed set of open endpoints (health, Swagger, error) plus any
+     *       paths supplied via {@code including} are permitted without authentication;
+     *       all other exchanges require a valid token.</li>
+     *   <li>OAuth2 resource server with opaque token introspection backed by this introspector.</li>
      * </ul>
      *
-     * @param httpSecurity The {@link ServerHttpSecurity} to configure.
-     * @return The configured {@link ServerHttpSecurity} with opaque token security enabled.
+     * <p>The returned builder may be further customised before calling {@link ServerHttpSecurity#build()}.
+     *
+     * @param httpSecurity The security builder to configure; must not be {@code null}.
+     * @param allowed      Zero or more additional Ant-style path patterns to permit without authentication.
+     * @return The configured {@link ServerHttpSecurity} builder, for further customisation or {@code .build()}.
      */
-    public ServerHttpSecurity withOpaqueTokenSecurity(ServerHttpSecurity httpSecurity) {
+    public ServerHttpSecurity withOpaqueTokenSecurity(ServerHttpSecurity httpSecurity, String... allowed) {
+
+        var allowedEndpoints = Optional
+                .ofNullable(allowed)
+                .map(paths -> Stream
+                        .concat(Arrays.stream(ALLOWED_ENDPOINTS), Arrays.stream(paths))
+                        .toArray(String[]::new))
+                .orElse(ALLOWED_ENDPOINTS);
+
         return httpSecurity
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED))
@@ -94,7 +123,12 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
                             exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
                             return exchange.getResponse().setComplete();
                         }))
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorize -> authorize
+                        .pathMatchers(allowedEndpoints).permitAll()
+                        .anyExchange().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(opaque -> opaque.introspector(this)));
+
     }
 
 }
