@@ -37,7 +37,7 @@ public class PersonDTO implements Serializable {
 
     private String ident;
     private Identtype identtype;
-    private Boolean id2032;
+    private boolean id2032;
     private Boolean standalone;
 
     @JsonIgnore
