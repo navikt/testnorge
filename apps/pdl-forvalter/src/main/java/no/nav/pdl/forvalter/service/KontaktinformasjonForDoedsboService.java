@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
@@ -9,6 +10,7 @@ import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.dto.OrganisasjonAdresseDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.mapper.MappingContextUtils;
 import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
@@ -26,9 +28,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 import static java.lang.Boolean.TRUE;
@@ -42,6 +44,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KontaktinformasjonForDoedsboService implements Validation<KontaktinformasjonForDoedsboDTO> {
@@ -70,6 +73,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     private final OrganisasjonForvalterConsumer organisasjonForvalterConsumer;
     private final EnkelAdresseService enkelAdresseService;
     private final KodeverkConsumer kodeverkConsumer;
+    private final JsonMapper jsonMapper;
 
     private static String blankCheck(String value, String defaultValue) {
         return isNotBlank(value) ? value : defaultValue;
@@ -272,18 +276,12 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             organisasjonDto) {
 
         return organisasjonForvalterConsumer.getOrganisasjoner(organisasjonDto.getOrganisasjonsnummer())
-                .map(Map::entrySet)
-                .flatMapMany(Flux::fromIterable)
-                .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
-                .map(Map.Entry::getValue)
-                .next()
-                .doOnNext(organisasjon -> {
-                    organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
-                    if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
-                        kontaktinfo.setAdresse(!((List<Map<String,String>>) organisasjon.get("adresser")).isEmpty() ?
-                                mapperFacade.map(((List<Map<String,String>>) organisasjon.get("adresser")).getFirst(),
-                                        KontaktinformasjonForDoedsboAdresse.class) :
-                                null);
+                .doOnNext(organisasjoner -> {
+                    organisasjonDto.setOrganisasjonsnavn(organisasjoner.findValue("organisasjonsnavn").asString());
+                    var adresseJson = organisasjoner.findValue("adresser");
+                    if (nonNull(adresseJson) && !adresseJson.isEmpty()) {
+                        var adresse = jsonMapper.treeToValue(adresseJson.get(0), OrganisasjonAdresseDTO.class);
+                        kontaktinfo.setAdresse(mapperFacade.map(adresse, KontaktinformasjonForDoedsboAdresse.class));
                     }
                 })
                 .then();
@@ -380,13 +378,9 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         }
 
         return organisasjonForvalterConsumer.getOrganisasjoner(pdlOrganisasjon.getOrganisasjonsnummer())
-                .map(Map::entrySet)
-                .flatMapMany(Flux::fromIterable)
-                .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
-                .map(Map.Entry::getValue)
-                .filter(organisasjon -> isNull(pdlOrganisasjon.getOrganisasjonsnavn()) ||
-                                        pdlOrganisasjon.getOrganisasjonsnavn().equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")))
-                .hasElements();
+                .filter(organisasjoner -> nonNull(organisasjoner.findValue("q1")) ||
+                                                  nonNull(organisasjoner.findValue("q2")))
+                .hasElement();
     }
 
     private Mono<Void> leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
