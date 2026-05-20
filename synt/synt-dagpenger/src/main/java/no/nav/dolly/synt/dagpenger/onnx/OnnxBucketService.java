@@ -39,7 +39,9 @@ class OnnxBucketService implements OnnxService {
     public List<DagpengevedtakDto> generateVedtak(String rettighet, List<String> startDates) {
 
         var rettighetType = RettighetType.valueOf(rettighet.toUpperCase(Locale.ROOT));
-        return dagpenger.generateVedtak(rettighetType, startDates).stream()
+        return dagpenger
+                .generateVedtak(rettighetType, startDates)
+                .stream()
                 .map(VedtakMapper::fromPrediction)
                 .collect(Collectors.toList());
 
