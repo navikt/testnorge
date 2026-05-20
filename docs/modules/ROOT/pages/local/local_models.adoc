@@ -5,7 +5,7 @@ Applikasjoner i synt kan kjøres lokalt, men er avhengig av at ONNX-modellfilene
 
 == Last ned onnx-modeller
 
-Buckets finnes i https://https://console.cloud.google.com/storage/browser?project=dolly-dev-ff83[GCP].
+Buckets finnes i https://console.cloud.google.com/storage/browser?project=dolly-dev-ff83[GCP].
 
 . Sjekk applikasjonens `application-prod.yml` for å finne ut hvilken bucket som brukes. Dette konfigureres med `app.config.bucket`. I `app.config.models` ligger en eller flere prefixer for modellene som brukes.
 
