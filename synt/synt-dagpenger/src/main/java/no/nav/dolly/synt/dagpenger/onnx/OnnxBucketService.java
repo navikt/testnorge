@@ -9,8 +9,6 @@ import no.nav.dolly.synt.dagpenger.dto.DagpengevedtakDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -25,14 +23,13 @@ class OnnxBucketService implements OnnxService {
     private DagpengevedtakGenerator dagpenger;
 
     @PostConstruct
-    void initialize() {
-        try {
-            var modelDirectory = BucketUtils.download(config.getBucket(), config.getModels(), "synt-dagpenger-models-");
-            this.dagpenger = new DagpengevedtakGenerator(modelDirectory);
-            log.info("Successfully initialized ONNX models from GCS bucket: {}", config.getBucket());
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to download models from GCP", e);
-        }
+    void initialize()
+            throws Exception {
+
+        var modelDirectory = BucketUtils.download(config.getBucket(), config.getModels(), "synt-dagpenger-models-");
+        this.dagpenger = new DagpengevedtakGenerator(modelDirectory);
+        log.info("Successfully initialized ONNX models from GCS bucket: {}", config.getBucket());
+
     }
 
     @Override

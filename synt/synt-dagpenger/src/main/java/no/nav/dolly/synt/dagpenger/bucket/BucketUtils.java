@@ -42,7 +42,7 @@ public class BucketUtils {
      * @see StorageOptions#getDefaultInstance()
      */
     public Path download(String bucket, List<String> models, String tempDirPrefix)
-            throws IOException {
+            throws Exception {
 
         var started =  Instant.now();
         var targetDir = Files.createTempDirectory(tempDirPrefix);
@@ -55,8 +55,6 @@ public class BucketUtils {
             }
             var durationInMillis =  Duration.between(started, Instant.now()).toMillis();
             log.info("Downloaded {} model(s) from GCS bucket {} to {} in {}ms", downloaded, bucket, targetDir, durationInMillis);
-        } catch (Exception e) {
-            throw new IOException("Failed to download from GCS bucket %s".formatted(bucket), e);
         }
 
         return targetDir;
