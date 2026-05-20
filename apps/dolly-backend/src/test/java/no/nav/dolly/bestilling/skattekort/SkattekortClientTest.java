@@ -27,6 +27,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
+import java.util.Set;
 
 import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.KILDESKATT_PAA_LOENN;
 import static no.nav.dolly.bestilling.skattekort.domain.Tilleggsopplysning.OPPHOLD_I_TILTAKSSONE;
@@ -66,6 +67,7 @@ class SkattekortClientTest {
         val dollyPerson = DollyPerson.builder().ident(IDENT).build();
         val argumentCaptor = ArgumentCaptor.forClass(String.class);
         val bestilling = RsDollyUtvidetBestilling.builder()
+                .environments(Set.of("q2"))
                 .skattekort(SkattekortRequestDTO.builder()
                         .arbeidsgiverSkatt(List.of(ArbeidstakerSkatt.builder()
                                 .arbeidstaker(List.of(Skattekortmelding.builder()
@@ -84,7 +86,7 @@ class SkattekortClientTest {
                 .build());
         when(transactionHelperService.persister(any(), any(), any(), argumentCaptor.capture()))
                 .thenReturn(Mono.just(new BestillingProgress()));
-        when(skattekortConsumer.sendSkattekort(any())).thenReturn(Mono.just(SkattekortResponse.builder()
+        when(skattekortConsumer.sendSkattekort(any(), anyString())).thenReturn(Mono.just(SkattekortResponse.builder()
                 .status(HttpStatus.CREATED)
                 .build()));
 
@@ -92,9 +94,9 @@ class SkattekortClientTest {
                         skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
                 .assertNext(progress -> {
                     verify(mapperFacade).map(any(), eq(SkattekortRequest.class), any());
-                    verify(skattekortConsumer).sendSkattekort(any());
+                    verify(skattekortConsumer).sendSkattekort(any(), eq("q2"));
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), anyString());
-                    assertThat(argumentCaptor.getAllValues(), hasItems("Info= Oppretting startet mot SKATTEKORT ...", "2025|Skattekort lagret"));
+                    assertThat(argumentCaptor.getAllValues(), hasItems("q2:Info= Oppretting startet mot SKATTEKORT ...", "q2:2025|Skattekort lagret"));
                 })
                 .verifyComplete();
     }
@@ -104,6 +106,7 @@ class SkattekortClientTest {
 
         val dollyPerson = DollyPerson.builder().ident(IDENT).build();
         val bestilling = RsDollyUtvidetBestilling.builder()
+                .environments(Set.of("q1"))
                 .skattekort(SkattekortRequestDTO.builder()
                         .arbeidsgiverSkatt(List.of(ArbeidstakerSkatt.builder()
                                 .arbeidstaker(List.of(Skattekortmelding.builder()
@@ -133,6 +136,7 @@ class SkattekortClientTest {
         val argumentCaptor = ArgumentCaptor.forClass(String.class);
 
         val bestilling = RsDollyUtvidetBestilling.builder()
+                .environments(Set.of("q1"))
                 .skattekort(SkattekortRequestDTO.builder()
                         .arbeidsgiverSkatt(List.of(ArbeidstakerSkatt.builder()
                                 .arbeidstaker(List.of(Skattekortmelding.builder()
@@ -164,7 +168,7 @@ class SkattekortClientTest {
 
         when(transactionHelperService.persister(any(), any(), any(), argumentCaptor.capture()))
                 .thenReturn(Mono.just(new BestillingProgress()));
-        when(skattekortConsumer.sendSkattekort(any())).thenReturn(Mono.just(SkattekortResponse.builder()
+        when(skattekortConsumer.sendSkattekort(any(), anyString())).thenReturn(Mono.just(SkattekortResponse.builder()
                 .status(HttpStatus.CREATED)
                 .build()));
 
@@ -172,9 +176,9 @@ class SkattekortClientTest {
                         skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
                 .assertNext(progress -> {
                     verify(mapperFacade).map(any(), eq(SkattekortRequest.class), any());
-                    verify(skattekortConsumer).sendSkattekort(any());
+                    verify(skattekortConsumer).sendSkattekort(any(), eq("q1"));
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), anyString());
-                    assertThat(argumentCaptor.getAllValues(), hasItems("Info= Oppretting startet mot SKATTEKORT ...", "2026|Skattekort lagret"));
+                    assertThat(argumentCaptor.getAllValues(), hasItems("q1:Info= Oppretting startet mot SKATTEKORT ...", "q1:2026|Skattekort lagret"));
                 })
                 .verifyComplete();
     }
@@ -184,6 +188,7 @@ class SkattekortClientTest {
 
         val dollyPerson = DollyPerson.builder().ident(IDENT).build();
         val bestilling = RsDollyUtvidetBestilling.builder()
+                .environments(Set.of("q2"))
                 .skattekort(SkattekortRequestDTO.builder()
                         .arbeidsgiverSkatt(List.of(ArbeidstakerSkatt.builder()
                                 .arbeidstaker(List.of(Skattekortmelding.builder()

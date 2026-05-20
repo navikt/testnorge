@@ -35,18 +35,18 @@ public class SkattekortConsumer extends ConsumerStatus {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<SkattekortResponse> sendSkattekort(SkattekortRequest skattekortRequest) {
+    public Mono<SkattekortResponse> sendSkattekort(SkattekortRequest skattekortRequest, String miljoe) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new SkattekortOpprettCommand(webClient, skattekortRequest, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Skattekort sendt med response: {}", response));
+                .flatMap(token -> new SkattekortOpprettCommand(webClient, skattekortRequest, miljoe, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Skattekort sendt til miljoe {} med response: {}", miljoe, response));
     }
 
-    public Mono<SkattekortResponse> hentSkattekort(SkattekortHentRequest request) {
+    public Mono<SkattekortResponse> hentSkattekort(SkattekortHentRequest request, String miljoe) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new SkattekortHentCommand(webClient, request, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Skattekort hentet med response: {}", response));
+                .flatMap(token -> new SkattekortHentCommand(webClient, request, miljoe, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Skattekort hentet fra miljoe {} med response: {}", miljoe, response));
     }
 
     @Override

@@ -55,13 +55,18 @@ public final class BestillingSkattekortStatusMapper {
                 var status = parts[1];
 
                 if (status.equals("Skattekort lagret")) {
-                    melding = "OK";
+                    var miljoe = extractMiljoe(orgYear);
+                    melding = miljoe != null ? "%s:OK".formatted(miljoe) : "OK";
                 } else {
-                    var orgYearParts = orgYear.split("\\+");
+                    var miljoe = extractMiljoe(orgYear);
+                    var yearPart = extractYearPart(orgYear);
+                    var orgYearParts = yearPart.split("\\+");
                     if (orgYearParts.length >= 2) {
-                        melding = "FEIL: organisasjon:" + orgYearParts[0] + ", inntektsår:" + orgYearParts[1] + ", melding:" + decodeMsg(status);
+                        var feilMsg = "FEIL: organisasjon:" + orgYearParts[0] + ", inntektsår:" + orgYearParts[1] + ", melding:" + decodeMsg(status);
+                        melding = miljoe != null ? "%s:%s".formatted(miljoe, feilMsg) : feilMsg;
                     } else {
-                        melding = "FEIL: " + decodeMsg(status);
+                        var feilMsg = "FEIL: " + decodeMsg(status);
+                        melding = miljoe != null ? "%s:%s".formatted(miljoe, feilMsg) : feilMsg;
                     }
                 }
             } else {
@@ -88,5 +93,19 @@ public final class BestillingSkattekortStatusMapper {
                 .navn(SKATTEKORT.getBeskrivelse())
                 .statuser(statuser)
                 .build());
+    }
+
+    private static String extractMiljoe(String orgYear) {
+        if (orgYear.contains(":")) {
+            return orgYear.split(":", 2)[0];
+        }
+        return null;
+    }
+
+    private static String extractYearPart(String orgYear) {
+        if (orgYear.contains(":")) {
+            return orgYear.split(":", 2)[1];
+        }
+        return orgYear;
     }
 }
