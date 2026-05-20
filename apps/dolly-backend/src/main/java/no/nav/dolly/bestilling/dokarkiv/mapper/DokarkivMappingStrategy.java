@@ -30,7 +30,6 @@ public class DokarkivMappingStrategy implements MappingStrategy {
     private static final String KANAL = "SKAN_IM";
     private static final String PDFA = "PDFA";
     private static final String ARKIV = "ARKIV";
-    private static final String MASKINELL_ENHET = "9999";
 
     @Override
     public void register(MapperFactory factory) {
@@ -44,7 +43,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
 
                         dokarkivRequest.setEksternReferanseId(UUID.randomUUID().toString());
                         dokarkivRequest.setTittel(rsDokarkiv.getTittel());
-                        dokarkivRequest.setJournalfoerendeEnhet(isBlank(rsDokarkiv.getJournalfoerendeEnhet()) ? MASKINELL_ENHET : rsDokarkiv.getJournalfoerendeEnhet());
+                        dokarkivRequest.setJournalfoerendeEnhet(isBlank(rsDokarkiv.getJournalfoerendeEnhet()) ? null : rsDokarkiv.getJournalfoerendeEnhet());
                         dokarkivRequest.setTema(rsDokarkiv.getTema());
 
                         dokarkivRequest.setKanal(isBlank(rsDokarkiv.getKanal()) ? KANAL : rsDokarkiv.getKanal());

@@ -1,10 +1,10 @@
 spring:
   config:
-    import: "sm://"
+    import: "sm@"
   datasource:
     url: jdbc:postgresql://localhost:5432/testnav-organisasjon-forvalter-local
     username: testnav-organisasjon-forvalter-local
-    password: ${sm\://testnav-organisasjon-forvalter-local}
+    password: ${sm@testnav-organisasjon-forvalter-local}
 
 consumers:
   generer-navn-service:
