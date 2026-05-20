@@ -5,6 +5,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OAuth2I
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +28,8 @@ class TexasTokenIntrospectorTest {
                           "active": true,
                           "preferred_username": "user@nav.no",
                           "exp": 1779285182,
+                          "iat": 1779280200,
+                          "nbf": 1779280200,
                           "groups": ["group-1", "group-2"]
                         }
                         """));
@@ -40,7 +43,11 @@ class TexasTokenIntrospectorTest {
         assertThat(principal.<String>getAttribute("preferred_username"))
                 .isEqualTo("user@nav.no");
         assertThat(principal.<Object>getAttribute("exp"))
-                .isInstanceOf(Number.class);
+                .isEqualTo(Instant.ofEpochSecond(1779285182));
+        assertThat(principal.<Object>getAttribute("iat"))
+                .isEqualTo(Instant.ofEpochSecond(1779280200));
+        assertThat(principal.<Object>getAttribute("nbf"))
+                .isEqualTo(Instant.ofEpochSecond(1779280200));
         assertThat(principal.<List<String>>getAttribute("groups"))
                 .isEqualTo(List.of("group-1", "group-2"));
 

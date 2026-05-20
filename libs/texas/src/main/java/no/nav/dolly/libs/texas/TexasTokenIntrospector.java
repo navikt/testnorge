@@ -15,9 +15,11 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -73,8 +75,9 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
 
             // Extract all claims from the introspection result.
             var attributes = objectMapper.convertValue(root, new TypeReference<HashMap<String, Object>>() {});
+            normalizeTemporalClaims(attributes);
 
-            // Build "scope" or "roles" claim in second argument, for role based authorization? Check token.
+            // Authorities are intentionally empty; access is enforced by authenticated token validation.
             return Mono.just(new OAuth2IntrospectionAuthenticatedPrincipal(attributes, Collections.emptyList()));
 
         } catch (Exception e) {
@@ -82,6 +85,30 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
             return Mono.error(new OAuth2IntrospectionException("Failed to parse introspection result", e));
         }
 
+    }
+
+    private void normalizeTemporalClaims(Map<String, Object> attributes) {
+        normalizeTemporalClaim(attributes, "exp");
+        normalizeTemporalClaim(attributes, "iat");
+        normalizeTemporalClaim(attributes, "nbf");
+    }
+
+    private void normalizeTemporalClaim(Map<String, Object> attributes, String claimName) {
+        Optional
+                .ofNullable(attributes.get(claimName))
+                .ifPresent(value -> {
+                    if (value instanceof Number numberValue) {
+                        attributes.put(claimName, Instant.ofEpochSecond(numberValue.longValue()));
+                        return;
+                    }
+                    if (value instanceof String stringValue) {
+                        try {
+                            attributes.put(claimName, Instant.ofEpochSecond(Long.parseLong(stringValue)));
+                        } catch (NumberFormatException ignored) {
+                            log.warn("Could not parse claim '{}' as epoch seconds", claimName);
+                        }
+                    }
+                });
     }
 
 
