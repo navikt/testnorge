@@ -2,10 +2,13 @@ package no.nav.dolly.libs.texas;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionException;
 import org.springframework.security.oauth2.server.resource.introspection.ReactiveOpaqueTokenIntrospector;
+import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
@@ -49,7 +52,7 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
                     .map(JsonNode::asBoolean)
                     .orElse(false);
 
-            if (Boolean.FALSE.equals(active)) {
+            if (!active) {
                 log.warn("Token is not active according to introspection result.");
                 return Mono.error(new OAuth2IntrospectionException("Token is not active"));
             }
@@ -68,6 +71,30 @@ public class TexasTokenIntrospector implements ReactiveOpaqueTokenIntrospector {
             return Mono.error(new OAuth2IntrospectionException("Failed to parse introspection result", e));
         }
 
+    }
+
+    /**
+     * Configures the given {@link ServerHttpSecurity} for opaque token-based OAuth2 resource server authentication.
+     *
+     * <p>This method sets up the security configuration to:
+     * <ul>
+     *   <li>Use this introspector to validate incoming opaque tokens via the Texas service.</li>
+     *   <li>Return HTTP 401 Unauthorized for authentication failures.</li>
+     *   <li>Return HTTP 403 Forbidden for authorization failures.</li>
+     * </ul>
+     *
+     * @param httpSecurity The {@link ServerHttpSecurity} to configure.
+     * @return The configured {@link ServerHttpSecurity} with opaque token security enabled.
+     */
+    public ServerHttpSecurity withOpaqueTokenSecurity(ServerHttpSecurity httpSecurity) {
+        return httpSecurity
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .accessDeniedHandler((exchange, denied) -> {
+                            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                            return exchange.getResponse().setComplete();
+                        }))
+                .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(opaque -> opaque.introspector(this)));
     }
 
 }
