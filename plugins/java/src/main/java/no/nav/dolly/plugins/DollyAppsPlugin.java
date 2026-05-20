@@ -3,12 +3,12 @@ package no.nav.dolly.plugins;
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.ModuleDependency;
 import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.bundling.Jar;
+import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
@@ -73,14 +73,7 @@ public class DollyAppsPlugin implements Plugin<Project> {
         dependencies.add("implementation", "org.json:json:" + versions.json);
         dependencies.add("implementation", "org.projectlombok:lombok");
         dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-actuator");
-        dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-undertow");
-        var springBootStarterWebflux = (ModuleDependency) dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-webflux");
-        if (springBootStarterWebflux != null) {
-            var springBootStarterReactorNettyExclusion = new HashMap<String, String>();
-            springBootStarterReactorNettyExclusion.put("group", "org.springframework.boot");
-            springBootStarterReactorNettyExclusion.put("module", "spring-boot-starter-reactor-netty");
-            springBootStarterWebflux.exclude(springBootStarterReactorNettyExclusion);
-        }
+        dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-webflux");
         dependencies.add("runtimeOnly", "io.micrometer:micrometer-registry-prometheus");
         dependencies.add("testAnnotationProcessor", "org.projectlombok:lombok");
         dependencies.add("testImplementation", project.getDependencies().platform("org.junit:junit-bom:" + versions.junit));
@@ -93,7 +86,12 @@ public class DollyAppsPlugin implements Plugin<Project> {
             imports.mavenBom("org.springframework.boot:spring-boot-dependencies:" + versions.springBoot);
             imports.mavenBom("org.springframework.cloud:spring-cloud-dependencies:" + versions.springCloud);
             imports.mavenBom("org.springframework.session:spring-session-bom:" + versions.springSession);
+            imports.mavenBom("org.testcontainers:testcontainers-bom:" + versions.testcontainers);
         });
+
+        project.getTasks().withType(JavaCompile.class).configureEach(task ->
+                task.getOptions().getCompilerArgs().add("-parameters")
+        );
 
         project
                 .getTasks()

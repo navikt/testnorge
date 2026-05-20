@@ -168,7 +168,7 @@ export const tenorSearchOversiktMock = {
 				fornavn: 'TESTESEN',
 				etternavn: 'TESTE',
 				tenorRelasjoner: ['Freg'],
-				ibruk: false,
+				iBruk: false,
 			},
 		],
 	},
@@ -2054,7 +2054,7 @@ export const testidentMock = {
 	bestillingId: [1],
 	bestillinger: backendBestillingerMock,
 	master: 'PDLF',
-	ibruk: false,
+	iBruk: false,
 }
 
 export const nyGruppeMock = {
@@ -2155,14 +2155,14 @@ export const tenorSoekOversiktMock = {
 				fornavn: 'TESTYTEST',
 				etternavn: 'CAFE',
 				tenorRelasjoner: ['Freg'],
-				ibruk: true,
+				iBruk: true,
 			},
 			{
 				id: '98765432198',
 				fornavn: 'TIGER',
 				etternavn: 'ULV',
 				tenorRelasjoner: ['Freg'],
-				ibruk: false,
+				iBruk: false,
 			},
 		],
 	},

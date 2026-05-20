@@ -1,3 +1,7 @@
+server:
+  error:
+    include-message: always
+
 spring:
   config:
     import: "dolly-application.yml"

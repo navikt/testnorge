@@ -20,4 +20,6 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine"
 
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    
+    testImplementation "org.springframework.boot:spring-boot-webflux-test"
 }

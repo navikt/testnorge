@@ -1,7 +1,5 @@
 package no.nav.dolly.domain.resultset.entity.testgruppe;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +22,6 @@ public class RsTestgruppe {
     private RsBrukerUtenFavoritter sistEndretAv;
     private List<Tags> tags;
 
-    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate datoEndret;
 
     private Integer antallIdenter;

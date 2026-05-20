@@ -11,6 +11,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -35,13 +36,8 @@ public class OversiktFrontendApplicationStarter {
     private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(OversiktFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
-    @Bean
+    @Bean("oversiktFrontendRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
@@ -56,6 +52,12 @@ public class OversiktFrontendApplicationStarter {
                         addAuthenticationHeaderFilterFrom(consumers.getTestnavAltinn3TilgangService())
                 ))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(OversiktFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {

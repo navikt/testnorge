@@ -59,6 +59,7 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .variables(variables)
                 .build();
 
+        log.debug("GetPdlAktoerCommand: Sender request til {} for ident {}", url, ident);
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -72,6 +73,9 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .retrieve()
                 .bodyToMono(PdlAktoer.class)
+                .doOnSuccess(response -> log.debug("GetPdlAktoerCommand: Mottok respons fra {} for ident {}", url, ident))
+                .doOnError(e -> log.error("GetPdlAktoerCommand: Feil ved kall til {} for ident {}: {} - {}", 
+                        url, ident, e.getClass().getSimpleName(), e.getMessage(), e))
                 .retryWhen(WebClientError.is5xxException());
 
     }

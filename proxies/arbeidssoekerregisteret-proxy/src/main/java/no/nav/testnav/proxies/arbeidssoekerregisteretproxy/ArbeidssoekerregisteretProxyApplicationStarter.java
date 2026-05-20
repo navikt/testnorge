@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTo
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.arbeidssoekerregisteretproxy.config.Consumers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -29,7 +30,8 @@ public class ArbeidssoekerregisteretProxyApplicationStarter {
                 .run(args);
     }
 
-    @Bean
+    @Bean("arbeidssoekerregisteretRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             AzureTrygdeetatenTokenService tokenService,

@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.profil.provider;
 
+import no.nav.registre.testnorge.profil.service.ProfilService;
+import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.TimeUnit;
-
-import no.nav.registre.testnorge.profil.service.ProfilService;
-import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 
 @RestController
 @RequestMapping("/api/v1/profil")

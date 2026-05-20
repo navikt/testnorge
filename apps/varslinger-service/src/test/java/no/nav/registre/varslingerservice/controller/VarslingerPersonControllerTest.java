@@ -1,6 +1,5 @@
 package no.nav.registre.varslingerservice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.registre.varslingerservice.repository.BrukerRepository;
@@ -15,10 +14,11 @@ import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -98,7 +98,7 @@ class VarslingerPersonControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(result -> System.err.println(result.getResponse().getContentAsString()))
-                .andExpect(content().json(objectMapper.writeValueAsString(new String[]{v1.getVarslingId(), v3.getVarslingId()})));
+                .andExpect(content().json(objectMapper.writeValueAsString(new String[]{ v1.getVarslingId(), v3.getVarslingId() })));
     }
 
     @Test

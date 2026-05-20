@@ -222,7 +222,6 @@ export const sokSelector = (items, searchStr) => {
 
 const hentPersonStatus = (ident, bestillingStatus) => {
 	let totalStatus = 'Ferdig'
-
 	if (!bestillingStatus) {
 		return totalStatus
 	}

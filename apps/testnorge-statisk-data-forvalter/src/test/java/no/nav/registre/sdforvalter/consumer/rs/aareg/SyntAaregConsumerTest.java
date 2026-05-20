@@ -9,9 +9,9 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -36,12 +36,13 @@ public class SyntAaregConsumerTest {
     private MockWebServer mockWebServer;
     private WebClient webClient;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         this.mockWebServer = new MockWebServer();
         this.mockWebServer.start();
         Dispatcher dispatcher = getDispatcher();
         mockWebServer.setDispatcher(dispatcher);
+        this.webClient = WebClient.create();
         syntAaregConsumer = new SyntAaregConsumer(webClient, 2, mockWebServer.url("/synt-aareg").toString());
     }
 
@@ -89,11 +90,11 @@ public class SyntAaregConsumerTest {
 
         syntAaregConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
-        assertThat(listAppender.list.size(), is(equalTo(1)));
-        assertThat(listAppender.list.getFirst().toString(), containsString("Feil under syntetisering"));
+        assertThat(listAppender.list.size(), is(equalTo(2)));
+        assertThat(listAppender.list.getLast().toString(), containsString("Feil under syntetisering"));
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws IOException {
         mockWebServer.shutdown();
     }

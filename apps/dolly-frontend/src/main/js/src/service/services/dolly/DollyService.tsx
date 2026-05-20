@@ -50,8 +50,8 @@ export default {
 		return Request.put(Endpoints.identBeskrivelse(ident), { beskrivelse })
 	},
 
-	updateIdentIbruk(ident, ibruk) {
-		return Request.put(Endpoints.identIbruk(ident, ibruk))
+	updateIdentIbruk(ident, iBruk) {
+		return Request.put(Endpoints.identIbruk(ident, iBruk))
 	},
 
 	createBestillingLeggTilPaaPerson(ident, data) {

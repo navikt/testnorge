@@ -19,39 +19,39 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PERSONIDENTIFIKATOR")
+@Table(name = "personidentifikator")
 public class Ident {
 
     @Id
-    @Column("ID")
+    @Column("id")
     @JsonIgnore
     private Long identity;
 
     @NotNull
-    @Column("IDENTTYPE")
+    @Column("identtype")
     private Identtype identtype;
 
     @NotNull
-    @Column("SYNTETISK")
+    @Column("syntetisk")
     private Boolean syntetisk;
 
     @NotNull
-    @Column("PERSONIDENTIFIKATOR")
+    @Column("personidentifikator")
     private String personidentifikator;
 
     @NotNull
-    @Column("REKVIRERINGSSTATUS")
+    @Column("rekvireringsstatus")
     private Rekvireringsstatus rekvireringsstatus;
 
     @NotNull
-    @Column("FOEDSELSDATO")
+    @Column("foedselsdato")
     private LocalDate foedselsdato;
 
     @NotNull
-    @Column("KJOENN")
+    @Column("kjoenn")
     private Kjoenn kjoenn;
 
-    @Column("REKVIRERT_AV")
+    @Column("rekvirert_av")
     private String rekvirertAv;
 
     @JsonIgnore

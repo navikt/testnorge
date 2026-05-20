@@ -3,7 +3,7 @@ import { Switch } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
-	const [brukt, setBrukt] = useState(ident.ibruk)
+	const [brukt, setBrukt] = useState(ident.iBruk)
 	const handleOnChange = (event: any) => {
 		const erIBruk = event.target.checked
 		setBrukt(erIBruk)

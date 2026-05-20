@@ -1,6 +1,6 @@
 package no.nav.testnav.pdllagreservice.consumers;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.pdllagreservice.consumers.command.OpensearchPutCommand;
 import org.springframework.beans.factory.annotation.Value;

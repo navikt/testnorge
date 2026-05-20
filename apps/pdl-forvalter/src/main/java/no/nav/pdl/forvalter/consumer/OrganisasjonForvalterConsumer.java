@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.OrganisasjonForvalterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Map;
+import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
 
 @Slf4j
 @Service
@@ -33,11 +33,10 @@ public class OrganisasjonForvalterConsumer {
                 .build();
     }
 
-    public Map<String, Map<String, Object>> get(String orgNummer) {
+    public Mono<JsonNode> getOrganisasjoner(String orgNummer) {
 
-        return tokenExchange.exchange(serverProperties).flatMap(
-                        token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
-                                String.format("orgnummer=%s", orgNummer), token.getTokenValue()).call())
-                .block();
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
+                                String.format("orgnummer=%s", orgNummer), token.getTokenValue()).call());
     }
 }

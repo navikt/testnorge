@@ -1,11 +1,11 @@
 package no.nav.pdl.forvalter.mapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
-import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
@@ -13,14 +13,17 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal.Tjenesteomraade;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TjenesteomraadeDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalMandattype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalSakstype;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -28,9 +31,6 @@ import static java.util.Objects.isNull;
 @Component
 @RequiredArgsConstructor
 public class VergemaalMappingStrategy implements MappingStrategy {
-
-    private final KodeverkConsumer kodeverkConsumer;
-    private final PersonRepository personRepository;
 
     @Override
     public void register(MapperFactory factory) {
@@ -40,12 +40,17 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(VergemaalDTO kilde, PdlVergemaal destinasjon, MappingContext context) {
 
-                        destinasjon.setEmbete(kodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
+                        val fylkesmannsembeter = (Map<String, String>)context.getProperty("fylkesmannsembeter");
+                        val vergepersoner = (List<DbPerson>) context.getProperty("vergepersoner");
+                        destinasjon.setEmbete(fylkesmannsembeter.get(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
 
-                        var personnavn = personRepository.findByIdent(kilde.getVergeIdent())
-                                .flatMap(person ->
-                                        person.getPerson().getNavn().stream().findFirst())
+                        var personnavn = vergepersoner.stream()
+                                .filter(dbPerson -> dbPerson.getIdent().equals(kilde.getVergeIdent()))
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getNavn)
+                                .flatMap(Collection::stream)
+                                .findFirst()
                                 .orElse(new NavnDTO());
 
                         destinasjon.setVergeEllerFullmektig(PdlVergemaal.VergeEllerFullmektig.builder()

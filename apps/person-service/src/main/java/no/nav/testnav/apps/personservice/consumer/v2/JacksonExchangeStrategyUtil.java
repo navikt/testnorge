@@ -1,25 +1,30 @@
 package no.nav.testnav.apps.personservice.consumer.v2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.http.codec.json.JacksonJsonDecoder;
+import org.springframework.http.codec.json.JacksonJsonEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @UtilityClass
 public final class JacksonExchangeStrategyUtil {
 
-    public static ExchangeStrategies getJacksonStrategy(ObjectMapper objectMapper) {
+    public static ExchangeStrategies getJacksonStrategy() {
         return ExchangeStrategies.builder()
-                .codecs(config -> {
-                    config.defaultCodecs()
-                            .maxInMemorySize(32 * 1024 * 1024);
-                    config.defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                    config.defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                }).build();
+                .codecs(config -> config.defaultCodecs()
+                        .maxInMemorySize(32 * 1024 * 1024))
+                .build();
     }
 
+    public static ExchangeStrategies getJacksonStrategy(ObjectMapper objectMapper) {
+        var jsonMapper = (objectMapper instanceof JsonMapper jm) ? jm : JsonMapper.builder().build();
+        return ExchangeStrategies.builder()
+                .codecs(config -> {
+                    config.defaultCodecs().maxInMemorySize(32 * 1024 * 1024);
+                    config.defaultCodecs().jacksonJsonDecoder(new JacksonJsonDecoder(jsonMapper));
+                    config.defaultCodecs().jacksonJsonEncoder(new JacksonJsonEncoder(jsonMapper));
+                })
+                .build();
+    }
 }

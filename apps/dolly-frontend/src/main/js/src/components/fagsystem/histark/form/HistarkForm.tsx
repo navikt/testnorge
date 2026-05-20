@@ -2,7 +2,7 @@ import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import Panel from '@/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useFormContext } from 'react-hook-form'
 import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
@@ -21,7 +21,7 @@ const HistarkForm = () => {
 		<Vis attributt={histarkAttributt}>
 			<Panel
 				heading="Dokumenter (Histark)"
-				hasErrors={panelError(histarkAttributt)}
+				hasErrors={usePanelError(histarkAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formMethods.getValues(), [histarkAttributt])}

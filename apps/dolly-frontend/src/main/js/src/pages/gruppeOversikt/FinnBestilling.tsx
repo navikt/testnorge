@@ -3,7 +3,7 @@ import { DollyApi } from '@/service/Api'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { useReduxDispatch } from '@/utils/hooks/useRedux'
 import { navigerTilBestilling } from '@/ducks/finnPerson'
-import { SoekTypeValg, GroupedOption } from './NavigeringTypes'
+import { GroupedOption, SoekTypeValg } from './NavigeringTypes'
 
 type ResponsBestilling = {
 	data: [

@@ -1,11 +1,12 @@
 import { NotFoundError } from '@/error'
 import { Argument } from 'classnames'
-const originalFetch = globalThis.fetch
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Logger } from '@/logger/Logger'
+
+const originalFetch = globalThis.fetch
 
 axios.defaults.timeout = 10000
 axios.defaults.validateStatus = (status) => {
@@ -121,7 +122,6 @@ export const cvFetcher = (url, headers) => {
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
 }
-
 
 export const identpoolFetcher = (url, body) =>
 	axios

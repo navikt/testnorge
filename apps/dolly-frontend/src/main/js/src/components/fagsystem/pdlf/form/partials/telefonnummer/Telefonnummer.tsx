@@ -125,7 +125,7 @@ export const TelefonnummerForm = ({ path, formMethods }: TelefonnummerProps) => 
 			/>
 			<DollyTextInput
 				name={`${path}.nummer`}
-				type={"number"}
+				type={'number'}
 				label="Telefonnummer"
 				onChange={({ target }: { target: { value: string } }) => handleChangeNummer(target)}
 				value={formMethods.watch(`${path}.nummer`)}

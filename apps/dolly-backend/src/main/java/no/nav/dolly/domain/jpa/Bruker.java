@@ -23,7 +23,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("BRUKER")
+@Table("bruker")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Bruker implements Serializable {
 
@@ -31,22 +31,22 @@ public class Bruker implements Serializable {
     private Long id;
 
     @Version
-    @Column("VERSJON")
+    @Column("versjon")
     private Long versjon;
 
-    @Column("BRUKER_ID")
+    @Column("bruker_id")
     private String brukerId;
 
-    @Column("BRUKERNAVN")
+    @Column("brukernavn")
     private String brukernavn;
 
-    @Column("EPOST")
+    @Column("epost")
     private String epost;
 
-    @Column("BRUKERTYPE")
+    @Column("brukertype")
     private Brukertype brukertype;
 
-    @Column("REPRESENTERER_TEAM")
+    @Column("representerer_team")
     private Long representererTeam;
 
     @Transient
@@ -85,8 +85,6 @@ public class Bruker implements Serializable {
                 .toHashCode();
     }
 
-    public enum Brukertype {AZURE, BANKID, TEAM}
-
     @Override
     public String toString() {
         return "Bruker{" +
@@ -99,4 +97,6 @@ public class Bruker implements Serializable {
                 ", representererTeam='" + representererTeam + '\'' +
                 '}';
     }
+
+    public enum Brukertype {AZURE, BANKID, TEAM}
 }

@@ -1,10 +1,10 @@
 package no.nav.dolly.libs.nais;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.lang.NonNull;
 
 import java.util.stream.Stream;
 
@@ -44,18 +44,18 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("dolly.texas.url.introspect", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect");
 
         // Emulating NAIS provided environment variables.
-        properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
-        properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
-        properties.putIfAbsent("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-nav-openid-config-token-endpoint}"); // Corresponding AZURE_NAV_APP_CLIENT_[ID|SECRET] can be loaded from pod, if needed.
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-openid-config-token-endpoint}");
-        properties.putIfAbsent("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-trygdeetaten-openid-config-token-endpoint}"); // Corresponding AZURE_TRYGDEETATEN_APP_CLIENT_[ID|SECRET] can be loaded from pod, if needed.
+        properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm@azure-app-client-id}");
+        properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm@azure-app-client-secret}");
+        properties.putIfAbsent("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm@azure-nav-openid-config-token-endpoint}"); // Corresponding AZURE_NAV_APP_CLIENT_[ID|SECRET] can be loaded from pod, if needed.
+        properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm@azure-openid-config-issuer}");
+        properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm@azure-openid-config-token-endpoint}");
+        properties.putIfAbsent("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm@azure-trygdeetaten-openid-config-token-endpoint}"); // Corresponding AZURE_TRYGDEETATEN_APP_CLIENT_[ID|SECRET] can be loaded from pod, if needed.
         properties.putIfAbsent("JWT_SECRET", DUMMY);
         properties.putIfAbsent("MASKINPORTEN_CLIENT_ID", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_CLIENT_JWK", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_SCOPES", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
-        properties.putIfAbsent("MASKINPORTEN_WELL_KNOWN_URL", "${sm\\://maskinporten-well-known-url}"); // Used by tenor-search-service and altinn3-tilgang-service only.
-        properties.putIfAbsent("TOKEN_X_ISSUER", "${sm\\://token-x-issuer}");
+        properties.putIfAbsent("MASKINPORTEN_WELL_KNOWN_URL", "${sm@maskinporten-well-known-url}"); // Used by tenor-search-service and altinn3-tilgang-service only.
+        properties.putIfAbsent("TOKEN_X_ISSUER", "${sm@token-x-issuer}");
 
     }
 
@@ -74,6 +74,9 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                         "spring.cloud.vault.token",
 
                         "ALTINN_API_KEY",
+
+                        "AZURE_APP_CLIENT_ID",
+                        "AZURE_APP_CLIENT_SECRET",
 
                         "JWT_SECRET",
                         "MASKINPORTEN_CLIENT_ID",

@@ -4,21 +4,17 @@ import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
-import {
-	sykemeldingAttributt,
-} from '@/components/fagsystem/sykdom/form/constants'
+import { sykemeldingAttributt } from '@/components/fagsystem/sykdom/form/constants'
 
-export const panelError = (attributtPath) => {
+export const usePanelError = (attributtPath) => {
+	'use no memo'
 	const {
 		formState: { errors },
 	} = useFormContext()
 	// Ignore if values ikke er satt
 	if (_.isNil(attributtPath)) return false
-
-	// Strings er akseptert, men konverter til Array
-	if (!Array.isArray(attributtPath)) attributtPath = [attributtPath]
-
-	return attributtPath.some((attr) => _.has(errors, attr) || _.has(errors, `manual.${attr}`))
+	const paths = Array.isArray(attributtPath) ? attributtPath : [attributtPath]
+	return paths.some((attr) => _.has(errors, attr) || _.has(errors, `manual.${attr}`))
 }
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
@@ -93,6 +89,7 @@ const getValgteAttributter = (values) => {
 		'pensjonforvalter.alderspensjonNyUtaksgrad',
 		'pensjonforvalter.uforetrygd',
 		'pensjonforvalter.afpOffentlig',
+		'kelvinAap',
 		'arenaforvalter',
 		sykemeldingAttributt,
 		'yrkesskader',

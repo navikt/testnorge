@@ -1,6 +1,6 @@
 import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
@@ -20,7 +20,7 @@ export const Familierelasjoner = ({ formMethods }: { formMethods: UseFormReturn 
 		<Vis attributt={relasjonerAttributter}>
 			<Panel
 				heading="Familierelasjoner"
-				hasErrors={panelError(relasjonerAttributter)}
+				hasErrors={usePanelError(relasjonerAttributter)}
 				iconType={'relasjoner'}
 				startOpen={erForsteEllerTest(formMethods.getValues(), relasjonerAttributter)}
 				checkAttributeArray={undefined}

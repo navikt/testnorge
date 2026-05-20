@@ -16,7 +16,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 import reactor.util.function.Tuple3;
 
 import java.util.List;
@@ -92,15 +91,6 @@ public class PensjonPdlPersonService {
                 .map(PdlPersonBolk::getData);
     }
 
-    private static List<PdlPersonBolk.PersonBolk> getPdlPerson(List<PdlPersonBolk.Data> persondata) {
-
-        return persondata.stream()
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(List::stream)
-                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .toList();
-    }
-
     private Mono<String> getNavEnhetNr(List<PdlPersonBolk.Data> persondata, String ident) {
 
         return Flux.fromIterable(persondata)
@@ -124,5 +114,14 @@ public class PensjonPdlPersonService {
                 .collectList()
                 .doOnNext(norgdata -> log.info("Mottatt norgdata: {}", norgdata))
                 .map(norgdata -> !norgdata.isEmpty() ? norgdata.getFirst() : "0315");
+    }
+
+    private static List<PdlPersonBolk.PersonBolk> getPdlPerson(List<PdlPersonBolk.Data> persondata) {
+
+        return persondata.stream()
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(List::stream)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .toList();
     }
 }

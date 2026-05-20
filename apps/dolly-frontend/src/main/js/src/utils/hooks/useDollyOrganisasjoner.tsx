@@ -274,7 +274,7 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 		?.map((miljoe: { id: string }) => miljoe.id)
 		?.filter((miljoe: string) => !unsupportedEnvironments.includes(miljoe))
 
-	const miljoer = miljoe ? [miljoe] : filteredEnvironments ?? []
+	const miljoer = miljoe ? [miljoe] : (filteredEnvironments ?? [])
 	const shouldFetch = !!(ident && harAaregBestilling && miljoer.length > 0)
 
 	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(

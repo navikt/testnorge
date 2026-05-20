@@ -140,8 +140,8 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/leggtilpaaperson`
 	}
 
-	static identIbruk(ident, ibruk) {
-		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
+	static identIbruk(ident, iBruk) {
+		return `${identBase}/${ident}/ibruk?iBruk=${iBruk}`
 	}
 
 	static navigerTilIdent(ident) {

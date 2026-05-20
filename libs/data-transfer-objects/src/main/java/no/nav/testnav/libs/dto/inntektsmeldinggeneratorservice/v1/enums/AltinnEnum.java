@@ -1,8 +1,8 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@JsonSerialize(using = JsonAltinnEnumSerializer.class)
 public interface AltinnEnum {
+    @JsonValue
     String getValue();
 }

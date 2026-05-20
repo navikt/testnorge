@@ -1,6 +1,5 @@
 package no.nav.dolly.opensearch.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -17,8 +16,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
@@ -72,7 +71,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
             return openSearchService.updateIndexParams(jsonNode)
                     .doOnNext(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
 
-        } catch (IOException e) {
+        } catch (RuntimeException e) {
             log.error("Feilet å gjøre setting for indekser {}", INDEX_SETTING, e);
             return Mono.just("Feilet");
         }

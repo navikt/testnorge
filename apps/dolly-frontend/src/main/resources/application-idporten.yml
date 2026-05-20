@@ -3,7 +3,7 @@ IDPORTEN_ISSUER_PROD: https://idporten.no
 
 spring:
   session:
-    timeout: 60m
+    timeout: 3h
   security:
     oauth2:
       client:

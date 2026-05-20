@@ -13,7 +13,6 @@ abstract class JwtResolver {
         return ReactiveSecurityContextHolder
                 .getContext()
                 .switchIfEmpty(Mono.error(new JwtResolverException("ReactiveSecurityContext is empty")))
-                .doOnNext(context -> log.info("JwtResolver context.authentication {} {}", context.getAuthentication().getClass().getCanonicalName(), context.getAuthentication()))
                 .map(SecurityContext::getAuthentication);
     }
 }

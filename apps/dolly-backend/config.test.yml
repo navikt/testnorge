@@ -28,7 +28,7 @@ spec:
       rules:
         - application: generer-navn-service
         - application: testnav-bruker-service-dev
-        - application: testnav-inntektsmelding-service
+        - application: testnav-inntektsmelding-service-dev
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-forvalter

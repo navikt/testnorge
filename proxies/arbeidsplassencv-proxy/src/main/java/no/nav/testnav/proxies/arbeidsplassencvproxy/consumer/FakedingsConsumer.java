@@ -1,6 +1,6 @@
 package no.nav.testnav.proxies.arbeidsplassencvproxy.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.consumer.command.FakedingsGetCommand;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.util.JacksonExchangeStrategyUtil;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class FakedingsConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(FAKE_TOKENDINGS_URL)
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy())
                 .build();
     }
 

@@ -1,7 +1,5 @@
 package no.nav.udistub.provider.ws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.udistub.exception.NotFoundException;
@@ -14,6 +12,8 @@ import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
 import no.udi.mt_1067_nav_data.v1.HentUtvidetPersonstatusResultat;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import v1.mt_1067_nav.no.udi.DeepPingFault;
 import v1.mt_1067_nav.no.udi.HentPersonstatusFault;
 import v1.mt_1067_nav.no.udi.HentPersonstatusRequestType;
@@ -54,7 +54,7 @@ public class PersonStatusService implements MT1067NAVV1Interface {
         var fnr = parameters.getParameter().getFodselsnummer();
         try {
             log.info("Mottatt hentPersonstatus request: {}", objectMapper.writeValueAsString(parameters));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.warn("Kunne ikke serialisere hentPersonstatus request til JSON", e);
         }
         try {
@@ -82,7 +82,7 @@ public class PersonStatusService implements MT1067NAVV1Interface {
         var fnr = parameters.getParameter().getFodselsnummer();
         try {
             log.info("Mottatt hentUtvidetPersonstatus request: {}", objectMapper.writeValueAsString(parameters));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.warn("Kunne ikke serialisere hentUtvidetPersonstatus request til JSON", e);
         }
         try {

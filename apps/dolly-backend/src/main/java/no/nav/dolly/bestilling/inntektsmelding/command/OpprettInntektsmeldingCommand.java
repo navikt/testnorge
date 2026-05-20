@@ -30,9 +30,15 @@ public class OpprettInntektsmeldingCommand implements Callable<Mono<Inntektsmeld
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(InntektsmeldingResponse.class)
+                .doOnNext(response -> log.info("Inntektsmelding-respons mottatt for {} - dokumenter: {}, callId: {}",
+                        request.getArbeidstakerFnr(), response.getDokumenter().size(), callId))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable ->
-                        InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe()));
+                .onErrorResume(throwable -> {
+                    log.warn("Inntektsmelding feilet for {} i {} - callId: {}, feil: {}",
+                            request.getArbeidstakerFnr(), request.getMiljoe(), callId,
+                            WebClientError.describe(throwable).getMessage());
+                    return InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe());
+                });
     }
 }

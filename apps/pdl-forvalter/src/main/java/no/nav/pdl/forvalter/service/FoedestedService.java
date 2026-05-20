@@ -2,14 +2,16 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -27,69 +29,105 @@ public class FoedestedService implements BiValidation<FoedestedDTO, PersonDTO> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public List<FoedestedDTO> convert(PersonDTO person) {
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        for (var type : person.getFoedested()) {
-
-            if (isTrue(type.getIsNew())) {
-
-                handle(type, person.getIdent(),
-                        person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
-                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
-
-                type.setKilde(getKilde(type));
-                type.setMaster(getMaster(type, person));
-            }
-        }
-
-        return person.getFoedested();
+        return Flux.fromIterable(dbPerson.getPerson().getFoedested())
+                .filter(type -> isTrue(type.getIsNew()))
+                .flatMap(type -> handle(type, dbPerson.getIdent(),
+                        dbPerson.getPerson().getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
+                        dbPerson.getPerson().getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .doOnNext(type -> {
+                    type.setKilde(getKilde(type));
+                    type.setMaster(getMaster(type, dbPerson.getPerson()));
+                })
+                .collectList()
+                .thenReturn(dbPerson);
     }
 
-    private void handle(FoedestedDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
+    private Mono<FoedestedDTO> handle(FoedestedDTO foedested, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
 
-        setFoedeland(foedsel, ident, bostedadresse, innflytting);
-        setFoedekommune(foedsel, bostedadresse);
+        return setFoedeland(foedested, ident, bostedadresse, innflytting)
+                .flatMap(fsted -> setFoedekommune(fsted, bostedadresse));
     }
 
-    private void setFoedeland(FoedestedDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
+    private Mono<FoedestedDTO> setFoedeland(FoedestedDTO foedested, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
 
-        if (isNull(foedsel.getFoedeland())) {
+        if (isNull(foedested.getFoedeland())) {
 
             if (FNR.equals(IdenttypeUtility.getIdenttype(ident))) {
-                foedsel.setFoedeland(NORGE);
+                foedested.setFoedeland(NORGE);
+                return Mono.just(foedested);
             } else if (nonNull(innflytting)) {
-                foedsel.setFoedeland(innflytting.getFraflyttingsland());
+                foedested.setFoedeland(innflytting.getFraflyttingsland());
+                return Mono.just(foedested);
             } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
-                foedsel.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
+                foedested.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
+                return Mono.just(foedested);
             } else {
-                foedsel.setFoedeland(kodeverkConsumer.getTilfeldigLand());
+                return kodeverkConsumer.getTilfeldigLand()
+                        .doOnNext(foedested::setFoedeland)
+                        .thenReturn(foedested);
             }
         }
+        return Mono.just(foedested);
     }
 
-    private void setFoedekommune(FoedestedDTO foedsel, BostedadresseDTO bostedadresse) {
+    private Mono<FoedestedDTO> setFoedekommune(FoedestedDTO foedested, BostedadresseDTO bostedadresse) {
 
-        if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFoedekommune())) {
+        if (NORGE.equals(foedested.getFoedeland()) && isBlank(foedested.getFoedekommune())) {
             if (nonNull(bostedadresse)) {
                 if (nonNull(bostedadresse.getVegadresse())) {
-                    foedsel.setFoedekommune(bostedadresse.getVegadresse().getKommunenummer());
+                    foedested.setFoedekommune(bostedadresse.getVegadresse().getKommunenummer());
+                    return Mono.just(foedested);
                 } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-                    foedsel.setFoedekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
+                    foedested.setFoedekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
+                    return Mono.just(foedested);
                 } else if (nonNull(bostedadresse.getUkjentBosted()) &&
-                        isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune())) {
-                    foedsel.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
+                           isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune())) {
+                    foedested.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
+                    return Mono.just(foedested);
                 } else {
-                    foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
+                    return kodeverkConsumer.getTilfeldigKommune()
+                            .doOnNext(foedested::setFoedekommune)
+                            .thenReturn(foedested);
                 }
             } else {
-                foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
+                return kodeverkConsumer.getTilfeldigKommune()
+                        .doOnNext(foedested::setFoedekommune)
+                        .thenReturn(foedested);
             }
         }
+        return Mono.just(foedested);
     }
 
     @Override
-    public void validate(FoedestedDTO artifact, PersonDTO person) {
+    public Mono<Void> validate(FoedestedDTO artifact, PersonDTO person) {
 
-        // Ingen validering
+        return Mono.just(true)
+                .flatMap(valid -> {
+                    if (isNotBlank(artifact.getFoedeland())) {
+                        return kodeverkConsumer.hentKodeverk(KodeverkConsumer.LANDKODER)
+                                .flatMap(landkoder -> {
+                                    if (!landkoder.containsKey(artifact.getFoedeland())) {
+                                        return Mono.error(new InvalidRequestException("Ugyldig foedeland: " + artifact.getFoedeland()));
+                                    }
+                                    return Mono.empty();
+                                });
+                    }
+                    return Mono.empty();
+                })
+                .then(Mono.defer(() -> {
+                    if (isNotBlank(artifact.getFoedekommune())) {
+                        return kodeverkConsumer.hentKodeverk(KodeverkConsumer.KOMMUNER_MED_HISTORISKE)
+                                .flatMap(kommuner -> {
+                                    if (!kommuner.containsKey(artifact.getFoedekommune())) {
+                                        return Mono.error(new InvalidRequestException("Ugyldig foedekommune: " + artifact.getFoedekommune()));
+                                    }
+                                    return Mono.empty();
+                                });
+                    }
+                    return Mono.empty();
+                }))
+                .then();
     }
 }

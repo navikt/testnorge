@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.utils.ArtifactUtils;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -12,9 +13,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.Folk
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
@@ -37,22 +39,23 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterPersonstatusDTO, PersonDTO> {
 
-    public List<FolkeregisterPersonstatusDTO> convert(PersonDTO person) {
+
+    public Mono<DbPerson> convert(DbPerson dbPerson) {
 
         var touched = new AtomicBoolean(false);
 
-        if (person.isNotChanged() || isTestnorgeIdent(person.getIdent()) || person.getIdenttype() == NPID) {
-            return person.getFolkeregisterPersonstatus();
+        if (dbPerson.getPerson().isNotChanged() || isTestnorgeIdent(dbPerson.getPerson().getIdent()) || dbPerson.getPerson().getIdenttype() == NPID) {
+            return Mono.just(dbPerson);
         }
 
-        person.getFolkeregisterPersonstatus()
+        dbPerson.getPerson().getFolkeregisterPersonstatus()
                 .forEach(status -> {
 
                     if (isTrue(status.getIsNew())) {
 
-                        handle(status, person);
+                        handle(status, dbPerson.getPerson());
                         status.setKilde(getKilde(status));
-                        status.setMaster(getMaster(status, person));
+                        status.setMaster(getMaster(status, dbPerson.getPerson()));
                         touched.set(true);
                     }
                 });
@@ -60,25 +63,25 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         if (!touched.get()) {
 
             var status = handle(FolkeregisterPersonstatusDTO.builder()
-                    .id(person.getFolkeregisterPersonstatus().size() + 1)
+                    .id(dbPerson.getPerson().getFolkeregisterPersonstatus().size() + 1)
                     .isNew(false)
                     .kilde("Dolly")
                     .master(Master.FREG)
-                    .build(), person);
+                    .build(), dbPerson.getPerson());
 
             if (nonNull(status.getStatus())) {
-                person.getFolkeregisterPersonstatus().addFirst(status);
+                dbPerson.getPerson().getFolkeregisterPersonstatus().addFirst(status);
             }
         }
 
-        setGyldigTilOgMed(person);
-        return person.getFolkeregisterPersonstatus();
+        setGyldigTilOgMed(dbPerson.getPerson());
+        return Mono.just(dbPerson);
     }
 
-    public List<FolkeregisterPersonstatusDTO> update(PersonDTO person) {
+    public Mono<DbPerson> update(DbPerson dbPerson) {
 
-        person.setIsChanged(true);
-        return convert(person);
+        dbPerson.getPerson().setIsChanged(true);
+        return convert(dbPerson);
     }
 
     private FolkeregisterPersonstatusDTO handle(FolkeregisterPersonstatusDTO personstatus, PersonDTO person) {
@@ -164,13 +167,14 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     private static boolean isNotCurrentStatus(FolkeregisterPersonstatus status, PersonDTO person) {
 
         return person.getFolkeregisterPersonstatus().isEmpty() ||
-                person.getFolkeregisterPersonstatus().getFirst().getStatus() != status;
+               person.getFolkeregisterPersonstatus().getFirst().getStatus() != status;
     }
 
     @Override
-    public void validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
+    public Mono<Void> validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
 
         // Ingen validering
+        return Mono.empty();
     }
 
     private static LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {
@@ -183,16 +187,6 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     }
 
     protected static void setGyldigTilOgMed(PersonDTO person) {
-
-        var newStatus = new ArrayList<>(person
-                .getFolkeregisterPersonstatus()
-                .stream()
-                .filter(status -> nonNull(status.getGyldigFraOgMed()))
-                .sorted(Comparator
-                        .comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed)
-                        .reversed())
-                .toList());
-        person.setFolkeregisterPersonstatus(newStatus);
 
         var folkeregisterPersonstatus = person.getFolkeregisterPersonstatus();
         ArtifactUtils.renumberId(folkeregisterPersonstatus);
@@ -226,7 +220,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     private static void fixGyldigFraOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
 
         if (statusA.getGyldigTilOgMed().isAfter(statusB.getGyldigFraOgMed()) ||
-                statusA.getGyldigTilOgMed().isEqual(statusB.getGyldigFraOgMed())) {
+            statusA.getGyldigTilOgMed().isEqual(statusB.getGyldigFraOgMed())) {
 
             statusB.setGyldigFraOgMed(statusA.getGyldigTilOgMed().plusDays(1));
         }

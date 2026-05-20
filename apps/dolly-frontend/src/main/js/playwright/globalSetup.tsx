@@ -65,9 +65,7 @@ const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/ident
 const bestillingFragmentSearch = new RegExp(
 	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
 )
-const gruppeFragmentSearch = new RegExp(
-	/\/dolly-backend\/api\/v1\/gruppe\/soekGruppe\?fragment/,
-)
+const gruppeFragmentSearch = new RegExp(/\/dolly-backend\/api\/v1\/gruppe\/soekGruppe\?fragment/)
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 const bestillingFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/naviger\/1/)
 const hentGruppeEnIdenter = new RegExp(/\/api\/v1\/gruppe\/1\/identer/)

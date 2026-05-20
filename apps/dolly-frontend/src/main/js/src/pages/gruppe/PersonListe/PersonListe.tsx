@@ -51,7 +51,7 @@ export default function PersonListe({
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
-	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
+	const { gruppe: gruppeInfo } = useGruppeById(gruppeId, sidetall, sideStoerrelse)
 
 	const bestillingStatuser = useMemo(() => {
 		if (!gruppeInfo?.identer) {
@@ -204,7 +204,7 @@ export default function PersonListe({
 			text: 'Brukt',
 			width: '15',
 			style: { paddingLeft: '3px' },
-			dataField: 'ibruk',
+			dataField: 'iBruk',
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => (

@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 class PensjonforvalterHelperTest {
 
     @Spy
-    private ErrorStatusDecoder errorStatusDecoder = new ErrorStatusDecoder(new ObjectMapper());
+    private ErrorStatusDecoder errorStatusDecoder = new ErrorStatusDecoder(JsonMapper.builder().build());
 
     @InjectMocks
     private PensjonforvalterHelper pensjonforvalterHelper;

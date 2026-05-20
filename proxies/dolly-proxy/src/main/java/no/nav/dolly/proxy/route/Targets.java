@@ -27,6 +27,7 @@ class Targets {
     String histark;
     String inntektstub;
     String inst;
+    String kelvinAap;
     String kontoregister;
     String skattekort;
     String krrstub;

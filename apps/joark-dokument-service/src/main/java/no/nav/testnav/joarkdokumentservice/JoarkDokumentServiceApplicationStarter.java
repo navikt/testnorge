@@ -18,5 +18,5 @@ public class JoarkDokumentServiceApplicationStarter {
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
-
 }
+

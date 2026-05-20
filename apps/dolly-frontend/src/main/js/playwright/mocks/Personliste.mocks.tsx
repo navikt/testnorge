@@ -200,7 +200,7 @@ export const mockedGruppe = {
 			bestillingId: [1],
 			bestillinger: [],
 			master: 'PDL',
-			ibruk: false,
+			iBruk: false,
 		},
 	],
 }

@@ -1,8 +1,5 @@
 package no.nav.dolly.bestilling.personservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
@@ -22,12 +19,14 @@ import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -81,6 +80,14 @@ public class PersonServiceClient {
     }
 
     private Flux<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
+        log.error("PersonServiceClient.getError: Feil for ident {}, exceptionType={}, message={}", 
+                person.getIdent(), throwable.getClass().getName(), throwable.getMessage());
+        if (throwable.getCause() != null) {
+            log.error("PersonServiceClient.getError: Caused by: exceptionType={}, message={}", 
+                    throwable.getCause().getClass().getName(), throwable.getCause().getMessage());
+        }
+        log.error("PersonServiceClient.getError: Full stacktrace:", throwable);
+        
         var description = WebClientError.describe(throwable);
         return Flux.just(PersonServiceResponse
                 .builder()
@@ -100,23 +107,23 @@ public class PersonServiceClient {
                 .flatMap(json -> {
                     try {
                         return Mono.just(objectMapper.readTree(json));
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                         return Mono.error(new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e));
                     }
                 })
-                .flatMap(tree -> Mono.just(Map.of(tree.path("hovedperson").path("ident").asText(),
+                .flatMap(tree -> Mono.just(Map.of(getTextValue(tree.path("hovedperson").path("ident")),
                                 toStream(tree.path("hovedperson").path("ordrer"))
                                         .map(entry -> toStream(entry.path(HENDELSER))
-                                                .map(hendelse -> hendelse.path("hendelseId").asText())
+                                                .map(hendelse -> getTextValue(hendelse.path("hendelseId")))
                                                 .collect(Collectors.toSet()))
                                         .flatMap(Collection::stream)
                                         .filter(StringUtil::isNotBlank)
                                         .collect(Collectors.toSet())))
                         .flatMap(hovedperson -> Mono.just(toStream(tree.path("relasjoner"))
-                                        .collect(Collectors.toMap(relasjon -> relasjon.path("ident").asText(),
+                                        .collect(Collectors.toMap(relasjon -> getTextValue(relasjon.path("ident")),
                                                 relasjon -> toStream(relasjon.path("ordrer"))
                                                         .map(entry -> toStream(entry.path(HENDELSER))
-                                                                .map(hendelse -> hendelse.path("hendelseId").asText())
+                                                                .map(hendelse -> getTextValue(hendelse.path("hendelseId")))
                                                                 .collect(Collectors.toSet()))
                                                         .flatMap(Collection::stream)
                                                         .filter(StringUtils::isNotBlank)
@@ -130,12 +137,10 @@ public class PersonServiceClient {
 
     private Stream<JsonNode> toStream(JsonNode node) {
 
-        return StreamSupport.stream(getIterable(node.elements()).spliterator(), false);
-    }
-
-    private Iterable<JsonNode> getIterable(Iterator<JsonNode> iterator) {
-
-        return () -> iterator;
+        if (node.isArray()) {
+            return StreamSupport.stream(node.spliterator(), false);
+        }
+        return Stream.empty();
     }
 
     private Flux<Map.Entry<String, Set<String>>> getIdentWithRelasjoner(DollyPerson dollyPerson, BestillingProgress progress) {
@@ -225,5 +230,12 @@ public class PersonServiceClient {
                     .flatMap(delayed -> personServiceConsumer.isPerson(ident.getKey(), ident.getValue())
                             .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(), resultat, ident)));
         }
+    }
+
+    private static String getTextValue(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return "";
+        }
+        return node.isTextual() ? node.textValue() : node.toString();
     }
 }

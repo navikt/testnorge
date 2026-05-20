@@ -10,9 +10,7 @@ const searchInput = (page) =>
 	page.getByTestId(TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING).locator('input')
 
 test.describe('Navigering', () => {
-	test('til ident som finnes i bestilling og tilbake igjen til bestillingen', async ({
-		page,
-	}) => {
+	test('til ident som finnes i bestilling og tilbake igjen til bestillingen', async ({ page }) => {
 		await page.goto('gruppe')
 		await page
 			.locator('div')
@@ -34,9 +32,10 @@ test.describe('Navigering', () => {
 			.getByText(/12345678912/)
 			.first()
 			.click()
-		await expect(
-			page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_PERSONER),
-		).toHaveAttribute('aria-checked', 'true')
+		await expect(page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_PERSONER)).toHaveAttribute(
+			'aria-checked',
+			'true',
+		)
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER).click()
 		await expect(
@@ -44,9 +43,7 @@ test.describe('Navigering', () => {
 		).toHaveAttribute('aria-checked', 'true')
 	})
 
-	test('til ident som IKKE finnes, deretter til ident som finnes i gruppe 1', async ({
-		page,
-	}) => {
+	test('til ident som IKKE finnes, deretter til ident som finnes i gruppe 1', async ({ page }) => {
 		await page.goto('gruppe')
 
 		await page.route(personFragmentNaviger, async (route) => {
@@ -63,9 +60,9 @@ test.describe('Navigering', () => {
 			.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY)
 			.click()
 
-		await expect(
-			page.getByTestId(TestComponentSelectors.ERROR_MESSAGE_NAVIGERING),
-		).toHaveText(ERROR_NAVIGATE_IDENT)
+		await expect(page.getByTestId(TestComponentSelectors.ERROR_MESSAGE_NAVIGERING)).toHaveText(
+			ERROR_NAVIGATE_IDENT,
+		)
 
 		await page.route(personFragmentNaviger, async (route) => {
 			await route.fulfill({

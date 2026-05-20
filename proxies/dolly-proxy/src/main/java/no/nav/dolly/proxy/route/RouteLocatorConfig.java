@@ -1,6 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ class RouteLocatorConfig {
     private final Histark histark;
     private final Inntektstub inntektstub;
     private final Inst inst;
+    private final KelvinAap kelvinAap;
     private final Kontoregister kontoregister;
     private final Skattekort skattekort;
     private final Krrstub krrstub;
@@ -32,7 +34,8 @@ class RouteLocatorConfig {
     private final Skjermingsregister skjermingsregister;
     private final Udistub udistub;
 
-    @Bean
+    @Bean("dollyProxyRouteLocator")
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
@@ -58,6 +61,7 @@ class RouteLocatorConfig {
                 .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
                 .route("inst", inst.build())
+                .route("kelvin-aap", kelvinAap.build())
                 .route("kontoregister", kontoregister.build())
                 .route("skattekort", skattekort.build())
                 .route("krrstub", krrstub.build())

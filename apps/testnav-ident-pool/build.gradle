@@ -41,6 +41,7 @@ dependencies {
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
+    testImplementation "org.springframework.boot:spring-boot-webtestclient"
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:r2dbc'

@@ -1,6 +1,5 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.kodeverk.KodeverkServiceCommand;
@@ -10,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class KodeverkServiceConsumer {
                 .exchangeStrategies(exchangeStrategies)
                 .build();
         this.tokenExchange = tokenExchange;
-        objectMapper = new ObjectMapper();
+        objectMapper = JsonMapper.builder().build();
     }
 
     public Mono<List<String>> hentKodeverk(String kodeverk) {
