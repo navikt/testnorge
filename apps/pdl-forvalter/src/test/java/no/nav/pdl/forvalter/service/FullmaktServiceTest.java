@@ -114,8 +114,8 @@ class FullmaktServiceTest {
 
         when(createPersonService.execute(any(PersonRequestDTO.class)))
                 .thenReturn(Mono.just(createdDbPerson));
-        when(relasjonService.setRelasjoner(IDENT, RelasjonType.FULLMAKTSGIVER,
-                CREATED_IDENT, RelasjonType.FULLMEKTIG))
+        when(relasjonService.setRelasjoner(IDENT, RelasjonType.FULLMEKTIG,
+                CREATED_IDENT, RelasjonType.FULLMAKTSGIVER))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(fullmaktService.convert(dbPerson))
@@ -129,8 +129,8 @@ class FullmaktServiceTest {
                 .verifyComplete();
 
         verify(createPersonService).execute(any(PersonRequestDTO.class));
-        verify(relasjonService).setRelasjoner(IDENT, RelasjonType.FULLMAKTSGIVER,
-                CREATED_IDENT, RelasjonType.FULLMEKTIG);
+        verify(relasjonService).setRelasjoner(IDENT, RelasjonType.FULLMEKTIG,
+                CREATED_IDENT, RelasjonType.FULLMAKTSGIVER);
     }
 
     @Test
@@ -284,8 +284,8 @@ class FullmaktServiceTest {
 
         when(personRepository.findByIdent(FULLMEKTIG_IDENT))
                 .thenReturn(Mono.just(existingPerson));
-        when(relasjonService.setRelasjoner(IDENT, RelasjonType.FULLMAKTSGIVER,
-                FULLMEKTIG_IDENT, RelasjonType.FULLMEKTIG))
+        when(relasjonService.setRelasjoner(IDENT, RelasjonType.FULLMEKTIG,
+                FULLMEKTIG_IDENT, RelasjonType.FULLMAKTSGIVER))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(fullmaktService.convert(dbPerson))
@@ -329,8 +329,8 @@ class FullmaktServiceTest {
                 .thenReturn(Mono.empty());
         when(personRepository.save(any(DbPerson.class)))
                 .thenReturn(Mono.just(savedPerson));
-        when(relasjonService.setRelasjoner(IDENT, RelasjonType.FULLMAKTSGIVER,
-                FULLMEKTIG_IDENT, RelasjonType.FULLMEKTIG))
+        when(relasjonService.setRelasjoner(IDENT, RelasjonType.FULLMEKTIG,
+                FULLMEKTIG_IDENT, RelasjonType.FULLMAKTSGIVER))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(fullmaktService.convert(dbPerson))

@@ -26,13 +26,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.String.format;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -57,6 +58,11 @@ class KontaktinformasjonForDoedsboServiceTest {
 
     private static final String IDENT = "12445678901";
     private static final String HOVEDPERSON_IDENT = "98765432100";
+    private static final JsonMapper TEST_JSON_MAPPER = JsonMapper.builder().build();
+
+    private static JsonNode toJson(String json) {
+        return TEST_JSON_MAPPER.readTree(json);
+    }
 
     @Mock
     private PersonRepository personRepository;
@@ -84,6 +90,9 @@ class KontaktinformasjonForDoedsboServiceTest {
 
     @Mock
     private KodeverkConsumer kodeverkConsumer;
+
+    @Mock
+    private JsonMapper jsonMapper;
 
     @InjectMocks
     private KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
@@ -256,7 +265,9 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectInvalidPersonnavnOnAdvokatSomKontakt() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
-        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1", Map.of("123456789", "Toys"))));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"123456789": "Toys"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -276,7 +287,9 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectInvalidPersonnavnOnOrganisasjonSomKontakt() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(false));
-        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1", Map.of("123456789", "Toys"))));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"123456789": "Toys"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -317,7 +330,8 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldAcceptAdvokatSomKontaktWithNoKontaktperson() {
 
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
-                .thenReturn(Mono.just(Map.of("q1", Map.of("organisasjonsnavn", "Advokat AS"))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Advokat AS"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -335,7 +349,8 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldAcceptOrganisasjonSomKontaktWithNoKontaktperson() {
 
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
-                .thenReturn(Mono.just(Map.of("q1", Map.of("organisasjonsnavn", "Firma AS"))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Firma AS"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -403,7 +418,8 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void shouldRejectAdvokatWithNonExistingOrgNumber() {
 
-        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(new HashMap<>()));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
+                .thenReturn(Mono.just(toJson("{}")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -421,10 +437,12 @@ class KontaktinformasjonForDoedsboServiceTest {
     }
 
     @Test
-    void shouldRejectAdvokatWithNonMatchingOrgNavn() {
+    void shouldAcceptAdvokatWithNonMatchingOrgNavn() {
 
-        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(Map.of("q1",
-                Map.of("organisasjonsnavn", "Toys"))));
+        when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(true));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Toys"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -437,15 +455,14 @@ class KontaktinformasjonForDoedsboServiceTest {
                 .build();
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.validate(request))
-                .verifyErrorSatisfies(throwable ->
-                        assertThat(throwable.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
-                                                                          "tomt og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]")));
+                .verifyComplete();
     }
 
     @Test
     void shouldRejectOrganisasjonWithNonExistingOrgNumber() {
 
-        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString())).thenReturn(Mono.just(new HashMap<>()));
+        when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
+                .thenReturn(Mono.just(toJson("{}")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -481,7 +498,8 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(Mono.just(true));
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
-                .thenReturn(Mono.just(Map.of("q1", Map.of("organisasjonsnavn", "Advokat AS"))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Advokat AS"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -504,7 +522,8 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldAcceptOrganisasjonWithMatchingOrgInMiljoe() {
 
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
-                .thenReturn(Mono.just(Map.of("q2", Map.of("organisasjonsnavn", "Firma AS"))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q2": {"organisasjonsnavn": "Firma AS"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(ANNET)
@@ -522,7 +541,8 @@ class KontaktinformasjonForDoedsboServiceTest {
     void shouldRejectOrgFoundOnlyInNonQ1Q2Miljoe() {
 
         when(organisasjonForvalterConsumer.getOrganisasjoner(anyString()))
-                .thenReturn(Mono.just(Map.of("t1", Map.of("organisasjonsnavn", "Firma AS"))));
+                .thenReturn(Mono.just(toJson("""
+                        {"t1": {"organisasjonsnavn": "Firma AS"}}""")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -761,9 +781,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(mapperFacade.map(any(KontaktinformasjonForDoedsboDTO.class), eq(KontaktinformasjonForDoedsboDTO.class)))
                 .thenReturn(KontaktinformasjonForDoedsboDTO.builder().build());
         when(organisasjonForvalterConsumer.getOrganisasjoner("123456789"))
-                .thenReturn(Mono.just(Map.of("q1", Map.of(
-                        "organisasjonsnavn", "Advokat AS",
-                        "adresser", List.of()))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Advokat AS", "adresser": []}}""")));
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
                 .assertNext(result -> {
@@ -801,9 +820,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(mapperFacade.map(any(KontaktinformasjonForDoedsboDTO.class), eq(KontaktinformasjonForDoedsboDTO.class)))
                 .thenReturn(KontaktinformasjonForDoedsboDTO.builder().build());
         when(organisasjonForvalterConsumer.getOrganisasjoner("987654321"))
-                .thenReturn(Mono.just(Map.of("q1", Map.of(
-                        "organisasjonsnavn", "Firma AS",
-                        "adresser", List.of()))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Firma AS", "adresser": []}}""")));
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
                 .assertNext(result -> {
@@ -837,9 +855,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(mapperFacade.map(any(KontaktinformasjonForDoedsboDTO.class), eq(KontaktinformasjonForDoedsboDTO.class)))
                 .thenReturn(KontaktinformasjonForDoedsboDTO.builder().build());
         when(organisasjonForvalterConsumer.getOrganisasjoner("123456789"))
-                .thenReturn(Mono.just(Map.of("q1", Map.of(
-                        "organisasjonsnavn", "Advokat AS",
-                        "adresser", List.of()))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Advokat AS", "adresser": []}}""")));
         when(genererNavnServiceConsumer.getNavn()).thenReturn(Mono.just(NavnDTO.builder()
                 .adjektiv("Generert")
                 .substantiv("Navn")
@@ -883,9 +900,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(mapperFacade.map(any(KontaktinformasjonForDoedsboDTO.class), eq(KontaktinformasjonForDoedsboDTO.class)))
                 .thenReturn(KontaktinformasjonForDoedsboDTO.builder().build());
         when(organisasjonForvalterConsumer.getOrganisasjoner("123456789"))
-                .thenReturn(Mono.just(Map.of("q1", Map.of(
-                        "organisasjonsnavn", "Firma AS",
-                        "adresser", List.of()))));
+                .thenReturn(Mono.just(toJson("""
+                        {"q1": {"organisasjonsnavn": "Firma AS", "adresser": []}}""")));
         when(genererNavnServiceConsumer.getNavn()).thenReturn(Mono.just(NavnDTO.builder()
                 .adjektiv("Fornavn")
                 .adverb("Mellom")

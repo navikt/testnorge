@@ -10,7 +10,7 @@ management:
 
 spring:
   config:
-    import: "sm://"
+    import: "sm@"
   data:
     redis:
       host: localhost

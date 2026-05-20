@@ -37,7 +37,7 @@ public class PersonDTO implements Serializable {
 
     private String ident;
     private Identtype identtype;
-    private boolean id2032;
+    private Boolean id2032;
     private Boolean standalone;
 
     @JsonIgnore
@@ -346,8 +346,5 @@ public class PersonDTO implements Serializable {
         final int beregnetRestSifferK1 = (vektetK1 + Character.getNumericValue(ident.charAt(9))) % 11;
 
         return VALIDS.contains(beregnetRestSifferK1);
-    }
-
-    public void getFol() {
     }
 }
