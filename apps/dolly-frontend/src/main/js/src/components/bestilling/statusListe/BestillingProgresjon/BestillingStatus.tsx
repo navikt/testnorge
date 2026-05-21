@@ -113,13 +113,14 @@ export const BestillingStatus = ({
 					return []
 				}
 
+				const isGjenopprett =
+					!!bestilling.opprettetFraGruppeId ||
+					!!bestilling.opprettetFraId ||
+					!!bestilling.gjenopprettetFraIdent
+
 				const oppretter =
 					(erOrganisasjon && !bestilling.ferdig) ||
 					!statuser.length ||
-					(!erOrganisasjon &&
-						antallBestilteIdenter > 1 &&
-						!bestilling.ferdig &&
-						getOkIdenter().length < antallBestilteIdenter) ||
 					statuser.some((status) => {
 						return (
 							status?.melding?.includes('Info') ||
@@ -165,7 +166,7 @@ export const BestillingStatus = ({
 										bestilling.feil,
 										bestilling.ferdig,
 										getOkIdenter().length,
-										antallBestilteIdenter,
+										isGjenopprett ? undefined : antallBestilteIdenter,
 									)}
 								/>
 							)}
@@ -176,7 +177,7 @@ export const BestillingStatus = ({
 								{fagsystem.id !== 'ANNEN_FEIL' && !erOrganisasjon && (
 									<p>
 										{getOkIdenter()?.length}{' '}
-										{!bestilling.opprettetFraGruppeId && `av ${antallBestilteIdenter} `}identer
+										{!isGjenopprett && `av ${antallBestilteIdenter} `}identer
 										opprettet
 									</p>
 								)}
