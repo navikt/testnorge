@@ -1,16 +1,19 @@
 package no.nav.dolly.util;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.SystemTyper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
@@ -51,8 +54,10 @@ import static no.nav.dolly.domain.resultset.SystemTyper.TPS_MESSAGING;
 import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.UDISTUB;
 import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @UtilityClass
 public class UtledFagsystemUtil {
 
@@ -71,11 +76,51 @@ public class UtledFagsystemUtil {
         utledPensjonTyper(result, kriterier);
         utledFagsystemTyper(result, kriterier);
 
-        if (isNotBlank(bestilling.getGjenopprettetFraIdent()) || nonNull(bestilling.getOpprettetFraId())) {
+        if (isGjenopprett(bestilling)) {
             result.remove(PDL_FORVALTER);
+            result.remove(PDLIMPORT);
+            result.add(PDL_ORDRE);
+            result.add(PDL_PERSONSTATUS);
         }
 
         return sortFagsystemer(new ArrayList<>(result));
+    }
+
+    public static String serialize(List<SystemTyper> fagsystemer) {
+
+        if (fagsystemer == null || fagsystemer.isEmpty()) {
+            return null;
+        }
+        return fagsystemer.stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(","));
+    }
+
+    public static List<SystemTyper> deserialize(String value) {
+
+        if (isBlank(value)) {
+            return List.of();
+        }
+        return Arrays.stream(value.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(name -> {
+                    try {
+                        return SystemTyper.valueOf(name);
+                    } catch (IllegalArgumentException e) {
+                        log.warn("Ukjent SystemTyper ved deserialisering: {}", name);
+                        return null;
+                    }
+                })
+                .filter(java.util.Objects::nonNull)
+                .toList();
+    }
+
+    private static boolean isGjenopprett(Bestilling bestilling) {
+
+        return isNotBlank(bestilling.getGjenopprettetFraIdent()) ||
+                nonNull(bestilling.getOpprettetFraId()) ||
+                nonNull(bestilling.getOpprettetFraGruppeId());
     }
 
     public static <T> void sortStatusList(List<T> list, java.util.function.Function<T, SystemTyper> idExtractor) {

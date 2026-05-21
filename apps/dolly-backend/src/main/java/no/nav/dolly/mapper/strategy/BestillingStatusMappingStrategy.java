@@ -56,6 +56,7 @@ import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMes
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static no.nav.dolly.mapper.BestillingYrkesskadeStatusMapper.buildYrkesskadeStatusMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Component
@@ -158,8 +159,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
     private void utledFagsystemer(RsBestillingStatus bestillingStatus, String bestKriterierJson, Bestilling bestilling) {
 
         try {
-            var kriterier = objectMapper.readValue(bestKriterierJson, BestilteKriterier.class);
-            var utledteFagsystemer = UtledFagsystemUtil.resolve(kriterier, bestilling);
+            var utledteFagsystemer = isNotBlank(bestilling.getUtlededeFagsystemer())
+                    ? UtledFagsystemUtil.deserialize(bestilling.getUtlededeFagsystemer())
+                    : UtledFagsystemUtil.resolve(objectMapper.readValue(bestKriterierJson, BestilteKriterier.class), bestilling);
+
             var eksisterendeIds = bestillingStatus.getStatus().stream()
                     .map(RsStatusRapport::getId)
                     .collect(Collectors.toSet());
