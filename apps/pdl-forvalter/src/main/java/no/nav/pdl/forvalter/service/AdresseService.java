@@ -118,24 +118,35 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         return Mono.empty();
     }
 
-    protected Mono<String> genererCoNavn(AdresseDTO.CoNavnDTO coNavn) {
+    protected Mono<AdresseDTO> genererCoNavn(AdresseDTO adresse) {
+
+        var coNavn = adresse.getOpprettCoAdresseNavn();
 
         if (nonNull(coNavn)) {
-            if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
-                (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
+            return Mono.defer(() -> {
+                        if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
+                            (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
 
-                return genererNavnServiceConsumer.getNavn()
-                        .doOnNext(nyttNavn -> {
-                            coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.getAdjektiv()));
-                            coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.getSubstantiv()));
-                            coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
-                                    isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.getAdverb() : null));
-                        })
-                        .map(nyttNavn -> buildNavn(coNavn));
-            }
-            return Mono.just(buildNavn(coNavn));
+                            return genererNavnServiceConsumer.getNavn()
+                                    .map(nyttNavn -> {
+                                        coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.getAdjektiv()));
+                                        coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.getSubstantiv()));
+                                        coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
+                                                isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.getAdverb() : null));
+                                        return coNavn;
+                                    });
+                        } else {
+                            return Mono.just(coNavn);
+                        }
+                    })
+                    .doOnNext(navn -> {
+
+                        adresse.setCoAdressenavn(buildNavn(navn));
+                        adresse.setOpprettCoAdresseNavn(null);
+                    })
+                    .thenReturn(adresse);
         }
-        return Mono.empty();
+        return Mono.just(adresse);
     }
 
     protected void oppdaterAdressedatoer(List<? extends AdresseDTO> adresser, PersonDTO person) {
