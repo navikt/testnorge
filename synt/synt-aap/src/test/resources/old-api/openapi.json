@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Syntetisering - Dagpenger",
-    "description": "Applikasjonen genererer syntetiske dagpengevedtak som kan settes inn i arena.",
+    "title": "Syntetisering - AAP",
+    "description": "Applikasjonen genererer syntetiske AAP-vedtak.",
     "version": "1.0",
     "termsOfService": "https://www.nav.no/",
     "contact": {
@@ -16,7 +16,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1"
+      "url": "https://synthdata-arena-aap.dev.intern.nav.no/api/v1"
     }
   ],
   "tags": [
@@ -24,14 +24,18 @@
       "name": "Syntetisering",
       "externalDocs": {
         "description": "Dokumentasjon",
-        "url": "https://navikt.github.io/testnorge-syntetiseringspakker/apps/arena/synt_dagpenger/docs/Implementasjon.html"
+        "url": "https://navikt.github.io/testnorge-syntetiseringspakker/apps/arena/synt_aap/docs/Implementasjon.html"
       }
     }
   ],
   "paths": {
-    "/vedtak/{rettighet}": {
+    "/aap": {
       "post": {
-        "operationId": "provider.controller.generate_vedtak",
+        "tags": [
+          "Syntetisering"
+        ],
+        "operationId": "service.generator.get_synthetic_aap",
+        "summary": "Generer syntetiske AAP-vedtak.",
         "security": [
           {
             "jwt": [
@@ -39,43 +43,36 @@
             ]
           }
         ],
-        "tags": [
-          "Syntetisering"
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tilDato",
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "description": "Bestemmer om innsendt tilDato verdi skal brukes eller om tilDato skal bli satt basert på syntetisk verdi. Default-verdi er satt til true."
+          }
         ],
-        "summary": "Trigger generering av dagpengevedtak",
         "requestBody": {
-          "description": "Liste med startdatoer for vedtakene",
+          "description": "Liste med vedtak-requests.",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "array",
                 "items": {
-                  "type": "string"
-                },
-                "example": [
-                  "2018-10-01",
-                  "2019-01-01"
-                ]
+                  "$ref": "#/components/schemas/Vedtak-request"
+                }
+              },
+              "examples": {
+                "vedtak-request-example": {
+                  "$ref": "#/components/examples/Vedtak-request-example"
+                }
               }
             }
           }
         },
-        "parameters": [
-          {
-            "in": "path",
-            "name": "rettighet",
-            "required": true,
-            "schema": {
-              "enum": [
-                "PERM",
-                "DAGO"
-              ],
-              "type": "string"
-            },
-            "description": "Rettighet for vedtakene som skal genereres"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Returnerer liste med syntetiske vedtak.",
@@ -84,184 +81,268 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "rettighetKode": {
-                        "type": "string"
-                      },
-                      "vedtaktypeKode": {
-                        "type": "string"
-                      },
-                      "datoMOttatt": {
-                        "type": "string"
-                      },
-                      "beregningsdato": {
-                        "type": "string"
-                      },
-                      "automatiseringsgrad": {
-                        "type": "string"
-                      },
-                      "begrunnelse": {
-                        "type": "string"
-                      },
-                      "vedtaksperiode": {
-                        "type": "object",
-                        "properties": {
-                          "fom": {
-                            "type": "string"
-                          },
-                          "tom": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "taptArbeidstid": {
-                        "type": "object",
-                        "properties": {
-                          "anvendtRegelKode": {
-                            "type": "string"
-                          },
-                          "fastsattArbeidstid": {
-                            "type": "number"
-                          },
-                          "naavaerendeArbeidstid": {
-                            "type": "number"
-                          }
-                        }
-                      },
-                      "dagpengeperiode": {
-                        "type": "object",
-                        "properties": {
-                          "antallUkerPermittering": {
-                            "type": "integer"
-                          },
-                          "justertFomDato": {
-                            "type": "string"
-                          },
-                          "antallUker": {
-                            "type": "integer"
-                          },
-                          "endringVentedagsteller": {
-                            "type": "string"
-                          },
-                          "endringPeriodeteller": {
-                            "type": "string"
-                          },
-                          "endringPermitteringsteller": {
-                            "type": "string"
-                          },
-                          "begrunnelseTellerendring": {
-                            "type": "string"
-                          },
-                          "nullstillPeriodeteller": {
-                            "type": "string"
-                          },
-                          "nullstillPermitteringsteller": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "godkjenningerReellArbeidssoker": {
-                        "type": "object",
-                        "properties": {
-                          "godkjentLokalArbeidssoker": {
-                            "type": "string"
-                          },
-                          "godkjentDeltidssoker": {
-                            "type": "string"
-                          },
-                          "godkjentUtdanning": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "beregningsregler": {
-                        "type": "object",
-                        "properties": {
-                          "oppfyllerKravTilFangstOgFiske": {
-                            "type": "string"
-                          },
-                          "harAvtjentVernepliktSiste3Av12Mnd": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "bruktInntektsperiode": {
-                        "type": "object",
-                        "properties": {
-                          "forsteManed": {
-                            "type": "string"
-                          },
-                          "sisteManed": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "vilkaar": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "kode": {
-                              "type": "string"
-                            },
-                            "status": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      },
-                      "reellArbeidssoker": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "kode": {
-                              "type": "string"
-                            },
-                            "verdi": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      },
-                      "barnListe": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "barn": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "kode": {
-                                    "type": "string"
-                                  },
-                                  "verdi": {
-                                    "type": "string"
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      },
-                      "permittering": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "kode": {
-                              "type": "string"
-                            },
-                            "verdi": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      }
-                    }
+                    "$ref": "#/components/schemas/AAP-vedtak"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/aap/filtered": {
+      "post": {
+        "operationId": "service.generator.get_filtered_synthetic_aap",
+        "tags": [
+          "Syntetisering"
+        ],
+        "summary": "Generer syntetiske AAP-vedtak. Filtrerer ut ugyldige/ulogiske sekvenser i request.",
+        "security": [
+          {
+            "jwt": [
+              "secret"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tilDato",
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "description": "Bestemmer om innsendt tilDato verdi skal brukes eller om tilDato skal bli satt basert på syntetisk verdi. Default-verdi er satt til true."
+          }
+        ],
+        "requestBody": {
+          "description": "Liste med vedtak-requests.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Vedtak-request"
+                }
+              },
+              "examples": {
+                "vedtak-request-example": {
+                  "$ref": "#/components/examples/Vedtak-request-example"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returnerer liste med syntetiske vedtak.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AAP-vedtak"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/11_5": {
+      "post": {
+        "operationId": "service.generator.get_synthetic_11_5",
+        "tags": [
+          "Syntetisering"
+        ],
+        "summary": "Generer syntetiske 11.5-vedtak.",
+        "security": [
+          {
+            "jwt": [
+              "secret"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Liste med vedtak-requests.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Vedtak-request"
+                }
+              },
+              "examples": {
+                "vedtak-request-example": {
+                  "$ref": "#/components/examples/Vedtak-request-example"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returnerer liste med syntetiske vedtak.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/115-Vedtak"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fri_mk": {
+      "post": {
+        "operationId": "service.generator.get_synthetic_fri_mk",
+        "tags": [
+          "Syntetisering"
+        ],
+        "summary": "Generer syntetiske Fritak fra å levere meldekort-vedtak (fri_mk).",
+        "security": [
+          {
+            "jwt": [
+              "secret"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Liste med vedtak-requests.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Vedtak-request"
+                }
+              },
+              "examples": {
+                "vedtak-request-example": {
+                  "$ref": "#/components/examples/Vedtak-request-example"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returnerer liste med syntetiske vedtak.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/aatfor-og-aaungufor-og-fri_mk-Vedtak"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/aaungufor": {
+      "post": {
+        "operationId": "service.generator.get_synthetic_aaungufor",
+        "tags": [
+          "Syntetisering"
+        ],
+        "summary": "Generer syntetiske Ung ufør-vedtak (aaungufor).",
+        "security": [
+          {
+            "jwt": [
+              "secret"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Liste med vedtak-requests.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Vedtak-request"
+                }
+              },
+              "examples": {
+                "vedtak-request-example": {
+                  "$ref": "#/components/examples/Vedtak-request-example"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returnerer liste med syntetiske vedtak.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/aatfor-og-aaungufor-og-fri_mk-Vedtak"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/aatfor": {
+      "post": {
+        "operationId": "service.generator.get_synthetic_aatfor",
+        "tags": [
+          "Syntetisering"
+        ],
+        "summary": "Generer syntetiske Tvungen forvaltning-vedtak (aatfor).",
+        "security": [
+          {
+            "jwt": [
+              "secret"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Liste med vedtak-requests.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Vedtak-request"
+                }
+              },
+              "examples": {
+                "vedtak-request-example": {
+                  "$ref": "#/components/examples/Vedtak-request-example"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returnerer liste med syntetiske vedtak.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/aatfor-og-aaungufor-og-fri_mk-Vedtak"
                   }
                 }
               }
@@ -273,233 +354,271 @@
   },
   "components": {
     "schemas": {
-      "RettighetType": {
-        "enum": [
-          "PERM",
-          "DAGO"
-        ],
-        "type": "string"
+      "Vedtak-request": {
+        "type": "object",
+        "properties": {
+          "fraDato": {
+            "type": "string"
+          },
+          "tilDato": {
+            "type": "string"
+          },
+          "utfall": {
+            "type": "string"
+          },
+          "vedtakDato": {
+            "type": "string"
+          },
+          "vedtakTypeKode": {
+            "type": "string"
+          }
+        }
+      },
+      "Ytelse": {
+        "type": "object",
+        "properties": {
+          "KODE": {
+            "type": "string"
+          },
+          "VERDI": {
+            "type": "string"
+          }
+        }
+      },
+      "Opplysning": {
+        "type": "object",
+        "properties": {
+          "KODE": {
+            "type": "string"
+          },
+          "OVERORDNET": {
+            "type": "string"
+          },
+          "VERDI": {
+            "type": "string"
+          }
+        }
       },
       "Vilkaar": {
         "type": "object",
         "properties": {
-          "kode": {
+          "KODE": {
             "type": "string"
           },
-          "status": {
-            "type": "string"
-          }
-        }
-      },
-      "KodeVerdi": {
-        "type": "object",
-        "properties": {
-          "kode": {
-            "type": "string"
-          },
-          "verdi": {
+          "STATUS": {
             "type": "string"
           }
         }
       },
-      "Barn": {
+      "Periode": {
         "type": "object",
         "properties": {
-          "barn": {
+          "ENDRING_PERIODE": {
+            "type": "string"
+          },
+          "ENDRING_PERIODE_BEGRUNNELSE": {
+            "type": "string"
+          },
+          "ENDRING_UNNTAK": {
+            "type": "string"
+          },
+          "ENDRING_UNNTAK_BEGRUNNELSE": {
+            "type": "string"
+          },
+          "NULLSTILL": {
+            "type": "string"
+          },
+          "PERIODE_KODE": {
+            "type": "string"
+          }
+        }
+      },
+      "ANNEN_OKONOM_YTELSE": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Ytelse"
+        }
+      },
+      "MedisinskOpplysning": {
+        "type": "object",
+        "properties": {
+          "DIAGNOSE": {
+            "type": "string"
+          },
+          "KILDE": {
+            "type": "string"
+          },
+          "KILDEDATO": {
+            "type": "string"
+          },
+          "KLASSIFISERING": {
+            "type": "string"
+          },
+          "TYPE": {
+            "type": "string"
+          }
+        }
+      },
+      "AAP-vedtak": {
+        "type": "object",
+        "properties": {
+          "AAR": {
+            "type": "string"
+          },
+          "AKTFASEKODE": {
+            "type": "string"
+          },
+          "ANDRE_OKONOM_YTELSER": {
             "type": "array",
             "items": {
               "type": "object",
-              "properties": {
-                "kode": {
-                  "type": "string"
-                },
-                "verdi": {
-                  "type": "string"
-                }
+              "additionalProperties": {
+                "$ref": "#/components/schemas/ANNEN_OKONOM_YTELSE"
               }
+            }
+          },
+          "AVBRUDDSKODE": {
+            "type": "string"
+          },
+          "DATO_MOTTATT": {
+            "type": "string"
+          },
+          "FRA_DATO": {
+            "type": "string"
+          },
+          "GEN_SAKSOPPLYSNINGER": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Opplysning"
+            }
+          },
+          "INSTITUSJONSOPPHOLD": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Opplysning"
+            }
+          },
+          "JUSTERT_FRA": {
+            "type": "string"
+          },
+          "LOPENRVEDTAK": {
+            "type": "string"
+          },
+          "MEDLEM_FOLKETRYGDEN": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ytelse"
+            }
+          },
+          "NYTTKRAV2": {
+            "type": "string"
+          },
+          "OPPR_TIL_DATO": {
+            "type": "string"
+          },
+          "PERIODE": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ytelse"
+            }
+          },
+          "TIL_DATO": {
+            "type": "string"
+          },
+          "UTFALL": {
+            "type": "string"
+          },
+          "VEDTAKSVARIANT": {
+            "type": "string"
+          },
+          "VEDTAKTYPE": {
+            "type": "string"
+          },
+          "VEDTAK_DATO": {
+            "type": "string"
+          },
+          "VILKAAR": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Vilkaar"
             }
           }
         }
       },
-      "Dagpengevedtak": {
+      "115-Vedtak": {
         "type": "object",
         "properties": {
-          "rettighetKode": {
+          "DATO_MOTTATT": {
             "type": "string"
           },
-          "vedtaktypeKode": {
+          "FRA_DATO": {
             "type": "string"
           },
-          "datoMOttatt": {
-            "type": "string"
-          },
-          "beregningsdato": {
-            "type": "string"
-          },
-          "automatiseringsgrad": {
-            "type": "string"
-          },
-          "begrunnelse": {
-            "type": "string"
-          },
-          "vedtaksperiode": {
-            "type": "object",
-            "properties": {
-              "fom": {
-                "type": "string"
-              },
-              "tom": {
-                "type": "string"
-              }
-            }
-          },
-          "taptArbeidstid": {
-            "type": "object",
-            "properties": {
-              "anvendtRegelKode": {
-                "type": "string"
-              },
-              "fastsattArbeidstid": {
-                "type": "number"
-              },
-              "naavaerendeArbeidstid": {
-                "type": "number"
-              }
-            }
-          },
-          "dagpengeperiode": {
-            "type": "object",
-            "properties": {
-              "antallUkerPermittering": {
-                "type": "integer"
-              },
-              "justertFomDato": {
-                "type": "string"
-              },
-              "antallUker": {
-                "type": "integer"
-              },
-              "endringVentedagsteller": {
-                "type": "string"
-              },
-              "endringPeriodeteller": {
-                "type": "string"
-              },
-              "endringPermitteringsteller": {
-                "type": "string"
-              },
-              "begrunnelseTellerendring": {
-                "type": "string"
-              },
-              "nullstillPeriodeteller": {
-                "type": "string"
-              },
-              "nullstillPermitteringsteller": {
-                "type": "string"
-              }
-            }
-          },
-          "godkjenningerReellArbeidssoker": {
-            "type": "object",
-            "properties": {
-              "godkjentLokalArbeidssoker": {
-                "type": "string"
-              },
-              "godkjentDeltidssoker": {
-                "type": "string"
-              },
-              "godkjentUtdanning": {
-                "type": "string"
-              }
-            }
-          },
-          "beregningsregler": {
-            "type": "object",
-            "properties": {
-              "oppfyllerKravTilFangstOgFiske": {
-                "type": "string"
-              },
-              "harAvtjentVernepliktSiste3Av12Mnd": {
-                "type": "string"
-              }
-            }
-          },
-          "bruktInntektsperiode": {
-            "type": "object",
-            "properties": {
-              "forsteManed": {
-                "type": "string"
-              },
-              "sisteManed": {
-                "type": "string"
-              }
-            }
-          },
-          "vilkaar": {
+          "MEDISINSK_OPPLYSNING": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "kode": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/MedisinskOpplysning"
             }
           },
-          "reellArbeidssoker": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "kode": {
-                  "type": "string"
-                },
-                "verdi": {
-                  "type": "string"
-                }
-              }
-            }
+          "TIL_DATO": {
+            "type": "string"
           },
-          "barnListe": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "barn": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "kode": {
-                        "type": "string"
-                      },
-                      "verdi": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+          "UTFALL": {
+            "type": "string"
           },
-          "permittering": {
+          "VEDTAKTYPE": {
+            "type": "string"
+          },
+          "VILKAAR": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "kode": {
-                  "type": "string"
-                },
-                "verdi": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/Vilkaar"
             }
           }
         }
+      },
+      "aatfor-og-aaungufor-og-fri_mk-Vedtak": {
+        "type": "object",
+        "properties": {
+          "AVVBRUDDSKODE": {
+            "type": "string"
+          },
+          "DATO_MOTTATT": {
+            "type": "string"
+          },
+          "FRA_DATO": {
+            "type": "string"
+          },
+          "UTFALL": {
+            "type": "string"
+          },
+          "UTLANDSMOTTAKER": {
+            "type": "string"
+          },
+          "VEDTAKTYPE": {
+            "type": "string"
+          },
+          "VILKAAR": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Vilkaar"
+            }
+          }
+        }
+      }
+    },
+    "examples": {
+      "Vedtak-request-example": {
+        "value": [
+          {
+            "fraDato": "2018-10-01",
+            "tilDato": "2019-01-01",
+            "utfall": "JA",
+            "vedtakDato": "2018-10-10",
+            "vedtakTypeKode": "O"
+          }
+        ],
+        "summary": "Generer et vedtak."
       }
     },
     "securitySchemes": {
