@@ -15,17 +15,8 @@ const PRIORITY_ORDER: Record<string, number> = {
 	PDL_PERSONSTATUS: 2,
 }
 
-const IMPORT_HIDDEN_IDS = new Set(['PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
-
-export const filterImportSubSteps = (statusList: any[]) => {
-	const isImport = statusList.some((s) => s.id === 'PDLIMPORT')
-	if (!isImport) return statusList
-	return statusList.filter((s) => !IMPORT_HIDDEN_IDS.has(s.id))
-}
-
 export const sortFagsystemer = (list: any[]) => {
-	const filtered = filterImportSubSteps(list)
-	return filtered.sort((a, b) => {
+	return [...list].sort((a, b) => {
 		const priorityA = PRIORITY_ORDER[a.id] ?? Number.MAX_SAFE_INTEGER
 		const priorityB = PRIORITY_ORDER[b.id] ?? Number.MAX_SAFE_INTEGER
 		if (priorityA !== priorityB) return priorityA - priorityB
