@@ -51,138 +51,162 @@ export const BestillingStatus = ({
 		feil: 'report-problem-triangle',
 	}
 
-	const iconType = (
-		statuser: Status[],
-		feil: string,
-		ferdig: boolean,
-		okIdenterCount?: number,
-		totalIdenter?: number,
-	) => {
-		if (feil) {
-			return IconTypes.feil
+	const TRANSIENT_KEYWORDS = ['ADDING_TO_QUEUE', 'RUNNING', 'PENDING_COMPLETE']
+	const IN_PROGRESS_KEYWORDS = ['Info', 'ADDING_TO_QUEUE', 'RUNNING', 'PENDING_COMPLETE', 'Deployer', 'Pågående']
+
+	const getOkIdentsFromStatuser = (statuser: Status[]) => {
+		const okStatus = statuser.find((s) => s?.melding === 'OK')
+		if (okStatus?.identer) {
+			return okStatus.identer.filter((ident) => ident)
 		}
-		if (!statuser?.length || (erOrganisasjon && !ferdig)) {
-			return IconTypes.oppretter
-		}
-		if (statuser.every((status) => status.melding === 'OK')) {
-			if (ferdig && totalIdenter && totalIdenter > 1 && okIdenterCount < totalIdenter) {
-				return IconTypes.avvik
-			}
-			return IconTypes.suksess
-		} else if (
-			statuser.some(
-				(status) =>
-					status?.melding?.includes('RUNNING') ||
-					status?.melding?.includes('PENDING_COMPLETE') ||
-					status?.melding?.includes('ADDING_TO_QUEUE') ||
-					status?.melding?.includes('Deployer') ||
-					status?.melding?.includes('Pågående'),
+		if (okStatus?.detaljert) {
+			return [...new Set(okStatus.detaljert.flatMap((miljo) => miljo?.identer))]?.filter(
+				(ident) => ident,
 			)
-		) {
-			return IconTypes.oppretter
-		} else if (
-			statuser.some(
-				(status) =>
-					status?.melding?.toLowerCase()?.includes('tidsavbrudd') ||
-					status?.melding?.toLowerCase()?.includes('avvik'),
-			)
-		) {
-			return IconTypes.avvik
 		}
-		return statuser.some((status) => status?.melding === 'OK') ? IconTypes.avvik : IconTypes.feil
+		return []
+	}
+
+	const getEnvironments = (statuser: Status[]) => {
+		const envs = new Set<string>()
+		statuser.forEach((s) => {
+			s?.detaljert?.forEach((d) => {
+				if (d?.miljo) envs.add(d.miljo.toUpperCase())
+			})
+		})
+		return envs.size > 0 ? Array.from(envs).sort().join(', ') : null
+	}
+
+	const getErrorIdents = (status: Status) => {
+		if (status?.identer) {
+			return status.identer.filter((ident) => ident)
+		}
+		if (status?.detaljert) {
+			return [...new Set(status.detaljert.flatMap((d) => d?.identer))]?.filter(
+				(ident) => ident,
+			)
+		}
+		return []
 	}
 
 	return (
 		<div style={{ marginTop: '15px' }}>
 			{sortFagsystemer(bestilling?.status || []).map((fagsystem, idx) => {
 				const statuser = fagsystem?.statuser || []
-
 				const antallBestilteIdenter = bestilling?.antallIdenter
 
-				const getOkIdenter = () => {
-					const miljouavhengig = statuser.find((s) => s?.melding === 'OK')?.identer
-					const miljoavhengig = statuser.find((s) => s?.melding === 'OK')?.detaljert
-					if (miljouavhengig) {
-						return miljouavhengig.filter((ident) => ident)
-					}
-					if (miljoavhengig) {
-						return [...new Set(miljoavhengig.flatMap((miljo) => miljo?.identer))]?.filter(
-							(ident) => ident,
-						)
-					}
-					return []
-				}
+				const okStatuser = statuser.filter((s) => s?.melding === 'OK')
+				const errorStatuser = statuser.filter(
+					(s) =>
+						s?.melding &&
+						s.melding !== 'OK' &&
+						!TRANSIENT_KEYWORDS.some((kw) => s.melding.includes(kw)),
+				)
 
 				const isGjenopprett =
 					!!bestilling.opprettetFraGruppeId ||
 					!!bestilling.opprettetFraId ||
 					!!bestilling.gjenopprettetFraIdent
 
-				const oppretter =
+				const okIdents = getOkIdentsFromStatuser(statuser)
+				const okEnv = getEnvironments(okStatuser)
+
+				const isInProgress =
 					(erOrganisasjon && !bestilling.ferdig) ||
 					!statuser.length ||
 					(!bestilling.ferdig &&
 						antallBestilteIdenter > 1 &&
-						statuser.every((s) => s?.melding === 'OK') &&
-						getOkIdenter().length < antallBestilteIdenter) ||
-					statuser.some((status) => {
-						return (
-							status?.melding?.includes('Info') ||
-							status?.melding?.includes('ADDING_TO_QUEUE') ||
-							status?.melding?.includes('RUNNING') ||
-							status?.melding?.includes('PENDING_COMPLETE') ||
-							status?.melding?.includes('Deployer') ||
-							status?.melding?.includes('Pågående')
-						)
-					})
+						okStatuser.length > 0 &&
+						!errorStatuser.length &&
+						okIdents.length < antallBestilteIdenter) ||
+					statuser.some((s) => IN_PROGRESS_KEYWORDS.some((kw) => s?.melding?.includes(kw)))
 
-				const getMelding = () => {
-					if (statuser.every((s) => s?.melding === 'OK')) {
-						return null
-					}
-					const transientKeywords = ['ADDING_TO_QUEUE', 'RUNNING', 'PENDING_COMPLETE']
-					return statuser.filter((s) => {
-						if (!s?.melding || s.melding === 'OK') return false
-						return !transientKeywords.some((kw) => s.melding.includes(kw))
-					})
+				if (isInProgress) {
+					return (
+						<FagsystemStatus key={idx} style={{ alignItems: 'flex-start' }}>
+							<StatusIcon>
+								<Spinner size={24} margin="0px" />
+							</StatusIcon>
+							<div style={{ width: '96%', marginBottom: '15px' }}>
+								<FagsystemText>
+									<h5>{fagsystem.navn}</h5>
+									{fagsystem.id !== 'ANNEN_FEIL' && !erOrganisasjon && okIdents.length > 0 && (
+										<p>
+											{okIdents.length}{' '}
+											{!isGjenopprett && `av ${antallBestilteIdenter} `}identer
+											opprettet
+										</p>
+									)}
+								</FagsystemText>
+							</div>
+						</FagsystemStatus>
+					)
 				}
 
-				// @ts-ignore
-				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
+				const hasOk = okStatuser.length > 0
+				const hasErrors = errorStatuser.length > 0
 
 				return (
-					<FagsystemStatus key={idx} style={{ alignItems: 'flex-start' }}>
-						<StatusIcon>
-							{oppretter ? (
-								<Spinner size={24} margin="0px" />
-							) : (
-								<Icon
-									kind={iconType(
-										statuser,
-										bestilling.feil,
-										bestilling.ferdig,
-										getOkIdenter().length,
-										antallBestilteIdenter,
-									)}
-								/>
-							)}
-						</StatusIcon>
-						<div style={{ width: '96%', marginBottom: marginBottom }}>
-							<FagsystemText>
-								<h5>{fagsystem.navn}</h5>
-								{fagsystem.id !== 'ANNEN_FEIL' && !erOrganisasjon && (
-									<p>
-										{getOkIdenter()?.length}{' '}
-										{!isGjenopprett && `av ${antallBestilteIdenter} `}identer
-										opprettet
-									</p>
-								)}
-							</FagsystemText>
-							{getMelding()?.map((status, idx) => {
-								return <ApiFeilmelding feilmelding={status?.melding} key={`Feilmelding-${idx}`} />
+					<React.Fragment key={idx}>
+						{hasOk && (
+							<FagsystemStatus style={{ alignItems: 'flex-start' }}>
+								<StatusIcon>
+									<Icon kind={IconTypes.suksess} />
+								</StatusIcon>
+								<div style={{ width: '96%', marginBottom: hasErrors ? '8px' : '15px' }}>
+									<FagsystemText>
+										<h5>{fagsystem.navn}</h5>
+										{fagsystem.id !== 'ANNEN_FEIL' && !erOrganisasjon && (
+											<p>
+												{okEnv || 'Ikke relevant'} &middot; {okIdents.length}{' '}
+												{!isGjenopprett && `av ${antallBestilteIdenter} `}identer
+												opprettet
+											</p>
+										)}
+									</FagsystemText>
+								</div>
+							</FagsystemStatus>
+						)}
+						{hasErrors &&
+							errorStatuser.map((status, errIdx) => {
+								const errEnv = getEnvironments([status])
+								const errIdents = getErrorIdents(status)
+								return (
+									<FagsystemStatus
+										key={`${idx}-err-${errIdx}`}
+										style={{ alignItems: 'flex-start' }}
+									>
+										<StatusIcon>
+											<Icon kind={IconTypes.feil} />
+										</StatusIcon>
+										<div style={{ width: '96%', marginBottom: '8px' }}>
+											<FagsystemText>
+												<h5>{fagsystem.navn}</h5>
+												{errEnv && <p>{errEnv}</p>}
+											</FagsystemText>
+											<ApiFeilmelding feilmelding={status?.melding} />
+											{errIdents.length > 0 && (
+												<p style={{ fontSize: '0.85em', color: '#6a6a6a', marginTop: '2px' }}>
+													{errIdents.join(', ')}
+												</p>
+											)}
+										</div>
+									</FagsystemStatus>
+								)
 							})}
-						</div>
-					</FagsystemStatus>
+						{!hasOk && !hasErrors && (
+							<FagsystemStatus style={{ alignItems: 'flex-start' }}>
+								<StatusIcon>
+									<Icon kind={bestilling.feil ? IconTypes.feil : IconTypes.suksess} />
+								</StatusIcon>
+								<div style={{ width: '96%', marginBottom: '15px' }}>
+									<FagsystemText>
+										<h5>{fagsystem.navn}</h5>
+									</FagsystemText>
+								</div>
+							</FagsystemStatus>
+						)}
+					</React.Fragment>
 				)
 			})}
 			{bestilling?.status?.length > 0 && <hr style={{ marginBottom: '15px' }} />}
