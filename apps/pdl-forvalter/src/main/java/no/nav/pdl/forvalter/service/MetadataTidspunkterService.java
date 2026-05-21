@@ -157,6 +157,13 @@ public class MetadataTidspunkterService {
                             subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()) :
                             null);
         }
+        opplysningstype.forEach(opplysning -> {
+            if (nonNull(opplysning.getFolkeregistermetadata().getOpphoerstidspunkt()) &&
+                nonNull(opplysning.getFolkeregistermetadata().getGyldighetstidspunkt()) &&
+                opplysning.getFolkeregistermetadata().getOpphoerstidspunkt().isBefore(opplysning.getFolkeregistermetadata().getGyldighetstidspunkt())) {
+                opplysning.getFolkeregistermetadata().setOpphoerstidspunkt(null);
+            }
+        });
     }
 
     private static LocalDateTime subtractADay(LocalDateTime tidspunkt) {
