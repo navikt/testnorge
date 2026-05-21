@@ -65,7 +65,7 @@ export const BestillingStatus = ({
 			return IconTypes.oppretter
 		}
 		if (statuser.every((status) => status.melding === 'OK')) {
-			if (totalIdenter && totalIdenter > 1 && okIdenterCount < totalIdenter) {
+			if (ferdig && totalIdenter && totalIdenter > 1 && okIdenterCount < totalIdenter) {
 				return IconTypes.avvik
 			}
 			return IconTypes.suksess
@@ -121,6 +121,10 @@ export const BestillingStatus = ({
 				const oppretter =
 					(erOrganisasjon && !bestilling.ferdig) ||
 					!statuser.length ||
+					(!bestilling.ferdig &&
+						antallBestilteIdenter > 1 &&
+						statuser.every((s) => s?.melding === 'OK') &&
+						getOkIdenter().length < antallBestilteIdenter) ||
 					statuser.some((status) => {
 						return (
 							status?.melding?.includes('Info') ||
@@ -158,7 +162,7 @@ export const BestillingStatus = ({
 										bestilling.feil,
 										bestilling.ferdig,
 										getOkIdenter().length,
-										isGjenopprett ? undefined : antallBestilteIdenter,
+										antallBestilteIdenter,
 									)}
 								/>
 							)}

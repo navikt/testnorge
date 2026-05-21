@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 import {
-    calculateProgress, filterImportSubSteps,
+    calculateProgress,
     sortFagsystemer,
 } from '@/components/bestilling/statusListe/BestillingProgresjon/fagsystemUtils'
 
@@ -199,38 +199,6 @@ describe('calculateProgress', () => {
             expect(result.percent).toBe(10)
             expect(result.text).toBe('Oppretter 0 av 1')
         })
-    })
-})
-
-describe('filterImportSubSteps', () => {
-    it('should remove PDL sub-steps when PDLIMPORT is present', () => {
-        const statusList = [
-            {id: 'PDLIMPORT', navn: 'Import av personer (TESTNORGE)', statuser: [{melding: 'OK'}]},
-            {id: 'PDL_FORVALTER', navn: 'Opprett persondetaljer', statuser: [{melding: 'OK'}]},
-            {id: 'PDL_ORDRE', navn: 'Ordre til PDL', statuser: [{melding: 'OK'}]},
-            {id: 'PDL_PERSONSTATUS', navn: 'Person finnes i PDL', statuser: [{melding: 'OK'}]},
-            {id: 'AAREG', navn: 'Arbeidsregister (AAREG)', statuser: [{melding: 'OK'}]},
-        ]
-        const result = filterImportSubSteps(statusList)
-
-        expect(result).toHaveLength(2)
-        expect(result.map((s) => s.id)).toEqual(['PDLIMPORT', 'AAREG'])
-    })
-
-    it('should not filter anything when PDLIMPORT is not present', () => {
-        const statusList = [
-            {id: 'PDL_FORVALTER', navn: 'Opprett persondetaljer', statuser: [{melding: 'OK'}]},
-            {id: 'PDL_ORDRE', navn: 'Ordre til PDL', statuser: [{melding: 'OK'}]},
-            {id: 'PDL_PERSONSTATUS', navn: 'Person finnes i PDL', statuser: [{melding: 'OK'}]},
-            {id: 'AAREG', navn: 'Arbeidsregister (AAREG)', statuser: [{melding: 'OK'}]},
-        ]
-        const result = filterImportSubSteps(statusList)
-
-        expect(result).toHaveLength(4)
-    })
-
-    it('should return empty list when given empty input', () => {
-        expect(filterImportSubSteps([])).toEqual([])
     })
 })
 

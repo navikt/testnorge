@@ -61,11 +61,3 @@ export const calculateProgress = ({
     return {percent, text}
 }
 
-const IMPORT_HIDDEN_IDS = new Set(['PDL_FORVALTER', 'PDL_ORDRE', 'PDL_PERSONSTATUS'])
-
-
-export const filterImportSubSteps = (statusList: any[]) => {
-    const isImport = statusList.some((s) => s.id === 'PDLIMPORT')
-    if (!isImport) return statusList
-    return statusList.filter((s) => !IMPORT_HIDDEN_IDS.has(s.id))
-}
