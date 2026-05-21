@@ -58,7 +58,6 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         return Flux.fromIterable(dbPerson.getPerson().getKontaktadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
                 .flatMap(adresse -> handle(adresse, dbPerson.getPerson()))
-                .filter(Objects::nonNull)
                 .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
                     adresse.setMaster(getMaster(adresse, dbPerson.getPerson()));
@@ -108,9 +107,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
                         kontaktadresse.setGyldigTilOgMed(nonNull(kontaktadresse.getGyldigTilOgMed()) ? kontaktadresse.getGyldigTilOgMed() :
                                 kontaktadresse.getGyldigFraOgMed().plusYears(1));
                     }
-                    return genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn())
-                            .doOnNext(kontaktadresse::setCoAdressenavn)
-                            .doOnNext(navn -> kontaktadresse.setOpprettCoAdresseNavn(null))
+                    return genererCoNavn(kontaktadresse)
                             .thenReturn(kontaktadresse);
                 });
     }
