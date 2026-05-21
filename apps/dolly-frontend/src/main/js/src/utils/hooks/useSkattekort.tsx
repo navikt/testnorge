@@ -1,7 +1,10 @@
 import useSWR from 'swr'
 import axios from 'axios'
 
-const skattekortBaseUrl = '/testnav-dolly-proxy/skattekort/api/v1/person'
+const skattekortUrl = (miljoe: string) =>
+	`/testnav-dolly-proxy/skattekort/${miljoe}/api/v1/person`
+
+const SKATTEKORT_MILJOER = ['q1', 'q2']
 
 interface SkattekortResponse {
 	utstedtDato?: string
@@ -68,29 +71,36 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 	},
 }
 
+const fetchSkattekortFromMiljoe = async (miljoe: string, fnr: string) => {
+	try {
+		const res = await axios.post(
+			`${skattekortUrl(miljoe)}/hent-skattekort`,
+			{ fnr },
+			{
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			},
+		)
+		return res.data || []
+	} catch (e: unknown) {
+		if (axios.isAxiosError(e) && e.response?.status === 404) {
+			return []
+		}
+		return []
+	}
+}
+
 export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) => {
 	const shouldFetch = Boolean(ident && harSkattekortBestilling)
 
 	const { data, isLoading, error } = useSWR<SkattekortResponse[], Error>(
-		shouldFetch ? [`${skattekortBaseUrl}/hent-skattekort`, ident] : null,
-		async ([url, fnr]: [string, string]) => {
-			try {
-				const res = await axios.post(
-					url,
-					{ fnr },
-					{
-						headers: {
-							'Content-Type': 'application/json',
-						},
-					},
-				)
-				return res.data
-			} catch (e: unknown) {
-				if (axios.isAxiosError(e) && e.response?.status === 404) {
-					return null
-				}
-				throw e
-			}
+		shouldFetch ? ['skattekort-alle-miljoer', ident] : null,
+		async ([, fnr]: [string, string]) => {
+			const results = await Promise.all(
+				SKATTEKORT_MILJOER.map((miljoe) => fetchSkattekortFromMiljoe(miljoe, fnr)),
+			)
+			return results.flat()
 		},
 		{ errorRetryCount: 0, revalidateOnFocus: false },
 	)
