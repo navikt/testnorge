@@ -7,7 +7,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
 import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type AdressebeskyttelseTypes = {
@@ -37,18 +37,14 @@ type AdressebeskyttelseLesTypes = {
 
 const AdressebeskyttelseLes = ({ adressebeskyttelse, idx }: AdressebeskyttelseLesTypes) => {
 	return (
-		<>
-			<div className="person-visning_content" key={idx}>
-				<TitleValue
-					title="Gradering"
-					value={showLabel('gradering', adressebeskyttelse.gradering)}
-				/>
-				<TitleValue
-					title="Master"
-					value={adressebeskyttelse.master || adressebeskyttelse.metadata?.master}
-				/>
-			</div>
-		</>
+		<div className="person-visning_content" key={idx}>
+			<TitleValue title="Gradering" value={showLabel('gradering', adressebeskyttelse.gradering)} />
+			<TitleValue
+				title="Master"
+				value={adressebeskyttelse.master || adressebeskyttelse.metadata?.master}
+			/>
+			<TitleValue title="ID" value={adressebeskyttelse.id} />
+		</div>
 	)
 }
 

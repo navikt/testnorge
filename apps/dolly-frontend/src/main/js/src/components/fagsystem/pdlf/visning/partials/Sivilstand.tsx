@@ -5,7 +5,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import {
 	getInitialSivilstand,
 	initialPdlPerson,
@@ -73,6 +73,7 @@ const SivilstandLes = ({
 						<TitleValue title="Relatert person" value={sivilstandData.relatertVedSivilstand} />
 					)}
 					<TitleValue title="Master" value={sivilstandData.master} />
+					<TitleValue title="ID" value={sivilstandData.id} />
 				</div>
 				{(relasjonRedigert || relasjon) && (
 					<RelatertPerson

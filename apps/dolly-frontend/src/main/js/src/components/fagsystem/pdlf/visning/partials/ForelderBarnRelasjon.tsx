@@ -13,7 +13,7 @@ import {
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import React from 'react'
 import { useParams } from 'react-router'
@@ -51,30 +51,29 @@ const ForelderBarnRelasjonLes = ({
 	const relatertPersonUtenId = forelderBarnData.relatertPersonUtenFolkeregisteridentifikator
 
 	return (
-		<>
-			<ErrorBoundary>
-				<div className="person-visning_content">
-					{!relasjoner && <TitleValue title="Relatert person" value={relatertPersonIdent} />}
-					{forelderBarnData.relatertPersonsRolle === 'BARN' && (
-						<TitleValue title="Rolle for barn" value={forelderBarnData.minRolleForPerson} />
-					)}
-					<TitleValue title="Har delt bosted" value={forelderBarnData.deltBosted && 'Ja'} />
-					<TitleValue title="Master" value={forelderBarnData.master} />
-				</div>
-				{(relasjon || relasjonRedigert) && (
-					<RelatertPerson
-						data={relasjonRedigert?.relatertPerson || relasjon?.relatertPerson}
-						tittel={showLabel('pdlRelasjonTyper', forelderBarnData.relatertPersonsRolle)}
-					/>
+		<ErrorBoundary>
+			<div className="person-visning_content">
+				{!relasjoner && <TitleValue title="Relatert person" value={relatertPersonIdent} />}
+				{forelderBarnData.relatertPersonsRolle === 'BARN' && (
+					<TitleValue title="Rolle for barn" value={forelderBarnData.minRolleForPerson} />
 				)}
-				{relatertPersonUtenId && (
-					<RelatertPersonUtenId
-						data={relatertPersonUtenId}
-						tittel={showLabel('pdlRelasjonTyper', forelderBarnData.relatertPersonsRolle)}
-					/>
-				)}
-			</ErrorBoundary>
-		</>
+				<TitleValue title="Har delt bosted" value={forelderBarnData.deltBosted && 'Ja'} />
+				<TitleValue title="Master" value={forelderBarnData.master} />
+				<TitleValue title="ID" value={forelderBarnData.id} />
+			</div>
+			{(relasjon || relasjonRedigert) && (
+				<RelatertPerson
+					data={relasjonRedigert?.relatertPerson || relasjon?.relatertPerson}
+					tittel={showLabel('pdlRelasjonTyper', forelderBarnData.relatertPersonsRolle)}
+				/>
+			)}
+			{relatertPersonUtenId && (
+				<RelatertPersonUtenId
+					data={relatertPersonUtenId}
+					tittel={showLabel('pdlRelasjonTyper', forelderBarnData.relatertPersonsRolle)}
+				/>
+			)}
+		</ErrorBoundary>
 	)
 }
 
