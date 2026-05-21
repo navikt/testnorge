@@ -146,7 +146,7 @@ public class BestillingController {
     public Flux<ServerSentEvent<RsBestillingStatus>> streamBestillingStatus(
             @PathVariable("bestillingId") Long bestillingId) {
 
-        return bestillingService.fetchBestillingById(bestillingId)
+        return bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                 .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                 .flatMapMany(initial -> {
                     var initialSse = toBestillingSse(initial);
@@ -157,7 +157,7 @@ public class BestillingController {
 
                     var updates = bestillingEventPublisher.subscribe(bestillingId)
                             .sample(Duration.ofMillis(200))
-                            .concatMap(id -> bestillingService.fetchBestillingById(bestillingId)
+                            .concatMap(id -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> {
@@ -166,7 +166,7 @@ public class BestillingController {
                                     }));
 
                     var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
-                            .concatMap(tick -> bestillingService.fetchBestillingById(bestillingId)
+                            .concatMap(tick -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> Mono.empty()));

@@ -91,7 +91,12 @@ public class BestillingService {
                         .map(bruker -> {
                             bestilling.setBruker(bruker);
                             return bestilling;
-                        }))
+                        }));
+    }
+
+    public Mono<Bestilling> fetchBestillingByIdMedUtlededeFagsystemer(Long bestillingId) {
+
+        return fetchBestillingById(bestillingId)
                 .flatMap(this::resolveUtlededeFagsystemerForBestilling);
     }
 
@@ -126,8 +131,7 @@ public class BestillingService {
                         .map(progresser -> {
                             bestilling.setProgresser(progresser);
                             return bestilling;
-                        }))
-                .flatMap(this::resolveUtlededeFagsystemerForBestilling);
+                        }));
     }
 
     public Mono<Set<String>> fetchBestilteMiljoerByGruppeId(Long gruppeId) {
