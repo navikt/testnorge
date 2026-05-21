@@ -87,7 +87,7 @@ const fetchSkattekortFromMiljoe = async (miljoe: string, fnr: string) => {
 		if (axios.isAxiosError(e) && e.response?.status === 404) {
 			return []
 		}
-		return []
+		throw e
 	}
 }
 
@@ -97,10 +97,18 @@ export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) =
 	const { data, isLoading, error } = useSWR<SkattekortResponse[], Error>(
 		shouldFetch ? ['skattekort-alle-miljoer', ident] : null,
 		async ([, fnr]: [string, string]) => {
-			const results = await Promise.all(
+			const results = await Promise.allSettled(
 				SKATTEKORT_MILJOER.map((miljoe) => fetchSkattekortFromMiljoe(miljoe, fnr)),
 			)
-			return results.flat()
+			const fulfilled = results
+				.filter((r): r is PromiseFulfilledResult<SkattekortResponse[]> => r.status === 'fulfilled')
+				.flatMap((r) => r.value)
+			const rejected = results.filter((r) => r.status === 'rejected')
+
+			if (fulfilled.length === 0 && rejected.length > 0) {
+				throw (rejected[0] as PromiseRejectedResult).reason
+			}
+			return fulfilled
 		},
 		{ errorRetryCount: 0, revalidateOnFocus: false },
 	)
