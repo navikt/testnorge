@@ -24,20 +24,21 @@ import static java.util.Objects.nonNull;
 @Slf4j
 public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>> {
 
-    private static final String HENT_SKATTEKORT_URL = "/skattekort/api/v1/person/hent-skattekort";
+    private static final String HENT_SKATTEKORT_URL = "/skattekort/{miljoe}/api/v1/person/hent-skattekort";
 
     private final WebClient webClient;
     private final SkattekortHentRequest request;
+    private final String miljoe;
     private final String token;
 
     @Override
     public Mono<SkattekortResponse> call() {
 
-        log.info("Henter skattekort fra Sokos: {}", Json.pretty(request));
+        log.info("Henter skattekort fra Sokos miljoe {}: {}", miljoe, Json.pretty(request));
 
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder.path(HENT_SKATTEKORT_URL).build())
+                .uri(uriBuilder -> uriBuilder.path(HENT_SKATTEKORT_URL).build(miljoe))
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
@@ -54,9 +55,10 @@ public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>>
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage()))))
                 .onErrorResume(throwable -> {
                     WebClientError.Description description = WebClientError.describe(throwable);
-                    log.error("Feil ved Henting av skattekort for ident: {}, Inntektsår: {}, Status: {}, Message: {}",
+                    log.error("Feil ved Henting av skattekort for ident: {}, Inntektsår: {}, Miljoe: {}, Status: {}, Message: {}",
                             request.getFnr(),
                             nonNull(request.getInntektsaar()) ? request.getInntektsaar() : null,
+                            miljoe,
                             description.getStatus(),
                             description.getMessage());
                     return SkattekortResponse.of(description);

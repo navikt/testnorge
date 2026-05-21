@@ -97,7 +97,8 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kelvin-aap", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.skattekort", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.skattekort-q1", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.skattekort-q2", () -> wireMockServer.baseUrl());
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.medl", () -> wireMockServer.baseUrl());
         registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
@@ -503,8 +504,9 @@ class RouteLocatorConfigTest {
 
     }
 
-    @Test
-    void testSkattekort() {
+    @ParameterizedTest
+    @ValueSource(strings = { "q1", "q2" })
+    void testSkattekort(String env) {
 
         var downstreamPath = "/api/v1/testdata";
         var responseBody = "Success from mocked skattekort";
@@ -517,7 +519,7 @@ class RouteLocatorConfigTest {
 
         webClient
                 .get()
-                .uri("/skattekort" + downstreamPath)
+                .uri("/skattekort/%s/%s".formatted(env, downstreamPath))
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("text/plain")

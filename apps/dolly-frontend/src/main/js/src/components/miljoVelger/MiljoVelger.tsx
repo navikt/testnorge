@@ -26,6 +26,7 @@ const miljoeavhengig = [
 	'dokarkiv',
 	'organisasjon',
 	'underenheter',
+	'skattekort',
 ]
 
 const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {
