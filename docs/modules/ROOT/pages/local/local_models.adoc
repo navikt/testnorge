@@ -1,0 +1,15 @@
+[[lokal_generelt]]
+= Forberede synt-modeller for lokal kjøring
+
+Applikasjoner i synt kan kjøres lokalt, men er avhengig av at ONNX-modellfilene er lastet ned lokalt.
+
+== Last ned onnx-modeller
+
+Buckets finnes i https://console.cloud.google.com/storage/browser?project=dolly-dev-ff83[GCP].
+
+. Sjekk applikasjonens `application-prod.yml` for å finne ut hvilken bucket som brukes. Dette konfigureres med `app.config.bucket`. I `app.config.models` ligger en eller flere prefixer for modellene som brukes.
+
+. Last ned onnx-modellene (`*.onnx`) til `./src/main/resources/models/` for applikasjonen det gjelder, enten manuelt eller vha.
+----
+> gcloud storage cp gs://<app.config.bucket>/*.onnx .
+----

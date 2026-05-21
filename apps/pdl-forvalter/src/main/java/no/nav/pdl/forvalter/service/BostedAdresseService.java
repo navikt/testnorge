@@ -126,9 +126,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                             }
                         }
 
-                    } else if (bostedadresse.countAdresser() == 0 &&
-                               person.getOppholdsadresse().isEmpty() &&
-                               person.getKontaktadresse().isEmpty()) {
+                    } else if (bostedadresse.countAdresser() == 0) {
 
                         bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
                     }
