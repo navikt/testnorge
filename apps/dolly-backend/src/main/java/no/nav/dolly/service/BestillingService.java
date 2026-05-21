@@ -64,6 +64,7 @@ public class BestillingService {
     private static final String FINNES_IKKE = "Finner ikke gruppe med id %d";
     private static final String SEARCH_STRING = "info:";
     private static final String DEFAULT_VALUE = "";
+    private static final String EMPTY_JSON = "{}";
 
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -360,7 +361,7 @@ public class BestillingService {
                             .sistOppdatert(now())
                             .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer(), tuple.getT3()))
                             .opprettetFraId(bestillingId)
-                            .bestKriterier("{}")
+                            .bestKriterier(EMPTY_JSON)
                             .bruker(tuple.getT2())
                             .brukerId(tuple.getT2().getId())
                             .build();
@@ -391,7 +392,7 @@ public class BestillingService {
                             .gruppeId(tuple.getT1().getGruppeId())
                             .ident(ident)
                             .antallIdenter(1)
-                            .bestKriterier("{}")
+                            .bestKriterier(EMPTY_JSON)
                             .sistOppdatert(now())
                             .miljoer(filterAvailable(miljoer, tuple.getT3()))
                             .gjenopprettetFraIdent(ident)
@@ -435,7 +436,7 @@ public class BestillingService {
                     var bestilling = Bestilling.builder()
                             .gruppeId(gruppeId)
                             .antallIdenter(tuple.getT2().size())
-                            .bestKriterier("{}")
+                            .bestKriterier(EMPTY_JSON)
                             .sistOppdatert(now())
                             .miljoer(filterAvailable(miljoer, tuple.getT3()))
                             .opprettetFraGruppeId(gruppeId)

@@ -133,11 +133,8 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                     return Mono.just(bostedadresse);
                 })
                 .flatMap(bostedadresse1 -> buildBoadresse(bostedadresse1, person))
-                .flatMap(boadresse -> genererCoNavn(boadresse.getOpprettCoAdresseNavn()))
+                .flatMap(this::genererCoNavn)
                 .doOnNext(adressseNavn -> {
-
-                    bostedadresse.setCoAdressenavn(adressseNavn);
-                    bostedadresse.setOpprettCoAdresseNavn(null);
 
                     if (isNull(bostedadresse.getAngittFlyttedato())) {
                         bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());

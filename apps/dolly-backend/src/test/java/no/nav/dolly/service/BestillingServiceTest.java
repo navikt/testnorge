@@ -6,21 +6,28 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.DokumentRepository;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,22 +48,40 @@ class BestillingServiceTest {
     private static final long BEST_ID = 1L;
 
     @Mock
-    private BestillingRepository bestillingRepository;
-
-    @Mock
     private BestillingKontrollRepository bestillingKontrollRepository;
 
     @Mock
     private BestillingProgressRepository bestillingProgressRepository;
 
     @Mock
-    private TestgruppeRepository testgruppeRepository;
+    private BestillingRepository bestillingRepository;
 
     @Mock
     private BrukerService brukerService;
 
     @Mock
+    private DokumentRepository dokumentRepository;
+
+    @Mock
+    private DokumentService dokumentService;
+
+    @Mock
+    private IdentRepository identRepository;
+
+    @Mock
+    private MalBestillingService malBestillingService;
+
+    @Mock
     private MiljoerConsumer miljoerConsumer;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private OpenSearchService openSearchService;
+
+    @Mock
+    private TestgruppeRepository testgruppeRepository;
 
     @InjectMocks
     private BestillingService bestillingService;
@@ -227,5 +253,98 @@ class BestillingServiceTest {
         StepVerifier.create(bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, miljoe))
                 .expectError(NotFoundException.class)
                 .verify();
+    }
+
+    @Test
+    void shouldSetBestKriterierToEmptyJsonForGjenopprettFraBestilling() {
+
+        var miljoe = "q2";
+        var gruppeId = 1L;
+        var bestilling = Bestilling.builder()
+                .id(BEST_ID)
+                .miljoer(miljoe)
+                .gruppeId(gruppeId)
+                .ferdig(true)
+                .brukerId(27L)
+                .build();
+
+        when(bestillingRepository.findById(BEST_ID)).thenReturn(Mono.just(bestilling));
+        when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.just(BestillingProgress.builder()
+                .ident("12345678901")
+                .build()));
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
+        when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
+        when(bestillingRepository.save(any())).thenReturn(Mono.just(bestilling));
+        when(brukerService.findById(any())).thenReturn(Mono.just(Bruker.builder().build()));
+
+        StepVerifier.create(bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, miljoe))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        var captor = ArgumentCaptor.forClass(Bestilling.class);
+        verify(bestillingRepository).save(captor.capture());
+        assertThat(captor.getValue().getBestKriterier(), is("{}"));
+    }
+
+    @Test
+    void shouldSetBestKriterierToEmptyJsonForGjenopprettFraIdent() {
+
+        var ident = "12345678901";
+        var gruppeId = 1L;
+        var miljoe = "q2";
+        var testident = Testident.builder()
+                .ident(ident)
+                .gruppeId(gruppeId)
+                .build();
+        var savedBestilling = Bestilling.builder()
+                .id(BEST_ID)
+                .gruppeId(gruppeId)
+                .bestKriterier("{}")
+                .build();
+
+        when(identRepository.findByIdent(ident)).thenReturn(Mono.just(testident));
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
+        when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
+        when(bestillingRepository.save(any())).thenReturn(Mono.just(savedBestilling));
+        when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.empty());
+
+        StepVerifier.create(bestillingService.createBestillingForGjenopprettFraIdent(ident, List.of(miljoe)))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        var captor = ArgumentCaptor.forClass(Bestilling.class);
+        verify(bestillingRepository).save(captor.capture());
+        assertThat(captor.getValue().getBestKriterier(), is("{}"));
+    }
+
+    @Test
+    void shouldSetBestKriterierToEmptyJsonForGjenopprettFraGruppe() {
+
+        var gruppeId = 1L;
+        var miljoe = "q2";
+        var testident = Testident.builder()
+                .ident("12345678901")
+                .gruppeId(gruppeId)
+                .build();
+        var savedBestilling = Bestilling.builder()
+                .id(BEST_ID)
+                .gruppeId(gruppeId)
+                .bestKriterier("{}")
+                .build();
+
+        when(testgruppeRepository.findById(gruppeId)).thenReturn(Mono.just(Testgruppe.builder().id(gruppeId).build()));
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
+        when(identRepository.findByGruppeId(eq(gruppeId), any(Pageable.class))).thenReturn(Flux.just(testident));
+        when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
+        when(bestillingRepository.save(any())).thenReturn(Mono.just(savedBestilling));
+        when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.empty());
+
+        StepVerifier.create(bestillingService.createBestillingForGjenopprettFraGruppe(gruppeId, miljoe))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        var captor = ArgumentCaptor.forClass(Bestilling.class);
+        verify(bestillingRepository).save(captor.capture());
+        assertThat(captor.getValue().getBestKriterier(), is("{}"));
     }
 }
