@@ -91,18 +91,26 @@ const fetchSkattekortFromMiljoe = async (miljoe: string, fnr: string) => {
 	}
 }
 
+interface MiljoSkattekortData {
+	miljo: string
+	data: SkattekortResponse[]
+}
+
 export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) => {
 	const shouldFetch = Boolean(ident && harSkattekortBestilling)
 
-	const { data, isLoading, error } = useSWR<SkattekortResponse[], Error>(
+	const { data, isLoading, error } = useSWR<MiljoSkattekortData[], Error>(
 		shouldFetch ? ['skattekort-alle-miljoer', ident] : null,
 		async ([, fnr]: [string, string]) => {
 			const results = await Promise.allSettled(
-				SKATTEKORT_MILJOER.map((miljoe) => fetchSkattekortFromMiljoe(miljoe, fnr)),
+				SKATTEKORT_MILJOER.map(async (miljoe) => {
+					const miljoData = await fetchSkattekortFromMiljoe(miljoe, fnr)
+					return { miljo: miljoe, data: miljoData } as MiljoSkattekortData
+				}),
 			)
 			const fulfilled = results
-				.filter((r): r is PromiseFulfilledResult<SkattekortResponse[]> => r.status === 'fulfilled')
-				.flatMap((r) => r.value)
+				.filter((r): r is PromiseFulfilledResult<MiljoSkattekortData> => r.status === 'fulfilled')
+				.map((r) => r.value)
 			const rejected = results.filter((r) => r.status === 'rejected')
 
 			if (fulfilled.length === 0 && rejected.length > 0) {

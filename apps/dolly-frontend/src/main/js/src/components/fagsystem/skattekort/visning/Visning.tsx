@@ -8,6 +8,7 @@ import { formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 
 interface ForskuddstrekkDTO {
 	trekkode?: string
@@ -25,8 +26,13 @@ interface SkattekortDTO {
 	tilleggsopplysningList?: string[]
 }
 
+interface MiljoSkattekortData {
+	miljo: string
+	data: SkattekortDTO[]
+}
+
 interface SkattekortVisningProps {
-	liste?: SkattekortDTO[]
+	liste?: MiljoSkattekortData[]
 	loading?: boolean
 }
 
@@ -59,9 +65,10 @@ export const KodeverkTitleValue = ({ kodeverkstype, value, label }: KodeverkType
 	return <TitleValue title={label} value={visningValue} />
 }
 
-export const SkattekortData = ({ liste }: { liste: SkattekortDTO[] }) => {
+export const SkattekortData = ({ liste, data }: { liste?: SkattekortDTO[]; data?: SkattekortDTO[] }) => {
+	const items = data || liste || []
 	return (
-		<DollyFieldArray header="" data={liste} expandable={liste.length > 5} nested>
+		<DollyFieldArray header="" data={items} expandable={items.length > 5} nested>
 			{(skattekort: SkattekortDTO, idx: number) => {
 				return (
 					<React.Fragment key={idx}>
@@ -96,7 +103,8 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 		return null
 	}
 
-	const manglerFagsystemdata = liste?.length < 1
+	const manglerFagsystemdata = liste?.every((miljoData) => !miljoData?.data || miljoData.data.length < 1)
+	const forsteMiljo = liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
 	return (
 		<>
@@ -111,7 +119,13 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 				</Alert>
 			) : (
 				<ErrorBoundary>
-					<SkattekortData liste={liste} />
+					<MiljoTabs
+						bestilteMiljoer={liste?.map((m) => m.miljo)}
+						forsteMiljo={forsteMiljo}
+						data={liste}
+					>
+						<SkattekortData liste={[]} />
+					</MiljoTabs>
 				</ErrorBoundary>
 			)}
 		</>
