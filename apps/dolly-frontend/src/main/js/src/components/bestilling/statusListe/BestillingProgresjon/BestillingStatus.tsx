@@ -132,23 +132,15 @@ export const BestillingStatus = ({
 						)
 					})
 
-				const infoString = ['Info', 'INFO', 'info']
-				const infoListe = statuser.filter((s) => infoString.some((i) => s?.melding?.includes(i)))
-
-				const advarselString = ['Advarsel', 'ADVARSEL', 'advarsel']
-				const advarselListe = statuser.filter((s) =>
-					advarselString.some((i) => s?.melding?.includes(i)),
-				)
-
-				const feilString = ['Feil', 'FEIL', 'feil']
-				const feilListe = statuser.filter((s) => feilString.some((i) => s?.melding?.includes(i)))
-
 				const getMelding = () => {
 					if (statuser.every((s) => s?.melding === 'OK')) {
 						return null
-					} else {
-						return infoListe?.concat(advarselListe, feilListe)
 					}
+					const transientKeywords = ['ADDING_TO_QUEUE', 'RUNNING', 'PENDING_COMPLETE']
+					return statuser.filter((s) => {
+						if (!s?.melding || s.melding === 'OK') return false
+						return !transientKeywords.some((kw) => s.melding.includes(kw))
+					})
 				}
 
 				// @ts-ignore
