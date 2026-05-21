@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:texas"
+    implementation "com.microsoft.onnxruntime:onnxruntime:1.20.0"
 
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
