@@ -116,7 +116,7 @@ public class SkattekortClient implements ClientRegister {
                 .flatMap(request -> skattekortConsumer.sendSkattekort(request, miljoe)
                         .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
                                 dollyPerson.getIdent(), miljoe)))
-                .onErrorResume(throwable -> Mono.just("%s:xxxx|%s".formatted(miljoe, throwable.getMessage())))
+                .onErrorResume(throwable -> Mono.just("%s:%s".formatted(miljoe, throwable.getMessage())))
                 .collect(Collectors.joining(","));
     }
 
@@ -164,13 +164,12 @@ public class SkattekortClient implements ClientRegister {
 
     private String formatStatus(SkattekortResponse response, Integer year, String ident, String miljoe) {
 
-        val prefix = miljoe + ":" + year + "|";
         if (response.getStatus().is2xxSuccessful()) {
-            return prefix + "Skattekort lagret";
+            return "%s:OK".formatted(miljoe);
         } else {
             log.error("Feil ved innsending av skattekort for person: {}, miljoe: {}, inntektsaar: {}: {}",
                     ident, miljoe, year, response.getFeilmelding());
-            return prefix + errorStatusDecoder.getStatusMessage(response.getFeilmelding());
+            return "%s:%s".formatted(miljoe, errorStatusDecoder.getStatusMessage(response.getFeilmelding()));
         }
     }
 

@@ -96,7 +96,7 @@ class SkattekortClientTest {
                     verify(mapperFacade).map(any(), eq(SkattekortRequest.class), any());
                     verify(skattekortConsumer).sendSkattekort(any(), eq("q2"));
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), anyString());
-                    assertThat(argumentCaptor.getAllValues(), hasItems("q2:Info= Oppretting startet mot SKATTEKORT ...", "q2:2025|Skattekort lagret"));
+                    assertThat(argumentCaptor.getAllValues(), hasItems("q2:Info= Oppretting startet mot SKATTEKORT ...", "q2:OK"));
                 })
                 .verifyComplete();
     }
@@ -178,7 +178,7 @@ class SkattekortClientTest {
                     verify(mapperFacade).map(any(), eq(SkattekortRequest.class), any());
                     verify(skattekortConsumer).sendSkattekort(any(), eq("q1"));
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), anyString());
-                    assertThat(argumentCaptor.getAllValues(), hasItems("q1:Info= Oppretting startet mot SKATTEKORT ...", "q1:2026|Skattekort lagret"));
+                    assertThat(argumentCaptor.getAllValues(), hasItems("q1:Info= Oppretting startet mot SKATTEKORT ...", "q1:OK"));
                 })
                 .verifyComplete();
     }
