@@ -22,24 +22,24 @@ public class BucketUtils {
     /**
      * Downloads ONNX model files from a Google Cloud Storage bucket to a temporary directory.
      * <p>
-     * This method connects to GCS using Application Default Credentials, filters files by the provided
-     * model prefixes, and downloads matching {@code .onnx} files to a new temporary directory.
+     * This method connects to GCS using Application Default Credentials and, for each configured
+     * model prefix, performs prefix-based blob listing in the bucket.
+     * Matching {@code .onnx} files are downloaded to a new temporary directory.
      * The temp directory is marked for automatic deletion on JVM exit.
      * <p>
-     * A blob is downloaded if its filename (trailing path segment) starts with one of the provided model prefixes.
+     * A blob is considered for download when its full blob name starts with one of the provided model prefixes
+     * and the blob name ends with {@code .onnx}.
      * For example, with prefix {@code "model_PERM"}, the file
      * {@code "model_PERM_bean_model_distributions_col_32.onnx"} will match.
      *
-     * @param bucket        the GCS bucket name; must exist and be readable with current credentials
-     * @param models        list of model filename prefixes to match; at least one must result in a matching file
-     * @param tempDirPrefix prefix for the temporary directory name (e.g., {@code "myapp-models-"});
-     *                      the OS will append random characters to ensure uniqueness
-     * @return a {@link Path} pointing to the temporary directory containing downloaded models;
-     * guaranteed to be non-empty
-     * @throws IOException           if the GCS bucket cannot be accessed, no files match the prefixes,
-     *                               or file I/O operations fail
-     * @throws IllegalStateException if no ONNX model files are found in the bucket matching
-     *                               any of the provided prefixes
+     * @param bucket        The GCS bucket name; must exist and be readable with current credentials.
+     * @param models        A list of blob-name prefixes to list and match; at least one must result in a matching file.
+     * @param tempDirPrefix Prefix for the temporary directory name, e.g. {@code "myapp-models-"}.
+     * @return A {@link Path} pointing to the temporary directory containing downloaded models..
+     * @throws IOException           If the GCS bucket cannot be accessed, no files match the prefixes,
+     *                               or file I/O operations fail.
+     * @throws IllegalStateException If no ONNX model files are found in the bucket matching
+     *                               any of the provided prefixes.
      * @see StorageOptions#getDefaultInstance()
      */
     public Path download(String bucket, List<String> models, String tempDirPrefix)
@@ -66,23 +66,16 @@ public class BucketUtils {
             throws IOException {
 
         var matchedFiles = 0;
-        for (var blob : storage.list(bucket).iterateAll()) {
-            if (shouldDownload(models, blob.getName())) {
-                downloadBlob(blob, targetDir);
-                matchedFiles++;
+        for (var model : models) {
+            var prefixedBlobs = storage.list(bucket, Storage.BlobListOption.prefix(model));
+            for (var blob : prefixedBlobs.iterateAll()) {
+                if (blob.getName().endsWith(".onnx")) {
+                    downloadBlob(blob, targetDir);
+                    matchedFiles++;
+                }
             }
         }
         return matchedFiles;
-
-    }
-
-    private boolean shouldDownload(List<String> models, String blobName) {
-
-        if (!blobName.endsWith(".onnx")) {
-            return false;
-        }
-        var filename = blobName.substring(blobName.lastIndexOf('/') + 1);
-        return models.stream().anyMatch(filename::startsWith);
 
     }
 
