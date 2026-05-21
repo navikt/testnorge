@@ -40,12 +40,12 @@ class OpenApiParityTest {
         assertThat(normalizePaths(fieldNames(currentSpec.path("paths"))))
                 .containsAll(fieldNames(legacySpec.path("paths")));
 
-        assertOperationId(currentSpec, "/aap", "post", "service.generator.get_synthetic_aap");
-        assertOperationId(currentSpec, "/aap/filtered", "post", "service.generator.get_filtered_synthetic_aap");
-        assertOperationId(currentSpec, "/11_5", "post", "service.generator.get_synthetic_11_5");
-        assertOperationId(currentSpec, "/fri_mk", "post", "service.generator.get_synthetic_fri_mk");
-        assertOperationId(currentSpec, "/aaungufor", "post", "service.generator.get_synthetic_aaungufor");
-        assertOperationId(currentSpec, "/aatfor", "post", "service.generator.get_synthetic_aatfor");
+        assertOperationId(currentSpec, "/aap", "service.generator.get_synthetic_aap");
+        assertOperationId(currentSpec, "/aap/filtered", "service.generator.get_filtered_synthetic_aap");
+        assertOperationId(currentSpec, "/11_5", "service.generator.get_synthetic_11_5");
+        assertOperationId(currentSpec, "/fri_mk", "service.generator.get_synthetic_fri_mk");
+        assertOperationId(currentSpec, "/aaungufor", "service.generator.get_synthetic_aaungufor");
+        assertOperationId(currentSpec, "/aatfor", "service.generator.get_synthetic_aatfor");
 
     }
 
@@ -109,11 +109,11 @@ class OpenApiParityTest {
 
     }
 
-    private void assertOperationId(JsonNode currentSpec, String path, String method, String expectedOperationId) {
+    private void assertOperationId(JsonNode currentSpec, String path, String expectedOperationId) {
 
-        var operation = currentSpec.path("paths").path(path).path(method);
+        var operation = currentSpec.path("paths").path(path).path("post");
         if (operation.isMissingNode()) {
-            operation = currentSpec.path("paths").path("/api/v1" + path).path(method);
+            operation = currentSpec.path("paths").path("/api/v1" + path).path("post");
         }
         assertThat(operation.path("operationId").asText()).isEqualTo(expectedOperationId);
 
