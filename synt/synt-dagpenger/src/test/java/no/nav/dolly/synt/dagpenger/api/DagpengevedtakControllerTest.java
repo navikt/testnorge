@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
@@ -106,10 +107,7 @@ class DagpengevedtakControllerTest {
     }
 
     @Test
-    void shouldReturn500WhenRettighetTypeIsInvalid() {
-
-        when(onnxService.generateVedtak(any(), any()))
-                .thenThrow(new IllegalArgumentException("No enum constant for INVALID"));
+    void shouldReturn400WhenRettighetTypeIsInvalid() {
 
         webTestClient
                 .post()
@@ -117,9 +115,9 @@ class DagpengevedtakControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(List.of("2018-10-01"))
                 .exchange()
-                .expectStatus().is5xxServerError()
-                .expectBody()
-                .jsonPath("$.error").isEqualTo("Inference failure");
+                .expectStatus().isBadRequest();
+
+        verifyNoInteractions(onnxService);
 
     }
 
@@ -142,4 +140,3 @@ class DagpengevedtakControllerTest {
     }
 
 }
-

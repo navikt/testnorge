@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.synt.dagpenger.dto.DagpengevedtakDto;
 import no.nav.dolly.synt.dagpenger.onnx.OnnxService;
+import no.nav.dolly.synt.dagpenger.onnx.RettighetType;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,10 +61,10 @@ class DagpengevedtakController {
                     description = "Rettighet for vedtakene som skal genereres",
                     schema = @Schema(type = "string", allowableValues = {"PERM", "DAGO"})
             )
-            String rettighet,
+            RettighetType rettighet,
             @RequestBody List<String> startDates) {
 
-        var generated = onnxService.generateVedtak(rettighet, startDates);
+        var generated = onnxService.generateVedtak(rettighet.name(), startDates);
         log.info("Generated {} result(s) based on request for {} with {} start date(s)", generated.size(), rettighet, startDates.size());
         return ResponseEntity.ok(generated);
 
