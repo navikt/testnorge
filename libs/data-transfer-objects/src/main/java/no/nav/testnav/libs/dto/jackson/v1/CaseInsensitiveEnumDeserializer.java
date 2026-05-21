@@ -11,29 +11,30 @@ import java.util.Arrays;
 
 public class CaseInsensitiveEnumDeserializer extends StdScalarDeserializer<Enum<?>> {
 
-    private Class<? extends Enum> enumClass;
+    private Class<? extends Enum<?>> enumClass;
 
     public CaseInsensitiveEnumDeserializer() {
         super(Enum.class);
     }
 
-    public CaseInsensitiveEnumDeserializer(Class<? extends Enum> enumClass) {
+    public CaseInsensitiveEnumDeserializer(Class<? extends Enum<?>> enumClass) {
         super(enumClass);
         this.enumClass = enumClass;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ValueDeserializer<?> createContextual(DeserializationContext context, BeanProperty property) throws DatabindException {
         Class<?> rawClass = context.getContextualType().getRawClass();
         if (rawClass.isEnum()) {
-            return new CaseInsensitiveEnumDeserializer((Class<? extends Enum>) rawClass);
+            return new CaseInsensitiveEnumDeserializer((Class<? extends Enum<?>>) rawClass);
         }
         return this;
     }
 
     @Override
     public Enum<?> deserialize(JsonParser parser, DeserializationContext context) {
-        String value = parser.getText();
+        String value = parser.getString();
         if (value == null || value.isEmpty()) {
             return null;
         }

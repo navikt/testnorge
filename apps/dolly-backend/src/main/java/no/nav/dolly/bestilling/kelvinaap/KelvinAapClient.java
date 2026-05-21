@@ -18,6 +18,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.KELVIN_AAP;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.substring;
 
@@ -35,6 +37,8 @@ public class KelvinAapClient implements ClientRegister {
 
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getKelvinAap()))
+                .flatMap(bestilling1 -> oppdaterStatus(progress, getInfoVenter(KELVIN_AAP.getBeskrivelse()))
+                        .thenReturn(bestilling1))
                 .map(RsDollyBestilling::getKelvinAap)
                 .flatMap(kelvinAap -> kelvinAapConsumer.readAap(dollyPerson.getIdent())
                         .zipWith(Mono.just(kelvinAap)))

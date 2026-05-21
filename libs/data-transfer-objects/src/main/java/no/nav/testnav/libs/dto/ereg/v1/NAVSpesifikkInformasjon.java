@@ -25,10 +25,13 @@ import lombok.Setter;
 })
 public class NAVSpesifikkInformasjon {
 
+    @Builder.Default
     private Bruksperiode bruksperiode = new Bruksperiode();
 
+    @Builder.Default
     private Gyldighetsperiode gyldighetsperiode = new Gyldighetsperiode();
 
     @Schema(description = "Inkluderende arbeidsliv (IA)?", example = "true")
     private Boolean erIA;
+
 }

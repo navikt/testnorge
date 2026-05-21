@@ -124,7 +124,7 @@ export const BestillingStatus = ({
 					if (fagsystem?.statuser?.every((s) => s?.melding === 'OK')) {
 						return null
 					} else {
-						return infoListe.concat(advarselListe, feilListe)
+						return infoListe?.concat(advarselListe, feilListe)
 					}
 				}
 

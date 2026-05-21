@@ -8,6 +8,7 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
+import { initialKelvinAap, kelvinAapPath } from '@/components/fagsystem/kelvin/initialValues'
 
 export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
@@ -29,7 +30,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={() => {
 				if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
-					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser'])
+					sm.batchAdd(['kelvinAap', 'ikkeServicebehov', 'ingenYtelser'])
 				}
 				if (!syntetisk) {
 					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser', 'aap', 'aap115', 'dagpenger'])
@@ -37,11 +38,24 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
-			startOpen={harValgtAttributt(formValues, [arenaPath])}
+			startOpen={harValgtAttributt(formValues, [arenaPath, kelvinAapPath])}
 		>
-			<AttributtKategori title={'Aktiv bruker'} attr={sm.attrs}>
+			<AttributtKategori title="Kelvin" attr={sm.attrs}>
+				<Attributt
+					attr={sm.attrs.kelvinAap}
+					disabled={
+						sm.attrs.ingenYtelser.checked ||
+						sm.attrs.aap115.checked ||
+						sm.attrs.aap.checked ||
+						sm.attrs.dagpenger.checked ||
+						sm.attrs.ikkeServicebehov.checked
+					}
+				/>
+			</AttributtKategori>
+			<AttributtKategori title={'Aktiv bruker (Arena)'} attr={sm.attrs}>
 				<Attributt
 					disabled={
+						sm.attrs.kelvinAap.checked ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
@@ -52,27 +66,37 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+						sm.attrs.kelvinAap.checked ||
+						sm.attrs.ikkeServicebehov.checked ||
+						sm.attrs.ingenYtelser.checked ||
+						!syntetisk
 					}
 					attr={sm.attrs.aap115}
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+						sm.attrs.kelvinAap.checked ||
+						sm.attrs.ikkeServicebehov.checked ||
+						sm.attrs.ingenYtelser.checked ||
+						!syntetisk
 					}
 					attr={sm.attrs.aap}
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+						sm.attrs.kelvinAap.checked ||
+						sm.attrs.ikkeServicebehov.checked ||
+						sm.attrs.ingenYtelser.checked ||
+						!syntetisk
 					}
 					attr={sm.attrs.dagpenger}
 				/>
 			</AttributtKategori>
 
-			<AttributtKategori title={'Inaktiv bruker'} attr={sm.attrs}>
+			<AttributtKategori title={'Inaktiv bruker (Arena)'} attr={sm.attrs}>
 				<Attributt
 					disabled={
+						sm.attrs.kelvinAap.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap.checked ||
 						sm.attrs.aap115.checked ||
@@ -112,9 +136,25 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		'arenaforvalter.kvalifiseringsgruppe',
 		sisteBestillingServicebehov || null,
 	]
-	const AKTIVERINGDATO = ['arenaforvalter.aktiveringDato', runningE2ETest() ? new Date(2022, 0) : null]
+	const AKTIVERINGDATO = [
+		'arenaforvalter.aktiveringDato',
+		runningE2ETest() ? new Date(2022, 0) : null,
+	]
+
+	const harMedlemskap = opts?.identtype === 'FNR'
 
 	return {
+		kelvinAap: {
+			label: 'AAP-ytelse',
+			checked: has('kelvinAap'),
+			add() {
+				set('kelvinAap', { ...initialKelvinAap, harMedlemskap: harMedlemskap })
+			},
+			remove() {
+				del('kelvinAap')
+			},
+		},
+
 		aap115: {
 			label: '11.5-vedtak',
 			checked: has('arenaforvalter.aap115'),

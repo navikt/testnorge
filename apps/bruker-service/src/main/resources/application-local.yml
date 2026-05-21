@@ -3,7 +3,7 @@ TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
 
 spring:
   config:
-    import: "sm://"
+    import: "sm@"
   flyway:
     url: jdbc:h2:mem:testdb
     username: sa

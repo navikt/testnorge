@@ -9,10 +9,11 @@ on:
           - "frontend"
       type:
         type: choice
-        description: "Apps or proxies. Used to resolve the working directory together with name, as <type>/<name>."
+        description: "Apps, proxies or synt. Used to resolve the working directory together with name, as <type>/<name>."
         options:
           - "apps"
           - "proxies"
+          - "synt"
       cluster:
         type: choice
         description: "The cluster to deploy to."

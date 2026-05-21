@@ -179,6 +179,9 @@ spec:
         - application: sokos-skattekort
           namespace: okonomi
           cluster: dev-gcp
+        - application: sokos-skattekort-q1
+          namespace: okonomi
+          cluster: dev-gcp
         - application: sokos-kontoregister-person
           namespace: okonomi
           cluster: dev-gcp

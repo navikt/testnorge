@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { Button, Textarea } from '@navikt/ds-react'
-import { ToastContainer } from 'react-toastify'
-import { ErrorToast } from '@/components/ui/toast/ErrorToast'
-import { SuccessToast } from '@/components/ui/toast/SuccessToast'
+import { Alert, Button, Textarea } from '@navikt/ds-react'
 import { useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -115,9 +112,16 @@ export const CreateInfostripeForm: React.FC = () => {
 						Nullstill
 					</Button>
 				</div>
-				<ErrorToast applicationError={serverError} />
-				<SuccessToast message={success ? 'Infostripe opprettet' : null} />
-				<ToastContainer containerId="global-toast" theme="light" />
+				{serverError && (
+					<Alert variant="error" closeButton onClose={() => setServerError(null)} style={{ marginTop: '1rem' }}>
+						{serverError.replace(/\?\S*/, '')}
+					</Alert>
+				)}
+				{success && (
+					<Alert variant="success" closeButton onClose={() => setSuccess(false)} style={{ marginTop: '1rem' }}>
+						Infostripe opprettet
+					</Alert>
+				)}
 			</form>
 		</FormProvider>
 	)

@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "sm://"
+    import: "sm@"
 
 OPEN_SEARCH_URI: http://localhost:9200
 OPEN_SEARCH_USERNAME: tada

@@ -247,6 +247,20 @@ const selectOptions = {
 		{ value: 'UTEN_ID', label: 'Person uten identifikator' },
 	],
 
+	// Kelvin
+	kelvinAapStoenad: [
+		{ value: 'AFP', label: 'AFP' },
+		{ value: 'INTRODUKSJONSSTOENAD', label: 'Introduksjonsstønad' },
+		{ value: 'KVALIFISERINGSSTOENAD', label: 'Kvalifiseringsstønad' },
+		{ value: 'LAAN', label: 'Lån' },
+		{ value: 'NEI', label: 'Nei' },
+		{ value: 'OMSORGSSTOENAD', label: 'Omsorgsstønad' },
+		{ value: 'STIPEND', label: 'Stipend' },
+		{ value: 'UTLAND', label: 'Utland' },
+		{ value: 'VERV', label: 'Verv' },
+		{ value: 'OEKONOMISK_SOSIALHJELP', label: 'Økonomisk sosialhjelp' },
+	],
+
 	// Arena
 	arenaBrukertype: [
 		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
@@ -376,6 +390,11 @@ const selectOptions = {
 		{ value: 'FAMILIE', label: 'Familie' },
 		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting/etablering' },
 		{ value: 'UAVKLART', label: 'Uavklart' },
+	],
+
+	jaNei: [
+		{ value: 'JA', label: 'Ja' },
+		{ value: 'NEI', label: 'Nei' },
 	],
 
 	jaNeiUavklart: [

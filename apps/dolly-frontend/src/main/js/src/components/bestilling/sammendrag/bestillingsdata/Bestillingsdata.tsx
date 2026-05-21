@@ -57,6 +57,7 @@ import { NavAnsatt } from '@/components/fagsystem/nom/bestilling/NavAnsatt'
 import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/bestilling/AlderspensjonNyUttaksgrad'
 import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/bestilling/SigrunstubSummertSkattegrunnlag'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { KelvinAap } from '@/components/fagsystem/kelvin/bestilling/KelvinAap'
 
 type BestillingsdataTypes = {
 	bestilling: any
@@ -128,6 +129,7 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 			<AlderspensjonNyUttaksgrad apNy={bestilling.pensjonforvalter?.alderspensjonNyUtaksgrad} />
 			<Uforetrygd pensjon={bestilling.pensjonforvalter?.uforetrygd} />
 			<AfpOffentlig pensjon={bestilling.pensjonforvalter?.afpOffentlig} />
+			<KelvinAap kelvinAap={bestilling.kelvinAap} />
 			<Arena arbeidsytelse={bestilling.arenaforvalter} />
 			<Sykemelding sykemelding={bestilling.sykemelding} />
 			<Yrkesskader yrkesskader={bestilling.yrkesskader} />

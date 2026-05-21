@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "sm://"
+    import: "sm@"
   datasource:
     url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
     username: postgres

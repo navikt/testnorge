@@ -30,6 +30,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.G
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SEPARERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SEPARERT_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SKILT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SKILT_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
@@ -1007,6 +1008,78 @@ class SivilstandServiceTest {
 
         StepVerifier.create(sivilstandService.convert(dbPerson))
                 .assertNext(result -> assertThat(result, is(dbPerson)))
+                .verifyComplete();
+    }
+
+    // ---- validate: SEPARERT_PARTNER with non-existing relatert ----
+
+    @Test
+    void shouldRejectSeparertPartnerWithNonExistingRelatertPerson() {
+
+        var request = SivilstandDTO.builder()
+                .type(SEPARERT_PARTNER)
+                .relatertVedSivilstand(PARTNER_IDENT)
+                .isNew(true)
+                .build();
+
+        when(personRepository.existsByIdent(PARTNER_IDENT)).thenReturn(Mono.just(false));
+
+        StepVerifier.create(sivilstandService.validate(request, PersonDTO.builder().ident(IDENT).build()))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable.getMessage(), containsString("Relatert person finnes ikke")));
+    }
+
+    // ---- convert: sets kilde and master ----
+
+    @Test
+    void shouldSetKildeAndMasterOnNewSivilstand() {
+
+        var dbPerson = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(IDENT)
+                        .foedselsdato(new ArrayList<>(List.of(FoedselsdatoDTO.builder()
+                                .foedselsdato(LocalDate.of(1980, 1, 1).atStartOfDay())
+                                .build())))
+                        .sivilstand(new ArrayList<>(List.of(
+                                SivilstandDTO.builder()
+                                        .type(UGIFT)
+                                        .sivilstandsdato(LocalDate.of(1980, 1, 1).atStartOfDay())
+                                        .isNew(true)
+                                        .id(1)
+                                        .build())))
+                        .build())
+                .build();
+
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
+
+        StepVerifier.create(sivilstandService.convert(dbPerson))
+                .assertNext(result -> {
+                    var sivilstand = result.getPerson().getSivilstand().getFirst();
+                    assertThat(sivilstand.getKilde(), is(equalTo("Dolly")));
+                    assertThat(sivilstand.getMaster(), is(equalTo(no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL)));
+                })
+                .verifyComplete();
+    }
+
+    // ---- convert: empty sivilstand list ----
+
+    @Test
+    void shouldConvertSuccessfullyWhenSivilstandListIsEmpty() {
+
+        var dbPerson = DbPerson.builder()
+                .person(PersonDTO.builder()
+                        .ident(IDENT)
+                        .foedselsdato(new ArrayList<>(List.of(FoedselsdatoDTO.builder()
+                                .foedselsdato(LocalDate.of(1980, 1, 1).atStartOfDay())
+                                .build())))
+                        .sivilstand(new ArrayList<>())
+                        .build())
+                .build();
+
+        when(personRepository.save(any(DbPerson.class))).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
+
+        StepVerifier.create(sivilstandService.convert(dbPerson))
+                .assertNext(result -> assertThat(result.getPerson().getSivilstand().isEmpty(), is(true)))
                 .verifyComplete();
     }
 }

@@ -89,6 +89,7 @@ const getValgteAttributter = (values) => {
 		'pensjonforvalter.alderspensjonNyUtaksgrad',
 		'pensjonforvalter.uforetrygd',
 		'pensjonforvalter.afpOffentlig',
+		'kelvinAap',
 		'arenaforvalter',
 		sykemeldingAttributt,
 		'yrkesskader',

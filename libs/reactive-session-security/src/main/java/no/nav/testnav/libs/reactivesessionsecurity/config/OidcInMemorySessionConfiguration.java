@@ -13,6 +13,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.session.ReactiveSessionRepository;
 import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 
@@ -40,6 +46,25 @@ public class OidcInMemorySessionConfiguration {
         sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
         log.info("Set in-memory session max inactive to {} seconds.", defaultMaxInactiveInterval);
         return sessionRepository;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
+            ReactiveClientRegistrationRepository clientRegistrationRepository,
+            ReactiveOAuth2AuthorizedClientService authorizedClientService) {
+
+        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
+                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
+                        .authorizationCode()
+                        .refreshToken(configurer -> configurer.clockSkew(Duration.ofSeconds(120)))
+                        .build();
+
+        var manager = new AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientService);
+        manager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return manager;
     }
 
     @Bean

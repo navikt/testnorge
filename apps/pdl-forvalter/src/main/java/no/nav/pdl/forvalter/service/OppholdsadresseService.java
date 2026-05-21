@@ -56,7 +56,6 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         return Flux.fromIterable(dbPerson.getPerson().getOppholdsadresse())
                 .filter(adresse -> isTrue(adresse.getIsNew()))
                 .flatMap(adresse -> handle(adresse, dbPerson.getPerson()))
-                .filter(Objects::nonNull)
                 .doOnNext(adresse -> {
                     adresse.setKilde(getKilde(adresse));
                     adresse.setMaster(getMaster(adresse, dbPerson.getPerson()));
@@ -101,10 +100,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
         return getOppholdsadresse(oppholdsadresse, person)
                 .flatMap(adresse ->
-
-                        genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn())
-                                .doOnNext(oppholdsadresse::setCoAdressenavn)
-                                .doOnNext(navn -> oppholdsadresse.setOpprettCoAdresseNavn(null))
+                        genererCoNavn(oppholdsadresse)
                                 .thenReturn(oppholdsadresse));
     }
 
