@@ -120,7 +120,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 			) : (
 				<ErrorBoundary>
 					<MiljoTabs
-						bestilteMiljoer={liste?.map((m) => m.miljo)}
+						bestilteMiljoer={liste?.filter((m) => m?.data?.length > 0).map((m) => m.miljo)}
 						forsteMiljo={forsteMiljo}
 						data={liste}
 					>
