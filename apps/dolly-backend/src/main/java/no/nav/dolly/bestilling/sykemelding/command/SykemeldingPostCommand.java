@@ -30,14 +30,13 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
-                .toEntity(SykemeldingResponseDTO.class)
-                .map(response ->
-                        SykemeldingResponseDTO.builder()
-                                .status(HttpStatus.resolve(response.getStatusCode().value()))
-                                .ident(request.getIdent())
-                                .build())
+                .bodyToMono(SykemeldingResponseDTO.class)
+                .map(response -> {
+                    response.setStatus(HttpStatus.OK);
+                    response.setIdent(request.getIdent());
+                    return response;
+                })
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> SykemeldingResponseDTO.of(WebClientError.describe(error), request.getIdent()));
-
     }
 }
