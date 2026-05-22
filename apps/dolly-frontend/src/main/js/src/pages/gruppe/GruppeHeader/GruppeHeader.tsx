@@ -26,7 +26,7 @@ import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { EndreTilknytning } from '@/pages/gruppe/EndreTilknytning/EndreTilknytning'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Button } from '@navikt/ds-react'
-import { ArrowsCirclepathIcon, PencilIcon } from '@navikt/aksel-icons'
+import { PencilIcon } from '@navikt/aksel-icons'
 
 const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
 const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
@@ -39,7 +39,6 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 	const dispatch = useDispatch<any>()
 	const matchMutate = useMatchMutate()
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
-	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
 	const { currentBruker } = useCurrentBruker()
 	const brukertype = currentBruker?.brukertype
 
@@ -122,17 +121,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 								Rediger
 							</Button>
 						)}
-						<Button
-							data-testid={TestComponentSelectors.BUTTON_GJENOPPRETT_GRUPPE}
-							size="xsmall"
-							variant="tertiary"
-							icon={<ArrowsCirclepathIcon aria-hidden />}
-							onClick={visGjenopprettModal}
-							disabled={antallPersoner < 1}
-							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : undefined}
-						>
-							Gjenopprett
-						</Button>
+						<GjenopprettGruppe gruppeId={gruppeId} />
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<LaasModal
 								autoMutate={false}
@@ -160,9 +149,6 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 				</div>
 			</header>
 			{visRedigerState && <RedigerGruppe gruppeId={gruppeId} onCancel={skjulRediger} />}
-			{viserGjenopprettModal && (
-				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppeId={gruppeId} />
-			)}
 		</Fragment>
 	)
 }

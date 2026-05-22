@@ -47,15 +47,13 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 			{harIdenterOpprettet && !erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
-						<Button
-							data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
-							onClick={openGjenopprettModal}
-							kind="synchronize"
+						<GjenopprettConnector
+							bestilling={bestilling}
+							brukerId={brukerId}
+							brukertype={brukertype}
 							disabled={!harLevertPersoner || gjenopprettingsId}
 							title={gjenopprettTitle}
-						>
-							GJENOPPRETT
-						</Button>
+						/>
 					)}
 					{!alleredeMal &&
 						!harRelatertPersonVedSivilstand &&
@@ -81,6 +79,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				</div>
 			)}
 
+			{/*TODO: Fix gjenopprett av organisasjoner ogsaa*/}
 			{erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
 					<Button
@@ -99,15 +98,6 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						OPPRETT MAL
 					</Button>
 				</div>
-			)}
-
-			{isGjenopprettModalOpen && (
-				<GjenopprettConnector
-					bestilling={bestilling}
-					brukerId={brukerId}
-					closeModal={closeGjenoprettModal}
-					brukertype={brukertype}
-				/>
 			)}
 
 			{isMalModalOpen && (
