@@ -5,10 +5,14 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
+import no.nav.dolly.bestilling.instdata.command.InstdataKdiDeleteCommand;
+import no.nav.dolly.bestilling.instdata.command.InstdataKdiPostCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
+import no.nav.dolly.bestilling.instdata.domain.InstdataKdiPostRequest;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
+import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
@@ -43,7 +47,7 @@ public class InstdataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_getMiljoer"})
-    public Mono<List<String>> getMiljoer() {
+    public Mono<MiljoerResponse> getMiljoer() {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call());
@@ -63,7 +67,9 @@ public class InstdataConsumer extends ConsumerStatus {
                 .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
                         .flatMap(miljoer -> Flux.fromIterable(identer)
                                 .flatMap(ident -> new InstdataDeleteCommand(webClient,
-                                        ident, miljoer, token.getTokenValue()).call())
+                                        ident, miljoer.getInstitusjonsoppholdEnvironments(), token.getTokenValue()).call()
+                                        .flatMap(response -> new InstdataKdiDeleteCommand(webClient,
+                                                ident, miljoer.getKdiEnvironments(), token.getTokenValue()).call()))
                                 .collectList()));
     }
 
@@ -74,6 +80,16 @@ public class InstdataConsumer extends ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(instdata)
                         .flatMap(opphold -> new InstdataPostCommand(webClient, opphold, environment,
+                                token.getTokenValue()).call()));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inst_postInstdataKdi"})
+    public Flux<InstdataResponse> postInstdataKdi(InstdataKdiPostRequest instdata) {
+
+        log.info("Instdata KDI oppretting {}", instdata);
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> Flux.fromIterable(instdata)
+                        .flatMap(opphold -> new InstdataKdiPostCommand(webClient, opphold,
                                 token.getTokenValue()).call()));
     }
 

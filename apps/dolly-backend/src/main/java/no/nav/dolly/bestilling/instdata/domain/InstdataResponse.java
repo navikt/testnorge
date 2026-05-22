@@ -33,6 +33,7 @@ public class InstdataResponse {
     private List<String> environments;
 
     public static Mono<InstdataResponse> of(WebClientError.Description description, Instdata instdata, List<String> miljoe) {
+
         return Mono.just(InstdataResponse
                 .builder()
                 .personident(instdata.getNorskident())
