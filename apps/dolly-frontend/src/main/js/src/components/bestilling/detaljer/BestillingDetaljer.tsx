@@ -6,7 +6,7 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 import './BestillingDetaljer.less'
 import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import * as _ from 'lodash-es'
-import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -47,15 +47,13 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 			{harIdenterOpprettet && !erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
-						<Button
-							data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
-							onClick={openGjenopprettModal}
-							kind="synchronize"
+						<GjenopprettConnector
+							bestilling={bestilling}
+							brukerId={brukerId}
+							brukertype={brukertype}
 							disabled={!harLevertPersoner || gjenopprettingsId}
 							title={gjenopprettTitle}
-						>
-							GJENOPPRETT
-						</Button>
+						/>
 					)}
 					{!alleredeMal &&
 						!harRelatertPersonVedSivilstand &&
@@ -71,17 +69,17 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 								OPPRETT MAL
 							</Button>
 						)}
-					<SlettButton
-						bestillingId={bestilling.id}
+					<SlettModal
 						action={DollyApi.slettBestilling}
+						bestillingId={bestilling.id}
 						loading={false}
 						navigateHome={false}
-					>
-						Er du sikker på at du vil slette denne bestillingen?
-					</SlettButton>
+						slettType={'bestilling'}
+					/>
 				</div>
 			)}
 
+			{/*TODO: Fix gjenopprett av organisasjoner ogsaa*/}
 			{erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
 					<Button
@@ -100,15 +98,6 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						OPPRETT MAL
 					</Button>
 				</div>
-			)}
-
-			{isGjenopprettModalOpen && (
-				<GjenopprettConnector
-					bestilling={bestilling}
-					brukerId={brukerId}
-					closeModal={closeGjenoprettModal}
-					brukertype={brukertype}
-				/>
 			)}
 
 			{isMalModalOpen && (

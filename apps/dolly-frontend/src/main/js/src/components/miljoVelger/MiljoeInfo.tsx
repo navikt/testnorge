@@ -45,7 +45,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments, tilgjengeligeMi
 
 	return (
 		<>
-			<StyledAlert variant={'info'}>
+			<StyledAlert variant={'info'} size={'small'}>
 				Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
 				egenskaper må derfor ett eller flere av miljøene under velges:
 				<ul style={{ margin: '7px 0' }}>

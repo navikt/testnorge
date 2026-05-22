@@ -9,9 +9,6 @@ export const actions = createActions(
 		create: DollyApi.createGruppe,
 		update: DollyApi.updateGruppe,
 		laas: DollyApi.updateGruppeLaas,
-		sendGruppeTags: DollyApi.updateGruppeSendTags,
-		getGruppeExcelFil: DollyApi.getExcelFil,
-		getOrgExcelFil: DollyApi.getOrgExcelFil,
 		remove: [
 			DollyApi.deleteGruppe,
 			(gruppeId) => ({
@@ -25,7 +22,7 @@ export const actions = createActions(
 	},
 	{
 		prefix: 'gruppe', // String used to prefix each type
-	}
+	},
 )
 
 const initialState = {
@@ -56,5 +53,5 @@ export default handleActions(
 			state.importerteZIdenter = action.payload.data
 		},
 	},
-	initialState
+	initialState,
 )

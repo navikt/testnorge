@@ -8,8 +8,8 @@ import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
-import { Alert } from '@navikt/ds-react'
 import { useFormContext, useWatch } from 'react-hook-form'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -29,7 +29,7 @@ const miljoeavhengig = [
 	'skattekort',
 ]
 
-const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {
+export const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {
 	if (!bestilling) return false
 	let miljoeNotRequired = true
 	miljoeavhengig.forEach((system) => {
@@ -42,10 +42,11 @@ const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {
 
 interface MiljoVelgerProps {
 	bestillingsdata?: Record<string, unknown>
-	heading: string
+	heading?: string
 	currentBruker: any
 	gyldigeMiljoer: any[]
 	tilgjengeligeMiljoer?: string
+	miljoeLabel?: string
 	loading: boolean
 }
 
@@ -55,6 +56,7 @@ export const MiljoVelger = ({
 	currentBruker,
 	gyldigeMiljoer,
 	tilgjengeligeMiljoer,
+	miljoeLabel = 'Miljøer',
 	loading = false,
 }: MiljoVelgerProps) => {
 	const formMethods = useFormContext()
@@ -94,13 +96,13 @@ export const MiljoVelger = ({
 
 	return (
 		<div className="miljo-velger">
-			<h2>{heading}</h2>
+			{heading && <h2>{heading}</h2>}
 			{bestillingsdata && (
 				<>
 					{disableAllEnvironments && (
-						<Alert variant={'info'} size={'small'}>
+						<StyledAlert variant={'info'} size={'small'}>
 							Denne bestillingen er uavhengig av miljøer.
-						</Alert>
+						</StyledAlert>
 					)}
 					<MiljoeInfo
 						bestillingsdata={bestillingsdata}
@@ -110,7 +112,7 @@ export const MiljoVelger = ({
 				</>
 			)}
 			<fieldset name={`Liste over miljøer`}>
-				<StyledH3>Miljøer</StyledH3>
+				<StyledH3>{miljoeLabel}</StyledH3>
 				<div className="miljo-velger_checkboxes">
 					{filteredEnvironments?.map((env: any) => (
 						<DollyCheckbox
