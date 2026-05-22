@@ -51,10 +51,17 @@ export const BestillingStatus = ({
         feil: 'report-problem-triangle',
     }
 
-    const ERROR_KEYWORDS = ['feil', 'avvik', 'error', 'advarsel']
+    const ERROR_KEYWORDS = ['feil', 'error']
+    const WARNING_KEYWORDS = ['avvik', 'advarsel', 'warning']
 
     const isErrorMessage = (melding: string) =>
         ERROR_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
+
+    const isWarningMessage = (melding: string) =>
+        WARNING_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
+
+    const isNonOkMessage = (melding: string) =>
+        isErrorMessage(melding) || isWarningMessage(melding)
 
     const getOkIdentsFromStatuser = (statuser: Status[]) => {
         const okStatus = statuser.find((s) => s?.melding === 'OK')
@@ -99,7 +106,7 @@ export const BestillingStatus = ({
 
                 const okStatuser = statuser.filter((s) => s?.melding === 'OK')
                 const errorStatuser = statuser.filter(
-                    (s) => s?.melding && s.melding !== 'OK' && isErrorMessage(s.melding),
+                    (s) => s?.melding && s.melding !== 'OK' && isNonOkMessage(s.melding),
                 )
 
                 const isGjenopprett =
@@ -178,19 +185,25 @@ export const BestillingStatus = ({
                             errorStatuser.map((status, errIdx) => {
                                 const errEnv = getEnvironments([status])
                                 const errIdents = getErrorIdents(status)
+                                const iconKind = isWarningMessage(status.melding)
+                                    ? IconTypes.avvik
+                                    : IconTypes.feil
                                 return (
                                     <FagsystemStatus
                                         key={`${idx}-err-${errIdx}`}
                                         style={{alignItems: 'flex-start'}}
                                     >
                                         <StatusIcon>
-                                            <Icon kind={IconTypes.feil}/>
+                                            <Icon kind={iconKind}/>
                                         </StatusIcon>
                                         <div style={{width: '96%', marginBottom: '8px'}}>
                                             <FagsystemText>
                                                 <h5>{fagsystem.navn}</h5>
                                                 {errIdents.length > 0 && (
-                                                    <p>{errEnv && `${errEnv} \u00B7 `}{errIdents.join(', ')}</p>
+                                                    <p>
+                                                        {errEnv && `${errEnv} \u00B7 `}{errIdents.length} identer
+                                                        feilet
+                                                    </p>
                                                 )}
                                                 {!errIdents.length && errEnv && <p>{errEnv}</p>}
                                             </FagsystemText>

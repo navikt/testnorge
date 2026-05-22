@@ -1,10 +1,12 @@
-const ERROR_KEYWORDS = ['feil', 'avvik', 'error', 'advarsel']
+const ERROR_KEYWORDS = ['feil', 'error']
+const WARNING_KEYWORDS = ['avvik', 'advarsel', 'warning']
 
-const isErrorMessage = (melding: string) =>
-    ERROR_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
-
-const isCompletedStatus = (melding: string) =>
-    melding === 'OK' || isErrorMessage(melding)
+const isCompletedStatus = (melding: string) => {
+    const lower = melding.toLowerCase()
+    return melding === 'OK' ||
+        ERROR_KEYWORDS.some((kw) => lower.includes(kw)) ||
+        WARNING_KEYWORDS.some((kw) => lower.includes(kw))
+}
 
 export const sortFagsystemer = (list: any[]) => {
     return [...list]
