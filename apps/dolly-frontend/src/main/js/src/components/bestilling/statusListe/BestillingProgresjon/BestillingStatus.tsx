@@ -201,8 +201,8 @@ export const BestillingStatus = ({
                                                 <h5>{fagsystem.navn}</h5>
                                                 {errIdents.length > 0 && (
                                                     <p>
-                                                        {errEnv && `${errEnv} \u00B7 `}{errIdents.length} identer
-                                                        feilet
+                                                        {errEnv && `${errEnv} \u00B7 `}{errIdents.length} {errIdents.length === 1 ? 'ident' : 'identer'}
+                                                        {' '}feilet
                                                     </p>
                                                 )}
                                                 {!errIdents.length && errEnv && <p>{errEnv}</p>}
