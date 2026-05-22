@@ -7,7 +7,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
 import { getInitialUtenlandskIdentifikasjonsnummer } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 const UtenlandsIdLes = ({ data, idx }) => {
@@ -24,6 +24,7 @@ const UtenlandsIdLes = ({ data, idx }) => {
 			/>
 			<TitleValue title="Opphørt" value={oversettBoolean(Boolean(data.opphoert))} />
 			<TitleValue title="Master" value={data.master || data?.metadata?.master} />
+			<TitleValue title="ID" value={data.id} />
 		</div>
 	)
 }

@@ -7,7 +7,7 @@ import * as _ from 'lodash-es'
 import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { useParams } from 'react-router'
@@ -31,64 +31,62 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 	)
 
 	return (
-		<>
-			<div className="person-visning_content" key={idx}>
-				<>
-					<TitleValue title="Hvem har ansvaret" value={_.capitalize(foreldreansvarData.ansvar)} />
-					<TitleValue title="Ansvarssubjekt (barnet)" value={foreldreansvarData.ansvarssubjekt} />
-					<TitleValue
-						title="Gyldig fra og med"
-						value={formatDate(foreldreansvarData.gyldigFraOgMed)}
-					/>
-					<TitleValue
-						title="Gyldig til og med"
-						value={formatDate(foreldreansvarData.gyldigTilOgMed)}
-					/>
-				</>
-				{!ansvarlig && !ansvarligRedigert && !foreldreansvarData.ansvarligUtenIdentifikator && (
-					<TitleValue title="Ident" value={foreldreansvarData.ansvarlig} />
-				)}
-				{(ansvarlig || ansvarligRedigert) && (
-					<RelatertPerson
-						data={ansvarligRedigert?.relatertPerson || ansvarlig?.relatertPerson}
-						tittel="Ansvarlig"
-						marginTop="10px"
-					/>
-				)}
-				{foreldreansvarData.ansvarligUtenIdentifikator && (
-					<div className="flexbox--full-width">
-						<h4 style={{ marginTop: '5px' }}>Ansvarlig uten identifikator</h4>
-						<div className="person-visning_content" key={idx} style={{ marginBottom: 0 }}>
-							<TitleValue
-								title="Fødselsdato"
-								value={formatDate(foreldreansvarData.ansvarligUtenIdentifikator.foedselsdato)}
-							/>
-							<TitleValue
-								title="Kjønn"
-								value={foreldreansvarData.ansvarligUtenIdentifikator.kjoenn}
-							/>
-							<TitleValue
-								title="Fornavn"
-								value={foreldreansvarData.ansvarligUtenIdentifikator.navn?.fornavn}
-							/>
-							<TitleValue
-								title="Mellomnavn"
-								value={foreldreansvarData.ansvarligUtenIdentifikator.navn?.mellomnavn}
-							/>
-							<TitleValue
-								title="Etternavn"
-								value={foreldreansvarData.ansvarligUtenIdentifikator.navn?.etternavn}
-							/>
-							<TitleValue
-								title="Statsborgerskap"
-								value={foreldreansvarData.ansvarligUtenIdentifikator.statsborgerskap}
-								kodeverk={AdresseKodeverk.StatsborgerskapLand}
-							/>
-						</div>
+		<div className="person-visning_content" key={idx}>
+			<>
+				<TitleValue title="Hvem har ansvaret" value={_.capitalize(foreldreansvarData.ansvar)} />
+				<TitleValue title="Ansvarssubjekt (barnet)" value={foreldreansvarData.ansvarssubjekt} />
+				<TitleValue
+					title="Gyldig fra og med"
+					value={formatDate(foreldreansvarData.gyldigFraOgMed)}
+				/>
+				<TitleValue
+					title="Gyldig til og med"
+					value={formatDate(foreldreansvarData.gyldigTilOgMed)}
+				/>
+			</>
+			{!ansvarlig && !ansvarligRedigert && !foreldreansvarData.ansvarligUtenIdentifikator && (
+				<TitleValue title="Ident" value={foreldreansvarData.ansvarlig} />
+			)}
+			{(ansvarlig || ansvarligRedigert) && (
+				<RelatertPerson
+					data={ansvarligRedigert?.relatertPerson || ansvarlig?.relatertPerson}
+					tittel="Ansvarlig"
+					marginTop="10px"
+				/>
+			)}
+			{foreldreansvarData.ansvarligUtenIdentifikator && (
+				<div className="flexbox--full-width">
+					<h4 style={{ marginTop: '5px' }}>Ansvarlig uten identifikator</h4>
+					<div className="person-visning_content" key={idx} style={{ marginBottom: 0 }}>
+						<TitleValue
+							title="Fødselsdato"
+							value={formatDate(foreldreansvarData.ansvarligUtenIdentifikator.foedselsdato)}
+						/>
+						<TitleValue
+							title="Kjønn"
+							value={foreldreansvarData.ansvarligUtenIdentifikator.kjoenn}
+						/>
+						<TitleValue
+							title="Fornavn"
+							value={foreldreansvarData.ansvarligUtenIdentifikator.navn?.fornavn}
+						/>
+						<TitleValue
+							title="Mellomnavn"
+							value={foreldreansvarData.ansvarligUtenIdentifikator.navn?.mellomnavn}
+						/>
+						<TitleValue
+							title="Etternavn"
+							value={foreldreansvarData.ansvarligUtenIdentifikator.navn?.etternavn}
+						/>
+						<TitleValue
+							title="Statsborgerskap"
+							value={foreldreansvarData.ansvarligUtenIdentifikator.statsborgerskap}
+							kodeverk={AdresseKodeverk.StatsborgerskapLand}
+						/>
 					</div>
-				)}
-			</div>
-		</>
+				</div>
+			)}
+		</div>
 	)
 }
 
