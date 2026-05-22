@@ -37,6 +37,7 @@ export const Fullmakt = ({ fullmakt, idx }: FullmaktProps) => {
 			<TitleValue title="Gyldig til" value={formatDate(fullmakt?.gyldigTilOgMed)} />
 			<TitleValue title="Kilde" value={fullmakt?.kilde} />
 			<TitleValue title="Opphørt" value={oversettBoolean(fullmakt?.opphoert)} />
+			<TitleValue title="ID" value={fullmakt?.id} />
 
 			{fullmakt?.omraade?.length > 2 && (
 				<Button

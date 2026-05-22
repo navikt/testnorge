@@ -572,7 +572,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 									personData.alderspensjon = apData
 								}
 								if (skattekortData) {
-									personData.skattekort = skattekortData
+									personData.skattekort = skattekortData.flatMap((m: any) => m.data || [])
 								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(

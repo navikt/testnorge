@@ -23,7 +23,7 @@ import {
 	getInitialFoedsel,
 	getInitialFoedselsdato,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type FoedselTypes = {
@@ -71,6 +71,7 @@ const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 			/>
 			<TitleValue title="Master" value={foedsel.metadata?.master || foedsel.master} />
+			<TitleValue title="ID" value={foedsel.id} />
 		</div>
 	)
 }
