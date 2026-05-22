@@ -65,7 +65,8 @@ public class UtledFagsystemUtil {
             PDL_FORVALTER, 0,
             PDLIMPORT, 0,
             PDL_ORDRE, 1,
-            PDL_PERSONSTATUS, 2
+            PDL_PERSONSTATUS, 2,
+            PEN_FORVALTER, 3
     );
 
     public static List<SystemTyper> resolve(BestilteKriterier kriterier, Bestilling bestilling) {
