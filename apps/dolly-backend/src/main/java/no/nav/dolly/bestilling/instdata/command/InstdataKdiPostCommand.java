@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.instdata.domain.InstdataKdiPostRequest;
+import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
@@ -21,7 +21,7 @@ public class InstdataKdiPostCommand implements Callable<Mono<InstdataResponse>> 
 
     private final WebClient webClient;
     private final String ident;
-    private final InstdataKdiPostRequest instdata;
+    private final InstdataKdiDTO instdata;
     private final String token;
 
     @Override
@@ -42,6 +42,6 @@ public class InstdataKdiPostCommand implements Callable<Mono<InstdataResponse>> 
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable), instdata, List.of(instdata.getEnvironment())));
+                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable), ident, List.of(instdata.getEnvironment())));
     }
 }

@@ -8,10 +8,8 @@ import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiPostCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
-import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
-import no.nav.dolly.bestilling.instdata.domain.InstdataKdiPostRequest;
+import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
 import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.inst.Instdata;
@@ -54,14 +52,14 @@ public class InstdataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_getInstdata"})
-    public Mono<InstitusjonsoppholdRespons> getInstdata(String ident, String environment) {
+    public Mono<InstdataResponse> getInstdata(String ident, String environment) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataGetCommand(webClient, ident, environment, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
-    public Mono<List<DeleteResponse>> deleteInstdata(List<String> identer) {
+    public Mono<List<InstdataResponse>> deleteInstdata(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
@@ -84,13 +82,12 @@ public class InstdataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_postInstdataKdi"})
-    public Flux<InstdataResponse> postInstdataKdi(InstdataKdiPostRequest instdata) {
+    public Mono<InstdataResponse> postInstdataKdi(InstdataKdiDTO instdata, String ident, String environment) {
 
         log.info("Instdata KDI oppretting {}", instdata);
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> Flux.fromIterable(instdata)
-                        .flatMap(opphold -> new InstdataKdiPostCommand(webClient, opphold,
-                                token.getTokenValue()).call()));
+                .flatMap(token -> new InstdataKdiPostCommand(webClient, ident, instdata,
+                                token.getTokenValue()).call());
     }
 
     @Override

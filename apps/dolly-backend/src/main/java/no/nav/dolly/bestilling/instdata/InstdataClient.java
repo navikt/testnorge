@@ -42,7 +42,7 @@ public class InstdataClient implements ClientRegister {
                 .filter(rsInstdata -> !rsInstdata.isEmpty())
                 .flatMap(rsInstdata -> Mono.just(mapperFacade.mapAsList(rsInstdata, Instdata.class, context)))
                 .flatMap(instdata -> instdataConsumer.getMiljoer()
-                        .flatMap(miljoer -> Flux.fromIterable(miljoer)
+                        .flatMap(miljoer -> Flux.fromIterable(miljoer.getInstitusjonsoppholdEnvironments())
                                 .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
                                 .flatMap(miljoe -> postInstdata(isOpprettEndre, instdata, miljoe))
                                 .collect(Collectors.joining(",")))

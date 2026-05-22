@@ -37,8 +37,6 @@ public class RsInstdataKdi {
     @AllArgsConstructor
     public static class Innsettelse {
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
         private String kategori;
         private String organisasjonsnummer;
         private LocalDateTime tidspunkt;
@@ -50,8 +48,6 @@ public class RsInstdataKdi {
     @AllArgsConstructor
     public static class Loeslatelse {
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
         private String kategori;
         private String organisasjonsnummer;
         private LocalDateTime tidspunkt;
@@ -65,8 +61,6 @@ public class RsInstdataKdi {
     @AllArgsConstructor
     public static class AvbruddStart {
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
         private String kategori;
         private String organisasjonsnummer;
         private LocalDateTime tidspunkt;
@@ -79,8 +73,6 @@ public class RsInstdataKdi {
     @AllArgsConstructor
     public static class AvbruddSlutt {
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
         private String kategori;
         private String organisasjonsnummer;
         private LocalDateTime tidspunkt;
@@ -92,9 +84,6 @@ public class RsInstdataKdi {
     @AllArgsConstructor
     public static class ForventetLoeslatelse {
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
-        private String innmeldingHendelseId;
         private LocalDateTime tidspunkt;
     }
 
@@ -105,6 +94,5 @@ public class RsInstdataKdi {
     public static class Annullering {
 
         private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
     }
 }

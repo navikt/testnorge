@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstdataKdiPostRequest {
+public class InstdataKdiDTO {
 
     private String environment;
     private Data data;

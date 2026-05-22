@@ -3,12 +3,13 @@ package no.nav.dolly.bestilling.instdata.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.InstdataRequest;
-import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
+import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdRespons>> {
+public class InstdataGetCommand implements Callable<Mono<InstdataResponse>> {
 
     private static final String INSTDATA_URL = "/inst/api/v1/institusjonsopphold/person/soek";
 
@@ -28,7 +29,7 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
     private final String token;
 
     @Override
-    public Mono<InstitusjonsoppholdRespons> call() {
+    public Mono<InstdataResponse> call() {
         return webClient
                 .post()
                 .uri(builder -> builder.path(INSTDATA_URL)
@@ -42,11 +43,15 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, List<Instdata>>>() {
                 })
-                .map(resultat -> InstitusjonsoppholdRespons.builder()
+                .map(resultat -> InstdataResponse.builder()
+                        .status(HttpStatus.OK)
+                        .personident(ident)
+                        .environments(List.of(miljoe))
                         .institusjonsopphold(resultat)
                         .build())
                 .doOnError(error -> log.error("Henting av institusjonsopphold feilet", error))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error -> Mono.just(new InstitusjonsoppholdRespons()));
+                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable),
+                        ident, List.of(miljoe)));
     }
 }

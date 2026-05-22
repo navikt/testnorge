@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataRequest;
+import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpMethod;
@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class InstdataKdiDeleteCommand implements Callable<Mono<DeleteResponse>> {
+public class InstdataKdiDeleteCommand implements Callable<Mono<InstdataResponse>> {
 
     private static final String INSTDATA_KDI_URL = "/inst/api/v2/kdi/person";
 
@@ -27,7 +27,7 @@ public class InstdataKdiDeleteCommand implements Callable<Mono<DeleteResponse>> 
     private final String token;
 
     @Override
-    public Mono<DeleteResponse> call() {
+    public Mono<InstdataResponse> call() {
 
         return webClient
                 .method(HttpMethod.DELETE)
@@ -41,14 +41,14 @@ public class InstdataKdiDeleteCommand implements Callable<Mono<DeleteResponse>> 
                         .build())
                 .retrieve()
                 .toBodilessEntity()
-                .map(resultat -> DeleteResponse.builder()
-                        .ident(ident)
+                .map(resultat -> InstdataResponse.builder()
+                        .personident(ident)
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.BadRequest),
                         WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> DeleteResponse.of(WebClientError.describe(throwable), ident));
+                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable), ident, miljoer));
     }
 }
