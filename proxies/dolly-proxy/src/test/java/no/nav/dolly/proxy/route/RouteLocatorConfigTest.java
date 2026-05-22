@@ -864,7 +864,7 @@ class RouteLocatorConfigTest {
         wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader("Content-Type", "text/plain")
                         .withBody(responseBody)));
 
         webClient
@@ -872,7 +872,7 @@ class RouteLocatorConfigTest {
                 .uri("/sykemelding" + downstreamPath)
                 .exchange()
                 .expectStatus().isOk()
-                .expectHeader().contentType("application/json")
+                .expectHeader().contentType("text/plain")
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
