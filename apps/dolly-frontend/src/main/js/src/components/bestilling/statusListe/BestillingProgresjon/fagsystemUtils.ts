@@ -1,27 +1,13 @@
-const IN_PROGRESS_MESSAGES = [
-    'Info',
-    'INFO',
-    'ADDING_TO_QUEUE',
-    'RUNNING',
-    'PENDING_COMPLETE',
-    'Deployer',
-    'Pågående',
-]
+const ERROR_KEYWORDS = ['feil', 'avvik', 'error', 'advarsel']
 
-const PRIORITY_ORDER: Record<string, number> = {
-    PDL_FORVALTER: 0,
-    PDLIMPORT: 0,
-    PDL_ORDRE: 1,
-    PDL_PERSONSTATUS: 2,
-}
+const isErrorMessage = (melding: string) =>
+    ERROR_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
+
+const isCompletedStatus = (melding: string) =>
+    melding === 'OK' || isErrorMessage(melding)
 
 export const sortFagsystemer = (list: any[]) => {
-    return [...list].sort((a, b) => {
-        const priorityA = PRIORITY_ORDER[a.id] ?? Number.MAX_SAFE_INTEGER
-        const priorityB = PRIORITY_ORDER[b.id] ?? Number.MAX_SAFE_INTEGER
-        if (priorityA !== priorityB) return priorityA - priorityB
-        return (a.navn || '').localeCompare(b.navn || '', 'nb')
-    })
+    return [...list]
 }
 
 export const calculateProgress = ({
@@ -43,9 +29,7 @@ export const calculateProgress = ({
     if (!erOrganisasjon && antallIdenter === 1 && totalFagsystemer > 0) {
         const completedCount = statusList.filter((fagsystem) => {
             if (!fagsystem?.statuser?.length) return false
-            return !fagsystem.statuser.some((s: any) =>
-                IN_PROGRESS_MESSAGES.some((msg) => s?.melding?.includes(msg)),
-            )
+            return fagsystem.statuser.some((s: any) => isCompletedStatus(s?.melding || ''))
         }).length
         percent = totalFagsystemer > 0 ? (100 / totalFagsystemer) * completedCount : 0
         text = `${completedCount} av ${totalFagsystemer} steg fullført`
@@ -60,4 +44,3 @@ export const calculateProgress = ({
 
     return {percent, text}
 }
-

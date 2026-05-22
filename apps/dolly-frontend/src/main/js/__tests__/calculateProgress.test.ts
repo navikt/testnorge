@@ -204,7 +204,7 @@ describe('calculateProgress', () => {
 
 describe('sortFagsystemer', () => {
 
-    it('should pin PDL entries first for non-import bestillinger', () => {
+    it('should return a shallow copy preserving backend order', () => {
         const statusList = [
             {id: 'AAREG', navn: 'Arbeidsregister (AAREG)', statuser: [{melding: 'OK'}]},
             {id: 'PDL_FORVALTER', navn: 'Opprett persondetaljer', statuser: [{melding: 'OK'}]},
@@ -213,8 +213,9 @@ describe('sortFagsystemer', () => {
         const result = sortFagsystemer(statusList)
 
         expect(result).toHaveLength(3)
-        expect(result[0].id).toBe('PDL_FORVALTER')
-        expect(result[1].id).toBe('PDL_ORDRE')
-        expect(result[2].id).toBe('AAREG')
+        expect(result[0].id).toBe('AAREG')
+        expect(result[1].id).toBe('PDL_FORVALTER')
+        expect(result[2].id).toBe('PDL_ORDRE')
+        expect(result).not.toBe(statusList)
     })
 })

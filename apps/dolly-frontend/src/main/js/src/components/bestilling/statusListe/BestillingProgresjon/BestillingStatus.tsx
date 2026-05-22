@@ -51,8 +51,10 @@ export const BestillingStatus = ({
         feil: 'report-problem-triangle',
     }
 
-    const TRANSIENT_KEYWORDS = ['ADDING_TO_QUEUE', 'RUNNING', 'PENDING_COMPLETE']
-    const IN_PROGRESS_KEYWORDS = ['Info', 'ADDING_TO_QUEUE', 'RUNNING', 'PENDING_COMPLETE', 'Deployer', 'Pågående']
+    const ERROR_KEYWORDS = ['feil', 'avvik', 'error', 'advarsel']
+
+    const isErrorMessage = (melding: string) =>
+        ERROR_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
 
     const getOkIdentsFromStatuser = (statuser: Status[]) => {
         const okStatus = statuser.find((s) => s?.melding === 'OK')
@@ -97,10 +99,7 @@ export const BestillingStatus = ({
 
                 const okStatuser = statuser.filter((s) => s?.melding === 'OK')
                 const errorStatuser = statuser.filter(
-                    (s) =>
-                        s?.melding &&
-                        s.melding !== 'OK' &&
-                        !TRANSIENT_KEYWORDS.some((kw) => s.melding.includes(kw)),
+                    (s) => s?.melding && s.melding !== 'OK' && isErrorMessage(s.melding),
                 )
 
                 const isGjenopprett =
@@ -119,7 +118,7 @@ export const BestillingStatus = ({
                             antallBestilteIdenter > 1 &&
                             okStatuser.length > 0 &&
                             okIdents.length < antallBestilteIdenter) ||
-                        statuser.some((s) => IN_PROGRESS_KEYWORDS.some((kw) => s?.melding?.includes(kw)))))
+                        (!okStatuser.length && !bestilling.ferdig)))
 
                 if (isInProgress) {
                     return (
