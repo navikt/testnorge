@@ -154,7 +154,7 @@ describe('calculateProgress', () => {
             })
 
             expect(result.percent).toBe(10)
-            expect(result.text).toBe('Oppretter 0 av 1')
+            expect(result.text).toBe('Opprettet 0 av 1')
         })
     })
 
@@ -168,8 +168,8 @@ describe('calculateProgress', () => {
                 totalFagsystemer: 1,
             })
 
-            expect(result.percent).toBe(60)
-            expect(result.text).toBe('Oppretter 3 av 5')
+            expect(result.percent).toBe(40)
+            expect(result.text).toBe('Opprettet 2 av 5')
         })
 
         it('should return 10% minimum when no identer are delivered', () => {
@@ -182,7 +182,7 @@ describe('calculateProgress', () => {
             })
 
             expect(result.percent).toBe(10)
-            expect(result.text).toBe('Oppretter 0 av 5')
+            expect(result.text).toBe('Opprettet 0 av 5')
         })
     })
 
@@ -197,7 +197,7 @@ describe('calculateProgress', () => {
             })
 
             expect(result.percent).toBe(10)
-            expect(result.text).toBe('Oppretter 0 av 1')
+            expect(result.text).toBe('Opprettet 0 av 1')
         })
     })
 })

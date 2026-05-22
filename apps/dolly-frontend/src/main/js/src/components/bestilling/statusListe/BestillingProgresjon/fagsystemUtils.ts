@@ -34,8 +34,9 @@ export const calculateProgress = ({
         percent = totalFagsystemer > 0 ? (100 / totalFagsystemer) * completedCount : 0
         text = `${completedCount} av ${totalFagsystemer} steg fullført`
     } else {
-        percent = antallIdenter > 0 ? (100 / antallIdenter) * antallLevert : 0
-        text = `Oppretter ${antallLevert || 0} av ${antallIdenter}`
+        const displayLevert = Math.max(0, antallLevert - 1)
+        percent = antallIdenter > 0 ? (100 / antallIdenter) * displayLevert : 0
+        text = `Opprettet ${displayLevert} av ${antallIdenter}`
     }
 
     if (percent === 0) {
