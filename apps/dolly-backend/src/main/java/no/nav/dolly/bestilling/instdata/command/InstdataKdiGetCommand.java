@@ -40,7 +40,7 @@ public class InstdataKdiGetCommand implements Callable<Mono<InstdataKdiResponse>
                 .bodyToMono(InstdataKdiDTO.class)
                 .map(resultat -> InstdataKdiResponse.builder()
                         .status(HttpStatus.OK)
-                        .norskident(ident)
+                        .ident(ident)
                         .environment(miljoe)
                         .instdataKdi(resultat)
                         .build())

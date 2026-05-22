@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InstdataKdiDTO {
 
+    private String ident;
     private String environment;
     private Data data;
 
@@ -32,79 +34,59 @@ public class InstdataKdiDTO {
     }
 
     @lombok.Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Innsettelse {
+    public static class Innsettelse extends Hendelse{
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
-        private String norskident;
         private String kategori;
         private String organisasjonsnummer;
-        private LocalDateTime tidspunkt;
     }
 
     @lombok.Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Loeslatelse {
+    public static class Loeslatelse extends Hendelse{
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
-        private String norskident;
         private String kategori;
         private String organisasjonsnummer;
-        private LocalDateTime tidspunkt;
         private Boolean erOverfoertTilUtlandskfengsel;
         private Boolean erOverfoertTilVaretektMedElektroniskKontroll;
     }
 
     @lombok.Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AvbruddStart {
+    public static class AvbruddStart extends Hendelse{
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
-        private String norskident;
         private String kategori;
         private String organisasjonsnummer;
-        private LocalDateTime tidspunkt;
         private LocalDateTime forventetAvbruddStartTidspunkt;
     }
 
     @lombok.Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AvbruddSlutt {
+    public static class AvbruddSlutt extends Hendelse {
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
-        private String norskident;
         private String kategori;
         private String organisasjonsnummer;
-        private LocalDateTime tidspunkt;
     }
 
     @lombok.Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ForventetLoeslatelse {
+    public static class ForventetLoeslatelse extends Hendelse{
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
         private String innmeldingHendelseId;
-        private String norskident;
-        private LocalDateTime tidspunkt;
     }
 
     @lombok.Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Annullering {
@@ -112,5 +94,17 @@ public class InstdataKdiDTO {
         private String hendelseId;
         private LocalDateTime publiseringstidspunkt;
         private String norskident;
+    }
+
+    @lombok.Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public abstract static class Hendelse {
+
+        private String hendelseId;
+        private LocalDateTime publiseringstidspunkt;
+        private String norskident;
+        private LocalDateTime tidspunkt;
     }
 }

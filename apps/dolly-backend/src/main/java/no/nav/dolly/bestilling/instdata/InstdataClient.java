@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -21,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -35,18 +38,49 @@ public class InstdataClient implements ClientRegister {
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (bestilling.getInstdata().isEmpty() && isNull(bestilling.getInstdataKdi())) {
+
+            return Mono.empty();
+        }
+
+        return Flux.merge(doInst2Bestilling(bestilling, dollyPerson, progress, isOpprettEndre),
+                doInstKdiBestilling(bestilling, dollyPerson, progress, isOpprettEndre))
+                        .collect(Collectors.joining(","))
+                        .flatMap(resultat -> oppdaterStatus(progress, resultat));
+    }
+
+    private Mono<String> doInstKdiBestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
+
+        return Mono.just(bestilling)
+                .filter(bestilling1 -> nonNull(bestilling1.getInstdataKdi()))
+                .flatMap(bestilling1 -> instdataConsumer.getMiljoer())
+                .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getKdiEnvironments())
+                        .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
+                        .flatMap(miljoe -> instdataConsumer.getInstdataKdi(dollyPerson.getIdent(), miljoe))
+                        .map(instKdiData -> {
+
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty("instKdiData", instKdiData);
+                            return mapperFacade.map(bestilling.getInstdataKdi(), InstdataKdiDTO.class, context);
+                        })
+                        .flatMap(instKdiRequest -> instdataConsumer.postInstdataKdi(instKdiRequest, dollyPerson.getIdent()))
+                        .map(response -> String.format("%s:opphold=%d$%s",
+                                miljoe, oppholdId.incrementAndGet(), getStatus(response)))
+                        .collect(Collectors.joining(","))
+    }
+
+    private Flux<String> doInst2Bestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, boolean isOpprettEndre) {
+
         var context = MappingContextUtils.getMappingContext();
         context.setProperty("ident", dollyPerson.getIdent());
 
         return Mono.just(bestilling.getInstdata())
                 .filter(rsInstdata -> !rsInstdata.isEmpty())
-                .flatMap(rsInstdata -> Mono.just(mapperFacade.mapAsList(rsInstdata, Instdata.class, context)))
+                .flatMapMany(rsInstdata -> Mono.just(mapperFacade.mapAsList(rsInstdata, Instdata.class, context)))
                 .flatMap(instdata -> instdataConsumer.getMiljoer()
-                        .flatMap(miljoer -> Flux.fromIterable(miljoer.getInstitusjonsoppholdEnvironments())
+                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getInstitusjonsoppholdEnvironments())
                                 .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
-                                .flatMap(miljoe -> postInstdata(isOpprettEndre, instdata, miljoe))
-                                .collect(Collectors.joining(",")))
-                        .flatMap(status -> oppdaterStatus(progress, status)));
+                                .flatMap(miljoe -> postInstdata(isOpprettEndre, instdata, miljoe))));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

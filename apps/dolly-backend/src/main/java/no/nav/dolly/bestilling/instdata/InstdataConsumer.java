@@ -6,9 +6,11 @@ import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiDeleteCommand;
+import no.nav.dolly.bestilling.instdata.command.InstdataKdiGetCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiPostCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
 import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
+import no.nav.dolly.bestilling.instdata.domain.InstdataKdiResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
 import no.nav.dolly.config.Consumers;
@@ -58,6 +60,13 @@ public class InstdataConsumer extends ConsumerStatus {
                 .flatMap(token -> new InstdataGetCommand(webClient, ident, environment, token.getTokenValue()).call());
     }
 
+    @Timed(name = "providers", tags = {"operation", "inst_getInstdata"})
+    public Mono<InstdataKdiResponse> getInstdataKdi(String ident, String environment) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new InstdataKdiGetCommand(webClient, ident, environment, token.getTokenValue()).call());
+    }
+
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
     public Mono<List<InstdataResponse>> deleteInstdata(List<String> identer) {
 
@@ -82,7 +91,7 @@ public class InstdataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_postInstdataKdi"})
-    public Mono<InstdataResponse> postInstdataKdi(InstdataKdiDTO instdata, String ident, String environment) {
+    public Mono<InstdataKdiResponse> postInstdataKdi(InstdataKdiDTO instdata, String ident) {
 
         log.info("Instdata KDI oppretting {}", instdata);
         return tokenService.exchange(serverProperties)

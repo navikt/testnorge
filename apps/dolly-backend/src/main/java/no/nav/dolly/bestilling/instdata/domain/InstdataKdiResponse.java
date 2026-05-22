@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 public class InstdataKdiResponse {
 
     private HttpStatus status;
-    private String norskident;
+    private String ident;
     private InstdataKdiDTO instdataKdi;
     private String feilmelding;
 
@@ -27,7 +27,7 @@ public class InstdataKdiResponse {
 
         return Mono.just(InstdataKdiResponse
                 .builder()
-                .norskident(ident)
+                .ident(ident)
                 .status(description.getStatus())
                 .feilmelding(description.getMessage())
                 .environment(miljoe)
