@@ -9,6 +9,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
 import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
+import { initialKdi, instdataKdiAttributt } from '@/components/fagsystem/kdi/initialValues'
 
 export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
@@ -20,13 +21,19 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 			checkAttributeArray={sm.batchAdd as any}
 			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="institusjon"
-			startOpen={harValgtAttributt(formValues, [instAttributt])}
+			startOpen={harValgtAttributt(formValues, [instAttributt, instdataKdiAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.instdata}
 					disabled={instTimeout.disabled}
 					title={instTimeout.title}
+				/>
+				<Attributt
+					attr={sm.attrs.instdataKdi}
+					// TODO: Settes naar vi henter data som brukes ved legg til endre
+					// disabled={instTimeout.disabled}
+					// title={instTimeout.title}
 				/>
 			</AttributtKategori>
 		</Panel>
@@ -51,6 +58,16 @@ InstitusjonsoppholdPanel.initialValues = ({ set, del, has }: any) => ({
 		},
 		remove() {
 			del('instdata')
+		},
+	},
+	instdataKdi: {
+		label: 'Har KDI-meldinger',
+		checked: has('instdataKdi'),
+		add() {
+			set('instdataKdi', initialKdi)
+		},
+		remove() {
+			del('instdataKdi')
 		},
 	},
 })
