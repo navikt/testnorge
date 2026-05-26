@@ -82,7 +82,7 @@ describe('useVersionCheck', () => {
 		expect(result.current.isNewVersionAvailable).toBe(false)
 	})
 
-	it('should poll at 60 second intervals', async () => {
+	it('should poll at 2 minute intervals', async () => {
 		fetchSpy.mockResolvedValue({
 			ok: true,
 			json: () => Promise.resolve({ commitHash: 'abc1234' }),
@@ -95,7 +95,7 @@ describe('useVersionCheck', () => {
 		})
 
 		await act(async () => {
-			vi.advanceTimersByTime(60_000)
+			vi.advanceTimersByTime(2 * 60_000)
 		})
 
 		await waitFor(() => {

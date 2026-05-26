@@ -24,17 +24,10 @@ export const useOrgBestillingStream = (
 ) => {
 	const [sseFailed, setSseFailed] = useState(false)
 
-	const shouldFetchInitial = !!bestillingId && erOrganisasjon && enabled
-	const { bestillingStatus: initialData, loading: initialLoading } =
-		useOrganisasjonBestillingStatus(shouldFetchInitial ? bestillingId : 0, erOrganisasjon, false)
-
-	const alreadyDone = initialData?.ferdig === true
-
 	const url = useMemo(() => {
-		if (!bestillingId || !erOrganisasjon || !enabled || sseFailed || alreadyDone || initialLoading)
-			return null
+		if (!bestillingId || !erOrganisasjon || !enabled || sseFailed) return null
 		return getOrgStreamUrl(bestillingId)
-	}, [bestillingId, erOrganisasjon, enabled, sseFailed, alreadyDone, initialLoading])
+	}, [bestillingId, erOrganisasjon, enabled, sseFailed])
 
 	const handleError = useCallback(() => {
 		setSseFailed(true)
@@ -47,7 +40,6 @@ export const useOrgBestillingStream = (
 	} = useEventSource<Bestillingsstatus>(url, ['progress', 'completed'], {
 		onError: handleError,
 		completeOnEvent: 'completed',
-		staleTimeoutMs: 10_000,
 	})
 
 	const { bestillingStatus: polledStatus, loading: pollingLoading } =
@@ -55,10 +47,6 @@ export const useOrgBestillingStream = (
 
 	if (!erOrganisasjon || !enabled) {
 		return { bestillingStatus: null, isStreaming: false, loading: false }
-	}
-
-	if (alreadyDone) {
-		return { bestillingStatus: initialData, isStreaming: false, loading: false }
 	}
 
 	if (sseFailed) {
@@ -70,8 +58,8 @@ export const useOrgBestillingStream = (
 	}
 
 	return {
-		bestillingStatus: sseData || initialData,
+		bestillingStatus: sseData,
 		isStreaming: isConnected && !isComplete,
-		loading: !sseData && !initialData,
+		loading: !sseData,
 	}
 }

@@ -87,6 +87,9 @@ public class Bestilling implements Serializable {
     private Boolean navSyntetiskIdent;
 
     @Transient
+    private String utlededeFagsystemer;
+
+    @Transient
     private List<BestillingProgress> progresser;
 
     @Transient
