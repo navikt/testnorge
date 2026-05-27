@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -63,8 +64,8 @@ class AapVedtakGenerator {
 
     private final OrtEnvironment environment = OrtEnvironment.getEnvironment();
     private final Random random = new Random();
-    private final Map<Path, OrtSession> sessionCache = new HashMap<>();
-    private final Map<OrtSession, Integer> featureCountCache = new HashMap<>();
+    private final Map<Path, OrtSession> sessionCache = new ConcurrentHashMap<>();
+    private final Map<OrtSession, Integer> featureCountCache = new ConcurrentHashMap<>();
 
     private final Map<AapModelType, Map<ModelSelector, List<DistributionModel>>> distributionsByType;
 
