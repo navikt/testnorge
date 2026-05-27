@@ -52,5 +52,5 @@ spec:
     buckets:
       - name: synthdata-aap-model-bucket
   ingresses:
-    - "https://synthdata-arena-aap.dev.intern.nav.no"
+    - "https://synthdata-arena-aap.intern.dev.nav.no"
 
