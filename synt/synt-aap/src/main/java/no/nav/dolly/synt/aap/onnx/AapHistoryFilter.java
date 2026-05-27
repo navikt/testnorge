@@ -105,7 +105,10 @@ class AapHistoryFilter {
             }
             return 0;
         }
-        return (int) ChronoUnit.DAYS.between(start, previousEnd.minusDays(1));
+        if (!start.isAfter(previousEnd)) {
+            return (int) ChronoUnit.DAYS.between(start, previousEnd.plusDays(1));
+        }
+        return 0;
 
     }
 
