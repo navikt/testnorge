@@ -61,14 +61,15 @@ class AapVedtakGenerator {
             "INNST", List.of("EFOV", "FFAV")
     );
 
-    private final OrtEnvironment environment;
-    private final Random random;
+    private final OrtEnvironment environment = OrtEnvironment.getEnvironment();
+    private final Random random = new Random();
+    private final Map<Path, OrtSession> sessionCache = new HashMap<>();
+    private final Map<OrtSession, Integer> featureCountCache = new HashMap<>();
+
     private final Map<AapModelType, Map<ModelSelector, List<DistributionModel>>> distributionsByType;
 
     AapVedtakGenerator(Path modelDirectory) {
-        this.environment = OrtEnvironment.getEnvironment();
-        this.random = new Random();
-        this.distributionsByType = discoverDistributionModels(modelDirectory);
+        distributionsByType = discoverDistributionModels(modelDirectory);
     }
 
     List<Map<String, String>> generateVedtak(AapModelType modelType, List<VedtakRequestDto> requests, boolean brukInnsendtTilDato) {
@@ -93,7 +94,7 @@ class AapVedtakGenerator {
         var distributions = bySelector.getOrDefault(selector, List.of());
         var usedModelFiles = new ArrayList<String>();
         for (var distribution : distributions) {
-            var prediction = infer(distribution.session(), request);
+            var prediction = infer(distribution.modelPath(), request);
             prediction.ifPresent(s -> vedtak.put(distribution.fieldName(), normalizePrediction(distribution.fieldName(), s)));
             usedModelFiles.add(distribution.fileName());
         }
@@ -214,11 +215,18 @@ class AapVedtakGenerator {
 
     }
 
-    private Optional<String> infer(OrtSession session, VedtakRequestDto request) {
+    private Optional<String> infer(Path modelPath, VedtakRequestDto request) {
 
         try {
+            var session = sessionCache.computeIfAbsent(modelPath, this::createSession);
             var inputName = session.getInputNames().iterator().next();
-            var featureCount = resolveFeatureCount(session, inputName);
+            var featureCount = featureCountCache.computeIfAbsent(session, k -> {
+                try {
+                    return resolveFeatureCount(k);
+                } catch (OrtException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             var features = buildFeatureVector(request, featureCount);
 
             try (var inputTensor = OnnxTensor.createTensor(environment, new float[][]{features});
@@ -232,9 +240,10 @@ class AapVedtakGenerator {
 
     }
 
-    private int resolveFeatureCount(OrtSession session, String inputName)
+    private int resolveFeatureCount(OrtSession session)
             throws OrtException {
 
+        var inputName = session.getInputNames().iterator().next();
         var input = Objects.requireNonNull(session.getInputInfo().get(inputName), "Missing ONNX input metadata");
         var tensorInfo = (TensorInfo) input.getInfo();
         var shape = tensorInfo.getShape();
@@ -298,7 +307,6 @@ class AapVedtakGenerator {
     private Map<AapModelType, Map<ModelSelector, List<DistributionModel>>> discoverDistributionModels(Path modelDirectory) {
 
         var discovered = new EnumMap<AapModelType, Map<ModelSelector, List<DistributionModel>>>(AapModelType.class);
-        var sessionCache = new HashMap<Path, OrtSession>();
 
         try (var stream = Files.list(modelDirectory)) {
             var files = stream
@@ -321,11 +329,10 @@ class AapVedtakGenerator {
                     continue;
                 }
 
-                var session = sessionCache.computeIfAbsent(file, this::createSession);
                 discovered
                         .computeIfAbsent(modelType, ignored -> new HashMap<>())
                         .computeIfAbsent(selector, ignored -> new ArrayList<>())
-                        .add(new DistributionModel(fieldName, columnIndex, file.getFileName().toString(), session));
+                        .add(new DistributionModel(fieldName, columnIndex, file.getFileName().toString(), file));
             }
 
             for (var bySelector : discovered.values()) {
@@ -362,7 +369,7 @@ class AapVedtakGenerator {
     private record ModelSelector(String vedtakType, String utfall) {
     }
 
-    private record DistributionModel(String fieldName, int columnIndex, String fileName, OrtSession session) {
+    private record DistributionModel(String fieldName, int columnIndex, String fileName, Path modelPath) {
     }
 
 }
