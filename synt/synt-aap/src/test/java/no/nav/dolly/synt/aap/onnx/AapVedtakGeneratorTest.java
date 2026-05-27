@@ -11,12 +11,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,9 +33,9 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 class AapVedtakGeneratorTest {
 
     private static final Path MODEL_DIRECTORY = Path.of("src/main/resources/models").toAbsolutePath().normalize();
-    private static final Path DEFAULT_REQUEST_FILE = Path.of("src/test/resources/requests/default-request.json");
-    private static final Path FILTERED_REQUEST_FILE = Path.of("src/test/resources/requests/filtered-es-chain-request.json");
-    private static final Path TILDATO_FALSE_REQUEST_FILE = Path.of("src/test/resources/requests/tildato-false-request.json");
+    private static final String DEFAULT_REQUEST_RESOURCE = "requests/default-request.json";
+    private static final String FILTERED_REQUEST_RESOURCE = "requests/filtered-es-chain-request.json";
+    private static final String TILDATO_FALSE_REQUEST_RESOURCE = "requests/tildato-false-request.json";
 
     private static final Set<String> VALID_UTFALL = Set.of("JA", "NEI");
     private static final Set<String> VALID_VEDTAKTYPE = Set.of("O", "E", "S", "G");
@@ -45,6 +48,7 @@ class AapVedtakGeneratorTest {
     @BeforeAll
     static void beforeAll() {
         assumeTrue(Files.isDirectory(MODEL_DIRECTORY), "Models directory not found – skipping smoke tests: " + MODEL_DIRECTORY);
+        assumeTrue(Objects.nonNull(AapVedtakGeneratorTest.class.getResource("/" + DEFAULT_REQUEST_RESOURCE)), "Request resources not found – skipping smoke tests");
         generator = new AapVedtakGenerator(MODEL_DIRECTORY);
     }
 
@@ -52,7 +56,7 @@ class AapVedtakGeneratorTest {
     void shouldGeneratePlausibleAapVedtakFromDefaultRequest()
             throws IOException {
 
-        var requests = loadRequests(DEFAULT_REQUEST_FILE);
+        var requests = loadRequests(DEFAULT_REQUEST_RESOURCE);
         var result = generator
                 .generateVedtak(AapModelType.AAP, requests, true)
                 .stream()
@@ -68,7 +72,7 @@ class AapVedtakGeneratorTest {
     void shouldOmitTilDatoWhenBrukInnsendtTilDatoIsFalse()
             throws IOException {
 
-        var requests = loadRequests(TILDATO_FALSE_REQUEST_FILE);
+        var requests = loadRequests(TILDATO_FALSE_REQUEST_RESOURCE);
         var result = generator
                 .generateVedtak(AapModelType.AAP, requests, false)
                 .stream()
@@ -84,7 +88,7 @@ class AapVedtakGeneratorTest {
     void shouldGeneratePlausibleAapVedtakAfterHistoryFiltering()
             throws IOException {
 
-        var filteredRequests = AapHistoryFilter.removeIllogicalRequests(loadRequests(FILTERED_REQUEST_FILE));
+        var filteredRequests = AapHistoryFilter.removeIllogicalRequests(loadRequests(FILTERED_REQUEST_RESOURCE));
         var generated = generator
                 .generateVedtak(AapModelType.AAP, filteredRequests, true)
                 .stream()
@@ -104,7 +108,7 @@ class AapVedtakGeneratorTest {
 
         assumeTrue(hasModelFilesForType(AapModelType.AAP_115), "No AAP_115 model files – skipping 11.5 smoke test");
 
-        var requests = loadRequests(DEFAULT_REQUEST_FILE);
+        var requests = loadRequests(DEFAULT_REQUEST_RESOURCE);
         var result = generator
                 .generateVedtak(AapModelType.AAP_115, requests, true)
                 .stream()
@@ -122,7 +126,7 @@ class AapVedtakGeneratorTest {
 
         assumeTrue(hasModelFilesForType(AapModelType.AATFOR), "No AATFOR model files – skipping aatfor smoke test");
 
-        var requests = loadRequests(DEFAULT_REQUEST_FILE);
+        var requests = loadRequests(DEFAULT_REQUEST_RESOURCE);
         var result = generator
                 .generateVedtak(AapModelType.AATFOR, requests, true)
                 .stream()
@@ -140,7 +144,7 @@ class AapVedtakGeneratorTest {
 
         assumeTrue(hasModelFilesForType(AapModelType.AAUNGUFOR), "No AAUNGUFOR model files – skipping aaungufor smoke test");
 
-        var requests = loadRequests(DEFAULT_REQUEST_FILE);
+        var requests = loadRequests(DEFAULT_REQUEST_RESOURCE);
         var result = generator
                 .generateVedtak(AapModelType.AAUNGUFOR, requests, true)
                 .stream()
@@ -158,7 +162,7 @@ class AapVedtakGeneratorTest {
 
         assumeTrue(hasModelFilesForType(AapModelType.FRI_MK), "No FRI_MK model files – skipping fri_mk smoke test");
 
-        var requests = loadRequests(DEFAULT_REQUEST_FILE);
+        var requests = loadRequests(DEFAULT_REQUEST_RESOURCE);
         var result = generator.generateVedtak(AapModelType.FRI_MK, requests, true)
                 .stream()
                 .map(AapVedtakMapper::toAatforAaunguforFriMkVedtak)
@@ -258,9 +262,19 @@ class AapVedtakGeneratorTest {
         }
     }
 
-    private List<VedtakRequestDto> loadRequests(Path requestFile) throws IOException {
-        return objectMapper.readValue(Files.readString(requestFile), new TypeReference<>() {
-        });
+    private List<VedtakRequestDto> loadRequests(String resourceName)
+            throws IOException {
+
+        var resourceUrl = getClass().getResource("/" + resourceName);
+        if (resourceUrl == null) {
+            throw new FileNotFoundException("Resource not found: " + resourceName);
+        }
+        try (var inputStream = resourceUrl.openStream()) {
+            var content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            return objectMapper.readValue(content, new TypeReference<>() {
+            });
+        }
+
     }
 
     private boolean hasModelFilesForType(AapModelType modelType) {
