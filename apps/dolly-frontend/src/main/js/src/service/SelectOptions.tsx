@@ -297,6 +297,24 @@ const selectOptions = {
 		{ value: 'FO', label: 'Fengsel' },
 	],
 
+	// INST KDI
+	kdiKategori: [
+		{ value: 'Boetesoning', label: 'Bøtesoning' },
+		{ value: 'ForegrepetSoning', label: 'Foregrepet soning' },
+		{ value: 'Forvaring', label: 'Forvaring' },
+		{ value: 'Ubetinget', label: 'Ubetinget' },
+		{ value: 'Varetekt', label: 'Varetekt' },
+	],
+
+	fengsel: [
+		{ value: '974727730', label: '974727730 - Bergen fengsel' },
+		{ value: '974707179', label: '974707179 - Bredtveit fengsel' },
+		{ value: '993315060', label: '993315060 - Halden fengsel' },
+		{ value: '874718602', label: '874718602 - Oslo fengsel' },
+		{ value: '974706806', label: '974706806 - Romerike fengsel' },
+		{ value: '974736888', label: '974736888 - Åna fengsel' },
+	],
+
 	// UDI
 	oppholdsstatus: [
 		{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },

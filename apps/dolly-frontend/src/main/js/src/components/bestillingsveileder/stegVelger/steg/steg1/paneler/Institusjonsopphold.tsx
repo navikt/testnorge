@@ -21,7 +21,8 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 			checkAttributeArray={sm.batchAdd as any}
 			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="institusjon"
-			startOpen={harValgtAttributt(formValues, [instAttributt, instdataKdiAttributt])}
+			// startOpen={harValgtAttributt(formValues, [instAttributt, instdataKdiAttributt])}
+			startOpen={true} //TODO: Fjernes naar ferdig!!!
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt
@@ -44,7 +45,7 @@ InstitusjonsoppholdPanel.heading = 'Institusjonsopphold'
 
 InstitusjonsoppholdPanel.initialValues = ({ set, del, has }: any) => ({
 	instdata: {
-		label: 'Har institusjonsopphold',
+		label: 'Institusjonsopphold',
 		checked: has('instdata'),
 		add() {
 			set('instdata', [
@@ -61,7 +62,7 @@ InstitusjonsoppholdPanel.initialValues = ({ set, del, has }: any) => ({
 		},
 	},
 	instdataKdi: {
-		label: 'Har KDI-meldinger',
+		label: 'KDI-meldinger',
 		checked: has('instdataKdi'),
 		add() {
 			set('instdataKdi', initialKdi)

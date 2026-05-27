@@ -1,56 +1,50 @@
 export const instdataKdiAttributt = 'instdataKdi'
 
 export const initialInnsettelse = {
-	// hendelseId: 'string',
+	hendelseId: null,
 	publiseringstidspunkt: new Date(),
-	// norskident: 'string',
-	kategori: 'string',
-	organisasjonsnummer: 'string',
-	tidspunkt: '2026-05-22T13:55:21.143Z',
+	kategori: '',
+	organisasjonsnummer: '874718602',
+	tidspunkt: '',
 }
 
 export const initialLoeslatelse = {
-	// hendelseId: 'string',
+	hendelseId: null,
 	publiseringstidspunkt: new Date(),
-	// norskident: 'string',
-	kategori: 'string',
-	organisasjonsnummer: 'string',
-	tidspunkt: '2026-05-22T13:55:21.143Z',
+	kategori: '',
+	organisasjonsnummer: '874718602',
+	tidspunkt: '',
 	erOverfoertTilUtlandskfengsel: false,
 	erOverfoertTilVaretektMedElektroniskKontroll: false,
 }
 
 export const initialAvbruddStart = {
-	// hendelseId: 'string',
+	hendelseId: null,
 	publiseringstidspunkt: new Date(),
-	// norskident: 'string',
-	kategori: 'string',
-	organisasjonsnummer: 'string',
-	tidspunkt: '2026-05-22T13:55:21.143Z',
-	forventetAvbruddSluttTidspunkt: '2026-05-22T13:55:21.143Z',
+	kategori: '',
+	organisasjonsnummer: '874718602',
+	tidspunkt: '',
+	forventetAvbruddSluttTidspunkt: '',
 }
 
 export const initialAvbruddSlutt = {
-	// hendelseId: 'string',
+	hendelseId: null,
 	publiseringstidspunkt: new Date(),
-	// norskident: 'string',
-	kategori: 'string',
-	organisasjonsnummer: 'string',
-	tidspunkt: '2026-05-22T13:55:21.143Z',
+	kategori: '',
+	organisasjonsnummer: '874718602',
+	tidspunkt: '',
 }
 
 export const initialForventetLoeslatelse = {
-	// hendelseId: 'string',
+	hendelseId: null,
 	publiseringstidspunkt: new Date(),
-	innmeldingHendelseId: 'string',
-	// norskident: 'string',
-	tidspunkt: '2026-05-22T13:55:21.143Z',
+	innmeldingHendelseId: '',
+	tidspunkt: '',
 }
 
 export const initialAnnullering = {
-	// hendelseId: 'string',
+	hendelseId: null,
 	publiseringstidspunkt: new Date(),
-	// norskident: 'string',
 }
 
 export const initialKdi = { innsettelse: [initialInnsettelse] }
