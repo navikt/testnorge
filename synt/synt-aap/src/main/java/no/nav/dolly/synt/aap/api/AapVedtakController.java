@@ -116,7 +116,7 @@ class AapVedtakController {
     @PostMapping(value = "/aaungufor", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "service.generator.get_synthetic_aaungufor",
-            summary = "Generer syntetiske Ung ufor-vedtak (aaungufor).",
+            summary = "Generer syntetiske Ung ufør-vedtak (aaungufor).",
             security = @SecurityRequirement(name = "jwt", scopes = {"secret"}),
             responses = @ApiResponse(
                     responseCode = "200",
