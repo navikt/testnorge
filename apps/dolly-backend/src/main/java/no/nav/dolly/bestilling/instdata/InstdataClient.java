@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.bestilling.instdata.service.InstKdiHendelseService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -30,10 +31,13 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class InstdataClient implements ClientRegister {
 
+    private static final String KDI_STATUS = "KDI_STATUS:";
+
     private final MapperFacade mapperFacade;
     private final InstdataConsumer instdataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
+    private final InstKdiHendelseService instKdiHendelseService;
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -43,25 +47,26 @@ public class InstdataClient implements ClientRegister {
             return Mono.empty();
         }
 
-        return Flux.merge(doInst2Bestilling(bestilling, dollyPerson, progress, isOpprettEndre),
-                doInstKdiBestilling(bestilling, dollyPerson, progress, isOpprettEndre))
+        return Flux.merge(doInst2Bestilling(bestilling, dollyPerson, isOpprettEndre),
+                doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), isOpprettEndre))
                         .collect(Collectors.joining(","))
                         .flatMap(resultat -> oppdaterStatus(progress, resultat));
     }
 
-    private Mono<String> doInstKdiBestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
+    private Mono<String> doInstKdiBestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Long bestillingId, boolean isOpprettEndre) {
 
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getInstdataKdi()))
                 .flatMap(bestilling1 -> instdataConsumer.getMiljoer())
                 .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getKdiEnvironments())
                         .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
-                        .flatMap(miljoe -> instdataConsumer.getInstdataKdi(dollyPerson.getIdent(), miljoe))
+                        .flatMap(miljoe -> instKdiHendelseService.getBestilling(bestilling, bestillingId,
+                                dollyPerson.getIdent(), miljoe, isOpprettEndre)
                         .map(instKdiData -> {
-
                             var context = MappingContextUtils.getMappingContext();
-                            context.setProperty("instKdiData", instKdiData);
-                            return mapperFacade.map(bestilling.getInstdataKdi(), InstdataKdiDTO.class, context);
+                            context.setProperty("ident", dollyPerson.getIdent());
+                            context.setProperty("miljoe", dollyPerson.getIdent());
+                            return mapperFacade.map(instKdiData, InstdataKdiDTO.class, context);
                         })
                         .flatMap(instKdiRequest -> instdataConsumer.postInstdataKdi(instKdiRequest, dollyPerson.getIdent()))
                         .map(response -> String.format("%s:opphold=%d$%s",

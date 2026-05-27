@@ -6,7 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -35,7 +39,7 @@ public class RsInstdataKdi {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Innsettelse {
+    public static class Innsettelse extends Hendelse {
 
         private String kategori;
         private String organisasjonsnummer;
@@ -46,7 +50,7 @@ public class RsInstdataKdi {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Loeslatelse {
+    public static class Loeslatelse extends Hendelse {
 
         private String kategori;
         private String organisasjonsnummer;
@@ -59,7 +63,7 @@ public class RsInstdataKdi {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AvbruddStart {
+    public static class AvbruddStart extends Hendelse {
 
         private String kategori;
         private String organisasjonsnummer;
@@ -71,7 +75,7 @@ public class RsInstdataKdi {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AvbruddSlutt {
+    public static class AvbruddSlutt extends Hendelse {
 
         private String kategori;
         private String organisasjonsnummer;
@@ -82,8 +86,9 @@ public class RsInstdataKdi {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ForventetLoeslatelse {
+    public static class ForventetLoeslatelse extends Hendelse {
 
+        private String innmeldingHendelseId;
         private LocalDateTime tidspunkt;
     }
 
@@ -91,8 +96,36 @@ public class RsInstdataKdi {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Annullering {
+    public static class Annullering extends Hendelse {
 
         private String hendelseId;
+        private LocalDateTime publiseringstidspunkt;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public abstract static class Hendelse {
+
+        private Map<String, Version> version;
+
+        public Map<String, Version> getVersion() {
+
+            if (isNull(version)) {
+                version = new HashMap<>();
+            }
+            return version;
+        }
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Version {
+
+        private String hendelseId;
+        private LocalDateTime publiseringstidspunkt;
     }
 }
