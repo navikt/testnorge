@@ -5,6 +5,7 @@ import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
 import ai.onnxruntime.TensorInfo;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.synt.aap.dto.VedtakRequestDto;
 
 import java.nio.file.Files;
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 class AapVedtakGenerator {
 
     private static final Pattern MODEL_FILE_PATTERN = Pattern.compile("^(AAP|AAP_115|AATFOR|AAUNGUFOR|FRI_MK)_bean_model_([OESG])_(JA|NEI)_distributions_col_(\\d+)\\.onnx$");
@@ -236,7 +238,8 @@ class AapVedtakGenerator {
             }
 
         } catch (Exception e) {
-            return Optional.empty();
+            log.error("Failed ONNX inference for model {} on request {}", modelPath, request);
+            throw new IllegalStateException("Failed ONNX inference for model " + modelPath, e);
         }
 
     }
