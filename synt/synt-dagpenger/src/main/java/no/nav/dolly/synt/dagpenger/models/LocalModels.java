@@ -28,7 +28,7 @@ public class LocalModels {
     private static Path extractModelsToTemporaryDirectory()
             throws IOException, IllegalStateException {
 
-        var targetDir = Files.createTempDirectory("synt-aap-models-");
+        var targetDir = Files.createTempDirectory("synt-dagpenger-models-");
         targetDir.toFile().deleteOnExit();
 
         var resolver = new PathMatchingResourcePatternResolver();
