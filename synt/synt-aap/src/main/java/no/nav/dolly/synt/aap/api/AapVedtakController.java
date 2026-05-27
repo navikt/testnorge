@@ -97,7 +97,7 @@ class AapVedtakController {
     @PostMapping(value = "/fri_mk", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "service.generator.get_synthetic_fri_mk",
-            summary = "Generer syntetiske Fritak fra a levere meldekort-vedtak (fri_mk).",
+            summary = "Generer syntetiske Fritak fra å levere meldekort-vedtak (fri_mk).",
             security = @SecurityRequirement(name = "jwt", scopes = {"secret"}),
             responses = @ApiResponse(
                     responseCode = "200",
