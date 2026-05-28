@@ -26,6 +26,7 @@ public class InstdataKdiGetCommand implements Callable<Mono<InstdataKdiResponse>
 
     @Override
     public Mono<InstdataKdiResponse> call() {
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

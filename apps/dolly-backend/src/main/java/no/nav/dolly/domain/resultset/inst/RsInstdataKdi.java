@@ -3,12 +3,14 @@ package no.nav.dolly.domain.resultset.inst;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -18,25 +20,65 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class RsInstdataKdi {
 
-    private String environment;
-    private Data data;
+    private List<Innsettelse> innsettelse;
+    private List<Loeslatelse> loeslatelse;
+    private List<AvbruddStart> avbruddStart;
+    private List<AvbruddSlutt> avbruddSlutt;
+    private List<ForventetLoeslatelse> forventetLoeslatelse;
+    private List<Annullering> annullering;
 
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Data {
+    public List<Innsettelse> getInnsettelse() {
 
-        private List<Innsettelse> innsettelse;
-        private List<Loeslatelse> loeslatelse;
-        private List<AvbruddStart> avbruddStart;
-        private List<AvbruddSlutt> avbruddSlutt;
-        private List<ForventetLoeslatelse> forventetLoeslatelse;
-        private List<Annullering> annullering;
+        if (isNull(innsettelse)) {
+            innsettelse = new ArrayList<>();
+        }
+        return innsettelse;
+    }
+
+    public List<Loeslatelse> getLoeslatelse() {
+
+        if (isNull(loeslatelse)) {
+            loeslatelse = new ArrayList<>();
+        }
+        return loeslatelse;
+    }
+
+    public List<AvbruddStart> getAvbruddStart() {
+
+        if (isNull(avbruddStart)) {
+            avbruddStart = new ArrayList<>();
+        }
+        return avbruddStart;
+    }
+
+    public List<AvbruddSlutt> getAvbruddSlutt() {
+
+        if (isNull(avbruddSlutt)) {
+            avbruddSlutt = new ArrayList<>();
+        }
+        return avbruddSlutt;
+    }
+
+    public List<ForventetLoeslatelse> getForventetLoeslatelse() {
+
+        if (isNull(forventetLoeslatelse)) {
+            forventetLoeslatelse = new ArrayList<>();
+        }
+        return forventetLoeslatelse;
+    }
+
+    public List<Annullering> getAnnullering() {
+
+        if (isNull(annullering)) {
+            annullering = new ArrayList<>();
+        }
+        return annullering;
     }
 
     @lombok.Data
-    @Builder
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Innsettelse extends Hendelse {
@@ -47,7 +89,9 @@ public class RsInstdataKdi {
     }
 
     @lombok.Data
-    @Builder
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Loeslatelse extends Hendelse {
@@ -60,7 +104,9 @@ public class RsInstdataKdi {
     }
 
     @lombok.Data
-    @Builder
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AvbruddStart extends Hendelse {
@@ -68,11 +114,13 @@ public class RsInstdataKdi {
         private String kategori;
         private String organisasjonsnummer;
         private LocalDateTime tidspunkt;
-        private LocalDateTime forventetAvbruddStartTidspunkt;
+        private LocalDateTime forventetAvbruddSluttTidspunkt;
     }
 
     @lombok.Data
-    @Builder
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AvbruddSlutt extends Hendelse {
@@ -83,7 +131,9 @@ public class RsInstdataKdi {
     }
 
     @lombok.Data
-    @Builder
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ForventetLoeslatelse extends Hendelse {
@@ -93,7 +143,9 @@ public class RsInstdataKdi {
     }
 
     @lombok.Data
-    @Builder
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Annullering extends Hendelse {
@@ -103,27 +155,10 @@ public class RsInstdataKdi {
     }
 
     @lombok.Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public abstract static class Hendelse {
-
-        private Map<String, Version> version;
-
-        public Map<String, Version> getVersion() {
-
-            if (isNull(version)) {
-                version = new HashMap<>();
-            }
-            return version;
-        }
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Version {
 
         private String hendelseId;
         private LocalDateTime publiseringstidspunkt;

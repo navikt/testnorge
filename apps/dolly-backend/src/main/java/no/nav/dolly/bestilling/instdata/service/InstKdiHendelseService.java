@@ -1,27 +1,18 @@
 package no.nav.dolly.bestilling.instdata.service;
 
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.instdata.InstdataConsumer;
 import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataKdiResponse;
-import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
-import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.TransactionHelperService;
-import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -39,11 +30,13 @@ public class InstKdiHendelseService {
     private final InstdataConsumer instdataConsumer;
     private final TransactionHelperService transactionHelperService;
 
-    public Mono<RsInstdataKdi> getBestilling(RsDollyUtvidetBestilling bestilling, Long bestillingId, String ident, String miljoe, boolean isOpprettEndre) {
+    public Mono<RsInstdataKdi> getOppdaterBestilling(RsDollyUtvidetBestilling bestilling, Long bestillingId, String ident, String miljoe, boolean isOpprettEndre) {
 
-        if (isOpprettEndre) {
+        if (isOpprettEndre || hasEmptyHendelseId(bestilling.getInstdataKdi())) {
+
             return instdataConsumer.getInstdataKdi(ident, miljoe)
-                    .map(instdataKdiResponse -> oppdaterBestilling(instdataKdiResponse, bestilling.getInstdataKdi(), bestillingId, miljoe))
+                    .filter(response -> response.getStatus().is2xxSuccessful())
+                    .map(instdataKdiResponse -> getOppdaterBestilling(instdataKdiResponse, bestilling.getInstdataKdi(), bestillingId))
                     .doOnNext(bestilling::setInstdataKdi)
                     .flatMap(oppdaterBestilling -> transactionHelperService.persister(bestillingId, bestilling)
                             .then(Mono.just(oppdaterBestilling)));
@@ -53,7 +46,7 @@ public class InstKdiHendelseService {
         }
     }
 
-    private RsInstdataKdi oppdaterBestilling(InstdataKdiResponse instdataKdiResponse, RsInstdataKdi bestilling, Long bestillingId, String miljoe) {
+    private RsInstdataKdi getOppdaterBestilling(InstdataKdiResponse instdataKdiResponse, RsInstdataKdi bestilling, Long bestillingId) {
 
         var kdidata = instdataKdiResponse.getInstdataKdi().getData();
 
@@ -61,29 +54,32 @@ public class InstKdiHendelseService {
                 .map(InstdataKdiDTO.Annullering::getHendelseId)
                 .toList();
 
-        var data = bestilling.getData();
+        oppdaterHendelser(bestilling.getInnsettelse(), getHendelseId(kdidata.getInnsettelse(),
+                INNSETTELSE, bestillingId, annuleringer));
+        oppdaterHendelser(bestilling.getAvbruddStart(), getHendelseId(kdidata.getAvbruddStart(),
+                AVBRUDD_START, bestillingId, annuleringer));
+        oppdaterHendelser(bestilling.getAvbruddSlutt(), getHendelseId(kdidata.getAvbruddSlutt(),
+                AVBRUDD_SLUTT, bestillingId, annuleringer));
+        oppdaterHendelser(bestilling.getLoeslatelse(), getHendelseId(kdidata.getLoeslatelse(),
+                LOESLATELSE, bestillingId, annuleringer));
+        oppdaterHendelser(bestilling.getForventetLoeslatelse(), getHendelseId(kdidata.getForventetLoeslatelse(),
+                FORVENTET_LOESLATELSE, bestillingId, annuleringer));
 
-        oppdaterHendelser(data.getInnsettelse(), getHendelseId(kdidata.getInnsettelse(),
-                INNSETTELSE, bestillingId, annuleringer), miljoe);
-        oppdaterHendelser(data.getAvbruddStart(), getHendelseId(kdidata.getAvbruddStart(),
-                AVBRUDD_START, bestillingId, annuleringer), miljoe);
-        oppdaterHendelser(data.getAvbruddSlutt(), getHendelseId(kdidata.getAvbruddSlutt(),
-                AVBRUDD_SLUTT, bestillingId, annuleringer), miljoe);
-        oppdaterHendelser(data.getLoeslatelse(), getHendelseId(kdidata.getLoeslatelse(),
-                LOESLATELSE, bestillingId, annuleringer), miljoe);
-        oppdaterHendelser(data.getForventetLoeslatelse(), getHendelseId(kdidata.getForventetLoeslatelse(),
-                FORVENTET_LOESLATELSE, bestillingId, annuleringer), miljoe);
-
-        data.getAnnullering()
-                .forEach(annulering ->
-                        annulering.getVersion().put(miljoe,
-                                RsInstdataKdi.Version.builder()
-                                        .hendelseId(annulering.getHendelseId())
-                                        .publiseringstidspunkt(isNull(annulering.getPubliseringstidspunkt()) ?
-                                                LocalDateTime.now() : annulering.getPubliseringstidspunkt())
-                                        .build()));
+        bestilling.getAnnullering()
+                .forEach(annulering -> annulering.setPubliseringstidspunkt(
+                        isNull(annulering.getPubliseringstidspunkt()) ?
+                                LocalDateTime.now() : annulering.getPubliseringstidspunkt()));
 
         return bestilling;
+    }
+
+    private static boolean hasEmptyHendelseId(RsInstdataKdi instdataKdi) {
+
+        return Stream.of(instdataKdi.getInnsettelse(), instdataKdi.getAvbruddStart(),
+                        instdataKdi.getAvbruddSlutt(), instdataKdi.getLoeslatelse(),
+                        instdataKdi.getForventetLoeslatelse())
+                .flatMap(Collection::stream)
+                .anyMatch(hendelse -> isNull(hendelse.getHendelseId()));
     }
 
     private static String getHendelseId(List<? extends InstdataKdiDTO.Hendelse> hendelser,
@@ -114,13 +110,13 @@ public class InstKdiHendelseService {
                 .orElse(makeHendelseId(bestillingId, type, 1));
     }
 
-    private static void oppdaterHendelser(List<? extends RsInstdataKdi.Hendelse> hendelser, String hendelseId, String miljoe) {
+    private static void oppdaterHendelser(List<? extends RsInstdataKdi.Hendelse> hendelser, String hendelseId) {
 
-        hendelser.forEach(hendelse -> hendelse.getVersion().put(miljoe,
-                RsInstdataKdi.Version.builder()
-                        .hendelseId(hendelseId)
-                        .publiseringstidspunkt(LocalDateTime.now())
-                        .build()
-        ));
+        hendelser.forEach(hendelse -> {
+            hendelse.setHendelseId(hendelseId);
+            if (isNull(hendelse.getPubliseringstidspunkt())) {
+                hendelse.setPubliseringstidspunkt(LocalDateTime.now());
+            }
+        });
     }
 }

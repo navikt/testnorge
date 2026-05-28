@@ -20,9 +20,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingInstdataStatusMapper {
 
+    private static final String INST2_STATUS = "INST2_STATUS#";
+    private static final String KDI_STATUS = "KDI_STATUS#";
+
     public static List<RsStatusRapport> buildInstdataStatusMap(List<BestillingProgress> progressList) {
 
-        //  status     miljø       ident
+        // system      status     miljø       ident
         Map<String, Map<String, Set<String>>> statusEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {

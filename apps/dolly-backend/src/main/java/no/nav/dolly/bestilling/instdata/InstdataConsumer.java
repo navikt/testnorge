@@ -64,7 +64,8 @@ public class InstdataConsumer extends ConsumerStatus {
     public Mono<InstdataKdiResponse> getInstdataKdi(String ident, String environment) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new InstdataKdiGetCommand(webClient, ident, environment, token.getTokenValue()).call());
+                .flatMap(token -> new InstdataKdiGetCommand(webClient, ident, environment, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Instdata KDI hentet for ident {} i miljø {}: {}", ident, environment, response));
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
