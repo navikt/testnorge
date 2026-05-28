@@ -12,7 +12,7 @@ import java.util.Map;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.KRRSTUB;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static no.nav.dolly.util.ListUtil.listOf;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

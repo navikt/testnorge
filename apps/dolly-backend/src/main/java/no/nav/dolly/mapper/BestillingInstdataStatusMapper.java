@@ -7,17 +7,16 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.lang.String.format;
 import static no.nav.dolly.domain.resultset.SystemTyper.INST2;
 import static no.nav.dolly.domain.resultset.SystemTyper.INST_KDI;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.resolveStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,7 +24,6 @@ public final class BestillingInstdataStatusMapper {
 
     private static final String INST2_STATUS = "INST2_STATUS";
     private static final String KDI_STATUS = "KDI_STATUS";
-    private static final String OK_RESULT = "OK";
 
     public static List<RsStatusRapport> buildInstdataStatusMap(List<BestillingProgress> progressList) {
 
@@ -34,28 +32,28 @@ public final class BestillingInstdataStatusMapper {
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getInstdataStatus())) {
-                var systemer = progress.getInstdataStatus().split("\\|");
-                List.of(systemer).forEach(system -> {
+                for (var system : progress.getInstdataStatus().split("\\|")) {
                     String systemId;
                     String statuser;
                     if (system.contains("#")) {
-                        systemId = system.split("#")[0];
-                        statuser = system.split("#")[1];
+                        var parts = system.split("#", 2);
+                        systemId = parts[0];
+                        statuser = parts[1];
                     } else {
                         systemId = INST2_STATUS;
                         statuser = system;
                     }
                     if (isNotBlank(statuser)) {
-                        List.of(statuser.split(",")).forEach(status -> {
+                        for (var status : statuser.split(",")) {
                             var environErrMsg = status.split(":", 2);
                             var environ = environErrMsg[0];
                             if (environErrMsg.length > 1 && isNotBlank(environErrMsg[1]) && isNotBlank(progress.getIdent())) {
                                 var errMsg = decodeMsg(environErrMsg[1]);
                                 checkAndUpdateStatus(systemStatusEnvIdents, systemId, progress.getIdent(), environ, errMsg);
                             }
-                        });
+                        }
                     }
-                });
+                }
             }
         });
 
@@ -67,47 +65,35 @@ public final class BestillingInstdataStatusMapper {
 
     private static List<RsStatusRapport> extractStatus(Map<String, Map<String, Map<String, Set<String>>>> meldStatusMiljoeIdents, String clientid, SystemTyper type) {
 
-        if (meldStatusMiljoeIdents.containsKey(clientid)) {
-            return Collections.singletonList(RsStatusRapport.builder()
-                    .id(type)
-                    .navn(type.getBeskrivelse())
-                    .statuser(
-                            meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
-                                            RsStatusRapport.Status.builder()
-                                                    .melding(decodeMsg(entry.getKey()))
-                                                    .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
-                                                                    RsStatusRapport.Detaljert.builder()
-                                                                            .miljo(miljeStatus.getKey())
-                                                                            .identer(miljeStatus.getValue())
-                                                                            .build())
-                                                            .toList())
-                                                    .build())
-                                    .toList())
-                    .build());
-        } else {
-            return Collections.emptyList();
+        if (!meldStatusMiljoeIdents.containsKey(clientid)) {
+            return List.of();
         }
+        return List.of(RsStatusRapport.builder()
+                .id(type)
+                .navn(type.getBeskrivelse())
+                .statuser(
+                        meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
+                                        RsStatusRapport.Status.builder()
+                                                .melding(decodeMsg(entry.getKey()))
+                                                .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
+                                                                RsStatusRapport.Detaljert.builder()
+                                                                        .miljo(miljeStatus.getKey())
+                                                                        .identer(miljeStatus.getValue())
+                                                                        .build())
+                                                        .toList())
+                                                .build())
+                                .toList())
+                .build());
     }
 
-    public static void checkAndUpdateStatus(Map<String, Map<String, Map<String, Set<String>>>> systemStatusEnvIdents,
-                                            String system, String ident, String environ, String errMsg) {
+    private static void checkAndUpdateStatus(Map<String, Map<String, Map<String, Set<String>>>> systemStatusEnvIdents,
+                                             String system, String ident, String environ, String errMsg) {
 
-        String status;
-
-        if (errMsg.contains("$")) {
-            String[] forholdStatus = errMsg.split("\\$");
-            String forhold = forholdStatus[0];
-            status = decodeMsg(forholdStatus.length > 1 ? forholdStatus[1] : "");
-            if (!OK_RESULT.equals(status)) {
-                status = format("%s: %s", forhold, status);
-            }
-        } else {
-            status = decodeMsg(errMsg);
-        }
-
-        systemStatusEnvIdents.putIfAbsent(system, new HashMap<>());
-        systemStatusEnvIdents.get(system).putIfAbsent(status, new HashMap<>());
-        systemStatusEnvIdents.get(system).get(status).putIfAbsent(environ, new HashSet<>());
-        systemStatusEnvIdents.get(system).get(status).get(environ).add(ident);
+        var status = resolveStatus(errMsg);
+        systemStatusEnvIdents
+                .computeIfAbsent(system, k -> new HashMap<>())
+                .computeIfAbsent(status, k -> new HashMap<>())
+                .computeIfAbsent(environ, k -> new HashSet<>())
+                .add(ident);
     }
 }
