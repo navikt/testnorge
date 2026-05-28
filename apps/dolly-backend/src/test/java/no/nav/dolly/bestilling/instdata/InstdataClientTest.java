@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.instdata;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -73,7 +74,9 @@ class InstdataClientTest {
         var progress = new BestillingProgress();
         var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(List.of("q2")));
+        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
+                .institusjonsoppholdEnvironments(List.of("q2"))
+                .build()));
         when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of(Instdata.builder()
                 .norskident(IDENT)
                 .build()));
@@ -101,11 +104,13 @@ class InstdataClientTest {
         var progress = new BestillingProgress();
         var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(List.of("q2")));
+        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
+                .institusjonsoppholdEnvironments(List.of("q2"))
+                .build()));
         when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of(Instdata.builder()
                 .norskident(IDENT)
                 .build()));
-        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstitusjonsoppholdRespons.builder()
+        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstdataResponse.builder()
                 .institusjonsopphold(Map.of("q2", List.of(new Instdata())))
                 .build()));
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
