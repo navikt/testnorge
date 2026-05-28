@@ -101,7 +101,9 @@ public class InstdataClient implements ClientRegister {
     public void release(List<String> identer) {
 
         instdataConsumer.deleteInstdata(identer)
-                .subscribe(response -> log.info("Slettet antall {} identer fra Instdata", response.size()));
+                .subscribe(response -> log.info("Slettet identer fra Instdata (inst 2)"));
+        instdataConsumer.deleteInstKdiData(identer)
+                .subscribe(response -> log.info("Slettet identer fra Institusjonsopphold fengsel (KDI)"));
     }
 
     private Mono<List<Instdata>> filterInstdata(List<Instdata> instdataRequest, String miljoe) {

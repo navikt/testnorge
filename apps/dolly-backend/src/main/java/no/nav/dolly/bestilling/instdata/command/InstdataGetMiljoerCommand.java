@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -37,6 +38,7 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<MiljoerResponse>
                         Mono.just(MiljoerResponse.builder()
                                 .institusjonsoppholdEnvironments(List.of("q1", "q2"))
                                 .kdiEnvironments(List.of("q2"))
-                                .build()));
+                                .build()))
+                .cache(Duration.ofSeconds(60));
     }
 }

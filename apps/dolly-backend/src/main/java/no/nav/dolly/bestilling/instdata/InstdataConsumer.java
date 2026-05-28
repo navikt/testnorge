@@ -75,10 +75,20 @@ public class InstdataConsumer extends ConsumerStatus {
                 .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
                         .flatMap(miljoer -> Flux.fromIterable(identer)
                                 .flatMap(ident -> new InstdataDeleteCommand(webClient,
-                                        ident, miljoer.getInstitusjonsoppholdEnvironments(), token.getTokenValue()).call()
-                                        .flatMap(response -> new InstdataKdiDeleteCommand(webClient,
-                                                ident, miljoer.getKdiEnvironments(), token.getTokenValue()).call()))
+                                        ident, miljoer.getInstitusjonsoppholdEnvironments(), token.getTokenValue()).call())
                                 .collectList()));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inst_deleteInstdataKdi"})
+    public Mono<List<InstdataKdiResponse>> deleteInstKdiData(List<String> identer) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
+                        .flatMapMany(miljoer -> Flux.fromIterable(identer)
+                                .flatMap(ident -> Flux.fromIterable(miljoer.getKdiEnvironments())
+                                        .flatMap(miljoe -> new InstdataKdiDeleteCommand(webClient,
+                                                ident, miljoe, token.getTokenValue()).call())))
+                        .collectList());
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_postInstdata"})
@@ -97,7 +107,7 @@ public class InstdataConsumer extends ConsumerStatus {
         log.info("Instdata KDI oppretting {}", instdata);
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataKdiPostCommand(webClient, ident, instdata,
-                                token.getTokenValue()).call());
+                        token.getTokenValue()).call());
     }
 
     @Override
