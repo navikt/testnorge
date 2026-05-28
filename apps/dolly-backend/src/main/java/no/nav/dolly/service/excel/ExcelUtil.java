@@ -48,7 +48,7 @@ public class ExcelUtil {
 
         return IntStream.range(0, opplysninger.size()).boxed()
                 .collect(Collectors.toMap(row -> (String) opplysninger.get(row)[indekskolonne], row -> row,
-                        (row1, row2) -> row1));
+                        (row1, _) -> row1));
     }
 
     @SuppressWarnings("all")

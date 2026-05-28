@@ -42,8 +42,8 @@ public class AapBehandlingStatusPostCommand implements Callable<Mono<AapStatusRe
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
                         .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
-                                             responseException.getStatusCode().is5xxServerError())
-                        .onRetryExhaustedThrow(((retryBackoffSpec, lastSignal) ->
+                                responseException.getStatusCode().is5xxServerError())
+                        .onRetryExhaustedThrow(((_, lastSignal) ->
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(error -> {
                     val feilmelding = WebClientError.describe(error);
