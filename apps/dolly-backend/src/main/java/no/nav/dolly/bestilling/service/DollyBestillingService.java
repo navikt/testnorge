@@ -292,7 +292,7 @@ public class DollyBestillingService {
 
         bestillingProgress.setPdlForvalterStatus("Info: Oppretting av person startet ...");
         return endrePerson(() -> pdlDataConsumer.opprettPdl(originator.getPdlBestilling()), bestillingProgress)
-                .doOnNext(response -> log.info("Opprettet person med ident ... {}", response));
+                .doOnNext(response -> log.info("Opprettet person med ident ... {}", originator.getPdlBestilling()));
     }
 
     protected Mono<BestillingProgress> oppdaterPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {

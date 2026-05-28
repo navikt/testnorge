@@ -52,7 +52,7 @@ public class InstdataClient implements ClientRegister {
                                 .map(INST2_STATUS::formatted),
                         doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), isOpprettEndre)
                                 .map(KDI_STATUS::formatted))
-                .collect(Collectors.joining(","))
+                .collect(Collectors.joining("|"))
                 .flatMap(resultat -> oppdaterStatus(progress, resultat));
     }
 
