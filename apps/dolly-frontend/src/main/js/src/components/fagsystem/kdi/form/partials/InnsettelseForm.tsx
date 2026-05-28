@@ -34,7 +34,7 @@ export const InnsettelseForm = ({ eksisterendeKdiData }) => {
 					<FormSelect
 						name={`${path}.organisasjonsnummer`}
 						label="Organisasjonsnummer"
-						options={Options('fengsel')}
+						options={Options('fengsel')} //TODO: Kan hentes fra nytt endepunkt
 						size="large"
 						isClearable={false}
 					/>

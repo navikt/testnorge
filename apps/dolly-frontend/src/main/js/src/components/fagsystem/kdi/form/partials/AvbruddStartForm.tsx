@@ -1,18 +1,17 @@
-import { initialLoeslatelse } from '@/components/fagsystem/kdi/initialValues'
+import { initialAvbruddStart } from '@/components/fagsystem/kdi/initialValues'
 import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
-export const LoeslatelseForm = ({ eksisterendeKdiData }) => {
+export const AvbruddStartForm = ({ eksisterendeKdiData }) => {
 	return (
 		<FormDollyFieldArray
-			name="instdataKdi.loeslatelse"
-			header="Løslatelse"
-			newEntry={initialLoeslatelse}
+			name="instdataKdi.avbruddStart"
+			header="Avbrudd start"
+			newEntry={initialAvbruddStart}
 			nested
 		>
 			{(path, idx) => (
@@ -39,23 +38,18 @@ export const LoeslatelseForm = ({ eksisterendeKdiData }) => {
 					/>
 					<FormDatepicker
 						name={`${path}.tidspunkt`}
-						label="Løslatelsestidspunkt"
+						label="Tidspunkt for start på straffeavbrudd"
 						format={'DD.MM.YYYY HH:mm:ss'}
+						size="large"
 						// date={rapporteringsdate}
 					/>
-					<FormCheckbox
-						name={`${path}.erOverfoertTilUtlandskfengsel`}
-						label="Er overført til utlandsk fengsel"
-						size="small"
-						checkboxMargin
+					<FormDatepicker
+						name={`${path}.forventetAvbruddSluttTidspunkt`}
+						label="Forventet tidspunkt for slutt på straffeavbrudd"
+						format={'DD.MM.YYYY HH:mm:ss'}
+						size="large"
+						// date={rapporteringsdate}
 					/>
-					<FormCheckbox
-						name={`${path}.erOverfoertTilVaretektMedElektroniskKontroll`}
-						label="Er overført til varetekt med elektronisk kontroll"
-						size="small"
-						checkboxMargin
-					/>
-					{/*	TODO: Skal kun kunne være true om kategori er Varetekt*/}
 				</React.Fragment>
 			)}
 		</FormDollyFieldArray>

@@ -10,6 +10,8 @@ import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils
 import React from 'react'
 import { InnsettelseForm } from '@/components/fagsystem/kdi/form/partials/InnsettelseForm'
 import { LoeslatelseForm } from '@/components/fagsystem/kdi/form/partials/LoeslatelseForm'
+import { AvbruddStartForm } from '@/components/fagsystem/kdi/form/partials/AvbruddStartForm'
+import { AvbruddSluttForm } from '@/components/fagsystem/kdi/form/partials/AvbruddSluttForm'
 
 export const KdiForm = () => {
 	const formMethods = useFormContext()
@@ -27,6 +29,8 @@ export const KdiForm = () => {
 			>
 				<InnsettelseForm eksisterendeKdiData={eksisterendeKdiData} />
 				<LoeslatelseForm eksisterendeKdiData={eksisterendeKdiData} />
+				<AvbruddStartForm eksisterendeKdiData={eksisterendeKdiData} />
+				<AvbruddSluttForm eksisterendeKdiData={eksisterendeKdiData} />
 			</Panel>
 		</Vis>
 	)
