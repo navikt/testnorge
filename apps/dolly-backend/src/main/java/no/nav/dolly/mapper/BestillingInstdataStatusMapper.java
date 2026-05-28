@@ -37,21 +37,23 @@ public final class BestillingInstdataStatusMapper {
                 var systemer = progress.getInstdataStatus().split("\\|");
                 List.of(systemer).forEach(system -> {
                     String systemId;
-                    String status;
+                    String statuser;
                     if (system.contains("#")) {
                         systemId = system.split("#")[0];
-                        status = system.split("#")[1];
+                        statuser = system.split("#")[1];
                     } else {
                         systemId = INST2_STATUS;
-                        status = system;
+                        statuser = system;
                     }
-                    if (isNotBlank(status)) {
-                        var environErrMsg = status.split(":", 2);
-                        var environ = environErrMsg[0];
-                        if (environErrMsg.length > 1 && isNotBlank(environErrMsg[1]) && isNotBlank(progress.getIdent())) {
-                            var errMsg = decodeMsg(environErrMsg[1]);
-                            checkAndUpdateStatus(systemStatusEnvIdents, systemId, progress.getIdent(), environ, errMsg);
-                        }
+                    if (isNotBlank(statuser)) {
+                        List.of(statuser.split(",")).forEach(status -> {
+                            var environErrMsg = status.split(":", 2);
+                            var environ = environErrMsg[0];
+                            if (environErrMsg.length > 1 && isNotBlank(environErrMsg[1]) && isNotBlank(progress.getIdent())) {
+                                var errMsg = decodeMsg(environErrMsg[1]);
+                                checkAndUpdateStatus(systemStatusEnvIdents, systemId, progress.getIdent(), environ, errMsg);
+                            }
+                        });
                     }
                 });
             }
