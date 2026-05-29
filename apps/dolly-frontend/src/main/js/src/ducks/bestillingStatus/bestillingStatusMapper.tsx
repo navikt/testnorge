@@ -20,7 +20,7 @@ const finnesDetAvvikForBestillinger = (systemListe: System[]) => {
 		return false
 	}
 	return systemListe.some((system) => {
-		return system.statuser.some((status) => status.melding !== 'OK')
+		return system.statuser?.some((status) => status.melding !== 'OK')
 	})
 }
 
@@ -33,7 +33,7 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [System]) => {
 	}
 
 	const addOpprettedeIdenter = (system: System) =>
-		system.statuser.flatMap((status) => {
+		(system.statuser || []).flatMap((status) => {
 			if (status?.identer) {
 				return status.identer
 			} else {

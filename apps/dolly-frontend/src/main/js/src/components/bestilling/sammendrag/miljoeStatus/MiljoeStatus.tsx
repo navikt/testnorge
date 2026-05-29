@@ -40,7 +40,7 @@ export type Status = {
 	detaljert?: Detaljert[]
 }
 
-const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[]) => {
+export const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[]) => {
 	const sortBestillingOnMiljoe = (first: Status, second: Status) => {
 		if (first.navn === second.navn) {
 			return first.miljo > second.miljo ? 1 : -1

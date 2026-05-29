@@ -11,9 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
-public class PdlMergeNpidCommand extends PdlTestdataCommand {
+public class PdlNpidCommand extends PdlTestdataCommand {
 
     private final WebClient webClient;
     private final String url;
@@ -28,7 +30,7 @@ public class PdlMergeNpidCommand extends PdlTestdataCommand {
                 .uri(builder -> builder
                         .path(url)
                         .queryParam("npid", npid)
-                        .queryParam("otherIdent", otherIdent)
+                        .queryParamIfPresent("otherIdent", Optional.ofNullable(otherIdent))
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .contentType(MediaType.APPLICATION_JSON)

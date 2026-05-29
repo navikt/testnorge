@@ -24,6 +24,7 @@ const miljoeavhengig = [
 	'arenaforvalter',
 	'instdata',
 	'dokarkiv',
+	'enhetstype',
 	'organisasjon',
 	'underenheter',
 	'skattekort',

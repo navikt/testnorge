@@ -51,7 +51,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 		} else if (values.sykemelding) {
 			return ['q1']
 		} else if (values.skattekort) {
-			return ['q1', 'q2']
+			return ['q2']
 		}
 		return []
 	}

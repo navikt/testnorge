@@ -64,6 +64,7 @@ app:
     saf: http://saf%s.teamdokumenthandtering.svc.nais.local # Note replacement pattern.
     sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
     skjermingsregister: https://skjermede-personer.dev.adeo.no
+    sykemelding: https://tsm-input-dolly.intern.dev.nav.no
     udistub: http://testnav-udi-stub.dolly
   token-cache:
     grace-period-seconds: 60

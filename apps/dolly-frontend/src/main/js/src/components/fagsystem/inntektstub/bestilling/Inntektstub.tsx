@@ -31,11 +31,12 @@ function genererTitleValueFelter(data: any) {
 				key.includes('Periode') ||
 				key.includes('periode'))
 		) {
-			return <TitleValue title={texts(key)} value={formatDate(value)} />
+			return <TitleValue key={key} title={texts(key)} value={formatDate(value)} />
 		}
 		if (key.includes('land') || key.includes('Land')) {
 			return (
 				<TitleValue
+					key={key}
 					title={texts(key)}
 					value={value}
 					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
@@ -43,14 +44,14 @@ function genererTitleValueFelter(data: any) {
 			)
 		}
 		if (_.get(value, key) && key === 'tilleggsinformasjon' && !data.tilleggsinformasjon) {
-			return Object?.entries(value)?.map(([key, value]) => {
-				return <TitleValue title="Tilleggsinformasjonstype" value={texts(key)} />
+			return Object?.entries(value)?.map(([innerKey, innerValue]) => {
+				return <TitleValue key={`${key}-${innerKey}`} title="Tilleggsinformasjonstype" value={texts(innerKey)} />
 			})
 		}
 		if (typeof value === 'object') {
 			return
 		}
-		return <TitleValue title={texts(key)} value={texts(value)} />
+		return <TitleValue key={key} title={texts(key)} value={texts(value)} />
 	})
 }
 

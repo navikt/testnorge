@@ -184,7 +184,7 @@ public class RsDollyBestilling {
                     try {
                         var object = method.invoke(this);
                         return nonNull(object) && (!(object instanceof List) || !((List<?>) object).isEmpty());
-                    } catch (IllegalAccessException | InvocationTargetException e) {
+                    } catch (IllegalAccessException | InvocationTargetException _) {
                         return true;
                     }
                 });

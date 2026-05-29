@@ -124,7 +124,7 @@ class SkattekortClientTest {
                         skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
                 .assertNext(progress -> {
                     verify(transactionHelperService).persister(any(), any(), any(), anyString());
-                    assertThat(argumentCaptor.getAllValues(), hasItems(is(equalTo("Avvik: Validering feilet: Trekkode er ikke gyldig"))));
+                    assertThat(argumentCaptor.getAllValues(), hasItems(is(equalTo("q1:Avvik: Validering feilet: Trekkode er ikke gyldig"))));
                 })
                 .verifyComplete();
     }
@@ -213,7 +213,7 @@ class SkattekortClientTest {
                         skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
                 .assertNext(progress -> {
                     verify(transactionHelperService).persister(any(), any(), any(), anyString());
-                    assertThat(argumentCaptor.getAllValues(), hasItems(is(equalTo("Avvik: Validering feilet: Trekkode er ikke gyldig"))));
+                    assertThat(argumentCaptor.getAllValues(), hasItems(is(equalTo("q2:Avvik: Validering feilet: Trekkode er ikke gyldig"))));
                 })
                 .verifyComplete();
     }
