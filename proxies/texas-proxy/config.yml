@@ -72,8 +72,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
-        - application: testnav-sykemelding-api-dev
         - application: testnav-synt-vedtakshistorikk-service
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-frontend
@@ -132,8 +130,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
-        - application: testnav-sykemelding-api-dev
         - application: testnav-synt-vedtakshistorikk-service
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-frontend
