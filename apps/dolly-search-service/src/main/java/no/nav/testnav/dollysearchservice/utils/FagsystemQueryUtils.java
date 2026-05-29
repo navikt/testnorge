@@ -45,6 +45,7 @@ public class FagsystemQueryUtils {
             case INNTK -> mustExistQuery(queryBuilder, "inntektstub");
             case INNTKMELD -> mustExistQuery(queryBuilder, "inntektsmelding");
             case INSTDATA -> mustExistQuery(queryBuilder, "instdata");
+            case INSTDATA_KDI -> mustExistQuery(queryBuilder, "instdataKdi");
             case KELVIN_AAP -> mustExistQuery(queryBuilder, "kelvinAap");
             case KRRSTUB -> mustExistQuery(queryBuilder, "krrstub");
             case MEDL -> mustExistQuery(queryBuilder, "medl");

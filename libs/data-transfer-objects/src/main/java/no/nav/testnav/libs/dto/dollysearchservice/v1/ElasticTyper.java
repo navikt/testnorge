@@ -26,6 +26,7 @@ public enum ElasticTyper {
     INNTK("Inntektskomponenten/stub (INNTK)", false),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)", true),
     INSTDATA("Institusjonsopphold", true),
+    INSTDATA_KDI("Institusjonsopphold fengsel (KDI)", true),
     KELVIN_AAP("Kelvin AAP-ytelse", false),
     KRRSTUB("Kontakt- og reservasjonsregister-stub", false),
     MEDL("Medlemskap (MEDL)", false),
