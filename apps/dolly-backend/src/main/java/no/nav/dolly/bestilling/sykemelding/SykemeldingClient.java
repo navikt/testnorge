@@ -60,7 +60,7 @@ public class SykemeldingClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        identer.forEach(ident -> sykemeldingConsumer.deleteTsmSykemeldinger(ident)
+        identer.forEach(ident -> sykemeldingConsumer.deleteSykemeldinger(ident)
                 .subscribe());
     }
 
@@ -108,6 +108,6 @@ public class SykemeldingClient implements ClientRegister {
                 .aktivitet(aktivitet)
                 .build();
 
-        return sykemeldingConsumer.postTsmSykemelding(request);
+        return sykemeldingConsumer.postSykemelding(request);
     }
 }

@@ -41,17 +41,17 @@ public class SykemeldingConsumer extends ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "nysykemelding_opprett" })
-    public Mono<SykemeldingResponseDTO> postTsmSykemelding(SykemeldingRequestDTO sykemeldingRequestDTO) {
+    @Timed(name = "providers", tags = { "operation", "sykemelding_opprett" })
+    public Mono<SykemeldingResponseDTO> postSykemelding(SykemeldingRequestDTO sykemeldingRequestDTO) {
 
-        log.info("Sykemelding sendt til tsm-input-dolly {}", Json.pretty(sykemeldingRequestDTO));
+        log.info("Sykemelding sendt til dolly-proxy {}", Json.pretty(sykemeldingRequestDTO));
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SykemeldingPostCommand(webClient, sykemeldingRequestDTO, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "nysykemelding_delete" })
-    public Mono<Void> deleteTsmSykemeldinger(String ident) {
+    @Timed(name = "providers", tags = { "operation", "sykemelding_delete" })
+    public Mono<Void> deleteSykemeldinger(String ident) {
 
         log.info("Sletter nye sykemeldinger for ident: {}", ident);
 
@@ -66,6 +66,6 @@ public class SykemeldingConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-sykemelding-proxy";
+        return "testnav-dolly-proxy";
     }
 }
