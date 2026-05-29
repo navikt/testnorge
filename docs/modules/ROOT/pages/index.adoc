@@ -11,7 +11,7 @@ Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjon
 === Om
 
 Dette er en samlet dokumentasjon for applikasjoner, retningslinjer, svar på vanlige problemstillinger og støtteverktøy relatert til syntetiske testdata i Nav.
-Spesifikke søke kan gjøres i søkefelt øverst til høyre.
+Spesifikke søk kan gjøres i søkefelt øverst til høyre.
 
 [[dolly]]
 == Dolly
