@@ -27,7 +27,7 @@ Dolly er et verktøy som gjør det mulig å:
 * *Definere egenskaper og relasjoner* som arbeidsforhold, inntekt, familiemedlemmer, ytelser og mer
 * *Deploy til testmiljøer* – distribuer testpersonene til valgte testmiljøer (Q1, Q2, etc.)
 * *Gjenbruke testdata* – lagre bestillinger som maler for senere bruk
-* *Samarbeide i team* – del og forvalte testdata sammen med teamet ditt
+* *Samarbeide i team* – del og forvalt testdata sammen med teamet ditt
 
 === Hvorfor Dolly?
 
