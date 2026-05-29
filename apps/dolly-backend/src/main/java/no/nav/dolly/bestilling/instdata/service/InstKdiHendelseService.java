@@ -20,11 +20,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class InstKdiHendelseService {
 
-    private static final String INNSETTELSE = "A";
-    private static final String AVBRUDD_START = "B";
-    private static final String AVBRUDD_SLUTT = "C";
-    private static final String LOESLATELSE = "D";
-    private static final String FORVENTET_LOESLATELSE = "E";
+    private static final String INNSETTELSE = "AAA";
+    private static final String AVBRUDD_START = "BBB";
+    private static final String AVBRUDD_SLUTT = "CCC";
+    private static final String LOESLATELSE = "DDD";
+    private static final String FORVENTET_LOESLATELSE = "EEE";
 
     private final TransactionHelperService transactionHelperService;
 
@@ -76,6 +76,6 @@ public class InstKdiHendelseService {
 
     private static String makeHendelseId(Long bestillingId, String type, Integer loepenummer) {
 
-        return "0x%010d00000%s00%010d".formatted(bestillingId, type, loepenummer);
+        return "0x%08d0%3s%08d0%3s%04d".formatted(bestillingId, type, bestillingId, type, loepenummer);
     }
 }
