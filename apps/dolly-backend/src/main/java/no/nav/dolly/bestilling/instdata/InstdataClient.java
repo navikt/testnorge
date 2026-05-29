@@ -60,19 +60,18 @@ public class InstdataClient implements ClientRegister {
 
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getInstdataKdi()))
-                .flatMap(bestilling1 -> instdataConsumer.getMiljoer())
-                .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getKdiEnvironments())
-                        .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
-                        .flatMap(miljoe -> instKdiHendelseService.getOppdaterBestilling(bestilling, bestillingId,
-                                        dollyPerson.getIdent(), miljoe, isOpprettEndre)
-                                .map(instKdiData -> {
+                .flatMap(bestilling1 -> instKdiHendelseService.getOppdaterBestilling(bestilling1, bestillingId, isOpprettEndre))
+                .flatMap(instKdiData -> instdataConsumer.getMiljoer()
+                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getKdiEnvironments())
+                                .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
+                                .map(miljoe -> {
                                     var context = MappingContextUtils.getMappingContext();
                                     context.setProperty("ident", dollyPerson.getIdent());
                                     context.setProperty("miljoe", miljoe);
                                     return mapperFacade.map(instKdiData, InstdataKdiDTO.class, context);
                                 }))
-                        .flatMap(instKdiRequest -> postInstdataKdi(instKdiRequest, dollyPerson.getIdent())))
-                .collect(Collectors.joining(","));
+                        .flatMap(instKdiRequest -> postInstdataKdi(instKdiRequest, dollyPerson.getIdent()))
+                        .collect(Collectors.joining(",")));
     }
 
     private Flux<String> doInst2Bestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, boolean isOpprettEndre) {

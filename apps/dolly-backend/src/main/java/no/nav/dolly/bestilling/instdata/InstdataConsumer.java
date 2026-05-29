@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiDeleteCommand;
-import no.nav.dolly.bestilling.instdata.command.InstdataKdiGetCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiPostCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
 import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
@@ -58,14 +57,6 @@ public class InstdataConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataGetCommand(webClient, ident, environment, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "inst_getInstdata"})
-    public Mono<InstdataKdiResponse> getInstdataKdi(String ident, String environment) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMap(token -> new InstdataKdiGetCommand(webClient, ident, environment, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Instdata KDI hentet for ident {} i miljø {}: {}", ident, environment, response));
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})

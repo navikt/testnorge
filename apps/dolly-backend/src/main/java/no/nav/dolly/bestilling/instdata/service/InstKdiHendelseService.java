@@ -1,21 +1,20 @@
 package no.nav.dolly.bestilling.instdata.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.instdata.InstdataConsumer;
-import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
-import no.nav.dolly.bestilling.instdata.domain.InstdataKdiResponse;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.service.TransactionHelperService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -27,43 +26,27 @@ public class InstKdiHendelseService {
     private static final String LOESLATELSE = "D";
     private static final String FORVENTET_LOESLATELSE = "E";
 
-    private final InstdataConsumer instdataConsumer;
     private final TransactionHelperService transactionHelperService;
 
-    public Mono<RsInstdataKdi> getOppdaterBestilling(RsDollyUtvidetBestilling bestilling, Long bestillingId, String ident, String miljoe, boolean isOpprettEndre) {
+    public Mono<RsInstdataKdi> getOppdaterBestilling(RsDollyUtvidetBestilling bestilling, Long bestillingId, boolean isOpprettEndre) {
 
-        if (isOpprettEndre || hasEmptyHendelseId(bestilling.getInstdataKdi())) {
-
-            return instdataConsumer.getInstdataKdi(ident, miljoe)
-                    .filter(response -> response.getStatus().is2xxSuccessful())
-                    .map(instdataKdiResponse -> getOppdaterBestilling(instdataKdiResponse, bestilling.getInstdataKdi(), bestillingId))
+        if (isOpprettEndre) {
+            return Mono.just(getOppdaterBestilling(bestilling.getInstdataKdi(), bestillingId))
                     .doOnNext(bestilling::setInstdataKdi)
                     .flatMap(oppdaterBestilling -> transactionHelperService.persister(bestillingId, bestilling)
                             .then(Mono.just(oppdaterBestilling)));
-
         } else {
             return Mono.just(bestilling.getInstdataKdi());
         }
     }
 
-    private RsInstdataKdi getOppdaterBestilling(InstdataKdiResponse instdataKdiResponse, RsInstdataKdi bestilling, Long bestillingId) {
+    private RsInstdataKdi getOppdaterBestilling(RsInstdataKdi bestilling, Long bestillingId) {
 
-        var kdidata = instdataKdiResponse.getInstdataKdi().getData();
-
-        var annuleringer = kdidata.getAnnullering().stream()
-                .map(InstdataKdiDTO.Annullering::getHendelseId)
-                .toList();
-
-        oppdaterHendelser(bestilling.getInnsettelse(), getHendelseId(kdidata.getInnsettelse(),
-                INNSETTELSE, bestillingId, annuleringer));
-        oppdaterHendelser(bestilling.getAvbruddStart(), getHendelseId(kdidata.getAvbruddStart(),
-                AVBRUDD_START, bestillingId, annuleringer));
-        oppdaterHendelser(bestilling.getAvbruddSlutt(), getHendelseId(kdidata.getAvbruddSlutt(),
-                AVBRUDD_SLUTT, bestillingId, annuleringer));
-        oppdaterHendelser(bestilling.getLoeslatelse(), getHendelseId(kdidata.getLoeslatelse(),
-                LOESLATELSE, bestillingId, annuleringer));
-        oppdaterHendelser(bestilling.getForventetLoeslatelse(), getHendelseId(kdidata.getForventetLoeslatelse(),
-                FORVENTET_LOESLATELSE, bestillingId, annuleringer));
+        oppdaterHendelser(bestilling.getInnsettelse(), INNSETTELSE, bestillingId);
+        oppdaterHendelser(bestilling.getAvbruddStart(), AVBRUDD_START, bestillingId);
+        oppdaterHendelser(bestilling.getAvbruddSlutt(), AVBRUDD_SLUTT, bestillingId);
+        oppdaterHendelser(bestilling.getLoeslatelse(), LOESLATELSE, bestillingId);
+        oppdaterHendelser(bestilling.getForventetLoeslatelse(), FORVENTET_LOESLATELSE, bestillingId);
 
         bestilling.getAnnullering()
                 .forEach(annulering -> annulering.setPubliseringstidspunkt(
@@ -73,50 +56,26 @@ public class InstKdiHendelseService {
         return bestilling;
     }
 
-    private static boolean hasEmptyHendelseId(RsInstdataKdi instdataKdi) {
+    private static void oppdaterHendelser(List<? extends RsInstdataKdi.Hendelse> hendelser, String type, Long bestillingId) {
 
-        return Stream.of(instdataKdi.getInnsettelse(), instdataKdi.getAvbruddStart(),
-                        instdataKdi.getAvbruddSlutt(), instdataKdi.getLoeslatelse(),
-                        instdataKdi.getForventetLoeslatelse())
-                .flatMap(Collection::stream)
-                .anyMatch(hendelse -> isNull(hendelse.getHendelseId()));
-    }
+        var loepenummer = new AtomicInteger(1);
 
-    private static String getHendelseId(List<? extends InstdataKdiDTO.Hendelse> hendelser,
-                                        String type,
-                                        Long bestillingId,
-                                        List<String> annuleringer) {
+        hendelser.forEach(hendelse -> {
 
-        var hendelseId = getHendelseId(hendelser, type, bestillingId);
-
-        return !annuleringer.contains(hendelseId) ? hendelseId : getNextHendelseId(hendelseId);
-    }
-
-    private static String getNextHendelseId(String hendelseId) {
-
-        return hendelseId.substring(0, 21) + String.format("%010d", Long.parseLong(hendelseId.substring(21)) + 1);
+            if (StringUtils.isBlank(hendelse.getMeldingId())) {
+                hendelse.setMeldingId(UUID.randomUUID().toString());
+            }
+            if (isBlank(hendelse.getHendelseId())) {
+                hendelse.setHendelseId(makeHendelseId(bestillingId, type, loepenummer.getAndIncrement()));
+            }
+            if (isNull(hendelse.getPubliseringstidspunkt())) {
+                hendelse.setPubliseringstidspunkt(LocalDateTime.now());
+            }
+        });
     }
 
     private static String makeHendelseId(Long bestillingId, String type, Integer loepenummer) {
 
         return "0x%010d00000%s00%010d".formatted(bestillingId, type, loepenummer);
-    }
-
-    private static String getHendelseId(List<? extends InstdataKdiDTO.Hendelse> hendelser, String type, Long bestillingId) {
-
-        return hendelser.stream()
-                .map(InstdataKdiDTO.Hendelse::getHendelseId)
-                .max(String::compareTo)
-                .orElse(makeHendelseId(bestillingId, type, 1));
-    }
-
-    private static void oppdaterHendelser(List<? extends RsInstdataKdi.Hendelse> hendelser, String hendelseId) {
-
-        hendelser.forEach(hendelse -> {
-            hendelse.setHendelseId(hendelseId);
-            if (isNull(hendelse.getPubliseringstidspunkt())) {
-                hendelse.setPubliseringstidspunkt(LocalDateTime.now());
-            }
-        });
     }
 }

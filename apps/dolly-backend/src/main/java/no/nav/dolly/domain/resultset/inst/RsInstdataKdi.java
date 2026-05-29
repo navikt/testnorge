@@ -150,8 +150,7 @@ public class RsInstdataKdi {
     @AllArgsConstructor
     public static class Annullering extends Hendelse {
 
-        private String hendelseId;
-        private LocalDateTime publiseringstidspunkt;
+        private String annullertMeldingId;
     }
 
     @lombok.Data
@@ -160,6 +159,7 @@ public class RsInstdataKdi {
     @AllArgsConstructor
     public abstract static class Hendelse {
 
+        private String meldingId;
         private String hendelseId;
         private LocalDateTime publiseringstidspunkt;
     }
