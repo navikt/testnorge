@@ -658,6 +658,7 @@ Spesielt viktig å merke seg:
 
 Hva kan du gjøre?
 
+* *Gjenopprett gruppe* – det beste tiltaket etter en prodlast. Gå til gruppen din og klikk "GJENOPPRETT" i gruppeheaderen. Da lastes alle personene i gruppen inn på nytt til de valgte miljøene
 * Lagre bestillingene som maler slik at du enkelt kan gjenskape personene
 * Bruk Test-Norge personer som er mer stabile over tid
 * Kontakt oss på #dolly hvis du har kritiske testpersoner som må bevares
