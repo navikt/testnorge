@@ -25,6 +25,7 @@ public class InstKdiHendelseService {
     private static final String AVBRUDD_SLUTT = "CCC";
     private static final String LOESLATELSE = "DDD";
     private static final String FORVENTET_LOESLATELSE = "EEE";
+    private static final String ANNULLERING = "FFF";
 
     private final TransactionHelperService transactionHelperService;
 
@@ -47,11 +48,7 @@ public class InstKdiHendelseService {
         oppdaterHendelser(bestilling.getAvbruddSlutt(), AVBRUDD_SLUTT, bestillingId);
         oppdaterHendelser(bestilling.getLoeslatelse(), LOESLATELSE, bestillingId);
         oppdaterHendelser(bestilling.getForventetLoeslatelse(), FORVENTET_LOESLATELSE, bestillingId);
-
-        bestilling.getAnnullering()
-                .forEach(annulering -> annulering.setPubliseringstidspunkt(
-                        isNull(annulering.getPubliseringstidspunkt()) ?
-                                LocalDateTime.now() : annulering.getPubliseringstidspunkt()));
+        oppdaterHendelser(bestilling.getAnnullering(), ANNULLERING, bestillingId);
 
         return bestilling;
     }
