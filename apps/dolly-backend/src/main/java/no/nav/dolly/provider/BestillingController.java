@@ -30,9 +30,11 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Transactional
@@ -144,7 +146,7 @@ public class BestillingController {
     public Flux<ServerSentEvent<RsBestillingStatus>> streamBestillingStatus(
             @PathVariable("bestillingId") Long bestillingId) {
 
-        return bestillingService.fetchBestillingById(bestillingId)
+        return bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                 .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                 .flatMapMany(initial -> {
                     var initialSse = toBestillingSse(initial);
@@ -155,7 +157,7 @@ public class BestillingController {
 
                     var updates = bestillingEventPublisher.subscribe(bestillingId)
                             .sample(Duration.ofMillis(200))
-                            .concatMap(id -> bestillingService.fetchBestillingById(bestillingId)
+                            .concatMap(id -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> {
@@ -164,7 +166,7 @@ public class BestillingController {
                                     }));
 
                     var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
-                            .concatMap(tick -> bestillingService.fetchBestillingById(bestillingId)
+                            .concatMap(tick -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> Mono.empty()));
@@ -181,8 +183,12 @@ public class BestillingController {
         return status.isFerdig() + ":"
                 + status.getAntallLevert() + ":"
                 + status.getSistOppdatert() + ":"
-                + (status.getFeil() != null ? status.getFeil().length() : 0) + ":"
-                + status.getStatus().size();
+                + (isNotBlank(status.getFeil()) ? status.getFeil().length() : 0) + ":"
+                + status.getStatus().stream()
+                        .map(s -> s.getId() + "=" + (nonNull(s.getStatuser()) && !s.getStatuser().isEmpty()
+                                ? s.getStatuser().getFirst().getMelding()
+                                : ""))
+                        .collect(java.util.stream.Collectors.joining(","));
     }
 
     private ServerSentEvent<RsBestillingStatus> toBestillingSse(RsBestillingStatus status) {

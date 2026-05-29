@@ -48,9 +48,9 @@ public class SkattekortOpprettCommand implements Callable<Mono<SkattekortRespons
                 .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
                         .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
                                 responseException.getStatusCode().is5xxServerError())
-                        .onRetryExhaustedThrow(((retryBackoffSpec, lastSignal) ->
+                        .onRetryExhaustedThrow(((_, lastSignal) ->
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(throwable ->
-                    SkattekortResponse.of(WebClientError.describe(throwable)));
+                        SkattekortResponse.of(WebClientError.describe(throwable)));
     }
 }

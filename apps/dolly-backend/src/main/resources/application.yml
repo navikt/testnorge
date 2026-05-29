@@ -110,20 +110,10 @@ consumers:
     namespace: dolly
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-sykemelding-api:
-    name: testnav-sykemelding-api
-    namespace: dolly
-    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-organisasjon-service:
     name: testnav-organisasjon-service
     namespace: dolly
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local
-    cluster: dev-gcp
-  testnav-sykemelding-proxy:
-    name: testnav-sykemelding-proxy
-    namespace: dolly
-    url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-arbeidsplassencv-proxy:
     name: testnav-arbeidsplassencv-proxy

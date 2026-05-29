@@ -11,6 +11,7 @@ import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/
 import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import React from 'react'
 
 type TjenesteomraadeType = {
 	tjenesteoppgave?: string[]
@@ -109,6 +110,7 @@ const VergemaalLes = ({
 						}
 					/>
 				)}
+				<TitleValue title="ID" value={vergemaalData.id} />
 			</div>
 			{tjenesteomraadeListe && tjenesteomraadeListe.length > 0 && (
 				<DollyFieldArray data={tjenesteomraadeListe} header="Tjenesteområde" nested whiteBackground>

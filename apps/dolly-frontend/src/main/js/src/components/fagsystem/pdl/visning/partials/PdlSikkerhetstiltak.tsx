@@ -4,6 +4,7 @@ import { formatDate } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SikkerhetstiltakData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import React from 'react'
 
 type Data = {
 	data: SikkerhetstiltakData
@@ -15,18 +16,17 @@ type DataListe = {
 
 export const Visning = ({ data }: Data) => {
 	return (
-		<>
-			<div className="person-visning_content">
-				<ErrorBoundary>
-					<TitleValue title="Gyldig fra og med" value={formatDate(data.gyldigFraOgMed)} />
-					<TitleValue title="Gyldig til og med" value={formatDate(data.gyldigTilOgMed)} />
-					<TitleValue title="Tiltakstype" value={data.tiltakstype} />
-					<TitleValue title="Beskrivelse" value={data.beskrivelse} />
-					<TitleValue title="Kontaktperson ident" value={data.kontaktperson.personident} />
-					<TitleValue title="NAV kontor" value={data.kontaktperson.enhet} />
-				</ErrorBoundary>
-			</div>
-		</>
+		<div className="person-visning_content">
+			<ErrorBoundary>
+				<TitleValue title="Gyldig fra og med" value={formatDate(data.gyldigFraOgMed)} />
+				<TitleValue title="Gyldig til og med" value={formatDate(data.gyldigTilOgMed)} />
+				<TitleValue title="Tiltakstype" value={data.tiltakstype} />
+				<TitleValue title="Beskrivelse" value={data.beskrivelse} />
+				<TitleValue title="Kontaktperson ident" value={data.kontaktperson.personident} />
+				<TitleValue title="NAV kontor" value={data.kontaktperson.enhet} />
+				<TitleValue title="ID" value={data.id} />
+			</ErrorBoundary>
+		</div>
 	)
 }
 

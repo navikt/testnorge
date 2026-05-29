@@ -12,8 +12,7 @@ import { BestillingStatus } from '@/components/bestilling/statusListe/Bestilling
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	calculateProgress,
-	getExpectedFagsystemer,
-	mergeStatusWithExpected,
+	sortFagsystemer,
 } from '@/components/bestilling/statusListe/BestillingProgresjon/fagsystemUtils'
 
 type ProgresjonProps = {
@@ -101,35 +100,26 @@ export const BestillingProgresjon = ({
 		cancelBestilling(bestillingID, erOrganisasjon)
 		if (!hasFinished) {
 			setHasFinished(true)
-			onFinishBestilling?.(data)
+			onFinishBestilling?.({ ...data, ferdig: true, stoppet: true })
 		}
 	}
 
-	const expectedFagsystemer = useMemo(
-		() => (!erOrganisasjon ? getExpectedFagsystemer(data?.bestilling) : []),
-		[data?.bestilling, erOrganisasjon],
-	)
+	const statusList = data?.status || []
 
-	const mergedStatus = useMemo(
-		() => mergeStatusWithExpected(data?.status || [], expectedFagsystemer),
-		[data?.status, expectedFagsystemer],
-	)
+	const displayStatus = useMemo(() => sortFagsystemer(statusList), [statusList])
 
 	const progress = useMemo(() => {
 		const { percent, text } = calculateProgress({
 			antallIdenter,
 			antallLevert,
 			erOrganisasjon,
-			statusList: mergedStatus,
-			expectedTotal: expectedFagsystemer.length,
+			statusList: displayStatus,
+			totalFagsystemer: statusList.length,
 		})
 
 		let title: string
 		if (isFerdig) {
 			title = 'FERDIG'
-		} else if (erSykemelding) {
-			title =
-				'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
 		} else if (erOrganisasjon) {
 			title = `AKTIV BESTILLING (${orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'})`
 		} else {
@@ -144,8 +134,8 @@ export const BestillingProgresjon = ({
 		erSykemelding,
 		erOrganisasjon,
 		orgStatus,
-		mergedStatus,
-		expectedFagsystemer,
+		displayStatus,
+		statusList,
 	])
 
 	if (loading) {
@@ -167,7 +157,7 @@ export const BestillingProgresjon = ({
 			</div>
 			<div>
 				<BestillingStatus
-					bestilling={{ ...data, status: mergedStatus }}
+					bestilling={{ ...data, status: displayStatus }}
 					erOrganisasjon={erOrganisasjon}
 				/>
 			</div>

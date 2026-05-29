@@ -52,6 +52,7 @@ const StatsborgerskapLes = ({ statsborgerskapData, idx }: StatsborgerskapLesType
 					value={formatDate(statsborgerskapData.gyldigTilOgMed)}
 				/>
 				<TitleValue title="Master" value={statsborgerskapData.master} />
+				<TitleValue title="ID" value={statsborgerskapData.id} />
 			</div>
 		)
 	}

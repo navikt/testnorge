@@ -18,6 +18,7 @@ interface MatrikkeladresseValues {
 		oppholdAnnetSted?: string
 		coAdressenavn?: string
 		metadata: any
+		id: number
 		master?: string
 	}
 	idx: number
@@ -35,6 +36,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 		oppholdAnnetSted,
 		coAdressenavn,
 		metadata,
+		id,
 	} = adresse
 
 	const master = adresse.master || metadata?.master
@@ -76,6 +78,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				/>
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 				<TitleValue title="Master" value={master} />
+				<TitleValue title="ID" value={id} />
 			</div>
 		</>
 	)
