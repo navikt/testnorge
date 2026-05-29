@@ -38,7 +38,7 @@ public class DollyProxiesPlugin implements Plugin<Project> {
         idea.setDownloadSources(true);
 
         var java = project.getExtensions().getByType(JavaPluginExtension.class);
-        java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(21));
+        java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(25));
 
         var configurations = project.getConfigurations();
         var compileOnlyConfig = configurations.maybeCreate("compileOnly");

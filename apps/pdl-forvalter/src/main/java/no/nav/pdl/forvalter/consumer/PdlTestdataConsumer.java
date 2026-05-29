@@ -4,13 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteHendelseIdCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlMergeNpidCommand;
+import no.nav.pdl.forvalter.consumer.command.PdlNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.HendelseIdRequest;
-import no.nav.pdl.forvalter.dto.MergeIdent;
+import no.nav.pdl.forvalter.dto.NpidIdentDTO;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -27,6 +27,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
@@ -34,8 +35,10 @@ import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_NPID_SPLIT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING_HENDELSEID;
 
@@ -75,6 +78,8 @@ public class PdlTestdataConsumer {
                         Flux.fromIterable(orders.getSletting())
                                 .parallel()
                                 .flatMap(order -> order.apply(accessToken)),
+                        Flux.fromIterable(orders.getSplit())
+                                .flatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getOppretting())
                                 .concatMap(order -> order.apply(accessToken)),
                         Flux.fromIterable(orders.getMerge())
@@ -91,7 +96,17 @@ public class PdlTestdataConsumer {
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.fromIterable(identer)
                         .flatMap(ident -> new PdlDeleteCommandPdl(webClient,
-                                getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
+                                getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()
+                                .flatMap(hendelse -> {
+                                    if (isNpidIdent(ident)) {
+                                        return new PdlNpidCommand(webClient,
+                                                getBestillingUrl().get(PDL_NPID_SPLIT),
+                                                ident, null, accessToken.getTokenValue()).call();
+                                    } else {
+                                        return Mono.just(hendelse);
+                                    }
+                                })
+                        ))
                 .collectList();
     }
 
@@ -117,13 +132,13 @@ public class PdlTestdataConsumer {
 
     public Mono<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
 
-        String body;
+        JsonNode body;
         try {
             var artifact = value.getBody();
             if (isNull(artifact.getFolkeregistermetadata())) {
                 artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
-            body = jsonMapper.writeValueAsString(artifact);
+            body = jsonMapper.valueToTree(artifact);
         } catch (JacksonException e) {
             return Mono.just(
                     OrdreResponseDTO.HendelseDTO.builder()
@@ -148,6 +163,13 @@ public class PdlTestdataConsumer {
                     accessToken.getTokenValue()
             ).call();
 
+            case PDL_NPID_SPLIT -> new PdlNpidCommand(webClient,
+                    getBestillingUrl().get(value.getArtifact()),
+                    value.getIdent(),
+                    null,
+                    accessToken.getTokenValue()
+            ).call();
+
             case PDL_OPPRETT_PERSON -> Identtype.NPID == getIdenttype(value.getIdent()) ?
 
                     new PdlOpprettNpidCommand(webClient,
@@ -164,10 +186,10 @@ public class PdlTestdataConsumer {
 
             case PDL_PERSON_MERGE -> personServiceConsumer.syncIdent(value.getIdent())
                     .flatMap(syncIdent ->
-                            new PdlMergeNpidCommand(webClient,
+                            new PdlNpidCommand(webClient,
                                     getBestillingUrl().get(value.getArtifact()),
-                                    ((MergeIdent) value.getBody()).getNpid(),
                                     value.getIdent(),
+                                    ((NpidIdentDTO) value.getBody()).getOtherIdent(),
                                     accessToken.getTokenValue()
                             ).call());
 

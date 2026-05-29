@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 
@@ -21,5 +22,17 @@ public class OpprettRequest {
     public boolean isNotTestnorgeIdent() {
 
         return !isTestnorgeIdent(person.getIdent());
+    }
+
+    @JsonIgnore
+    public boolean isNpidIdent() {
+
+        return IdenttypeUtility.isNpidIdent(person.getIdent());
+    }
+
+    @JsonIgnore
+    public boolean isNotNpidIdent() {
+
+        return !isNpidIdent();
     }
 }

@@ -12,7 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MergeIdent extends DbVersjonDTO {
+public class NpidIdentDTO extends DbVersjonDTO {
 
-    private String npid;
+    private String otherIdent;
 }
