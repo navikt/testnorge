@@ -109,7 +109,7 @@ public class InstdataKdiDTO {
     @AllArgsConstructor
     public static class Annullering extends Hendelse {
 
-        private LocalDateTime annullertMeldingId;
+        private String annullertMeldingId;
     }
 
     @lombok.Data

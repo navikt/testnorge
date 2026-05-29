@@ -100,9 +100,9 @@ public class InstdataClient implements ClientRegister {
     public void release(List<String> identer) {
 
         instdataConsumer.deleteInstdata(identer)
-                .subscribe(response -> log.info("Slettet identer fra Instdata (inst 2)"));
+                .subscribe(_ -> log.info("Slettet identer fra Instdata (inst 2)"));
         instdataConsumer.deleteInstKdiData(identer)
-                .subscribe(response -> log.info("Slettet identer fra Institusjonsopphold fengsel (KDI)"));
+                .subscribe(_ -> log.info("Slettet identer fra Institusjonsopphold fengsel (KDI)"));
     }
 
     private Mono<List<Instdata>> filterInstdata(List<Instdata> instdataRequest, String miljoe) {
@@ -149,8 +149,8 @@ public class InstdataClient implements ClientRegister {
                 .map(response -> String.format("%s:%s".formatted(
                         instdata.getEnvironment(),
                         response.getStatus().is2xxSuccessful() ? "OK" :
-                                errorStatusDecoder.getErrorText(response.getStatus(),
-                                        response.getFeilmelding()))));
+                                ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(response.getStatus(),
+                                        response.getFeilmelding())))));
 
     }
 }

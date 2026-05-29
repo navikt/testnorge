@@ -23,7 +23,7 @@ public enum SystemTyper {
     HISTARK("Saksmappearkiv (HISTARK)"),
     INNTK("Inntektstub (INNTK)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
-    INST2("Institusjonsopphold (Inst2)"),
+    INST2("Institusjonsopphold (INST2)"),
     INST_KDI("Institusjonsopphold fengsel (KDI)"),
     KELVIN_AAP("Kelvin AAP-ytelse"),
     KONTOREGISTER("Bankkontoregister"),

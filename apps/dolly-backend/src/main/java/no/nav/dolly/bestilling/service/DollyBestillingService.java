@@ -51,6 +51,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -156,7 +157,7 @@ public class DollyBestillingService {
 
         return transactionHelperService.persister(bestillingProgress, BestillingProgress::setPdlForvalterStatus,
                         bestillingProgress.getPdlForvalterStatus())
-                .flatMap(progress1 -> operasjon.get())
+                .flatMap(_ -> operasjon.get())
                 .map(response -> {
 
                     String status;
@@ -236,7 +237,7 @@ public class DollyBestillingService {
                         .master(progress.getMaster())
                         .tags(Stream.concat(testgruppe.getTags().stream(),
                                         Stream.of(Tags.DOLLY)
-                                                .filter(tag -> progress.getMaster() == PDL))
+                                                .filter(_ -> progress.getMaster() == PDL))
                                 .toList())
                         .bruker(bruker)
                         .build()));
@@ -273,9 +274,9 @@ public class DollyBestillingService {
         }
     }
 
-    protected Mono<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {
+    protected Mono<BestillingProgress> opprettPDLFProgress(Bestilling bestilling) {
 
-        return opprettProgress(bestilling, master, null);
+        return opprettProgress(bestilling, PDLF, null);
     }
 
     protected Mono<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, String ident) {
@@ -292,7 +293,7 @@ public class DollyBestillingService {
 
         bestillingProgress.setPdlForvalterStatus("Info: Oppretting av person startet ...");
         return endrePerson(() -> pdlDataConsumer.opprettPdl(originator.getPdlBestilling()), bestillingProgress)
-                .doOnNext(response -> log.info("Opprettet person med ident ... {}", originator.getPdlBestilling()));
+                .doOnNext(response -> log.info("Opprettet person med ident ... {}", response.getIdent()));
     }
 
     protected Mono<BestillingProgress> oppdaterPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {
