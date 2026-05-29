@@ -12,6 +12,7 @@ import { InnsettelseForm } from '@/components/fagsystem/kdi/form/partials/Innset
 import { LoeslatelseForm } from '@/components/fagsystem/kdi/form/partials/LoeslatelseForm'
 import { AvbruddStartForm } from '@/components/fagsystem/kdi/form/partials/AvbruddStartForm'
 import { AvbruddSluttForm } from '@/components/fagsystem/kdi/form/partials/AvbruddSluttForm'
+import { ForventetLoeslatelseForm } from '@/components/fagsystem/kdi/form/partials/ForventetLoeslatelseForm'
 
 export const KdiForm = () => {
 	const formMethods = useFormContext()
@@ -31,6 +32,7 @@ export const KdiForm = () => {
 				<LoeslatelseForm eksisterendeKdiData={eksisterendeKdiData} />
 				<AvbruddStartForm eksisterendeKdiData={eksisterendeKdiData} />
 				<AvbruddSluttForm eksisterendeKdiData={eksisterendeKdiData} />
+				<ForventetLoeslatelseForm eksisterendeKdiData={eksisterendeKdiData} />
 			</Panel>
 		</Vis>
 	)
