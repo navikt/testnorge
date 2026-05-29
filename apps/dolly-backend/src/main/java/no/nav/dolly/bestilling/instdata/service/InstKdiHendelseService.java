@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.service.TransactionHelperService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -59,7 +58,7 @@ public class InstKdiHendelseService {
 
         hendelser.forEach(hendelse -> {
 
-            if (StringUtils.isBlank(hendelse.getMeldingId())) {
+            if (isBlank(hendelse.getMeldingId())) {
                 hendelse.setMeldingId(UUID.randomUUID().toString());
             }
             if (isBlank(hendelse.getHendelseId())) {
