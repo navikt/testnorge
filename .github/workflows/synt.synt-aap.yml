@@ -1,0 +1,21 @@
+name: synt-aap
+
+on:
+  push:
+    paths:
+      - .github/workflows/synt.synt-aap.yml
+      - synt/synt-aap/**
+      - libs/testing/**
+      - libs/texas/**
+      - plugins/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "synt/synt-aap"
+      deploy-tag: "#deploy-synt-aap"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

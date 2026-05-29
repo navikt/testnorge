@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: synthdata-arena-dagpenger
+  name: synthdata-arena-aap
   namespace: dolly
   labels:
     team: dolly
@@ -26,9 +26,9 @@ spec:
   resources:
     requests:
       cpu: 300m
-      memory: 512Mi
+      memory: 1024Mi
     limits:
-      memory: 2048Mi
+      memory: 3072Mi
   azure:
     application:
       allowAllUsers: true
@@ -37,9 +37,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: synthdata-arena-vedtakshistorikk
         - application: testnav-oversikt-frontend
         - application: team-dolly-lokal-app
-        - application: testnav-synt-vedtakshistorikk-service
     outbound:
       rules:
         - application: logging
@@ -49,7 +49,7 @@ spec:
       value: prod
   gcp:
     buckets:
-      - name: synthdata-dagpenger-model-bucket
+      - name: synthdata-aap-model-bucket
   ingresses:
-    - "https://synthdata-arena-dagpenger.intern.dev.nav.no"
+    - "https://synthdata-arena-aap.intern.dev.nav.no"
 
