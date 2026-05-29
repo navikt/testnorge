@@ -37,7 +37,7 @@ public class InstdataKdiMappingStrategy implements MappingStrategy {
                         dest.getData().setAvbruddStart(mapperFacade.mapAsList(kilde.getAvbruddStart(), InstdataKdiDTO.AvbruddStart.class, context));
                         dest.getData().setAvbruddSlutt(mapperFacade.mapAsList(kilde.getAvbruddSlutt(), InstdataKdiDTO.AvbruddSlutt.class, context));
                         dest.getData().setForventetLoeslatelse(mapperFacade.mapAsList(kilde.getForventetLoeslatelse(), InstdataKdiDTO.ForventetLoeslatelse.class, context));
-                        dest.getData().setLoeslatelse(mapperFacade.mapAsList(kilde.getForventetLoeslatelse(), InstdataKdiDTO.Loeslatelse.class, context));
+                        dest.getData().setLoeslatelse(mapperFacade.mapAsList(kilde.getLoeslatelse(), InstdataKdiDTO.Loeslatelse.class, context));
                         dest.getData().setAnnullering(mapperFacade.mapAsList(kilde.getAnnullering(), InstdataKdiDTO.Annullering.class, context));
                     }
                 })

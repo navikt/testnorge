@@ -93,7 +93,7 @@ class InstdataClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService)
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getValue(), is(equalTo("q2:opphold=1$OK")));
+                    assertThat(statusCaptor.getValue(), is(equalTo("INST2_STATUS#q2:opphold=1$OK")));
                 })
                 .verifyComplete();
     }
@@ -126,7 +126,7 @@ class InstdataClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService)
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getValue(), is(equalTo("q2:opphold=1$OK")));
+                    assertThat(statusCaptor.getValue(), is(equalTo("INST2_STATUS#q2:opphold=1$OK")));
                 })
                 .verifyComplete();
     }
