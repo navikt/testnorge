@@ -578,7 +578,7 @@ xref:index.adoc#dolly_retningslinjer[Retningslinjer]
 Dolly tilbyr mulighet til å opprette syntetiske testpersoner med:
 
 * Grunnleggende persondata (navn, fødselsnummer, adresse, etc.)
-* Familerelasjoner (ektefelle, barn, foreldre, etc.)
+* Familierelasjoner (ektefelle, barn, foreldre, etc.)
 * Arbeidsforhold og inntekt
 * Ytelser (sykepenger, foreldrepenger, etc.)
 * Institusjonsopphold
