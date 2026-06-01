@@ -17,6 +17,5 @@ public class BestillingerFragment {
     private Long personer;
     private String gjenopprettstatus;
     private String pdlstatus;
-    private String aaregstatus;
-    private String penstatus;
+    private String annenstatus;
 }

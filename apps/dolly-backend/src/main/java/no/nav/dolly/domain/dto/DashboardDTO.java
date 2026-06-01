@@ -14,10 +14,9 @@ import java.time.LocalDate;
 public class DashboardDTO {
 
     private LocalDate dato;
-    private Long personer;
-    private Long nyePersoner;
-    private Long gjenopprettinger;
+    private Long personerTotalt;
+    private Long nye;
+    private Long gjenopprettede;
     private Long pdlFeil;
-    private Long aaregFeil;
-    private Long penFeil;
+    private Long annenFeil;
 }

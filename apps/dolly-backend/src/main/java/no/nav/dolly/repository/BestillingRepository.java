@@ -149,16 +149,20 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                       else 'OK'
                    end as pdlStatus,
                    case
-                      when lower(bp.aareg_status) like '%feil%' then 'FEIL'
-                      else 'OK'
-                   end as aaregStatus,
-                   case
                       when lower(bp.pensjonforvalter_status) like '%feil%' then 'FEIL'
+                      when lower(bp.aareg_status) like '%feil%' then 'FEIL'
+                      when lower(bp.arenaforvalter_status) like '%feil%' then 'FEIL'
+                      when lower(bp.instdata_status) like '%feil%' then 'FEIL'
+                      when lower(bp.inntektsstub_status) like '%feil%' then 'FEIL'
+                      when lower(bp.inntektsmelding_status) like '%feil%' then 'FEIL'
+                      when lower(bp.sigrunstub_status) like '%feil%' then 'FEIL'
+                      when lower(bp.dokarkiv_status) like '%feil%' then 'FEIL'
+                      when lower(bp.feil) like '%feil%' then 'FEIL'
                       else 'OK'
-                   end as penStatus
+                   end as annenStatus
             from bestilling b
             join bestilling_progress bp on b.id = bp.bestilling_id
-            group by dato, gjenopprettStatus, pdlStatus, aaregStatus, penStatus
+            group by dato, gjenopprettStatus, pdlStatus, annenStatus
             order by dato desc
             """)
     Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
