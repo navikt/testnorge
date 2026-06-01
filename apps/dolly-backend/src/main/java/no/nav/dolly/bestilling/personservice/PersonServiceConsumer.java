@@ -46,8 +46,6 @@ public class PersonServiceConsumer extends ConsumerStatus {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
-        log.info("PersonServiceConsumer: Initialiserer med JsonMapper type: {}", 
-                jsonMapper != null ? jsonMapper.getClass().getName() : "null");
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -106,11 +104,11 @@ public class PersonServiceConsumer extends ConsumerStatus {
                                 .anyMatch(data -> isNull(data.getPerson())))) {
 
                         return Flux.just(true)
-                                .doOnNext(melding ->
+                                .doOnNext(_ ->
                                         log.info("PDL har tomt resultat for {}, retry #{}", String.join(", ", identer),
                                                 retry.incrementAndGet()))
                                 .delayElements(Duration.ofMillis(200))
-                                .flatMap(delay -> getPdlPersoner(identer, new AtomicInteger(retry.get())));
+                                .flatMap(_ -> getPdlPersoner(identer, new AtomicInteger(retry.get())));
                     } else {
                         return Flux.just(resultat);
                     }

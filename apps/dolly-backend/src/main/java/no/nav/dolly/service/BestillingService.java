@@ -588,6 +588,8 @@ public class BestillingService {
                                     .inntektsmelding(request2.getInntektsmelding())
                                     .inntektstub(request2.getInntektstub())
                                     .instdata(request2.getInstdata())
+                                    .instdataKdi(request2.getInstdataKdi())
+                                    .kelvinAap(request2.getKelvinAap())
                                     .krrstub(request2.getKrrstub())
                                     .medl(request2.getMedl())
                                     .nomdata(request2.getNomdata())
@@ -602,7 +604,6 @@ public class BestillingService {
                                     .tpsMessaging(request2.getTpsMessaging())
                                     .udistub(request2.getUdistub())
                                     .yrkesskader(request2.getYrkesskader())
-                                    .kelvinAap(request2.getKelvinAap())
                                     .build());
                             return Mono.just(isNotBlank(bestKriterier) ? bestKriterier : "{}");
                         }));
