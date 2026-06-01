@@ -51,7 +51,6 @@ spec:
         - application: testnav-endringsmelding-frontend
         - application: testnav-endringsmelding-service
         - application: testnav-faste-data-frontend
-        - application: testnav-helsepersonell-service
         - application: testnav-ident-pool
         - application: testnav-inntektsmelding-generator-service
         - application: testnav-inntektsmelding-service
@@ -72,8 +71,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
-        - application: testnav-sykemelding-api-dev
         - application: testnav-synt-vedtakshistorikk-service
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-frontend
@@ -111,7 +108,6 @@ spec:
         - application: testnav-endringsmelding-frontend
         - application: testnav-endringsmelding-service
         - application: testnav-faste-data-frontend
-        - application: testnav-helsepersonell-service
         - application: testnav-ident-pool
         - application: testnav-inntektsmelding-generator-service
         - application: testnav-inntektsmelding-service
@@ -132,8 +128,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
-        - application: testnav-sykemelding-api-dev
         - application: testnav-synt-vedtakshistorikk-service
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-frontend
