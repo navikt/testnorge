@@ -11,7 +11,7 @@ import {
 import * as _ from 'lodash-es'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { getSisteDatoInnUtvandring } from '@/components/fagsystem/pdlf/visning/partials/Innvandring'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -53,6 +53,7 @@ const UtvandringLes = ({ utvandringData, idx }: UtvandringLesTypes) => {
 			/>
 			<TitleValue title="Tilflyttingssted" value={utvandringData.tilflyttingsstedIUtlandet} />
 			<TitleValue title="Utflyttingsdato" value={formatDate(utvandringData.utflyttingsdato)} />
+			<TitleValue title="ID" value={utvandringData.id} />
 		</div>
 	)
 }

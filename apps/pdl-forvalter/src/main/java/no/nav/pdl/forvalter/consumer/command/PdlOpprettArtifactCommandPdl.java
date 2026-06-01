@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.consumer.command;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
@@ -13,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 
@@ -23,13 +23,13 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
     private final WebClient webClient;
     private final String url;
     private final String ident;
-    private final Object body;
+    private final JsonNode body;
     private final String token;
     private final Integer id;
 
     @Override
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
-        log.info("Sending PDL artifact to {} for ident {}: {}", url, ident, Json.pretty(body));
+
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).build())
@@ -50,5 +50,4 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(errorHandling(error, id)));
     }
-
 }

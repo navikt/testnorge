@@ -12,13 +12,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.nonNull;
-
 @RequiredArgsConstructor
 @Slf4j
 public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponseDTO>> {
 
-    private static final String TSM_SYKEMELDING_URL = "/tsm/api/sykmelding";
+    private static final String TSM_SYKEMELDING_URL = "/sykemelding/api/sykmelding";
 
     private final WebClient webClient;
     private final SykemeldingRequestDTO request;
@@ -32,22 +30,13 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
-                .toEntity(SykemeldingResponseDTO.class)
+                .bodyToMono(SykemeldingResponseDTO.class)
                 .map(response -> {
-                    var body = response.getBody();
-                    var builder = SykemeldingResponseDTO.builder()
-                            .status(HttpStatus.resolve(response.getStatusCode().value()))
-                            .sykemeldingRequest(request)
-                            .ident(request.getIdent());
-                    if (nonNull(body)) {
-                        builder.sykmeldingId(body.getSykmeldingId())
-                                .type(body.getType())
-                                .aktivitet(body.getAktivitet());
-                    }
-                    return builder.build();
+                    response.setStatus(HttpStatus.OK);
+                    response.setIdent(request.getIdent());
+                    return response;
                 })
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> SykemeldingResponseDTO.of(WebClientError.describe(error), request.getIdent()));
-
     }
 }

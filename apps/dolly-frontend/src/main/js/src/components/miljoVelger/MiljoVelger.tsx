@@ -24,8 +24,10 @@ const miljoeavhengig = [
 	'arenaforvalter',
 	'instdata',
 	'dokarkiv',
+	'enhetstype',
 	'organisasjon',
 	'underenheter',
+	'skattekort',
 ]
 
 const erMiljouavhengig = (bestilling: Record<string, unknown> | undefined) => {

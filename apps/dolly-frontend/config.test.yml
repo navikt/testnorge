@@ -47,7 +47,6 @@ spec:
         - application: testnav-person-faste-data-service
         - application: testnav-dolly-search-service-dev
         - application: testnav-person-service
-        - application: testnav-sykemelding-api-dev
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
@@ -60,7 +59,6 @@ spec:
         - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-service
         - application: testnav-arbeidssoekerregisteret-proxy
-        - application: testnav-sykemelding-proxy
         - application: testnav-api-oversikt-service
         - application: testnav-ident-pool
         - application: logging

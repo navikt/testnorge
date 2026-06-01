@@ -18,6 +18,7 @@ interface VegadresseValues {
 		oppholdAnnetSted?: string
 		coAdressenavn?: string
 		metadata: any
+		id: number
 		master?: string
 	}
 	idx: number
@@ -43,6 +44,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 		oppholdAnnetSted,
 		coAdressenavn,
 		metadata,
+		id,
 	} = adresse
 	const master = adresse.master || metadata?.master
 
@@ -93,6 +95,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 				/>
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 				<TitleValue title="Master" value={master} />
+				<TitleValue title="ID" value={id} />
 			</div>
 		</>
 	)

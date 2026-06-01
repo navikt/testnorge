@@ -3,11 +3,9 @@ package no.nav.dolly.plugins;
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.plugins.JavaLibraryPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
 
@@ -36,7 +34,7 @@ public class DollyLibsPlugin implements Plugin<Project> {
         idea.setDownloadSources(true);
 
         var java = project.getExtensions().getByType(JavaPluginExtension.class);
-        java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(21));
+        java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(25));
 
         var configurations = project.getConfigurations();
         var compileOnlyConfig = configurations.maybeCreate("compileOnly");
@@ -64,27 +62,7 @@ public class DollyLibsPlugin implements Plugin<Project> {
         dependencies.add("testImplementation", "org.springframework.boot:spring-boot-starter-test");
         dependencies.add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher");
 
-        project
-                .getTasks()
-                .withType(Test.class)
-                .configureEach(test -> {
-                    test.useJUnitPlatform();
-                    test.doFirst(task -> {
-                        var jvmArgs = test.getJvmArgs();
-                        jvmArgs.add("--add-opens");
-                        jvmArgs.add("java.base/java.lang=ALL-UNNAMED");
-                        project
-                                .getConfigurations()
-                                .getByName("testRuntimeClasspath")
-                                .getResolvedConfiguration()
-                                .getResolvedArtifacts()
-                                .stream()
-                                .map(ResolvedArtifact::getFile)
-                                .filter(f -> f.getName().contains("byte-buddy-agent"))
-                                .findFirst()
-                                .ifPresent(file -> test.getJvmArgs().add("-javaagent:" + file));
-                    });
-                });
+        MockitoAgentSupport.configureTests(project);
 
         var repositories = project.getRepositories();
         repositories.mavenCentral();

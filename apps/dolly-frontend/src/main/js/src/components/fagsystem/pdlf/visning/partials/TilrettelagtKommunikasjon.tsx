@@ -4,6 +4,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { TilrettelagtKommunikasjonData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import React from 'react'
 
 type DataListe = {
 	data: Array<TilrettelagtKommunikasjonData>
@@ -32,6 +33,7 @@ export const TilrettelagtKommunikasjon = ({ data }: DataListe) => {
 					value={item.tegnspraaktolk ? item.tegnspraaktolk.spraak : item.spraakForTegnspraakTolk}
 					kodeverk={PersoninformasjonKodeverk.Spraak}
 				/>
+				<TitleValue title="ID" value={item.id} />
 			</div>
 		)
 	}

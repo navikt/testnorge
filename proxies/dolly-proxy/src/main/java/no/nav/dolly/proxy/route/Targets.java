@@ -29,7 +29,8 @@ class Targets {
     String inst;
     String kelvinAap;
     String kontoregister;
-    String skattekort;
+    String skattekortQ1;
+    String skattekortQ2;
     String krrstub;
     String medl;
     String norg2;
@@ -44,6 +45,7 @@ class Targets {
     String saf;
     String sigrunstub;
     String skjermingsregister;
+    String sykemelding;
     String udistub;
 
 }

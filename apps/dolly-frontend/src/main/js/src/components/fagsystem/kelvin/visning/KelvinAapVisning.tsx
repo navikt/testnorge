@@ -13,7 +13,7 @@ export const KelvinAapVisning = ({
 	harKelvinAapBestilling,
 }: KelvinAapVisningTypes) => {
 	if (loading) {
-		return <Loading label="Laster Nav AAP ytelse ..." />
+		return <Loading label="Laster Kelvin AAP-ytelse ..." />
 	}
 
 	if (!data && !harKelvinAapBestilling) {
@@ -24,10 +24,10 @@ export const KelvinAapVisning = ({
 
 	return (
 		<div>
-			<SubOverskrift label="Nav AAP ytelse" iconKind="arena" isWarning={manglerFagsystemdata} />
+			<SubOverskrift label="Kelvin AAP-ytelse" iconKind="arena" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Fant ikke Nav AAP ytelse på person
+					Fant ikke Kelvin AAP-ytelse på person
 				</Alert>
 			) : (
 				<ErrorBoundary>

@@ -137,8 +137,16 @@ public class MetadataTidspunkterService {
 
     private static void fixAddrOpphoert(List<? extends AdresseDTO> adresseopplysning) {
 
-        adresseopplysning.forEach(adresse ->
-                adresse.getFolkeregistermetadata().setOpphoerstidspunkt(adresse.getGyldigTilOgMed()));
+        adresseopplysning.forEach(adresse -> {
+
+            if (nonNull(adresse.getGyldigFraOgMed()) && nonNull(adresse.getGyldigTilOgMed()) &&
+                adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
+                adresse.getFolkeregistermetadata().setOpphoerstidspunkt(adresse.getGyldigTilOgMed());
+            } else {
+                adresse.setGyldigTilOgMed(null);
+                adresse.getFolkeregistermetadata().setOpphoerstidspunkt(null);
+            }
+        });
     }
 
     private static void fixOpphoert(List<? extends DbVersjonDTO> opplysningstype) {
@@ -149,6 +157,13 @@ public class MetadataTidspunkterService {
                             subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()) :
                             null);
         }
+        opplysningstype.forEach(opplysning -> {
+            if (nonNull(opplysning.getFolkeregistermetadata().getOpphoerstidspunkt()) &&
+                nonNull(opplysning.getFolkeregistermetadata().getGyldighetstidspunkt()) &&
+                opplysning.getFolkeregistermetadata().getOpphoerstidspunkt().isBefore(opplysning.getFolkeregistermetadata().getGyldighetstidspunkt())) {
+                opplysning.getFolkeregistermetadata().setOpphoerstidspunkt(null);
+            }
+        });
     }
 
     private static LocalDateTime subtractADay(LocalDateTime tidspunkt) {

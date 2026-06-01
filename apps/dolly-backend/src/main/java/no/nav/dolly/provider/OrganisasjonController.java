@@ -3,6 +3,7 @@ package no.nav.dolly.provider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 import static no.nav.dolly.provider.OrganisasjonBestillingController.getStatus;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "api/v1/organisasjon")

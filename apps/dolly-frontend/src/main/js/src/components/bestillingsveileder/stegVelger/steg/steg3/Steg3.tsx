@@ -50,6 +50,8 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 			return ['q2']
 		} else if (values.sykemelding) {
 			return ['q1']
+		} else if (values.skattekort) {
+			return ['q2']
 		}
 		return []
 	}

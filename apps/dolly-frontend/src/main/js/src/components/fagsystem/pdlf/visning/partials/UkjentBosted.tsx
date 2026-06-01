@@ -15,6 +15,7 @@ type AdresseData = {
 		coAdressenavn?: string
 		master?: string
 		metadata?: any
+		id?: number
 	}
 	idx: number
 }
@@ -28,6 +29,7 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 		sluttdatoForKontrakt,
 		coAdressenavn,
 		metadata,
+		id,
 	} = adresse
 
 	const master = adresse.master || metadata?.master
@@ -48,6 +50,7 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 				<TitleValue title="Master" value={master} />
+				<TitleValue title="ID" value={id} />
 			</div>
 		</>
 	)

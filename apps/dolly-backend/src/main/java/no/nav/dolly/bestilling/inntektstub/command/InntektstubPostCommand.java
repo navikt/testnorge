@@ -39,7 +39,7 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
                 .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
                         .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
                                 responseException.getStatusCode().is5xxServerError())
-                        .onRetryExhaustedThrow(((retryBackoffSpec, lastSignal) ->
+                        .onRetryExhaustedThrow(((_, lastSignal) ->
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);

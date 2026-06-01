@@ -5,7 +5,7 @@ import { formatDate, showLabel } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { initialPersonstatus } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import Panel from '@/components/ui/panel/Panel'
 
 const PersonstatusLes = ({ data, idx }) => {
@@ -14,6 +14,7 @@ const PersonstatusLes = ({ data, idx }) => {
 			<TitleValue title="Status" value={showLabel('personstatus', data?.status)} />
 			<TitleValue title="Gyldig fra og med" value={formatDate(data?.gyldigFraOgMed)} />
 			<TitleValue title="Gyldig til og med" value={formatDate(data?.gyldigTilOgMed)} />
+			<TitleValue title="ID" value={data?.id} />
 		</div>
 	)
 }
@@ -68,38 +69,36 @@ export const Personstatus = ({ data, tmpPersoner, ident }) => {
 
 	return (
 		<div className="array-historikk">
-			<>
-				<DollyFieldArray data={[gyldigPersonstatus]} header="Personstatus" nested>
-					{(element, idx) => {
-						return (
-							<PersonstatusVisning
-								personstatusData={element}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-							/>
-						)
-					}}
-				</DollyFieldArray>
-				{historiskePersonstatuser?.length > 0 && (
-					<Panel heading="Personstatus historikk">
-						<DollyFieldArray data={historiskePersonstatuser} nested>
-							{(element, idx) => {
-								return (
-									<PersonstatusVisning
-										personstatusData={element}
-										idx={idx + 1}
-										data={data}
-										tmpPersoner={tmpPersoner}
-										ident={ident}
-									/>
-								)
-							}}
-						</DollyFieldArray>
-					</Panel>
-				)}
-			</>
+			<DollyFieldArray data={[gyldigPersonstatus]} header="Personstatus" nested>
+				{(element, idx) => {
+					return (
+						<PersonstatusVisning
+							personstatusData={element}
+							idx={idx}
+							data={data}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+						/>
+					)
+				}}
+			</DollyFieldArray>
+			{historiskePersonstatuser?.length > 0 && (
+				<Panel heading="Personstatus historikk">
+					<DollyFieldArray data={historiskePersonstatuser} nested>
+						{(element, idx) => {
+							return (
+								<PersonstatusVisning
+									personstatusData={element}
+									idx={idx + 1}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+								/>
+							)
+						}}
+					</DollyFieldArray>
+				</Panel>
+			)}
 		</div>
 	)
 }

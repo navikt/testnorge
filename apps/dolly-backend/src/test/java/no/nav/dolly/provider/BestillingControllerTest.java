@@ -98,7 +98,7 @@ class BestillingControllerTest {
                 .antallIdenter(5)
                 .build();
 
-        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
         when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class))).thenReturn(bestillingStatus);
 
         StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
@@ -129,7 +129,7 @@ class BestillingControllerTest {
                 .antallIdenter(5)
                 .build();
 
-        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
         when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class)))
                 .thenReturn(progressStatus)
                 .thenReturn(completedStatus);
@@ -162,7 +162,7 @@ class BestillingControllerTest {
                 .feil("Feil ved opprettelse")
                 .build();
 
-        when(bestillingService.fetchBestillingById(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
+        when(bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(BESTILLING_ID)).thenReturn(Mono.just(bestillingEntity));
         when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class))).thenReturn(bestillingStatus);
 
         StepVerifier.create(bestillingController.streamBestillingStatus(BESTILLING_ID))
