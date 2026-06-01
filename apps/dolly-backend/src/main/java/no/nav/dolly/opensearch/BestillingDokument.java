@@ -19,6 +19,8 @@ import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
+import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
@@ -48,6 +50,8 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BestillingDokument implements Persistable<Long> {
 
+    // Legg til system som skal indekseres for soek vha OpenSearch
+
     @Id
     private Long id;
     
@@ -60,6 +64,8 @@ public class BestillingDokument implements Persistable<Long> {
     private RsMedl medl;
     
     private List<RsInstdata> instdata;
+
+    private RsInstdataKdi instdataKdi;
     
     private List<RsAareg> aareg;
     
@@ -106,6 +112,8 @@ public class BestillingDokument implements Persistable<Long> {
     private List<EtterlatteYtelse> etterlatteYtelser;
     
     private RsNomData nomdata;
+
+    private RsKelvinAapRequestDTO kelvinAap;
 
     @Transient
     @JsonIgnore

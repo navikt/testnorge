@@ -8,12 +8,13 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
+public class InstdataGetMiljoerCommand implements Callable<Mono<MiljoerResponse>> {
 
     private static final String INSTMILJO_URL = "/inst/api/v1/environment";
 
@@ -21,7 +22,7 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
     private final String token;
 
     @Override
-    public Mono<List<String>> call() {
+    public Mono<MiljoerResponse> call() {
 
         return webClient
                 .get()
@@ -31,10 +32,13 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(MiljoerResponse.class)
-                .map(MiljoerResponse::getInstitusjonsoppholdEnvironments)
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error ->
-                        Mono.just(List.of("q1", "q2")));
+                        Mono.just(MiljoerResponse.builder()
+                                .institusjonsoppholdEnvironments(List.of("q1", "q2"))
+                                .kdiEnvironments(List.of("q2"))
+                                .build()))
+                .cache(Duration.ofSeconds(60));
     }
 }

@@ -12,18 +12,23 @@ import reactor.core.publisher.Mono;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteResponse {
+public class InstdataKdiResponse {
 
-    private String ident;
     private HttpStatus status;
-    private String error;
+    private String ident;
+    private InstdataKdiDTO instdataKdi;
+    private String feilmelding;
 
-    public static Mono<DeleteResponse> of(WebClientError.Description description, String ident) {
-        return Mono.just(DeleteResponse.builder()
+    private String environment;
+
+    public static Mono<InstdataKdiResponse> of(WebClientError.Description description, String ident, String miljoe) {
+
+        return Mono.just(InstdataKdiResponse
+                .builder()
                 .ident(ident)
                 .status(description.getStatus())
-                .error(description.getMessage())
+                .feilmelding(description.getMessage())
+                .environment(miljoe)
                 .build());
     }
-
 }
