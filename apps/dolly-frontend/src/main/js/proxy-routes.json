@@ -90,9 +90,6 @@
 	"/testnav-arbeidsplassencv-proxy": {
 		"changeOrigin": true
 	},
-	"/testnav-helsepersonell-service": {
-		"changeOrigin": true
-	},
 	"/generer-navn-service": {
 		"changeOrigin": true
 	},

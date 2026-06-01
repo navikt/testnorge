@@ -1,0 +1,17 @@
+[
+  {
+    "fraDato": "2019-01-10",
+    "tilDato": "2019-04-10",
+    "utfall": "JA",
+    "vedtakDato": "2019-01-12",
+    "vedtakTypeKode": "O"
+  },
+  {
+    "fraDato": "2019-04-11",
+    "tilDato": "2019-08-01",
+    "utfall": "NEI",
+    "vedtakDato": "2019-04-12",
+    "vedtakTypeKode": "E"
+  }
+]
+

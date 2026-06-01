@@ -129,6 +129,7 @@ public class ErrorStatusDecoder {
                         .replace(':', '=')
                         .replace("\"", "")
                         .replace("$", "§")
+                        .replace("%", "")
                         .replace("\n", ""): "";
     }
 }
