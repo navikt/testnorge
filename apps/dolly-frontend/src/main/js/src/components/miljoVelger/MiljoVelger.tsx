@@ -23,6 +23,7 @@ const miljoeavhengig = [
 	'inntektsmelding',
 	'arenaforvalter',
 	'instdata',
+	'instdataKdi',
 	'dokarkiv',
 	'organisasjon',
 	'underenheter',

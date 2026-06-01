@@ -1,7 +1,7 @@
 export const instdataKdiAttributt = 'instdataKdi'
 
 export const initialInnsettelse = {
-	meldingId: 111,
+	meldingId: null,
 	hendelseId: null,
 	publiseringstidspunkt: new Date(),
 	kategori: '',
@@ -10,7 +10,7 @@ export const initialInnsettelse = {
 }
 
 export const initialLoeslatelse = {
-	meldingId: 222,
+	meldingId: null,
 	hendelseId: null,
 	publiseringstidspunkt: new Date(),
 	kategori: '',
@@ -21,7 +21,7 @@ export const initialLoeslatelse = {
 }
 
 export const initialAvbruddStart = {
-	meldingId: 333,
+	meldingId: null,
 	hendelseId: null,
 	publiseringstidspunkt: new Date(),
 	kategori: '',
@@ -31,7 +31,7 @@ export const initialAvbruddStart = {
 }
 
 export const initialAvbruddSlutt = {
-	meldingId: 444,
+	meldingId: null,
 	hendelseId: null,
 	publiseringstidspunkt: new Date(),
 	kategori: '',
@@ -40,7 +40,7 @@ export const initialAvbruddSlutt = {
 }
 
 export const initialForventetLoeslatelse = {
-	meldingId: 555,
+	meldingId: null,
 	hendelseId: null,
 	publiseringstidspunkt: new Date(),
 	innmeldingHendelseId: '',
