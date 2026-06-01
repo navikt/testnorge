@@ -116,7 +116,7 @@ public class BestillingService {
                 .collect(Collectors.joining(" "));
 
         return Mono.just(bestillingFragment)
-                .flatMapMany(fragment -> isNotBlank(gruppeNavn) && isNotBlank(bestillingID) ?
+                .flatMapMany(_ -> isNotBlank(gruppeNavn) && isNotBlank(bestillingID) ?
                         bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn) :
                         Flux.merge(
                                 bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
@@ -188,7 +188,7 @@ public class BestillingService {
                                 .stoppet(true)
                                 .bestillingId(bestillingId)
                                 .build()))
-                        .flatMap(bestKontroll -> Mono.just(bestilling))
+                        .flatMap(_ -> Mono.just(bestilling))
                         .zipWith(brukerService.fetchOrCreateBruker())
                         .map(tuple2 -> {
                             tuple2.getT1().setStoppet(true);
@@ -249,7 +249,7 @@ public class BestillingService {
 
         return identRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Testident %s ble ikke funnet", ident))))
-                .doOnNext(tuple -> fixAaregAbstractClassProblem(request.getAareg()))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -294,8 +294,8 @@ public class BestillingService {
                                            List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -418,8 +418,8 @@ public class BestillingService {
     public Mono<Bestilling> createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .flatMap(testgruppe -> Mono.zip(
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                                 .collectList(),
@@ -461,9 +461,9 @@ public class BestillingService {
     public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
-                .flatMap(testgruppe -> Mono.zip(
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
+                .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
                 .map(tuple -> Bestilling.builder()
@@ -496,9 +496,9 @@ public class BestillingService {
     public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
-                .flatMap(testgruppe -> Mono.zip(
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
+                .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(gruppeId),
                         miljoerConsumer.getMiljoer()))
@@ -648,7 +648,7 @@ public class BestillingService {
                         if (isNotBlank(dokument.getFysiskDokument())) {
                             return lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
-                                    .doOnNext(id -> dokument.setFysiskDokument(null));
+                                    .doOnNext(_ -> dokument.setFysiskDokument(null));
                         } else if (isNotBlank(dokument.getUploadReferanse())) {
                             var contents = dokumentService.resolveUpload(dokument.getUploadReferanse());
                             if (isNull(contents)) {
@@ -656,7 +656,7 @@ public class BestillingService {
                             }
                             return lagreDokument(contents, request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
-                                    .doOnNext(id -> dokument.setUploadReferanse(null));
+                                    .doOnNext(_ -> dokument.setUploadReferanse(null));
                         }
                         return Mono.empty();
                     })

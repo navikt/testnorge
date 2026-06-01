@@ -53,6 +53,7 @@ public class InstdataClient implements ClientRegister {
                         doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), isOpprettEndre)
                                 .map(KDI_STATUS::formatted))
                 .collect(Collectors.joining("|"))
+                .filter(resultat -> !resultat.isBlank())
                 .flatMap(resultat -> oppdaterStatus(progress, resultat));
     }
 
@@ -71,7 +72,8 @@ public class InstdataClient implements ClientRegister {
                                     return mapperFacade.map(instKdiData, InstdataKdiDTO.class, context);
                                 }))
                         .flatMap(instKdiRequest -> postInstdataKdi(instKdiRequest, dollyPerson.getIdent()))
-                        .collect(Collectors.joining(",")));
+                        .collect(Collectors.joining(",")))
+                .filter(resultat -> !resultat.isBlank());
     }
 
     private Flux<String> doInst2Bestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, boolean isOpprettEndre) {
