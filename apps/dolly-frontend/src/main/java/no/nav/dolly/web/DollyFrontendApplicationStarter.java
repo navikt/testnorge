@@ -75,7 +75,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
                 .route(createRoute(consumers.getTestnavDollySearchService(), "testnav-dolly-search-service"))
                 .route(createRoute(consumers.getTestnavArbeidsplassenCVProxy()))
-                .route(createRoute(consumers.getTestnavHelsepersonellService()))
                 .route(createRoute(consumers.getTestnavPersonService(), "person-service"))
                 .route(createRoute(consumers.getGenererNavnService()))
                 .route(createRoute(consumers.getTestnavKodeverkService()))

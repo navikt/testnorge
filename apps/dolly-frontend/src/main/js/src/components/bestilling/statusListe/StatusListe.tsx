@@ -29,9 +29,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 					(bestilling?.ferdig && prevNye.some((best) => best?.id === bestilling?.id)),
 			)
 
-			const inProgressMissing = prevNye.filter(
-				(b) => b?.id && !currentIds.has(b.id) && !b?.ferdig,
-			)
+			const inProgressMissing = prevNye.filter((b) => b?.id && !currentIds.has(b.id) && !b?.ferdig)
 
 			return [...fromList, ...inProgressMissing]
 		})
@@ -54,6 +52,11 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 		filtrerNyeBestillinger(bestillingListe)
 	}, [bestillingListe])
 
+	const ferdigBestillingIds = new Set(ferdigBestillinger.map((bestilling) => bestilling?.id))
+	const aktiveBestillinger = nyeBestillinger.filter(
+		(bestilling) => !ferdigBestillingIds.has(bestilling?.id),
+	)
+
 	if (isCanceling) {
 		return (
 			<ContentContainer className="loading-content-container">
@@ -62,7 +65,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 		)
 	}
 
-	const ikkeFerdig = nyeBestillinger.map((bestilling) => (
+	const ikkeFerdig = aktiveBestillinger.map((bestilling) => (
 		<BestillingProgresjon
 			key={bestilling.id}
 			bestillingID={bestilling.id}
