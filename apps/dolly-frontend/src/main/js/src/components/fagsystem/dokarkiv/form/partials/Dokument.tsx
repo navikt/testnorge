@@ -204,12 +204,12 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 
 	const handleDeleteFile = (file: FileObject) => {
 		const currentBrevkode = formMethods.getValues(`${path}.dokumenter[0].brevkode`) || ''
+		const fileIndex = vedlegg.indexOf(file)
 		updateVedlegg(vedlegg.filter((f) => f !== file))
 		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
-		const index = currentDokumenter.findIndex((d: DokumentObjekt) => d.tittel === file.file.name)
-		if (index >= 0) {
+		if (fileIndex >= 0 && fileIndex < currentDokumenter.length) {
 			const newDokumenter = [...currentDokumenter]
-			newDokumenter.splice(index, 1)
+			newDokumenter.splice(fileIndex, 1)
 			updateDokumenter(newDokumenter)
 			formMethods.setValue(`${path}.dokumenter[0].brevkode`, currentBrevkode)
 		}
