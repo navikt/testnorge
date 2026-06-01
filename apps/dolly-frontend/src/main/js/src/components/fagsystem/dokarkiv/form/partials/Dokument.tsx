@@ -1,6 +1,6 @@
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { BaseSyntheticEvent, useEffect, useRef, useState } from 'react'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { useEffect, useRef, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import Digitalinnsending from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
@@ -15,6 +15,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form'
 import styled from 'styled-components'
+import { useAlleNavEnheter } from '@/utils/hooks/useNorg2'
 
 type Skjema = {
 	data: string
@@ -57,6 +58,22 @@ export const StyledVedlegg = styled(FileUpload.Item)`
 	}
 `
 
+export const StyledVedleggWrapper = styled.div`
+	display: flex;
+	align-items: flex-end;
+	gap: 1rem;
+	width: 100%;
+
+	> :first-child {
+		flex: 1;
+		min-width: 0;
+	}
+
+	> :last-child {
+		flex: 0 0 200px;
+	}
+`
+
 export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const malId = (opts?.mal as any)?.id
@@ -65,6 +82,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		loading: loadingDokumenterFraMal,
 		error: errorDokumenterFraMal,
 	} = useDokumenterFraMal(malId)
+	const { alleNavEnheter, loading: loadingEnheter } = useAlleNavEnheter()
 
 	const processedMalIdRef = useRef<string | undefined>(undefined)
 	const [vedlegg, setVedlegg] = useState<FileObject[]>(
@@ -138,12 +156,6 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 		formMethods.setValue(`${path}.tittel`, skjema.data)
 		formMethods.setValue(`${path}.skjema`, skjema)
 		formMethods.setValue(`${path}.dokumenter[0].brevkode`, skjema.value)
-		const currentDokumenter: DokumentObjekt[] = formMethods.getValues(`${path}.dokumenter`) || []
-		currentDokumenter.forEach((dokument: DokumentObjekt, idx: number) => {
-			if (!dokument?.tittel) {
-				formMethods.setValue(`${path}.dokumenter[${idx}].tittel`, skjema.data)
-			}
-		})
 		formMethods.trigger(`${path}.dokumenter`)
 	}
 
@@ -219,6 +231,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
+				<FormTextInput name={`${path}.tittel`} label="Tittel" size="xlarge" />
 				<FormTextInput name={`${path}.dokumenter[0].brevkode`} label="Brevkode" size="large" />
 				<FormSelect
 					name={`${path}.tema`}
@@ -234,17 +247,13 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 					options={!loading && behandlingstemaKodeverk}
 					isClearable={true}
 				/>
-				<DollyTextInput
-					onChange={(event: BaseSyntheticEvent) => {
-						formMethods.setValue(
-							`${path}.journalfoerendeEnhet`,
-							event.target.value === '' ? undefined : event.target.value,
-						)
-						formMethods.trigger(`${path}.journalfoerendeEnhet`)
-					}}
+				<FormSelect
 					name={`${path}.journalfoerendeEnhet`}
 					label="Journalførende enhet"
-					size="large"
+					options={alleNavEnheter}
+					isLoading={loadingEnheter}
+					isClearable={true}
+					size="xlarge"
 				/>
 				<FormSelect
 					name={`${path}.sak.sakstype`}
@@ -297,11 +306,19 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 						<Heading level="3" size="xsmall">{`Vedlegg (${vedlegg?.length})`}</Heading>
 						<VStack gap="space-12">
 							{vedlegg?.map((file, idx) => (
-								<StyledVedlegg
-									key={file?.file?.name + idx}
-									file={file?.file}
-									button={{ action: 'delete', onClick: () => handleDeleteFile(file) }}
-								/>
+								<StyledVedleggWrapper key={file?.file?.name + idx}>
+									<StyledVedlegg
+										file={file?.file}
+										button={{
+											action: 'delete',
+											onClick: () => handleDeleteFile(file),
+										}}
+									/>
+									<FormTextInput
+										name={`${path}.dokumenter[${idx}].tittel`}
+										label="Dokumenttittel"
+									/>
+								</StyledVedleggWrapper>
 							))}
 						</VStack>
 					</VStack>
