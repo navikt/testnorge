@@ -1,4 +1,4 @@
-package no.nav.dolly.synt.dagpenger.bucket;
+package no.nav.dolly.synt.dagpenger.models;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @UtilityClass
 @Slf4j
-public class BucketUtils {
+public class BucketModels {
 
     /**
      * Downloads ONNX model files from a Google Cloud Storage bucket to a temporary directory.
@@ -42,7 +42,7 @@ public class BucketUtils {
      *                               any of the provided prefixes.
      * @see StorageOptions#getDefaultInstance()
      */
-    public Path download(String bucket, List<String> models, String tempDirPrefix)
+    public static Path get(String bucket, List<String> models, String tempDirPrefix)
             throws Exception {
 
         var started = Instant.now();
