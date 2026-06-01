@@ -5,6 +5,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
 
 export const AvbruddStartForm = ({ eksisterendeKdiData }) => {
 	return (
@@ -50,6 +51,7 @@ export const AvbruddStartForm = ({ eksisterendeKdiData }) => {
 						size="large"
 						// date={rapporteringsdate}
 					/>
+					<AnnulleringForm meldingId={333} />
 				</React.Fragment>
 			)}
 		</FormDollyFieldArray>

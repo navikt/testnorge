@@ -6,6 +6,7 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
 
 export const LoeslatelseForm = ({ eksisterendeKdiData }) => {
 	return (
@@ -56,6 +57,7 @@ export const LoeslatelseForm = ({ eksisterendeKdiData }) => {
 						checkboxMargin
 					/>
 					{/*	TODO: Skal kun kunne være true om kategori er Varetekt*/}
+					<AnnulleringForm meldingId={222} />
 				</React.Fragment>
 			)}
 		</FormDollyFieldArray>

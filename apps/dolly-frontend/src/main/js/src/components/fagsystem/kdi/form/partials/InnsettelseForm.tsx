@@ -5,10 +5,12 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
 
 export const InnsettelseForm = ({ eksisterendeKdiData }) => {
 	console.log('eksisterendeKdiData: ', eksisterendeKdiData) //TODO - SLETT MEG
 
+	// TOOD: Naar man sletter melding som har annullering maa annullering med tilsvarende meldingId også slettes
 	return (
 		<FormDollyFieldArray
 			name="instdataKdi.innsettelse"
@@ -44,6 +46,7 @@ export const InnsettelseForm = ({ eksisterendeKdiData }) => {
 						format={'DD.MM.YYYY HH:mm:ss'}
 						// date={rapporteringsdate}
 					/>
+					<AnnulleringForm meldingId={111} />
 				</React.Fragment>
 			)}
 		</FormDollyFieldArray>
