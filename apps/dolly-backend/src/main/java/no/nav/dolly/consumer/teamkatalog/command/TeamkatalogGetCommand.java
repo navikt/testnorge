@@ -5,34 +5,35 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class TeamkatalogGetCommand implements Callable<Mono<TeamkatalogDTO>> {
+public class TeamkatalogGetCommand implements Callable<Flux<TeamkatalogDTO>> {
 
-    private static final String TEAM_URL = "/member/membership/byUserEmail";
+    private static final String TEAM_URL = "/member/simpleMemberships/byUserEmail";
 
     private final WebClient webClient;
-    private final String epost;
+    private final List<String> epost;
 //    private final String token;
 
     @Override
-    public Mono<TeamkatalogDTO> call() {
+    public Flux<TeamkatalogDTO> call() {
 
         return webClient
-                .get()
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(TEAM_URL)
-                        .queryParam("email", epost)
                         .build())
 //                .headers(WebClientHeader.bearer(token))
+                .body(Mono.just(epost), List.class)
                 .retrieve()
-                .bodyToMono(TeamkatalogDTO.class)
+                .bodyToFlux(TeamkatalogDTO.class)
                 .map(response -> {
-                    response.setEpost(epost);
                     response.setTeamNavn(response.getTeams().stream()
                             .map(TeamkatalogDTO.Team::getName)
                             .toList());

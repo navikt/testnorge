@@ -13,8 +13,14 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -66,27 +72,40 @@ public class DashboardService {
 
     public Flux<DashboardTeamsDTO> getTeamsStatus() {
 
-       return brukerRepository.findAll()
+        return brukerRepository.findAll()
                 .filter(bruker -> isNotBlank(bruker.getEpost()))
                 .map(Bruker::getEpost)
                 .distinct()
+                .buffer(100)
                 .flatMap(teamkatalogConsumer::getTeamForEpost, 5)
-                .collect(Collectors.toMap(TeamkatalogDTO::getEpost, TeamkatalogDTO::getTeamNavn))
+                .collect(Collectors.toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getDato)
                         .flatMap(Flux::collectList)
-                        .map(fragmentliste ->
-                                DashboardTeamsDTO.builder()
-                                        .dato(fragmentliste.stream()
-                                                .map(TeamFragment::getDato)
-                                                .findAny().orElse(null))
-                                        .entries(fragmentliste.stream()
-                                                .filter(fragment -> isNotBlank(fragment.getEpost()))
-                                                .map(fragment -> new DashboardTeamsDTO.Entry(
-                                                        teams.get(fragment.getEpost()),
-                                                        fragment.getAntall()))
-                                                .toList())
-                                        .build())
-                        .sort(Comparator.comparing(DashboardTeamsDTO::getDato).reversed()));
+                        .flatMap(teamfragmentDato -> {
+
+                            var groupedTeam = new HashMap<String, Set<String>>();
+                            teamfragmentDato.forEach(fragment -> {
+                                var teamsGruppe = teams.getOrDefault(fragment.getEpost(), List.of("Tilhører ikke noe team"));
+                                teamsGruppe.forEach(team -> {
+                                    var teamSet = groupedTeam.getOrDefault(team, new HashSet<>());
+                                    teamSet.add(fragment.getEpost());
+                                    groupedTeam.put(team, teamSet);
+                                });
+                            });
+                            return Mono.just(groupedTeam)
+                                    .zipWith(Mono.just(teamfragmentDato.getFirst().getDato()));
+                        }))
+                .map(fragmentDato ->
+
+                        DashboardTeamsDTO.builder()
+                                .dato(fragmentDato.getT2())
+                                .teams(fragmentDato.getT1().entrySet().stream()
+                                        .map(fragment -> new DashboardTeamsDTO.Entry(
+                                                fragment.getKey(),
+                                                fragment.getValue().size()))
+                                        .toList())
+                                .build())
+                .sort(Comparator.comparing(DashboardTeamsDTO::getDato).reversed());
     }
 }

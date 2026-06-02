@@ -8,7 +8,10 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 public class TeamkatalogConsumer {
@@ -31,7 +34,7 @@ public class TeamkatalogConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "saf_getDokument" })
-    public Mono<TeamkatalogDTO> getTeamForEpost(String epost) {
+    public Flux<TeamkatalogDTO> getTeamForEpost(List<String> epost) {
 
         return new TeamkatalogGetCommand(webClient, epost).call();
 

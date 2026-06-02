@@ -172,6 +172,8 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     @Query("""
             select count(*) antall, b.sist_oppdatert::date dato, br.epost from bestilling b
             join bruker br on br.id = b.bruker_id
+            and br.brukertype = 'AZURE'
+            and br.epost is not null
             group by dato, br.epost
             order by dato desc;
             """)

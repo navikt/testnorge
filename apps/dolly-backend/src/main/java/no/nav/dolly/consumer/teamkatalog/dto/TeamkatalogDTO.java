@@ -20,9 +20,10 @@ public class TeamkatalogDTO {
     private HttpStatus status;
     private String feilmelding;
 
-    private String epost;
-    private List<String> teamNavn;
+    private String email;
     private List<Team> teams;
+
+    private List<String> teamNavn;
 
     public List<String> getTeamNavn() {
 

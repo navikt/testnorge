@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -15,7 +16,7 @@ import java.util.List;
 public class DashboardTeamsDTO {
 
     private LocalDate dato;
-    private List<Entry> entries;
+    private List<Entry> teams;
 
     @Data
     @Builder
@@ -23,7 +24,7 @@ public class DashboardTeamsDTO {
     @AllArgsConstructor
     public static class Entry {
 
-        private List<String> teams;
-        private Long antall;
+        private String team;
+        private Integer antall;
     }
 }
