@@ -70,7 +70,7 @@ public class DashboardService {
                 .filter(bruker -> isNotBlank(bruker.getEpost()))
                 .map(Bruker::getEpost)
                 .distinct()
-                .flatMap(teamkatalogConsumer::getTeamForEpost)
+                .flatMap(teamkatalogConsumer::getTeamForEpost, 5)
                 .collect(Collectors.toMap(TeamkatalogDTO::getEpost, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getDato)
