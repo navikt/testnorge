@@ -45,6 +45,9 @@ spec:
         - application: testnav-nom-proxy
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
+        - application: team-catalog-backend
+          namespace: org
+          cluster: prod-gcp
       external:
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
