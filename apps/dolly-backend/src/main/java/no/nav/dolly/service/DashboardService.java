@@ -14,13 +14,15 @@ import no.nav.dolly.repository.BrukerRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuples;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -29,6 +31,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class DashboardService {
+
+    private static final String INGEN_TEAM = "Tilhører ikke noe team";
 
     private final BestillingRepository bestillingRepository;
     private final BrukerRepository brukerRepository;
@@ -41,34 +45,16 @@ public class DashboardService {
                 .flatMap(Flux::collectList)
                 .map(fragmentliste ->
                         DashboardPersonerDTO.builder()
-                                .dato(fragmentliste.stream()
-                                        .map(BestillingerFragment::getDato)
-                                        .findAny().orElse(null))
+                                .dato(fragmentliste.getFirst().getDato())
                                 .personerTotalt(fragmentliste.stream()
-                                        .map(BestillingerFragment::getPersoner)
-                                        .reduce(0L, Long::sum))
-                                .nye(fragmentliste.stream()
-                                        .filter(fragment -> "NYBESTILLING".equals(fragment.getGjenopprettstatus()))
-                                        .map(BestillingerFragment::getPersoner)
-                                        .reduce(0L, Long::sum))
-                                .gjenopprettede(fragmentliste.stream()
-                                        .filter(fragment -> "GJENOPPRETTING".equals(fragment.getGjenopprettstatus()))
-                                        .map(BestillingerFragment::getPersoner)
-                                        .reduce(0L, Long::sum))
-                                .pdlFeil(fragmentliste.stream()
-                                        .filter(fragment ->
-                                                "FEIL".equals(fragment.getPdlstatus()))
-                                        .map(BestillingerFragment::getPersoner)
-                                        .reduce(0L, Long::sum))
-                                .andreFeil(fragmentliste.stream()
-                                        .filter(fragment ->
-                                                "FEIL".equals(fragment.getAnnenstatus()))
-                                        .map(BestillingerFragment::getPersoner)
-                                        .reduce(0L, Long::sum))
+                                        .mapToLong(BestillingerFragment::getPersoner).sum())
+                                .nye(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "NYBESTILLING"))
+                                .gjenopprettede(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "GJENOPPRETTING"))
+                                .pdlFeil(sumByStatus(fragmentliste, BestillingerFragment::getPdlstatus, "FEIL"))
+                                .andreFeil(sumByStatus(fragmentliste, BestillingerFragment::getAnnenstatus, "FEIL"))
                                 .build())
                 .sort(Comparator.comparing(DashboardPersonerDTO::getDato).reversed());
     }
-
 
     public Flux<DashboardTeamsDTO> getTeamsStatus() {
 
@@ -82,30 +68,37 @@ public class DashboardService {
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getDato)
                         .flatMap(Flux::collectList)
-                        .flatMap(teamfragmentDato -> {
-
-                            var groupedTeam = new HashMap<String, Set<String>>();
-                            teamfragmentDato.forEach(fragment -> {
-                                var teamsGruppe = teams.getOrDefault(fragment.getEpost(), List.of("Tilhører ikke noe team"));
-                                teamsGruppe.forEach(team -> {
-                                    var teamSet = groupedTeam.getOrDefault(team, new HashSet<>());
-                                    teamSet.add(fragment.getEpost());
-                                    groupedTeam.put(team, teamSet);
-                                });
-                            });
-                            return Mono.just(groupedTeam)
-                                    .zipWith(Mono.just(teamfragmentDato.getFirst().getDato()));
-                        }))
-                .map(fragmentDato ->
-
+                        .flatMap(fragments -> Mono.just(
+                                Tuples.of(groupFragmentsByTeam(fragments, teams), fragments.getFirst().getDato()))))
+                .map(tuple ->
                         DashboardTeamsDTO.builder()
-                                .dato(fragmentDato.getT2())
-                                .teams(fragmentDato.getT1().entrySet().stream()
-                                        .map(fragment -> new DashboardTeamsDTO.Entry(
-                                                fragment.getKey(),
-                                                fragment.getValue().size()))
+                                .dato(tuple.getT2())
+                                .teams(tuple.getT1().entrySet().stream()
+                                        .map(entry -> new DashboardTeamsDTO.Entry(entry.getKey(), entry.getValue().size()))
                                         .toList())
                                 .build())
                 .sort(Comparator.comparing(DashboardTeamsDTO::getDato).reversed());
+    }
+
+    private static long sumByStatus(List<BestillingerFragment> fragments,
+                                    Function<BestillingerFragment, String> statusGetter,
+                                    String value) {
+
+        return fragments.stream()
+                .filter(f -> value.equals(statusGetter.apply(f)))
+                .mapToLong(BestillingerFragment::getPersoner)
+                .sum();
+    }
+
+    private static Map<String, Set<String>> groupFragmentsByTeam(List<TeamFragment> fragments,
+                                                                  Map<String, List<String>> teams) {
+
+        var grouped = new HashMap<String, Set<String>>();
+        fragments.forEach(fragment -> {
+            var teamNames = teams.getOrDefault(fragment.getEpost(), List.of(INGEN_TEAM));
+            teamNames.forEach(team ->
+                    grouped.computeIfAbsent(team, k -> new HashSet<>()).add(fragment.getEpost()));
+        });
+        return grouped;
     }
 }
