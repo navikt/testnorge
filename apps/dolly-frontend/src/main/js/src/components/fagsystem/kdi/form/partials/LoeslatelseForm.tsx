@@ -46,7 +46,7 @@ export const LoeslatelseForm = ({ eksisterendeKdiData }) => {
 					/>
 					<FormCheckbox
 						name={`${path}.erOverfoertTilUtlandskfengsel`}
-						label="Er overført til utlandsk fengsel"
+						label="Er overført til utenlandsk fengsel"
 						size="small"
 						checkboxMargin
 					/>
