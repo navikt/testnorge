@@ -1,7 +1,8 @@
 package no.nav.dolly.provider;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.dto.DashboardDTO;
+import no.nav.dolly.domain.dto.DashboardPersonerDTO;
+import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.service.DashboardService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +17,15 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    @GetMapping(value = "/bestillinger", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<DashboardDTO> getDashboard() {
+    @GetMapping(value = "/personer", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<DashboardPersonerDTO> getDashboard() {
 
-        return dashboardService.getBestillingStatus();
+        return dashboardService.getPersonerStatus();
+    }
+
+    @GetMapping(value = "/teams", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<DashboardTeamsDTO> getDashboardTeams() {
+
+        return dashboardService.getTeamsStatus();
     }
 }

@@ -3,6 +3,7 @@ package no.nav.dolly.repository;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
+import no.nav.dolly.domain.projection.TeamFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -166,4 +167,13 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             order by dato desc
             """)
     Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
+
+
+    @Query("""
+            select count(*) antall, b.sist_oppdatert::date dato, br.epost from bestilling b
+            join bruker br on br.id = b.bruker_id
+            group by dato, br.epost
+            order by dato desc;
+            """)
+    Flux<TeamFragment> findBestillingerForTeamsOrderBySistOppdatert();
 }

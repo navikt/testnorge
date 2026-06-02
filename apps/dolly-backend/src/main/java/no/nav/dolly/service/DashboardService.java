@@ -2,13 +2,17 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.dto.DashboardDTO;
+import no.nav.dolly.domain.dto.DashboardPersonerDTO;
+import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.Comparator;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -17,13 +21,13 @@ public class DashboardService {
 
     private final BestillingRepository bestillingRepository;
 
-    public Flux<DashboardDTO> getBestillingStatus() {
+    public Flux<DashboardPersonerDTO> getPersonerStatus() {
 
         return bestillingRepository.findBestillingerOrderBySistOppdatert()
                 .groupBy(BestillingerFragment::getDato)
                 .flatMap(Flux::collectList)
                 .map(fragmentliste ->
-                        DashboardDTO.builder()
+                        DashboardPersonerDTO.builder()
                                 .dato(fragmentliste.stream()
                                         .map(BestillingerFragment::getDato)
                                         .findAny().orElse(null))
@@ -43,12 +47,33 @@ public class DashboardService {
                                                 "FEIL".equals(fragment.getPdlstatus()))
                                         .map(BestillingerFragment::getPersoner)
                                         .reduce(0L, Long::sum))
-                                .annenFeil(fragmentliste.stream()
+                                .andreFeil(fragmentliste.stream()
                                         .filter(fragment ->
                                                 "FEIL".equals(fragment.getAnnenstatus()))
                                         .map(BestillingerFragment::getPersoner)
                                         .reduce(0L, Long::sum))
                                 .build())
-                .sort(Comparator.comparing(DashboardDTO::getDato).reversed());
+                .sort(Comparator.comparing(DashboardPersonerDTO::getDato).reversed());
+    }
+
+
+    public Flux<DashboardTeamsDTO> getTeamsStatus() {
+
+        return bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
+                .groupBy(TeamFragment::getDato)
+                .flatMap(Flux::collectList)
+                .map(fragmentliste ->
+                        DashboardTeamsDTO.builder()
+                                .dato(fragmentliste.stream()
+                                        .map(TeamFragment::getDato)
+                                        .findAny().orElse(null))
+                                .entries(fragmentliste.stream()
+                                        .filter(fragment -> isNotBlank(fragment.getEpost()))
+                                        .map(fragment -> new DashboardTeamsDTO.Entry(
+                                                fragment.getEpost(),
+                                                fragment.getAntall()))
+                                        .toList())
+                                .build())
+                .sort(Comparator.comparing(DashboardTeamsDTO::getDato).reversed());
     }
 }

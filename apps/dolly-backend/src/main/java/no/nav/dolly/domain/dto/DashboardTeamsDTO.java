@@ -6,17 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DashboardDTO {
+public class DashboardTeamsDTO {
 
     private LocalDate dato;
-    private Long personerTotalt;
-    private Long nye;
-    private Long gjenopprettede;
-    private Long pdlFeil;
-    private Long annenFeil;
+    private List<Entry> entries;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Entry {
+
+        private String epost;
+        private Long antall;
+    }
 }
