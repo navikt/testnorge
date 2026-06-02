@@ -51,16 +51,14 @@ export const BestillingStatus = ({
 		feil: 'report-problem-triangle',
 	}
 
-	const ERROR_KEYWORDS = ['feil', 'error']
 	const WARNING_KEYWORDS = ['avvik', 'advarsel', 'warning']
-
-	const isErrorMessage = (melding: string) =>
-		ERROR_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
+	const INFO_KEYWORDS = ['info']
 
 	const isWarningMessage = (melding: string) =>
 		WARNING_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
 
-	const isNonOkMessage = (melding: string) => isErrorMessage(melding) || isWarningMessage(melding)
+	const isInfoMessage = (melding: string) =>
+		INFO_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
 
 	const getOkIdentsFromStatuser = (statuser: Status[]) => {
 		const okStatus = statuser.find((s) => s?.melding === 'OK')
@@ -102,7 +100,10 @@ export const BestillingStatus = ({
 				const antallBestilteIdenter = bestilling?.antallIdenter
 
 				const okStatuser = statuser.filter((s) => s?.melding === 'OK')
-				const errorStatuser = statuser.filter((s) => s?.melding && s.melding !== 'OK')
+				const infoStatuser = statuser.filter((s) => s?.melding && isInfoMessage(s.melding))
+				const errorStatuser = statuser.filter(
+					(s) => s?.melding && s.melding !== 'OK' && !isInfoMessage(s.melding),
+				)
 
 				const isGjenopprett =
 					!!bestilling.opprettetFraGruppeId ||
@@ -115,6 +116,7 @@ export const BestillingStatus = ({
 				const isInProgress =
 					(erOrganisasjon && !bestilling.ferdig) ||
 					!statuser.length ||
+					(infoStatuser.length > 0 && !bestilling.ferdig) ||
 					(!errorStatuser.length &&
 						((!bestilling.ferdig &&
 							antallBestilteIdenter > 1 &&
