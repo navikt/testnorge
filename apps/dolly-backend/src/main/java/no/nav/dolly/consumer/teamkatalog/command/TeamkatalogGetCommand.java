@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,7 +20,7 @@ public class TeamkatalogGetCommand implements Callable<Flux<TeamkatalogDTO>> {
 
     private final WebClient webClient;
     private final List<String> epost;
-//    private final String token;
+    private final String token;
 
     @Override
     public Flux<TeamkatalogDTO> call() {
@@ -29,7 +30,7 @@ public class TeamkatalogGetCommand implements Callable<Flux<TeamkatalogDTO>> {
                 .uri(uriBuilder -> uriBuilder
                         .path(TEAM_URL)
                         .build())
-//                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.bearer(token))
                 .body(Mono.just(epost), List.class)
                 .retrieve()
                 .bodyToFlux(TeamkatalogDTO.class)

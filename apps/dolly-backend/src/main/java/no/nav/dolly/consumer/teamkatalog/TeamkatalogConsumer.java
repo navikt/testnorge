@@ -9,7 +9,6 @@ import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -36,10 +35,8 @@ public class TeamkatalogConsumer {
     @Timed(name = "providers", tags = { "operation", "saf_getDokument" })
     public Flux<TeamkatalogDTO> getTeamForEpost(List<String> epost) {
 
-        return new TeamkatalogGetCommand(webClient, epost).call();
-
-//        return tokenService.exchange(serverProperties)
-//                .flatMap(token -> new TeamkatalogGetCommand(webClient,
-//                       epost, token.getTokenValue()).call());
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new TeamkatalogGetCommand(webClient,
+                       epost, token.getTokenValue()).call());
     }
 }
