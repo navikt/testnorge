@@ -2,15 +2,20 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
+import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -20,6 +25,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DashboardService {
 
     private final BestillingRepository bestillingRepository;
+    private final BrukerRepository brukerRepository;
+    private final TeamkatalogConsumer teamkatalogConsumer;
 
     public Flux<DashboardPersonerDTO> getPersonerStatus() {
 
@@ -59,21 +66,27 @@ public class DashboardService {
 
     public Flux<DashboardTeamsDTO> getTeamsStatus() {
 
-        return bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
-                .groupBy(TeamFragment::getDato)
-                .flatMap(Flux::collectList)
-                .map(fragmentliste ->
-                        DashboardTeamsDTO.builder()
-                                .dato(fragmentliste.stream()
-                                        .map(TeamFragment::getDato)
-                                        .findAny().orElse(null))
-                                .entries(fragmentliste.stream()
-                                        .filter(fragment -> isNotBlank(fragment.getEpost()))
-                                        .map(fragment -> new DashboardTeamsDTO.Entry(
-                                                fragment.getEpost(),
-                                                fragment.getAntall()))
-                                        .toList())
-                                .build())
-                .sort(Comparator.comparing(DashboardTeamsDTO::getDato).reversed());
+       return brukerRepository.findAll()
+                .filter(bruker -> isNotBlank(bruker.getEpost()))
+                .map(Bruker::getEpost)
+                .distinct()
+                .flatMap(teamkatalogConsumer::getTeamForEpost)
+                .collect(Collectors.toMap(TeamkatalogDTO::getEpost, TeamkatalogDTO::getTeamNavn))
+                .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
+                        .groupBy(TeamFragment::getDato)
+                        .flatMap(Flux::collectList)
+                        .map(fragmentliste ->
+                                DashboardTeamsDTO.builder()
+                                        .dato(fragmentliste.stream()
+                                                .map(TeamFragment::getDato)
+                                                .findAny().orElse(null))
+                                        .entries(fragmentliste.stream()
+                                                .filter(fragment -> isNotBlank(fragment.getEpost()))
+                                                .map(fragment -> new DashboardTeamsDTO.Entry(
+                                                        teams.get(fragment.getEpost()),
+                                                        fragment.getAntall()))
+                                                .toList())
+                                        .build())
+                        .sort(Comparator.comparing(DashboardTeamsDTO::getDato).reversed()));
     }
 }

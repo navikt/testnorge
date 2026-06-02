@@ -38,4 +38,5 @@ public class Consumers {
     private ServerProperties safProxy;
     private ServerProperties etterlatte;
     private ServerProperties nomProxy;
+    private ServerProperties teamkatalog;
 }

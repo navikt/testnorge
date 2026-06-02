@@ -23,7 +23,7 @@ public class DashboardTeamsDTO {
     @AllArgsConstructor
     public static class Entry {
 
-        private String epost;
+        private List<String> teams;
         private Long antall;
     }
 }
