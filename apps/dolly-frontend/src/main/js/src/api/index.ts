@@ -35,6 +35,23 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 		),
 	)
 
+// TODO: Har flere hooks hvor vi bruker axios post, skriv om til aa bruke denne
+export const postFetcher = (url, body) =>
+	axios
+		.post(url, body, { headers: { 'Content-Type': 'application/json' } })
+		.then((res) => {
+			if (res.status === 404) {
+				return null
+			}
+			return res.data
+		})
+		.catch((reason) => {
+			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
+				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
+			}
+			throw new Error(`Henting av data fra ${url} feilet.`)
+		})
+
 export const multiFetcherArena = (miljoUrlListe, headers = null) =>
 	Promise.all(
 		miljoUrlListe?.map((obj) =>

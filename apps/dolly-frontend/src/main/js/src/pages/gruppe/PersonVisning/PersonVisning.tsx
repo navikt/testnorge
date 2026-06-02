@@ -32,6 +32,7 @@ import {
 	useDokarkivData,
 	useHistarkData,
 	useInstData,
+	useKdiData,
 	usePensjonsavtaleData,
 	usePoppData,
 	useTpDataForhold,
@@ -55,6 +56,7 @@ import {
 	harInntektsmeldingBestilling,
 	harInntektstubBestilling,
 	harInstBestilling,
+	harKdiBestilling,
 	harKelvinAapBestilling,
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
@@ -116,6 +118,7 @@ import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
+import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -253,6 +256,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harInstBestilling(bestillingerFagsystemer),
 	)
 
+	const { loading: loadingKdiData, kdiData } = useKdiData(
+		ident.ident,
+		harKdiBestilling(bestillingerFagsystemer),
+	)
+
 	const { loading: loadingArbeidssoekerregisteret, data: arbeidssoekerregisteretData } =
 		useArbeidssoekerregistrering(
 			ident.ident,
@@ -363,6 +371,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 		uforetrygdData,
 		brregstub: data?.brregstub,
 		instData,
+		kdiData,
 		yrkesskadeData,
 		arbeidsplassencvData,
 		arbeidsplassencvError,
@@ -423,6 +432,10 @@ const PersonVisning = (props: PersonVisningProps) => {
 			{
 				condition: !!(instData && sjekkManglerInstData(instData)),
 				reason: 'Inst mangler data',
+			},
+			{
+				condition: !!(kdiData && sjekkManglerKdiData(kdiData)),
+				reason: 'KDI mangler data',
 			},
 			{
 				condition: !!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
@@ -754,6 +767,13 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<InstVisning
 					data={instData}
 					loading={loadingInstData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<KdiVisning
+					data={kdiData}
+					loading={loadingKdiData}
+					harKdiBestilling={harKdiBestilling}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
