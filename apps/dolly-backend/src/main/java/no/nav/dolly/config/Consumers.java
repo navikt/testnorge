@@ -39,4 +39,5 @@ public class Consumers {
     private ServerProperties etterlatte;
     private ServerProperties nomProxy;
     private ServerProperties teamkatalog;
+    private ServerProperties altinn3TilgangService;
 }

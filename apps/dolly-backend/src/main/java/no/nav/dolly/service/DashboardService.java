@@ -2,8 +2,11 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.consumer.altinn3.Altinn3TilgangServiceConsumer;
+import no.nav.dolly.consumer.altinn3.dto.Altinn3TilgangDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
+import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -37,6 +40,7 @@ public class DashboardService {
     private final BestillingRepository bestillingRepository;
     private final BrukerRepository brukerRepository;
     private final TeamkatalogConsumer teamkatalogConsumer;
+    private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
 
     public Flux<DashboardPersonerDTO> getPersonerStatus() {
 
@@ -105,5 +109,11 @@ public class DashboardService {
                     grouped.computeIfAbsent(team, _ -> new HashSet<>()).add(fragment.getEpost()));
         });
         return grouped;
+    }
+
+    public Flux<Altinn3TilgangDTO> getOrganisasjonerStatus() {
+
+
+        return altinn3TilgangServiceConsumer.getOrganisasjoner();
     }
 }

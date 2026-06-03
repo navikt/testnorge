@@ -2,6 +2,7 @@ package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.consumer.altinn3.dto.Altinn3TilgangDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.service.DashboardService;
@@ -29,5 +30,12 @@ public class DashboardController {
     public Flux<DashboardTeamsDTO> getDashboardTeams() {
 
         return dashboardService.getTeamsStatus();
+    }
+
+    @GetMapping(value = "/organisasjoner")
+    @Operation(description = "Henter status for organisasjoner fra Altinn, og antall unike personer som har bestilt")
+    public Flux<Altinn3TilgangDTO> getDashboardOrganisasjoner() {
+
+        return dashboardService.getOrganisasjonerStatus();
     }
 }
