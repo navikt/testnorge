@@ -75,7 +75,12 @@ public class DashboardService {
                                 .interval(tuple.getT2())
                                 .teams(tuple.getT1().entrySet().stream()
                                         .map(entry -> new DashboardTeamsDTO.Entry(entry.getKey(), entry.getValue().size()))
+                                        .sorted(Comparator.comparing(DashboardTeamsDTO.Entry::getTeam))
                                         .toList())
+                                .totaltAntallTeams(tuple.getT1().size())
+                                .totaltUnikeBrukere((int) tuple.getT1().values().stream()
+                                        .distinct()
+                                        .count())
                                 .build())
                 .sort(Comparator.comparing(DashboardTeamsDTO::getInterval).reversed());
     }

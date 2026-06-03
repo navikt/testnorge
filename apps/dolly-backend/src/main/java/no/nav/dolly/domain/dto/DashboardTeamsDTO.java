@@ -14,6 +14,8 @@ import java.util.List;
 public class DashboardTeamsDTO {
 
     private String interval;
+    private Integer totaltUnikeBrukere;
+    private Integer totaltAntallTeams;
     private List<Entry> teams;
 
     @Data
