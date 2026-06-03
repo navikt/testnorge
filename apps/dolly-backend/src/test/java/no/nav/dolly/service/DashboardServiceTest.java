@@ -28,6 +28,8 @@ class DashboardServiceTest {
 
     private static final LocalDate DATE_1 = LocalDate.of(2024, 1, 1);
     private static final LocalDate DATE_2 = LocalDate.of(2024, 1, 2);
+    private static final String INTERVAL_1 = "2024-01";
+    private static final String INTERVAL_2 = "2024-02";
 
     @Mock
     private BestillingRepository bestillingRepository;
@@ -125,7 +127,7 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldProduceZeroCounstWhenNoMatchingStatuses() {
+    void shouldProduceZeroCountsWhenNoMatchingStatuses() {
         var f = fragment(DATE_1, 5L, "UKJENT", "UKJENT", "UKJENT");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(f));
 
@@ -161,7 +163,7 @@ class DashboardServiceTest {
                         .teamNavn(List.of("Team A"))
                         .build()));
         when(bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert())
-                .thenReturn(Flux.just(teamFragment(DATE_1, "user@nav.no")));
+                .thenReturn(Flux.just(teamFragment(INTERVAL_1, "user@nav.no")));
 
         StepVerifier.create(dashboardService.getTeamsStatus())
                 .assertNext(dto -> {
@@ -177,7 +179,7 @@ class DashboardServiceTest {
         when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
         when(teamkatalogConsumer.getTeamForEpost(anyList())).thenReturn(Flux.empty());
         when(bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert())
-                .thenReturn(Flux.just(teamFragment(DATE_1, "orphan@nav.no")));
+                .thenReturn(Flux.just(teamFragment(INTERVAL_1, "orphan@nav.no")));
 
         StepVerifier.create(dashboardService.getTeamsStatus())
                 .assertNext(dto -> {
@@ -199,9 +201,9 @@ class DashboardServiceTest {
         ));
         when(bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert())
                 .thenReturn(Flux.just(
-                        teamFragment(DATE_1, "a@nav.no"),
-                        teamFragment(DATE_1, "a@nav.no"),
-                        teamFragment(DATE_1, "b@nav.no")
+                        teamFragment(INTERVAL_1, "a@nav.no"),
+                        teamFragment(INTERVAL_1, "a@nav.no"),
+                        teamFragment(INTERVAL_1, "b@nav.no")
                 ));
 
         StepVerifier.create(dashboardService.getTeamsStatus())
@@ -221,7 +223,7 @@ class DashboardServiceTest {
                 TeamkatalogDTO.builder().email("multi@nav.no").teamNavn(List.of("Team A", "Team B")).build()
         ));
         when(bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert())
-                .thenReturn(Flux.just(teamFragment(DATE_1, "multi@nav.no")));
+                .thenReturn(Flux.just(teamFragment(INTERVAL_1, "multi@nav.no")));
 
         StepVerifier.create(dashboardService.getTeamsStatus())
                 .assertNext(dto -> {
@@ -232,33 +234,33 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldGroupTeamFragmentsByDateIntoSeparateDtos() {
+    void shouldGroupTeamFragmentsByIntervalIntoSeparateDtos() {
         when(brukerRepository.findAll()).thenReturn(Flux.empty());
         when(bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert())
                 .thenReturn(Flux.just(
-                        teamFragment(DATE_1, "a@nav.no"),
-                        teamFragment(DATE_2, "b@nav.no")
+                        teamFragment(INTERVAL_1, "a@nav.no"),
+                        teamFragment(INTERVAL_2, "b@nav.no")
                 ));
 
         StepVerifier.create(dashboardService.getTeamsStatus())
-                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
-                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_1))
+                .assertNext(dto -> assertThat(dto.getInterval()).isEqualTo(INTERVAL_2))
+                .assertNext(dto -> assertThat(dto.getInterval()).isEqualTo(INTERVAL_1))
                 .verifyComplete();
     }
 
     @Test
-    void shouldSortTeamsStatusByDateDescending() {
+    void shouldSortTeamsStatusByIntervalDescending() {
         when(brukerRepository.findAll()).thenReturn(Flux.empty());
         when(bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert())
                 .thenReturn(Flux.just(
-                        teamFragment(DATE_1, "x@nav.no"),
-                        teamFragment(DATE_2, "y@nav.no")
+                        teamFragment(INTERVAL_1, "x@nav.no"),
+                        teamFragment(INTERVAL_2, "y@nav.no")
                 ));
 
         var results = dashboardService.getTeamsStatus().collectList().block();
         assertThat(results).isNotNull();
-        assertThat(results.get(0).getDato()).isEqualTo(DATE_2);
-        assertThat(results.get(1).getDato()).isEqualTo(DATE_1);
+        assertThat(results.get(0).getInterval()).isEqualTo(INTERVAL_2);
+        assertThat(results.get(1).getInterval()).isEqualTo(INTERVAL_1);
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────
@@ -276,9 +278,9 @@ class DashboardServiceTest {
                 .build();
     }
 
-    private static TeamFragment teamFragment(LocalDate dato, String epost) {
+    private static TeamFragment teamFragment(String interval, String epost) {
         return TeamFragment.builder()
-                .dato(dato)
+                .interval(interval)
                 .epost(epost)
                 .build();
     }
