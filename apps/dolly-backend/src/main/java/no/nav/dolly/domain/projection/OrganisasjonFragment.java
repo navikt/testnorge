@@ -13,5 +13,5 @@ public class OrganisasjonFragment {
 
     private Long antall;
     private String interval;
-    private String brukerId;
+    private String brukerid;
 }

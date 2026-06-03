@@ -29,6 +29,7 @@ public class TeamkatalogGetCommand implements Callable<Flux<TeamkatalogDTO>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(TEAM_URL)
+                        .queryParam("onlyActive", true)
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .body(Mono.just(epost), List.class)

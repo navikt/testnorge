@@ -3,7 +3,6 @@ package no.nav.dolly.consumer.teamkatalog;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.consumer.teamkatalog.command.TeamkatalogGetCommand;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
-import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,6 @@ public class TeamkatalogConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "saf_getDokument" })
     public Flux<TeamkatalogDTO> getTeamForEpost(List<String> epost) {
 
         return tokenService.exchange(serverProperties)
