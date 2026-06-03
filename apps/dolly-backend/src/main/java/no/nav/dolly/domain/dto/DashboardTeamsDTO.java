@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -14,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DashboardTeamsDTO {
 
-    private LocalDate dato;
+    private String interval;
     private List<Entry> teams;
 
     @Data

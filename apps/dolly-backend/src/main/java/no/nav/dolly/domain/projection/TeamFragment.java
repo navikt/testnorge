@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,6 +12,6 @@ import java.time.LocalDate;
 public class TeamFragment {
 
     private Long antall;
-    private LocalDate dato;
+    private String interval;
     private String epost;
 }

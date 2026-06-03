@@ -66,18 +66,18 @@ public class DashboardService {
                 .flatMap(teamkatalogConsumer::getTeamForEpost, 5)
                 .collect(Collectors.toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
-                        .groupBy(TeamFragment::getDato)
+                        .groupBy(TeamFragment::getInterval)
                         .flatMap(Flux::collectList)
                         .flatMap(fragments -> Mono.just(
-                                Tuples.of(groupFragmentsByTeam(fragments, teams), fragments.getFirst().getDato()))))
+                                Tuples.of(groupFragmentsByTeam(fragments, teams), fragments.getFirst().getInterval()))))
                 .map(tuple ->
                         DashboardTeamsDTO.builder()
-                                .dato(tuple.getT2())
+                                .interval(tuple.getT2())
                                 .teams(tuple.getT1().entrySet().stream()
                                         .map(entry -> new DashboardTeamsDTO.Entry(entry.getKey(), entry.getValue().size()))
                                         .toList())
                                 .build())
-                .sort(Comparator.comparing(DashboardTeamsDTO::getDato).reversed());
+                .sort(Comparator.comparing(DashboardTeamsDTO::getInterval).reversed());
     }
 
     private static long sumByStatus(List<BestillingerFragment> fragments,
@@ -97,7 +97,7 @@ public class DashboardService {
         fragments.forEach(fragment -> {
             var teamNames = teams.getOrDefault(fragment.getEpost(), List.of(INGEN_TEAM));
             teamNames.forEach(team ->
-                    grouped.computeIfAbsent(team, k -> new HashSet<>()).add(fragment.getEpost()));
+                    grouped.computeIfAbsent(team, _ -> new HashSet<>()).add(fragment.getEpost()));
         });
         return grouped;
     }
