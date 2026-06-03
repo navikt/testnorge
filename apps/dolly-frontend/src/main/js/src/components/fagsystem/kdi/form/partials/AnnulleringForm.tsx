@@ -7,10 +7,12 @@ import React, { useState } from 'react'
 import { initialAnnullering } from '@/components/fagsystem/kdi/initialValues'
 
 export const AnnulleringForm = ({ meldingId }) => {
-	const [harAnnullering, setHarAnnullering] = useState(false)
-
 	const formMethods = useFormContext()
-	const annulleringer = formMethods.watch('instdataKdi.annullering')
+	const annulleringer = formMethods.watch('instdataKdi.annullering') || []
+
+	const eksisterendeAnnullering = annulleringer?.find((a) => a.annullertMeldingId === meldingId)
+	const [harAnnullering, setHarAnnullering] = useState(!!eksisterendeAnnullering || false)
+
 	const index = annulleringer?.findIndex(
 		(annullering) => annullering.annullertMeldingId === meldingId,
 	)
@@ -41,11 +43,11 @@ export const AnnulleringForm = ({ meldingId }) => {
 			</Button>
 			{harAnnullering && (
 				<div className="flexbox--flex-wrap">
-					<FormTextInput
-						name={`instdataKdi.annullering[${index}].hendelseId`}
-						label="Hendelse-ID"
-						isDisabled
-					/>
+					{/*<FormTextInput*/}
+					{/*	name={`instdataKdi.annullering[${index}].hendelseId`}*/}
+					{/*	label="Hendelse-ID"*/}
+					{/*	isDisabled*/}
+					{/*/>*/}
 					<FormDatepicker
 						name={`instdataKdi.annullering[${index}].publiseringstidspunkt`}
 						label="Publiseringstidspunkt"

@@ -7,6 +7,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDateTimeWithSeconds, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 
+// TODO: Fiks denne
 export const sjekkManglerKdiData = (kdiData) => {
 	return false
 	// return kdiData?.length < 1 || kdiData?.every((miljoData) => miljoData.data?.length < 1)
@@ -14,9 +15,9 @@ export const sjekkManglerKdiData = (kdiData) => {
 
 // TODO: Annullering som eget objekt som kan vises paa alle meldinger?
 
-const KdiMelding = ({ melding, key, tidspunktLabel = 'Tidspunkt' }) => {
+const KdiMelding = ({ melding, id, tidspunktLabel = 'Tidspunkt' }) => {
 	return (
-		<div className="person-visning_content" key={key}>
+		<div className="person-visning_content" key={id}>
 			{/*TODO: hendelseId?*/}
 			{/*TODO: meldingId?*/}
 			<TitleValue
@@ -49,14 +50,15 @@ const KdiMelding = ({ melding, key, tidspunktLabel = 'Tidspunkt' }) => {
 export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 	console.log('data: ', data) //TODO - SLETT MEG
 
-	if (loading) {
-		return <Loading label="Laster KDI-meldinger ..." />
-	}
-
 	if (!data && !harKdiBestilling) {
 		return null
 	}
 
+	if (loading) {
+		return <Loading label="Laster KDI-meldinger ..." />
+	}
+	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('harKdiBestilling: ', harKdiBestilling) //TODO - SLETT MEG
 	const manglerFagsystemdata = harKdiBestilling && !data
 
 	const {
@@ -86,7 +88,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 							{(melding, idx) => (
 								<KdiMelding
 									melding={melding}
-									key={'innsettelse' + idx}
+									id={'innsettelse' + idx}
 									tidspunktLabel="Innsettelsestidspunkt"
 								/>
 							)}
@@ -97,7 +99,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 							{(melding, idx) => (
 								<KdiMelding
 									melding={melding}
-									key={'loeslatelse' + idx}
+									id={'loeslatelse' + idx}
 									tidspunktLabel="Løslatelsestidspunkt"
 								/>
 							)}
@@ -108,7 +110,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 							{(melding, idx) => (
 								<KdiMelding
 									melding={melding}
-									key={'avbruddStart' + idx}
+									id={'avbruddStart' + idx}
 									tidspunktLabel="Tidspunkt for start på straffeavbrudd"
 								/>
 							)}
@@ -119,7 +121,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 							{(melding, idx) => (
 								<KdiMelding
 									melding={melding}
-									key={'avbruddSlutt' + idx}
+									id={'avbruddSlutt' + idx}
 									tidspunktLabel="Tidspunkt for slutt på straffeavbrudd"
 								/>
 							)}
@@ -130,7 +132,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 							{(melding, idx) => (
 								<KdiMelding
 									melding={melding}
-									key={'forventetLoeslatelse' + idx}
+									id={'forventetLoeslatelse' + idx}
 									tidspunktLabel="Forventet løslatt tidspunkt"
 								/>
 							)}

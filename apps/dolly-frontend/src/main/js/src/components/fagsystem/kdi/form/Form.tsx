@@ -28,11 +28,11 @@ export const KdiForm = () => {
 				hasErrors={usePanelError(instdataKdiAttributt)}
 				iconType="institusjon"
 			>
-				<InnsettelseForm eksisterendeKdiData={eksisterendeKdiData} />
-				<LoeslatelseForm eksisterendeKdiData={eksisterendeKdiData} />
-				<AvbruddStartForm eksisterendeKdiData={eksisterendeKdiData} />
-				<AvbruddSluttForm eksisterendeKdiData={eksisterendeKdiData} />
-				<ForventetLoeslatelseForm eksisterendeKdiData={eksisterendeKdiData} />
+				<InnsettelseForm formMethods={formMethods} />
+				<LoeslatelseForm formMethods={formMethods} />
+				<AvbruddStartForm formMethods={formMethods} />
+				<AvbruddSluttForm formMethods={formMethods} />
+				<ForventetLoeslatelseForm formMethods={formMethods} />
 			</Panel>
 		</Vis>
 	)

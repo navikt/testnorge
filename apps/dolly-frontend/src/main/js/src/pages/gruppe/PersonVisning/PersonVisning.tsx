@@ -553,7 +553,8 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingArbeidsplassencvData ||
 		loadingArenaData ||
 		loadingApData ||
-		loadingSkattekort
+		loadingSkattekort ||
+		loadingKdiData
 
 	return (
 		<ErrorBoundary>
@@ -586,6 +587,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 								}
 								if (skattekortData) {
 									personData.skattekort = skattekortData.flatMap((m: any) => m.data || [])
+								}
+								if (kdiData) {
+									personData.instdataKdi = kdiData
 								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
@@ -773,7 +777,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<KdiVisning
 					data={kdiData}
 					loading={loadingKdiData}
-					harKdiBestilling={harKdiBestilling}
+					harKdiBestilling={harKdiBestilling(bestillingerFagsystemer)}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>

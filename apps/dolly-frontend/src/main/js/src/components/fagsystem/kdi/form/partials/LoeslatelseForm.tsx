@@ -8,7 +8,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
 
-export const LoeslatelseForm = ({ eksisterendeKdiData }) => {
+export const LoeslatelseForm = ({ formMethods }) => {
 	return (
 		<FormDollyFieldArray
 			name="instdataKdi.loeslatelse"
@@ -16,50 +16,62 @@ export const LoeslatelseForm = ({ eksisterendeKdiData }) => {
 			newEntry={initialLoeslatelse}
 			nested
 		>
-			{(path, idx) => (
-				<React.Fragment key={idx}>
-					{eksisterendeKdiData && <FormTextInput name={`${path}.hendelseId`} label="Hendelse-ID" />}
-					<FormDatepicker
-						name={`${path}.publiseringstidspunkt`}
-						label="Publiseringstidspunkt"
-						format={'DD.MM.YYYY HH:mm:ss'}
-						// date={rapporteringsdate}
-					/>
-					<FormSelect
-						name={`${path}.kategori`}
-						label="Kategori"
-						options={Options('kdiKategori')}
-						isClearable={false}
-					/>
-					<FormSelect
-						name={`${path}.organisasjonsnummer`}
-						label="Organisasjonsnummer"
-						options={Options('fengsel')} //TODO: Kan hentes fra nytt endepunkt
-						size="large"
-						isClearable={false}
-					/>
-					<FormDatepicker
-						name={`${path}.tidspunkt`}
-						label="Løslatelsestidspunkt"
-						format={'DD.MM.YYYY HH:mm:ss'}
-						// date={rapporteringsdate}
-					/>
-					<FormCheckbox
-						name={`${path}.erOverfoertTilUtlandskfengsel`}
-						label="Er overført til utenlandsk fengsel"
-						size="small"
-						checkboxMargin
-					/>
-					<FormCheckbox
-						name={`${path}.erOverfoertTilVaretektMedElektroniskKontroll`}
-						label="Er overført til varetekt med elektronisk kontroll"
-						size="small"
-						checkboxMargin
-					/>
-					{/*	TODO: Skal kun kunne være true om kategori er Varetekt*/}
-					<AnnulleringForm meldingId={222} />
-				</React.Fragment>
-			)}
+			{(path, idx) => {
+				// const hendelseId = formMethods.getValues(path)
+				const meldingId = formMethods.getValues(`${path}.meldingId`)
+
+				return (
+					<React.Fragment key={idx}>
+						{/*{hendelseId && (*/}
+						{/*	<FormTextInput*/}
+						{/*		name={`${path}.hendelseId`}*/}
+						{/*		label="Hendelse-ID"*/}
+						{/*		size="large"*/}
+						{/*		isDisabled*/}
+						{/*	/>*/}
+						{/*)}*/}
+						<FormDatepicker
+							name={`${path}.publiseringstidspunkt`}
+							label="Publiseringstidspunkt"
+							format={'DD.MM.YYYY HH:mm:ss'}
+							// date={rapporteringsdate}
+						/>
+						<FormSelect
+							name={`${path}.kategori`}
+							label="Kategori"
+							options={Options('kdiKategori')}
+							isClearable={false}
+						/>
+						<FormSelect
+							name={`${path}.organisasjonsnummer`}
+							label="Organisasjonsnummer"
+							options={Options('fengsel')} //TODO: Kan hentes fra nytt endepunkt
+							size="large"
+							isClearable={false}
+						/>
+						<FormDatepicker
+							name={`${path}.tidspunkt`}
+							label="Løslatelsestidspunkt"
+							format={'DD.MM.YYYY HH:mm:ss'}
+							// date={rapporteringsdate}
+						/>
+						<FormCheckbox
+							name={`${path}.erOverfoertTilUtlandskfengsel`}
+							label="Er overført til utenlandsk fengsel"
+							size="small"
+							checkboxMargin
+						/>
+						<FormCheckbox
+							name={`${path}.erOverfoertTilVaretektMedElektroniskKontroll`}
+							label="Er overført til varetekt med elektronisk kontroll"
+							size="small"
+							checkboxMargin
+						/>
+						{/*	TODO: Skal kun kunne være true om kategori er Varetekt*/}
+						{meldingId && <AnnulleringForm meldingId={meldingId} />}
+					</React.Fragment>
+				)
+			}}
 		</FormDollyFieldArray>
 	)
 }

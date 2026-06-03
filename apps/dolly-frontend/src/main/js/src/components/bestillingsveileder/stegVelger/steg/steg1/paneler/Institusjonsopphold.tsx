@@ -43,32 +43,36 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 
 InstitusjonsoppholdPanel.heading = 'Institusjonsopphold'
 
-InstitusjonsoppholdPanel.initialValues = ({ set, del, has }: any) => ({
-	instdata: {
-		label: 'Institusjonsopphold',
-		checked: has('instdata'),
-		add() {
-			set('instdata', [
-				{
-					institusjonstype: runningE2ETest() ? 'AS' : '',
-					startdato: runningE2ETest() ? new Date() : '',
-					forventetSluttdato: '',
-					sluttdato: '',
-				},
-			])
+InstitusjonsoppholdPanel.initialValues = ({ set, opts, del, has }: any) => {
+	const eksisterendeKdiData = opts?.personFoerLeggTil?.instdataKdi
+
+	return {
+		instdata: {
+			label: 'Institusjonsopphold',
+			checked: has('instdata'),
+			add() {
+				set('instdata', [
+					{
+						institusjonstype: runningE2ETest() ? 'AS' : '',
+						startdato: runningE2ETest() ? new Date() : '',
+						forventetSluttdato: '',
+						sluttdato: '',
+					},
+				])
+			},
+			remove() {
+				del('instdata')
+			},
 		},
-		remove() {
-			del('instdata')
+		instdataKdi: {
+			label: 'KDI-meldinger',
+			checked: has('instdataKdi'),
+			add() {
+				set('instdataKdi', eksisterendeKdiData ?? initialKdi)
+			},
+			remove() {
+				del('instdataKdi')
+			},
 		},
-	},
-	instdataKdi: {
-		label: 'KDI-meldinger',
-		checked: has('instdataKdi'),
-		add() {
-			set('instdataKdi', initialKdi)
-		},
-		remove() {
-			del('instdataKdi')
-		},
-	},
-})
+	}
+}
