@@ -87,6 +87,7 @@ public class DashboardService {
                                         .toList())
                                 .totaltAntallTeams(tuple.getT1().size())
                                 .totaltUnikeBrukere((int) tuple.getT1().values().stream()
+                                        .flatMap(Set::stream)
                                         .distinct()
                                         .count())
                                 .build())
@@ -127,9 +128,9 @@ public class DashboardService {
                         .flatMap(fragments -> {
                             var organisasjoner = new HashMap<String, Set<String>>();
                             fragments.forEach(fragment -> {
-                                var orgNummer = oppslag.getT2().get(fragment.getBrukerId());
+                                var orgNummer = oppslag.getT2().get(fragment.getBrukerid());
                                 organisasjoner.computeIfAbsent(orgNummer, _ -> new HashSet<>())
-                                        .add(fragment.getBrukerId());
+                                        .add(fragment.getBrukerid());
                             });
                             return Mono.just(organisasjoner)
                                     .zipWith(Mono.just(fragments.getFirst().getInterval()));
