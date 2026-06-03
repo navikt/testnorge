@@ -2,6 +2,7 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import org.springframework.data.domain.Pageable;
@@ -179,4 +180,14 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             order by interval desc;
             """)
     Flux<TeamFragment> findBestillingerForTeamsOrderBySistOppdatert();
+
+    @Query("""
+            select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval, br.bruker_id brukerId
+            from bestilling b
+            join bruker br on br.id = b.bruker_id
+            and br.brukertype = 'BANKID'
+            group by interval, brukerId
+            order by interval desc;
+            """)
+    Flux<OrganisasjonFragment> findBestillingerForOrganisasjonerOrderBySistOppdatert();
 }

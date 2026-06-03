@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.altinn3.Altinn3TilgangServiceConsumer;
 import no.nav.dolly.consumer.altinn3.dto.Altinn3TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
@@ -11,6 +13,7 @@ import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
@@ -37,10 +40,11 @@ public class DashboardService {
 
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
 
+    private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
     private final BestillingRepository bestillingRepository;
     private final BrukerRepository brukerRepository;
+    private final BrukerServiceConsumer brukerServiceConsumer;
     private final TeamkatalogConsumer teamkatalogConsumer;
-    private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
 
     public Flux<DashboardPersonerDTO> getPersonerStatus() {
 
@@ -100,7 +104,7 @@ public class DashboardService {
     }
 
     private static Map<String, Set<String>> groupFragmentsByTeam(List<TeamFragment> fragments,
-                                                                  Map<String, List<String>> teams) {
+                                                                 Map<String, List<String>> teams) {
 
         var grouped = new HashMap<String, Set<String>>();
         fragments.forEach(fragment -> {
@@ -111,9 +115,39 @@ public class DashboardService {
         return grouped;
     }
 
-    public Flux<Altinn3TilgangDTO> getOrganisasjonerStatus() {
+    public Flux<DashboardOrganisasjonerDTO> getOrganisasjonerStatus() {
 
-
-        return altinn3TilgangServiceConsumer.getOrganisasjoner();
+        return Mono.zip(altinn3TilgangServiceConsumer.getOrganisasjoner()
+                                .collect(Collectors.toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, Altinn3TilgangDTO::getNavn)),
+                        brukerServiceConsumer.getAlleBrukere()
+                                .collect(Collectors.toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
+                .flatMapMany(oppslag -> bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()
+                        .groupBy(OrganisasjonFragment::getInterval)
+                        .flatMap(Flux::collectList)
+                        .flatMap(fragments -> {
+                            var organisasjoner = new HashMap<String, Set<String>>();
+                            fragments.forEach(fragment -> {
+                                var orgNummer = oppslag.getT2().get(fragment.getBrukerId());
+                                organisasjoner.computeIfAbsent(orgNummer, _ -> new HashSet<>())
+                                        .add(fragment.getBrukerId());
+                            });
+                            return Mono.just(organisasjoner)
+                                    .zipWith(Mono.just(fragments.getFirst().getInterval()));
+                        })
+                        .map(organisasjoner -> DashboardOrganisasjonerDTO.builder()
+                                .interval(organisasjoner.getT2())
+                                .organisasjoner(organisasjoner.getT1().entrySet().stream()
+                                        .map(entry -> new DashboardOrganisasjonerDTO.Entry(
+                                                entry.getKey(),
+                                                oppslag.getT1().getOrDefault(entry.getKey(), "Ukjent organisasjon"),
+                                                entry.getValue().size()))
+                                        .sorted(Comparator.comparing(DashboardOrganisasjonerDTO.Entry::getNavn))
+                                        .toList())
+                                .totaltAntallOrganisasjoner(organisasjoner.getT1().size())
+                                .totaltUnikeBrukere((int) organisasjoner.getT1().values().stream()
+                                        .distinct()
+                                        .count())
+                                .build()))
+                .sort(Comparator.comparing(DashboardOrganisasjonerDTO::getInterval).reversed());
     }
 }
