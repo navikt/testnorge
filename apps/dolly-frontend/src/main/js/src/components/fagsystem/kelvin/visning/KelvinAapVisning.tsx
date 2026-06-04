@@ -55,18 +55,18 @@ export const KelvinAapVisning = ({
 						<TitleValue
 							title="Stønad"
 							value={arrayToString(
-								data.soeknad?.andreUtbetalinger.stoenad?.map((stoenad) =>
+								data.soeknad?.andreUtbetalinger?.stoenad?.map((stoenad) =>
 									showLabel('kelvinAapStoenad', stoenad),
 								),
 							)}
 						/>
 						<TitleValue
 							title="Hvem betaler (AFP)"
-							value={data.soeknad?.andreUtbetalinger.afp?.hvemBetaler}
+							value={data.soeknad?.andreUtbetalinger?.afp?.hvemBetaler}
 						/>
 						<TitleValue
 							title="Lønn"
-							value={showLabel('jaNei', data.soeknad?.andreUtbetalinger.loenn)}
+							value={showLabel('jaNei', data.soeknad?.andreUtbetalinger?.loenn)}
 						/>
 					</div>
 				</ErrorBoundary>
