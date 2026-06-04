@@ -2,6 +2,7 @@ package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
@@ -37,5 +38,12 @@ public class DashboardController {
     public Flux<DashboardOrganisasjonerDTO> getDashboardOrganisasjoner() {
 
         return dashboardService.getOrganisasjonerStatus();
+    }
+
+    @GetMapping(value = "/dollyteams")
+    @Operation(description = "Henter status for bruk av Dolly-teams, og antall unike personer som har bestilt")
+    public Flux<DashboardDollyTeamsDTO> getDashboardDollyTeams() {
+
+        return dashboardService.getDollyTeamsStatus();
     }
 }

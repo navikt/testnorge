@@ -8,11 +8,13 @@ import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
+import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
@@ -31,6 +33,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.toIntExact;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -94,28 +97,6 @@ public class DashboardService {
                 .sort(Comparator.comparing(DashboardTeamsDTO::getInterval).reversed());
     }
 
-    private static long sumByStatus(List<BestillingerFragment> fragments,
-                                    Function<BestillingerFragment, String> statusGetter,
-                                    String value) {
-
-        return fragments.stream()
-                .filter(f -> value.equals(statusGetter.apply(f)))
-                .mapToLong(BestillingerFragment::getPersoner)
-                .sum();
-    }
-
-    private static Map<String, Set<String>> groupFragmentsByTeam(List<TeamFragment> fragments,
-                                                                 Map<String, List<String>> teams) {
-
-        var grouped = new HashMap<String, Set<String>>();
-        fragments.forEach(fragment -> {
-            var teamNames = teams.getOrDefault(fragment.getEpost(), List.of(INGEN_TEAM));
-            teamNames.forEach(team ->
-                    grouped.computeIfAbsent(team, _ -> new HashSet<>()).add(fragment.getEpost()));
-        });
-        return grouped;
-    }
-
     public Flux<DashboardOrganisasjonerDTO> getOrganisasjonerStatus() {
 
         return Mono.zip(altinn3TilgangServiceConsumer.getOrganisasjoner()
@@ -142,6 +123,28 @@ public class DashboardService {
                 .sort(Comparator.comparing(DashboardOrganisasjonerDTO::getInterval).reversed());
     }
 
+    private static long sumByStatus(List<BestillingerFragment> fragments,
+                                    Function<BestillingerFragment, String> statusGetter,
+                                    String value) {
+
+        return fragments.stream()
+                .filter(f -> value.equals(statusGetter.apply(f)))
+                .mapToLong(BestillingerFragment::getPersoner)
+                .sum();
+    }
+
+    private static Map<String, Set<String>> groupFragmentsByTeam(List<TeamFragment> fragments,
+                                                                 Map<String, List<String>> teams) {
+
+        var grouped = new HashMap<String, Set<String>>();
+        fragments.forEach(fragment -> {
+            var teamNames = teams.getOrDefault(fragment.getEpost(), List.of(INGEN_TEAM));
+            teamNames.forEach(team ->
+                    grouped.computeIfAbsent(team, _ -> new HashSet<>()).add(fragment.getEpost()));
+        });
+        return grouped;
+    }
+
     private static Map<String, Set<String>> groupFragmentsByOrganisasjon(List<OrganisasjonFragment> fragments,
                                                                          Map<String, String> brukerToOrgnummer) {
 
@@ -162,5 +165,28 @@ public class DashboardService {
                 .organisasjonsform("Ukjent organisasjonsform")
                 .build());
         return new DashboardOrganisasjonerDTO.Entry(orgNummer, info.getNavn(), info.getOrganisasjonsform(), brukere.size());
+    }
+
+    public Flux<DashboardDollyTeamsDTO> getDollyTeamsStatus() {
+
+        return bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
+                .groupBy(DollyTeamFragment::getInterval)
+                .flatMap(Flux::collectList)
+                .map(fragments -> DashboardDollyTeamsDTO.builder()
+                        .interval(fragments.getFirst().getInterval())
+                        .teams(fragments.stream()
+                                .map(fragment -> {
+                                    var info = fragment.getInformasjon().split(",", 2);
+                                    return new DashboardDollyTeamsDTO.Entry(info[0], info[1], toIntExact(fragment.getAntall()));
+                                })
+                                .sorted(Comparator.comparing(DashboardDollyTeamsDTO.Entry::getNavn))
+                                .toList())
+                        .totaltAntallTeams(fragments.size())
+                        .totaltUnikeBrukere(fragments.stream()
+                                .map(DollyTeamFragment::getAntall)
+                                .map(Long::intValue)
+                                .reduce(0, Integer::sum))
+                        .build())
+                .sort(Comparator.comparing(DashboardDollyTeamsDTO::getInterval).reversed());
     }
 }

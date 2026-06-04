@@ -2,6 +2,7 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
@@ -190,4 +191,16 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             order by interval desc;
             """)
     Flux<OrganisasjonFragment> findBestillingerForOrganisasjonerOrderBySistOppdatert();
+
+    @Query("""
+            select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval,
+                   t.navn || ','|| t.beskrivelse informasjon
+            from bestilling b
+            join bruker br on br.id = b.bruker_id
+            join team t on t.bruker_id = br.id
+            and br.brukertype = 'TEAM'
+            group by interval, informasjon
+            order by interval desc;
+            """)
+    Flux<DollyTeamFragment> findBestillingerForDollyTeamsOrderBySistOppdatert();
 }
