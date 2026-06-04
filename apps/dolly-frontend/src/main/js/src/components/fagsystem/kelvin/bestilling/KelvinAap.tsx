@@ -27,7 +27,7 @@ export const KelvinAap = ({ kelvinAap }: { kelvinAap: KelvinAapTypes }) => {
 						/>
 						<TitleValue title="Har yrkesskade" value={oversettBoolean(kelvinAap.harYrkesskade)} />
 					</BestillingData>
-					<h3>Andre ytelser/utbetalinger (samordning)</h3>
+					<h3>Andre ytelser/utbetalinger (informasjon fra bruker)</h3>
 					<BestillingData>
 						<TitleValue
 							title="Stønad"

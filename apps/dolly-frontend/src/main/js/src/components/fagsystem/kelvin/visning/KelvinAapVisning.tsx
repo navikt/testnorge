@@ -43,12 +43,15 @@ export const KelvinAapVisning = ({
 						<>
 							<h4 style={{ width: '100%', marginTop: '0' }}>Generelt</h4>
 							<div className="person-visning_content">
-								<TitleValue title="Er student" value={oversettBoolean(soeknad.erStudent)} />
+								<TitleValue title="Er student" value={oversettBoolean(soeknad?.erStudent)} />
 								<TitleValue
 									title="Har medlemskap i folketrygden"
-									value={oversettBoolean(soeknad.harMedlemskap)}
+									value={oversettBoolean(soeknad?.harMedlemskap)}
 								/>
-								<TitleValue title="Har yrkesskade" value={oversettBoolean(soeknad.harYrkesskade)} />
+								<TitleValue
+									title="Har yrkesskade"
+									value={oversettBoolean(soeknad?.harYrkesskade)}
+								/>
 							</div>
 						</>
 					)}
@@ -61,13 +64,16 @@ export const KelvinAapVisning = ({
 								<TitleValue
 									title="Stønad"
 									value={arrayToString(
-										andreUtbetalinger.stoenad?.map((stoenad) =>
+										andreUtbetalinger?.stoenad?.map((stoenad) =>
 											showLabel('kelvinAapStoenad', stoenad),
 										),
 									)}
 								/>
-								<TitleValue title="Hvem betaler (AFP)" value={andreUtbetalinger.afp?.hvemBetaler} />
-								<TitleValue title="Lønn" value={showLabel('jaNei', andreUtbetalinger.loenn)} />
+								<TitleValue
+									title="Hvem betaler (AFP)"
+									value={andreUtbetalinger?.afp?.hvemBetaler}
+								/>
+								<TitleValue title="Lønn" value={showLabel('jaNei', andreUtbetalinger?.loenn)} />
 							</div>
 						</>
 					)}
