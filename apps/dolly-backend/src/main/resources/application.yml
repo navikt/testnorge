@@ -153,6 +153,6 @@ consumers:
   altinn3-tilgang-service:
     name: testnav-altinn3-tilgang-service-prod
     namespace: dolly
-    url: https://testnav-altinn3-tilgang-service.nav.no/
+    url: https://testnav-altinn3-tilgang-service.nav.no
     cluster: prod-gcp
     

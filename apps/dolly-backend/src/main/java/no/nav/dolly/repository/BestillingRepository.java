@@ -194,7 +194,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
 
     @Query("""
             select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval,
-                   t.navn || '|' || t.beskrivelse || '|' || t.bruker_id informasjon
+                   t.navn || '|' || coalesce(t.beskrivelse, '') || '|' || t.bruker_id informasjon
             from bestilling b
             join bruker br on br.id = b.bruker_id
             join team t on t.bruker_id = br.id

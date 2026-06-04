@@ -126,6 +126,30 @@ public class DashboardService {
                 .sort(Comparator.comparing(DashboardOrganisasjonerDTO::getInterval).reversed());
     }
 
+    public Flux<DashboardDollyTeamsDTO> getDollyTeamsStatus() {
+
+        return teamRepository.findAllTeamBrukere()
+                .collect(Collectors.toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
+                .flatMapMany(oppslag -> bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
+                        .groupBy(DollyTeamFragment::getInterval)
+                        .flatMap(Flux::collectList)
+                        .map(fragments -> {
+                            var teams = fragments.stream()
+                                    .map(fragment -> toDollyTeamEntry(fragment, oppslag))
+                                    .sorted(Comparator.comparing(DashboardDollyTeamsDTO.Entry::getNavn))
+                                    .toList();
+                            return DashboardDollyTeamsDTO.builder()
+                                    .interval(fragments.getFirst().getInterval())
+                                    .teams(teams)
+                                    .totaltAntallTeams(teams.size())
+                                    .totaltAntallMedlemmer(teams.stream()
+                                            .mapToInt(DashboardDollyTeamsDTO.Entry::getAntallMedlemmer)
+                                            .sum())
+                                    .build();
+                        }))
+                .sort(Comparator.comparing(DashboardDollyTeamsDTO::getInterval).reversed());
+    }
+
     private static long sumByStatus(List<BestillingerFragment> fragments,
                                     Function<BestillingerFragment, String> statusGetter,
                                     String value) {
@@ -170,30 +194,10 @@ public class DashboardService {
         return new DashboardOrganisasjonerDTO.Entry(orgNummer, info.getNavn(), info.getOrganisasjonsform(), brukere.size());
     }
 
-    public Flux<DashboardDollyTeamsDTO> getDollyTeamsStatus() {
+    private static DashboardDollyTeamsDTO.Entry toDollyTeamEntry(DollyTeamFragment fragment,
+                                                                  Map<String, Long> oppslag) {
 
-        return teamRepository.findAllTeamBrukere()
-                .collect(Collectors.toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
-                .flatMapMany(oppslag -> bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
-                        .groupBy(DollyTeamFragment::getInterval)
-                        .flatMap(Flux::collectList)
-                        .map(fragments -> DashboardDollyTeamsDTO.builder()
-                                .interval(fragments.getFirst().getInterval())
-                                .teams(fragments.stream()
-                                        .map(fragment -> {
-                                            var info = fragment.getInformasjon().split("\\|");
-                                            return new DashboardDollyTeamsDTO.Entry(info[0], info[1],
-                                                    toIntExact(oppslag.get(info[2])));
-                                        })
-                                        .sorted(Comparator.comparing(DashboardDollyTeamsDTO.Entry::getNavn))
-                                        .toList())
-                                .totaltAntallTeams(fragments.size())
-                                .totaltAntallMedlemmer(fragments.stream()
-                                        .map(fragment -> fragment.getInformasjon().split("\\|")[2])
-                                        .map(oppslag::get)
-                                        .map(Math::toIntExact)
-                                        .reduce(0, Integer::sum))
-                                .build()))
-                .sort(Comparator.comparing(DashboardDollyTeamsDTO::getInterval).reversed());
+        var info = fragment.getInformasjon().split("\\|");
+        return new DashboardDollyTeamsDTO.Entry(info[0], info[1], toIntExact(oppslag.get(info[2])));
     }
 }
