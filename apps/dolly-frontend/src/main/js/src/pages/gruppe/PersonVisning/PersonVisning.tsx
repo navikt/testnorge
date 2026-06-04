@@ -394,87 +394,38 @@ const PersonVisning = (props: PersonVisningProps) => {
 	const { inntektstub, brregstub, krrstub } = data
 
 	const manglerFagsystemdata = (): boolean => {
-		const checks: Array<{ condition: boolean; reason: string }> = [
-			{
-				condition: Array.isArray(krrstub) && krrstub.length === 0,
-				reason: 'Krrstub mangler data',
-			},
-			{
-				condition:
-					harInntektstubBestilling(bestillingerFagsystemer) &&
-					(!inntektstub || (Array.isArray(inntektstub) && inntektstub.length === 0)),
-				reason: 'Inntektstub mangler data',
-			},
-			{
-				condition: !!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
-				reason: 'Aareg mangler data',
-			},
-			{
-				condition: !!(poppData && sjekkManglerPensjonData(poppData)),
-				reason: 'Pensjon (POPP) mangler data',
-			},
-			{
-				condition: !!(tpDataForhold && sjekkManglerTpData(tpDataForhold)),
-				reason: 'Tjenestepensjon mangler data',
-			},
-			{
-				condition: !!(apData && sjekkManglerApData(apData)),
-				reason: 'Alderspensjon mangler data',
-			},
-			{
-				condition: !!(uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)),
-				reason: 'Uføretrygd mangler data',
-			},
-			{
-				condition: !!(brregstub && sjekkManglerBrregData(brregstub)),
-				reason: 'Brreg mangler data',
-			},
-			{
-				condition: !!(instData && sjekkManglerInstData(instData)),
-				reason: 'Inst mangler data',
-			},
-			{
-				condition: !!(kdiData && sjekkManglerKdiData(kdiData)),
-				reason: 'KDI mangler data',
-			},
-			{
-				condition: !!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
-				reason: 'Yrkesskade mangler data eller feilet',
-			},
-			{
-				condition: !!(
-					(udistub && sjekkManglerUdiData(udistub)) ||
-					(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
-				),
-				reason: 'UDI mangler data eller feilet',
-			},
-			{
-				condition: !!(
-					(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
-					(harMedlBestilling(bestillingerFagsystemer) &&
-						medl &&
-						Array.isArray(medl) &&
-						medl.length === 0)
-				),
-				reason: 'MEDL mangler data eller feilet',
-			},
-			{
-				condition: !!(
-					harArbeidsplassenBestilling(bestillingerFagsystemer) &&
-					!arbeidsplassencvData &&
-					arbeidsplassencvError
-				),
-				reason: 'Arbeidsplassen CV mangler data eller feilet',
-			},
+		const checks: boolean[] = [
+			Array.isArray(krrstub) && krrstub.length === 0,
+			harInntektstubBestilling(bestillingerFagsystemer) &&
+				(!inntektstub || (Array.isArray(inntektstub) && inntektstub.length === 0)),
+			!!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
+			!!(poppData && sjekkManglerPensjonData(poppData)),
+			!!(tpDataForhold && sjekkManglerTpData(tpDataForhold)),
+			!!(apData && sjekkManglerApData(apData)),
+			!!(uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)),
+			!!(brregstub && sjekkManglerBrregData(brregstub)),
+			!!(instData && sjekkManglerInstData(instData)),
+			!!(kdiData && sjekkManglerKdiData(kdiData)),
+			!!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
+			!!(
+				(udistub && sjekkManglerUdiData(udistub)) ||
+				(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
+			),
+			!!(
+				(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
+				(harMedlBestilling(bestillingerFagsystemer) &&
+					medl &&
+					Array.isArray(medl) &&
+					medl.length === 0)
+			),
+			!!(
+				harArbeidsplassenBestilling(bestillingerFagsystemer) &&
+				!arbeidsplassencvData &&
+				arbeidsplassencvError
+			),
 		]
 
-		for (const { condition, reason } of checks) {
-			if (condition) {
-				console.warn('manglerFagsystemdata:', reason)
-				return true
-			}
-		}
-		return false
+		return checks.some(Boolean)
 	}
 
 	const pdlRelatertPerson = () => {

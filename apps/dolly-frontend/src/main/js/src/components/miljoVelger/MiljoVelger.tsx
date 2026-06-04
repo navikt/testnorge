@@ -25,6 +25,7 @@ const miljoeavhengig = [
 	'instdata',
 	'instdataKdi',
 	'dokarkiv',
+	'enhetstype',
 	'organisasjon',
 	'underenheter',
 	'skattekort',

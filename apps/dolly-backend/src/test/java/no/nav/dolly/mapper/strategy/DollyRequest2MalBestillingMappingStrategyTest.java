@@ -40,6 +40,8 @@ import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
+import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
@@ -65,6 +67,7 @@ import no.nav.dolly.domain.resultset.sykemelding.SykmeldingType;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
@@ -73,6 +76,11 @@ import no.nav.testnav.libs.dto.yrkesskade.v1.FerdigstillSak;
 import no.nav.testnav.libs.dto.yrkesskade.v1.InnmelderRolletype;
 import no.nav.testnav.libs.dto.yrkesskade.v1.Klassifisering;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -482,10 +490,10 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         var target = mapperFacade.map(bestilling, RsDollyUtvidetBestilling.class);
 
         assertThat(target.getSykemelding().getNySykemelding().getType(), is(equalTo(SykmeldingType.VANLIG)));
-        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getGrad(), is(equalTo(50)));
-        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getReisetilskudd(), is(equalTo(true)));
-        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getFom(), is(equalTo(java.time.LocalDate.of(2025, 1, 1))));
-        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().get(0).getTom(), is(equalTo(java.time.LocalDate.of(2025, 1, 14))));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().getFirst().getGrad(), is(equalTo(50)));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().getFirst().getReisetilskudd(), is(equalTo(true)));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().getFirst().getFom(), is(equalTo(java.time.LocalDate.of(2025, 1, 1))));
+        assertThat(target.getSykemelding().getNySykemelding().getAktivitet().getFirst().getTom(), is(equalTo(java.time.LocalDate.of(2025, 1, 14))));
     }
 
     @Test
@@ -917,6 +925,137 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                                 .beskrivelse("Inntekt fra næring")
                                 .build()))
                         .build()));
+    }
+
+    @Test
+    void shouldCopyInstdataKdi() {
+
+        var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .instdataKdi(RsInstdataKdi.builder()
+                        .innsettelse(List.of(RsInstdataKdi.Innsettelse.builder()
+                                .hendelseId("h1")
+                                .kategori("DOM")
+                                .build()))
+                        .build())
+                .build(), RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getInstdataKdi().getInnsettelse().getFirst().getHendelseId(), is(equalTo("h1")));
+        assertThat(target.getInstdataKdi().getInnsettelse().getFirst().getKategori(), is(equalTo("DOM")));
+    }
+
+    @Test
+    void shouldAccumulateInstdataKdiHendelser() {
+
+        var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .instdataKdi(RsInstdataKdi.builder()
+                        .innsettelse(List.of(RsInstdataKdi.Innsettelse.builder()
+                                .hendelseId("h1")
+                                .build()))
+                        .loeslatelse(List.of(RsInstdataKdi.Loeslatelse.builder()
+                                .hendelseId("l1")
+                                .build()))
+                        .build())
+                .build(), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .instdataKdi(RsInstdataKdi.builder()
+                        .innsettelse(List.of(RsInstdataKdi.Innsettelse.builder()
+                                .hendelseId("h2")
+                                .build()))
+                        .avbruddStart(List.of(RsInstdataKdi.AvbruddStart.builder()
+                                .hendelseId("as1")
+                                .build()))
+                        .avbruddSlutt(List.of(RsInstdataKdi.AvbruddSlutt.builder()
+                                .hendelseId("ae1")
+                                .build()))
+                        .forventetLoeslatelse(List.of(RsInstdataKdi.ForventetLoeslatelse.builder()
+                                .hendelseId("fl1")
+                                .build()))
+                        .annullering(List.of(RsInstdataKdi.Annullering.builder()
+                                .hendelseId("a1")
+                                .build()))
+                        .build())
+                .build(), target);
+
+        assertThat(target.getInstdataKdi().getInnsettelse().size(), is(2));
+        assertThat(target.getInstdataKdi().getLoeslatelse().size(), is(1));
+        assertThat(target.getInstdataKdi().getAvbruddStart().size(), is(1));
+        assertThat(target.getInstdataKdi().getAvbruddSlutt().size(), is(1));
+        assertThat(target.getInstdataKdi().getForventetLoeslatelse().size(), is(1));
+        assertThat(target.getInstdataKdi().getAnnullering().size(), is(1));
+    }
+
+    @Test
+    void shouldCopyKelvinAap() {
+
+        var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .kelvinAap(RsKelvinAapRequestDTO.builder()
+                        .erStudent(true)
+                        .harMedlemskap(false)
+                        .harYrkesskade(true)
+                        .build())
+                .build(), RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getKelvinAap().getErStudent(), is(true));
+        assertThat(target.getKelvinAap().getHarMedlemskap(), is(false));
+        assertThat(target.getKelvinAap().getHarYrkesskade(), is(true));
+    }
+
+    @Test
+    void shouldCopyNavSyntetiskIdent() {
+
+        var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .navSyntetiskIdent(true)
+                .build(), RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getNavSyntetiskIdent(), is(true));
+    }
+
+    @Test
+    void shouldCopyPdldata() {
+
+        var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .pdldata(PdlPersondata.builder()
+                        .person(PersonDTO.builder()
+                                .kjoenn(List.of(KjoennDTO.builder()
+                                        .kjoenn(KjoennDTO.Kjoenn.MANN)
+                                        .build()))
+                                .build())
+                        .build())
+                .build(), RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getPdldata().getPerson().getKjoenn().getFirst().getKjoenn(), is(equalTo(KjoennDTO.Kjoenn.MANN)));
+    }
+
+    @Test
+    void shouldAccumulatePdldataPersonLists() {
+
+        var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .pdldata(PdlPersondata.builder()
+                        .person(PersonDTO.builder()
+                                .navn(List.of(NavnDTO.builder()
+                                        .fornavn("Ola")
+                                        .build()))
+                                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                        .landkode("NOR")
+                                        .build()))
+                                .build())
+                        .build())
+                .build(), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .pdldata(PdlPersondata.builder()
+                        .person(PersonDTO.builder()
+                                .navn(List.of(NavnDTO.builder()
+                                        .fornavn("Kari")
+                                        .build()))
+                                .bostedsadresse(List.of(BostedadresseDTO.builder()
+                                        .build()))
+                                .build())
+                        .build())
+                .build(), target);
+
+        assertThat(target.getPdldata().getPerson().getNavn().size(), is(2));
+        assertThat(target.getPdldata().getPerson().getStatsborgerskap().size(), is(1));
+        assertThat(target.getPdldata().getPerson().getBostedsadresse().size(), is(1));
     }
 
     private static RsDollyUtvidetBestilling buildInntektstub(Double beloep, InntektType inntektstype, String beskrivelse) {

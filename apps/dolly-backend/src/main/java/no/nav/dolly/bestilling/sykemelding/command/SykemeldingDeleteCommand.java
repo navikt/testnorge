@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class SykemeldingDeleteCommand implements Callable<Mono<Void>> {
 
-    private static final String TSM_SYKEMELDING_URL = "/tsm/api/sykmelding/ident";
+    private static final String TSM_SYKEMELDING_URL = "/sykemelding/api/sykmelding/ident";
 
     private final WebClient webClient;
     private final String ident;

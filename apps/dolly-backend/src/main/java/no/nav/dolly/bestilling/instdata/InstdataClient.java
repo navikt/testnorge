@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.bestilling.instdata.service.InstKdiHendelseService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -21,32 +23,72 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class InstdataClient implements ClientRegister {
 
+    private static final String INST2_STATUS = "INST2_STATUS#%s";
+    private static final String KDI_STATUS = "KDI_STATUS#%s";
+
     private final MapperFacade mapperFacade;
     private final InstdataConsumer instdataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
+    private final InstKdiHendelseService instKdiHendelseService;
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+
+        if (bestilling.getInstdata().isEmpty() && isNull(bestilling.getInstdataKdi())) {
+
+            return Mono.empty();
+        }
+
+        return Flux.merge(doInst2Bestilling(bestilling, dollyPerson, isOpprettEndre)
+                                .map(INST2_STATUS::formatted),
+                        doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), isOpprettEndre)
+                                .map(KDI_STATUS::formatted))
+                .collect(Collectors.joining("|"))
+                .filter(resultat -> !resultat.isBlank())
+                .flatMap(resultat -> oppdaterStatus(progress, resultat));
+    }
+
+    private Mono<String> doInstKdiBestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Long bestillingId, boolean isOpprettEndre) {
+
+        return Mono.just(bestilling)
+                .filter(bestilling1 -> nonNull(bestilling1.getInstdataKdi()))
+                .flatMap(bestilling1 -> instKdiHendelseService.getOppdaterBestilling(bestilling1, bestillingId, isOpprettEndre))
+                .flatMap(instKdiData -> instdataConsumer.getMiljoer()
+                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getKdiEnvironments())
+                                .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
+                                .map(miljoe -> {
+                                    var context = MappingContextUtils.getMappingContext();
+                                    context.setProperty("ident", dollyPerson.getIdent());
+                                    context.setProperty("miljoe", miljoe);
+                                    return mapperFacade.map(instKdiData, InstdataKdiDTO.class, context);
+                                }))
+                        .flatMap(instKdiRequest -> postInstdataKdi(instKdiRequest, dollyPerson.getIdent()))
+                        .collect(Collectors.joining(",")))
+                .filter(resultat -> !resultat.isBlank());
+    }
+
+    private Flux<String> doInst2Bestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, boolean isOpprettEndre) {
 
         var context = MappingContextUtils.getMappingContext();
         context.setProperty("ident", dollyPerson.getIdent());
 
         return Mono.just(bestilling.getInstdata())
                 .filter(rsInstdata -> !rsInstdata.isEmpty())
-                .flatMap(rsInstdata -> Mono.just(mapperFacade.mapAsList(rsInstdata, Instdata.class, context)))
+                .flatMapMany(rsInstdata -> Mono.just(mapperFacade.mapAsList(rsInstdata, Instdata.class, context)))
                 .flatMap(instdata -> instdataConsumer.getMiljoer()
-                        .flatMap(miljoer -> Flux.fromIterable(miljoer)
+                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getInstitusjonsoppholdEnvironments())
                                 .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
                                 .flatMap(miljoe -> postInstdata(isOpprettEndre, instdata, miljoe))
-                                .collect(Collectors.joining(",")))
-                        .flatMap(status -> oppdaterStatus(progress, status)));
+                                .collect(Collectors.joining(","))));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
@@ -60,7 +102,9 @@ public class InstdataClient implements ClientRegister {
     public void release(List<String> identer) {
 
         instdataConsumer.deleteInstdata(identer)
-                .subscribe(response -> log.info("Slettet antall {} identer fra Instdata", response.size()));
+                .subscribe(_ -> log.info("Slettet identer fra Instdata (inst 2)"));
+        instdataConsumer.deleteInstKdiData(identer)
+                .subscribe(_ -> log.info("Slettet identer fra Institusjonsopphold fengsel (KDI)"));
     }
 
     private Mono<List<Instdata>> filterInstdata(List<Instdata> instdataRequest, String miljoe) {
@@ -99,5 +143,16 @@ public class InstdataClient implements ClientRegister {
                         return Mono.just(miljoe + ":opphold=1$OK");
                     }
                 });
+    }
+
+    private Mono<String> postInstdataKdi(InstdataKdiDTO instdata, String ident) {
+
+        return instdataConsumer.postInstdataKdi(instdata, ident)
+                .map(response -> String.format("%s:%s".formatted(
+                        instdata.getEnvironment(),
+                        response.getStatus().is2xxSuccessful() ? "OK" :
+                                ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(response.getStatus(),
+                                        response.getFeilmelding())))));
+
     }
 }

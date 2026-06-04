@@ -24,6 +24,7 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -52,6 +53,7 @@ public class DollyFrontendApplicationStarter {
     };
 
     @Bean("dollyFrontendRouteLocator")
+    @Profile("!test")
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
@@ -64,7 +66,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavVarslingerService(), "testnav-varslinger-service"))
                 .route(createRoute(consumers.getTestnavTpsMessagingService(), "testnav-tps-messaging-service"))
                 .route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api"))
-                .route(createRoute(consumers.getTestnavSykemeldingApi(), "testnav-sykemelding-api"))
                 .route(createRoute(consumers.getTestnavBrukerService(), "testnav-bruker-service"))
                 .route(createRoute(consumers.getTestnavMiljoerService()))
                 .route(createRoute(consumers.getDollyBackend(), "dolly-backend"))
@@ -74,7 +75,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
                 .route(createRoute(consumers.getTestnavDollySearchService(), "testnav-dolly-search-service"))
                 .route(createRoute(consumers.getTestnavArbeidsplassenCVProxy()))
-                .route(createRoute(consumers.getTestnavHelsepersonellService()))
                 .route(createRoute(consumers.getTestnavPersonService(), "person-service"))
                 .route(createRoute(consumers.getGenererNavnService()))
                 .route(createRoute(consumers.getTestnavKodeverkService()))
@@ -82,7 +82,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdAnsettelse(), "testnav-levende-arbeidsforhold-ansettelse"))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdScheduler(), "testnav-levende-arbeidsforhold-scheduler"))
                 .route(createRoute(consumers.getTestnavYrkesskadeProxy()))
-                .route(createRoute(consumers.getTestnavSykemeldingProxy()))
                 .route(createRoute(consumers.getTestnavNomProxy()))
                 .route(createRoute(consumers.getTestnavAltinn3TilgangService(), "testnav-altinn3-tilgang-service"))
                 .route(createRoute(consumers.getTestnavArbeidssoekerregisteretProxy()))

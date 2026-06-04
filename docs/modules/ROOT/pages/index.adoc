@@ -1,4 +1,4 @@
-= Testnav Dokumentasjon
+= Dolly/Testnav Dokumentasjon
 :sectnums:
 :sectanchors:
 :sectnumlevels: 4
@@ -10,23 +10,62 @@ Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjon
 
 === Om
 
-Dette er en samlet dokumentasjon for applikasjoner, retningslinjer og støtteverktøy relatert til syntetiske testdata i NAV.
-Spesisfikke søke kan gjøres i søkefelt øverst til høyre.
+Dette er en samlet dokumentasjon for applikasjoner, retningslinjer, svar på vanlige problemstillinger og støtteverktøy relatert til syntetiske testdata i Nav.
+Spesifikke søk kan gjøres i søkefelt øverst til høyre.
 
 [[dolly]]
 == Dolly
 
-Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
+Dolly er Navs selvbetjeningsløsning for å opprette og forvalte syntetiske testdata.
+Med Dolly kan utviklingsteam raskt og enkelt opprette realistiske testpersoner med komplekse egenskaper, familiestrukturer og livsforløp – uten å berøre personopplysninger fra produksjon.
+
+=== Hva er Dolly?
+
+Dolly er et verktøy som gjør det mulig å:
+
+* *Opprette syntetiske personer* med fødselsnummer, navn, adresse og demografiske data
+* *Definere egenskaper og relasjoner* som arbeidsforhold, inntekt, familiemedlemmer, ytelser og mer
+* *Deploy til testmiljøer* – distribuer testpersonene til valgte testmiljøer (Q1, Q2, etc.)
+* *Gjenbruke testdata* – lagre bestillinger som maler for senere bruk
+* *Samarbeide i team* – del og forvalt testdata sammen med teamet ditt
+
+=== Hvorfor Dolly?
+
+Testing med produksjonsdata medfører betydelig risiko og administrative byrder:
+
+* Personvern og GDPR-utfordringer
+* Kompleks tilgangsstyring og logging
+* Sikkerhetskrav som begrenser fleksibilitet
+* Tidkrevende prosesser for å få tilgang
+
+Dolly løser disse utfordringene ved å tilby *fullstendig syntetiske data* som ikke kan spores tilbake til reelle personer.
+Dette gir teamene frihet til å teste grundig uten personvernhensyn, samtidig som Nav overholder regelverket.
+
+=== Hvem er Dolly for?
+
+Dolly er primært laget for:
+
+* *Utviklingsteam* som trenger testdata for utvikling og testing
+* *Testere* som skal verifisere funksjonalitet på tvers av fagsystemer
+* *Produkteiere* som ønsker å demonstrere funksjonalitet med realistiske data
+
+Alle Nav-ansatte og konsulenter med tilgang kan bruke Dolly etter innlogging.
+
+=== Kom i gang
+
+Link til Dolly: https://dolly.ekstern.dev.nav.no/
+
+Se xref:index.adoc#brukerveiledning[Brukerveiledning] for å lære hvordan du oppretter dine første testpersoner.
+
+Har du spørsmål? Se xref:index.adoc#faq[Ofte stilte spørsmål (FAQ)] eller kontakt oss på Slack-kanalen #dolly.
+
+Et omfattende eksempel på bestilling av tilgang til Dolly samt bruk av Dolly er tilgjengelig på team helsearbeidsgiver sine docs: https://github.com/navikt/sykepenger-im-lps-api/wiki/Testdata
 
 [[brukerveiledning]]
 === Brukerveiledning
 
-Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.
-I Dolly kan du opprette syntetiske personer med forskjellige egenskaper, og tilgjengeliggjøre dataene i valgte testmiljøer.
-
-Link til Dolly: https://dolly.ekstern.dev.nav.no/
-
-Et omfattende eksempel på bestilling av tilgang til dolly samt noe bruk av dolly er tilgjengelig på team helsearbeidsgiver sine docs her: https://github.com/navikt/sykepenger-im-lps-api/wiki/Testdata
+I Dolly kan du opprette syntetiske personer med forskjellige egenskaper og tilgjengeliggjøre dataene i valgte testmiljøer.
+Følg veiledningen under for å komme i gang.
 
 [[palogging]]
 ==== Pålogging
@@ -110,7 +149,7 @@ Savner du noe, meld inn på Slack-kanalen link:https://nav-it.slack.com/archives
 
 Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
 
-For mer informasjon om NAVs testmiljøer se: https://confluence.adeo.no/pages/viewpage.action?pageId=305341700
+For mer informasjon om Navs testmiljøer se: https://confluence.adeo.no/pages/viewpage.action?pageId=305341700
 
 image::dolly/miljoe_valg.png[Miljøvalg]
 
@@ -373,19 +412,19 @@ Hvis du gjentatte ganger blir logget ut eller ikke kommer inn kan det skyldes co
 [[dolly_retningslinjer]]
 === Retningslinjer Dolly
 
-Retningslinjer for bruk og forvaltning av Dolly, basert på overordnede retningslinjer for syntetiske testdata i NAV.
+Retningslinjer for bruk og forvaltning av Dolly, basert på overordnede retningslinjer for syntetiske testdata i Nav.
 
 [[dolly_retningslinjer_hensikt]]
 ==== Hensikt, målgrupper og ansvar
 
-Syntetiske testdata skal brukes i utvikling og forvaltning av NAVs IT-løsninger.
+Syntetiske testdata skal brukes i utvikling og forvaltning av Navs IT-løsninger.
 Ved unntaksvis bruk av produksjonsdata gjelder spesielle sikkerhetstiltak.
 Disse føringene er sentrale for å minimere og sikre kontroll med bruken av persondata:
 
 * Syntetiske testdata kan ikke kobles til reelle personer og er ikke personopplysninger
 * Produksjonsdata kan direkte eller indirekte knyttes til en enkeltperson og må håndteres som personopplysninger som må beskyttes gjennom tilgangskontroll, maskering, logging m.m.
 
-Retningslinjene gjelder for alle ansatte og eksterne som er involvert i utvikling av NAVs IT‑løsninger.
+Retningslinjene gjelder for alle ansatte og eksterne som er involvert i utvikling av Navs IT‑løsninger.
 Følgende har et spesielt ansvar:
 
 * Teamleder i produktteam har ansvaret for at retningslinjene følges av interne og eksterne ressurser i teamet
@@ -397,12 +436,12 @@ Sikkerhetsseksjonen har ansvaret for vedlikehold; endringsbehov kan meldes dit.
 
 Avgrensning (historisk):
 
-* NAV utviklet løsning for syntetiske testdata i 2018–2019. Syntetiske data blir gradvis tilgjengelig pr område/system.
+* Nav utviklet løsning for syntetiske testdata i 2018–2019. Syntetiske data blir gradvis tilgjengelig pr område/system.
 For områder der syntetiske data ikke er tilgjengelig vil sikkerhetsregler for unntak gjelde
 * Ny løsning for tilgangskontroll ved unntaksvis bruk av produksjonsdata vurderes av personvernprosjekter
 
 [[dolly_retningslinjer_bruk_syntetiske]]
-==== Bruk av syntetiske testdata i NAV
+==== Bruk av syntetiske testdata i Nav
 
 Syntetiske testdata skal brukes til utvikling og forvaltning, og er tilgjengelig som:
 
@@ -450,7 +489,7 @@ Unntak vurderes pr produktteam i samarbeid med behandlingsansvarlig og gjelder t
 *Begrensning i kopiering og bruk av produksjonsdata*
 
 * Diskresjonskode 6 og 7 fjernes alltid ved kopi/uttrekk
-* Ansatte i NAV fjernes alltid
+* Ansatte i Nav fjernes alltid
 * For Bisys: brukere bosatt i utlandet og dekket av paragraf 19 tas ut manuelt
 * Maskering brukes i overgangsperioder
 
@@ -530,6 +569,127 @@ xref:index.adoc#brukerveiledning[Brukerveiledning]
 
 xref:index.adoc#dolly_retningslinjer[Retningslinjer]
 
+[[faq]]
+== Ofte stilte spørsmål (FAQ)
+
+[[faq_hva_tilbyr_dere]]
+=== Hva tilbyr Dolly?
+
+Dolly tilbyr mulighet til å opprette syntetiske testpersoner med:
+
+* Grunnleggende persondata (navn, fødselsnummer, adresse, etc.)
+* Familierelasjoner (ektefelle, barn, foreldre, etc.)
+* Arbeidsforhold og inntekt
+* Ytelser (sykepenger, foreldrepenger, etc.)
+* Institusjonsopphold
+* Fullmakter og vergemål
+* Kontaktinformasjon
+* og mye mer
+
+Se xref:index.adoc#brukerveiledning[Brukerveiledning] for full oversikt over tilgjengelige egenskaper.
+
+Savner du noe? Kontakt oss på Slack-kanalen #dolly eller epost dolly@nav.no.
+
+[[faq_mangler_stoette]]
+=== Dere har ikke lagt til rette for vårt behov - hva gjør vi?
+
+Vi jobber kontinuerlig med å utvide Dolly basert på tilbakemeldinger fra brukere.
+
+Hvis du mangler funksjonalitet:
+
+1. Kontakt oss på Slack-kanalen #dolly
+2. Beskriv ditt behov så konkret som mulig:
+** Hva trenger du å teste?
+** Hvilke egenskaper eller data mangler?
+** Hvilke systemer skal dette brukes mot?
+3. Vi vil vurdere behovet og prioritere utviklingen
+
+Vi kan ikke alltid imøtekomme alle ønsker umiddelbart, men alle innspill hjelper oss å prioritere riktig.
+
+[[faq_organisasjon_ansatte]]
+=== Hvordan oppretter jeg en organisasjon med mange ansatte?
+
+For å opprette en organisasjon med mange ansatte i Dolly:
+
+1. Opprett først organisasjonen med ønsket organisasjonsnummer og egenskaper
+2. Opprett deretter personer som skal være ansatte
+3. Under egenskaper for personene, velg "Arbeidsforhold" og knytt dem til organisasjonens organisasjonsnummer
+4. Du kan opprette flere personer samtidig og knytte dem alle til samme organisasjon
+
+Tips: Bruk mal-funksjonalitet for å gjenbruke organisasjonsinformasjon når du oppretter flere ansatte.
+
+[[faq_sikkerhetstiltak]]
+=== Hvordan bruker jeg sikkerhetstiltak og adressebeskyttelse?
+
+Mange brukere er usikre på forskjellen mellom sikkerhetstiltak og adressebeskyttelse:
+
+* *Adressebeskyttelse (kode 6 og 7)*: Dette er offisielle beskyttelseskoder fra Folkeregisteret
+** Kode 6: Strengt fortrolig adresse
+** Kode 7: Fortrolig adresse
+* *Sikkerhetstiltak*: Generelle sikkerhetstiltak som kan legges til personer. For eksempel: "Nav-ansatt skal aldri være alene med bruker (på grunn av voldshistorikk)". Sikkerhetstiltaket her er altså for den Nav-ansatte, ikke for brukeren.
+* *Skjerming*: Brukes for å skjerme personer fra innsyn
+
+Mange brukere velger "Sikkerhetstiltak" når de egentlig trenger "Adressebeskyttelse". Velg riktig kategori basert på testscenarioet ditt:
+
+* Skal du teste håndtering av strengt fortrolige adresser → Bruk kode 6/7
+* Skal du teste generelle sikkerhetstiltak → Bruk sikkerhetstiltak
+
+[[faq_vergemaal_fullmakt]]
+=== Hva er forskjellen på vergemål og fullmakt?
+
+* *Vergemål*: En juridisk ordning der en person (verge) er oppnevnt av fylkesmannen til å ivareta interessene til en person som ikke kan ivareta egne interesser (f.eks. barn, personer med utviklingshemming)
+* *Fullmakt*: En frivillig avtale der en person gir en annen person rett til å handle på sine vegne i spesifikke situasjoner
+
+I Dolly kan du legge til begge:
+
+* For vergemål: Velg "Vergemål" under egenskaper
+* For fullmakt: Velg "Fullmakt" under egenskaper
+
+[[faq_prodlast]]
+=== Hvorfor er testpersonene mine borte etter prodlast?
+
+Testpersoner kan forsvinne etter en prodlast (migrering av data fra produksjon til testmiljø). Dette skyldes at prodlasten overskriver data i testmiljøet.
+
+Spesielt viktig å merke seg:
+
+* *Arena*: Ved datamigreringsaktiviteter i Arena kan syntetiske personer bli overskrevet
+* Følg med på varsler i kanalen #datamigrering for planlagte prodlaster
+* Hvis personene dine er borte etter en prodlast, må de opprettes på nytt
+
+Hva kan du gjøre?
+
+* *Gjenopprett gruppe* – det beste tiltaket etter en prodlast. Gå til gruppen din og klikk "GJENOPPRETT" i gruppeheaderen. Da lastes alle personene i gruppen inn på nytt til de valgte miljøene
+* Lagre bestillingene som maler slik at du enkelt kan gjenskape personene
+* Bruk Test-Norge personer som er mer stabile over tid
+* Kontakt oss på #dolly hvis du har kritiske testpersoner som må bevares
+
+[[faq_komplekse_relasjoner]]
+=== Hvordan lager jeg komplekse familierelasjoner?
+
+For å lage komplekse familierelasjoner i Dolly, for eksempel med partner og foreldreansvar:
+
+1. Opprett hovedperson
+2. Velg "Relasjoner" → "Ektefelle/Partner"
+3. Du kan enten opprette ny partner eller velge eksisterende person
+4. For å legge til barn: Velg "Relasjoner" → "Barn" eller "Foreldreansvar"
+5. Barn kan også opprettes med begge foreldrene automatisk
+
+Uten partner, men med foreldreansvar:
+
+1. Opprett person som skal ha foreldreansvar
+2. Opprett barn separat
+3. Velg "Legg til/endre" på personen
+4. Velg "Foreldreansvar" og knytt til barnet
+
+Mer komplekse strukturer:
+
+* Samboere uten formelt forhold
+* Delt foreldreansvar
+* Verge som ikke er forelder
+* Flere generasjoner
+
+For disse scenariene, bygg opp familien steg for steg ved å bruke "Legg til/endre" funksjonalitet og "Relasjoner". Se også xref:index.adoc#demo_legg-til-endre[Demo - Legg til/endre].
+
 [[proxyer]]
 == Proxyer
 
@@ -537,7 +697,7 @@ xref:index.adoc#dolly_retningslinjer[Retningslinjer]
 === Hensikt
 
 * Forenkle integrasjon for Dolly-relaterte applikasjoner
-* Skjule variasjon i sikkerhetsmekanismer (TokenX, Azure AD NAV, Azure AD Trygdeetaten, interne servicebrukere)
+* Skjule variasjon i sikkerhetsmekanismer (TokenX, Azure AD Nav, Azure AD Trygdeetaten, interne servicebrukere)
 * Forholde oss enkelt til nais accesspolicy og ha sentralisert kontroll
 * legge til cross-cutting funksjoner der det egner seg: tidsgrenser, retries, korrelasjonsid, strukturerte logger og metrikk
 
@@ -611,7 +771,6 @@ Proxy (lenke til repo), Cluster (proxyens primære cluster utledet fra accessPol
 |link:https://github.com/navikt/testnorge/tree/master/proxies/saf-proxy[saf-proxy] |dev-gcp |- |detektert-saf-MILJOE |http://saf-MILJOE.teamdokumenthandtering.svc.nais.local |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/sigrunstub-proxy[sigrunstub-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/skjermingsregister-proxy[skjermingsregister-proxy] |dev-gcp |- |detektert-skjermede-personer |https://skjermede-personer.dev.adeo.no |false |aktiv
-|link:https://github.com/navikt/testnorge/tree/master/proxies/sykemelding-proxy[sykemelding-proxy] |dev-gcp |https://testnav-sykemelding-proxy.intern.dev.nav.no |syfosmregler, tsm-input-dolly |http://syfosmregler.teamsykmelding.svc.cluster.local, http://tsm-input-dolly.tsm.svc.cluster.local |true |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/synthdata-meldekort-proxy[synthdata-meldekort-proxy] |dev-fss |https://testnav-synthdata-meldekort-proxy.intern.dev.nav.no |synthdata-arena-meldekort |https://synthdata-arena-meldekort.intern.dev.nav.no |true |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/texas-proxy[texas-proxy] |dev-gcp |https://dolly-texas-proxy.intern.dev.nav.no |samler alle andre proxyer (WIP) |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/trygdeetaten-nav-proxy[trygdeetaten-nav-proxy] |dev-gcp |- |detektert-synthdata-arena-meldekort |https://synthdata-arena-meldekort.intern.dev.nav.no |false |aktiv
@@ -637,7 +796,7 @@ https://testnav-nom-proxy.intern.dev.nav.no
 ----
 4. Kall endepunkter med gyldig TokenX/OBO-token.
 Velg riktig token-type basert på proxy (TokenX for sluttbrukersesjoner, Azure AD OBO for system-til-system)
-5. Hvis proxy krever kryss-tenant tilgang sørg for at applikasjonen din har riktige scopes/audience for innkommende token (NAV eller Trygdeetaten)
+5. Hvis proxy krever kryss-tenant tilgang sørg for at applikasjonen din har riktige scopes/audience for innkommende token (Nav eller Trygdeetaten)
 6. Overvåk logger (Elastic/Loki) for korrelasjonsid og eventuelle feil
 
 [[proxyer_feilsoking]]

@@ -303,6 +303,7 @@ class BestillingServiceTest {
                 .build();
 
         when(identRepository.findByIdent(ident)).thenReturn(Mono.just(testident));
+        when(identRepository.getBestillingerByIdent(ident)).thenReturn(Flux.empty());
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
         when(bestillingRepository.save(any())).thenReturn(Mono.just(savedBestilling));
@@ -335,6 +336,7 @@ class BestillingServiceTest {
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Mono.just(Testgruppe.builder().id(gruppeId).build()));
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(identRepository.findByGruppeId(eq(gruppeId), any(Pageable.class))).thenReturn(Flux.just(testident));
+        when(identRepository.getBestillingerFromGruppe(gruppeId)).thenReturn(Flux.empty());
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
         when(bestillingRepository.save(any())).thenReturn(Mono.just(savedBestilling));
         when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.empty());

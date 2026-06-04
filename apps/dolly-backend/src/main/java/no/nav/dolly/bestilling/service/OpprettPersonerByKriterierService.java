@@ -27,7 +27,6 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -101,7 +100,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .takeWhile(BooleanUtils::isFalse)
-                .concatMap(ok -> opprettProgress(bestilling, PDLF))
+                .concatMap(ok -> opprettPDLFProgress(bestilling))
                 .concatMap(progress -> opprettPerson(originator, progress))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)

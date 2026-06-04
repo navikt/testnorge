@@ -127,7 +127,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments, tilgjengeligeMi
 					bli sendt til Q1 <br />
 				</Alert>
 			)}
-			{skattekort && bestillingsdata?.environments?.every((env) => env === 'q4') && (
+			{skattekort && bestillingsdata?.environments?.length > 0 && bestillingsdata?.environments?.every((env) => env === 'q4') && (
 				<Alert variant={'info'} style={{ marginTop: 20 }}>
 					Innsending av skattekort er for øyeblikket ikke støttet i Q4, bestillingen vil bli sendt
 					til Q2.

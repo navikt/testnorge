@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.Strings;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,14 +21,14 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.resultset.SystemTyper.TPS_MESSAGING;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingTpsMessagingStatusMapper {
 
-    private static final List<String> HIDE_MILJOER = List.of("q1","q2","qx");
+    private static final List<String> HIDE_MILJOER = List.of("q1", "q2", "qx");
     private static final String OKEY = "OK";
     private static final String ADVARSEL = "Advarsel: ";
     private static final String FEIL = "Feil: ";
@@ -44,7 +44,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     .filter(progress -> isNotBlank(progress.getIdent()))
                     .map(progress ->
                             Stream.of(progress.getTpsMessagingStatus().split("\\$"))
-                                    .filter(Strings::isNotBlank)
+                                    .filter(StringUtils::isNotBlank)
                                     .filter(melding -> !melding.contains("Telefonnummer_slett"))
                                     .filter(melding -> !melding.contains("Sikkerhetstiltak_slett"))
                                     .filter(melding -> melding.split("#").length > 1)
@@ -67,8 +67,8 @@ public final class BestillingTpsMessagingStatusMapper {
             intermediateStatus.stream()
                     .filter(status -> !OKEY.equals(status.getMelding()) || intermediateStatus.stream()
                             .noneMatch(status2 -> !OKEY.equals(status2.getMelding()) &&
-                                    status.getMiljoe().equals(status2.getMiljoe()) &&
-                                    status.getIdent().equals(status2.getIdent())))
+                                                  status.getMiljoe().equals(status2.getMiljoe()) &&
+                                                  status.getIdent().equals(status2.getIdent())))
                     .forEach(entry -> {
                         if (statusMap.containsKey(entry.getMelding())) {
                             if (statusMap.get(entry.getMelding()).containsKey(entry.getMiljoe())) {
@@ -107,15 +107,15 @@ public final class BestillingTpsMessagingStatusMapper {
 
     private static String formatMsg(String message) {
 
-        if (StringUtils.containsIgnoreCase(message, ADVARSEL)) {
+        if (Strings.CI.contains(message, ADVARSEL)) {
             return decodeMsg(ADVARSEL + message.replace(" ADVARSEL", "")
                     .replace("_", " "));
         }
-        if (StringUtils.containsIgnoreCase(message, FEIL)) {
+        if (Strings.CI.contains(message, FEIL)) {
             return decodeMsg(FEIL + message.replace(" FEIL", "")
                     .replace("_", " "));
         }
-        if (StringUtils.containsIgnoreCase(message, "Startet ")) {
+        if (Strings.CI.contains(message, "Startet ")) {
             return decodeMsg(message.replace("Startet ", ""));
         }
         return message;
@@ -128,11 +128,11 @@ public final class BestillingTpsMessagingStatusMapper {
 
         } else {
             return status.contains(OKEY) ||
-                    status.toLowerCase().contains("person ikke funnet i tps") ||
-                    status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
-                    status.toLowerCase().contains("utgått fødselsnr") ||
-                    status.toLowerCase().contains("mottaker svarer ikke") && !status.toUpperCase().contains("MELDINGER TIL TPS") ||
-                    status.toLowerCase().contains("forbindelsen er ustabil")
+                   status.toLowerCase().contains("person ikke funnet i tps") ||
+                   status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
+                   status.toLowerCase().contains("utgått fødselsnr") ||
+                   status.toLowerCase().contains("mottaker svarer ikke") && !status.toUpperCase().contains("MELDINGER TIL TPS") ||
+                   status.toLowerCase().contains("forbindelsen er ustabil")
                     ? OKEY
                     : status;
         }

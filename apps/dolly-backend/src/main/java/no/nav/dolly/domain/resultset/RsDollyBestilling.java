@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
@@ -55,7 +56,7 @@ public class RsDollyBestilling {
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata", "getId");
 
     @JsonIgnore
-    private long id; // Ved gjenopprett vil denne ID kan ha verdi fra bestillingen som gjenopprettes
+    private long id; // Ved gjenopprett vil denne ID ha verdi fra bestillingen som gjenopprettes
 
     @Schema(description = "Sett av miljøer bestillingen skal deployes til")
     private Set<String> environments;
@@ -69,6 +70,7 @@ public class RsDollyBestilling {
     private List<RsFullmakt> fullmakt;
     private RsMedl medl;
     private List<RsInstdata> instdata;
+    private RsInstdataKdi instdataKdi;
     private List<RsAareg> aareg;
     private List<RsLignetInntekt> sigrunstub;
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
@@ -182,7 +184,7 @@ public class RsDollyBestilling {
                     try {
                         var object = method.invoke(this);
                         return nonNull(object) && (!(object instanceof List) || !((List<?>) object).isEmpty());
-                    } catch (IllegalAccessException | InvocationTargetException e) {
+                    } catch (IllegalAccessException | InvocationTargetException _) {
                         return true;
                     }
                 });

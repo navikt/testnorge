@@ -61,7 +61,13 @@ public class SkattekortClient implements ClientRegister {
         if (isNull(bestilling.getSkattekort()) || bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty()) {
             return Mono.empty();
         } else if (!isValidateOK(bestilling)) {
-            return oppdaterStatus(progress, "Avvik: Validering feilet: Trekkode er ikke gyldig");
+            var filteredMiljoer = bestilling.getEnvironments().stream()
+                    .filter(MILJOER_SUPPORTED::contains)
+                    .collect(Collectors.toSet());
+            var miljoer = filteredMiljoer.isEmpty() ? DEFAULT_MILJOER : filteredMiljoer;
+            return oppdaterStatus(progress, miljoer.stream()
+                    .map(miljo -> "%s:Avvik: Validering feilet: Trekkode er ikke gyldig".formatted(miljo))
+                    .collect(Collectors.joining(",")));
         }
 
         var filteredMiljoer = bestilling.getEnvironments().stream()

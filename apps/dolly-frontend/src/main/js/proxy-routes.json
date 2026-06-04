@@ -85,19 +85,9 @@
 		"changeOrigin": true
 	},
 	"/testnav-bruker-service/api": {
-
 		"changeOrigin": true
 	},
 	"/testnav-arbeidsplassencv-proxy": {
-		"changeOrigin": true
-	},
-	"/testnav-sykemelding-proxy": {
-		"changeOrigin": true
-	},
-	"/testnav-helsepersonell-service": {
-		"changeOrigin": true
-	},
-	"/testnav-sykemelding-api/api": {
 		"changeOrigin": true
 	},
 	"/generer-navn-service": {

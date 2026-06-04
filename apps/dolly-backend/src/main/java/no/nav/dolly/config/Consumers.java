@@ -31,8 +31,6 @@ public class Consumers {
     private ServerProperties testnavPdlForvalter;
     private ServerProperties testnavPdlProxy;
     private ServerProperties testnavPersonService;
-    private ServerProperties testnavSykemeldingApi;
-    private ServerProperties testnavSykemeldingProxy;
     private ServerProperties testnavTpsMessagingService;
     private ServerProperties yrkesskadeProxy;
     private ServerProperties arbeidssoekerregisteretProxy;

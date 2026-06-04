@@ -41,11 +41,17 @@ type ResultatProps = {
 	erOrganisasjon: boolean
 }
 
+const ERROR_KEYWORDS = ['feil', 'error']
+
 const bestillingHarFeil = (bestilling: Bestillingsstatus) => {
-	const statuser = bestilling?.status?.map((fagsystem) =>
-		fagsystem.statuser?.some((status) => status?.melding !== 'OK'),
+	return bestilling?.status?.some((fagsystem) =>
+		fagsystem.statuser?.some(
+			(status) =>
+				status?.melding &&
+				status.melding !== 'OK' &&
+				ERROR_KEYWORDS.some((kw) => status.melding.toLowerCase().includes(kw)),
+		),
 	)
-	return statuser?.some((value) => value)
 }
 
 export default function BestillingResultat({

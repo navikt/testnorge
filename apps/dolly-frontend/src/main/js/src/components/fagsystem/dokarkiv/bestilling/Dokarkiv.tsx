@@ -45,7 +45,7 @@ export const Dokarkiv = ({ dokarkivListe }: DokarkivProps) => {
 							<TitleValue title="Avsender type" value={dokarkiv.avsenderMottaker?.idType} />
 							<TitleValue title="Avsender ID" value={dokarkiv.avsenderMottaker?.id} />
 							<TitleValue title="Avsender navn" value={dokarkiv.avsenderMottaker?.navn} />
-							<TitleValue title="Antall vedlegg" value={dokarkiv.vedlegg?.length || '0'} />
+							<TitleValue title="Antall vedlegg" value={dokarkiv.vedlegg?.length || undefined} />
 						</React.Fragment>
 					)}
 				</DollyFieldArray>

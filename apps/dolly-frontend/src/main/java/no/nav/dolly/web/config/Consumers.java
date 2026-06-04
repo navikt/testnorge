@@ -34,7 +34,6 @@ public class Consumers {
     private ServerProperties testnavBrregstubProxy;
     private ServerProperties testnavBrukerService;
     private ServerProperties testnavDokarkivProxy;
-    private ServerProperties testnavHelsepersonellService;
     private ServerProperties testnavDollyProxy;
     private ServerProperties testnavInstProxy;
     private ServerProperties testnavJoarkDokumentService;
@@ -64,7 +63,6 @@ public class Consumers {
     private ServerProperties testnavLevendeArbeidsforholdAnsettelse;
     private ServerProperties testnavLevendeArbeidsforholdScheduler;
     private ServerProperties testnavYrkesskadeProxy;
-    private ServerProperties testnavSykemeldingProxy;
     private ServerProperties testnavNomProxy;
     private ServerProperties testnavAltinn3TilgangService;
     private ServerProperties testnavArbeidssoekerregisteretProxy;

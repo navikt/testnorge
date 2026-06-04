@@ -166,6 +166,115 @@ describe('useBestillingStream', () => {
 		})
 	})
 
+	it('should preserve fagsystems that disappear in subsequent SSE events', async () => {
+		const firstEvent: Partial<Bestilling> = {
+			id: 1,
+			gruppeId: 10,
+			ferdig: false,
+			stoppet: false,
+			antallLevert: 1,
+			antallIdenter: 5,
+			feil: null,
+			sistOppdatert: '2024-01-01T00:00:00',
+			status: [
+				{ id: 'AAREG', navn: 'Arbeidsregister', statuser: [] },
+				{ id: 'PDL_FORVALTER', navn: 'Ordre til PDL', statuser: [] },
+				{ id: 'KRRSTUB', navn: 'DKIF', statuser: [] },
+			],
+		}
+
+		const secondEvent: Partial<Bestilling> = {
+			id: 1,
+			gruppeId: 10,
+			ferdig: false,
+			stoppet: false,
+			antallLevert: 2,
+			antallIdenter: 5,
+			feil: null,
+			sistOppdatert: '2024-01-01T00:00:01',
+			status: [
+				{ id: 'AAREG', navn: 'Arbeidsregister', statuser: [{ melding: 'OK' }] },
+				{ id: 'PDL_FORVALTER', navn: 'Ordre til PDL', statuser: [{ melding: 'OK' }] },
+			],
+		}
+
+		const { result } = renderHook(() => useBestillingStream(1, false, true))
+
+		act(() => {
+			lastMockEventSource!.simulateOpen()
+		})
+
+		act(() => {
+			lastMockEventSource!.simulateMessage('progress', firstEvent)
+		})
+
+		await waitFor(() => {
+			expect(result.current.bestilling?.status).toHaveLength(3)
+		})
+
+		act(() => {
+			lastMockEventSource!.simulateMessage('progress', secondEvent)
+		})
+
+		await waitFor(() => {
+			const statusIds = result.current.bestilling?.status?.map((s) => s.id)
+			expect(statusIds).toContain('AAREG')
+			expect(statusIds).toContain('PDL_FORVALTER')
+			expect(statusIds).toContain('KRRSTUB')
+			expect(result.current.bestilling?.status).toHaveLength(3)
+		})
+	})
+
+	it('should use final backend state on completion without accumulated placeholders', async () => {
+		const progressEvent: Partial<Bestilling> = {
+			id: 1,
+			gruppeId: 10,
+			ferdig: false,
+			stoppet: false,
+			antallLevert: 1,
+			antallIdenter: 2,
+			feil: null,
+			sistOppdatert: '2024-01-01T00:00:00',
+			status: [
+				{ id: 'AAREG', navn: 'Arbeidsregister', statuser: [] },
+				{ id: 'KRRSTUB', navn: 'DKIF', statuser: [] },
+			],
+		}
+
+		const completedEvent: Partial<Bestilling> = {
+			id: 1,
+			gruppeId: 10,
+			ferdig: true,
+			stoppet: false,
+			antallLevert: 2,
+			antallIdenter: 2,
+			feil: null,
+			sistOppdatert: '2024-01-01T00:00:01',
+			status: [{ id: 'AAREG', navn: 'Arbeidsregister', statuser: [{ melding: 'OK' }] }],
+		}
+
+		const { result } = renderHook(() => useBestillingStream(1, false, true))
+
+		act(() => {
+			lastMockEventSource!.simulateOpen()
+			lastMockEventSource!.simulateMessage('progress', progressEvent)
+		})
+
+		await waitFor(() => {
+			expect(result.current.bestilling?.status).toHaveLength(2)
+		})
+
+		act(() => {
+			lastMockEventSource!.simulateMessage('completed', completedEvent)
+		})
+
+		await waitFor(() => {
+			expect(result.current.bestilling?.ferdig).toBe(true)
+			expect(result.current.bestilling?.status).toHaveLength(1)
+			expect(result.current.bestilling?.status?.[0]?.id).toBe('AAREG')
+		})
+	})
+
 	it('should fall back to polling on SSE error', async () => {
 		const { result } = renderHook(() => useBestillingStream(1, false, true))
 
