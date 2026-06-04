@@ -58,7 +58,7 @@ export const KelvinAapVisning = ({
 					{andreUtbetalinger && (
 						<>
 							<h4 style={{ width: '100%', marginTop: '0' }}>
-								Andre ytelser/utbetalinger (samordning)
+								Andre ytelser/utbetalinger (informasjon fra bruker)
 							</h4>
 							<div className="person-visning_content">
 								<TitleValue
