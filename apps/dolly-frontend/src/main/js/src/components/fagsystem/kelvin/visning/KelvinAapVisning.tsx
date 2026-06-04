@@ -48,7 +48,9 @@ export const KelvinAapVisning = ({
 							value={oversettBoolean(data.soeknad?.harYrkesskade)}
 						/>
 					</div>
-					<h4 style={{ width: '100%', marginTop: '0' }}>Andre ytelser/utbetalinger (samordning)</h4>
+					<h4 style={{ width: '100%', marginTop: '0' }}>
+						Andre ytelser/utbetalinger (informasjon fra bruker)
+					</h4>
 					<div className="person-visning_content">
 						<TitleValue
 							title="Stønad"
