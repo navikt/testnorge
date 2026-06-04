@@ -146,6 +146,7 @@ public class DashboardService {
                                         .toList())
                                 .totaltAntallOrganisasjoner(organisasjoner.getT1().size())
                                 .totaltUnikeBrukere((int) organisasjoner.getT1().values().stream()
+                                        .flatMap(Set::stream)
                                         .distinct()
                                         .count())
                                 .build()))
