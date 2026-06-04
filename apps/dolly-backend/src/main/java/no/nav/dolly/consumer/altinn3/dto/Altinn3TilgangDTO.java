@@ -13,4 +13,5 @@ public class Altinn3TilgangDTO {
 
     private String navn;
     private String organisasjonsnummer;
+    private String organisasjonsform;
 }

@@ -119,7 +119,7 @@ public class DashboardService {
     public Flux<DashboardOrganisasjonerDTO> getOrganisasjonerStatus() {
 
         return Mono.zip(altinn3TilgangServiceConsumer.getOrganisasjoner()
-                                .collect(Collectors.toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, Altinn3TilgangDTO::getNavn)),
+                                .collect(Collectors.toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, value -> value)),
                         brukerServiceConsumer.getAlleBrukere()
                                 .collect(Collectors.toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()
@@ -140,7 +140,14 @@ public class DashboardService {
                                 .organisasjoner(organisasjoner.getT1().entrySet().stream()
                                         .map(entry -> new DashboardOrganisasjonerDTO.Entry(
                                                 entry.getKey(),
-                                                oppslag.getT1().getOrDefault(entry.getKey(), "Ukjent organisasjon"),
+                                                oppslag.getT1().getOrDefault(entry.getKey(), Altinn3TilgangDTO.builder()
+                                                                .navn("Ukjent organisasjon")
+                                                                .build())
+                                                        .getNavn(),
+                                                oppslag.getT1().getOrDefault(entry.getKey(), Altinn3TilgangDTO.builder()
+                                                                .organisasjonsform("Ukjent organisasjonsform")
+                                                                .build())
+                                                        .getOrganisasjonsform(),
                                                 entry.getValue().size()))
                                         .sorted(Comparator.comparing(DashboardOrganisasjonerDTO.Entry::getNavn))
                                         .toList())

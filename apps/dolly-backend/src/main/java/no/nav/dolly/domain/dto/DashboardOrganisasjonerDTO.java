@@ -26,6 +26,7 @@ public class DashboardOrganisasjonerDTO {
 
         private String organisasjonsnummer;
         private String navn;
+        private String organisasjonsform;
         private Integer unikeBrukere;
     }
 }
