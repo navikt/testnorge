@@ -14,11 +14,13 @@ import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,6 +50,7 @@ public class DashboardService {
     private final BrukerRepository brukerRepository;
     private final BrukerServiceConsumer brukerServiceConsumer;
     private final TeamkatalogConsumer teamkatalogConsumer;
+    private final TeamRepository teamRepository;
 
     public Flux<DashboardPersonerDTO> getPersonerStatus() {
 
@@ -169,24 +172,28 @@ public class DashboardService {
 
     public Flux<DashboardDollyTeamsDTO> getDollyTeamsStatus() {
 
-        return bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
-                .groupBy(DollyTeamFragment::getInterval)
-                .flatMap(Flux::collectList)
-                .map(fragments -> DashboardDollyTeamsDTO.builder()
-                        .interval(fragments.getFirst().getInterval())
-                        .teams(fragments.stream()
-                                .map(fragment -> {
-                                    var info = fragment.getInformasjon().split("\\|", 2);
-                                    return new DashboardDollyTeamsDTO.Entry(info[0], info[1], toIntExact(fragment.getAntall()));
-                                })
-                                .sorted(Comparator.comparing(DashboardDollyTeamsDTO.Entry::getNavn))
-                                .toList())
-                        .totaltAntallTeams(fragments.size())
-                        .totaltUnikeBrukere(fragments.stream()
-                                .map(DollyTeamFragment::getAntall)
-                                .map(Long::intValue)
-                                .reduce(0, Integer::sum))
-                        .build())
+        return teamRepository.findAllTeamBrukere()
+                .collect(Collectors.toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
+                .flatMapMany(oppslag -> bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
+                        .groupBy(DollyTeamFragment::getInterval)
+                        .flatMap(Flux::collectList)
+                        .map(fragments -> DashboardDollyTeamsDTO.builder()
+                                .interval(fragments.getFirst().getInterval())
+                                .teams(fragments.stream()
+                                        .map(fragment -> {
+                                            var info = fragment.getInformasjon().split("\\|");
+                                            return new DashboardDollyTeamsDTO.Entry(info[0], info[1],
+                                                    toIntExact(oppslag.get(info[2])));
+                                        })
+                                        .sorted(Comparator.comparing(DashboardDollyTeamsDTO.Entry::getNavn))
+                                        .toList())
+                                .totaltAntallTeams(fragments.size())
+                                .totaltAntallMedlemmer(fragments.stream()
+                                        .map(fragment -> fragment.getInformasjon().split("\\|")[2])
+                                        .map(oppslag::get)
+                                        .map(Math::toIntExact)
+                                        .reduce(0, Integer::sum))
+                                .build()))
                 .sort(Comparator.comparing(DashboardDollyTeamsDTO::getInterval).reversed());
     }
 }

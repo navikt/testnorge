@@ -11,11 +11,13 @@ import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,6 +55,9 @@ class DashboardServiceTest {
 
     @Mock
     private TeamkatalogConsumer teamkatalogConsumer;
+
+    @Mock
+    private TeamRepository teamRepository;
 
     @InjectMocks
     private DashboardService dashboardService;
@@ -424,6 +429,7 @@ class DashboardServiceTest {
 
     @Test
     void shouldReturnEmptyDollyTeamsWhenNoFragments() {
+        when(teamRepository.findAllTeamBrukere()).thenReturn(Flux.empty());
         when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()).thenReturn(Flux.empty());
 
         StepVerifier.create(dashboardService.getDollyTeamsStatus())
@@ -432,8 +438,11 @@ class DashboardServiceTest {
 
     @Test
     void shouldParseDollyTeamInformasjonIntoNavnAndBeskrivelse() {
+        when(teamRepository.findAllTeamBrukere()).thenReturn(Flux.just(
+                DollyTeam2Fragment.builder().brukerid("1").antall(3L).build()
+        ));
         when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
-                .thenReturn(Flux.just(dollyTeamFragment(INTERVAL_1, "Team A", "En beskrivelse", 3L)));
+                .thenReturn(Flux.just(dollyTeamFragment(INTERVAL_1, "Team A", "En beskrivelse", "1")));
 
         StepVerifier.create(dashboardService.getDollyTeamsStatus())
                 .assertNext(dto -> {
@@ -441,33 +450,40 @@ class DashboardServiceTest {
                     var entry = dto.getTeams().getFirst();
                     assertThat(entry.getNavn()).isEqualTo("Team A");
                     assertThat(entry.getBeskrivelse()).isEqualTo("En beskrivelse");
-                    assertThat(entry.getUnikeBrukere()).isEqualTo(3);
+                    assertThat(entry.getAntallMedlemmer()).isEqualTo(3);
                 })
                 .verifyComplete();
     }
 
     @Test
-    void shouldSumTotaltUnikeBrukereAcrossTeams() {
+    void shouldSumTotaltAntallMedlemmerAcrossTeams() {
+        when(teamRepository.findAllTeamBrukere()).thenReturn(Flux.just(
+                DollyTeam2Fragment.builder().brukerid("4").antall(4L).build(),
+                DollyTeam2Fragment.builder().brukerid("6").antall(6L).build()
+        ));
         when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
                 .thenReturn(Flux.just(
-                        dollyTeamFragment(INTERVAL_1, "Team A", "Beskrivelse A", 4L),
-                        dollyTeamFragment(INTERVAL_1, "Team B", "Beskrivelse B", 6L)
+                        dollyTeamFragment(INTERVAL_1, "Team A", "Beskrivelse A", "4"),
+                        dollyTeamFragment(INTERVAL_1, "Team B", "Beskrivelse B", "6")
                 ));
 
         StepVerifier.create(dashboardService.getDollyTeamsStatus())
                 .assertNext(dto -> {
                     assertThat(dto.getTotaltAntallTeams()).isEqualTo(2);
-                    assertThat(dto.getTotaltUnikeBrukere()).isEqualTo(10);
+                    assertThat(dto.getTotaltAntallMedlemmer()).isEqualTo(10);
                 })
                 .verifyComplete();
     }
 
     @Test
     void shouldSortDollyTeamsByNavnAlphabetically() {
+        when(teamRepository.findAllTeamBrukere()).thenReturn(Flux.just(
+                DollyTeam2Fragment.builder().brukerid("1").antall(1L).build()
+        ));
         when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
                 .thenReturn(Flux.just(
-                        dollyTeamFragment(INTERVAL_1, "Zebra", "Z", 1L),
-                        dollyTeamFragment(INTERVAL_1, "Alpha", "A", 1L)
+                        dollyTeamFragment(INTERVAL_1, "Zebra", "Z", "1"),
+                        dollyTeamFragment(INTERVAL_1, "Alpha", "A", "1")
                 ));
 
         StepVerifier.create(dashboardService.getDollyTeamsStatus())
@@ -480,10 +496,13 @@ class DashboardServiceTest {
 
     @Test
     void shouldGroupDollyTeamFragmentsByIntervalIntoSeparateDtos() {
+        when(teamRepository.findAllTeamBrukere()).thenReturn(Flux.just(
+                DollyTeam2Fragment.builder().brukerid("1").antall(1L).build()
+        ));
         when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
                 .thenReturn(Flux.just(
-                        dollyTeamFragment(INTERVAL_1, "Team A", "A", 1L),
-                        dollyTeamFragment(INTERVAL_2, "Team B", "B", 1L)
+                        dollyTeamFragment(INTERVAL_1, "Team A", "A", "1"),
+                        dollyTeamFragment(INTERVAL_2, "Team B", "B", "1")
                 ));
 
         StepVerifier.create(dashboardService.getDollyTeamsStatus())
@@ -494,10 +513,13 @@ class DashboardServiceTest {
 
     @Test
     void shouldSortDollyTeamsStatusByIntervalDescending() {
+        when(teamRepository.findAllTeamBrukere()).thenReturn(Flux.just(
+                DollyTeam2Fragment.builder().brukerid("1").antall(1L).build()
+        ));
         when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
                 .thenReturn(Flux.just(
-                        dollyTeamFragment(INTERVAL_1, "Team A", "A", 1L),
-                        dollyTeamFragment(INTERVAL_2, "Team B", "B", 1L)
+                        dollyTeamFragment(INTERVAL_1, "Team A", "A", "1"),
+                        dollyTeamFragment(INTERVAL_2, "Team B", "B", "1")
                 ));
 
         var results = dashboardService.getDollyTeamsStatus().collectList().block();
@@ -535,11 +557,10 @@ class DashboardServiceTest {
                 .build();
     }
 
-    private static DollyTeamFragment dollyTeamFragment(String interval, String navn, String beskrivelse, long antall) {
+    private static DollyTeamFragment dollyTeamFragment(String interval, String navn, String beskrivelse, String brukerid) {
         return DollyTeamFragment.builder()
                 .interval(interval)
-                .informasjon(navn + "|" + beskrivelse)
-                .antall(antall)
+                .informasjon(navn + "|" + beskrivelse + "|" + brukerid)
                 .build();
     }
 }
