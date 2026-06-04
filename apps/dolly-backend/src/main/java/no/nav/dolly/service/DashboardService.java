@@ -77,7 +77,7 @@ public class DashboardService {
                 .map(Bruker::getEpost)
                 .distinct()
                 .buffer(100)
-                .flatMap(teamkatalogConsumer::getTeamForEpost, 5)
+                .flatMap(teamkatalogConsumer::getTeamForEpost, 3)
                 .collect(Collectors.toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getInterval)
