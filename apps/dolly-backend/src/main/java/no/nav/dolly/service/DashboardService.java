@@ -125,38 +125,42 @@ public class DashboardService {
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()
                         .groupBy(OrganisasjonFragment::getInterval)
                         .flatMap(Flux::collectList)
-                        .flatMap(fragments -> {
-                            var organisasjoner = new HashMap<String, Set<String>>();
-                            fragments.forEach(fragment -> {
-                                var orgNummer = oppslag.getT2().get(fragment.getBrukerid());
-                                organisasjoner.computeIfAbsent(orgNummer, _ -> new HashSet<>())
-                                        .add(fragment.getBrukerid());
-                            });
-                            return Mono.just(organisasjoner)
-                                    .zipWith(Mono.just(fragments.getFirst().getInterval()));
-                        })
-                        .map(organisasjoner -> DashboardOrganisasjonerDTO.builder()
-                                .interval(organisasjoner.getT2())
-                                .organisasjoner(organisasjoner.getT1().entrySet().stream()
-                                        .map(entry -> new DashboardOrganisasjonerDTO.Entry(
-                                                entry.getKey(),
-                                                oppslag.getT1().getOrDefault(entry.getKey(), Altinn3TilgangDTO.builder()
-                                                                .navn("Ukjent organisasjon")
-                                                                .build())
-                                                        .getNavn(),
-                                                oppslag.getT1().getOrDefault(entry.getKey(), Altinn3TilgangDTO.builder()
-                                                                .organisasjonsform("Ukjent organisasjonsform")
-                                                                .build())
-                                                        .getOrganisasjonsform(),
-                                                entry.getValue().size()))
+                        .flatMap(fragments -> Mono.just(
+                                Tuples.of(groupFragmentsByOrganisasjon(fragments, oppslag.getT2()), fragments.getFirst().getInterval())))
+                        .map(tuple -> DashboardOrganisasjonerDTO.builder()
+                                .interval(tuple.getT2())
+                                .organisasjoner(tuple.getT1().entrySet().stream()
+                                        .map(entry -> toOrganisasjonEntry(entry.getKey(), entry.getValue(), oppslag.getT1()))
                                         .sorted(Comparator.comparing(DashboardOrganisasjonerDTO.Entry::getNavn))
                                         .toList())
-                                .totaltAntallOrganisasjoner(organisasjoner.getT1().size())
-                                .totaltUnikeBrukere((int) organisasjoner.getT1().values().stream()
+                                .totaltAntallOrganisasjoner(tuple.getT1().size())
+                                .totaltUnikeBrukere((int) tuple.getT1().values().stream()
                                         .flatMap(Set::stream)
                                         .distinct()
                                         .count())
                                 .build()))
                 .sort(Comparator.comparing(DashboardOrganisasjonerDTO::getInterval).reversed());
+    }
+
+    private static Map<String, Set<String>> groupFragmentsByOrganisasjon(List<OrganisasjonFragment> fragments,
+                                                                         Map<String, String> brukerToOrgnummer) {
+
+        var grouped = new HashMap<String, Set<String>>();
+        fragments.forEach(fragment -> {
+            var orgNummer = brukerToOrgnummer.get(fragment.getBrukerid());
+            grouped.computeIfAbsent(orgNummer, _ -> new HashSet<>()).add(fragment.getBrukerid());
+        });
+        return grouped;
+    }
+
+    private static DashboardOrganisasjonerDTO.Entry toOrganisasjonEntry(String orgNummer,
+                                                                        Set<String> brukere,
+                                                                        Map<String, Altinn3TilgangDTO> organisasjonerOppslag) {
+
+        var info = organisasjonerOppslag.getOrDefault(orgNummer, Altinn3TilgangDTO.builder()
+                .navn("Ukjent organisasjon")
+                .organisasjonsform("Ukjent organisasjonsform")
+                .build());
+        return new DashboardOrganisasjonerDTO.Entry(orgNummer, info.getNavn(), info.getOrganisasjonsform(), brukere.size());
     }
 }

@@ -1,10 +1,16 @@
 package no.nav.dolly.service;
 
+import no.nav.dolly.consumer.altinn3.Altinn3TilgangServiceConsumer;
+import no.nav.dolly.consumer.altinn3.dto.Altinn3TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
+import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
@@ -30,6 +36,12 @@ class DashboardServiceTest {
     private static final LocalDate DATE_2 = LocalDate.of(2024, 1, 2);
     private static final String INTERVAL_1 = "2024-01";
     private static final String INTERVAL_2 = "2024-02";
+
+    @Mock
+    private Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
+
+    @Mock
+    private BrukerServiceConsumer brukerServiceConsumer;
 
     @Mock
     private BestillingRepository bestillingRepository;
@@ -263,6 +275,149 @@ class DashboardServiceTest {
         assertThat(results.get(1).getInterval()).isEqualTo(INTERVAL_1);
     }
 
+    // ── getOrganisasjonerStatus ──────────────────────────────────────────────
+
+    @Test
+    void shouldReturnEmptyOrganisasjonerWhenNoFragments() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.empty());
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.empty());
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()).thenReturn(Flux.empty());
+
+        StepVerifier.create(dashboardService.getOrganisasjonerStatus())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldResolveOrganisasjonNavnFromAltinn3Oppslag() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.just(
+                Altinn3TilgangDTO.builder()
+                        .organisasjonsnummer("123456789")
+                        .navn("Firma AS")
+                        .organisasjonsform("AS")
+                        .build()
+        ));
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.just(
+                BrukerDTO.builder().id("bruker1").organisasjonsnummer("123456789").build()
+        ));
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert())
+                .thenReturn(Flux.just(organisasjonFragment(INTERVAL_1, "bruker1")));
+
+        StepVerifier.create(dashboardService.getOrganisasjonerStatus())
+                .assertNext(dto -> {
+                    assertThat(dto.getOrganisasjoner()).hasSize(1);
+                    var entry = dto.getOrganisasjoner().getFirst();
+                    assertThat(entry.getOrganisasjonsnummer()).isEqualTo("123456789");
+                    assertThat(entry.getNavn()).isEqualTo("Firma AS");
+                    assertThat(entry.getOrganisasjonsform()).isEqualTo("AS");
+                    assertThat(entry.getUnikeBrukere()).isEqualTo(1);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldFallbackToUkjentWhenOrganisasjonNotInAltinn3() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.empty());
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.just(
+                BrukerDTO.builder().id("bruker1").organisasjonsnummer("999999999").build()
+        ));
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert())
+                .thenReturn(Flux.just(organisasjonFragment(INTERVAL_1, "bruker1")));
+
+        StepVerifier.create(dashboardService.getOrganisasjonerStatus())
+                .assertNext(dto -> {
+                    var entry = dto.getOrganisasjoner().getFirst();
+                    assertThat(entry.getNavn()).isEqualTo("Ukjent organisasjon");
+                    assertThat(entry.getOrganisasjonsform()).isEqualTo("Ukjent organisasjonsform");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCountUniqueUsersPerOrganisasjon() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.empty());
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.just(
+                BrukerDTO.builder().id("bruker1").organisasjonsnummer("111111111").build(),
+                BrukerDTO.builder().id("bruker2").organisasjonsnummer("111111111").build()
+        ));
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        organisasjonFragment(INTERVAL_1, "bruker1"),
+                        organisasjonFragment(INTERVAL_1, "bruker1"),
+                        organisasjonFragment(INTERVAL_1, "bruker2")
+                ));
+
+        StepVerifier.create(dashboardService.getOrganisasjonerStatus())
+                .assertNext(dto -> {
+                    assertThat(dto.getTotaltUnikeBrukere()).isEqualTo(2);
+                    assertThat(dto.getOrganisasjoner().getFirst().getUnikeBrukere()).isEqualTo(2);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGroupOrganisasjonFragmentsByIntervalIntoSeparateDtos() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.empty());
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.just(
+                BrukerDTO.builder().id("bruker1").organisasjonsnummer("111111111").build(),
+                BrukerDTO.builder().id("bruker2").organisasjonsnummer("222222222").build()
+        ));
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        organisasjonFragment(INTERVAL_1, "bruker1"),
+                        organisasjonFragment(INTERVAL_2, "bruker2")
+                ));
+
+        StepVerifier.create(dashboardService.getOrganisasjonerStatus())
+                .assertNext(dto -> assertThat(dto.getInterval()).isEqualTo(INTERVAL_2))
+                .assertNext(dto -> assertThat(dto.getInterval()).isEqualTo(INTERVAL_1))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSortOrganisasjonerStatusByIntervalDescending() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.empty());
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.just(
+                BrukerDTO.builder().id("bruker1").organisasjonsnummer("111111111").build(),
+                BrukerDTO.builder().id("bruker2").organisasjonsnummer("222222222").build()
+        ));
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        organisasjonFragment(INTERVAL_1, "bruker1"),
+                        organisasjonFragment(INTERVAL_2, "bruker2")
+                ));
+
+        var results = dashboardService.getOrganisasjonerStatus().collectList().block();
+        assertThat(results).isNotNull();
+        assertThat(results.get(0).getInterval()).isEqualTo(INTERVAL_2);
+        assertThat(results.get(1).getInterval()).isEqualTo(INTERVAL_1);
+    }
+
+    @Test
+    void shouldSortOrganisasjonerByNavnAlphabetically() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.just(
+                Altinn3TilgangDTO.builder().organisasjonsnummer("111").navn("Zebra AS").organisasjonsform("AS").build(),
+                Altinn3TilgangDTO.builder().organisasjonsnummer("222").navn("Alpha AS").organisasjonsform("AS").build()
+        ));
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.just(
+                BrukerDTO.builder().id("bruker1").organisasjonsnummer("111").build(),
+                BrukerDTO.builder().id("bruker2").organisasjonsnummer("222").build()
+        ));
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        organisasjonFragment(INTERVAL_1, "bruker1"),
+                        organisasjonFragment(INTERVAL_1, "bruker2")
+                ));
+
+        StepVerifier.create(dashboardService.getOrganisasjonerStatus())
+                .assertNext(dto -> {
+                    var names = dto.getOrganisasjoner().stream()
+                            .map(DashboardOrganisasjonerDTO.Entry::getNavn)
+                            .toList();
+                    assertThat(names).containsExactly("Alpha AS", "Zebra AS");
+                })
+                .verifyComplete();
+    }
+
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private static BestillingerFragment fragment(LocalDate dato, Long personer,
@@ -282,6 +437,13 @@ class DashboardServiceTest {
         return TeamFragment.builder()
                 .interval(interval)
                 .epost(epost)
+                .build();
+    }
+
+    private static OrganisasjonFragment organisasjonFragment(String interval, String brukerid) {
+        return OrganisasjonFragment.builder()
+                .interval(interval)
+                .brukerid(brukerid)
                 .build();
     }
 }
