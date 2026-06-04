@@ -28,6 +28,7 @@ export const KdiBestilling = ({ kdi }) => {
 							<KdiMelding
 								melding={melding}
 								id={'innsettelse' + idx}
+								annulleringListe={annullering}
 								tidspunktLabel="Innsettelsestidspunkt"
 							/>
 						)}
@@ -39,6 +40,7 @@ export const KdiBestilling = ({ kdi }) => {
 							<KdiMelding
 								melding={melding}
 								id={'loeslatelse' + idx}
+								annulleringListe={annullering}
 								tidspunktLabel="Løslatelsestidspunkt"
 							/>
 						)}
@@ -50,6 +52,7 @@ export const KdiBestilling = ({ kdi }) => {
 							<KdiMelding
 								melding={melding}
 								id={'avbruddStart' + idx}
+								annulleringListe={annullering}
 								tidspunktLabel="Tidspunkt for start på straffeavbrudd"
 							/>
 						)}
@@ -61,6 +64,7 @@ export const KdiBestilling = ({ kdi }) => {
 							<KdiMelding
 								melding={melding}
 								id={'avbruddSlutt' + idx}
+								annulleringListe={annullering}
 								tidspunktLabel="Tidspunkt for slutt på straffeavbrudd"
 							/>
 						)}
@@ -72,6 +76,7 @@ export const KdiBestilling = ({ kdi }) => {
 							<KdiMelding
 								melding={melding}
 								id={'forventetLoeslatelse' + idx}
+								annulleringListe={annullering}
 								tidspunktLabel="Forventet løslatt tidspunkt"
 							/>
 						)}

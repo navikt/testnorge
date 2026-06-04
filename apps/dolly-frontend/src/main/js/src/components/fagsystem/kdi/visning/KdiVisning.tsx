@@ -15,35 +15,50 @@ export const sjekkManglerKdiData = (kdiData) => {
 
 // TODO: Annullering som eget objekt som kan vises paa alle meldinger?
 
-export const KdiMelding = ({ melding, id, tidspunktLabel = 'Tidspunkt' }) => {
+export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Tidspunkt' }) => {
+	const annullering = annulleringListe?.find((a) => a.annullertMeldingId === melding.meldingId)
+
 	return (
-		<div className="person-visning_content" key={id}>
-			{/*TODO: hendelseId?*/}
-			{/*TODO: meldingId?*/}
-			<TitleValue
-				title="Publiseringstidspunkt"
-				value={formatDateTimeWithSeconds(melding.publiseringstidspunkt)}
-			/>
-			<TitleValue title="Kategori" value={showLabel('kdiKategori', melding.kategori)} />
-			<TitleValue
-				title="Organisasjonsnummer"
-				value={showLabel('fengsel', melding.organisasjonsnummer)} //TODO: Bruk nytt endepunkt
-			/>
-			<TitleValue title={tidspunktLabel} value={formatDateTimeWithSeconds(melding.tidspunkt)} />
-			<TitleValue
-				title="Er overført til utenlandsk fengsel"
-				value={oversettBoolean(melding.erOverfoertTilUtlandskfengsel)}
-			/>
-			<TitleValue
-				title="Er overført til varetekt med elektronisk kontroll"
-				value={oversettBoolean(melding.erOverfoertTilVaretektMedElektroniskKontroll)}
-			/>
-			<TitleValue
-				title="Forventet tidspunkt for slutt på straffeavbrudd"
-				value={formatDateTimeWithSeconds(melding.forventetAvbruddSluttTidspunkt)}
-			/>
-			{/*	TODO: innmeldingHendelseId?*/}
-		</div>
+		<>
+			<div className="person-visning_content" key={id}>
+				{/*TODO: hendelseId?*/}
+				{/*TODO: meldingId?*/}
+				<TitleValue
+					title="Publiseringstidspunkt"
+					value={formatDateTimeWithSeconds(melding.publiseringstidspunkt)}
+				/>
+				<TitleValue title="Kategori" value={showLabel('kdiKategori', melding.kategori)} />
+				<TitleValue
+					title="Organisasjonsnummer"
+					value={showLabel('fengsel', melding.organisasjonsnummer)} //TODO: Bruk nytt endepunkt
+				/>
+				<TitleValue title={tidspunktLabel} value={formatDateTimeWithSeconds(melding.tidspunkt)} />
+				<TitleValue
+					title="Er overført til utenlandsk fengsel"
+					value={oversettBoolean(melding.erOverfoertTilUtlandskfengsel)}
+				/>
+				<TitleValue
+					title="Er overført til varetekt med elektronisk kontroll"
+					value={oversettBoolean(melding.erOverfoertTilVaretektMedElektroniskKontroll)}
+				/>
+				<TitleValue
+					title="Forventet tidspunkt for slutt på straffeavbrudd"
+					value={formatDateTimeWithSeconds(melding.forventetAvbruddSluttTidspunkt)}
+				/>
+				{/*	TODO: innmeldingHendelseId?*/}
+			</div>
+			{annullering && (
+				<>
+					<h4 style={{ marginTop: '0px' }}>Annullering</h4>
+					<div className="person-visning_content">
+						<TitleValue
+							title="Publiseringstidspunkt"
+							value={formatDateTimeWithSeconds(annullering.publiseringstidspunkt)}
+						/>
+					</div>
+				</>
+			)}
+		</>
 	)
 }
 
@@ -89,6 +104,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 								<KdiMelding
 									melding={melding}
 									id={'innsettelse' + idx}
+									annulleringListe={annullering}
 									tidspunktLabel="Innsettelsestidspunkt"
 								/>
 							)}
@@ -100,6 +116,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 								<KdiMelding
 									melding={melding}
 									id={'loeslatelse' + idx}
+									annulleringListe={annullering}
 									tidspunktLabel="Løslatelsestidspunkt"
 								/>
 							)}
@@ -111,6 +128,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 								<KdiMelding
 									melding={melding}
 									id={'avbruddStart' + idx}
+									annulleringListe={annullering}
 									tidspunktLabel="Tidspunkt for start på straffeavbrudd"
 								/>
 							)}
@@ -122,6 +140,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 								<KdiMelding
 									melding={melding}
 									id={'avbruddSlutt' + idx}
+									annulleringListe={annullering}
 									tidspunktLabel="Tidspunkt for slutt på straffeavbrudd"
 								/>
 							)}
@@ -133,6 +152,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 								<KdiMelding
 									melding={melding}
 									id={'forventetLoeslatelse' + idx}
+									annulleringListe={annullering}
 									tidspunktLabel="Forventet løslatt tidspunkt"
 								/>
 							)}
