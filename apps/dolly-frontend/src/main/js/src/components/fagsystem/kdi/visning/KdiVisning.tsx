@@ -15,7 +15,7 @@ export const sjekkManglerKdiData = (kdiData) => {
 
 // TODO: Annullering som eget objekt som kan vises paa alle meldinger?
 
-const KdiMelding = ({ melding, id, tidspunktLabel = 'Tidspunkt' }) => {
+export const KdiMelding = ({ melding, id, tidspunktLabel = 'Tidspunkt' }) => {
 	return (
 		<div className="person-visning_content" key={id}>
 			{/*TODO: hendelseId?*/}
