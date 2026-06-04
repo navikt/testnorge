@@ -6,10 +6,12 @@ import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
+import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
@@ -418,6 +420,92 @@ class DashboardServiceTest {
                 .verifyComplete();
     }
 
+    // ── getDollyTeamsStatus ──────────────────────────────────────────────────
+
+    @Test
+    void shouldReturnEmptyDollyTeamsWhenNoFragments() {
+        when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()).thenReturn(Flux.empty());
+
+        StepVerifier.create(dashboardService.getDollyTeamsStatus())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldParseDollyTeamInformasjonIntoNavnAndBeskrivelse() {
+        when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
+                .thenReturn(Flux.just(dollyTeamFragment(INTERVAL_1, "Team A", "En beskrivelse", 3L)));
+
+        StepVerifier.create(dashboardService.getDollyTeamsStatus())
+                .assertNext(dto -> {
+                    assertThat(dto.getTeams()).hasSize(1);
+                    var entry = dto.getTeams().getFirst();
+                    assertThat(entry.getNavn()).isEqualTo("Team A");
+                    assertThat(entry.getBeskrivelse()).isEqualTo("En beskrivelse");
+                    assertThat(entry.getUnikeBrukere()).isEqualTo(3);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSumTotaltUnikeBrukereAcrossTeams() {
+        when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        dollyTeamFragment(INTERVAL_1, "Team A", "Beskrivelse A", 4L),
+                        dollyTeamFragment(INTERVAL_1, "Team B", "Beskrivelse B", 6L)
+                ));
+
+        StepVerifier.create(dashboardService.getDollyTeamsStatus())
+                .assertNext(dto -> {
+                    assertThat(dto.getTotaltAntallTeams()).isEqualTo(2);
+                    assertThat(dto.getTotaltUnikeBrukere()).isEqualTo(10);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSortDollyTeamsByNavnAlphabetically() {
+        when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        dollyTeamFragment(INTERVAL_1, "Zebra", "Z", 1L),
+                        dollyTeamFragment(INTERVAL_1, "Alpha", "A", 1L)
+                ));
+
+        StepVerifier.create(dashboardService.getDollyTeamsStatus())
+                .assertNext(dto -> {
+                    var names = dto.getTeams().stream().map(DashboardDollyTeamsDTO.Entry::getNavn).toList();
+                    assertThat(names).containsExactly("Alpha", "Zebra");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGroupDollyTeamFragmentsByIntervalIntoSeparateDtos() {
+        when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        dollyTeamFragment(INTERVAL_1, "Team A", "A", 1L),
+                        dollyTeamFragment(INTERVAL_2, "Team B", "B", 1L)
+                ));
+
+        StepVerifier.create(dashboardService.getDollyTeamsStatus())
+                .assertNext(dto -> assertThat(dto.getInterval()).isEqualTo(INTERVAL_2))
+                .assertNext(dto -> assertThat(dto.getInterval()).isEqualTo(INTERVAL_1))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSortDollyTeamsStatusByIntervalDescending() {
+        when(bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        dollyTeamFragment(INTERVAL_1, "Team A", "A", 1L),
+                        dollyTeamFragment(INTERVAL_2, "Team B", "B", 1L)
+                ));
+
+        var results = dashboardService.getDollyTeamsStatus().collectList().block();
+        assertThat(results).isNotNull();
+        assertThat(results.get(0).getInterval()).isEqualTo(INTERVAL_2);
+        assertThat(results.get(1).getInterval()).isEqualTo(INTERVAL_1);
+    }
+
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private static BestillingerFragment fragment(LocalDate dato, Long personer,
@@ -444,6 +532,14 @@ class DashboardServiceTest {
         return OrganisasjonFragment.builder()
                 .interval(interval)
                 .brukerid(brukerid)
+                .build();
+    }
+
+    private static DollyTeamFragment dollyTeamFragment(String interval, String navn, String beskrivelse, long antall) {
+        return DollyTeamFragment.builder()
+                .interval(interval)
+                .informasjon(navn + "|" + beskrivelse)
+                .antall(antall)
                 .build();
     }
 }

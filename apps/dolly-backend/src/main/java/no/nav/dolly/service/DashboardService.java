@@ -176,7 +176,7 @@ public class DashboardService {
                         .interval(fragments.getFirst().getInterval())
                         .teams(fragments.stream()
                                 .map(fragment -> {
-                                    var info = fragment.getInformasjon().split(",", 2);
+                                    var info = fragment.getInformasjon().split("\\|", 2);
                                     return new DashboardDollyTeamsDTO.Entry(info[0], info[1], toIntExact(fragment.getAntall()));
                                 })
                                 .sorted(Comparator.comparing(DashboardDollyTeamsDTO.Entry::getNavn))
