@@ -1,32 +1,24 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredString } from '@/utils/YupValidations'
+import { ifPresent } from '@/utils/YupValidations'
 
 export const dokarkivValidation = {
 	dokarkiv: ifPresent(
 		'$dokarkiv',
 		Yup.array().of(
 			Yup.object({
-				tittel: requiredString,
-				tema: requiredString,
-				journalfoerendeEnhet: Yup.string()
-					.optional()
-					.nullable()
-					.matches(/^\d*$/, 'Journalfoerende enhet må enten være blank eller et tall med 4 sifre')
-					.test(
-						'len',
-						'Journalfoerende enhet må enten være blank eller et tall med 4 sifre',
-						(val) => !val || (val && val.length === 4),
-					),
+				tittel: Yup.string().required('Tittel er påkrevd'),
+				tema: Yup.string().required('Tema er påkrevd'),
+				journalfoerendeEnhet: Yup.string().optional().nullable(),
 				sak: Yup.object({
-					sakstype: requiredString,
+					sakstype: Yup.string().required('Sakstype er påkrevd'),
 					fagsaksystem: Yup.string().when('sakstype', {
 						is: 'FAGSAK',
-						then: () => requiredString,
+						then: () => Yup.string().required('Fagsaksystem er påkrevd'),
 						otherwise: () => Yup.mixed().notRequired(),
 					}),
 					fagsakId: Yup.string().when('sakstype', {
 						is: 'FAGSAK',
-						then: () => requiredString,
+						then: () => Yup.string().required('Fagsak-ID er påkrevd'),
 						otherwise: () => Yup.mixed().notRequired(),
 					}),
 				}),
@@ -59,7 +51,11 @@ export const dokarkivValidation = {
 				}),
 				dokumenter: Yup.array().of(
 					Yup.object({
-						tittel: requiredString,
+						tittel: Yup.string().when('dokumentvarianter', {
+							is: (val: any) => val && val.length > 0,
+							then: () => Yup.string().required('Dokumenttittel er påkrevd'),
+							otherwise: () => Yup.string().optional().nullable(),
+						}),
 						brevkode: Yup.string().optional().nullable(),
 					}),
 				),
