@@ -10,8 +10,14 @@ app:
   config:
     bucket: synthdata-meldekort-model-bucket
     models:
-     - model_PERM
-     - model_DAGO
+     - model_ARBS
+     - model_ATTF
+     #- model_DAGO # Old relic, not currently in use by the API.
+     - model_DAGP
+     - model_FY
+     - model_INDIV
+     #- model_LONN # Old relic, not currently in use by the API.
+     #- model_PERM # Old relic, not currently in use by the API.
 
 
 

@@ -1,4 +1,4 @@
-package no.nav.dolly.synt.dagpenger;
+package no.nav.dolly.synt.meldekort;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @SpringBootApplication
-public class SyntDagpengerApplication {
+public class SyntMeldekortApplication {
 
     static void main(String[] args) {
-        new SpringApplicationBuilder(SyntDagpengerApplication.class)
+        new SpringApplicationBuilder(SyntMeldekortApplication.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }

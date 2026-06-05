@@ -37,9 +37,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
         - application: team-dolly-lokal-app
-        - application: testnav-synt-vedtakshistorikk-service
+        - application: testnav-oversikt-frontend
+        - application: testnav-synthdata-meldekort-proxy-nav
     outbound:
       rules:
         - application: logging
