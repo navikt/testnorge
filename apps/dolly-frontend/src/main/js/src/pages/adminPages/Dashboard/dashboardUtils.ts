@@ -1,6 +1,6 @@
-import { format, parseISO, subDays, subMonths } from 'date-fns'
+import { format, isMonday, isWeekend, parseISO, subDays } from 'date-fns'
 import { nb } from 'date-fns/locale'
-import { DashboardPersonerDTO, DashboardTeamsDTO } from '@/utils/hooks/useDashboard'
+import { type DashboardPersonerDTO, type DashboardTeamsDTO } from '@/utils/hooks/useDashboard'
 
 export type PersonTrendPoint = {
 	dato: string
@@ -35,6 +35,18 @@ export type TeamDistributionPoint = {
 	unikeBrukere: number
 }
 
+export type GenericTrendSeries = {
+	key: string
+	name: string
+	data: number[]
+	total: number
+}
+
+export type GenericTrendDataset = {
+	labels: string[]
+	series: GenericTrendSeries[]
+}
+
 export const MONTH_SCOPE_LAST_12 = 'LAST_12'
 export const MONTH_SCOPE_ALL = 'ALL'
 
@@ -46,6 +58,47 @@ export const toDisplayDate = (dato: string) => {
 		return format(parseISO(dato), 'dd.MM.yyyy')
 	} catch {
 		return dato
+	}
+}
+
+export type PreviousBusinessPeriod = {
+	dates: string[]
+	label: string
+	title: string
+	buttonLabel: string
+}
+
+export const getPreviousBusinessPeriod = (referenceDate = new Date()): PreviousBusinessPeriod => {
+	const friday = format(subDays(referenceDate, 1), 'yyyy-MM-dd')
+
+	if (isMonday(referenceDate)) {
+		const mondayFriday = format(subDays(referenceDate, 3), 'yyyy-MM-dd')
+		const mondaySaturday = format(subDays(referenceDate, 2), 'yyyy-MM-dd')
+		const mondaySunday = format(subDays(referenceDate, 1), 'yyyy-MM-dd')
+		return {
+			dates: [mondayFriday, mondaySaturday, mondaySunday],
+			label: `${toDisplayDate(mondayFriday)}–${toDisplayDate(mondaySunday)}`,
+			title: 'Siste hverdag + helg',
+			buttonLabel: 'Siste hverdag + helg',
+		}
+	}
+
+	if (isWeekend(referenceDate)) {
+		const fridayOffset = referenceDate.getDay() === 6 ? 1 : 2
+		const previousFriday = format(subDays(referenceDate, fridayOffset), 'yyyy-MM-dd')
+		return {
+			dates: [previousFriday],
+			label: toDisplayDate(previousFriday),
+			title: 'Siste hverdag',
+			buttonLabel: 'Siste hverdag',
+		}
+	}
+
+	return {
+		dates: [friday],
+		label: toDisplayDate(friday),
+		title: 'Siste hverdag',
+		buttonLabel: 'Siste hverdag',
 	}
 }
 
@@ -67,6 +120,48 @@ export const withinDateRange = (dato: string, fraDato: string, tilDato: string) 
 	return dato >= startDato && dato <= endDato
 }
 
+export const fillMissingPersonDays = (
+	personer: DashboardPersonerDTO[],
+	fraDato: string,
+	tilDato: string,
+): DashboardPersonerDTO[] => {
+	if (!fraDato || !tilDato) {
+		return [...personer].sort((a, b) => a.dato.localeCompare(b.dato))
+	}
+
+	const startDato = fraDato <= tilDato ? fraDato : tilDato
+	const endDato = fraDato <= tilDato ? tilDato : fraDato
+	const startDate = new Date(`${startDato}T00:00:00`)
+	const endDate = new Date(`${endDato}T00:00:00`)
+
+	if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+		return [...personer].sort((a, b) => a.dato.localeCompare(b.dato))
+	}
+
+	const personByDate = new Map(personer.map((personData) => [personData.dato, personData]))
+	const completedDays: DashboardPersonerDTO[] = []
+	let currentDate = startDate
+
+	while (currentDate <= endDate) {
+		const currentDateValue = format(currentDate, 'yyyy-MM-dd')
+		const personDataForDay = personByDate.get(currentDateValue)
+		completedDays.push(
+			personDataForDay ?? {
+				dato: currentDateValue,
+				personerTotalt: 0,
+				nye: 0,
+				gjenopprettede: 0,
+				pdlFeil: 0,
+				andreFeil: 0,
+			},
+		)
+		currentDate = new Date(currentDate)
+		currentDate.setDate(currentDate.getDate() + 1)
+	}
+
+	return completedDays
+}
+
 const toMonthDisplayDate = (interval: string) => {
 	try {
 		return format(parseISO(`${interval}-01`), 'MMM yyyy', { locale: nb })
@@ -76,8 +171,8 @@ const toMonthDisplayDate = (interval: string) => {
 }
 
 const normalizeInterval = (interval?: string, dato?: string) => {
-	if (interval && /^\d{4}-\d{2}$/.test(interval)) {
-		return interval
+	if (interval && /^\d{4}-\d{2}(-\d{2})?$/.test(interval)) {
+		return interval.slice(0, 7)
 	}
 
 	if (dato && /^\d{4}-\d{2}-\d{2}$/.test(dato)) {
@@ -135,6 +230,44 @@ export const toMonthlyTeamPoints = (dashboardTeams: DashboardTeamsDTO[]): Monthl
 		.filter((point): point is MonthlyTeamPoint => Boolean(point))
 		.sort((a, b) => a.interval.localeCompare(b.interval))
 
+export const toMonthlyOrganisasjonPoints = (
+	dashboardOrganisasjoner: DashboardOrganisasjonerDTO[],
+): MonthlyTeamPoint[] =>
+	dashboardOrganisasjoner
+		.map((row) => ({
+			interval: row.interval,
+			intervalVisning: toMonthDisplayDate(row.interval),
+			totaltUnikeBrukere: asNumber(row.totaltUnikeBrukere),
+			totaltAntallTeams: asNumber(row.totaltAntallOrganisasjoner),
+			teams: (row.organisasjoner ?? [])
+				.map((entry) => ({
+					team: entry.navn,
+					unikeBrukere: asNumber(entry.unikeBrukere),
+				}))
+				.filter((entry) => entry.team)
+				.sort((a, b) => b.unikeBrukere - a.unikeBrukere),
+		}))
+		.sort((a, b) => a.interval.localeCompare(b.interval))
+
+export const toMonthlyDollyTeamPoints = (
+	dashboardDollyTeams: DashboardDollyTeamsDTO[],
+): MonthlyTeamPoint[] =>
+	dashboardDollyTeams
+		.map((row) => ({
+			interval: row.interval,
+			intervalVisning: toMonthDisplayDate(row.interval),
+			totaltUnikeBrukere: asNumber(row.totaltUnikeBrukere),
+			totaltAntallTeams: asNumber(row.totaltAntallTeams),
+			teams: (row.teams ?? [])
+				.map((entry) => ({
+					team: entry.navn,
+					unikeBrukere: asNumber(entry.unikeBrukere),
+				}))
+				.filter((entry) => entry.team)
+				.sort((a, b) => b.unikeBrukere - a.unikeBrukere),
+		}))
+		.sort((a, b) => a.interval.localeCompare(b.interval))
+
 export const toPersonTrendData = (personer: DashboardPersonerDTO[]): PersonTrendPoint[] =>
 	personer.map((personData) => ({
 		dato: personData.dato,
@@ -145,6 +278,136 @@ export const toPersonTrendData = (personer: DashboardPersonerDTO[]): PersonTrend
 		pdlFeil: asNumber(personData.pdlFeil),
 		andreFeil: asNumber(personData.andreFeil),
 	}))
+
+const toPrettyFieldLabel = (fieldName: string) =>
+	fieldName
+		.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+		.replace(/_/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim()
+		.replace(/^./, (char) => char.toUpperCase())
+
+const isIsoDateValue = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value)
+const isMonthlyIntervalValue = (value: string) => /^\d{4}-\d{2}$/.test(value)
+
+const extractDateValue = (row: Record<string, unknown>): string | null => {
+	const preferredKeys = ['dato', 'date', 'day', 'interval']
+	for (const key of preferredKeys) {
+		const value = row[key]
+		if (typeof value === 'string') {
+			if (isIsoDateValue(value)) {
+				return value
+			}
+			if (key === 'interval' && isMonthlyIntervalValue(value)) {
+				return `${value}-01`
+			}
+		}
+	}
+	const fallbackValue = Object.values(row).find(
+		(value) =>
+			typeof value === 'string' && (isIsoDateValue(value) || isMonthlyIntervalValue(value)),
+	)
+	if (typeof fallbackValue !== 'string') {
+		return null
+	}
+	return isIsoDateValue(fallbackValue) ? fallbackValue : `${fallbackValue}-01`
+}
+
+const toDateRangeValues = (fraDato: string, tilDato: string) => {
+	const startDato = fraDato <= tilDato ? fraDato : tilDato
+	const endDato = fraDato <= tilDato ? tilDato : fraDato
+	return { startDato, endDato }
+}
+
+export const toGenericTrendDataset = (
+	rows: Record<string, unknown>[],
+	fraDato: string,
+	tilDato: string,
+): GenericTrendDataset => {
+	const rowsWithDate = rows
+		.map((row) => ({ row, dato: extractDateValue(row) }))
+		.filter((item): item is { row: Record<string, unknown>; dato: string } => Boolean(item.dato))
+		.sort((a, b) => a.dato.localeCompare(b.dato))
+
+	if (rowsWithDate.length === 0) {
+		return { labels: [], series: [] }
+	}
+
+	const numericKeys = Object.keys(rowsWithDate[0].row).filter(
+		(key) =>
+			key !== 'dato' &&
+			key !== 'date' &&
+			key !== 'day' &&
+			key !== 'interval' &&
+			!Array.isArray(rowsWithDate[0].row[key]) &&
+			rowsWithDate.some((item) => typeof item.row[key] === 'number'),
+	)
+
+	if (numericKeys.length === 0) {
+		return { labels: [], series: [] }
+	}
+
+	const hasMonthlyIntervals = rowsWithDate.some(
+		(item) => typeof item.row.interval === 'string' && isMonthlyIntervalValue(item.row.interval),
+	)
+	const rowsInRange =
+		fraDato && tilDato
+			? rowsWithDate.filter((item) => withinDateRange(item.dato, fraDato, tilDato))
+			: rowsWithDate
+
+	const valuesByDate = new Map(
+		rowsInRange.map((item) => {
+			const values = Object.fromEntries(
+				numericKeys.map((key) => [
+					key,
+					typeof item.row[key] === 'number' ? asNumber(item.row[key] as number) : 0,
+				]),
+			)
+			return [item.dato, values]
+		}),
+	)
+
+	const labels: string[] = []
+	const valuesByKey = new Map(numericKeys.map((key) => [key, [] as number[]]))
+
+	if (fraDato && tilDato && !hasMonthlyIntervals) {
+		const { startDato, endDato } = toDateRangeValues(fraDato, tilDato)
+		let currentDate = new Date(`${startDato}T00:00:00`)
+		const endDate = new Date(`${endDato}T00:00:00`)
+		while (currentDate <= endDate) {
+			const dateValue = format(currentDate, 'yyyy-MM-dd')
+			const dayValues = valuesByDate.get(dateValue)
+			labels.push(toDisplayDate(dateValue))
+			numericKeys.forEach((key) => valuesByKey.get(key)?.push(dayValues?.[key] ?? 0))
+			currentDate = new Date(currentDate)
+			currentDate.setDate(currentDate.getDate() + 1)
+		}
+	} else {
+		rowsInRange.forEach((item) => {
+			labels.push(
+				hasMonthlyIntervals ? toMonthDisplayDate(item.dato.slice(0, 7)) : toDisplayDate(item.dato),
+			)
+			numericKeys.forEach((key) => {
+				valuesByKey.get(key)?.push(valuesByDate.get(item.dato)?.[key] ?? 0)
+			})
+		})
+	}
+
+	const series = numericKeys.map((key) => {
+		const data = valuesByKey.get(key) ?? []
+		return {
+			key,
+			name: toPrettyFieldLabel(key),
+			data,
+			total: data.reduce((sum, value) => sum + value, 0),
+		}
+	})
+
+	return {
+		labels,
+		series,
+	}
+}
 
 export const toMonthlyTrendData = (points: MonthlyTeamPoint[]): MonthlyTrendPoint[] =>
 	points.map((point) => ({
@@ -157,7 +420,10 @@ export const toMonthlyTrendData = (points: MonthlyTeamPoint[]): MonthlyTrendPoin
 export const filterMonthlyTeamPoints = (
 	points: MonthlyTeamPoint[],
 	scope: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL,
-) => (scope === MONTH_SCOPE_ALL ? points : points.slice(-12))
+) => {
+	const sortedPoints = [...points].sort((a, b) => a.interval.localeCompare(b.interval))
+	return scope === MONTH_SCOPE_ALL ? sortedPoints : sortedPoints.slice(-12)
+}
 
 export const toMonthlyIntervalOptions = (points: MonthlyTeamPoint[]) =>
 	[...points]
@@ -172,65 +438,3 @@ export const toTeamDistributionForInterval = (
 		team: teamData.team,
 		unikeBrukere: teamData.unikeBrukere,
 	}))
-
-export const createDashboardMockData = (
-	_cycle: number,
-): {
-	dashboardPersoner: DashboardPersonerDTO[]
-	dashboardTeams: DashboardTeamsDTO[]
-} => {
-	const dashboardPersoner = Array.from({ length: 300 }, (_, index) => {
-		const dayOffset = 89 - index
-		const dato = format(subDays(new Date(), dayOffset), 'yyyy-MM-dd')
-		const nye = Math.floor(Math.random() * 60) + 10
-		const gjenopprettede = Math.floor(Math.random() * 40) + 5
-		const pdlFeil = Math.floor(Math.random() * 41)
-		const andreFeil = Math.floor(Math.random() * 41)
-		const personerTotalt = nye + gjenopprettede
-
-		return {
-			dato,
-			personerTotalt,
-			nye,
-			gjenopprettede,
-			pdlFeil,
-			andreFeil,
-		}
-	})
-
-	const teamNames = [
-		'Team Dolly',
-		'Team Schmetchy',
-		'Team Aurora',
-		'Team Hydra',
-		'Team Orion',
-		'Team Vega',
-		'Team Atlas',
-		'Team Nova',
-	]
-
-	const dashboardTeams = Array.from({ length: 24 }, (_, index) => {
-		const monthOffset = 23 - index
-		const interval = format(subMonths(new Date(), monthOffset), 'yyyy-MM')
-		const activeTeamCount = Math.floor(Math.random() * 5) + 4
-
-		const teams = Array.from({ length: activeTeamCount }, (_, teamIndex) => {
-			const nameIndex = Math.floor(Math.random() * teamNames.length)
-			return {
-				team: teamNames[nameIndex],
-				unikeBrukere: Math.floor(Math.random() * 45) + 6,
-			}
-		})
-
-		const totaltUnikeBrukere = teams.reduce((sum, team) => sum + team.unikeBrukere, 0)
-
-		return {
-			interval,
-			totaltUnikeBrukere,
-			totaltAntallTeams: activeTeamCount,
-			teams,
-		}
-	})
-
-	return { dashboardPersoner, dashboardTeams }
-}

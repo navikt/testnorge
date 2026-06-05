@@ -4,9 +4,9 @@ export {
 	DashboardKpiCard,
 	DashboardSectionCard,
 } from './dashboardSharedComponents'
+export { PersonAnalysisSection, PreviousDaySection } from './dashboardDayPersonSections'
 export {
+	GenericTrendSection,
 	MonthlyTeamDistributionSection,
 	MonthlyTeamTrendSection,
-	PersonAnalysisSection,
-	PreviousDaySection,
-} from './dashboardSections'
+} from './dashboardMonthlySections'

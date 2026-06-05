@@ -5,71 +5,102 @@ import {
 	getChartBaseOptions,
 	TOOLTIP_OPTIONS,
 } from './dashboardChartBase'
-import { MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
+import { GenericTrendSeries, MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
 
-export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[]): Options => ({
-	...getChartBaseOptions(
-		'Linjediagram med daglig utvikling av nye, gjenopprettede, PDL-feil og andre feil i valgt periode.',
-	),
-	xAxis: {
-		categories: personTrendData.map((point) => point.datoVisning),
-		title: { text: 'Dato' },
-		labels: {
-			style: {
-				fontSize: '12px',
+export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[]): Options => {
+	return {
+		...getChartBaseOptions(
+			'Linjediagram med daglig utvikling av nye, gjenopprettede, PDL-feil og andre feil i valgt periode.',
+		),
+		chart: {
+			...getChartBaseOptions('').chart,
+			type: 'line',
+			height: 360,
+			marginBottom: 112,
+		},
+		xAxis: {
+			categories: personTrendData.map((point) => point.datoVisning),
+			title: { text: undefined },
+			labels: {
+				reserveSpace: true,
+				autoRotation: [-45, -70],
+				autoRotationLimit: 80,
+				overflow: 'justify',
+				style: {
+					fontSize: '12px',
+				},
 			},
 		},
-	},
-	yAxis: {
-		title: { text: 'Antall' },
-		allowDecimals: false,
-	},
-	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
-	plotOptions: {
-		series: {
-			marker: {
-				enabled: true,
-				radius: 3,
+		yAxis: {
+			title: { text: 'Antall' },
+			allowDecimals: false,
+			min: 0,
+		},
+		legend: {
+			enabled: true,
+			layout: 'horizontal',
+			align: 'left',
+			verticalAlign: 'top',
+			itemMarginBottom: 4,
+		},
+		tooltip: { ...TOOLTIP_OPTIONS, shared: true },
+		plotOptions: {
+			series: {
+				showInLegend: true,
+				marker: {
+					enabled: true,
+					radius: 3,
+				},
 			},
 		},
-	},
-	series: [
-		{ type: 'line', name: 'Nye', data: personTrendData.map((point) => point.nye) },
-		{
-			type: 'line',
-			name: 'Gjenopprettede',
-			data: personTrendData.map((point) => point.gjenopprettede),
-		},
-		{
-			type: 'line',
-			name: 'PDL-feil',
-			data: personTrendData.map((point) => point.pdlFeil),
-			color: ERROR_PRIMARY_COLOR,
-		},
-		{
-			type: 'line',
-			name: 'Andre feil',
-			data: personTrendData.map((point) => point.andreFeil),
-			color: ERROR_SECONDARY_COLOR,
-		},
-	],
-})
+		series: [
+			{ type: 'line', name: 'Nye', data: personTrendData.map((point) => point.nye) },
+			{
+				type: 'line',
+				name: 'Gjenopprettede',
+				data: personTrendData.map((point) => point.gjenopprettede),
+			},
+			{
+				type: 'line',
+				name: 'PDL-feil',
+				data: personTrendData.map((point) => point.pdlFeil),
+				color: ERROR_PRIMARY_COLOR,
+			},
+			{
+				type: 'line',
+				name: 'Andre feil',
+				data: personTrendData.map((point) => point.andreFeil),
+				color: ERROR_SECONDARY_COLOR,
+			},
+		],
+	}
+}
 
 export const createMonthlyTeamTrendChartOptions = (
 	teamTrendData: MonthlyTrendPoint[],
+	options?: {
+		description?: string
+		secondSeriesName?: string
+	},
 ): Options => ({
 	...getChartBaseOptions(
-		'Linjediagram med månedlig utvikling i unike brukere og antall aktive teams.',
+		options?.description ||
+			'Linjediagram med månedlig utvikling i unike brukere og antall aktive teams.',
 	),
 	chart: {
 		...getChartBaseOptions('').chart,
 		type: 'line',
+		height: 360,
+		marginBottom: 112,
 	},
 	xAxis: {
 		categories: teamTrendData.map((point) => point.intervalVisning),
-		title: { text: 'Måned' },
+		title: { text: undefined },
 		labels: {
-			rotation: -30,
+			reserveSpace: true,
+			autoRotation: [-45, -70],
+			autoRotationLimit: 80,
+			overflow: 'justify',
 			style: {
 				fontSize: '12px',
 			},
@@ -79,7 +110,19 @@ export const createMonthlyTeamTrendChartOptions = (
 		title: { text: 'Antall' },
 		allowDecimals: false,
 	},
+	legend: {
+		enabled: true,
+		layout: 'horizontal',
+		align: 'left',
+		verticalAlign: 'top',
+		itemMarginBottom: 4,
+	},
 	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
+	plotOptions: {
+		series: {
+			showInLegend: true,
+		},
+	},
 	series: [
 		{
 			type: 'line',
@@ -88,8 +131,68 @@ export const createMonthlyTeamTrendChartOptions = (
 		},
 		{
 			type: 'line',
-			name: 'Antall teams',
+			name: options?.secondSeriesName || 'Antall teams',
 			data: teamTrendData.map((point) => point.totaltAntallTeams),
 		},
 	],
+})
+
+export const createGenericTrendChartOptions = ({
+	description,
+	xAxisTitle,
+	labels,
+	series,
+}: {
+	description: string
+	xAxisTitle?: string
+	labels: string[]
+	series: GenericTrendSeries[]
+}): Options => ({
+	...getChartBaseOptions(description),
+	chart: {
+		...getChartBaseOptions('').chart,
+		type: 'line',
+		height: 360,
+		marginBottom: 112,
+	},
+	xAxis: {
+		categories: labels,
+		title: { text: xAxisTitle || undefined },
+		labels: {
+			reserveSpace: true,
+			autoRotation: [-45, -70],
+			autoRotationLimit: 80,
+			overflow: 'justify',
+			style: {
+				fontSize: '12px',
+			},
+		},
+	},
+	yAxis: {
+		title: { text: 'Antall' },
+		allowDecimals: false,
+		min: 0,
+	},
+	legend: {
+		enabled: true,
+		layout: 'horizontal',
+		align: 'left',
+		verticalAlign: 'top',
+		itemMarginBottom: 4,
+	},
+	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
+	plotOptions: {
+		series: {
+			showInLegend: true,
+			marker: {
+				enabled: true,
+				radius: 3,
+			},
+		},
+	},
+	series: series.map((seriesItem) => ({
+		type: 'line',
+		name: seriesItem.name,
+		data: seriesItem.data,
+	})),
 })

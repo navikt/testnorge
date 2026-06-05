@@ -1,5 +1,9 @@
 export { createMonthlyTeamDistributionChartOptions } from './dashboardMonthlyTeamChartOptions'
-export { createMonthlyTeamTrendChartOptions, createPersonTrendChartOptions } from './dashboardTrendChartOptions'
+export {
+	createGenericTrendChartOptions,
+	createMonthlyTeamTrendChartOptions,
+	createPersonTrendChartOptions,
+} from './dashboardTrendChartOptions'
 export {
 	createPreviousDayChartOptions,
 	createPreviousDayErrorBreakdownChartOptions,

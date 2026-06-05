@@ -1,7 +1,7 @@
 import Highcharts, { type Options } from 'highcharts'
 import { Alert, Box, Button, Heading, HGrid, Label, VStack } from '@navikt/ds-react'
 import { HighchartsReact } from 'highcharts-react-official'
-import type { ReactNode } from 'react'
+import { type ReactNode, useEffect, useRef } from 'react'
 
 export const DashboardSectionCard = ({ children }: { children: ReactNode }) => (
 	<Box
@@ -16,7 +16,7 @@ export const DashboardSectionCard = ({ children }: { children: ReactNode }) => (
 	</Box>
 )
 
-export const DashboardKpiCard = ({ label, value }: { label: string; value: number }) => (
+export const DashboardKpiCard = ({ label, value }: { label: string; value: ReactNode }) => (
 	<Box
 		background="neutral-soft"
 		padding={{ xs: 'space-12', md: 'space-16' }}
@@ -26,9 +26,13 @@ export const DashboardKpiCard = ({ label, value }: { label: string; value: numbe
 	>
 		<VStack gap="space-4">
 			<Label size="small">{label}</Label>
-			<Heading size="medium" level="3">
-				{value}
-			</Heading>
+			{typeof value === 'number' || typeof value === 'string' ? (
+				<Heading size="medium" level="3">
+					{value}
+				</Heading>
+			) : (
+				value
+			)}
 		</VStack>
 	</Box>
 )
@@ -36,20 +40,37 @@ export const DashboardKpiCard = ({ label, value }: { label: string; value: numbe
 export const DashboardChartPanel = ({
 	options,
 	ariaLabel,
+	isLoading = false,
 }: {
 	options: Options
 	ariaLabel: string
-}) => (
-	<Box as="section" aria-label={ariaLabel}>
-		<Box width="100%" height="320px">
-			<HighchartsReact
-				highcharts={Highcharts}
-				options={options}
-				containerProps={{ style: { width: '100%', height: '100%' } }}
-			/>
+	isLoading?: boolean
+}) => {
+	const chartRef = useRef<HighchartsReact.RefObject>(null)
+
+	useEffect(() => {
+		const chart = chartRef.current?.chart
+		if (!chart) return
+		if (isLoading) {
+			chart.showLoading()
+		} else {
+			chart.hideLoading()
+		}
+	}, [isLoading])
+
+	return (
+		<Box as="section" aria-label={ariaLabel}>
+			<Box width="100%" height="320px">
+				<HighchartsReact
+					ref={chartRef}
+					highcharts={Highcharts}
+					options={options}
+					containerProps={{ style: { width: '100%', height: '100%' } }}
+				/>
+			</Box>
 		</Box>
-	</Box>
-)
+	)
+}
 
 export const DashboardHeaderActions = ({
 	mockModeEnabled,

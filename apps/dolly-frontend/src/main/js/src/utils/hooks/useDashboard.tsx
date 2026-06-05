@@ -30,6 +30,37 @@ export type DashboardTeamsDTO = {
 	totaltAntallTeams?: number
 }
 
+export type DashboardGenericTimeSeriesDTO = {
+	[key: string]: string | number | null | undefined
+}
+
+export type DashboardOrganisasjonEntryDTO = {
+	organisasjonsnummer: string
+	navn: string
+	organisasjonsform: string
+	unikeBrukere: number
+}
+
+export type DashboardDollyTeamEntryDTO = {
+	navn: string
+	beskrivelse: string
+	unikeBrukere: number
+}
+
+export type DashboardOrganisasjonerDTO = {
+	interval: string
+	totaltUnikeBrukere: number
+	totaltAntallOrganisasjoner: number
+	organisasjoner: DashboardOrganisasjonEntryDTO[]
+}
+
+export type DashboardDollyTeamsDTO = {
+	interval: string
+	totaltUnikeBrukere: number
+	totaltAntallTeams: number
+	teams: DashboardDollyTeamEntryDTO[]
+}
+
 export const useDashboard = () => {
 	const {
 		data: dashboardPersoner,
@@ -51,13 +82,49 @@ export const useDashboard = () => {
 		dedupingInterval: 15000,
 	})
 
+	const {
+		data: dashboardOrganisasjoner,
+		isLoading: loadingDashboardOrganisasjoner,
+		error: dashboardOrganisasjonerError,
+		mutate: mutateDashboardOrganisasjoner,
+	} = useSWR<DashboardOrganisasjonerDTO[], Error>(
+		DollyEndpoints.dashboardOrganisasjoner(),
+		fetcher,
+		{
+			revalidateOnFocus: false,
+			dedupingInterval: 15000,
+		},
+	)
+
+	const {
+		data: dashboardDollyTeams,
+		isLoading: loadingDashboardDollyTeams,
+		error: dashboardDollyTeamsError,
+		mutate: mutateDashboardDollyTeams,
+	} = useSWR<DashboardDollyTeamsDTO[], Error>(DollyEndpoints.dashboardDollyTeams(), fetcher, {
+		revalidateOnFocus: false,
+		dedupingInterval: 15000,
+	})
+
 	return {
 		dashboardPersoner: dashboardPersoner ?? [],
 		dashboardTeams: dashboardTeams ?? [],
+		dashboardOrganisasjoner: dashboardOrganisasjoner ?? [],
+		dashboardDollyTeams: dashboardDollyTeams ?? [],
 		loadingDashboardPersoner,
 		loadingDashboardTeams,
+		loadingDashboardOrganisasjoner,
+		loadingDashboardDollyTeams,
 		dashboardPersonerError,
 		dashboardTeamsError,
-		reloadDashboard: () => Promise.all([mutateDashboardPersoner(), mutateDashboardTeams()]),
+		dashboardOrganisasjonerError,
+		dashboardDollyTeamsError,
+		reloadDashboard: () =>
+			Promise.all([
+				mutateDashboardPersoner(),
+				mutateDashboardTeams(),
+				mutateDashboardOrganisasjoner(),
+				mutateDashboardDollyTeams(),
+			]),
 	}
 }

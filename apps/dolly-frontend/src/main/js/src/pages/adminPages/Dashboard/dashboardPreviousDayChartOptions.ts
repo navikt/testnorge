@@ -19,13 +19,16 @@ export const createPreviousDayChartOptions = ({
 	chart: {
 		...getChartBaseOptions('').chart,
 		type: 'column',
-		marginBottom: 72,
+		marginBottom: 108,
 	},
 	xAxis: {
 		categories: ['Opprettet', 'Gjenopprettet'],
 		title: { text: undefined },
 		labels: {
 			reserveSpace: true,
+			align: 'center',
+			x: 0,
+			y: 18,
 			style: {
 				fontSize: '12px',
 			},
@@ -38,7 +41,7 @@ export const createPreviousDayChartOptions = ({
 		allowDecimals: false,
 		min: 0,
 		labels: {
-			y: -4,
+			y: 0,
 		},
 	},
 	plotOptions: {
@@ -49,6 +52,11 @@ export const createPreviousDayChartOptions = ({
 			groupPadding: 0.12,
 			dataLabels: {
 				enabled: true,
+				inside: false,
+				crop: false,
+				overflow: 'allow',
+				allowOverlap: true,
+				y: -6,
 				formatter: function () {
 					const pointValue = Number(this.y ?? 0)
 					return pointValue > 0 ? `${pointValue}` : ''
@@ -58,28 +66,29 @@ export const createPreviousDayChartOptions = ({
 	},
 	tooltip: {
 		...TOOLTIP_OPTIONS,
-		shared: true,
+		shared: false,
 		formatter: function () {
-			const hoveredPoints = (this.points ?? []).filter((point) => Number(point.y ?? 0) > 0)
-			const pointRows = hoveredPoints.map(
-				(point) =>
-					`<span style="color:${point.color}">\u25cf</span> ${point.series.name}: <b>${point.y}</b>`,
-			)
-			return pointRows.join('<br/>')
+			const value = Number(this.y ?? 0)
+			const category =
+				typeof this.point?.category === 'string'
+					? this.point.category
+					: this.x === 0
+						? 'Opprettet'
+						: this.x === 1
+							? 'Gjenopprettet'
+							: `${this.x}`
+			return `${category}: <b>${value}</b>`
 		},
 	},
 	series: [
 		{
 			type: 'column',
-			name: 'Opprettet',
-			color: 'var(--ax-accent-700)',
-			data: [nye, 0],
-		},
-		{
-			type: 'column',
-			name: 'Gjenopprettet',
-			color: 'var(--ax-info-700)',
-			data: [0, gjenopprettede],
+			name: 'Antall',
+			colorByPoint: true,
+			data: [
+				{ y: nye, color: 'var(--ax-accent-700)' },
+				{ y: gjenopprettede, color: 'var(--ax-info-700)' },
+			],
 		},
 	],
 })

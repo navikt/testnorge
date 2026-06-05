@@ -243,4 +243,12 @@ export default class DollyEndpoints {
 	static dashboardTeams() {
 		return `${uri}/dashboard/teams`
 	}
+
+	static dashboardOrganisasjoner() {
+		return `${uri}/dashboard/organisasjoner`
+	}
+
+	static dashboardDollyTeams() {
+		return `${uri}/dashboard/dollyteams`
+	}
 }

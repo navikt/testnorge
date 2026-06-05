@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
-import { FingerButtonIcon, InformationSquareIcon, TenancyIcon } from '@navikt/aksel-icons'
+import {
+	FingerButtonIcon,
+	InformationSquareIcon,
+	LineGraphIcon,
+	TenancyIcon,
+} from '@navikt/aksel-icons'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 
@@ -11,7 +16,8 @@ export const AdminDropdown = () => {
 		setIsActive(
 			location?.pathname === '/orgtilgang' ||
 				location?.pathname === '/levendearbeidsforhold' ||
-				location?.pathname === '/infostriper',
+				location?.pathname === '/infostriper' ||
+				location?.pathname === '/dashboard',
 		)
 	}, [location])
 
@@ -30,6 +36,10 @@ export const AdminDropdown = () => {
 			<PreloadableActionMenuItem route="/infostriper" style={{ color: '#212529' }}>
 				<InformationSquareIcon title="a11y-title" fontSize="1.5rem" />
 				<DropdownStyledLink href="/infostriper">Administrer infostriper</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+			<PreloadableActionMenuItem route="/dashboard" style={{ color: '#212529' }}>
+				<LineGraphIcon title="a11y-title" fontSize="1.5rem" />
+				<DropdownStyledLink href="/dashboard">Dashboard</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 		</ActionMenuWrapper>
 	)
