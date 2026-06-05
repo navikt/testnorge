@@ -15,7 +15,6 @@ import no.nav.dolly.synt.aap.dto.Vedtak115Dto;
 import no.nav.dolly.synt.aap.dto.VedtakRequestDto;
 import no.nav.dolly.synt.aap.onnx.OnnxService;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,13 +43,13 @@ class AapVedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = AapVedtakDto.class)))
             )
     )
-    ResponseEntity<List<AapVedtakDto>> generateAap(
+    List<AapVedtakDto> generateAap(
             @RequestBody List<VedtakRequestDto> requests,
             @RequestParam(name = "tilDato", defaultValue = "true") boolean brukInnsendtTilDato) {
 
         var generated = onnxService.generateAap(requests, brukInnsendtTilDato);
         log.info("Generated {} result(s) for /aap", generated.size());
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 
@@ -65,13 +64,13 @@ class AapVedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = AapVedtakDto.class)))
             )
     )
-    ResponseEntity<List<AapVedtakDto>> generateFilteredAap(
+    List<AapVedtakDto> generateFilteredAap(
             @RequestBody List<VedtakRequestDto> requests,
             @RequestParam(name = "tilDato", defaultValue = "true") boolean brukInnsendtTilDato) {
 
         var generated = onnxService.generateFilteredAap(requests, brukInnsendtTilDato);
         log.info("Generated {} result(s) for /aap/filtered", generated.size());
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 
@@ -86,11 +85,11 @@ class AapVedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = Vedtak115Dto.class)))
             )
     )
-    ResponseEntity<List<Vedtak115Dto>> generate115(@RequestBody List<VedtakRequestDto> requests) {
+    List<Vedtak115Dto> generate115(@RequestBody List<VedtakRequestDto> requests) {
 
         var generated = onnxService.generate115(requests);
         log.info("Generated {} result(s) for /11_5", generated.size());
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 
@@ -105,11 +104,11 @@ class AapVedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = AatforAaunguforFriMkVedtakDto.class)))
             )
     )
-    ResponseEntity<List<AatforAaunguforFriMkVedtakDto>> generateFriMk(@RequestBody List<VedtakRequestDto> requests) {
+    List<AatforAaunguforFriMkVedtakDto> generateFriMk(@RequestBody List<VedtakRequestDto> requests) {
 
         var generated = onnxService.generateFriMk(requests);
         log.info("Generated {} result(s) for /fri_mk", generated.size());
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 
@@ -124,11 +123,11 @@ class AapVedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = AatforAaunguforFriMkVedtakDto.class)))
             )
     )
-    ResponseEntity<List<AatforAaunguforFriMkVedtakDto>> generateAaungufor(@RequestBody List<VedtakRequestDto> requests) {
+    List<AatforAaunguforFriMkVedtakDto> generateAaungufor(@RequestBody List<VedtakRequestDto> requests) {
 
         var generated = onnxService.generateAaungufor(requests);
         log.info("Generated {} result(s) for /aaungufor", generated.size());
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 
@@ -143,11 +142,11 @@ class AapVedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = AatforAaunguforFriMkVedtakDto.class)))
             )
     )
-    ResponseEntity<List<AatforAaunguforFriMkVedtakDto>> generateAatfor(@RequestBody List<VedtakRequestDto> requests) {
+    List<AatforAaunguforFriMkVedtakDto> generateAatfor(@RequestBody List<VedtakRequestDto> requests) {
 
         var generated = onnxService.generateAatfor(requests);
         log.info("Generated {} result(s) for /aatfor", generated.size());
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 }
