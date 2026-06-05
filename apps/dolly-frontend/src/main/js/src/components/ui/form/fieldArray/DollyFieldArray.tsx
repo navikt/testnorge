@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
-import Button from '@/components/ui/button/Button'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'
 import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
 import { useFieldArray, useFormContext } from 'react-hook-form'
+import { Button } from '@navikt/ds-react'
+import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -21,10 +22,13 @@ export const FieldArrayAddButton = ({
 	disabled = false,
 }) => (
 	<Button
-		kind="add-circle"
+		variant="tertiary"
+		size="xsmall"
+		icon={<PlusCircleIcon aria-hidden />}
 		onClick={onClick}
 		title={hoverText || `Legg til ${addEntryButtonText.toLowerCase()}`}
 		disabled={disabled}
+		style={{ marginBottom: '15px' }}
 	>
 		{addEntryButtonText}
 	</Button>
@@ -34,8 +38,9 @@ const DeleteButton = ({ onClick }) =>
 	!onClick ? null : (
 		<Button
 			className="dolly-delete-button"
-			kind="trashcan"
-			fontSize="1.4rem"
+			variant="tertiary"
+			size="small"
+			icon={<TrashIcon aria-hidden />}
 			onClick={onClick}
 			title="Fjern"
 		/>
