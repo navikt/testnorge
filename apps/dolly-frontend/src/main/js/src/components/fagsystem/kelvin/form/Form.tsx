@@ -64,7 +64,7 @@ export const KelvinAapForm = () => {
 						size="small"
 					/>
 				</CheckboxWrapper>
-				<h3>Andre ytelser/utbetalinger (samordning)</h3>
+				<h3>Andre ytelser/utbetalinger (informasjon fra bruker)</h3>
 				<div className={'flexbox--full-width'}>
 					<FormSelect
 						name={`${andreUtbetalingerPath}.stoenad`}

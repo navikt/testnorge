@@ -14,9 +14,6 @@ public interface TeamBrukerRepository extends ReactiveCrudRepository<TeamBruker,
     Mono<Void> deleteByTeamId(Long teamId);
 
     @Modifying
-    Mono<Void> deleteByBrukerId(Long brukerId);
-
-    @Modifying
     Mono<Void> deleteByTeamIdAndBrukerId(Long teamId, Long brukerId);
 
     Flux<TeamBruker> findByTeamId(Long teamId);

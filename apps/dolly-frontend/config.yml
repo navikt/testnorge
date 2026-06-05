@@ -49,7 +49,6 @@ spec:
         - application: testnav-adresse-service
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-bruker-service
-        - application: testnav-helsepersonell-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service

@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_ORDRE;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j

@@ -6,7 +6,7 @@ export const initialKelvinAap = {
 			hvemBetaler: '',
 		},
 		loenn: '',
-		stoenad: [],
+		stoenad: ['NEI'],
 	},
 	erStudent: false,
 	harMedlemskap: false,

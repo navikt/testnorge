@@ -16,7 +16,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.checkAndUpdateStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j

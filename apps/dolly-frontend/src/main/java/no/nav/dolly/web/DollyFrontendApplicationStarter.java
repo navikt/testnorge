@@ -24,6 +24,7 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -52,6 +53,7 @@ public class DollyFrontendApplicationStarter {
     };
 
     @Bean("dollyFrontendRouteLocator")
+    @Profile("!test")
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
@@ -73,7 +75,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
                 .route(createRoute(consumers.getTestnavDollySearchService(), "testnav-dolly-search-service"))
                 .route(createRoute(consumers.getTestnavArbeidsplassenCVProxy()))
-                .route(createRoute(consumers.getTestnavHelsepersonellService()))
                 .route(createRoute(consumers.getTestnavPersonService(), "person-service"))
                 .route(createRoute(consumers.getGenererNavnService()))
                 .route(createRoute(consumers.getTestnavKodeverkService()))

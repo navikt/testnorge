@@ -6,7 +6,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class DollyBackendApplicationStarter {
-    public static void main(String[] args) {
+
+    static void main(String[] args) {
         new SpringApplicationBuilder(DollyBackendApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
