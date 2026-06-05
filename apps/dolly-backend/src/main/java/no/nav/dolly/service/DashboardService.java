@@ -76,7 +76,7 @@ public class DashboardService {
                 .filter(bruker -> isNotBlank(bruker.getEpost()))
                 .map(Bruker::getEpost)
                 .distinct()
-                .buffer(100)
+                .buffer(500)
                 .flatMap(teamkatalogConsumer::getTeamForEpost, 3)
                 .collect(Collectors.toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
