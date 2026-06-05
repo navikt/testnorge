@@ -45,5 +45,18 @@ class MeldekortMapperTest {
 
     }
 
+    @Test
+    void shouldAlignTopLevelFlagsWithDayLevelData() {
+
+        var prediction = new OnnxPrediction("model_DAGP_example.onnx", "label", 0.7, Map.of("class_0", 0.3, "class_1", 0.6, "class_2", 0.2));
+        var result = MeldekortMapper.fromPredictions(MeldekortType.DAGP, 3, java.util.List.of(prediction), null);
+
+        assertThat(result.arbeidet()).isEqualTo(result.meldekortDager().stream().anyMatch(day -> day.arbeidetTimerSum() > 0.0));
+        assertThat(result.syk()).isEqualTo(result.meldekortDager().stream().anyMatch(GeneratedMeldekortDag::syk));
+        assertThat(result.annetFravaer()).isEqualTo(result.meldekortDager().stream().anyMatch(GeneratedMeldekortDag::annetFravaer));
+        assertThat(result.kurs()).isEqualTo(result.meldekortDager().stream().anyMatch(GeneratedMeldekortDag::kurs));
+
+    }
+
 }
 

@@ -29,10 +29,6 @@ class MeldekortMapper {
         var rng = new Random(seed);
 
         var arbeidssoker = rng.nextDouble() < clamp(0.15 + (signalA * 0.7), 1.0);
-        var arbeidet = rng.nextDouble() < clamp(0.20 + (signalB * 0.65), 1.0);
-        var syk = rng.nextDouble() < clamp(0.05 + (signalC * 0.45), 1.0);
-        var annetFravaer = rng.nextDouble() < clamp(0.03 + ((1.0 - signalA) * 0.30), 1.0);
-        var kurs = rng.nextDouble() < clamp((meldekortType == MeldekortType.ATTF ? 0.25 : 0.05) + (signalB * 0.35), 1.0);
         var forskudd = rng.nextDouble() < clamp(0.10 + ((1.0 - signalB) * 0.25) + (signalC * 0.20), 1.0);
 
         var dagmeldinger = new ArrayList<GeneratedMeldekortDag>();
@@ -54,6 +50,11 @@ class MeldekortMapper {
                     meldekortType.name()
             ));
         }
+
+        var arbeidet = dagmeldinger.stream().anyMatch(dag -> dag.arbeidetTimerSum() > 0.0);
+        var syk = dagmeldinger.stream().anyMatch(GeneratedMeldekortDag::syk);
+        var annetFravaer = dagmeldinger.stream().anyMatch(GeneratedMeldekortDag::annetFravaer);
+        var kurs = dagmeldinger.stream().anyMatch(GeneratedMeldekortDag::kurs);
 
         return new GeneratedMeldekort(
                 arbeidssoker,
