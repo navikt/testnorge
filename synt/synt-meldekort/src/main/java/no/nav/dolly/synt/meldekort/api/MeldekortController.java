@@ -70,13 +70,19 @@ class MeldekortController {
             throw new IllegalArgumentException("num_to_generate must be zero or positive");
         }
 
+        log.info(
+                "Generating {} meldekort for meldegruppe {}...",
+                numToGenerate,
+                meldegruppe
+        );
+        var started = System.currentTimeMillis();
         var arbeidstimerOverride = parseArbeidstimer(arbeidstimer);
         var generated = onnxService.generateMeldekort(meldegruppe, numToGenerate, arbeidstimerOverride);
         log.info(
-                "Generated {} meldekort for meldegruppe {} with requested count {}",
+                "Generated {} meldekort for meldegruppe {} in {}ms",
                 generated.size(),
                 meldegruppe,
-                numToGenerate
+                System.currentTimeMillis() - started
         );
         return generated;
 
