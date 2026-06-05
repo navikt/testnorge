@@ -1,3 +1,7 @@
+spring:
+  config:
+    import: "dolly-application.yml"
+
 springdoc:
   api-docs:
     version: OPENAPI_3_0
@@ -12,26 +16,3 @@ server:
   servlet:
     context-path: /
   shutdown: graceful
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-    import: "sm://"
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
-
-app:
-  config:
-    bucket: synthdata-meldekort-model-bucket
-    models:
-      - model_ARBS
-      - model_ATTF
-      - model_DAGP
-      - model_FY
-      - model_INDIV
