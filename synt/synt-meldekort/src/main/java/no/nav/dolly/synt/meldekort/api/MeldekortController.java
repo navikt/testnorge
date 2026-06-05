@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.synt.meldekort.onnx.MeldekortType;
 import no.nav.dolly.synt.meldekort.onnx.OnnxService;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +41,7 @@ class MeldekortController {
                     content = @Content(array = @ArraySchema(schema = @Schema(type = "string")))
             )
     )
-    ResponseEntity<List<String>> generateData(
+    List<String> generateData(
             @PathVariable
             @Parameter(
                     name = "meldegruppe",
@@ -79,7 +78,7 @@ class MeldekortController {
                 meldegruppe,
                 numToGenerate
         );
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 
