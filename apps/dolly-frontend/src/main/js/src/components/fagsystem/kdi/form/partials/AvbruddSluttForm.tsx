@@ -5,7 +5,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
 
-export const AvbruddSluttForm = ({ formMethods, path }: KdiMeldingFieldsProps) => {
+export const AvbruddSluttForm = ({ formMethods, path, fengselOptions }: KdiMeldingFieldsProps) => {
 	const meldingId = formMethods.getValues(`${path}.meldingId`)
 
 	return (
@@ -25,8 +25,8 @@ export const AvbruddSluttForm = ({ formMethods, path }: KdiMeldingFieldsProps) =
 			<FormSelect
 				name={`${path}.organisasjonsnummer`}
 				label="Organisasjonsnummer"
-				options={Options('fengsel')} //TODO: Kan hentes fra nytt endepunkt
-				size="large"
+				options={fengselOptions}
+				size="xlarge"
 				isClearable={false}
 			/>
 			<FormDatepicker

@@ -31,8 +31,6 @@ import {
 	useArenaData,
 	useDokarkivData,
 	useHistarkData,
-	useInstData,
-	useKdiData,
 	usePensjonsavtaleData,
 	usePoppData,
 	useTpDataForhold,
@@ -119,6 +117,7 @@ import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
 import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
+import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {

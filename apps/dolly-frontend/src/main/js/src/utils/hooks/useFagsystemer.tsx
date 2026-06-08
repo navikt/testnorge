@@ -5,14 +5,11 @@ import {
 	multiFetcherAll,
 	multiFetcherArena,
 	multiFetcherDokarkiv,
-	multiFetcherInst,
 	multiFetcherPensjon,
-	postFetcher,
 } from '@/api'
 import {
 	useArenaEnvironments,
 	useDokarkivEnvironments,
-	useInstEnvironments,
 	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
 
@@ -38,14 +35,6 @@ const tpForholdUrl = (ident, miljoer) =>
 
 const tpYtelseUrl = (miljo, ordningNr) =>
 	`/testnav-dolly-proxy/pensjon/api/v1/tp/ytelse?ordning=${ordningNr}&miljo=${miljo}`
-
-const instUrl = (ident, miljoer) =>
-	miljoer?.map((miljo) => ({
-		url: `/testnav-dolly-proxy/inst/api/v1/institusjonsopphold/person?environments=${miljo}`,
-		miljo: miljo,
-	}))
-
-const kdiUrl = '/testnav-dolly-proxy/inst/api/v2/kdi/person/soek'
 
 const arenaUrl = (miljoer) =>
 	miljoer?.map((miljoe) => ({
@@ -215,37 +204,6 @@ export const useTransaksjonIdPensjon = (ident, harBestilling) => {
 
 	return {
 		data: miljoData?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useInstData = (ident, harInstBestilling) => {
-	const { instEnvironments } = useInstEnvironments()
-
-	const { data, isLoading, error } = useSWR<any, Error>(
-		[harInstBestilling ? instUrl(ident, instEnvironments) : null, { norskident: ident }],
-		([url, headers]) => multiFetcherInst(url, headers),
-	)
-
-	return {
-		instData: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useKdiData = (ident, harKdiBestilling) => {
-	// TODO: Henter forloepig bare fra q2, kan skrives om til aa hente fra alle mijoer ved behov
-	const { data, isLoading, error } = useSWR<any, Error>(
-		ident && harKdiBestilling ? [kdiUrl, ident] : null,
-		([url, norskident]: [string, string]) =>
-			postFetcher(url, { environment: 'q2', norskident: norskident }),
-		{ errorRetryCount: 0, revalidateOnFocus: false },
-	)
-
-	return {
-		kdiData: data?.data,
 		loading: isLoading,
 		error: error,
 	}

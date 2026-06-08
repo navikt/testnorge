@@ -24,6 +24,7 @@ import {
 	FieldArrayAddButton,
 } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { validation } from '@/components/fagsystem/kdi/form/validation'
+import { useFengsel } from '@/utils/hooks/useInstitusjon'
 
 const meldingstyper = [
 	{
@@ -77,6 +78,14 @@ export const KdiForm = () => {
 		fieldArrays[key].fields.map((field, idx) => ({ key, header, Form, fieldId: field.id, idx })),
 	)
 
+	const { fengsler, loading, error } = useFengsel()
+	const fengselOptions = fengsler
+		? Object.entries(fengsler).map(([key, value]) => ({
+				value: key,
+				label: `${key} - ${value}`,
+			}))
+		: []
+
 	return (
 		<Vis attributt={instdataKdiAttributt}>
 			<Panel
@@ -98,7 +107,11 @@ export const KdiForm = () => {
 									whiteBackground
 									showDeleteButton
 								>
-									<Form formMethods={formMethods} path={`instdataKdi.${key}[${idx}]`} />
+									<Form
+										formMethods={formMethods}
+										path={`instdataKdi.${key}[${idx}]`}
+										fengselOptions={fengselOptions}
+									/>
 								</DollyFaBlokk>
 							))}
 							<div className="flexbox--flex-wrap">

@@ -6,6 +6,7 @@ import React from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDateTimeWithSeconds, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import { useFengsel } from '@/utils/hooks/useInstitusjon'
 
 // TODO: Fiks denne
 export const sjekkManglerKdiData = (kdiData) => {
@@ -13,10 +14,13 @@ export const sjekkManglerKdiData = (kdiData) => {
 	// return kdiData?.length < 1 || kdiData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
-// TODO: Annullering som eget objekt som kan vises paa alle meldinger?
-
 export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Tidspunkt' }) => {
 	const annullering = annulleringListe?.find((a) => a.annullertMeldingId === melding.meldingId)
+
+	const { fengsler, loading, error } = useFengsel()
+	const fengselLabel = fengsler
+		? `${melding.organisasjonsnummer} - ${fengsler[melding.organisasjonsnummer]}`
+		: melding.organisasjonsnummer
 
 	return (
 		<>
@@ -28,10 +32,7 @@ export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Ti
 					value={formatDateTimeWithSeconds(melding.publiseringstidspunkt)}
 				/>
 				<TitleValue title="Kategori" value={showLabel('kdiKategori', melding.kategori)} />
-				<TitleValue
-					title="Organisasjonsnummer"
-					value={showLabel('fengsel', melding.organisasjonsnummer)} //TODO: Bruk nytt endepunkt
-				/>
+				<TitleValue title="Organisasjonsnummer" value={fengselLabel} />
 				<TitleValue title={tidspunktLabel} value={formatDateTimeWithSeconds(melding.tidspunkt)} />
 				<TitleValue
 					title="Er overført til utenlandsk fengsel"

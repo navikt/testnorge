@@ -5,7 +5,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
 
-export const InnsettelseForm = ({ formMethods, path }: KdiMeldingFieldsProps) => {
+export const InnsettelseForm = ({ formMethods, path, fengselOptions }: KdiMeldingFieldsProps) => {
 	// TODO: Naar man sletter melding som har annullering maa annullering med tilsvarende meldingId også slettes
 	const meldingId = formMethods.getValues(`${path}.meldingId`)
 
@@ -26,8 +26,8 @@ export const InnsettelseForm = ({ formMethods, path }: KdiMeldingFieldsProps) =>
 			<FormSelect
 				name={`${path}.organisasjonsnummer`}
 				label="Organisasjonsnummer"
-				options={Options('fengsel')} //TODO: Kan hentes fra nytt endepunkt
-				size="large"
+				options={fengselOptions}
+				size="xlarge"
 				isClearable={false}
 			/>
 			<FormDatepicker
