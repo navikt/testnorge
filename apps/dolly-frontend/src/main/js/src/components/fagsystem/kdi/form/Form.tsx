@@ -23,6 +23,7 @@ import {
 	DollyFieldArrayWrapper,
 	FieldArrayAddButton,
 } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { validation } from '@/components/fagsystem/kdi/form/validation'
 
 const meldingstyper = [
 	{
@@ -116,3 +117,5 @@ export const KdiForm = () => {
 		</Vis>
 	)
 }
+
+KdiForm.validation = validation

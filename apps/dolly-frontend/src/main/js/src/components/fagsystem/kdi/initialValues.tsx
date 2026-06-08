@@ -6,7 +6,7 @@ export const initialInnsettelse = {
 	publiseringstidspunkt: new Date(), //TODO: Alle publiseringstidspunkt maa settes i form for at de skal settes til now ved render av aktuell melding
 	kategori: '',
 	organisasjonsnummer: '874718602',
-	tidspunkt: '',
+	tidspunkt: null,
 }
 
 export const initialLoeslatelse = {
@@ -15,7 +15,7 @@ export const initialLoeslatelse = {
 	publiseringstidspunkt: new Date(),
 	kategori: '',
 	organisasjonsnummer: '874718602',
-	tidspunkt: '',
+	tidspunkt: null,
 	erOverfoertTilUtlandskfengsel: false,
 	erOverfoertTilVaretektMedElektroniskKontroll: false,
 }
@@ -26,8 +26,8 @@ export const initialAvbruddStart = {
 	publiseringstidspunkt: new Date(),
 	kategori: '',
 	organisasjonsnummer: '874718602',
-	tidspunkt: '',
-	forventetAvbruddSluttTidspunkt: '',
+	tidspunkt: null,
+	forventetAvbruddSluttTidspunkt: null,
 }
 
 export const initialAvbruddSlutt = {
@@ -36,7 +36,7 @@ export const initialAvbruddSlutt = {
 	publiseringstidspunkt: new Date(),
 	kategori: '',
 	organisasjonsnummer: '874718602',
-	tidspunkt: '',
+	tidspunkt: null,
 }
 
 export const initialForventetLoeslatelse = {
@@ -44,7 +44,7 @@ export const initialForventetLoeslatelse = {
 	hendelseId: null,
 	publiseringstidspunkt: new Date(),
 	innmeldingHendelseId: '',
-	tidspunkt: '',
+	tidspunkt: null,
 }
 
 export const initialAnnullering = {
