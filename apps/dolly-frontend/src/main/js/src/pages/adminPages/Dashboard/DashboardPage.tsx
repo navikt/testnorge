@@ -22,6 +22,10 @@ initAccessibilityModule?.(Highcharts)
 export default () => {
 	const isAdmin = useErDollyAdmin()
 	const d = useDashboardData()
+	const isDevDashboardMode =
+		typeof window !== 'undefined' &&
+		(window.location.hostname.includes('localhost') ||
+			window.location.hostname.includes('dolly-frontend-dev'))
 
 	if (!isAdmin) {
 		return <AdminAccessDenied />
@@ -35,11 +39,13 @@ export default () => {
 					<p>Statistikk for syntetisering av identer og bruk av Dolly.</p>
 				</Box>
 
-				<DashboardHeaderActions
-					mockModeEnabled={d.mockModeEnabled}
-					onSeedMockData={d.onSeedMockData}
-					onShowRealData={d.onShowRealData}
-				/>
+				{isDevDashboardMode && (
+					<DashboardHeaderActions
+						mockModeEnabled={d.mockModeEnabled}
+						onSeedMockData={d.onSeedMockData}
+						onShowRealData={d.onShowRealData}
+					/>
+				)}
 
 				<PreviousDaySection
 					selectedDayDisplayLabel={d.selectedDayDisplayLabel}

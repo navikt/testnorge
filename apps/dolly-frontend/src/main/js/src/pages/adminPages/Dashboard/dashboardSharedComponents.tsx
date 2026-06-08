@@ -47,6 +47,13 @@ export const DashboardChartPanel = ({
 	isLoading?: boolean
 }) => {
 	const chartRef = useRef<HighchartsReact.RefObject>(null)
+	const chartHeightOption = options.chart?.height
+	const containerHeight =
+		typeof chartHeightOption === 'number'
+			? `${chartHeightOption}px`
+			: typeof chartHeightOption === 'string'
+				? chartHeightOption
+				: '320px'
 
 	useEffect(() => {
 		const chart = chartRef.current?.chart
@@ -60,12 +67,12 @@ export const DashboardChartPanel = ({
 
 	return (
 		<Box as="section" aria-label={ariaLabel}>
-			<Box width="100%" height="320px">
+			<Box width="100%">
 				<HighchartsReact
 					ref={chartRef}
 					highcharts={Highcharts}
 					options={options}
-					containerProps={{ style: { width: '100%', height: '100%' } }}
+					containerProps={{ style: { width: '100%', height: containerHeight } }}
 				/>
 			</Box>
 		</Box>

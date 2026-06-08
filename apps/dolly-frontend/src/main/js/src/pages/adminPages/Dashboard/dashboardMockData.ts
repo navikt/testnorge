@@ -103,7 +103,7 @@ export const createDashboardMockData = (
 
 	const dollyTeamPool: DashboardDollyTeamEntryDTO[] = [
 		{ navn: 'Team Dolly', beskrivelse: 'Kloning og syntetisering', unikeBrukere: 0 },
-		{ navn: 'Team Villsau', beskrivelse: 'Frie sjeler i villamarken', unikeBrukere: 0 },
+		{ navn: 'Team Villsau', beskrivelse: 'Frie sjeler i villmarken', unikeBrukere: 0 },
 		{ navn: 'Team Lam', beskrivelse: 'Rask og varm problemløsning', unikeBrukere: 0 },
 		{ navn: 'Team Saueull', beskrivelse: 'Myk datahåndtering siden 2023', unikeBrukere: 0 },
 		{ navn: 'Team Gjeter', beskrivelse: 'Vi holder orden på flokken', unikeBrukere: 0 },

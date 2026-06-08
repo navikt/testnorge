@@ -1,6 +1,11 @@
 import { format, isMonday, isWeekend, parseISO, subDays } from 'date-fns'
 import { nb } from 'date-fns/locale'
-import { type DashboardPersonerDTO, type DashboardTeamsDTO } from '@/utils/hooks/useDashboard'
+import {
+	type DashboardDollyTeamsDTO,
+	type DashboardOrganisasjonerDTO,
+	type DashboardPersonerDTO,
+	type DashboardTeamsDTO,
+} from '@/utils/hooks/useDashboard'
 
 export type PersonTrendPoint = {
 	dato: string
