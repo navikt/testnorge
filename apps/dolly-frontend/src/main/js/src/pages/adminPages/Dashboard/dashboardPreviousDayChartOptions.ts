@@ -19,7 +19,9 @@ export const createPreviousDayChartOptions = ({
 	chart: {
 		...getChartBaseOptions('').chart,
 		type: 'column',
-		marginBottom: 108,
+		height: 300,
+		marginBottom: 40,
+		spacing: [16, 16, 10, 16],
 	},
 	xAxis: {
 		categories: ['Opprettet', 'Gjenopprettet'],
@@ -28,7 +30,7 @@ export const createPreviousDayChartOptions = ({
 			reserveSpace: true,
 			align: 'center',
 			x: 0,
-			y: 18,
+			y: 16,
 			style: {
 				fontSize: '12px',
 			},
@@ -36,7 +38,7 @@ export const createPreviousDayChartOptions = ({
 	},
 	yAxis: {
 		title: {
-			text: 'Antall',
+			text: undefined,
 		},
 		allowDecimals: false,
 		min: 0,
@@ -84,6 +86,7 @@ export const createPreviousDayChartOptions = ({
 		{
 			type: 'column',
 			name: 'Antall',
+			showInLegend: false,
 			colorByPoint: true,
 			data: [
 				{ y: nye, color: 'var(--ax-accent-700)' },
@@ -103,6 +106,8 @@ export const createPreviousDayErrorBreakdownChartOptions = (
 	chart: {
 		...getChartBaseOptions('').chart,
 		type: 'pie',
+		height: 300,
+		spacing: [16, 16, 8, 16],
 	},
 	tooltip: { ...TOOLTIP_OPTIONS, pointFormat: '<b>{point.y}</b> ({point.percentage:.1f}%)' },
 	plotOptions: {
@@ -124,7 +129,7 @@ export const createPreviousDayErrorBreakdownChartOptions = (
 		},
 	},
 	legend: {
-		enabled: true,
+		enabled: false,
 		labelFormatter: function () {
 			const point = this as unknown as { name?: string; custom?: { actualY?: number }; y?: number }
 			const value = point.custom?.actualY ?? point.y ?? 0

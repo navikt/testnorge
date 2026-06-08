@@ -23,6 +23,9 @@ export const createMonthlyTeamDistributionChartOptions = (
 		title: { text: 'Unike brukere' },
 		allowDecimals: false,
 	},
+	legend: {
+		enabled: false,
+	},
 	tooltip: { ...TOOLTIP_OPTIONS, pointFormat: '<b>{point.y}</b>' },
 	plotOptions: {
 		bar: {
@@ -36,6 +39,7 @@ export const createMonthlyTeamDistributionChartOptions = (
 		{
 			type: 'bar',
 			name: 'Unike brukere',
+			showInLegend: false,
 			data: teamDistributionData.map((point) => point.unikeBrukere),
 		},
 	],

@@ -7,7 +7,17 @@ import {
 } from './dashboardChartBase'
 import { GenericTrendSeries, MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
 
-export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[]): Options => {
+type PersonTrendVisibilityOptions = {
+	personerTotaltVisible?: boolean
+	feilTotaltVisible?: boolean
+	onPersonerTotaltVisibilityChange?: (visible: boolean) => void
+	onFeilTotaltVisibilityChange?: (visible: boolean) => void
+}
+
+export const createPersonTrendChartOptions = (
+	personTrendData: PersonTrendPoint[],
+	visibilityOptions?: PersonTrendVisibilityOptions,
+): Options => {
 	return {
 		...getChartBaseOptions(
 			'Linjediagram med daglig utvikling av nye, gjenopprettede, PDL-feil og andre feil i valgt periode.',
@@ -16,7 +26,7 @@ export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[
 			...getChartBaseOptions('').chart,
 			type: 'line',
 			height: 360,
-			marginBottom: 112,
+			marginBottom: 56,
 		},
 		xAxis: {
 			categories: personTrendData.map((point) => point.datoVisning),
@@ -32,7 +42,7 @@ export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[
 			},
 		},
 		yAxis: {
-			title: { text: 'Antall' },
+			title: { text: undefined },
 			allowDecimals: false,
 			min: 0,
 		},
@@ -76,13 +86,21 @@ export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[
 				type: 'line',
 				name: 'Personer totalt',
 				data: personTrendData.map((point) => point.personerTotalt),
-				visible: false,
+				visible: visibilityOptions?.personerTotaltVisible ?? false,
+				events: {
+					show: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(true),
+					hide: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(false),
+				},
 			},
 			{
 				type: 'line',
 				name: 'Feil totalt',
 				data: personTrendData.map((point) => point.pdlFeil + point.andreFeil),
-				visible: false,
+				visible: visibilityOptions?.feilTotaltVisible ?? false,
+				events: {
+					show: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(true),
+					hide: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(false),
+				},
 			},
 		],
 	}
@@ -103,7 +121,7 @@ export const createMonthlyTeamTrendChartOptions = (
 		...getChartBaseOptions('').chart,
 		type: 'line',
 		height: 360,
-		marginBottom: 112,
+		marginBottom: 56,
 	},
 	xAxis: {
 		categories: teamTrendData.map((point) => point.intervalVisning),
@@ -119,20 +137,16 @@ export const createMonthlyTeamTrendChartOptions = (
 		},
 	},
 	yAxis: {
-		title: { text: 'Antall' },
+		title: { text: undefined },
 		allowDecimals: false,
 	},
 	legend: {
-		enabled: true,
-		layout: 'horizontal',
-		align: 'left',
-		verticalAlign: 'top',
-		itemMarginBottom: 4,
+		enabled: false,
 	},
 	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
 	plotOptions: {
 		series: {
-			showInLegend: true,
+			showInLegend: false,
 		},
 	},
 	series: [
@@ -165,7 +179,7 @@ export const createGenericTrendChartOptions = ({
 		...getChartBaseOptions('').chart,
 		type: 'line',
 		height: 360,
-		marginBottom: 112,
+		marginBottom: 56,
 	},
 	xAxis: {
 		categories: labels,
@@ -181,7 +195,7 @@ export const createGenericTrendChartOptions = ({
 		},
 	},
 	yAxis: {
-		title: { text: 'Antall' },
+		title: { text: undefined },
 		allowDecimals: false,
 		min: 0,
 	},

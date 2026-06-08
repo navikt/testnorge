@@ -75,6 +75,8 @@ export const useDashboardData = () => {
 	const [selectedDayScope, setSelectedDayScope] = useState<
 		typeof DAY_SCOPE_YESTERDAY | typeof DAY_SCOPE_TODAY
 	>(DAY_SCOPE_YESTERDAY)
+	const [personerTotaltVisible, setPersonerTotaltVisible] = useState(false)
+	const [feilTotaltVisible, setFeilTotaltVisible] = useState(false)
 	const [mockModeEnabled, setMockModeEnabled] = useState(false)
 	const [mockData, setMockData] = useState(() => createDashboardMockData(0))
 
@@ -161,7 +163,12 @@ export const useDashboardData = () => {
 	)
 
 	const personTrendData = toPersonTrendData(completeFilteredPersoner)
-	const personTrendChartOptions = createPersonTrendChartOptions(personTrendData)
+	const personTrendChartOptions = createPersonTrendChartOptions(personTrendData, {
+		personerTotaltVisible,
+		feilTotaltVisible,
+		onPersonerTotaltVisibilityChange: setPersonerTotaltVisible,
+		onFeilTotaltVisibilityChange: setFeilTotaltVisible,
+	})
 
 	// --- Organisasjoner ---
 	const organisasjonMonthlyPoints = toMonthlyOrganisasjonPoints(activeDashboardOrganisasjoner)
