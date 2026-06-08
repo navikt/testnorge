@@ -1,8 +1,8 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: "localauth"
-  namespace: "dolly" # replace <team>
+  name: "dolly-local-auth"
+  namespace: "dolly"
 spec:
   image: "europe-north1-docker.pkg.dev/nais-management-233d/nais/localauth:latest"
   port: 8080
@@ -20,11 +20,11 @@ spec:
       cpu: "10m"
       memory: "32Mi"
   ingresses:
-    - https://localauth-dolly.intern.dev.nav.no # replace <team>
+    - https://dolly-local-auth.intern.dev.nav.no
   azure:
     application:
       enabled: true
       allowAllUsers: true
   env:
     - name: LOCALAUTH_PUBLIC_URL
-      value: "https://localauth-dolly.intern.dev.nav.no" # replace <team>
+      value: "https://dolly-local-auth.intern.dev.nav.no"
