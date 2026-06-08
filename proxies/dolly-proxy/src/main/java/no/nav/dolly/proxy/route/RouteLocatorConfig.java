@@ -29,6 +29,7 @@ class RouteLocatorConfig {
     private final Norg2 norg2;
     private final Pdl pdl;
     private final Pensjon pensjon;
+    private final Oppfoelging oppfoelging;
     private final Saf saf;
     private final Sigrunstub sigrunstub;
     private final Skjermingsregister skjermingsregister;
@@ -78,6 +79,7 @@ class RouteLocatorConfig {
                 .route("pensjon-afp-q2", pensjon.build(Pensjon.SpecialCase.AFP_Q2))
                 .route("pensjon-samboer-q1", pensjon.build(Pensjon.SpecialCase.SAMBOER_Q1))
                 .route("pensjon-samboer-q2", pensjon.build(Pensjon.SpecialCase.SAMBOER_Q2))
+                .route("oppfoelging", oppfoelging.build())
                 .route("saf-q1", saf.build(Saf.SpecialCase.Q1))
                 .route("saf-q2", saf.build(Saf.SpecialCase.Q2))
                 .route("saf-q4", saf.build(Saf.SpecialCase.Q4))
