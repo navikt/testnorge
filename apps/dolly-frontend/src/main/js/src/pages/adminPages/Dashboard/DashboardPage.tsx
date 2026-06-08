@@ -104,6 +104,25 @@ export default () => {
 				)}
 
 				<MonthlyTeamTrendSection
+					filteredMonthlyTeamPointsLength={d.filteredMonthlyTeamPointsLength}
+					monthScope={d.monthScope}
+					onMonthScopeChange={d.onMonthScopeChange}
+					monthlyTrendChartOptions={d.monthlyTrendChartOptions}
+				/>
+
+				<MonthlyTeamDistributionSection
+					yearOptions={d.teamYearOptions}
+					selectedYear={d.selectedTeamYear}
+					monthOptions={d.teamMonthOptions}
+					onSelectedYearChange={d.onSelectedTeamYearChange}
+					selectedInterval={d.selectedTeamInterval}
+					onSelectedIntervalChange={d.onSelectedTeamIntervalChange}
+					selectedMonthlyPoint={d.selectedMonthlyPoint}
+					teamDistribution={d.teamDistribution}
+					monthlyDistributionChartOptions={d.monthlyDistributionChartOptions}
+				/>
+
+				<MonthlyTeamTrendSection
 					title="Ekstern bruk over tid"
 					filteredMonthlyTeamPointsLength={d.filteredOrganisasjonPointsLength}
 					monthScope={d.organisasjonMonthScope}
@@ -150,25 +169,6 @@ export default () => {
 					selectedMonthlyPoint={d.selectedDollyTeamsPoint}
 					teamDistribution={d.dollyTeamsDistribution}
 					monthlyDistributionChartOptions={d.dollyTeamsDistributionChartOptions}
-				/>
-
-				<MonthlyTeamTrendSection
-					filteredMonthlyTeamPointsLength={d.filteredMonthlyTeamPointsLength}
-					monthScope={d.monthScope}
-					onMonthScopeChange={d.onMonthScopeChange}
-					monthlyTrendChartOptions={d.monthlyTrendChartOptions}
-				/>
-
-				<MonthlyTeamDistributionSection
-					yearOptions={d.teamYearOptions}
-					selectedYear={d.selectedTeamYear}
-					monthOptions={d.teamMonthOptions}
-					onSelectedYearChange={d.onSelectedTeamYearChange}
-					selectedInterval={d.selectedTeamInterval}
-					onSelectedIntervalChange={d.onSelectedTeamIntervalChange}
-					selectedMonthlyPoint={d.selectedMonthlyPoint}
-					teamDistribution={d.teamDistribution}
-					monthlyDistributionChartOptions={d.monthlyDistributionChartOptions}
 				/>
 			</VStack>
 		</>

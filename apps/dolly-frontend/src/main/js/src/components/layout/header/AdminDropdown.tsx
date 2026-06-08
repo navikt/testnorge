@@ -23,6 +23,10 @@ export const AdminDropdown = () => {
 
 	return (
 		<ActionMenuWrapper title="Admin" isActive={isActive}>
+			<PreloadableActionMenuItem route="/dashboard" style={{ color: '#212529' }}>
+				<LineGraphIcon title="a11y-title" fontSize="1.5rem" />
+				<DropdownStyledLink href="/dashboard">Dashboard</DropdownStyledLink>
+			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/orgtilgang" style={{ color: '#212529' }}>
 				<TenancyIcon title="a11y-title" fontSize="1.5rem" />
 				<DropdownStyledLink href="/orgtilgang">Organisasjon-tilgang</DropdownStyledLink>
@@ -36,10 +40,6 @@ export const AdminDropdown = () => {
 			<PreloadableActionMenuItem route="/infostriper" style={{ color: '#212529' }}>
 				<InformationSquareIcon title="a11y-title" fontSize="1.5rem" />
 				<DropdownStyledLink href="/infostriper">Administrer infostriper</DropdownStyledLink>
-			</PreloadableActionMenuItem>
-			<PreloadableActionMenuItem route="/dashboard" style={{ color: '#212529' }}>
-				<LineGraphIcon title="a11y-title" fontSize="1.5rem" />
-				<DropdownStyledLink href="/dashboard">Dashboard</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 		</ActionMenuWrapper>
 	)
