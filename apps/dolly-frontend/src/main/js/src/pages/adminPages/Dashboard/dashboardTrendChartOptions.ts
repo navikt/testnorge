@@ -72,6 +72,18 @@ export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[
 				data: personTrendData.map((point) => point.andreFeil),
 				color: ERROR_SECONDARY_COLOR,
 			},
+			{
+				type: 'line',
+				name: 'Personer totalt',
+				data: personTrendData.map((point) => point.personerTotalt),
+				visible: false,
+			},
+			{
+				type: 'line',
+				name: 'Feil totalt',
+				data: personTrendData.map((point) => point.pdlFeil + point.andreFeil),
+				visible: false,
+			},
 		],
 	}
 }

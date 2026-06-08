@@ -9,7 +9,7 @@ export const CHART_COLORS = [
 	'var(--ax-info-700)',
 ]
 export const ERROR_PRIMARY_COLOR = 'var(--ax-danger-700)'
-export const ERROR_SECONDARY_COLOR = 'var(--ax-danger-500)'
+export const ERROR_SECONDARY_COLOR = 'var(--ax-warning-700)'
 
 export const getChartBaseOptions = (description: string): Options => ({
 	chart: {
