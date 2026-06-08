@@ -27,7 +27,7 @@ class Oppfoelging {
                         NAME, targets.getOppfoelging());
 
         return spec -> spec
-                .path("/oppfolging/**")
+                .path("/oppfoelging/**")
                 .filters(f -> f.stripPrefix(1)
                         .filter(bearerAuthenticationFilter))
                 .uri(targets.getOppfoelging());
