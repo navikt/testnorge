@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -18,6 +19,7 @@ public class RsKelvinAapRequestDTO {
     private Boolean erStudent;
     private Boolean harMedlemskap;
     private Boolean harYrkesskade;
+    private LocalDate soeknadsdato;
 
     @Data
     @Builder
