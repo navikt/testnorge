@@ -63,10 +63,14 @@ export const useDashboard = () => {
 		isLoading: loadingDashboardPersoner,
 		error: dashboardPersonerError,
 		mutate: mutateDashboardPersoner,
-	} = useSWR<DashboardPersonerDTO[], Error>(DollyEndpoints.dashboardPersoner(), fetcher, {
-		revalidateOnFocus: false,
-		dedupingInterval: 15000,
-	})
+	} = useSWR<DashboardPersonerDTO[], Error>(
+		DollyEndpoints.dashboardPersoner(),
+		(url) => fetcher(url, null, 30000),
+		{
+			revalidateOnFocus: false,
+			dedupingInterval: 15000,
+		},
+	)
 
 	const {
 		data: dashboardTeams,
@@ -85,7 +89,7 @@ export const useDashboard = () => {
 		mutate: mutateDashboardOrganisasjoner,
 	} = useSWR<DashboardOrganisasjonerDTO[], Error>(
 		DollyEndpoints.dashboardOrganisasjoner(),
-		fetcher,
+		(url) => fetcher(url, null, 30000),
 		{
 			revalidateOnFocus: false,
 			dedupingInterval: 15000,
