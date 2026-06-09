@@ -1,5 +1,3 @@
-import { date } from 'yup'
-
 export const kelvinAapPath = 'kelvinAap'
 
 export const initialKelvinAap = {
