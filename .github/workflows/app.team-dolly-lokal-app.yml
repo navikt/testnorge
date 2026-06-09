@@ -5,6 +5,7 @@ on:
     paths:
       - plugins/**
       - .nais/team-dolly-lokal-app.yml
+      - .nais/dolly-lokal-auth.yaml
       - .github/workflows/app.team-dolly-lokal-app.yml
 
 jobs:
