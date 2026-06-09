@@ -40,7 +40,7 @@ export type DashboardOrganisasjonEntryDTO = {
 export type DashboardDollyTeamEntryDTO = {
 	navn: string
 	beskrivelse: string
-	unikeBrukere: number
+	antallMedlemmer: number
 }
 
 export type DashboardOrganisasjonerDTO = {
@@ -52,7 +52,7 @@ export type DashboardOrganisasjonerDTO = {
 
 export type DashboardDollyTeamsDTO = {
 	interval: string
-	totaltUnikeBrukere: number
+	totaltAntallMedlemmer: number
 	totaltAntallTeams: number
 	teams: DashboardDollyTeamEntryDTO[]
 }

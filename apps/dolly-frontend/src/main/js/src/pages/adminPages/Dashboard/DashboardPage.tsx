@@ -160,7 +160,7 @@ export default () => {
 				<MonthlyTeamDistributionSection
 					title="Dolly-team fordeling i valgt måned"
 					monthLabel="Måned"
-					primaryTotalLabel="Unike brukere totalt"
+					primaryTotalLabel="Antall medlemmer totalt"
 					secondaryTotalLabel="Antall teams totalt"
 					yearOptions={d.dollyTeamsYearOptions}
 					selectedYear={d.selectedDollyTeamsYear}

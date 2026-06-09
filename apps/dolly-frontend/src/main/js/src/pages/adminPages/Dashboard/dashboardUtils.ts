@@ -249,12 +249,12 @@ export const toMonthlyDollyTeamPoints = (
 		.map((row) => ({
 			interval: row.interval,
 			intervalVisning: toMonthDisplayDate(row.interval),
-			totaltUnikeBrukere: asNumber(row.totaltUnikeBrukere),
+			totaltUnikeBrukere: asNumber(row.totaltAntallMedlemmer),
 			totaltAntallTeams: asNumber(row.totaltAntallTeams),
 			teams: (row.teams ?? [])
 				.map((entry) => ({
 					team: entry.navn,
-					unikeBrukere: asNumber(entry.unikeBrukere),
+					unikeBrukere: asNumber(entry.antallMedlemmer),
 				}))
 				.filter((entry) => entry.team)
 				.sort((a, b) => b.unikeBrukere - a.unikeBrukere),
@@ -290,7 +290,7 @@ export const filterMonthlyTeamPoints = (
 
 export const toMonthlyIntervalOptions = (points: MonthlyTeamPoint[]) =>
 	[...points]
-		.sort((a, b) => b.interval.localeCompare(a.interval))
+		.sort((a, b) => a.interval.localeCompare(b.interval))
 		.map((point) => ({ value: point.interval, label: point.intervalVisning }))
 
 export const toTeamDistributionForInterval = (

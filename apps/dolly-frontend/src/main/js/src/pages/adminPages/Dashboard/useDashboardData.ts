@@ -179,7 +179,7 @@ export const useDashboardData = () => {
 	const organisasjonIntervalOptions = toMonthlyIntervalOptions(filteredOrganisasjonPoints)
 	const organisasjonYearOptions = [
 		...new Set(organisasjonIntervalOptions.map((option) => option.value.slice(0, 4))),
-	].sort((a, b) => b.localeCompare(a))
+	].sort((a, b) => a.localeCompare(b))
 	const selectedOrganisasjonYear = selectedOrganisasjonInterval.slice(0, 4)
 	const organisasjonMonthOptions = organisasjonIntervalOptions
 		.filter((option) => option.value.startsWith(`${selectedOrganisasjonYear}-`))
@@ -211,7 +211,7 @@ export const useDashboardData = () => {
 			(option) => option.value === selectedOrganisasjonInterval,
 		)
 		if (!selectedExists) {
-			setSelectedOrganisasjonInterval(organisasjonIntervalOptions[0].value)
+			setSelectedOrganisasjonInterval(organisasjonIntervalOptions.at(-1)!.value)
 		}
 	}, [organisasjonIntervalOptions, selectedOrganisasjonInterval])
 
@@ -221,7 +221,7 @@ export const useDashboardData = () => {
 	const dollyTeamsIntervalOptions = toMonthlyIntervalOptions(filteredDollyTeamsPoints)
 	const dollyTeamsYearOptions = [
 		...new Set(dollyTeamsIntervalOptions.map((option) => option.value.slice(0, 4))),
-	].sort((a, b) => b.localeCompare(a))
+	].sort((a, b) => a.localeCompare(b))
 	const selectedDollyTeamsYear = selectedDollyTeamsInterval.slice(0, 4)
 	const dollyTeamsMonthOptions = dollyTeamsIntervalOptions
 		.filter((option) => option.value.startsWith(`${selectedDollyTeamsYear}-`))
@@ -240,8 +240,10 @@ export const useDashboardData = () => {
 			secondSeriesName: 'Antall teams',
 		},
 	)
-	const dollyTeamsDistributionChartOptions =
-		createMonthlyTeamDistributionChartOptions(dollyTeamsDistribution)
+	const dollyTeamsDistributionChartOptions = createMonthlyTeamDistributionChartOptions(
+		dollyTeamsDistribution,
+		'Antall medlemmer',
+	)
 
 	useEffect(() => {
 		if (dollyTeamsIntervalOptions.length === 0) {
@@ -252,7 +254,7 @@ export const useDashboardData = () => {
 			(option) => option.value === selectedDollyTeamsInterval,
 		)
 		if (!selectedExists) {
-			setSelectedDollyTeamsInterval(dollyTeamsIntervalOptions[0].value)
+			setSelectedDollyTeamsInterval(dollyTeamsIntervalOptions.at(-1)!.value)
 		}
 	}, [dollyTeamsIntervalOptions, selectedDollyTeamsInterval])
 
@@ -262,7 +264,7 @@ export const useDashboardData = () => {
 	const monthlyIntervalOptions = toMonthlyIntervalOptions(filteredMonthlyTeamPoints)
 	const teamYearOptions = [
 		...new Set(monthlyIntervalOptions.map((option) => option.value.slice(0, 4))),
-	].sort((a, b) => b.localeCompare(a))
+	].sort((a, b) => a.localeCompare(b))
 	const selectedTeamYear = selectedInterval.slice(0, 4)
 	const teamMonthOptions = monthlyIntervalOptions
 		.filter((option) => option.value.startsWith(`${selectedTeamYear}-`))
@@ -288,7 +290,7 @@ export const useDashboardData = () => {
 			(option) => option.value === selectedInterval,
 		)
 		if (!selectedExists) {
-			setSelectedInterval(monthlyIntervalOptions[0].value)
+			setSelectedInterval(monthlyIntervalOptions.at(-1)!.value)
 		}
 	}, [monthlyIntervalOptions, selectedInterval])
 
@@ -381,10 +383,10 @@ export const useDashboardData = () => {
 		selectedOrganisasjonYear,
 		organisasjonMonthOptions,
 		onSelectedOrganisasjonYearChange: (year: string) => {
-			const firstOption = organisasjonIntervalOptions.find((option) =>
+			const lastOption = organisasjonIntervalOptions.findLast((option) =>
 				option.value.startsWith(`${year}-`),
 			)
-			if (firstOption) setSelectedOrganisasjonInterval(firstOption.value)
+			if (lastOption) setSelectedOrganisasjonInterval(lastOption.value)
 		},
 		selectedOrganisasjonInterval,
 		onSelectedOrganisasjonIntervalChange: setSelectedOrganisasjonInterval,
@@ -399,10 +401,10 @@ export const useDashboardData = () => {
 		selectedDollyTeamsYear,
 		dollyTeamsMonthOptions,
 		onSelectedDollyTeamsYearChange: (year: string) => {
-			const firstOption = dollyTeamsIntervalOptions.find((option) =>
+			const lastOption = dollyTeamsIntervalOptions.findLast((option) =>
 				option.value.startsWith(`${year}-`),
 			)
-			if (firstOption) setSelectedDollyTeamsInterval(firstOption.value)
+			if (lastOption) setSelectedDollyTeamsInterval(lastOption.value)
 		},
 		selectedDollyTeamsInterval,
 		onSelectedDollyTeamsIntervalChange: setSelectedDollyTeamsInterval,
@@ -419,10 +421,10 @@ export const useDashboardData = () => {
 		selectedTeamYear,
 		teamMonthOptions,
 		onSelectedTeamYearChange: (year: string) => {
-			const firstOption = monthlyIntervalOptions.find((option) =>
+			const lastOption = monthlyIntervalOptions.findLast((option) =>
 				option.value.startsWith(`${year}-`),
 			)
-			if (firstOption) setSelectedInterval(firstOption.value)
+			if (lastOption) setSelectedInterval(lastOption.value)
 		},
 		selectedTeamInterval: selectedInterval,
 		onSelectedTeamIntervalChange: setSelectedInterval,
