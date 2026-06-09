@@ -188,7 +188,7 @@ describe('dashboardUtils', () => {
 		const distribution = toTeamDistributionForInterval(points, '2026-06')
 
 		expect(trend.map((point) => point.interval)).toEqual(['2026-05', '2026-06'])
-		expect(options.map((option) => option.value)).toEqual(['2026-06', '2026-05'])
+		expect(options.map((option) => option.value)).toEqual(['2026-05', '2026-06'])
 		expect(distribution).toEqual([
 			{ team: 'Team A', unikeBrukere: 3 },
 			{ team: 'Team B', unikeBrukere: 2 },
