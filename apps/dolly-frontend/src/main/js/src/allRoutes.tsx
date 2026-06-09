@@ -26,6 +26,7 @@ const TeamOversiktPage = lazyWithPreload(() => import('@/pages/teamOversikt/Team
 const IdentValidatorPage = lazyWithPreload(
 	() => import('@/pages/identvalidator/IdentvalidatorPage'),
 )
+const DashboardPage = lazyWithPreload(() => import('@/pages/adminPages/Dashboard/DashboardPage'))
 
 const GruppeBreadcrumb = (props: any) => <span>Gruppe #{props.params?.gruppeId}</span>
 
@@ -121,6 +122,11 @@ const allRoutes = [
 		path: '/infostriper',
 		handle: { crumb: () => 'Dolly infostriper' },
 		element: InfostripePage,
+	},
+	{
+		path: '/dashboard',
+		handle: { crumb: () => 'Dashboard' },
+		element: DashboardPage,
 	},
 	{
 		path: '/nyansettelser',
