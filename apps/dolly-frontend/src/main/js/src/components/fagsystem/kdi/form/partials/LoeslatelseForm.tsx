@@ -3,7 +3,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
+import { RedigeringAnnulleringForm } from './RedigeringAnnulleringForm'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
 
 export const LoeslatelseForm = ({ formMethods, path, fengselOptions }: KdiMeldingFieldsProps) => {
@@ -49,7 +49,7 @@ export const LoeslatelseForm = ({ formMethods, path, fengselOptions }: KdiMeldin
 				checkboxMargin
 			/>
 			{/*	TODO: Skal kun kunne være true om kategori er Varetekt*/}
-			{meldingId && <AnnulleringForm meldingId={meldingId} />}
+			{meldingId && <RedigeringAnnulleringForm meldingId={meldingId} />}
 		</>
 	)
 }

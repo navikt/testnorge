@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
+import { RedigeringAnnulleringForm } from './RedigeringAnnulleringForm'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
 
 export const ForventetLoeslatelseForm = ({ formMethods, path }: KdiMeldingFieldsProps) => {
@@ -27,7 +27,7 @@ export const ForventetLoeslatelseForm = ({ formMethods, path }: KdiMeldingFields
 				size="large"
 				// date={rapporteringsdate}
 			/>
-			{meldingId && <AnnulleringForm meldingId={meldingId} />}
+			{meldingId && <RedigeringAnnulleringForm meldingId={meldingId} />}
 		</>
 	)
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { AnnulleringForm } from '@/components/fagsystem/kdi/form/partials/AnnulleringForm'
+import { RedigeringAnnulleringForm } from './RedigeringAnnulleringForm'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
 
 export const InnsettelseForm = ({ formMethods, path, fengselOptions }: KdiMeldingFieldsProps) => {
@@ -36,7 +36,7 @@ export const InnsettelseForm = ({ formMethods, path, fengselOptions }: KdiMeldin
 				format={'DD.MM.YYYY HH:mm:ss'}
 				// date={rapporteringsdate}
 			/>
-			{meldingId && <AnnulleringForm meldingId={meldingId} />}
+			{meldingId && <RedigeringAnnulleringForm meldingId={meldingId} />}
 		</>
 	)
 }

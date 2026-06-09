@@ -28,7 +28,7 @@ export const FieldArrayAddButton = ({
 		onClick={onClick}
 		title={hoverText || `Legg til ${addEntryButtonText.toLowerCase()}`}
 		disabled={disabled}
-		style={{ marginBottom: '15px' }}
+		style={{ margin: '0 10px 15px 0' }}
 	>
 		{addEntryButtonText}
 	</Button>

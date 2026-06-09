@@ -1,12 +1,11 @@
 import { useFormContext } from 'react-hook-form'
 import { Button } from '@navikt/ds-react'
-import { FileXMarkIcon } from '@navikt/aksel-icons'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FileXMarkIcon, PencilIcon } from '@navikt/aksel-icons'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React, { useState } from 'react'
 import { initialAnnullering } from '@/components/fagsystem/kdi/initialValues'
 
-export const AnnulleringForm = ({ meldingId }) => {
+export const RedigeringAnnulleringForm = ({ meldingId }) => {
 	const formMethods = useFormContext()
 	const annulleringer = formMethods.watch('instdataKdi.annullering') || []
 
@@ -32,6 +31,15 @@ export const AnnulleringForm = ({ meldingId }) => {
 
 	return (
 		<div className="flexbox--full-width">
+			<Button
+				variant="tertiary"
+				size="xsmall"
+				data-color="neutral"
+				icon={<PencilIcon aria-hidden />}
+				style={{ marginRight: '10px' }}
+			>
+				Rediger melding
+			</Button>
 			<Button
 				data-color="danger"
 				size="xsmall"
