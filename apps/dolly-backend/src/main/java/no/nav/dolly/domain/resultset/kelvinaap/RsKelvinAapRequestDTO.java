@@ -20,6 +20,7 @@ public class RsKelvinAapRequestDTO {
     private Boolean harMedlemskap;
     private Boolean harYrkesskade;
     private LocalDate soeknadsdato;
+    private Boolean automatiskMeldekort;
 
     @Data
     @Builder

@@ -21,6 +21,7 @@ public class AapOpprettRequest {
     private Boolean harYrkesskade;
     private String ident;
     private LocalDate soeknadsdato;
+    private Boolean automatiskMeldekort;
 
     @Data
     @Builder
