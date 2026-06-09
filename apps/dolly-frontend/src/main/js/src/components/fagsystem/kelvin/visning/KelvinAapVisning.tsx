@@ -3,7 +3,13 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Alert } from '@navikt/ds-react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { arrayToString, codeToNorskLabel, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import {
+	arrayToString,
+	codeToNorskLabel,
+	formatDate,
+	oversettBoolean,
+	showLabel,
+} from '@/utils/DataFormatter'
 import React from 'react'
 import { KelvinAapVisningTypes } from '@/components/fagsystem/kelvin/initialValues'
 
@@ -43,6 +49,11 @@ export const KelvinAapVisning = ({
 						<>
 							<h4 style={{ width: '100%', marginTop: '0' }}>Generelt</h4>
 							<div className="person-visning_content">
+								<TitleValue title="Søknadsdato" value={formatDate(soeknad?.soeknadsdato)} />
+								<TitleValue
+									title="Automatisk meldekort"
+									value={oversettBoolean(soeknad?.automatiskMeldekort)}
+								/>
 								<TitleValue title="Er student" value={oversettBoolean(soeknad?.erStudent)} />
 								<TitleValue
 									title="Har medlemskap i folketrygden"
