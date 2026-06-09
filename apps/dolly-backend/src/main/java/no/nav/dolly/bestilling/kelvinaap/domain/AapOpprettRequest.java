@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -19,6 +20,8 @@ public class AapOpprettRequest {
     private Boolean harMedlemskap;
     private Boolean harYrkesskade;
     private String ident;
+    private LocalDate soeknadsdato;
+    private Boolean automatiskMeldekort;
 
     @Data
     @Builder
