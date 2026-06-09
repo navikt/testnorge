@@ -1,12 +1,57 @@
 import Highcharts, { type Options } from 'highcharts'
-import { Alert, Box, Button, Heading, HGrid, Label, VStack } from '@navikt/ds-react'
+import { Alert, Box, Button, Heading, HGrid, HStack, Label, VStack } from '@navikt/ds-react'
 import { HighchartsReact } from 'highcharts-react-official'
 import { type ReactNode, useEffect, useRef } from 'react'
+
+export type DashboardSelectOption = {
+	value: string
+	label: string
+}
+
+export const DashboardSelectButtons = ({
+	label,
+	options,
+	selected,
+	onSelect,
+}: {
+	label?: string
+	options: DashboardSelectOption[]
+	selected: string | null
+	onSelect: (value: string) => void
+}) => {
+	const buttons = (
+		<HStack gap="space-8" wrap>
+			{options.map((option) => (
+				<Button
+					key={option.value}
+					variant={selected === option.value ? 'secondary' : 'tertiary'}
+					size="small"
+					onClick={() => onSelect(option.value)}
+				>
+					{option.label}
+				</Button>
+			))}
+		</HStack>
+	)
+
+	if (!label) {
+		return buttons
+	}
+
+	return (
+		<VStack gap="space-8">
+			<Label>{label}</Label>
+			{buttons}
+		</VStack>
+	)
+}
 
 export const DashboardSectionCard = ({ children }: { children: ReactNode }) => (
 	<Box
 		background="default"
-		padding={{ xs: 'space-16', md: 'space-20' }}
+		paddingInline={{ xs: 'space-16', md: 'space-20' }}
+		paddingBlockStart={{ xs: 'space-16', md: 'space-20' }}
+		paddingBlockEnd={{ xs: 'space-8', md: 'space-10' }}
 		borderRadius="8"
 		borderWidth="1"
 		borderColor="neutral-subtle"

@@ -1,11 +1,13 @@
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
+import { DashboardHeaderActions } from '@/pages/adminPages/Dashboard/dashboardSharedComponents'
 import {
-	DashboardHeaderActions,
-	MonthlyTeamDistributionSection,
-	MonthlyTeamTrendSection,
 	PersonAnalysisSection,
 	PreviousDaySection,
-} from '@/pages/adminPages/Dashboard/dashboardPanels'
+} from '@/pages/adminPages/Dashboard/dashboardDayPersonSections'
+import {
+	MonthlyTeamDistributionSection,
+	MonthlyTeamTrendSection,
+} from '@/pages/adminPages/Dashboard/dashboardMonthlySections'
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { Alert, Box, Loader, VStack } from '@navikt/ds-react'
 import Highcharts from 'highcharts'

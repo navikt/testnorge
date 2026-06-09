@@ -1,9 +1,10 @@
-import { Alert, BodyShort, Button, Heading, HGrid, HStack, Label, VStack } from '@navikt/ds-react'
+import { Alert, BodyShort, Heading, HGrid, VStack } from '@navikt/ds-react'
 import { type Options } from 'highcharts'
 import {
 	DashboardChartPanel,
 	DashboardKpiCard,
 	DashboardSectionCard,
+	DashboardSelectButtons,
 } from './dashboardSharedComponents'
 import { MONTH_SCOPE_ALL, MONTH_SCOPE_LAST_12, type TeamDistributionPoint } from './dashboardUtils'
 
@@ -37,25 +38,17 @@ export const MonthlyTeamTrendSection = ({
 			) : (
 				<>
 					{showScopeToggle && (
-						<VStack gap="space-8">
-							<Label>Vis tidsrom</Label>
-							<HStack gap="space-8" wrap>
-								<Button
-									variant={monthScope === MONTH_SCOPE_LAST_12 ? 'secondary' : 'tertiary'}
-									size="small"
-									onClick={() => onMonthScopeChange(MONTH_SCOPE_LAST_12)}
-								>
-									Siste 12 måneder
-								</Button>
-								<Button
-									variant={monthScope === MONTH_SCOPE_ALL ? 'secondary' : 'tertiary'}
-									size="small"
-									onClick={() => onMonthScopeChange(MONTH_SCOPE_ALL)}
-								>
-									All historikk
-								</Button>
-							</HStack>
-						</VStack>
+						<DashboardSelectButtons
+							label="Vis tidsrom"
+							selected={monthScope}
+							onSelect={(value) =>
+								onMonthScopeChange(value as typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL)
+							}
+							options={[
+								{ value: MONTH_SCOPE_LAST_12, label: 'Siste 12 måneder' },
+								{ value: MONTH_SCOPE_ALL, label: 'All historikk' },
+							]}
+						/>
 					)}
 					<DashboardChartPanel
 						options={monthlyTrendChartOptions}
@@ -112,36 +105,18 @@ export const MonthlyTeamDistributionSection = ({
 				</Alert>
 			) : (
 				<>
-					<VStack gap="space-8">
-						<Label>År</Label>
-						<HStack gap="space-8" wrap>
-							{yearOptions.map((year) => (
-								<Button
-									key={year}
-									variant={selectedYear === year ? 'secondary' : 'tertiary'}
-									size="small"
-									onClick={() => onSelectedYearChange(year)}
-								>
-									{year}
-								</Button>
-							))}
-						</HStack>
-					</VStack>
-					<VStack gap="space-8">
-						<Label>{monthLabel}</Label>
-						<HStack gap="space-8" wrap>
-							{monthOptions.map((option) => (
-								<Button
-									key={option.value}
-									variant={selectedInterval === option.value ? 'secondary' : 'tertiary'}
-									size="small"
-									onClick={() => onSelectedIntervalChange(option.value)}
-								>
-									{option.label}
-								</Button>
-							))}
-						</HStack>
-					</VStack>
+					<DashboardSelectButtons
+						label="År"
+						selected={selectedYear}
+						onSelect={onSelectedYearChange}
+						options={yearOptions.map((year) => ({ value: year, label: year }))}
+					/>
+					<DashboardSelectButtons
+						label={monthLabel}
+						selected={selectedInterval}
+						onSelect={onSelectedIntervalChange}
+						options={monthOptions}
+					/>
 					{selectedMonthlyPoint && (
 						<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
 							<DashboardKpiCard
@@ -164,55 +139,6 @@ export const MonthlyTeamDistributionSection = ({
 							ariaLabel="Teamfordeling for valgt måned"
 						/>
 					)}
-				</>
-			)}
-		</VStack>
-	</DashboardSectionCard>
-)
-
-export const GenericTrendSection = ({
-	title,
-	description,
-	datasetFields,
-	seriesTotals,
-	chartOptions,
-	ariaLabel,
-	emptyMessage,
-}: {
-	title: string
-	description?: string
-	datasetFields: string[]
-	seriesTotals: { name: string; total: number }[]
-	chartOptions: Options
-	ariaLabel: string
-	emptyMessage: string
-}) => (
-	<DashboardSectionCard>
-		<VStack gap="space-16">
-			<Heading level="2" size="small">
-				{title}
-			</Heading>
-			{description && <BodyShort>{description}</BodyShort>}
-			{seriesTotals.length === 0 ? (
-				<Alert variant="info" inline>
-					{emptyMessage}
-				</Alert>
-			) : (
-				<>
-					<VStack gap="space-4">
-						<Label>Datasettet inneholder</Label>
-						<BodyShort>{datasetFields.join(', ')}</BodyShort>
-					</VStack>
-					<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
-						{seriesTotals.map((seriesItem) => (
-							<DashboardKpiCard
-								key={seriesItem.name}
-								label={`Totalt ${seriesItem.name.toLowerCase()}`}
-								value={seriesItem.total}
-							/>
-						))}
-					</HGrid>
-					<DashboardChartPanel options={chartOptions} ariaLabel={ariaLabel} />
 				</>
 			)}
 		</VStack>

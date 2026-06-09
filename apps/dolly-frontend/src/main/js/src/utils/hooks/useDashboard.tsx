@@ -30,10 +30,6 @@ export type DashboardTeamsDTO = {
 	totaltAntallTeams?: number
 }
 
-export type DashboardGenericTimeSeriesDTO = {
-	[key: string]: string | number | null | undefined
-}
-
 export type DashboardOrganisasjonEntryDTO = {
 	organisasjonsnummer: string
 	navn: string

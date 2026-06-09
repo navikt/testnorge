@@ -1,5 +1,4 @@
 import {
-	createGenericTrendChartOptions,
 	createMonthlyTeamDistributionChartOptions,
 	createMonthlyTeamTrendChartOptions,
 	createPersonTrendChartOptions,
@@ -25,14 +24,13 @@ describe('dashboardChartOptions', () => {
 		expect(options.tooltip?.shared).toBe(true)
 		expect(options.tooltip?.outside).toBe(true)
 		expect(options.chart?.height).toBe(360)
-		expect(options.chart?.marginBottom).toBe(56)
 		expect(options.legend?.enabled).toBe(true)
 		expect(options.legend?.verticalAlign).toBe('top')
 		expect(
 			options.xAxis && !Array.isArray(options.xAxis)
 				? options.xAxis.labels?.autoRotation
 				: undefined,
-		).toEqual([-45, -70])
+		).toEqual([-45])
 		expect(options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.min : undefined).toBe(0)
 		const series = options.series as Highcharts.SeriesLineOptions[]
 		expect(series[2].color).toBe('var(--ax-danger-700)')
@@ -99,12 +97,8 @@ describe('dashboardChartOptions', () => {
 			{ y: 3, color: 'var(--ax-info-700)' },
 		])
 		expect(options.tooltip?.shared).toBe(false)
-		const tooltipFormatter = options.tooltip?.formatter
-		const tooltipOutput = tooltipFormatter?.call({
-			x: 'Opprettet',
-			y: 9,
-		} as never)
-		expect(tooltipOutput).toBe('Opprettet: <b>9</b>')
+		expect(options.tooltip?.headerFormat).toBe('')
+		expect(options.tooltip?.pointFormat).toBe('{point.key}: <b>{point.y}</b>')
 		expect(options.chart?.height).toBe(300)
 		expect(options.chart?.marginBottom).toBe(40)
 		expect(
@@ -171,13 +165,12 @@ describe('dashboardChartOptions', () => {
 
 		expect(options.tooltip?.outside).toBe(true)
 		expect(options.chart?.height).toBe(360)
-		expect(options.chart?.marginBottom).toBe(56)
 		expect(options.legend?.enabled).toBe(false)
 		expect(
 			options.xAxis && !Array.isArray(options.xAxis)
 				? options.xAxis.labels?.autoRotation
 				: undefined,
-		).toEqual([-45, -70])
+		).toEqual([-45])
 		expect(options.series).toHaveLength(2)
 		expect((options.series?.[0] as Highcharts.SeriesLineOptions).name).toBe('Unike brukere')
 		expect((options.series?.[1] as Highcharts.SeriesLineOptions).name).toBe('Antall teams')
@@ -196,23 +189,6 @@ describe('dashboardChartOptions', () => {
 		expect(
 			options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.title?.text : undefined,
 		).toBe('Unike brukere')
-		expect(series.showInLegend).toBe(false)
 		expect(series.data).toEqual([4, 2])
-	})
-
-	it('should create generic trend chart with legend and line series', () => {
-		const options = createGenericTrendChartOptions({
-			description: 'Generic trend',
-			labels: ['01.06.2026', '02.06.2026'],
-			series: [
-				{ key: 'nye', name: 'Nye', data: [1, 2], total: 3 },
-				{ key: 'feil', name: 'Feil', data: [0, 1], total: 1 },
-			],
-		})
-
-		expect(options.chart?.type).toBe('line')
-		expect(options.legend?.enabled).toBe(true)
-		expect(options.series).toHaveLength(2)
-		expect((options.series?.[0] as Highcharts.SeriesLineOptions).name).toBe('Nye')
 	})
 })

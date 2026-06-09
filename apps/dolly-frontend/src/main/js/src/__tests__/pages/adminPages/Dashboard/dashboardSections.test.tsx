@@ -1,10 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import type { ReactNode } from 'react'
-import {
-	MonthlyTeamTrendSection,
-	PreviousDaySection,
-} from '@/pages/adminPages/Dashboard/dashboardSections'
+import { MonthlyTeamTrendSection } from '@/pages/adminPages/Dashboard/dashboardMonthlySections'
+import { PreviousDaySection } from '@/pages/adminPages/Dashboard/dashboardDayPersonSections'
 import { MONTH_SCOPE_LAST_12 } from '@/pages/adminPages/Dashboard/dashboardUtils'
 
 vi.mock('@/pages/adminPages/Dashboard/dashboardSharedComponents', () => ({
@@ -16,6 +14,30 @@ vi.mock('@/pages/adminPages/Dashboard/dashboardSharedComponents', () => ({
 		</div>
 	),
 	DashboardSectionCard: ({ children }: { children: ReactNode }) => <section>{children}</section>,
+	DashboardSelectButtons: ({
+		label,
+		options,
+		selected,
+		onSelect,
+	}: {
+		label?: string
+		options: { value: string; label: string }[]
+		selected: string | null
+		onSelect: (value: string) => void
+	}) => (
+		<div>
+			{label && <div>{label}</div>}
+			{options.map((option) => (
+				<button
+					key={option.value}
+					aria-pressed={selected === option.value}
+					onClick={() => onSelect(option.value)}
+				>
+					{option.label}
+				</button>
+			))}
+		</div>
+	),
 }))
 
 describe('dashboard sections', () => {

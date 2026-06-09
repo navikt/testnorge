@@ -1,11 +1,32 @@
-import { type Options } from 'highcharts'
+import { type Options, type SeriesLineOptions } from 'highcharts'
 import {
 	ERROR_PRIMARY_COLOR,
 	ERROR_SECONDARY_COLOR,
-	getChartBaseOptions,
+	ROTATED_CATEGORY_LABELS,
 	TOOLTIP_OPTIONS,
+	withBaseChart,
 } from './dashboardChartBase'
-import { GenericTrendSeries, MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
+import { MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
+
+const createLineTrendChartOptions = ({
+	description,
+	categories,
+	series,
+	legend = { enabled: false },
+}: {
+	description: string
+	categories: string[]
+	series: SeriesLineOptions[]
+	legend?: Options['legend']
+}): Options => ({
+	...withBaseChart(description, { type: 'line', height: 360, spacing: [16, 16, 4, 16] }),
+	xAxis: { categories, ...ROTATED_CATEGORY_LABELS },
+	yAxis: { title: { text: undefined }, allowDecimals: false, min: 0 },
+	legend,
+	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
+	plotOptions: { series: { marker: { enabled: true, radius: 3 } } },
+	series,
+})
 
 type PersonTrendVisibilityOptions = {
 	personerTotaltVisible?: boolean
@@ -17,51 +38,17 @@ type PersonTrendVisibilityOptions = {
 export const createPersonTrendChartOptions = (
 	personTrendData: PersonTrendPoint[],
 	visibilityOptions?: PersonTrendVisibilityOptions,
-): Options => {
-	return {
-		...getChartBaseOptions(
+): Options =>
+	createLineTrendChartOptions({
+		description:
 			'Linjediagram med daglig utvikling av nye, gjenopprettede, PDL-feil og andre feil i valgt periode.',
-		),
-		chart: {
-			...getChartBaseOptions('').chart,
-			type: 'line',
-			height: 360,
-			marginBottom: 56,
-		},
-		xAxis: {
-			categories: personTrendData.map((point) => point.datoVisning),
-			title: { text: undefined },
-			labels: {
-				reserveSpace: true,
-				autoRotation: [-45, -70],
-				autoRotationLimit: 80,
-				overflow: 'justify',
-				style: {
-					fontSize: '12px',
-				},
-			},
-		},
-		yAxis: {
-			title: { text: undefined },
-			allowDecimals: false,
-			min: 0,
-		},
+		categories: personTrendData.map((point) => point.datoVisning),
 		legend: {
 			enabled: true,
 			layout: 'horizontal',
 			align: 'left',
 			verticalAlign: 'top',
 			itemMarginBottom: 4,
-		},
-		tooltip: { ...TOOLTIP_OPTIONS, shared: true },
-		plotOptions: {
-			series: {
-				showInLegend: true,
-				marker: {
-					enabled: true,
-					radius: 3,
-				},
-			},
 		},
 		series: [
 			{ type: 'line', name: 'Nye', data: personTrendData.map((point) => point.nye) },
@@ -103,8 +90,7 @@ export const createPersonTrendChartOptions = (
 				},
 			},
 		],
-	}
-}
+	})
 
 export const createMonthlyTeamTrendChartOptions = (
 	teamTrendData: MonthlyTrendPoint[],
@@ -112,113 +98,22 @@ export const createMonthlyTeamTrendChartOptions = (
 		description?: string
 		secondSeriesName?: string
 	},
-): Options => ({
-	...getChartBaseOptions(
-		options?.description ||
+): Options =>
+	createLineTrendChartOptions({
+		description:
+			options?.description ||
 			'Linjediagram med månedlig utvikling i unike brukere og antall aktive teams.',
-	),
-	chart: {
-		...getChartBaseOptions('').chart,
-		type: 'line',
-		height: 360,
-		marginBottom: 56,
-	},
-	xAxis: {
 		categories: teamTrendData.map((point) => point.intervalVisning),
-		title: { text: undefined },
-		labels: {
-			reserveSpace: true,
-			autoRotation: [-45, -70],
-			autoRotationLimit: 80,
-			overflow: 'justify',
-			style: {
-				fontSize: '12px',
+		series: [
+			{
+				type: 'line',
+				name: 'Unike brukere',
+				data: teamTrendData.map((point) => point.totaltUnikeBrukere),
 			},
-		},
-	},
-	yAxis: {
-		title: { text: undefined },
-		allowDecimals: false,
-	},
-	legend: {
-		enabled: false,
-	},
-	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
-	plotOptions: {
-		series: {
-			showInLegend: false,
-		},
-	},
-	series: [
-		{
-			type: 'line',
-			name: 'Unike brukere',
-			data: teamTrendData.map((point) => point.totaltUnikeBrukere),
-		},
-		{
-			type: 'line',
-			name: options?.secondSeriesName || 'Antall teams',
-			data: teamTrendData.map((point) => point.totaltAntallTeams),
-		},
-	],
-})
-
-export const createGenericTrendChartOptions = ({
-	description,
-	xAxisTitle,
-	labels,
-	series,
-}: {
-	description: string
-	xAxisTitle?: string
-	labels: string[]
-	series: GenericTrendSeries[]
-}): Options => ({
-	...getChartBaseOptions(description),
-	chart: {
-		...getChartBaseOptions('').chart,
-		type: 'line',
-		height: 360,
-		marginBottom: 56,
-	},
-	xAxis: {
-		categories: labels,
-		title: { text: xAxisTitle || undefined },
-		labels: {
-			reserveSpace: true,
-			autoRotation: [-45, -70],
-			autoRotationLimit: 80,
-			overflow: 'justify',
-			style: {
-				fontSize: '12px',
+			{
+				type: 'line',
+				name: options?.secondSeriesName || 'Antall teams',
+				data: teamTrendData.map((point) => point.totaltAntallTeams),
 			},
-		},
-	},
-	yAxis: {
-		title: { text: undefined },
-		allowDecimals: false,
-		min: 0,
-	},
-	legend: {
-		enabled: true,
-		layout: 'horizontal',
-		align: 'left',
-		verticalAlign: 'top',
-		itemMarginBottom: 4,
-	},
-	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
-	plotOptions: {
-		series: {
-			showInLegend: true,
-			marker: {
-				enabled: true,
-				radius: 3,
-			},
-		},
-	},
-	series: series.map((seriesItem) => ({
-		type: 'line',
-		name: seriesItem.name,
-		data: seriesItem.data,
-	})),
-})
+		],
+	})

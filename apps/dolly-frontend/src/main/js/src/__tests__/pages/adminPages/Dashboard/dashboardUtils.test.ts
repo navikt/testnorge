@@ -4,7 +4,6 @@ import {
 	getPreviousBusinessPeriod,
 	MONTH_SCOPE_ALL,
 	MONTH_SCOPE_LAST_12,
-	toGenericTrendDataset,
 	toMonthlyDollyTeamPoints,
 	toMonthlyIntervalOptions,
 	toMonthlyOrganisasjonPoints,
@@ -223,40 +222,6 @@ describe('dashboardUtils', () => {
 		expect(first.dashboardTeams[0].totaltUnikeBrukere).not.toBe(
 			second.dashboardTeams[0].totaltUnikeBrukere,
 		)
-	})
-
-	it('should map generic trend dataset and fill missing days with zeroes', () => {
-		const dataset = toGenericTrendDataset(
-			[
-				{ dato: '2026-06-01', opprettet: 2, feil: 1 },
-				{ dato: '2026-06-03', opprettet: 4, feil: 0 },
-			],
-			'2026-06-01',
-			'2026-06-03',
-		)
-
-		expect(dataset.labels).toEqual(['01.06.2026', '02.06.2026', '03.06.2026'])
-		expect(dataset.series.find((series) => series.key === 'opprettet')?.data).toEqual([2, 0, 4])
-		expect(dataset.series.find((series) => series.key === 'feil')?.data).toEqual([1, 0, 0])
-	})
-
-	it('should map monthly interval datasets without day-filling', () => {
-		const dataset = toGenericTrendDataset(
-			[
-				{ interval: '2026-04', totaltUnikeBrukere: 5, totaltAntallTeams: 2 },
-				{ interval: '2026-05', totaltUnikeBrukere: 8, totaltAntallTeams: 3 },
-			],
-			'',
-			'',
-		)
-
-		expect(dataset.labels).toEqual(['apr. 2026', 'mai 2026'])
-		expect(dataset.series.find((series) => series.key === 'totaltUnikeBrukere')?.data).toEqual([
-			5, 8,
-		])
-		expect(dataset.series.find((series) => series.key === 'totaltAntallTeams')?.data).toEqual([
-			2, 3,
-		])
 	})
 
 	it('should map organisasjoner and dolly teams payloads to monthly points', () => {

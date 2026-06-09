@@ -1,12 +1,10 @@
 import {
 	Alert,
 	BodyShort,
-	Box,
 	Button,
 	Heading,
 	HGrid,
 	HStack,
-	Label,
 	Skeleton,
 	TextField,
 	VStack,
@@ -16,6 +14,7 @@ import {
 	DashboardChartPanel,
 	DashboardKpiCard,
 	DashboardSectionCard,
+	DashboardSelectButtons,
 } from './dashboardSharedComponents'
 import { type DashboardPersonerDTO } from '@/utils/hooks/useDashboard'
 import zeroFeilIllustrasjon from '@/assets/img/dolly-sheep-confetti.svg'
@@ -69,22 +68,14 @@ export const PreviousDaySection = ({
 					: `Statistikk for ${selectedDayPeriodTitle.toLowerCase()}`}{' '}
 				({selectedDayDisplayLabel})
 			</Heading>
-			<HStack gap="space-8" wrap>
-				<Button
-					variant={selectedDayScope === 'YESTERDAY' ? 'secondary' : 'tertiary'}
-					size="small"
-					onClick={() => onSelectedDayScopeChange('YESTERDAY')}
-				>
-					{selectedDayButtonLabel}
-				</Button>
-				<Button
-					variant={selectedDayScope === 'TODAY' ? 'secondary' : 'tertiary'}
-					size="small"
-					onClick={() => onSelectedDayScopeChange('TODAY')}
-				>
-					I dag
-				</Button>
-			</HStack>
+			<DashboardSelectButtons
+				selected={selectedDayScope}
+				onSelect={(value) => onSelectedDayScopeChange(value as 'YESTERDAY' | 'TODAY')}
+				options={[
+					{ value: 'YESTERDAY', label: selectedDayButtonLabel },
+					{ value: 'TODAY', label: 'I dag' },
+				]}
+			/>
 			{isLoading ? (
 				<VStack gap="space-12">
 					<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
@@ -125,16 +116,7 @@ export const PreviousDaySection = ({
 							ariaLabel="Opprettet og gjenopprettet for valgt dag"
 						/>
 						{previousDaySummary.totaltFeil === 0 ? (
-							<Box
-								padding="space-16"
-								borderRadius="8"
-								minHeight="320px"
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-								}}
-							>
+							<HStack align="center" justify="center" padding="space-16" minHeight="320px">
 								<img
 									alt="Ingen feil registrert for valgt dag"
 									src={zeroFeilIllustrasjon}
@@ -147,7 +129,7 @@ export const PreviousDaySection = ({
 											'0 18px 40px rgba(12, 22, 39, 0.24), 0 6px 16px rgba(12, 22, 39, 0.16)',
 									}}
 								/>
-							</Box>
+							</HStack>
 						) : (
 							<DashboardChartPanel
 								options={previousDayErrorBreakdownChartOptions}
@@ -195,21 +177,12 @@ export const PersonAnalysisSection = ({
 			<Heading level="2" size="small">
 				Statistikk for perioder
 			</Heading>
-			<VStack gap="space-8">
-				<Label>Velg periode</Label>
-				<HStack gap="space-8" wrap>
-					{quickRangeOptions.map((option) => (
-						<Button
-							key={option.value}
-							variant={selectedQuickRange === option.value ? 'secondary' : 'tertiary'}
-							size="small"
-							onClick={() => onQuickRangeClick(option.value)}
-						>
-							{option.label}
-						</Button>
-					))}
-				</HStack>
-			</VStack>
+			<DashboardSelectButtons
+				label="Velg periode"
+				selected={selectedQuickRange}
+				onSelect={onQuickRangeClick}
+				options={quickRangeOptions}
+			/>
 			<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-16" align="end">
 				<TextField
 					label="Fra dato"
