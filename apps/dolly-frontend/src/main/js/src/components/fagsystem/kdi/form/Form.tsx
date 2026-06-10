@@ -20,11 +20,13 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import {
 	DollyFaBlokk,
+	DollyFaBlokkNested,
 	DollyFieldArrayWrapper,
 	FieldArrayAddButton,
 } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { validation } from '@/components/fagsystem/kdi/form/validation'
 import { useFengsel } from '@/utils/hooks/useInstitusjon'
+import { RedigeringAnnulleringForm } from '@/components/fagsystem/kdi/form/partials/RedigeringAnnulleringForm'
 
 const meldingstyper = [
 	{
@@ -86,6 +88,14 @@ export const KdiForm = () => {
 			}))
 		: []
 
+	const handleRedigering = (key, initialValues) => {
+		fieldArrays[key].append({
+			...initialValues,
+			meldingId: null,
+			publiseringstidspunkt: new Date(),
+		})
+	}
+
 	return (
 		<Vis attributt={instdataKdiAttributt}>
 			<Panel
@@ -97,23 +107,35 @@ export const KdiForm = () => {
 				<ErrorBoundary>
 					<Kategori title={'KDI-meldinger'}>
 						<DollyFieldArrayWrapper>
-							{meldinger.map(({ key, header, Form, fieldId, idx }, meldingNr) => (
-								<DollyFaBlokk
-									key={fieldId}
-									idx={idx}
-									number={meldingNr + 1}
-									header={header}
-									handleRemove={() => fieldArrays[key].remove(idx)}
-									whiteBackground
-									showDeleteButton
-								>
-									<Form
-										formMethods={formMethods}
-										path={`instdataKdi.${key}[${idx}]`}
-										fengselOptions={fengselOptions}
-									/>
-								</DollyFaBlokk>
-							))}
+							{meldinger.map(({ key, header, Form, fieldId, idx }, meldingNr) => {
+								const hendelse = formMethods.getValues(`instdataKdi.${key}[${idx}]`)
+								const meldingId = formMethods.getValues(`instdataKdi.${key}[${idx}].meldingId`)
+								const erEksisterendeMelding = !!meldingId
+
+								return (
+									<DollyFaBlokk
+										key={fieldId}
+										idx={idx}
+										number={meldingNr + 1}
+										header={header}
+										handleRemove={() => fieldArrays[key].remove(idx)}
+										// whiteBackground
+										showDeleteButton={!erEksisterendeMelding}
+									>
+										<Form
+											path={`instdataKdi.${key}[${idx}]`}
+											erEksisterendeMelding={erEksisterendeMelding}
+											fengselOptions={fengselOptions}
+										/>
+										{erEksisterendeMelding && (
+											<RedigeringAnnulleringForm
+												meldingId={meldingId}
+												handleRedigering={() => handleRedigering(key, hendelse)}
+											/>
+										)}
+									</DollyFaBlokk>
+								)
+							})}
 							<div className="flexbox--flex-wrap">
 								{meldingstyper.map(({ key, header, initialValues }) => (
 									<FieldArrayAddButton

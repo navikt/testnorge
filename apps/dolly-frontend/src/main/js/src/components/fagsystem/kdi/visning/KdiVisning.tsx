@@ -32,7 +32,10 @@ export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Ti
 					value={formatDateTimeWithSeconds(melding.publiseringstidspunkt)}
 				/>
 				<TitleValue title="Kategori" value={showLabel('kdiKategori', melding.kategori)} />
-				<TitleValue title="Organisasjonsnummer" value={fengselLabel} />
+				<TitleValue
+					title="Organisasjonsnummer"
+					value={melding.organisasjonsnummer ? fengselLabel : null}
+				/>
 				<TitleValue title={tidspunktLabel} value={formatDateTimeWithSeconds(melding.tidspunkt)} />
 				<TitleValue
 					title="Er overført til utenlandsk fengsel"

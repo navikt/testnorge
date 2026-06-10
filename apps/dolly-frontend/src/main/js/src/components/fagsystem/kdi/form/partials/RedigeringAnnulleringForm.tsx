@@ -5,7 +5,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import React, { useState } from 'react'
 import { initialAnnullering } from '@/components/fagsystem/kdi/initialValues'
 
-export const RedigeringAnnulleringForm = ({ meldingId }) => {
+export const RedigeringAnnulleringForm = ({ meldingId, handleRedigering }) => {
 	const formMethods = useFormContext()
 	const annulleringer = formMethods.watch('instdataKdi.annullering') || []
 
@@ -36,6 +36,7 @@ export const RedigeringAnnulleringForm = ({ meldingId }) => {
 				size="xsmall"
 				data-color="neutral"
 				icon={<PencilIcon aria-hidden />}
+				onClick={handleRedigering}
 				style={{ marginRight: '10px' }}
 			>
 				Rediger melding

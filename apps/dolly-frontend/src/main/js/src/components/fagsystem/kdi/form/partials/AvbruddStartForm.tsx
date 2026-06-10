@@ -2,18 +2,20 @@ import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { RedigeringAnnulleringForm } from './RedigeringAnnulleringForm'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
 
-export const AvbruddStartForm = ({ formMethods, path, fengselOptions }: KdiMeldingFieldsProps) => {
-	const meldingId = formMethods.getValues(`${path}.meldingId`)
-
+export const AvbruddStartForm = ({
+	path,
+	erEksisterendeMelding,
+	fengselOptions,
+}: KdiMeldingFieldsProps) => {
 	return (
 		<>
 			<FormDatepicker
 				name={`${path}.publiseringstidspunkt`}
 				label="Publiseringstidspunkt"
 				format={'DD.MM.YYYY HH:mm:ss'}
+				disabled={erEksisterendeMelding}
 				// date={rapporteringsdate}
 			/>
 			<FormSelect
@@ -21,6 +23,7 @@ export const AvbruddStartForm = ({ formMethods, path, fengselOptions }: KdiMeldi
 				label="Kategori"
 				options={Options('kdiKategori')}
 				isClearable={false}
+				isDisabled={erEksisterendeMelding}
 			/>
 			<FormSelect
 				name={`${path}.organisasjonsnummer`}
@@ -28,11 +31,13 @@ export const AvbruddStartForm = ({ formMethods, path, fengselOptions }: KdiMeldi
 				options={fengselOptions}
 				size="xlarge"
 				isClearable={false}
+				isDisabled={erEksisterendeMelding}
 			/>
 			<FormDatepicker
 				name={`${path}.tidspunkt`}
 				label="Tidspunkt for start på straffeavbrudd"
 				format={'DD.MM.YYYY HH:mm:ss'}
+				disabled={erEksisterendeMelding}
 				// size="large"
 				// date={rapporteringsdate}
 			/>
@@ -40,10 +45,10 @@ export const AvbruddStartForm = ({ formMethods, path, fengselOptions }: KdiMeldi
 				name={`${path}.forventetAvbruddSluttTidspunkt`}
 				label="Forventet tidspunkt for slutt på straffeavbrudd"
 				format={'DD.MM.YYYY HH:mm:ss'}
+				disabled={erEksisterendeMelding}
 				// size="large"
 				// date={rapporteringsdate}
 			/>
-			{meldingId && <RedigeringAnnulleringForm meldingId={meldingId} />}
 		</>
 	)
 }
