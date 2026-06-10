@@ -3,26 +3,31 @@ spring:
     import: "classpath:dolly-application.yml"
   security:
     oauth2:
-      client:
-        registration:
-          entra:
-            client-id: 669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4
-            client-secret: unused
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: openid
-            provider: entra
-        provider:
-          entra:
-            authorization-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/authorize  # replace <team>
-            token-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/token              # replace <team>
-            jwk-set-uri: https://login.microsoftonline.com/nav.no/discovery/v2.0/keys             # replace <tenant>
-#      resourceserver:
-#        aad:
-#          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-#          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
-#        tokenx:
-#          issuer-uri: ${TOKEN_X_ISSUER}
+#      client:
+#        registration:
+#          entra:
+#            client-id: 669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4
+#            client-secret: unused
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+#            scope: openid
+#            provider: entra
+#        provider:
+#          entra:
+#            authorization-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/authorize  # replace <team>
+#            token-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/token              # replace <team>
+#            jwk-set-uri: https://login.microsoftonline.com/nav.no/discovery/v2.0/keys             # replace <tenant>
+      resourceserver:
+        aad:
+#          AZURE_APP_CLIENT_ID: 669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4
+#          AZURE_APP_WELL_KNOWN_URL: https://dolly-auth-local.intern.dev.nav.no/entraid/.well-known/openid-configuration  # replace <team>
+#          AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/token            # replace <team>
+#          AZURE_OPENID_CONFIG_ISSUER: https://login.microsoftonline.com/nav.no/v2.0                                    # replace <tenant>
+#          AZURE_OPENID_CONFIG_JWKS_URI: https://login.microsoftonline.com/nav.no/discovery/v2.0/keys
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
 
 consumers:
   testnorge-profil-api:
