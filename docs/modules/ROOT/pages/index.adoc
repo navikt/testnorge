@@ -691,9 +691,9 @@ Mer komplekse strukturer:
 For disse scenariene, bygg opp familien steg for steg ved å bruke "Legg til/endre" funksjonalitet og "Relasjoner". Se også xref:index.adoc#demo_legg-til-endre[Demo - Legg til/endre].
 
 [[faq_altinn_dolly_samarbeidspartner]]
-=== Hvorfor finner jeg ikke "Nav's Dolly for samarbeidspartnere" i Altinn?
+=== Hvorfor finner jeg ikke "Navs Dolly for samarbeidspartnere" i Altinn?
 
-Altinn lar deg velge "Hvem vil du bruke Altinn på vegne av", og det er organisasjonsnummer som Dolly har gitt tilgang for som benyttes. 
+Altinn lar deg velge "Hvem vil du bruke Altinn på vegne av", og det er organisasjonsnummer som Dolly har gitt tilgang for som benyttes.
 
 For riktig organisasjon:
 
