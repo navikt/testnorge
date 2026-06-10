@@ -42,6 +42,7 @@ class Targets {
     String pensjon;
     String pensjonAfp;
     String pensjonSamboer;
+    String oppfoelging;
     String saf;
     String sigrunstub;
     String skjermingsregister;
