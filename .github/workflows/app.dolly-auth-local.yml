@@ -1,16 +1,15 @@
-name: team-dolly-lokal-app
+name: dolly-auth-local
 
 on:
   push:
     paths:
       - plugins/**
-      - .nais/team-dolly-lokal-app.yml
-      - .nais/dolly-lokal-auth.yaml
-      - .github/workflows/app.team-dolly-lokal-app.yml
+      - .nais/dolly-auth-local.yaml
+      - .github/workflows/app.dolly-auth-lokal.yml
 
 jobs:
   deploy:
-    name: Deploy team-dolly-lokal-app
+    name: Deploy dolly-auth-local
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:
@@ -21,4 +20,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@fa754451577294aae42872a69b888b3470478ec1 # v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: ".nais/team-dolly-lokal-app.yml"
+          RESOURCE: ".nais/dolly-auth-local.yml"

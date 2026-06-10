@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
-import { FingerButtonIcon, InformationSquareIcon, TenancyIcon } from '@navikt/aksel-icons'
+import {
+	FingerButtonIcon,
+	InformationSquareIcon,
+	LineGraphIcon,
+	TenancyIcon,
+} from '@navikt/aksel-icons'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 
@@ -11,12 +16,17 @@ export const AdminDropdown = () => {
 		setIsActive(
 			location?.pathname === '/orgtilgang' ||
 				location?.pathname === '/levendearbeidsforhold' ||
-				location?.pathname === '/infostriper',
+				location?.pathname === '/infostriper' ||
+				location?.pathname === '/dashboard',
 		)
 	}, [location])
 
 	return (
 		<ActionMenuWrapper title="Admin" isActive={isActive}>
+			<PreloadableActionMenuItem route="/dashboard" style={{ color: '#212529' }}>
+				<LineGraphIcon title="a11y-title" fontSize="1.5rem" />
+				<DropdownStyledLink href="/dashboard">Dashboard</DropdownStyledLink>
+			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/orgtilgang" style={{ color: '#212529' }}>
 				<TenancyIcon title="a11y-title" fontSize="1.5rem" />
 				<DropdownStyledLink href="/orgtilgang">Organisasjon-tilgang</DropdownStyledLink>
