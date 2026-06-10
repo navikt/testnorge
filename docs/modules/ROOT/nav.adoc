@@ -48,7 +48,7 @@
 *** xref:index.adoc#faq_vergemaal_fullmakt[Hva er forskjellen på vergemål og fullmakt?]
 *** xref:index.adoc#faq_prodlast[Hvorfor er testpersonene mine borte etter prodlast?]
 *** xref:index.adoc#faq_komplekse_relasjoner[Hvordan lager jeg komplekse familierelasjoner?]
-*** xref:index.adoc#faq_altinn_dolly_samarbeidspartner[Hvorfor finner jeg ikke "Nav's Dolly for samarbeidspartnere" i Altinn?]
+*** xref:index.adoc#faq_altinn_dolly_samarbeidspartner[Hvorfor finner jeg ikke "Navs Dolly for samarbeidspartnere" i Altinn?]
 ** xref:index.adoc#proxyer[Proxyer]
 *** xref:index.adoc#proxyer_hensikt[Hensikt]
 *** xref:index.adoc#proxyer_arkitektur[Arkitektur og mønster]
