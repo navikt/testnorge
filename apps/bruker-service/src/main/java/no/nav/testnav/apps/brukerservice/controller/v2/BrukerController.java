@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
@@ -35,17 +36,24 @@ public class BrukerController {
 
     @PostMapping
     public Mono<BrukerDTO> createBruker(
-            @RequestBody BrukerDTO brukerDTO
-    ) {
+            @RequestBody BrukerDTO brukerDTO) {
+
         return validateService.validateOrganiasjonsnummerAccess(brukerDTO.organisasjonsnummer())
                 .then(userService.create(brukerDTO))
                 .map(User::toDTO);
     }
 
+    @GetMapping("/alle")
+    public Flux<BrukerDTO> getAlleBrukere() {
+
+        return userService.getAllUsers()
+                .map(User::toDTO);
+    }
+
     @GetMapping
     public Mono<List<BrukerDTO>> getBrukere(
-            @RequestParam String organisasjonsnummer
-    ) {
+            @RequestParam String organisasjonsnummer) {
+
         return validateService.validateOrganiasjonsnummerAccess(organisasjonsnummer)
                 .then(userService.getUserFromOrganisasjonsnummer(organisasjonsnummer))
                 .map(User::toDTO)
@@ -55,8 +63,8 @@ public class BrukerController {
     @GetMapping("/{id}")
     public Mono<BrukerDTO> getBruker(
             @PathVariable String id,
-            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
-    ) {
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt) {
+
         return jwtService.verify(jwt, id)
                 .then(userService.getUser(id))
                 .map(User::toDTO);
@@ -64,8 +72,8 @@ public class BrukerController {
 
     @PutMapping()
     public Mono<BrukerDTO> updateBruker(
-            @RequestBody BrukerDTO bruker
-    ) {
+            @RequestBody BrukerDTO bruker) {
+
         return validateService.validateOrganiasjonsnummerAccess(bruker.organisasjonsnummer())
                 .then(userService.updateUser(bruker))
                 .map(User::toDTO);
@@ -73,8 +81,8 @@ public class BrukerController {
 
     @GetMapping("/brukernavn/{brukernavn}")
     public Mono<String> getBrukernavn(
-            @PathVariable String brukernavn
-    ) {
+            @PathVariable String brukernavn) {
+
         return userService.getUserByBrukernavn(brukernavn)
                 .map(User::getBrukernavn);
     }
@@ -82,14 +90,15 @@ public class BrukerController {
     @DeleteMapping("/{id}")
     public Mono<Void> deleteBruker(
             @PathVariable String id,
-            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
-    ) {
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt) {
+
         return jwtService.verify(jwt, id)
                 .then(userService.delete(id));
     }
 
     @PostMapping("/{id}/token")
     public Mono<String> getToken(@PathVariable String id) {
+
         return userService.getUser(id, true)
                 .doOnNext(user -> validateService.validateOrganiasjonsnummerAccess(user.getOrganisasjonsnummer()))
                 .flatMap(jwtService::getToken);

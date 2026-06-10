@@ -2,12 +2,15 @@ package no.nav.dolly.consumer.brukerservice;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.Consumers;
+import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetAlleCommand;
 import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetTilgangCommand;
+import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -36,5 +39,12 @@ public class BrukerServiceConsumer {
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
                         new BrukerServiceGetTilgangCommand(webClient, brukerId, token.getTokenValue()).call());
+    }
+
+    public Flux<BrukerDTO> getAlleBrukere() {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token ->
+                        new BrukerServiceGetAlleCommand(webClient, token.getTokenValue()).call());
     }
 }

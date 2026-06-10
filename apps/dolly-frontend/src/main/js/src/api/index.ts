@@ -150,7 +150,7 @@ export const identpoolFetcher = (url, body) =>
 			throw new Error(error.message)
 		})
 
-export const fetcher = (url, headers?, timeout = 10000) =>
+export const fetcher = (url, headers?, timeout = 15000) =>
 	axios
 		.get(url, { headers: headers, timeout: timeout })
 		.then((res) => {

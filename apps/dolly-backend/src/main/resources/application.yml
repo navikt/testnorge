@@ -145,4 +145,14 @@ consumers:
     namespace: dolly
     url: http://testnav-nom-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
+  teamkatalog:
+    name: team-catalog-backend
+    namespace: org
+    url: https://teamkatalog-api.intern.nav.no
+    cluster: prod-gcp
+  altinn3-tilgang-service:
+    name: testnav-altinn3-tilgang-service-prod
+    namespace: dolly
+    url: https://testnav-altinn3-tilgang-service.nav.no
+    cluster: prod-gcp
     
