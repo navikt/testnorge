@@ -4,6 +4,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
+import { PubliseringstidspunktField } from '@/components/fagsystem/kdi/form/partials/PubliseringstidspunktField'
 
 export const LoeslatelseForm = ({
 	path,
@@ -12,13 +13,7 @@ export const LoeslatelseForm = ({
 }: KdiMeldingFieldsProps) => {
 	return (
 		<>
-			<FormDatepicker
-				name={`${path}.publiseringstidspunkt`}
-				label="Publiseringstidspunkt"
-				format={'DD.MM.YYYY HH:mm:ss'}
-				disabled={erEksisterendeMelding}
-				// date={rapporteringsdate}
-			/>
+			<PubliseringstidspunktField path={path} erEksisterendeMelding={erEksisterendeMelding} />
 			<FormSelect
 				name={`${path}.kategori`}
 				label="Kategori"

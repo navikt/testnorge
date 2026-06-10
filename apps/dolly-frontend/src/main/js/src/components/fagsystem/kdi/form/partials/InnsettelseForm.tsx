@@ -3,6 +3,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
+import { PubliseringstidspunktField } from '@/components/fagsystem/kdi/form/partials/PubliseringstidspunktField'
 
 export const InnsettelseForm = ({
 	path,
@@ -13,13 +14,7 @@ export const InnsettelseForm = ({
 
 	return (
 		<>
-			<FormDatepicker
-				name={`${path}.publiseringstidspunkt`}
-				label="Publiseringstidspunkt"
-				format={'DD.MM.YYYY HH:mm:ss'}
-				disabled={erEksisterendeMelding}
-				// date={rapporteringsdate}
-			/>
+			<PubliseringstidspunktField path={path} erEksisterendeMelding={erEksisterendeMelding} />
 			<FormSelect
 				name={`${path}.kategori`}
 				label="Kategori"

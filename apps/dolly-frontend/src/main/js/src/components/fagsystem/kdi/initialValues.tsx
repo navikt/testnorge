@@ -3,7 +3,7 @@ export const instdataKdiAttributt = 'instdataKdi'
 export const initialInnsettelse = {
 	meldingId: null,
 	hendelseId: null,
-	publiseringstidspunkt: new Date(), //TODO: Alle publiseringstidspunkt maa settes i form for at de skal settes til now ved render av aktuell melding
+	publiseringstidspunkt: null,
 	kategori: '',
 	organisasjonsnummer: '874718602',
 	tidspunkt: null,
@@ -12,7 +12,7 @@ export const initialInnsettelse = {
 export const initialLoeslatelse = {
 	meldingId: null,
 	hendelseId: null,
-	publiseringstidspunkt: new Date(),
+	publiseringstidspunkt: null,
 	kategori: '',
 	organisasjonsnummer: '874718602',
 	tidspunkt: null,
@@ -23,7 +23,7 @@ export const initialLoeslatelse = {
 export const initialAvbruddStart = {
 	meldingId: null,
 	hendelseId: null,
-	publiseringstidspunkt: new Date(),
+	publiseringstidspunkt: null,
 	kategori: '',
 	organisasjonsnummer: '874718602',
 	tidspunkt: null,
@@ -33,7 +33,7 @@ export const initialAvbruddStart = {
 export const initialAvbruddSlutt = {
 	meldingId: null,
 	hendelseId: null,
-	publiseringstidspunkt: new Date(),
+	publiseringstidspunkt: null,
 	kategori: '',
 	organisasjonsnummer: '874718602',
 	tidspunkt: null,
@@ -42,7 +42,7 @@ export const initialAvbruddSlutt = {
 export const initialForventetLoeslatelse = {
 	meldingId: null,
 	hendelseId: null,
-	publiseringstidspunkt: new Date(),
+	publiseringstidspunkt: null,
 	innmeldingHendelseId: '',
 	tidspunkt: null,
 }
@@ -50,7 +50,7 @@ export const initialForventetLoeslatelse = {
 export const initialAnnullering = {
 	meldingId: null,
 	hendelseId: null,
-	publiseringstidspunkt: new Date(),
+	publiseringstidspunkt: null,
 	annullertMeldingId: null,
 }
 
