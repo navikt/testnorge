@@ -695,7 +695,7 @@ For disse scenariene, bygg opp familien steg for steg ved å bruke "Legg til/end
 
 Altinn lar deg velge "Hvem vil du bruke Altinn på vegne av", og det er organisasjonsnummer som Dolly har gitt tilgang for som benyttes. 
 
-Fra Altinn, gjør som følger:
+For riktig organisasjon:
 
 1. Velg *Tilgangsstyring* og *Brukere*
 2. Opprett bruker eller velg en eksisterende, og i åpen personvisning velg *Enkelttjenester*
