@@ -5,6 +5,8 @@ spring:
   config:
     import: "sm@"
 
+TOKEN_X_ISSUER: ${sm@token-x-issuer}
+
 consumers:
   testnorge-profil-api:
     url: https://testnorge-profil-api-dev.intern.dev.nav.no/api

@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.oversiktfrontend;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.apps.oversiktfrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
@@ -54,15 +53,16 @@ public class OversiktFrontendApplicationStarter {
                 .build();
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
+
         new SpringApplicationBuilder(OversiktFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+
         return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
-                .apply(exchange -> {
+                .apply(_ -> {
                     return tokenExchange
                             .exchange(serverProperties)
                             .map(AccessToken::getTokenValue);
@@ -70,6 +70,7 @@ public class OversiktFrontendApplicationStarter {
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
+
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
