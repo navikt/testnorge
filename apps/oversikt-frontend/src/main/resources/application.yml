@@ -1,3 +1,8 @@
+APP_CLIENT_ID: 669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4
+LOCAL_AUTH: https://dolly-auth-local.intern.dev.nav.no
+PROVIDER_URL: https://login.microsoftonline.com
+TENENT_ID: nav.no
+
 spring:
   config:
     import: "classpath:dolly-application.yml"
@@ -5,13 +10,13 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          AZURE_APP_CLIENT_ID: 669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4
-          AZURE_APP_WELL_KNOWN_URL: https://dolly-auth-local.intern.dev.nav.no/entraid/.well-known/openid-configuration  # replace <team>
-          AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/token            # replace <team>
-          AZURE_OPENID_CONFIG_ISSUER: https://login.microsoftonline.com/nav.no/v2.0                                    # replace <tenant>
-          AZURE_OPENID_CONFIG_JWKS_URI: https://login.microsoftonline.com/nav.no/discovery/v2.0/keys                   # replace <tenant>
-          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
-          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          AZURE_APP_CLIENT_ID: ${APP_CLIENT_ID}
+          AZURE_APP_WELL_KNOWN_URL: ${LOCAL_AUTH}/entraid/.well-known/openid-configuration
+          AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: ${LOCAL_AUTH}/entraid/oauth2/token
+          AZURE_OPENID_CONFIG_ISSUER: ${PROVIDER_URL}/${TENENT_ID}/v2.0
+          AZURE_OPENID_CONFIG_JWKS_URI: ${PROVIDER_URL}/${TENENT_ID}/discovery/v2.0/keys
+          issuer-uri: ${PROVIDER_URL}/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+          accepted-audience: ${APP_CLIENT_ID}, api:// ${APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
 
