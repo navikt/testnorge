@@ -4,7 +4,7 @@ import {
 	BestillingTitle,
 } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { arrayToString, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import { arrayToString, formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { KelvinAapTypes } from '@/components/fagsystem/kelvin/initialValues'
 
@@ -20,6 +20,11 @@ export const KelvinAap = ({ kelvinAap }: { kelvinAap: KelvinAapTypes }) => {
 				<div className="bestilling-blokk">
 					<h3>Generelt</h3>
 					<BestillingData>
+						<TitleValue title="Søknadsdato" value={formatDate(kelvinAap.soeknadsdato)} />
+						<TitleValue
+							title="Automatisk meldekort"
+							value={oversettBoolean(kelvinAap.automatiskMeldekort)}
+						/>
 						<TitleValue title="Er student" value={oversettBoolean(kelvinAap.erStudent)} />
 						<TitleValue
 							title="Har medlemskap i folketrygden"

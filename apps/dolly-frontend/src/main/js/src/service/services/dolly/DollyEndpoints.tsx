@@ -235,4 +235,20 @@ export default class DollyEndpoints {
 	static lagreSoek(soekType: string) {
 		return `${uri}/soek?soekType=${soekType}`
 	}
+
+	static dashboardPersoner() {
+		return `${uri}/dashboard/personer`
+	}
+
+	static dashboardTeams() {
+		return `${uri}/dashboard/teams`
+	}
+
+	static dashboardOrganisasjoner() {
+		return `${uri}/dashboard/organisasjoner`
+	}
+
+	static dashboardDollyTeams() {
+		return `${uri}/dashboard/dollyteams`
+	}
 }
