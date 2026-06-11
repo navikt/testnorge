@@ -7,10 +7,14 @@ export const PubliseringstidspunktField = ({ path, erEksisterendeMelding }) => {
 	const publiseringsTidspunktPath = `${path}.publiseringstidspunkt`
 	const publiseringstidspunkt = formMethods.watch(publiseringsTidspunktPath)
 
-	// TODO: Hvorfor blir dato satt to timer senere i formMethods?
 	useEffect(() => {
 		if (!publiseringstidspunkt) {
-			formMethods.setValue(publiseringsTidspunktPath, new Date())
+			formMethods.setValue(
+				publiseringsTidspunktPath,
+				Temporal.Now.plainDateTimeISO()
+					.round({ smallestUnit: 'second', roundingMode: 'trunc' })
+					.toString(),
+			)
 		}
 	}, [])
 
