@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -49,6 +50,7 @@ public class TeamkatalogGetCommand implements Callable<Flux<TeamkatalogDTO>> {
                             .status(description.getStatus())
                             .feilmelding(description.getMessage())
                             .build());
-                });
+                })
+                .cache(Duration.ofDays(1));
     }
 }
