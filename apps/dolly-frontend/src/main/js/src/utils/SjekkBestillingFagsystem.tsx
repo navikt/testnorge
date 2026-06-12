@@ -18,6 +18,7 @@ type Fagsystem = {
 		afpOffentlig?: boolean
 	}
 	instdata?: boolean
+	instdataKdi?: boolean
 	dokarkiv?: boolean
 	histark?: boolean
 	arbeidssoekerregisteret?: boolean
@@ -85,6 +86,9 @@ export const harAfpOffentligBestilling = (bestillingerFagsystemer: Fagsystem[]):
 
 export const harInstBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.instdata)
+
+export const harKdiBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.instdataKdi)
 
 export const harDokarkivBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.dokarkiv)

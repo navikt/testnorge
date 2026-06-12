@@ -46,7 +46,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 			(values.pensjonforvalter && values.sykemelding)
 		) {
 			return ['q1', 'q2']
-		} else if (values.pensjonforvalter) {
+		} else if (values.pensjonforvalter || values.instdataKdi) {
 			return ['q2']
 		} else if (values.sykemelding) {
 			return ['q1']

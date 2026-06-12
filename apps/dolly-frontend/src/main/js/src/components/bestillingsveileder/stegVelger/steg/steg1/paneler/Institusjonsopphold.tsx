@@ -9,6 +9,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
 import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
+import { initialKdi, instdataKdiAttributt } from '@/components/fagsystem/kdi/initialValues'
 
 export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
@@ -20,13 +21,20 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 			checkAttributeArray={sm.batchAdd as any}
 			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="institusjon"
-			startOpen={harValgtAttributt(formValues, [instAttributt])}
+			// startOpen={harValgtAttributt(formValues, [instAttributt, instdataKdiAttributt])}
+			startOpen={true} //TODO: Fjernes naar ferdig!!!
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.instdata}
 					disabled={instTimeout.disabled}
 					title={instTimeout.title}
+				/>
+				<Attributt
+					attr={sm.attrs.instdataKdi}
+					// TODO: Settes naar vi henter data som brukes ved legg til endre
+					// disabled={instTimeout.disabled}
+					// title={instTimeout.title}
 				/>
 			</AttributtKategori>
 		</Panel>
@@ -35,22 +43,36 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 
 InstitusjonsoppholdPanel.heading = 'Institusjonsopphold'
 
-InstitusjonsoppholdPanel.initialValues = ({ set, del, has }: any) => ({
-	instdata: {
-		label: 'Har institusjonsopphold',
-		checked: has('instdata'),
-		add() {
-			set('instdata', [
-				{
-					institusjonstype: runningE2ETest() ? 'AS' : '',
-					startdato: runningE2ETest() ? new Date() : '',
-					forventetSluttdato: '',
-					sluttdato: '',
-				},
-			])
+InstitusjonsoppholdPanel.initialValues = ({ set, opts, del, has }: any) => {
+	const eksisterendeKdiData = opts?.personFoerLeggTil?.instdataKdi
+
+	return {
+		instdata: {
+			label: 'Institusjonsopphold',
+			checked: has('instdata'),
+			add() {
+				set('instdata', [
+					{
+						institusjonstype: runningE2ETest() ? 'AS' : '',
+						startdato: runningE2ETest() ? new Date() : '',
+						forventetSluttdato: '',
+						sluttdato: '',
+					},
+				])
+			},
+			remove() {
+				del('instdata')
+			},
 		},
-		remove() {
-			del('instdata')
+		instdataKdi: {
+			label: 'KDI-meldinger',
+			checked: has('instdataKdi'),
+			add() {
+				set('instdataKdi', eksisterendeKdiData ?? initialKdi)
+			},
+			remove() {
+				del('instdataKdi')
+			},
 		},
-	},
-})
+	}
+}
