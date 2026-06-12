@@ -66,6 +66,7 @@ export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Ti
 	)
 }
 
+// TODO: Fiks rekkefoelge til aa foelge publiseringstidspunkt
 export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 	console.log('data: ', data) //TODO - SLETT MEG
 

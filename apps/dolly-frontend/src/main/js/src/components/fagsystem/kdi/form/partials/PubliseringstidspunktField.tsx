@@ -1,6 +1,7 @@
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { naaPubliseringstidspunkt } from '@/components/fagsystem/kdi/form/Form'
 
 export const PubliseringstidspunktField = ({ path, erEksisterendeMelding }) => {
 	const formMethods = useFormContext()
@@ -9,12 +10,7 @@ export const PubliseringstidspunktField = ({ path, erEksisterendeMelding }) => {
 
 	useEffect(() => {
 		if (!publiseringstidspunkt) {
-			formMethods.setValue(
-				publiseringsTidspunktPath,
-				Temporal.Now.plainDateTimeISO()
-					.round({ smallestUnit: 'second', roundingMode: 'trunc' })
-					.toString(),
-			)
+			formMethods.setValue(publiseringsTidspunktPath, naaPubliseringstidspunkt())
 		}
 	}, [])
 

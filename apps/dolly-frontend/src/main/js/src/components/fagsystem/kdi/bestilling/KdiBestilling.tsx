@@ -4,6 +4,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { KdiMelding } from '@/components/fagsystem/kdi/visning/KdiVisning'
 
+// TODO: Fiks rekkefoelge til aa foelge publiseringstidspunkt
 export const KdiBestilling = ({ kdi }) => {
 	if (!kdi) {
 		return null

@@ -61,6 +61,11 @@ const meldingstyper = [
 	},
 ] as const
 
+export const naaPubliseringstidspunkt = () =>
+	Temporal.Now.plainDateTimeISO()
+		.round({ smallestUnit: 'second', roundingMode: 'trunc' })
+		.toString()
+
 export const KdiForm = () => {
 	const formMethods = useFormContext()
 
@@ -75,10 +80,25 @@ export const KdiForm = () => {
 		}),
 	}
 
-	// TODO: Sorteres etter rekkefoelge lagt til, evt. etter dato
-	const meldinger = meldingstyper.flatMap(({ key, header, Form }) =>
-		fieldArrays[key].fields.map((field, idx) => ({ key, header, Form, fieldId: field.id, idx })),
-	)
+	const publiseringstidspunktTid = (publiseringstidspunkt: unknown) =>
+		publiseringstidspunkt ? new Date(publiseringstidspunkt as string).getTime() : Infinity
+
+	const meldinger = meldingstyper
+		.flatMap(({ key, header, Form }) =>
+			fieldArrays[key].fields.map((field, idx) => ({
+				...formMethods.getValues(`instdataKdi.${key}[${idx}]`),
+				key,
+				header,
+				Form,
+				fieldId: field.id,
+				idx,
+			})),
+		)
+		.sort(
+			(a, b) =>
+				publiseringstidspunktTid(a.publiseringstidspunkt) -
+				publiseringstidspunktTid(b.publiseringstidspunkt),
+		)
 
 	const { fengsler, loading, error } = useFengsel()
 	const fengselOptions = fengsler
@@ -92,7 +112,7 @@ export const KdiForm = () => {
 		fieldArrays[key].append({
 			...initialValues,
 			meldingId: null,
-			publiseringstidspunkt: new Date(),
+			publiseringstidspunkt: naaPubliseringstidspunkt(),
 		})
 	}
 
@@ -141,7 +161,12 @@ export const KdiForm = () => {
 									<FieldArrayAddButton
 										key={key}
 										addEntryButtonText={header}
-										onClick={() => fieldArrays[key].append(initialValues)}
+										onClick={() =>
+											fieldArrays[key].append({
+												...initialValues,
+												publiseringstidspunkt: naaPubliseringstidspunkt(),
+											})
+										}
 									/>
 								))}
 							</div>
