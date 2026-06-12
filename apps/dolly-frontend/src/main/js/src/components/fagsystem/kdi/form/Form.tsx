@@ -66,6 +66,9 @@ export const naaPubliseringstidspunkt = () =>
 		.round({ smallestUnit: 'second', roundingMode: 'trunc' })
 		.toString()
 
+export const publiseringstidspunktTid = (publiseringstidspunkt: unknown) =>
+	publiseringstidspunkt ? new Date(publiseringstidspunkt as string).getTime() : Infinity
+
 export const KdiForm = () => {
 	const formMethods = useFormContext()
 
@@ -79,9 +82,6 @@ export const KdiForm = () => {
 			name: 'instdataKdi.forventetLoeslatelse',
 		}),
 	}
-
-	const publiseringstidspunktTid = (publiseringstidspunkt: unknown) =>
-		publiseringstidspunkt ? new Date(publiseringstidspunkt as string).getTime() : Infinity
 
 	const meldinger = meldingstyper
 		.flatMap(({ key, header, Form }) =>

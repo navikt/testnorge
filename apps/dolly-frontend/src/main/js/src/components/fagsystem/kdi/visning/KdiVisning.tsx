@@ -5,8 +5,15 @@ import { Alert } from '@navikt/ds-react'
 import React from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDateTimeWithSeconds, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import {
+	codeToNorskLabel,
+	formatDateTimeWithSeconds,
+	oversettBoolean,
+	showLabel,
+} from '@/utils/DataFormatter'
 import { useFengsel } from '@/utils/hooks/useInstitusjon'
+import { publiseringstidspunktTid } from '@/components/fagsystem/kdi/form/Form'
+import { getTidspunktLabel } from '@/components/fagsystem/kdi/utils'
 
 // TODO: Fiks denne
 export const sjekkManglerKdiData = (kdiData) => {
@@ -14,7 +21,7 @@ export const sjekkManglerKdiData = (kdiData) => {
 	// return kdiData?.length < 1 || kdiData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
-export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Tidspunkt' }) => {
+export const KdiMelding = ({ melding, id, annulleringListe }) => {
 	const annullering = annulleringListe?.find((a) => a.annullertMeldingId === melding.meldingId)
 
 	const { fengsler, loading, error } = useFengsel()
@@ -22,8 +29,11 @@ export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Ti
 		? `${melding.organisasjonsnummer} - ${fengsler[melding.organisasjonsnummer]}`
 		: melding.organisasjonsnummer
 
+	const tidspunktLabel = getTidspunktLabel(melding.type)
+
 	return (
 		<>
+			{melding.type && <h4 style={{ marginTop: '0px' }}>{codeToNorskLabel(melding.type)}</h4>}
 			<div className="person-visning_content" key={id}>
 				{/*TODO: hendelseId?*/}
 				{/*TODO: meldingId?*/}
@@ -68,8 +78,6 @@ export const KdiMelding = ({ melding, id, annulleringListe, tidspunktLabel = 'Ti
 
 // TODO: Fiks rekkefoelge til aa foelge publiseringstidspunkt
 export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
-	console.log('data: ', data) //TODO - SLETT MEG
-
 	if (!data && !harKdiBestilling) {
 		return null
 	}
@@ -78,17 +86,20 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 		return <Loading label="Laster KDI-meldinger ..." />
 	}
 	console.log('data: ', data) //TODO - SLETT MEG
-	console.log('harKdiBestilling: ', harKdiBestilling) //TODO - SLETT MEG
-	const manglerFagsystemdata = harKdiBestilling && !data
 
-	const {
-		innsettelse,
-		loeslatelse,
-		avbruddStart,
-		avbruddSlutt,
-		forventetLoeslatelse,
-		annullering,
-	} = data
+	const annullering = data.annullering
+
+	const meldinger = Object.entries(data)
+		.flatMap(([type, values]) => values?.map((melding) => ({ ...melding, type })))
+		?.filter((melding) => melding && melding.type !== 'annullering')
+		?.sort(
+			(a, b) =>
+				publiseringstidspunktTid(a.publiseringstidspunkt) -
+				publiseringstidspunktTid(b.publiseringstidspunkt),
+		)
+	console.log('meldinger: ', meldinger) //TODO - SLETT MEG
+
+	const manglerFagsystemdata = harKdiBestilling && (!data || !meldinger || meldinger?.length < 1)
 
 	return (
 		<div>
@@ -103,66 +114,11 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 				</Alert>
 			) : (
 				<ErrorBoundary>
-					{innsettelse?.length > 0 && (
-						<DollyFieldArray data={innsettelse} header="Innsettelse" nested>
-							{(melding, idx) => (
-								<KdiMelding
-									melding={melding}
-									id={'innsettelse' + idx}
-									annulleringListe={annullering}
-									tidspunktLabel="Innsettelsestidspunkt"
-								/>
-							)}
-						</DollyFieldArray>
-					)}
-					{loeslatelse?.length > 0 && (
-						<DollyFieldArray data={loeslatelse} header="Løslatelse" nested>
-							{(melding, idx) => (
-								<KdiMelding
-									melding={melding}
-									id={'loeslatelse' + idx}
-									annulleringListe={annullering}
-									tidspunktLabel="Løslatelsestidspunkt"
-								/>
-							)}
-						</DollyFieldArray>
-					)}
-					{avbruddStart?.length > 0 && (
-						<DollyFieldArray data={avbruddStart} header="Avbrudd start" nested>
-							{(melding, idx) => (
-								<KdiMelding
-									melding={melding}
-									id={'avbruddStart' + idx}
-									annulleringListe={annullering}
-									tidspunktLabel="Tidspunkt for start på straffeavbrudd"
-								/>
-							)}
-						</DollyFieldArray>
-					)}
-					{avbruddSlutt?.length > 0 && (
-						<DollyFieldArray data={avbruddSlutt} header="Avbrudd slutt" nested>
-							{(melding, idx) => (
-								<KdiMelding
-									melding={melding}
-									id={'avbruddSlutt' + idx}
-									annulleringListe={annullering}
-									tidspunktLabel="Tidspunkt for slutt på straffeavbrudd"
-								/>
-							)}
-						</DollyFieldArray>
-					)}
-					{forventetLoeslatelse?.length > 0 && (
-						<DollyFieldArray data={forventetLoeslatelse} header="Forventet løslatelse" nested>
-							{(melding, idx) => (
-								<KdiMelding
-									melding={melding}
-									id={'forventetLoeslatelse' + idx}
-									annulleringListe={annullering}
-									tidspunktLabel="Forventet løslatt tidspunkt"
-								/>
-							)}
-						</DollyFieldArray>
-					)}
+					<DollyFieldArray data={meldinger} nested>
+						{(melding, idx) => (
+							<KdiMelding melding={melding} id={idx} annulleringListe={annullering} />
+						)}
+					</DollyFieldArray>
 				</ErrorBoundary>
 			)}
 		</div>
