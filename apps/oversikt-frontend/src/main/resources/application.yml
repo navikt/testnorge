@@ -1,7 +1,3 @@
-APP_CLIENT_ID: 669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4
-LOCAL_AUTH: https://dolly-auth-local.intern.dev.nav.no
-PROVIDER_URL: https://login.microsoftonline.com
-TENENT_ID: nav.no
 
 spring:
   config:
