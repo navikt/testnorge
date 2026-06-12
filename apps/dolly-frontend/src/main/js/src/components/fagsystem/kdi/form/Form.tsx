@@ -109,10 +109,15 @@ export const KdiForm = () => {
 		: []
 
 	const handleRedigering = (key, initialValues) => {
+		const redigertTidspunkt =
+			Temporal.PlainDateTime.from(initialValues.publiseringstidspunkt)
+				?.add({ seconds: 1 })
+				?.toString() || naaPubliseringstidspunkt()
+
 		fieldArrays[key].append({
 			...initialValues,
 			meldingId: null,
-			publiseringstidspunkt: naaPubliseringstidspunkt(),
+			publiseringstidspunkt: redigertTidspunkt,
 		})
 	}
 
