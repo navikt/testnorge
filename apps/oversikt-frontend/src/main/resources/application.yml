@@ -10,13 +10,8 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          AZURE_APP_CLIENT_ID: ${APP_CLIENT_ID}
-          AZURE_APP_WELL_KNOWN_URL: ${LOCAL_AUTH}/entraid/.well-known/openid-configuration
-          AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: ${LOCAL_AUTH}/entraid/oauth2/token
-          AZURE_OPENID_CONFIG_ISSUER: ${PROVIDER_URL}/${TENENT_ID}/v2.0
-          AZURE_OPENID_CONFIG_JWKS_URI: ${PROVIDER_URL}/${TENENT_ID}/discovery/v2.0/keys
-          issuer-uri: ${PROVIDER_URL}/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
-          accepted-audience: ${APP_CLIENT_ID}, api:// ${APP_CLIENT_ID}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
 

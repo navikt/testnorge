@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.oversiktfrontend;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.apps.oversiktfrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
@@ -56,6 +57,7 @@ public class OversiktFrontendApplicationStarter {
     static void main(String[] args) {
 
         new SpringApplicationBuilder(OversiktFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
 
