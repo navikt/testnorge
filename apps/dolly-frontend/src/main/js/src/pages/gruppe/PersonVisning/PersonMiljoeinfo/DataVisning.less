@@ -1,24 +1,82 @@
 @import (reference) '@/styles/variables.less';
 
 .miljoe-knapp {
-	background-color: @navGronnLighten60;
-	border: 1px solid #999;
-	border-radius: 4px;
-	padding: 2px 6px;
-	font-size: 0.8rem;
-	margin-right: 10px;
+  background-color: @navGronnLighten60;
+  border: 1px solid #999;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  margin-right: 10px;
 
-	&-grey {
-		background-color: @navGra60;
-	}
+  &-grey {
+    background-color: @navGra60;
+  }
 }
 
 .boks {
-	font-size: 16px;
-	line-height: 1.15;
-	min-width: 600px;
-	max-width: 800px;
-	max-height: 80vh;
-	overflow-y: auto;
-	padding-right: 10px;
+  font-size: 16px;
+  line-height: 1.15;
+  min-width: 600px;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.hendelse-kategori-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hendelse-kategori-antall {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background-color: var(--ax-bg-accent-moderateA);
+  color: var(--ax-text-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.hendelse-id-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.hendelse-id-value {
+  white-space: nowrap;
+  word-break: normal;
+  hyphens: none;
+}
+
+.hendelse-feil {
+  color: @color-error;
+  font-style: italic;
+}
+
+.hendelse-kategori-feil {
+  .aksel-accordion__header {
+    color: @color-error;
+  }
+
+  .hendelse-kategori-antall {
+    background-color: @color-error-background;
+    color: @color-error;
+  }
+}
+
+.hendelse-importert-relasjon {
+  flex: 1 1 100%;
+  width: 100%;
+  margin-right: 0;
+  margin-bottom: 8px;
 }
