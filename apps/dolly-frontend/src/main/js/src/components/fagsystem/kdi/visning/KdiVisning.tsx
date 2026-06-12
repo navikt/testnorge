@@ -34,7 +34,7 @@ export const KdiMelding = ({ melding, id, annulleringListe }) => {
 	return (
 		<>
 			{melding.type && <h4 style={{ marginTop: '0px' }}>{codeToNorskLabel(melding.type)}</h4>}
-			<div className="person-visning_content" key={id}>
+			<div className="person-visning_content" key={id} style={{ marginBottom: 0 }}>
 				{/*TODO: hendelseId?*/}
 				{/*TODO: meldingId?*/}
 				<TitleValue
@@ -76,7 +76,6 @@ export const KdiMelding = ({ melding, id, annulleringListe }) => {
 	)
 }
 
-// TODO: Fiks rekkefoelge til aa foelge publiseringstidspunkt
 export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 	if (!data && !harKdiBestilling) {
 		return null
@@ -85,7 +84,6 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 	if (loading) {
 		return <Loading label="Laster KDI-meldinger ..." />
 	}
-	console.log('data: ', data) //TODO - SLETT MEG
 
 	const annullering = data.annullering
 
@@ -97,7 +95,6 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 				publiseringstidspunktTid(a.publiseringstidspunkt) -
 				publiseringstidspunktTid(b.publiseringstidspunkt),
 		)
-	console.log('meldinger: ', meldinger) //TODO - SLETT MEG
 
 	const manglerFagsystemdata = harKdiBestilling && (!data || !meldinger || meldinger?.length < 1)
 
