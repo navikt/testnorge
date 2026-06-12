@@ -19,7 +19,7 @@ spec:
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: team-dolly-lokal-app
+        - application: localauth
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
