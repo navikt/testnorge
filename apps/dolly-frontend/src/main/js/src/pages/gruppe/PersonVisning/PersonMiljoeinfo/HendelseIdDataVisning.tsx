@@ -1,11 +1,14 @@
 import React from 'react'
 import './DataVisning.less'
 import 'rc-tooltip/assets/bootstrap_white.css'
-import { Accordion, CopyButton, FormSummary } from '@navikt/ds-react'
+import { Accordion, Alert, CopyButton } from '@navikt/ds-react'
 import Loading from '@/components/ui/loading/Loading'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { useHendelseId } from '@/utils/hooks/useHendelseId'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
+import { ApiFeilmelding } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 
 export type RelatertPerson = {
 	type: string
@@ -15,9 +18,15 @@ export type RelatertPerson = {
 type HendelseIdDataVisningProps = {
 	ident: string
 	relatertePersoner?: RelatertPerson[]
+	onHoverAvailabilityChange?: (tilgjengelig: boolean) => void
 }
 
-type Hendelse = Record<string, unknown>
+type Hendelse = {
+	id?: number
+	status?: string
+	hendelseId?: string
+	error?: string
+}
 
 type Ordre = {
 	infoElement?: string
@@ -28,6 +37,7 @@ type HendelseData = {
 	ident?: string
 	ordrer?: Ordre[]
 	hovedperson?: {
+		ident?: string
 		ordrer?: Ordre[]
 	}
 	relasjoner?: unknown[]
@@ -39,73 +49,63 @@ type HendelseIdInfoProps = {
 	onCategoryOpened?: () => void
 }
 
-const ApiFeilmelding = ({ feil }: { feil: string }) => <div role="alert">{feil}</div>
-
-const formatValue = (value: unknown): React.ReactNode => {
-	if (value === null || value === undefined) return '–'
-	if (typeof value === 'object') return JSON.stringify(value)
-	return String(value)
+type RelatertHendelseElementProps = {
+	ident: string
+	person: RelatertPerson
+	visTooltip: boolean
+	visImportMelding?: boolean
+	onImportertChange: (
+		personId: string,
+		tilstand: { erImportertRelasjon: boolean; erAvklart: boolean },
+	) => void
 }
 
-const formatSummaryValue = (key: string, value: unknown): React.ReactNode => {
-	if (key !== 'hendelseId' || value === null || value === undefined) {
-		return formatValue(value)
-	}
+const IMPORTERT_RELASJON_MESSAGE =
+	'Hendelser utledes fra bestilling og ettersom denne relasjonen kun er importert, kan de ikke vises på denne identen. Gå til tilhørende hovedperson for å vise hendelser.'
 
-	const hendelseId = String(value)
+const NOISE_INFOELEMENTER = new Set(['PDL_SLETTING', 'PDL_OPPRETT_PERSON'])
 
+const hendelseHarFeil = (hendelse: Hendelse): boolean =>
+	Boolean(hendelse.error) || (hendelse.status != null && hendelse.status !== 'OK')
+
+const ImportertRelasjonMelding = () => {
 	return (
-		<span className="hendelse-id-copy">
-			<span>{hendelseId}</span>
-			<CopyButton size="xsmall" copyText={hendelseId} title="Kopier hendelse-ID" />
-		</span>
+		<Alert variant="warning" size="small" className="hendelse-importert-relasjon">
+			{IMPORTERT_RELASJON_MESSAGE}
+		</Alert>
 	)
 }
 
-const HendelseAnswers = ({ hendelser }: { hendelser: Hendelse[] }) => {
-	if (hendelser.length === 0) {
+const HendelseInnhold = ({ hendelse }: { hendelse: Hendelse }) => {
+	if (hendelseHarFeil(hendelse)) {
 		return (
-			<FormSummary.Answer>
-				<FormSummary.Label>Ingen hendelser registrert</FormSummary.Label>
-			</FormSummary.Answer>
+			<div className="person-visning_content">
+				<TitleValue title="Feil" size="full-width">
+					<span className="hendelse-feil">{hendelse.error ?? hendelse.status}</span>
+				</TitleValue>
+			</div>
+		)
+	}
+
+	if (hendelse.hendelseId) {
+		return (
+			<div className="person-visning_content">
+				<TitleValue title="Hendelse-ID" size="full-width">
+					<span className="hendelse-id-copy">
+						<span className="hendelse-id-value">{hendelse.hendelseId}</span>
+						<CopyButton size="xsmall" copyText={hendelse.hendelseId} title="Kopier hendelse-ID" />
+					</span>
+				</TitleValue>
+			</div>
 		)
 	}
 
 	return (
-		<>
-			{hendelser.map((hendelse, idx) => (
-				<FormSummary.Answer key={`${hendelse.id ?? idx}-${idx}`}>
-					<FormSummary.Label>
-						{hendelse.id !== undefined ? `ID ${hendelse.id}` : `Hendelse ${idx + 1}`}
-					</FormSummary.Label>
-					<FormSummary.Value>
-						<FormSummary.Answers>
-							{Object.entries(hendelse)
-								.filter(([key]) => key !== 'id')
-								.map(([key, value]) => (
-									<FormSummary.Answer key={key}>
-										<FormSummary.Label>{key}</FormSummary.Label>
-										<FormSummary.Value>{formatSummaryValue(key, value)}</FormSummary.Value>
-									</FormSummary.Answer>
-								))}
-						</FormSummary.Answers>
-					</FormSummary.Value>
-				</FormSummary.Answer>
-			))}
-		</>
+		<div className="person-visning_content">
+			<TitleValue title="Status" value={hendelse.status} />
+		</div>
 	)
 }
-
-const OrdreFormSummary = ({ ordre }: { ordre: Ordre }) => (
-	<FormSummary>
-		<FormSummary.Header>
-			<FormSummary.Heading level="3">{ordre.infoElement ?? 'Ukjent type'}</FormSummary.Heading>
-		</FormSummary.Header>
-		<FormSummary.Answers>
-			<HendelseAnswers hendelser={ordre.hendelser ?? []} />
-		</FormSummary.Answers>
-	</FormSummary>
-)
 
 const HendelseIdInfo = ({ ident, relatertIdent, onCategoryOpened }: HendelseIdInfoProps) => {
 	const { data, loading, error } = useHendelseId(ident, relatertIdent)
@@ -126,16 +126,7 @@ const HendelseIdInfo = ({ ident, relatertIdent, onCategoryOpened }: HendelseIdIn
 	if (ordrer.length === 0) {
 		return (
 			<div className="boks">
-				<FormSummary>
-					<FormSummary.Header>
-						<FormSummary.Heading level="3">Hendelse-ID</FormSummary.Heading>
-					</FormSummary.Header>
-					<FormSummary.Answers>
-						<FormSummary.Answer>
-							<FormSummary.Label>Ingen hendelser funnet</FormSummary.Label>
-						</FormSummary.Answer>
-					</FormSummary.Answers>
-				</FormSummary>
+				<ImportertRelasjonMelding />
 			</div>
 		)
 	}
@@ -146,29 +137,53 @@ const HendelseIdInfo = ({ ident, relatertIdent, onCategoryOpened }: HendelseIdIn
 		return accumulator
 	}, {})
 
+	const synligeOrdrer = Object.entries(groupedOrdrer).filter(
+		([infoElement, hendelser]) =>
+			!NOISE_INFOELEMENTER.has(infoElement) || hendelser.some(hendelseHarFeil),
+	)
+
+	if (synligeOrdrer.length === 0) {
+		return (
+			<div className="boks">
+				<Alert variant="info" size="small">
+					Ingen hendelser å vise.
+				</Alert>
+			</div>
+		)
+	}
+
 	return (
 		<div className="boks">
 			<Accordion size="small">
-				{Object.entries(groupedOrdrer)
+				{synligeOrdrer
 					.sort(([left], [right]) => left.localeCompare(right, 'no'))
-					.map(([infoElement, hendelser]) => (
-						<Accordion.Item key={infoElement} onOpenChange={(open) => open && onCategoryOpened?.()}>
-							<Accordion.Header>
-								<span className="hendelse-kategori-header">
-									<span>{codeToNorskLabel(infoElement)}</span>
-									<span
-										className="hendelse-kategori-antall"
-										aria-label={`${hendelser.length} hendelser`}
-									>
-										{hendelser.length}
+					.map(([infoElement, hendelser]) => {
+						const harFeil = hendelser.some(hendelseHarFeil)
+						return (
+							<Accordion.Item
+								key={infoElement}
+								className={harFeil ? 'hendelse-kategori-feil' : undefined}
+								onOpenChange={(open) => open && onCategoryOpened?.()}
+							>
+								<Accordion.Header>
+									<span className="hendelse-kategori-header">
+										<span>{codeToNorskLabel(infoElement)}</span>
+										<span
+											className="hendelse-kategori-antall"
+											aria-label={`${hendelser.length} hendelser`}
+										>
+											{hendelser.length}
+										</span>
 									</span>
-								</span>
-							</Accordion.Header>
-							<Accordion.Content>
-								<OrdreFormSummary ordre={{ infoElement, hendelser }} />
-							</Accordion.Content>
-						</Accordion.Item>
-					))}
+								</Accordion.Header>
+								<Accordion.Content>
+									<DollyFieldArray data={hendelser} nested>
+										{(hendelse: Hendelse) => <HendelseInnhold hendelse={hendelse} />}
+									</DollyFieldArray>
+								</Accordion.Content>
+							</Accordion.Item>
+						)
+					})}
 			</Accordion>
 		</div>
 	)
@@ -220,20 +235,107 @@ const HendelseTooltip = ({ triggerText, ident, relatertIdent }: HendelseTooltipP
 	)
 }
 
-export const HendelseIdDataVisning = ({ ident, relatertePersoner }: HendelseIdDataVisningProps) => {
-	if (!ident) {
+const RelatertHendelseElement = ({
+	ident,
+	person,
+	visTooltip,
+	visImportMelding = true,
+	onImportertChange,
+}: RelatertHendelseElementProps) => {
+	const { data, loading, error } = useHendelseId(ident, person.id)
+	const typed = data as HendelseData | undefined
+	const erImportertRelasjon =
+		!loading && !error && Boolean(typed) && (typed?.ordrer?.length ?? 0) === 0
+	React.useEffect(() => {
+		onImportertChange(person.id, {
+			erImportertRelasjon,
+			erAvklart: !loading,
+		})
+	}, [person.id, erImportertRelasjon, loading, onImportertChange])
+
+	if (erImportertRelasjon && visImportMelding) {
+		return <ImportertRelasjonMelding />
+	}
+	if (!visTooltip) {
 		return null
 	}
 
 	return (
+		<HendelseTooltip
+			triggerText={`${person.id} (${person.type})`}
+			ident={ident}
+			relatertIdent={person.id}
+		/>
+	)
+}
+
+export const HendelseIdDataVisning = ({
+	ident,
+	relatertePersoner,
+	onHoverAvailabilityChange,
+}: HendelseIdDataVisningProps) => {
+	if (!ident) {
+		return null
+	}
+	const [relasjonTilstand, setRelasjonTilstand] = React.useState<
+		Record<string, { erImportertRelasjon: boolean; erAvklart: boolean }>
+	>({})
+	const {
+		data: hovedpersonData,
+		loading: loadingHovedperson,
+		error: errorHovedperson,
+	} = useHendelseId(ident)
+	const typedHovedpersonData = hovedpersonData as HendelseData | undefined
+	const erImportertHovedperson =
+		!loadingHovedperson &&
+		!errorHovedperson &&
+		Boolean(typedHovedpersonData?.hovedperson) &&
+		(typedHovedpersonData?.hovedperson?.ordrer?.length ?? 0) === 0
+	const harImportertRelasjon = (relatertePersoner ?? []).some(
+		(person) => relasjonTilstand[person.id]?.erImportertRelasjon,
+	)
+	const alleRelaterteAvklart = (relatertePersoner ?? []).every(
+		(person) => relasjonTilstand[person.id]?.erAvklart,
+	)
+	const skalViseKunImportvarsel = erImportertHovedperson || harImportertRelasjon
+	const harTilgjengeligeHendelser =
+		!loadingHovedperson && alleRelaterteAvklart && !skalViseKunImportvarsel
+	const visHovedpersonTooltip = !skalViseKunImportvarsel && alleRelaterteAvklart
+	const oppdaterImportertRelasjon = React.useCallback(
+		(personId: string, tilstand: { erImportertRelasjon: boolean; erAvklart: boolean }) => {
+			setRelasjonTilstand((previous) => {
+				if (
+					previous[personId]?.erImportertRelasjon === tilstand.erImportertRelasjon &&
+					previous[personId]?.erAvklart === tilstand.erAvklart
+				) {
+					return previous
+				}
+				return {
+					...previous,
+					[personId]: tilstand,
+				}
+			})
+		},
+		[],
+	)
+	React.useEffect(() => {
+		onHoverAvailabilityChange?.(harTilgjengeligeHendelser)
+	}, [harTilgjengeligeHendelser, onHoverAvailabilityChange])
+
+	return (
 		<div className="flexbox--flex-wrap">
-			<HendelseTooltip triggerText={ident} ident={ident} />
+			{erImportertHovedperson && <ImportertRelasjonMelding />}
+			{visHovedpersonTooltip && (
+				<HendelseTooltip triggerText={`${ident} (HOVEDPERSON)`} ident={ident} />
+			)}
 			{relatertePersoner?.map((person) => (
-				<HendelseTooltip
+				<RelatertHendelseElement
 					key={`${person.type}-${person.id}`}
-					triggerText={`${person.id} (${person.type})`}
 					ident={ident}
-					relatertIdent={person.id}
+					person={person}
+					visTooltip={!skalViseKunImportvarsel}
+					visImportMelding={!erImportertHovedperson}
+					onImportertChange={oppdaterImportertRelasjon}
 				/>
 			))}
 		</div>

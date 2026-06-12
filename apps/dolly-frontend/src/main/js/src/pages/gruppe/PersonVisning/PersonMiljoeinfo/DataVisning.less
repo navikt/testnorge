@@ -44,7 +44,39 @@
 }
 
 .hendelse-id-copy {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
   gap: 6px;
+}
+
+.hendelse-id-value {
+  white-space: nowrap;
+  word-break: normal;
+  hyphens: none;
+}
+
+.hendelse-feil {
+  color: @color-error;
+  font-style: italic;
+}
+
+.hendelse-kategori-feil {
+  .aksel-accordion__header {
+    color: @color-error;
+  }
+
+  .hendelse-kategori-antall {
+    background-color: @color-error-background;
+    color: @color-error;
+  }
+}
+
+.hendelse-importert-relasjon {
+  flex: 1 1 100%;
+  width: 100%;
+  margin-right: 0;
+  margin-bottom: 8px;
 }
