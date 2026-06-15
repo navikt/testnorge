@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class RsInntektsinformasjon {
 
     private List<Historikk> historikk;
 
-    private OffsetDateTime rapporteringsdato;
+    private LocalDateTime rapporteringsdato;
 
     private Integer versjon;
 
@@ -115,6 +115,6 @@ public class RsInntektsinformasjon {
 
         private List<Forskuddstrekk> forskuddstrekksliste;
 
-        private OffsetDateTime rapporteringsdato;
+        private LocalDateTime rapporteringsdato;
     }
 }
