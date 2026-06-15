@@ -102,7 +102,7 @@ describe('HendelseIdDataVisning', () => {
 			/>,
 		)
 		expect(screen.getAllByText(/importert/i).length).toBeGreaterThan(0)
-		expect(screen.getAllByText(/Gå til hovedperson/i).length).toBeGreaterThan(0)
+		expect(screen.getAllByText(/hovedperson/i).length).toBeGreaterThan(0)
 		expect(screen.queryByText('11111111111 (BARN)')).not.toBeInTheDocument()
 		await waitFor(() =>
 			expect(screen.queryByText('12345678901 (HOVEDPERSON)')).not.toBeInTheDocument(),

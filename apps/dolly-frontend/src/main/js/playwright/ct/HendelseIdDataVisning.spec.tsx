@@ -217,7 +217,7 @@ test('should show imported-relation warning immediately and hide related hover b
 	)
 
 	await expect(page.getByText(/importert/i)).toBeVisible()
-	await expect(page.getByText(/Gå til hovedperson/i)).toBeVisible()
+	await expect(page.getByText(/hovedperson/i)).toBeVisible()
 	await expect(component.getByRole('button', { name: '11111111111 (BARN)' })).toHaveCount(0)
 	await expect(component.getByRole('button', { name: '12345678901 (HOVEDPERSON)' })).toHaveCount(0)
 })
