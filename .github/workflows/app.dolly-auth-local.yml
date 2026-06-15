@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - plugins/**
-      - .nais/dolly-auth-local.yaml
-      - .github/workflows/app.dolly-auth-lokal.yml
+      - .nais/dolly-auth-local.yml
+      - .github/workflows/app.dolly-auth-local.yml
 
 jobs:
   deploy:
