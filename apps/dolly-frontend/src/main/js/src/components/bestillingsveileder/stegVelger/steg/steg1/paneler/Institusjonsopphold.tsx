@@ -21,8 +21,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 			checkAttributeArray={sm.batchAdd as any}
 			uncheckAttributeArray={sm.batchRemove as any}
 			iconType="institusjon"
-			// startOpen={harValgtAttributt(formValues, [instAttributt, instdataKdiAttributt])}
-			startOpen={true} //TODO: Fjernes naar ferdig!!!
+			startOpen={harValgtAttributt(formValues, [instAttributt, instdataKdiAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt

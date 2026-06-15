@@ -30,19 +30,15 @@ export const AvbruddStartForm = ({
 			/>
 			<FormDatepicker
 				name={`${path}.tidspunkt`}
-				label="Tidspunkt for start på straffeavbrudd"
+				label="Start straffeavbrudd"
 				format={'DD.MM.YYYY HH:mm:ss'}
 				disabled={erEksisterendeMelding}
-				// size="large"
-				// date={rapporteringsdate}
 			/>
 			<FormDatepicker
 				name={`${path}.forventetAvbruddSluttTidspunkt`}
-				label="Forventet tidspunkt for slutt på straffeavbrudd"
+				label="Forv. slutt straffeavbrudd"
 				format={'DD.MM.YYYY HH:mm:ss'}
 				disabled={erEksisterendeMelding}
-				// size="large"
-				// date={rapporteringsdate}
 			/>
 		</>
 	)

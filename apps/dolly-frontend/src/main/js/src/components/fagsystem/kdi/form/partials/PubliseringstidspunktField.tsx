@@ -14,6 +14,7 @@ export const PubliseringstidspunktField = ({ path, erEksisterendeMelding }) => {
 		}
 	}, [])
 
+	// TODO: setValue onBlur? Evt. knapp for aa refreshe rekkefoelge?
 	return (
 		<FormDatepicker
 			key={publiseringstidspunkt ? 'set' : 'unset'}
@@ -21,7 +22,6 @@ export const PubliseringstidspunktField = ({ path, erEksisterendeMelding }) => {
 			label="Publiseringstidspunkt"
 			format={'DD.MM.YYYY HH:mm:ss'}
 			disabled={erEksisterendeMelding}
-			// date={rapporteringsdate}
 		/>
 	)
 }

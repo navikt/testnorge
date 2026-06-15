@@ -10,8 +10,6 @@ export const InnsettelseForm = ({
 	erEksisterendeMelding,
 	fengselOptions,
 }: KdiMeldingFieldsProps) => {
-	// TODO: Naar man sletter melding som har annullering maa annullering med tilsvarende meldingId også slettes
-
 	return (
 		<>
 			<PubliseringstidspunktField path={path} erEksisterendeMelding={erEksisterendeMelding} />
@@ -35,7 +33,6 @@ export const InnsettelseForm = ({
 				label="Innsettelsestidspunkt"
 				format={'DD.MM.YYYY HH:mm:ss'}
 				disabled={erEksisterendeMelding}
-				// date={rapporteringsdate}
 			/>
 		</>
 	)

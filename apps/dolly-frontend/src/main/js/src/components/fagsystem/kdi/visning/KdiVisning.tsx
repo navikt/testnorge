@@ -35,8 +35,6 @@ export const KdiMelding = ({ melding, id, annulleringListe }) => {
 		<>
 			{melding.type && <h4 style={{ marginTop: '0px' }}>{codeToNorskLabel(melding.type)}</h4>}
 			<div className="person-visning_content" key={id} style={{ marginBottom: 0 }}>
-				{/*TODO: hendelseId?*/}
-				{/*TODO: meldingId?*/}
 				<TitleValue
 					title="Publiseringstidspunkt"
 					value={formatDateTimeWithSeconds(melding.publiseringstidspunkt)}
@@ -59,7 +57,6 @@ export const KdiMelding = ({ melding, id, annulleringListe }) => {
 					title="Forventet tidspunkt for slutt på straffeavbrudd"
 					value={formatDateTimeWithSeconds(melding.forventetAvbruddSluttTidspunkt)}
 				/>
-				{/*	TODO: innmeldingHendelseId?*/}
 			</div>
 			{annullering && (
 				<>

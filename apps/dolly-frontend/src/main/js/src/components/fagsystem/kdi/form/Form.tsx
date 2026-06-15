@@ -20,7 +20,6 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import {
 	DollyFaBlokk,
-	DollyFaBlokkNested,
 	DollyFieldArrayWrapper,
 	FieldArrayAddButton,
 } from '@/components/ui/form/fieldArray/DollyFieldArray'
@@ -175,11 +174,11 @@ export const KdiForm = () => {
 												<FieldArrayTag type={meldingType.REDIGERING} />
 											) : null
 										}
-										// whiteBackground
 										showDeleteButton={!erEksisterendeMelding}
 									>
 										<Form
 											path={`instdataKdi.${key}[${idx}]`}
+											formMethods={formMethods}
 											erEksisterendeMelding={erEksisterendeMelding}
 											fengselOptions={fengselOptions}
 										/>

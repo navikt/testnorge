@@ -5,12 +5,16 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { KdiMeldingFieldsProps } from '@/components/fagsystem/kdi/form/partials/types'
 import { PubliseringstidspunktField } from '@/components/fagsystem/kdi/form/partials/PubliseringstidspunktField'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 export const LoeslatelseForm = ({
 	path,
+	formMethods,
 	erEksisterendeMelding,
 	fengselOptions,
 }: KdiMeldingFieldsProps) => {
+	const kategori = formMethods?.watch(`${path}.kategori`)
+
 	return (
 		<>
 			<PubliseringstidspunktField path={path} erEksisterendeMelding={erEksisterendeMelding} />
@@ -20,6 +24,12 @@ export const LoeslatelseForm = ({
 				options={Options('kdiKategori')}
 				isClearable={false}
 				isDisabled={erEksisterendeMelding}
+				onChange={(val: Option) => {
+					formMethods?.setValue(`${path}.kategori`, val.value)
+					if (val.value !== 'Varetekt') {
+						formMethods?.setValue(`${path}.erOverfoertTilVaretektMedElektroniskKontroll`, false)
+					}
+				}}
 			/>
 			<FormSelect
 				name={`${path}.organisasjonsnummer`}
@@ -34,7 +44,6 @@ export const LoeslatelseForm = ({
 				label="Løslatelsestidspunkt"
 				format={'DD.MM.YYYY HH:mm:ss'}
 				disabled={erEksisterendeMelding}
-				// date={rapporteringsdate}
 			/>
 			<FormCheckbox
 				name={`${path}.erOverfoertTilUtlandskfengsel`}
@@ -47,10 +56,9 @@ export const LoeslatelseForm = ({
 				name={`${path}.erOverfoertTilVaretektMedElektroniskKontroll`}
 				label="Er overført til varetekt med elektronisk kontroll"
 				size="small"
-				disabled={erEksisterendeMelding}
+				disabled={erEksisterendeMelding || kategori !== 'Varetekt'}
 				checkboxMargin
 			/>
-			{/*	TODO: Skal kun kunne være true om kategori er Varetekt*/}
 		</>
 	)
 }

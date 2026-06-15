@@ -30,11 +30,9 @@ export const AvbruddSluttForm = ({
 			/>
 			<FormDatepicker
 				name={`${path}.tidspunkt`}
-				label="Tidspunkt for slutt på straffeavbrudd"
+				label="Slutt straffeavbrudd"
 				format={'DD.MM.YYYY HH:mm:ss'}
 				disabled={erEksisterendeMelding}
-				// size="large"
-				// date={rapporteringsdate}
 			/>
 		</>
 	)
