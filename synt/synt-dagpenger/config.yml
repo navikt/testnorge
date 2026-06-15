@@ -38,7 +38,7 @@ spec:
     inbound:
       rules:
         - application: testnav-oversikt-frontend
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-synt-vedtakshistorikk-service
     outbound:
       rules:
