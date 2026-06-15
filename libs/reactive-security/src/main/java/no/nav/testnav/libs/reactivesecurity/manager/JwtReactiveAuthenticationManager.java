@@ -39,10 +39,13 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
     ) {
         this.getJwtDecoder = jwt -> resourceServerProperties
                 .stream()
-                .filter(props -> props.getIssuerUri().equals(getIssuer(jwt)))
+                .filter(props ->
+                        props.getIssuerUri().equals(getIssuer(jwt)))
                 .findFirst()
-                .map(props -> new NonBeanJwtDecoder(webClient, props, proxy).jwtDecoder())
-                .orElseThrow(() -> new AuthenticationServiceException("Finner ikke støtte for issuer " + getIssuer(jwt)));
+                .map(props ->
+                        new NonBeanJwtDecoder(webClient, props, proxy).jwtDecoder())
+                .orElseThrow(() ->
+                        new AuthenticationServiceException("Finner ikke støtte for issuer " + getIssuer(jwt)));
     }
 
     @Override

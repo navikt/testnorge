@@ -46,7 +46,9 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
         var exceptionInfo = ExceptionInformation.builder()
                 .error(status.getReasonPhrase())
                 .status(status.value())
-                .message(exception.getMessage())
+                .message(exception instanceof WebClientResponseException responseException ?
+                        responseException.getResponseBodyAsString() :
+                        exception.getMessage())
                 .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
                 .timestamp(LocalDateTime.now())
                 .build();
