@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class Inntektsinformasjon {
     @EqualsAndHashCode.Exclude
     private List<Forskuddstrekk> forskuddstrekksliste;
 
-    private LocalDateTime rapporteringsdato;
+    private OffsetDateTime rapporteringsdato;
 
     private Integer versjon;
 
