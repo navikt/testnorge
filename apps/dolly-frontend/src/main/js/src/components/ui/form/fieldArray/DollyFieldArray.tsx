@@ -81,6 +81,7 @@ export const DollyFaBlokk = ({
 	idx,
 	handleRemove,
 	hjelpetekst,
+	tag = null,
 	children,
 	showDeleteButton,
 	number,
@@ -93,6 +94,7 @@ export const DollyFaBlokk = ({
 				<Numbering idx={number || idx + 1} />
 				<h2>{header}</h2>
 				{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
+				{tag}
 				{showDeleteButton && <DeleteButton onClick={handleRemove} />}
 			</div>
 			<div className={`${className}_content`}>{children}</div>

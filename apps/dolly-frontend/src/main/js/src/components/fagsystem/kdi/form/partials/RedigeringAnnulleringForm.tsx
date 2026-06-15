@@ -36,7 +36,7 @@ export const RedigeringAnnulleringForm = ({ meldingId, handleRedigering }) => {
 			<Button
 				variant="tertiary"
 				size="xsmall"
-				data-color="neutral"
+				data-color="meta-purple"
 				icon={<PencilIcon aria-hidden />}
 				onClick={handleRedigering}
 				style={{ marginRight: '10px' }}

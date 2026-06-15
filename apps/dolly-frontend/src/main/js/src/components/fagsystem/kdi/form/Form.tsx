@@ -27,6 +27,7 @@ import {
 import { validation } from '@/components/fagsystem/kdi/form/validation'
 import { useFengsel } from '@/utils/hooks/useInstitusjon'
 import { RedigeringAnnulleringForm } from '@/components/fagsystem/kdi/form/partials/RedigeringAnnulleringForm'
+import { Tag } from '@navikt/ds-react'
 
 const meldingstyper = [
 	{
@@ -61,6 +62,22 @@ const meldingstyper = [
 	},
 ] as const
 
+const meldingType = {
+	ANNULLERT: 'Annullert',
+	REDIGERING: 'Redigering',
+}
+
+const FieldArrayTag = ({ type }) => (
+	<Tag
+		variant="outline"
+		size="small"
+		data-color={type === meldingType.ANNULLERT ? 'danger' : 'meta-purple'}
+		style={{ marginLeft: '10px' }}
+	>
+		{type}
+	</Tag>
+)
+
 export const naaPubliseringstidspunkt = () =>
 	Temporal.Now.plainDateTimeISO()
 		.round({ smallestUnit: 'second', roundingMode: 'trunc' })
@@ -71,6 +88,7 @@ export const publiseringstidspunktTid = (publiseringstidspunkt: unknown) =>
 
 export const KdiForm = () => {
 	const formMethods = useFormContext()
+	const annulleringer = formMethods.watch('instdataKdi.annullering') || []
 
 	const fieldArrays = {
 		innsettelse: useFieldArray({ control: formMethods.control, name: 'instdataKdi.innsettelse' }),
@@ -135,7 +153,13 @@ export const KdiForm = () => {
 							{meldinger.map(({ key, header, Form, fieldId, idx }, meldingNr) => {
 								const hendelse = formMethods.getValues(`instdataKdi.${key}[${idx}]`)
 								const meldingId = formMethods.getValues(`instdataKdi.${key}[${idx}].meldingId`)
+								const hendelseId = formMethods.getValues(`instdataKdi.${key}[${idx}].hendelseId`)
+
 								const erEksisterendeMelding = !!meldingId
+								const erRedigering = !erEksisterendeMelding && !!hendelseId
+								const harAnnullering = annulleringer?.find(
+									(a) => a.annullertMeldingId === meldingId,
+								)
 
 								return (
 									<DollyFaBlokk
@@ -144,6 +168,13 @@ export const KdiForm = () => {
 										number={meldingNr + 1}
 										header={header}
 										handleRemove={() => fieldArrays[key].remove(idx)}
+										tag={
+											harAnnullering ? (
+												<FieldArrayTag type={meldingType.ANNULLERT} />
+											) : erRedigering ? (
+												<FieldArrayTag type={meldingType.REDIGERING} />
+											) : null
+										}
 										// whiteBackground
 										showDeleteButton={!erEksisterendeMelding}
 									>
