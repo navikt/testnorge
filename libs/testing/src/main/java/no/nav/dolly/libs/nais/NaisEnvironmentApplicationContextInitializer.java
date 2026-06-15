@@ -11,6 +11,13 @@ import java.util.stream.Stream;
 @Slf4j
 public class NaisEnvironmentApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
+    // Konfigurasjon for lokal kjøring er hentet herfra: https://github.com/navikt/localauth
+
+    private static final String APP_CLIENT_ID = "669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4";
+    private static final String AUDIENCE = "3cbdd4cb-d048-420f-889e-2b32b7add652";
+    private static final String LOCAL_AUTH = "https://dolly-auth-local.intern.dev.nav.no";
+    private static final String PROVIDER_URL = "https://login.microsoftonline.com";
+    private static final String TENANT_ID = "nav.no";
     private static final String DUMMY = "dummy";
     private static final String FALSE = "false";
 
@@ -43,19 +50,23 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("dolly.texas.url.exchange", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange");
         properties.putIfAbsent("dolly.texas.url.introspect", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect");
 
+        properties.putIfAbsent("spring.security.oauth2.resourceserver.aad.issuer-uri",
+                PROVIDER_URL + "/62366534-1ec3-4962-8869-9b5535279d0b/v2.0");
+        properties.putIfAbsent("spring.security.oauth2.resourceserver.aad.accepted-audience",
+                "%s, api:// %s".formatted(AUDIENCE, AUDIENCE));
+
         // Emulating NAIS provided environment variables.
-        properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm@azure-app-client-id}");
-        properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm@azure-app-client-secret}");
-        properties.putIfAbsent("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm@azure-nav-openid-config-token-endpoint}"); // Corresponding AZURE_NAV_APP_CLIENT_[ID|SECRET] can be loaded from pod, if needed.
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm@azure-openid-config-issuer}");
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm@azure-openid-config-token-endpoint}");
-        properties.putIfAbsent("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm@azure-trygdeetaten-openid-config-token-endpoint}"); // Corresponding AZURE_TRYGDEETATEN_APP_CLIENT_[ID|SECRET] can be loaded from pod, if needed.
+        properties.putIfAbsent("AZURE_APP_CLIENT_ID", APP_CLIENT_ID);
+        properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", DUMMY);
+        properties.putIfAbsent("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT", LOCAL_AUTH + "/entraid/oauth2/token");
+        properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "%s/%s/v2.0".formatted(PROVIDER_URL, TENANT_ID));
+        properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", LOCAL_AUTH + "/entraid/oauth2/token");
         properties.putIfAbsent("JWT_SECRET", DUMMY);
         properties.putIfAbsent("MASKINPORTEN_CLIENT_ID", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_CLIENT_JWK", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_SCOPES", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
-        properties.putIfAbsent("MASKINPORTEN_WELL_KNOWN_URL", "${sm@maskinporten-well-known-url}"); // Used by tenor-search-service and altinn3-tilgang-service only.
-        properties.putIfAbsent("TOKEN_X_ISSUER", "${sm@token-x-issuer}");
+        properties.putIfAbsent("MASKINPORTEN_WELL_KNOWN_URL", "https://test.maskinporten.no/.well-known/oauth-authorization-server"); // Used by tenor-search-service and altinn3-tilgang-service only.
+        properties.putIfAbsent("TOKEN_X_ISSUER", "https://tokenx.dev-gcp.nav.cloud.nais.io");
 
     }
 
