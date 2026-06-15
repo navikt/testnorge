@@ -19,12 +19,6 @@ spring:
   devtools:
     restart:
       enabled: false
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
-          accepted-audience: 3cbdd4cb-d048-420f-889e-2b32b7add652, api:// 3cbdd4cb-d048-420f-889e-2b32b7add652
 
 management:
   health:
