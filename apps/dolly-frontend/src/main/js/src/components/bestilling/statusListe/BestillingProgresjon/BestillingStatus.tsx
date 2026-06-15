@@ -58,7 +58,7 @@ export const BestillingStatus = ({
 		WARNING_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
 
 	const isInfoMessage = (melding: string) =>
-		INFO_KEYWORDS.some((kw) => melding.toLowerCase().includes(kw))
+		INFO_KEYWORDS.some((kw) => melding.toLowerCase().startsWith(kw))
 
 	const getOkIdentsFromStatuser = (statuser: Status[]) => {
 		const okStatus = statuser.find((s) => s?.melding === 'OK')
