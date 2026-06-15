@@ -59,7 +59,7 @@ spec:
       rules:
         - application: dolly-backend-dev
         - application: dolly-frontend-dev
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-oversikt-frontend
     outbound:
       rules:
