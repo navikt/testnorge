@@ -15,10 +15,16 @@ import { useFengsel } from '@/utils/hooks/useInstitusjon'
 import { publiseringstidspunktTid } from '@/components/fagsystem/kdi/form/Form'
 import { getTidspunktLabel } from '@/components/fagsystem/kdi/utils'
 
-// TODO: Fiks denne
 export const sjekkManglerKdiData = (kdiData) => {
-	return false
-	// return kdiData?.length < 1 || kdiData?.every((miljoData) => miljoData.data?.length < 1)
+	return (
+		!kdiData ||
+		((!kdiData.annullering || kdiData.annullering?.length < 1) &&
+			(!kdiData.avbruddSlutt || kdiData.avbruddSlutt?.length < 1) &&
+			(!kdiData.avbruddStart || kdiData.avbruddStart?.length < 1) &&
+			(!kdiData.forventetLoeslatelse || kdiData.forventetLoeslatelse?.length < 1) &&
+			(!kdiData.innsettelse || kdiData.innsettelse?.length < 1) &&
+			(!kdiData.loeslatelse || kdiData.loeslatelse?.length < 1))
+	)
 }
 
 export const KdiMelding = ({ melding, id, annulleringListe }) => {

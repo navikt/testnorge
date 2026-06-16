@@ -15,6 +15,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const instTimeout = getTimeoutAttr('INST', opts)
+	const kdiTimeout = getTimeoutAttr('INST_KDI', opts)
 	return (
 		<Panel
 			heading={InstitusjonsoppholdPanel.heading}
@@ -31,9 +32,8 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 				/>
 				<Attributt
 					attr={sm.attrs.instdataKdi}
-					// TODO: Settes naar vi henter data som brukes ved legg til endre
-					// disabled={instTimeout.disabled}
-					// title={instTimeout.title}
+					disabled={kdiTimeout.disabled}
+					title={kdiTimeout.title}
 				/>
 			</AttributtKategori>
 		</Panel>

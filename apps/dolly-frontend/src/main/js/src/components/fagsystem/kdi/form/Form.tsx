@@ -117,7 +117,7 @@ export const KdiForm = () => {
 				publiseringstidspunktTid(b.publiseringstidspunkt),
 		)
 
-	const { fengsler, loading, error } = useFengsel()
+	const { fengsler } = useFengsel()
 	const fengselOptions = fengsler
 		? Object.entries(fengsler).map(([key, value]) => ({
 				value: key,
@@ -174,7 +174,7 @@ export const KdiForm = () => {
 												<FieldArrayTag type={meldingType.REDIGERING} />
 											) : null
 										}
-										showDeleteButton={!erEksisterendeMelding}
+										showDeleteButton={!erEksisterendeMelding && meldinger?.length > 1}
 									>
 										<Form
 											path={`instdataKdi.${key}[${idx}]`}

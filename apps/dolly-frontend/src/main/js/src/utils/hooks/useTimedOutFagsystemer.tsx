@@ -86,7 +86,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 	if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
 	if (brregstub && sjekkManglerBrregData(brregstub)) list.push('BRREG')
 	if (instData && sjekkManglerInstData(instData)) list.push('INST')
-	if (kdiData && sjekkManglerKdiData(instData)) list.push('INST_KDI')
+	if (kdiData && sjekkManglerKdiData(kdiData)) list.push('INST_KDI')
 	if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) list.push('YRKESSKADE')
 	if (
 		harArbeidsplassenBestilling(bestillingerFagsystemer) &&
