@@ -34,7 +34,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                         default -> configureForOtherProfiles(environment);
                     }
                 });
-
     }
 
     private static void configureForLocalProfile(ConfigurableEnvironment environment) {
@@ -50,6 +49,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("dolly.texas.url.exchange", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange");
         properties.putIfAbsent("dolly.texas.url.introspect", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect");
 
+        // backend
         properties.putIfAbsent("spring.security.oauth2.resourceserver.aad.issuer-uri",
                 PROVIDER_URL + "/62366534-1ec3-4962-8869-9b5535279d0b/v2.0");
         properties.putIfAbsent("spring.security.oauth2.resourceserver.aad.accepted-audience",
@@ -67,7 +67,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("MASKINPORTEN_SCOPES", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_WELL_KNOWN_URL", "https://test.maskinporten.no/.well-known/oauth-authorization-server"); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("TOKEN_X_ISSUER", "https://tokenx.dev-gcp.nav.cloud.nais.io");
-
     }
 
     private static void configureForTestProfile(ConfigurableEnvironment environment) {
