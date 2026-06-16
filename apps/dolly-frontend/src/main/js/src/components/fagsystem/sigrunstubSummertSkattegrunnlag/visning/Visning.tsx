@@ -93,7 +93,7 @@ const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx, whiteBackgro
 		})
 }
 
-export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading }) => {
+export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading, harBestilling = false }) => {
 	if (loading) {
 		return <Loading label="Laster sigrunstub-data" />
 	}
@@ -104,6 +104,9 @@ export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading }) => {
 		return null
 	}
 	const manglerFagsystemdata = data.length < 1
+	if (manglerFagsystemdata && !harBestilling) {
+		return null
+	}
 
 	return (
 		<>

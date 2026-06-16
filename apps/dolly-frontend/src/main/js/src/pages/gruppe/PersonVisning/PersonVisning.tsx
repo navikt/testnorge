@@ -621,10 +621,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<SigrunstubPensjonsgivendeVisning
 					data={sigrunstubPensjonsgivendeInntekt}
 					loading={loadingSigrunstubPensjonsgivendeInntekt}
+					harBestilling={harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer)}
 				/>
 				<SigrunstubSummertSkattegrunnlagVisning
 					data={sigrunstubSummertSkattegrunnlag}
 					loading={loadingSigrunstubSummertSkattegrunnlag}
+					harBestilling={harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer)}
 				/>
 				<InntektstubVisning
 					liste={inntektstub}
