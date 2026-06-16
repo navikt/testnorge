@@ -9,7 +9,11 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
 import { getTimeoutAttr } from '@/components/bestillingsveileder/utils/timeoutTitle'
-import { initialKdi, instdataKdiAttributt } from '@/components/fagsystem/kdi/initialValues'
+import {
+	initialKdi,
+	initialKdiTesting,
+	instdataKdiAttributt,
+} from '@/components/fagsystem/kdi/initialValues'
 
 export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
@@ -67,7 +71,10 @@ InstitusjonsoppholdPanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'KDI-meldinger',
 			checked: has('instdataKdi'),
 			add() {
-				set('instdataKdi', eksisterendeKdiData ?? initialKdi)
+				set(
+					'instdataKdi',
+					runningE2ETest() ? initialKdiTesting : (eksisterendeKdiData ?? initialKdi),
+				)
 			},
 			remove() {
 				del('instdataKdi')
