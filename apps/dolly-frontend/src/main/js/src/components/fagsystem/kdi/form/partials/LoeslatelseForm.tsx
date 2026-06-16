@@ -12,18 +12,26 @@ export const LoeslatelseForm = ({
 	formMethods,
 	erEksisterendeMelding,
 	fengselOptions,
+	onSort,
+	sortVersjon,
 }: KdiMeldingFieldsProps) => {
 	const kategori = formMethods?.watch(`${path}.kategori`)
 
 	return (
 		<>
-			<PubliseringstidspunktField path={path} erEksisterendeMelding={erEksisterendeMelding} />
+			<PubliseringstidspunktField
+				path={path}
+				erEksisterendeMelding={erEksisterendeMelding}
+				onSort={onSort}
+				sortVersjon={sortVersjon}
+			/>
 			<FormSelect
 				name={`${path}.kategori`}
 				label="Kategori"
 				options={Options('kdiKategori')}
 				isClearable={false}
 				isDisabled={erEksisterendeMelding}
+				// TODO: Denne gjoer at feilmeldinger henger igjen i form
 				onChange={(val: Option) => {
 					formMethods?.setValue(`${path}.kategori`, val.value)
 					if (val.value !== 'Varetekt') {

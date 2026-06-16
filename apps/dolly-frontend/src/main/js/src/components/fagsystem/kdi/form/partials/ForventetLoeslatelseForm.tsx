@@ -6,10 +6,17 @@ import { PubliseringstidspunktField } from '@/components/fagsystem/kdi/form/part
 export const ForventetLoeslatelseForm = ({
 	path,
 	erEksisterendeMelding,
+	onSort,
+	sortVersjon,
 }: KdiMeldingFieldsProps) => {
 	return (
 		<>
-			<PubliseringstidspunktField path={path} erEksisterendeMelding={erEksisterendeMelding} />
+			<PubliseringstidspunktField
+				path={path}
+				erEksisterendeMelding={erEksisterendeMelding}
+				onSort={onSort}
+				sortVersjon={sortVersjon}
+			/>
 			<FormDatepicker
 				name={`${path}.tidspunkt`}
 				label="Forventet løslatt tidspunkt"

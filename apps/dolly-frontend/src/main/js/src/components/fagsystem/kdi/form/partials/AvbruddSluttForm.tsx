@@ -9,10 +9,17 @@ export const AvbruddSluttForm = ({
 	path,
 	erEksisterendeMelding,
 	fengselOptions,
+	onSort,
+	sortVersjon,
 }: KdiMeldingFieldsProps) => {
 	return (
 		<>
-			<PubliseringstidspunktField path={path} erEksisterendeMelding={erEksisterendeMelding} />
+			<PubliseringstidspunktField
+				path={path}
+				erEksisterendeMelding={erEksisterendeMelding}
+				onSort={onSort}
+				sortVersjon={sortVersjon}
+			/>
 			<FormSelect
 				name={`${path}.kategori`}
 				label="Kategori"

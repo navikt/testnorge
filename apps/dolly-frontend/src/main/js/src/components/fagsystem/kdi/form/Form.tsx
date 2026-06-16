@@ -10,7 +10,7 @@ import {
 } from '@/components/fagsystem/kdi/initialValues'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { InnsettelseForm } from '@/components/fagsystem/kdi/form/partials/InnsettelseForm'
 import { LoeslatelseForm } from '@/components/fagsystem/kdi/form/partials/LoeslatelseForm'
 import { AvbruddStartForm } from '@/components/fagsystem/kdi/form/partials/AvbruddStartForm'
@@ -100,22 +100,37 @@ export const KdiForm = () => {
 		}),
 	}
 
-	const meldinger = meldingstyper
-		.flatMap(({ key, header, Form }) =>
-			fieldArrays[key].fields.map((field, idx) => ({
-				...formMethods.getValues(`instdataKdi.${key}[${idx}]`),
-				key,
-				header,
-				Form,
-				fieldId: field.id,
-				idx,
-			})),
-		)
-		.sort(
-			(a, b) =>
-				publiseringstidspunktTid(a.publiseringstidspunkt) -
-				publiseringstidspunktTid(b.publiseringstidspunkt),
-		)
+	const [sortVersjon, setSortVersjon] = useState(0)
+
+	// Rekkefoelgen fryses mens publiseringstidspunkt redigeres, og oppdateres kun naar
+	// brukeren trykker "Oppdater rekkefoelge", naar meldinger legges til/fjernes, eller ved ny render.
+	const meldinger = useMemo(
+		() =>
+			meldingstyper
+				.flatMap(({ key, header, Form }) =>
+					fieldArrays[key].fields.map((field, idx) => ({
+						...formMethods.getValues(`instdataKdi.${key}[${idx}]`),
+						key,
+						header,
+						Form,
+						fieldId: field.id,
+						idx,
+					})),
+				)
+				.sort(
+					(a, b) =>
+						publiseringstidspunktTid(a.publiseringstidspunkt) -
+						publiseringstidspunktTid(b.publiseringstidspunkt),
+				),
+		[
+			sortVersjon,
+			fieldArrays.innsettelse.fields,
+			fieldArrays.loeslatelse.fields,
+			fieldArrays.avbruddStart.fields,
+			fieldArrays.avbruddSlutt.fields,
+			fieldArrays.forventetLoeslatelse.fields,
+		],
+	)
 
 	const { fengsler } = useFengsel()
 	const fengselOptions = fengsler
@@ -181,6 +196,8 @@ export const KdiForm = () => {
 											formMethods={formMethods}
 											erEksisterendeMelding={erEksisterendeMelding}
 											fengselOptions={fengselOptions}
+											onSort={() => setSortVersjon((versjon) => versjon + 1)}
+											sortVersjon={sortVersjon}
 										/>
 										{erEksisterendeMelding && (
 											<RedigeringAnnulleringForm

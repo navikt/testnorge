@@ -5,4 +5,6 @@ export type KdiMeldingFieldsProps = {
 	formMethods?: UseFormReturn
 	erEksisterendeMelding: boolean
 	fengselOptions?: Array<any>
+	onSort?: () => void
+	sortVersjon?: number
 }
