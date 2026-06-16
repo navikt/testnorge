@@ -12,9 +12,9 @@ export const api = {
 			setTimeout(
 				() =>
 					reject(
-						'Feilet å hente fra api fordi appen som bidrar med verdier ikke er oppe og kjøre akkurat nå av kjente eller ukjente grunner'
+						'Feilet å hente fra api fordi appen som bidrar med verdier ikke er oppe og kjøre akkurat nå av kjente eller ukjente grunner',
 					),
-				2000
+				2000,
 			)
 		}),
 }

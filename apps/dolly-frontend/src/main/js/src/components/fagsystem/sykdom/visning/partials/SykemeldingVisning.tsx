@@ -4,8 +4,8 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { useTsmSykemelding } from '@/utils/hooks/useSykemelding'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import Loading from '@/components/ui/loading/Loading'
-import { sykmeldingTypeLabels } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import type { SykmeldingType } from '@/components/fagsystem/sykdom/SykemeldingTypes'
+import { sykmeldingTypeLabels } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 
 export const SykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger }: any) => {
 	const fetched = useTsmSykemelding(ident?.ident)
@@ -32,10 +32,7 @@ export const SykemeldingVisning = ({ ident, sykemeldinger: initialSykemeldinger 
 				{(aktivitet: any, aIdx: number) => (
 					<div key={aIdx} className="person-visning_content">
 						<TitleValue title="Grad (%)" value={aktivitet.grad} />
-						<TitleValue
-							title="Reisetilskudd"
-							value={aktivitet.reisetilskudd ? 'Ja' : undefined}
-						/>
+						<TitleValue title="Reisetilskudd" value={aktivitet.reisetilskudd ? 'Ja' : undefined} />
 						<TitleValue title="F.o.m. dato" value={formatDate(aktivitet.fom)} />
 						<TitleValue title="T.o.m. dato" value={formatDate(aktivitet.tom)} />
 					</div>

@@ -19,18 +19,18 @@ export const validation = {
 						datoYtelseIverksattFom: testDatoTom(
 							requiredDate,
 							'datoInnmeldtYtelseFom',
-							'Velg ytelse f.o.m.-dato som er etter medlemskap f.o.m-dato'
+							'Velg ytelse f.o.m.-dato som er etter medlemskap f.o.m-dato',
 						)
 							.required()
 							.typeError('Tast inn et iverksatt Fom dato'),
 						datoYtelseIverksattTom: testDatoTom(
 							Yup.date().nullable(),
 							'datoYtelseIverksattFom',
-							'Velg ytelse t.o.m.-dato som er etter ytelse f.o.m-dato eller fjern den'
+							'Velg ytelse t.o.m.-dato som er etter ytelse f.o.m-dato eller fjern den',
 						),
-					})
+					}),
 				),
-			})
-		)
+			}),
+		),
 	),
 }

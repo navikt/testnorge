@@ -1,8 +1,7 @@
 import useSWR from 'swr'
 import axios from 'axios'
 
-const skattekortUrl = (miljoe: string) =>
-	`/testnav-dolly-proxy/skattekort/${miljoe}/api/v1/person`
+const skattekortUrl = (miljoe: string) => `/testnav-dolly-proxy/skattekort/${miljoe}/api/v1/person`
 
 const SKATTEKORT_MILJOER = ['q1', 'q2']
 
