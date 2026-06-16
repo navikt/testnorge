@@ -66,7 +66,7 @@ const meldingType = {
 	REDIGERING: 'Redigering',
 }
 
-const FieldArrayTag = ({ type }) => (
+const FieldArrayTag = ({ type }: { type: any }) => (
 	<Tag
 		variant="outline"
 		size="small"
@@ -108,7 +108,7 @@ export const KdiForm = () => {
 		() =>
 			meldingstyper
 				.flatMap(({ key, header, Form }) =>
-					fieldArrays[key].fields.map((field, idx) => ({
+					fieldArrays[key].fields.map((field: any, idx: number) => ({
 						...formMethods.getValues(`instdataKdi.${key}[${idx}]`),
 						key,
 						header,

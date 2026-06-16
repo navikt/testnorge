@@ -14,8 +14,21 @@ import {
 import { useFengsel } from '@/utils/hooks/useInstitusjon'
 import { publiseringstidspunktTid } from '@/components/fagsystem/kdi/form/Form'
 import { getTidspunktLabel } from '@/components/fagsystem/kdi/utils'
+import { KdiMeldingProps, KdiProps } from '@/components/fagsystem/kdi/form/partials/types'
 
-export const sjekkManglerKdiData = (kdiData) => {
+type KdiMeldingVisningProps = {
+	melding: KdiMeldingProps
+	id: number
+	annulleringListe: Array<KdiMeldingProps>
+}
+
+type KdiVisningProps = {
+	data: KdiProps
+	loading: boolean
+	harKdiBestilling: boolean
+}
+
+export const sjekkManglerKdiData = (kdiData: KdiProps) => {
 	return (
 		!kdiData ||
 		((!kdiData.annullering || kdiData.annullering?.length < 1) &&
@@ -27,10 +40,10 @@ export const sjekkManglerKdiData = (kdiData) => {
 	)
 }
 
-export const KdiMelding = ({ melding, id, annulleringListe }) => {
+export const KdiMelding = ({ melding, id, annulleringListe }: KdiMeldingVisningProps) => {
 	const annullering = annulleringListe?.find((a) => a.annullertMeldingId === melding.meldingId)
 
-	const { fengsler, loading, error } = useFengsel()
+	const { fengsler } = useFengsel()
 	const fengselLabel = fengsler
 		? `${melding.organisasjonsnummer} - ${fengsler[melding.organisasjonsnummer]}`
 		: melding.organisasjonsnummer
@@ -79,7 +92,7 @@ export const KdiMelding = ({ melding, id, annulleringListe }) => {
 	)
 }
 
-export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
+export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps) => {
 	if (!data && !harKdiBestilling) {
 		return null
 	}
@@ -115,7 +128,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }) => {
 			) : (
 				<ErrorBoundary>
 					<DollyFieldArray data={meldinger} nested>
-						{(melding, idx) => (
+						{(melding: KdiMeldingProps, idx: number) => (
 							<KdiMelding melding={melding} id={idx} annulleringListe={annullering} />
 						)}
 					</DollyFieldArray>

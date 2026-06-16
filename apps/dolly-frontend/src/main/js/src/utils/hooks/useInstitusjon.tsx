@@ -4,7 +4,7 @@ import { useInstEnvironments } from '@/utils/hooks/useEnvironments'
 
 const instRoot = '/testnav-dolly-proxy/inst/api'
 
-const instUrl = (ident, miljoer) =>
+const instUrl = (ident: string, miljoer: Array<string>) =>
 	miljoer?.map((miljo) => ({
 		url: `${instRoot}/v1/institusjonsopphold/person?environments=${miljo}`,
 		miljo: miljo,
@@ -14,7 +14,7 @@ const kdiUrl = `${instRoot}/v2/kdi/person/soek`
 
 const fengselUrl = `${instRoot}/v1/institusjon/fengsel`
 
-export const useInstData = (ident, harInstBestilling) => {
+export const useInstData = (ident: string, harInstBestilling: boolean) => {
 	const { instEnvironments } = useInstEnvironments()
 
 	const { data, isLoading, error } = useSWR<any, Error>(
@@ -29,7 +29,7 @@ export const useInstData = (ident, harInstBestilling) => {
 	}
 }
 
-export const useKdiData = (ident, harKdiBestilling) => {
+export const useKdiData = (ident: string, harKdiBestilling: boolean) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		ident && harKdiBestilling ? [kdiUrl, ident] : null,
 		([url, norskident]: [string, string]) =>

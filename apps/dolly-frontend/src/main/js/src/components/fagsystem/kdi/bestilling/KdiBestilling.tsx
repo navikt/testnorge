@@ -4,8 +4,9 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/steg/steg3/Bestillingsvisning'
 import { KdiMelding } from '@/components/fagsystem/kdi/visning/KdiVisning'
 import { publiseringstidspunktTid } from '@/components/fagsystem/kdi/form/Form'
+import { KdiMeldingProps, KdiProps } from '@/components/fagsystem/kdi/form/partials/types'
 
-export const KdiBestilling = ({ kdi }) => {
+export const KdiBestilling = ({ kdi }: { kdi: KdiProps }) => {
 	if (!kdi) {
 		return null
 	}
@@ -26,7 +27,7 @@ export const KdiBestilling = ({ kdi }) => {
 			<ErrorBoundary>
 				<BestillingTitle>KDI-meldinger</BestillingTitle>
 				<DollyFieldArray data={meldinger} nested>
-					{(melding, idx) => (
+					{(melding: KdiMeldingProps, idx: number) => (
 						<KdiMelding melding={melding} id={idx} annulleringListe={annullering} />
 					)}
 				</DollyFieldArray>

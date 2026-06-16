@@ -4,21 +4,30 @@ import { FileXMarkIcon, PencilIcon } from '@navikt/aksel-icons'
 import React, { useState } from 'react'
 import { initialAnnullering } from '@/components/fagsystem/kdi/initialValues'
 import { PubliseringstidspunktField } from '@/components/fagsystem/kdi/form/partials/PubliseringstidspunktField'
+import { KdiMeldingProps } from '@/components/fagsystem/kdi/form/partials/types'
 
-export const RedigeringAnnulleringForm = ({ meldingId, handleRedigering }) => {
+export const RedigeringAnnulleringForm = ({
+	meldingId,
+	handleRedigering,
+}: {
+	meldingId: string
+	handleRedigering: any
+}) => {
 	const formMethods = useFormContext()
 	const annulleringer = formMethods.watch('instdataKdi.annullering') || []
 
-	const eksisterendeAnnullering = annulleringer?.find((a) => a.annullertMeldingId === meldingId)
+	const eksisterendeAnnullering = annulleringer?.find(
+		(a: KdiMeldingProps) => a.annullertMeldingId === meldingId,
+	)
 	const [harAnnullering, setHarAnnullering] = useState(!!eksisterendeAnnullering || false)
 
 	const annulleringFoerLeggTil = !!eksisterendeAnnullering?.meldingId
 
 	const index = annulleringer?.findIndex(
-		(annullering) => annullering.annullertMeldingId === meldingId,
+		(annullering: KdiMeldingProps) => annullering.annullertMeldingId === meldingId,
 	)
 
-	const handleAnnullering = (annullering) => {
+	const handleAnnullering = (annullering: boolean) => {
 		setHarAnnullering(annullering)
 		if (annullering) {
 			formMethods.setValue('instdataKdi.annullering', [

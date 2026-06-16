@@ -31,9 +31,9 @@ export const LoeslatelseForm = ({
 				options={Options('kdiKategori')}
 				isClearable={false}
 				isDisabled={erEksisterendeMelding}
-				// TODO: Denne gjoer at feilmeldinger henger igjen i form
 				onChange={(val: Option) => {
 					formMethods?.setValue(`${path}.kategori`, val.value)
+					formMethods?.clearErrors(`${path}.kategori`)
 					if (val.value !== 'Varetekt') {
 						formMethods?.setValue(`${path}.erOverfoertTilVaretektMedElektroniskKontroll`, false)
 					}

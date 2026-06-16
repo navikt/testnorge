@@ -35,7 +35,6 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 		),
 	)
 
-// TODO: Har flere hooks hvor vi bruker axios post, skriv om til aa bruke denne
 export const postFetcher = (url, body) =>
 	axios
 		.post(url, body, { headers: { 'Content-Type': 'application/json' } })
