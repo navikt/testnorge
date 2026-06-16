@@ -62,8 +62,8 @@ public class BestillingProgressDTO implements Serializable {
         return "{" +
                "\"sistOppdatert\":" + sistOppdatert +
                ", \"bestillingId\":" + bestillingId +
-               getError("ident", ident) +
-               getError("master" , master.toString()) +
+               ", \"ident\":\"" + ident + "\"" +
+               ", \"master\":\"" +  master.toString() + "\"" +
                getError("aaregStatus" , aaregStatus) +
                getError("arbeidsplassenCVStatus" , arbeidsplassenCVStatus) +
                getError("arbeidssoekerregisteretStatus" , arbeidssoekerregisteretStatus) +
@@ -85,7 +85,7 @@ public class BestillingProgressDTO implements Serializable {
                getError("pdlForvalterStatus" , pdlForvalterStatus) +
                getError("pdlImportStatus" , pdlImportStatus) +
                getError("pdlOrdreStatus" , isNotBlank(pdlOrdreStatus) ?
-                       pdlOrdreStatus.substring(16) : EMPTY) +
+                       pdlOrdreStatus.substring(15) : EMPTY) +
                getError("pdlPersonStatus" , pdlPersonStatus) +
                getError("pensjonforvalterStatus" , pensjonforvalterStatus) +
                getError("sigrunstubStatus" , sigrunstubStatus) +
