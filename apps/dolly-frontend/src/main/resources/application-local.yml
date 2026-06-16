@@ -24,12 +24,18 @@ spring:
           aad:
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
-            scope: openid, offline_access,  ${AZURE_APP_CLIENT_ID}/.default
+            scope: openid, offline_access,  3cbdd4cb-d048-420f-889e-2b32b7add652/.default
             client-id: ${AZURE_APP_CLIENT_ID}
             client-secret: ${AZURE_APP_CLIENT_SECRET}
         provider:
           aad:
-            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+            issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+
+#            // frontend
+#            //        properties.putIfAbsent("spring.security.oauth2.client.provider.aad.issuer-uri",
+#            //                PROVIDER_URL + "/62366534-1ec3-4962-8869-9b5535279d0b/v2.0");
+#            //        properties.putIfAbsent("spring.security.oauth2.client.registration.aad.scope",
+#            //                "openid, offline_access,  %s/.default".formatted(AUDIENCE));
 
 consumers:
   testnav-altinn3-tilgang-service:
