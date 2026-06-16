@@ -20,6 +20,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => 
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const instTimeout = getTimeoutAttr('INST', opts)
 	const kdiTimeout = getTimeoutAttr('INST_KDI', opts)
+
 	return (
 		<Panel
 			heading={InstitusjonsoppholdPanel.heading}
