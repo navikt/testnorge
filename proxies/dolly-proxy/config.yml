@@ -87,7 +87,7 @@ spec:
         - application: pensjon-samboerforhold-backend-q2
           namespace: pensjon-person
           cluster: dev-gcp
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: testnav-adresse-service
           cluster: dev-gcp

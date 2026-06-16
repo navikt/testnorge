@@ -22,7 +22,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: testnav-generer-organisasjon-populasjon-service
           cluster: dev-gcp

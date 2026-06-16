@@ -10,7 +10,7 @@ spec:
     inbound:
       rules:
         - application: dolly-texas-proxy
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
         - application: testnav-dollystatus
     outbound:
       rules:

@@ -53,7 +53,7 @@ spec:
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:
       rules:

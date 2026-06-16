@@ -19,7 +19,7 @@ spec:
       rules:
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend
