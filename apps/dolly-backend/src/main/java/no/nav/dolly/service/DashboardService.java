@@ -8,29 +8,38 @@ import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
+import no.nav.dolly.domain.dto.BestillingProgressDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,8 +56,11 @@ public class DashboardService {
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
     private final BestillingRepository bestillingRepository;
+    private final BestillingProgressRepository bestillingProgressRepository;
     private final BrukerRepository brukerRepository;
     private final BrukerServiceConsumer brukerServiceConsumer;
+    private final R2dbcEntityTemplate entityTemplate;
+    private final JsonMapper jsonMapper;
     private final TeamkatalogConsumer teamkatalogConsumer;
     private final TeamRepository teamRepository;
 
@@ -199,5 +211,35 @@ public class DashboardService {
 
         var info = fragment.getInformasjon().split("\\|");
         return new DashboardDollyTeamsDTO.Entry(info[0], info[1], toIntExact(oppslag.get(info[2])));
+    }
+
+    public Flux<JsonNode> getFeilstatus() {
+
+        return bestillingProgressRepository.findStatusColumns()
+                .reduce(new StringBuilder(), (StringBuilder sb, String column) ->
+                        sb.append(" or lower(")
+                        .append(column)
+                        .append(") like '%feil%'"))
+                .map(query -> new StringBuilder("select * from bestilling_progress where ")
+                        .append(query.substring(4))
+                        .toString())
+                .flatMapMany(query -> entityTemplate.getDatabaseClient()
+                        .sql(query)
+                        .map((row, metadata) -> entityTemplate.getConverter()
+                                .read(BestillingProgressDTO.class, row, metadata))
+                        .all())
+                .sort(Comparator.comparing(BestillingProgressDTO::getBestillingId).reversed())
+                .map(BestillingProgressDTO::toString)
+                .mapNotNull(this::toJson);
+    }
+
+    private JsonNode toJson(String json) {
+
+        try {
+            return jsonMapper.readTree(json);
+        } catch (JacksonException e) {
+            log.error("Feil ved parsing av JSON string: {}", json, e);
+            return null;
+        }
     }
 }

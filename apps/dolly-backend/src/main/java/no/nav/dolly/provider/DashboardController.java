@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import tools.jackson.databind.JsonNode;
 
 @RequestMapping("/api/v1/dashboard")
 @RestController
@@ -24,6 +25,13 @@ public class DashboardController {
     public Flux<DashboardPersonerDTO> getDashboardPersoner() {
 
         return dashboardService.getPersonerStatus();
+    }
+
+    @GetMapping(value = "/feil")
+    @Operation(description = "Henter feilstatus for personer opprettet.")
+    public Flux<JsonNode> getDashboardFeil() {
+
+        return dashboardService.getFeilstatus();
     }
 
     @GetMapping(value = "/teams")
