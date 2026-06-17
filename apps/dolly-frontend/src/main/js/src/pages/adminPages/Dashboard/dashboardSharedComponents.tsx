@@ -1,7 +1,7 @@
 import Highcharts, { type Options } from 'highcharts'
 import { Alert, Box, Button, Heading, HGrid, HStack, Label, VStack } from '@navikt/ds-react'
 import { HighchartsReact } from 'highcharts-react-official'
-import { type ReactNode, useEffect, useRef } from 'react'
+import { type ReactNode, useEffect, useMemo, useRef } from 'react'
 
 export type DashboardSelectOption = {
 	value: string
@@ -99,6 +99,9 @@ export const DashboardChartPanel = ({
 				? chartHeightOption
 				: '320px'
 
+	const optionsSignature = JSON.stringify(options)
+	const stableOptions = useMemo(() => options, [optionsSignature])
+
 	useEffect(() => {
 		const chart = chartRef.current?.chart
 		if (!chart) return
@@ -115,7 +118,8 @@ export const DashboardChartPanel = ({
 				<HighchartsReact
 					ref={chartRef}
 					highcharts={Highcharts}
-					options={options}
+					options={stableOptions}
+					immutable
 					containerProps={{ style: { width: '100%', height: containerHeight } }}
 				/>
 			</Box>

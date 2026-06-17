@@ -33,6 +33,7 @@ export const QUICK_RANGE_OPTIONS = [
 	{ value: 'threeMonths', label: 'Siste 3 måneder' },
 	{ value: 'sixMonths', label: 'Siste 6 måneder' },
 	{ value: 'year', label: 'Siste år' },
+	{ value: 'all', label: 'All historikk' },
 ] as const
 
 type QuickRangeValue = (typeof QUICK_RANGE_OPTIONS)[number]['value']
@@ -69,6 +70,9 @@ export const useDashboardData = () => {
 	const [organisasjonMonthScope, setOrganisasjonMonthScope] = useState<
 		typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
 	>(MONTH_SCOPE_LAST_12)
+	const [dollyTeamsMonthScope, setDollyTeamsMonthScope] = useState<
+		typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
+	>(MONTH_SCOPE_LAST_12)
 	const [selectedInterval, setSelectedInterval] = useState('')
 	const [selectedOrganisasjonInterval, setSelectedOrganisasjonInterval] = useState('')
 	const [selectedDollyTeamsInterval, setSelectedDollyTeamsInterval] = useState('')
@@ -99,6 +103,12 @@ export const useDashboardData = () => {
 		: undefined
 	const quickRangeAnchorDate =
 		latestAvailableDate && isValid(latestAvailableDate) ? latestAvailableDate : new Date()
+
+	const earliestAvailableDateValue = activeDashboardPersoner
+		.map((personData) => personData.dato)
+		.filter((dateValue): dateValue is string => Boolean(dateValue))
+		.sort((a, b) => a.localeCompare(b))
+		.at(0)
 
 	const todayDate = format(new Date(), 'yyyy-MM-dd')
 	const previousBusinessPeriod = getPreviousBusinessPeriod(new Date())
@@ -176,7 +186,7 @@ export const useDashboardData = () => {
 		organisasjonMonthlyPoints,
 		organisasjonMonthScope,
 	)
-	const organisasjonIntervalOptions = toMonthlyIntervalOptions(filteredOrganisasjonPoints)
+	const organisasjonIntervalOptions = toMonthlyIntervalOptions(organisasjonMonthlyPoints)
 	const organisasjonYearOptions = [
 		...new Set(organisasjonIntervalOptions.map((option) => option.value.slice(0, 4))),
 	].sort((a, b) => a.localeCompare(b))
@@ -185,10 +195,10 @@ export const useDashboardData = () => {
 		.filter((option) => option.value.startsWith(`${selectedOrganisasjonYear}-`))
 		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
 	const selectedOrganisasjonPoint =
-		filteredOrganisasjonPoints.find((point) => point.interval === selectedOrganisasjonInterval) ??
+		organisasjonMonthlyPoints.find((point) => point.interval === selectedOrganisasjonInterval) ??
 		null
 	const organisasjonDistribution = toTeamDistributionForInterval(
-		filteredOrganisasjonPoints,
+		organisasjonMonthlyPoints,
 		selectedOrganisasjonInterval,
 	)
 	const organisasjonMonthlyTrendChartOptions = createMonthlyTeamTrendChartOptions(
@@ -217,8 +227,11 @@ export const useDashboardData = () => {
 
 	// --- Dolly Teams ---
 	const dollyTeamsMonthlyPoints = toMonthlyDollyTeamPoints(activeDashboardDollyTeams)
-	const filteredDollyTeamsPoints = [...dollyTeamsMonthlyPoints]
-	const dollyTeamsIntervalOptions = toMonthlyIntervalOptions(filteredDollyTeamsPoints)
+	const filteredDollyTeamsPoints = filterMonthlyTeamPoints(
+		dollyTeamsMonthlyPoints,
+		dollyTeamsMonthScope,
+	)
+	const dollyTeamsIntervalOptions = toMonthlyIntervalOptions(dollyTeamsMonthlyPoints)
 	const dollyTeamsYearOptions = [
 		...new Set(dollyTeamsIntervalOptions.map((option) => option.value.slice(0, 4))),
 	].sort((a, b) => a.localeCompare(b))
@@ -227,9 +240,9 @@ export const useDashboardData = () => {
 		.filter((option) => option.value.startsWith(`${selectedDollyTeamsYear}-`))
 		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
 	const selectedDollyTeamsPoint =
-		filteredDollyTeamsPoints.find((point) => point.interval === selectedDollyTeamsInterval) ?? null
+		dollyTeamsMonthlyPoints.find((point) => point.interval === selectedDollyTeamsInterval) ?? null
 	const dollyTeamsDistribution = toTeamDistributionForInterval(
-		filteredDollyTeamsPoints,
+		dollyTeamsMonthlyPoints,
 		selectedDollyTeamsInterval,
 	)
 	const dollyTeamsMonthlyTrendChartOptions = createMonthlyTeamTrendChartOptions(
@@ -261,7 +274,7 @@ export const useDashboardData = () => {
 	// --- Teams ---
 	const monthlyTeamPoints = toMonthlyTeamPoints(activeDashboardTeams)
 	const filteredMonthlyTeamPoints = filterMonthlyTeamPoints(monthlyTeamPoints, monthScope)
-	const monthlyIntervalOptions = toMonthlyIntervalOptions(filteredMonthlyTeamPoints)
+	const monthlyIntervalOptions = toMonthlyIntervalOptions(monthlyTeamPoints)
 	const teamYearOptions = [
 		...new Set(monthlyIntervalOptions.map((option) => option.value.slice(0, 4))),
 	].sort((a, b) => a.localeCompare(b))
@@ -270,11 +283,8 @@ export const useDashboardData = () => {
 		.filter((option) => option.value.startsWith(`${selectedTeamYear}-`))
 		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
 	const selectedMonthlyPoint =
-		filteredMonthlyTeamPoints.find((point) => point.interval === selectedInterval) ?? null
-	const teamDistribution = toTeamDistributionForInterval(
-		filteredMonthlyTeamPoints,
-		selectedInterval,
-	)
+		monthlyTeamPoints.find((point) => point.interval === selectedInterval) ?? null
+	const teamDistribution = toTeamDistributionForInterval(monthlyTeamPoints, selectedInterval)
 	const monthlyTrendChartOptions = createMonthlyTeamTrendChartOptions(
 		toMonthlyTrendData(filteredMonthlyTeamPoints),
 	)
@@ -297,15 +307,17 @@ export const useDashboardData = () => {
 	const applyQuickRange = (quickRangeValue: string) => {
 		const toDateValue = format(quickRangeAnchorDate, 'yyyy-MM-dd')
 		const fromDateValue =
-			quickRangeValue === 'week'
-				? format(subDays(quickRangeAnchorDate, 6), 'yyyy-MM-dd')
-				: quickRangeValue === 'month'
-					? format(subDays(quickRangeAnchorDate, 29), 'yyyy-MM-dd')
-					: quickRangeValue === 'threeMonths'
-						? format(subDays(quickRangeAnchorDate, 89), 'yyyy-MM-dd')
-						: quickRangeValue === 'sixMonths'
-							? format(subDays(quickRangeAnchorDate, 179), 'yyyy-MM-dd')
-							: format(subYears(quickRangeAnchorDate, 1), 'yyyy-MM-dd')
+			quickRangeValue === 'all'
+				? (earliestAvailableDateValue ?? format(subYears(quickRangeAnchorDate, 1), 'yyyy-MM-dd'))
+				: quickRangeValue === 'week'
+					? format(subDays(quickRangeAnchorDate, 6), 'yyyy-MM-dd')
+					: quickRangeValue === 'month'
+						? format(subDays(quickRangeAnchorDate, 29), 'yyyy-MM-dd')
+						: quickRangeValue === 'threeMonths'
+							? format(subDays(quickRangeAnchorDate, 89), 'yyyy-MM-dd')
+							: quickRangeValue === 'sixMonths'
+								? format(subDays(quickRangeAnchorDate, 179), 'yyyy-MM-dd')
+								: format(subYears(quickRangeAnchorDate, 1), 'yyyy-MM-dd')
 		setFraDato(fromDateValue)
 		setTilDato(toDateValue)
 		if (isQuickRangeValue(quickRangeValue)) {
@@ -396,6 +408,8 @@ export const useDashboardData = () => {
 
 		// Dolly teams section
 		filteredDollyTeamsPointsLength: filteredDollyTeamsPoints.length,
+		dollyTeamsMonthScope,
+		onDollyTeamsMonthScopeChange: setDollyTeamsMonthScope,
 		dollyTeamsMonthlyTrendChartOptions,
 		dollyTeamsYearOptions,
 		selectedDollyTeamsYear,

@@ -67,10 +67,10 @@ export const MonthlyTeamDistributionSection = ({
 	secondaryTotalLabel = 'Antall teams totalt',
 	yearOptions,
 	selectedYear,
-	monthOptions,
 	onSelectedYearChange,
-	selectedInterval,
+	monthOptions,
 	onSelectedIntervalChange,
+	selectedInterval,
 	selectedMonthlyPoint,
 	teamDistribution,
 	monthlyDistributionChartOptions,
@@ -81,10 +81,10 @@ export const MonthlyTeamDistributionSection = ({
 	secondaryTotalLabel?: string
 	yearOptions: string[]
 	selectedYear: string
-	monthOptions: { value: string; label: string }[]
 	onSelectedYearChange: (value: string) => void
-	selectedInterval: string
+	monthOptions: { value: string; label: string }[]
 	onSelectedIntervalChange: (value: string) => void
+	selectedInterval: string
 	selectedMonthlyPoint: {
 		interval: string
 		intervalVisning: string

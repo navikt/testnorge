@@ -96,6 +96,7 @@ export const createPreviousDayErrorBreakdownChartOptions = (
 	series: [
 		{
 			type: 'pie',
+			borderColor: 'white',
 			name: 'Feil',
 			data: [
 				{

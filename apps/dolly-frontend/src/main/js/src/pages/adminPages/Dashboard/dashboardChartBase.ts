@@ -1,5 +1,7 @@
 import { type Options } from 'highcharts'
 
+export const CHART_TEXT_COLOR = '#23262A'
+
 export const CHART_COLORS = [
 	'var(--ax-accent-700)',
 	'var(--ax-success-700)',
@@ -75,7 +77,7 @@ export const TOOLTIP_OPTIONS: Options['tooltip'] = {
 	padding: 12,
 	shadow: false,
 	style: {
-		color: '#23262A',
+		color: CHART_TEXT_COLOR,
 		fontSize: '13px',
 	},
 	outside: true,

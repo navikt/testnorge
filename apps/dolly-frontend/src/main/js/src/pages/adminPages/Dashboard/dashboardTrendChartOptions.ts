@@ -51,11 +51,31 @@ export const createPersonTrendChartOptions = (
 			itemMarginBottom: 4,
 		},
 		series: [
+			{
+				type: 'line',
+				name: 'Personer totalt',
+				data: personTrendData.map((point) => point.personerTotalt),
+				visible: visibilityOptions?.personerTotaltVisible ?? false,
+				events: {
+					show: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(true),
+					hide: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(false),
+				},
+			},
 			{ type: 'line', name: 'Nye', data: personTrendData.map((point) => point.nye) },
 			{
 				type: 'line',
 				name: 'Gjenopprettede',
 				data: personTrendData.map((point) => point.gjenopprettede),
+			},
+			{
+				type: 'line',
+				name: 'Feil totalt',
+				data: personTrendData.map((point) => point.pdlFeil + point.andreFeil),
+				visible: visibilityOptions?.feilTotaltVisible ?? false,
+				events: {
+					show: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(true),
+					hide: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(false),
+				},
 			},
 			{
 				type: 'line',
@@ -68,26 +88,6 @@ export const createPersonTrendChartOptions = (
 				name: 'Andre feil',
 				data: personTrendData.map((point) => point.andreFeil),
 				color: ERROR_SECONDARY_COLOR,
-			},
-			{
-				type: 'line',
-				name: 'Personer totalt',
-				data: personTrendData.map((point) => point.personerTotalt),
-				visible: visibilityOptions?.personerTotaltVisible ?? false,
-				events: {
-					show: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(true),
-					hide: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(false),
-				},
-			},
-			{
-				type: 'line',
-				name: 'Feil totalt',
-				data: personTrendData.map((point) => point.pdlFeil + point.andreFeil),
-				visible: visibilityOptions?.feilTotaltVisible ?? false,
-				events: {
-					show: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(true),
-					hide: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(false),
-				},
 			},
 		],
 	})

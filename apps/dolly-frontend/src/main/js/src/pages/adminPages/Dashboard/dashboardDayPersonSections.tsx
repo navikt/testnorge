@@ -187,6 +187,7 @@ export const PersonAnalysisSection = ({
 				<TextField
 					label="Fra dato"
 					type="date"
+					max={tilDatoMax}
 					value={fraDato}
 					onChange={(event) => onFraDatoChange(event.target.value)}
 				/>

@@ -12,7 +12,7 @@ import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { Alert, Box, Loader, VStack } from '@navikt/ds-react'
 import Highcharts from 'highcharts'
 import HighchartsAccessibility from 'highcharts/modules/accessibility'
-import { MONTH_SCOPE_ALL } from './dashboardUtils'
+import { CHART_TEXT_COLOR } from '@/pages/adminPages/Dashboard/dashboardChartBase'
 import { QUICK_RANGE_OPTIONS, useDashboardData } from './useDashboardData'
 
 const initAccessibilityModule =
@@ -20,6 +20,23 @@ const initAccessibilityModule =
 		? HighchartsAccessibility
 		: (HighchartsAccessibility as { default?: (chartInstance: typeof Highcharts) => void }).default
 initAccessibilityModule?.(Highcharts)
+
+Highcharts.setOptions({
+	xAxis: {
+		labels: { style: { color: CHART_TEXT_COLOR, fontSize: '12px' } },
+		title: { style: { color: CHART_TEXT_COLOR } },
+	},
+	yAxis: {
+		labels: { style: { color: CHART_TEXT_COLOR, fontSize: '12px' } },
+		title: { style: { color: CHART_TEXT_COLOR } },
+	},
+	legend: {
+		itemStyle: { color: CHART_TEXT_COLOR },
+		itemHoverStyle: { color: CHART_TEXT_COLOR },
+	},
+	title: { style: { color: CHART_TEXT_COLOR } },
+	subtitle: { style: { color: CHART_TEXT_COLOR } },
+})
 
 export default () => {
 	const isAdmin = useErDollyAdmin()
@@ -115,10 +132,10 @@ export default () => {
 				<MonthlyTeamDistributionSection
 					yearOptions={d.teamYearOptions}
 					selectedYear={d.selectedTeamYear}
-					monthOptions={d.teamMonthOptions}
 					onSelectedYearChange={d.onSelectedTeamYearChange}
-					selectedInterval={d.selectedTeamInterval}
+					monthOptions={d.teamMonthOptions}
 					onSelectedIntervalChange={d.onSelectedTeamIntervalChange}
+					selectedInterval={d.selectedTeamInterval}
 					selectedMonthlyPoint={d.selectedMonthlyPoint}
 					teamDistribution={d.teamDistribution}
 					monthlyDistributionChartOptions={d.monthlyDistributionChartOptions}
@@ -139,10 +156,10 @@ export default () => {
 					secondaryTotalLabel="Antall organisasjoner totalt"
 					yearOptions={d.organisasjonYearOptions}
 					selectedYear={d.selectedOrganisasjonYear}
-					monthOptions={d.organisasjonMonthOptions}
 					onSelectedYearChange={d.onSelectedOrganisasjonYearChange}
-					selectedInterval={d.selectedOrganisasjonInterval}
+					monthOptions={d.organisasjonMonthOptions}
 					onSelectedIntervalChange={d.onSelectedOrganisasjonIntervalChange}
+					selectedInterval={d.selectedOrganisasjonInterval}
 					selectedMonthlyPoint={d.selectedOrganisasjonPoint}
 					teamDistribution={d.organisasjonDistribution}
 					monthlyDistributionChartOptions={d.organisasjonDistributionChartOptions}
@@ -150,10 +167,9 @@ export default () => {
 
 				<MonthlyTeamTrendSection
 					title="Dolly-team statistikk"
-					showScopeToggle={false}
 					filteredMonthlyTeamPointsLength={d.filteredDollyTeamsPointsLength}
-					monthScope={MONTH_SCOPE_ALL}
-					onMonthScopeChange={() => undefined}
+					monthScope={d.dollyTeamsMonthScope}
+					onMonthScopeChange={d.onDollyTeamsMonthScopeChange}
 					monthlyTrendChartOptions={d.dollyTeamsMonthlyTrendChartOptions}
 				/>
 
@@ -164,10 +180,10 @@ export default () => {
 					secondaryTotalLabel="Antall teams totalt"
 					yearOptions={d.dollyTeamsYearOptions}
 					selectedYear={d.selectedDollyTeamsYear}
-					monthOptions={d.dollyTeamsMonthOptions}
 					onSelectedYearChange={d.onSelectedDollyTeamsYearChange}
-					selectedInterval={d.selectedDollyTeamsInterval}
+					monthOptions={d.dollyTeamsMonthOptions}
 					onSelectedIntervalChange={d.onSelectedDollyTeamsIntervalChange}
+					selectedInterval={d.selectedDollyTeamsInterval}
 					selectedMonthlyPoint={d.selectedDollyTeamsPoint}
 					teamDistribution={d.dollyTeamsDistribution}
 					monthlyDistributionChartOptions={d.dollyTeamsDistributionChartOptions}
