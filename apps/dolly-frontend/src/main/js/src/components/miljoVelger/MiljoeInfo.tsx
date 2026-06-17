@@ -18,17 +18,30 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments, tilgjengeligeMi
 		loading: loadingPensjon,
 		error: errorPensjon,
 	} = usePensjonEnvironments()
-	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
+	const {
+		instEnvironments,
+		kdiEnvironments,
+		loading: loadingInst,
+		error: errorInst,
+	} = useInstEnvironments()
 	const {
 		dokarkivEnvironments,
 		loading: loadingDokarkiv,
 		error: errorDokarkiv,
 	} = useDokarkivEnvironments()
-	const { instdata, arenaforvalter, pensjonforvalter, dokarkiv, skattekort } = bestillingsdata
-	if (!instdata && !arenaforvalter && !pensjonforvalter && !dokarkiv && !skattekort) {
+
+	const { instdata, instdataKdi, arenaforvalter, pensjonforvalter, dokarkiv, skattekort } =
+		bestillingsdata
+	if (
+		!instdata &&
+		!instdataKdi &&
+		!arenaforvalter &&
+		!pensjonforvalter &&
+		!dokarkiv &&
+		!skattekort
+	) {
 		return null
 	}
-
 	const getMiljoer = (environments: string[] | undefined, loading?: boolean, error?: any) => {
 		if (loading) {
 			return 'Laster tilgjengelige miljøer ...'
@@ -67,7 +80,12 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments, tilgjengeligeMi
 							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
 						</li>
 					)}
-
+					{instdataKdi && (
+						<li>
+							KDI-meldinger:&nbsp;
+							<span>{getMiljoer(kdiEnvironments, loadingInst, errorInst)}</span>
+						</li>
+					)}
 					{(pensjonforvalter?.inntekt ||
 						pensjonforvalter?.tp ||
 						pensjonforvalter?.alderspensjon) && (
