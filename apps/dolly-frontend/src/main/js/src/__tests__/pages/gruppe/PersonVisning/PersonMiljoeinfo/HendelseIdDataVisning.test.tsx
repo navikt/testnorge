@@ -55,7 +55,7 @@ describe('HendelseIdDataVisning', () => {
 
 	it('should render ident trigger button when ident is provided', () => {
 		render(<HendelseIdDataVisning ident="12345678901" />)
-		expect(screen.getByText('12345678901 (HOVEDPERSON)')).toBeInTheDocument()
+		expect(screen.getByText('12345678901')).toBeInTheDocument()
 	})
 
 	it('should render one trigger button per related person', () => {
@@ -107,6 +107,24 @@ describe('HendelseIdDataVisning', () => {
 		await waitFor(() =>
 			expect(screen.queryByText('12345678901 (HOVEDPERSON)')).not.toBeInTheDocument(),
 		)
+	})
+
+	it('should only show one imported warning for duplicate related idents', () => {
+		mockUseHendelseId.mockReturnValue({
+			data: makeRelatertResponse([]),
+			loading: false,
+			error: undefined,
+		})
+		render(
+			<HendelseIdDataVisning
+				ident="12345678901"
+				relatertePersoner={[
+					{ type: 'BARN', id: '11111111111' },
+					{ type: 'BARN', id: '11111111111' },
+				]}
+			/>,
+		)
+		expect(screen.getAllByText(/importert/i)).toHaveLength(1)
 	})
 
 	it('should render one accordion header per infoElement for main person', () => {

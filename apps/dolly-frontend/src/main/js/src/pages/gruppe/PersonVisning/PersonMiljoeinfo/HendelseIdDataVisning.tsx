@@ -9,6 +9,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { useHendelseId } from '@/utils/hooks/useHendelseId'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { ApiFeilmelding } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export type RelatertPerson = {
 	type: string
@@ -70,9 +71,9 @@ const hendelseHarFeil = (hendelse: Hendelse): boolean =>
 
 const ImportertRelasjonMelding = () => {
 	return (
-		<Alert variant="warning" size="small" className="hendelse-importert-relasjon">
+		<StyledAlert variant="info" size="small" className="hendelse-importert-relasjon">
 			{IMPORTERT_RELASJON_MESSAGE}
-		</Alert>
+		</StyledAlert>
 	)
 }
 
@@ -228,7 +229,7 @@ const HendelseTooltip = ({ triggerText, ident, relatertIdent }: HendelseTooltipP
 			overlayStyle={{ opacity: 1 }}
 			destroyTooltipOnHide={{ keepParent: false }}
 		>
-			<button type="button" className="miljoe-knapp">
+			<button type="button" className="miljoe-knapp hendelse-miljoe-knapp">
 				{triggerText}
 			</button>
 		</DollyTooltip>
@@ -277,6 +278,15 @@ export const HendelseIdDataVisning = ({
 	if (!ident) {
 		return null
 	}
+	const unikeRelatertePersoner =
+		relatertePersoner?.reduce<RelatertPerson[]>((acc, person) => {
+			if (acc.some((existing) => existing.id === person.id)) {
+				return acc
+			}
+			acc.push(person)
+			return acc
+		}, []) ?? []
+	const harRelatertePersoner = unikeRelatertePersoner.length > 0
 	const [relasjonTilstand, setRelasjonTilstand] = React.useState<
 		Record<string, { erImportertRelasjon: boolean; erAvklart: boolean }>
 	>({})
@@ -291,10 +301,10 @@ export const HendelseIdDataVisning = ({
 		!errorHovedperson &&
 		Boolean(typedHovedpersonData?.hovedperson) &&
 		(typedHovedpersonData?.hovedperson?.ordrer?.length ?? 0) === 0
-	const harImportertRelasjon = (relatertePersoner ?? []).some(
+	const harImportertRelasjon = unikeRelatertePersoner.some(
 		(person) => relasjonTilstand[person.id]?.erImportertRelasjon,
 	)
-	const alleRelaterteAvklart = (relatertePersoner ?? []).every(
+	const alleRelaterteAvklart = unikeRelatertePersoner.every(
 		(person) => relasjonTilstand[person.id]?.erAvklart,
 	)
 	const skalViseKunImportvarsel = erImportertHovedperson || harImportertRelasjon
@@ -324,17 +334,20 @@ export const HendelseIdDataVisning = ({
 
 	return (
 		<div className="flexbox--flex-wrap">
-			{erImportertHovedperson && <ImportertRelasjonMelding />}
+			{skalViseKunImportvarsel && <ImportertRelasjonMelding />}
 			{visHovedpersonTooltip && (
-				<HendelseTooltip triggerText={`${ident} (HOVEDPERSON)`} ident={ident} />
+				<HendelseTooltip
+					triggerText={harRelatertePersoner ? `${ident} (HOVEDPERSON)` : ident}
+					ident={ident}
+				/>
 			)}
-			{relatertePersoner?.map((person) => (
+			{unikeRelatertePersoner.map((person) => (
 				<RelatertHendelseElement
 					key={`${person.type}-${person.id}`}
 					ident={ident}
 					person={person}
 					visTooltip={!skalViseKunImportvarsel}
-					visImportMelding={!erImportertHovedperson}
+					visImportMelding={false}
 					onImportertChange={oppdaterImportertRelasjon}
 				/>
 			))}
