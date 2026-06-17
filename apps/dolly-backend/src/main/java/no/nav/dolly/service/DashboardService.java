@@ -217,11 +217,15 @@ public class DashboardService {
 
         return bestillingProgressRepository.findStatusColumns()
                 .reduce(new StringBuilder(), (StringBuilder sb, String column) ->
-                        sb.append(" or lower(")
+                        sb.append(" or lower(bp.")
                         .append(column)
                         .append(") like '%feil%'"))
-                .map(query -> new StringBuilder("select * from bestilling_progress where ")
+                .map(query -> new StringBuilder("select b.sist_oppdatert, bp.* " +
+                                                "from bestilling b " +
+                                                "join bestilling_progress bp on bp.bestilling_id = b.id " +
+                                                "where ")
                         .append(query.substring(4))
+                        .append(" order by b.sist_oppdatert desc")
                         .toString())
                 .flatMapMany(query -> entityTemplate.getDatabaseClient()
                         .sql(query)
@@ -230,16 +234,18 @@ public class DashboardService {
                         .all())
                 .sort(Comparator.comparing(BestillingProgressDTO::getBestillingId).reversed())
                 .map(BestillingProgressDTO::toString)
-                .mapNotNull(this::toJson);
+                .flatMap(this::toJson);
     }
 
-    private JsonNode toJson(String json) {
+    private Mono<JsonNode> toJson(String json) {
 
         try {
-            return jsonMapper.readTree(json);
+            return isNotBlank(json) ?
+                    Mono.just(jsonMapper.readTree(json)) :
+                    Mono.empty();
         } catch (JacksonException e) {
             log.error("Feil ved parsing av JSON string: {}", json, e);
-            return null;
+            return Mono.empty();
         }
     }
 }

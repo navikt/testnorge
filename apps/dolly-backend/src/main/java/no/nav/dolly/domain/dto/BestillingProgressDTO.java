@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Testident.Master;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -20,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BestillingProgressDTO implements Serializable {
 
-    private LocalDate sistOppdatert;
+    private LocalDateTime sistOppdatert;
 
     private Long bestillingId;
 
@@ -59,8 +59,9 @@ public class BestillingProgressDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "{" +
-               "\"sistOppdatert\":" + sistOppdatert +
+
+        var resultat = "{" +
+               "\"sistOppdatert\":\"" + sistOppdatert + "\"" +
                ", \"bestillingId\":" + bestillingId +
                ", \"ident\":\"" + ident + "\"" +
                ", \"master\":\"" +  master.toString() + "\"" +
@@ -95,6 +96,7 @@ public class BestillingProgressDTO implements Serializable {
                getError("udistubStatus" , udistubStatus) +
                getError("yrkesskadeStatus" , yrkesskadeStatus) +
                "}";
+        return resultat.length() > 120 ? resultat : EMPTY;
     }
 
     private static String getError(String kolonnenavn, String kolonneverdi) {
