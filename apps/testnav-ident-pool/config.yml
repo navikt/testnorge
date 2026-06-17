@@ -58,7 +58,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
         - application: testnav-endringsmelding-service
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter

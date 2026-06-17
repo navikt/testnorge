@@ -48,6 +48,7 @@ import {
 } from '@/components/fagsystem/alderspensjon/form/AlderspensjonNyUttaksgradForm'
 import BankkontoForm from '@/components/fagsystem/bankkonto/form/Form'
 import { KelvinAapForm } from '@/components/fagsystem/kelvin/form/Form'
+import { KdiForm } from '@/components/fagsystem/kdi/form/Form'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
@@ -113,6 +114,7 @@ const Steg2: React.FC = () => {
 			{getValues('bankkonto') && <BankkontoForm />}
 			{getValues('brregstub') && <BrregstubForm />}
 			{getValues('instdata') && <InstForm />}
+			{getValues('instdataKdi') && <KdiForm />}
 			{getValues('krrstub') && <KrrstubForm />}
 			{getValues('medl') && <MedlForm />}
 			{getValues('udistub') && <UdistubForm />}

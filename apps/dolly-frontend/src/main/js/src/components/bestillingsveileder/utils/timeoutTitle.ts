@@ -11,6 +11,7 @@ const names: Record<string, string> = {
 	YRKESSKADE: 'Yrkesskade',
 	BRREG: 'Brreg',
 	INST: 'Institusjonsopphold',
+	INST_KDI: 'KDI',
 	ARBEIDSPLASSENCV: 'Nav CV',
 }
 

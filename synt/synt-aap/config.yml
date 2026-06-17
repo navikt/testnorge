@@ -39,7 +39,7 @@ spec:
       rules:
         - application: synthdata-arena-vedtakshistorikk
         - application: testnav-oversikt-frontend
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
     outbound:
       rules:
         - application: logging

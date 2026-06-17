@@ -35,7 +35,7 @@ spec:
         - application: testnav-dolly-proxy
         - application: generer-navn-service
         - application: organisasjon-bestilling-service
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
         - application: testnav-adresse-service
         - application: testnav-altinn3-tilgang-service
         - application: testnav-altinn3-tilgang-service-prod
@@ -92,7 +92,7 @@ spec:
         - application: dolly-idporten
         - application: generer-navn-service
         - application: organisasjon-bestilling-service
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
         - application: testnav-adresse-service
         - application: testnav-altinn3-tilgang-service
         - application: testnav-altinn3-tilgang-service-prod

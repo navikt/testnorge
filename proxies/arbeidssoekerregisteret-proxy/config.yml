@@ -39,7 +39,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-auth-local
+        - application: team-dolly-lokal-app
         - application: dolly-idporten
         - application: dolly-frontend
         - application: dolly-frontend-dev
