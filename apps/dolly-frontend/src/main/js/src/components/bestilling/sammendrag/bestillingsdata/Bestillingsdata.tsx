@@ -58,6 +58,7 @@ import { AlderspensjonNyUttaksgrad } from '@/components/fagsystem/alderspensjon/
 import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/bestilling/SigrunstubSummertSkattegrunnlag'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { KelvinAap } from '@/components/fagsystem/kelvin/bestilling/KelvinAap'
+import { KdiBestilling } from '@/components/fagsystem/kdi/bestilling/KdiBestilling'
 
 type BestillingsdataTypes = {
 	bestilling: any
@@ -138,6 +139,7 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
 			/>
 			<Inst inst={bestilling.instdata} />
+			<KdiBestilling kdi={bestilling.instdataKdi} />
 			<Krrstub krrstub={bestilling.krrstub} />
 			<Medl medl={bestilling.medl} />
 			<Udistub udistub={bestilling.udistub} />

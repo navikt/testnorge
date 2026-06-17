@@ -10,7 +10,10 @@ const getDokarkivMiljoerUrl = '/testnav-dolly-proxy/dokarkiv/rest/miljoe'
 const prefetchedMiljoer = ['q1', 'q2', 'q4', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
-const prefetchedInstMiljoer = { institusjonsoppholdEnvironments: ['q1', 'q2'] }
+const prefetchedInstMiljoer = {
+	institusjonsoppholdEnvironments: ['q1', 'q2'],
+	kdiEnvironments: ['q2'],
+}
 const prefetchedDokarkivMiljoer = ['q1', 'q2', 'q4']
 
 type InstResponse = {
@@ -75,6 +78,7 @@ export const useInstEnvironments = () => {
 
 	return {
 		instEnvironments: data?.institusjonsoppholdEnvironments,
+		kdiEnvironments: data?.kdiEnvironments,
 		loading: isLoading,
 		error: error,
 	}
