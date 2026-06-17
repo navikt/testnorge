@@ -1,4 +1,4 @@
-export const getTidspunktLabel = (meldingstype: string) => {
+export const getTidspunktLabel = (meldingstype?: string) => {
 	switch (meldingstype) {
 		case 'innsettelse':
 			return 'Innsettelsestidspunkt'

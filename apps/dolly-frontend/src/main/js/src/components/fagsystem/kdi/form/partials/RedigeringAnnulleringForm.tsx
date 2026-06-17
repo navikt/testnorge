@@ -34,9 +34,11 @@ export const RedigeringAnnulleringForm = ({
 				...annulleringer,
 				{ ...initialAnnullering, annullertMeldingId: meldingId },
 			])
-		} else {
-			annulleringer?.splice(index, 1)
-			formMethods.setValue('instdataKdi.annullering', annulleringer || [])
+		} else if (index >= 0) {
+			formMethods.setValue(
+				'instdataKdi.annullering',
+				annulleringer.filter((_: KdiMeldingProps, i: number) => i !== index),
+			)
 		}
 	}
 

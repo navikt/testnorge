@@ -45,7 +45,9 @@ export const useKdiData = (ident: string, harKdiBestilling: boolean) => {
 }
 
 export const useFengsel = () => {
-	const { data, isLoading, error } = useSWR<any, Error>(fengselUrl, postFetcher)
+	const { data, isLoading, error } = useSWR<any, Error>(fengselUrl, (url: string) =>
+		postFetcher(url, {}),
+	)
 
 	return {
 		fengsler: data,

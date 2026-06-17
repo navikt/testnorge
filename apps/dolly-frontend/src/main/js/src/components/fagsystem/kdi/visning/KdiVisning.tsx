@@ -19,11 +19,11 @@ import { KdiMeldingProps, KdiProps } from '@/components/fagsystem/kdi/form/parti
 type KdiMeldingVisningProps = {
 	melding: KdiMeldingProps
 	id: number
-	annulleringListe: Array<KdiMeldingProps>
+	annulleringListe?: Array<KdiMeldingProps>
 }
 
 type KdiVisningProps = {
-	data: KdiProps
+	data?: KdiProps
 	loading: boolean
 	harKdiBestilling: boolean
 }
@@ -101,9 +101,9 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps)
 		return <Loading label="Laster KDI-meldinger ..." />
 	}
 
-	const annullering = data.annullering
+	const annullering = data?.annullering ?? []
 
-	const meldinger = Object.entries(data)
+	const meldinger = Object.entries(data ?? {})
 		.flatMap(([type, values]) => values?.map((melding) => ({ ...melding, type })))
 		?.filter((melding) => melding && melding.type !== 'annullering')
 		?.sort(

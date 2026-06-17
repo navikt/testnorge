@@ -730,8 +730,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 					data={kdiData}
 					loading={loadingKdiData}
 					harKdiBestilling={harKdiBestilling(bestillingerFagsystemer)}
-					bestillingIdListe={bestillingIdListe}
-					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<MedlVisning data={medl} timedOutFagsystemer={timedOutFagsystemer} />
