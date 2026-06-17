@@ -53,7 +53,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("spring.security.oauth2.resourceserver.aad.issuer-uri",
                 PROVIDER_URL + "/62366534-1ec3-4962-8869-9b5535279d0b/v2.0");
         properties.putIfAbsent("spring.security.oauth2.resourceserver.aad.accepted-audience",
-                "%s, api:// %s".formatted(AUDIENCE, AUDIENCE));
+                "%s, api://%s".formatted(AUDIENCE, AUDIENCE));
 
         // Emulating NAIS provided environment variables.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", APP_CLIENT_ID);
