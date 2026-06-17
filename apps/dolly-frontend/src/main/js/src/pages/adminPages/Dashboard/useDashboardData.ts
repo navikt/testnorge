@@ -8,6 +8,7 @@ import {
 	getPreviousBusinessPeriod,
 	MONTH_SCOPE_ALL,
 	MONTH_SCOPE_LAST_12,
+	type MonthlyTeamPoint,
 	toDisplayDate,
 	toMonthlyDollyTeamPoints,
 	toMonthlyIntervalOptions,
@@ -43,6 +44,46 @@ const isQuickRangeValue = (value: string): value is QuickRangeValue =>
 
 const DAY_SCOPE_YESTERDAY = 'YESTERDAY'
 const DAY_SCOPE_TODAY = 'TODAY'
+
+const buildMonthlyDistributionView = (
+	monthlyPoints: MonthlyTeamPoint[],
+	selectedInterval: string,
+) => {
+	const intervalOptions = toMonthlyIntervalOptions(monthlyPoints)
+	const yearOptions = [...new Set(intervalOptions.map((option) => option.value.slice(0, 4)))].sort(
+		(a, b) => a.localeCompare(b),
+	)
+	const selectedYear = selectedInterval.slice(0, 4)
+	const monthOptions = intervalOptions
+		.filter((option) => option.value.startsWith(`${selectedYear}-`))
+		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
+	const selectedPoint = monthlyPoints.find((point) => point.interval === selectedInterval) ?? null
+	const distribution = toTeamDistributionForInterval(monthlyPoints, selectedInterval)
+	return { intervalOptions, yearOptions, selectedYear, monthOptions, selectedPoint, distribution }
+}
+
+const useAutoSelectLatestInterval = (
+	intervalOptions: { value: string }[],
+	selectedInterval: string,
+	setSelectedInterval: (value: string) => void,
+) => {
+	useEffect(() => {
+		if (intervalOptions.length === 0) {
+			if (selectedInterval !== '') setSelectedInterval('')
+			return
+		}
+		if (!intervalOptions.some((option) => option.value === selectedInterval)) {
+			setSelectedInterval(intervalOptions.at(-1)!.value)
+		}
+	}, [intervalOptions, selectedInterval, setSelectedInterval])
+}
+
+const makeYearChangeHandler =
+	(intervalOptions: { value: string }[], setSelectedInterval: (value: string) => void) =>
+	(year: string) => {
+		const lastOption = intervalOptions.findLast((option) => option.value.startsWith(`${year}-`))
+		if (lastOption) setSelectedInterval(lastOption.value)
+	}
 
 export const useDashboardData = () => {
 	const {
@@ -186,18 +227,7 @@ export const useDashboardData = () => {
 		organisasjonMonthlyPoints,
 		organisasjonMonthScope,
 	)
-	const organisasjonIntervalOptions = toMonthlyIntervalOptions(organisasjonMonthlyPoints)
-	const organisasjonYearOptions = [
-		...new Set(organisasjonIntervalOptions.map((option) => option.value.slice(0, 4))),
-	].sort((a, b) => a.localeCompare(b))
-	const selectedOrganisasjonYear = selectedOrganisasjonInterval.slice(0, 4)
-	const organisasjonMonthOptions = organisasjonIntervalOptions
-		.filter((option) => option.value.startsWith(`${selectedOrganisasjonYear}-`))
-		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
-	const selectedOrganisasjonPoint =
-		organisasjonMonthlyPoints.find((point) => point.interval === selectedOrganisasjonInterval) ??
-		null
-	const organisasjonDistribution = toTeamDistributionForInterval(
+	const organisasjonView = buildMonthlyDistributionView(
 		organisasjonMonthlyPoints,
 		selectedOrganisasjonInterval,
 	)
@@ -209,21 +239,15 @@ export const useDashboardData = () => {
 			secondSeriesName: 'Antall organisasjoner',
 		},
 	)
-	const organisasjonDistributionChartOptions =
-		createMonthlyTeamDistributionChartOptions(organisasjonDistribution)
+	const organisasjonDistributionChartOptions = createMonthlyTeamDistributionChartOptions(
+		organisasjonView.distribution,
+	)
 
-	useEffect(() => {
-		if (organisasjonIntervalOptions.length === 0) {
-			setSelectedOrganisasjonInterval('')
-			return
-		}
-		const selectedExists = organisasjonIntervalOptions.some(
-			(option) => option.value === selectedOrganisasjonInterval,
-		)
-		if (!selectedExists) {
-			setSelectedOrganisasjonInterval(organisasjonIntervalOptions.at(-1)!.value)
-		}
-	}, [organisasjonIntervalOptions, selectedOrganisasjonInterval])
+	useAutoSelectLatestInterval(
+		organisasjonView.intervalOptions,
+		selectedOrganisasjonInterval,
+		setSelectedOrganisasjonInterval,
+	)
 
 	// --- Dolly Teams ---
 	const dollyTeamsMonthlyPoints = toMonthlyDollyTeamPoints(activeDashboardDollyTeams)
@@ -231,17 +255,7 @@ export const useDashboardData = () => {
 		dollyTeamsMonthlyPoints,
 		dollyTeamsMonthScope,
 	)
-	const dollyTeamsIntervalOptions = toMonthlyIntervalOptions(dollyTeamsMonthlyPoints)
-	const dollyTeamsYearOptions = [
-		...new Set(dollyTeamsIntervalOptions.map((option) => option.value.slice(0, 4))),
-	].sort((a, b) => a.localeCompare(b))
-	const selectedDollyTeamsYear = selectedDollyTeamsInterval.slice(0, 4)
-	const dollyTeamsMonthOptions = dollyTeamsIntervalOptions
-		.filter((option) => option.value.startsWith(`${selectedDollyTeamsYear}-`))
-		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
-	const selectedDollyTeamsPoint =
-		dollyTeamsMonthlyPoints.find((point) => point.interval === selectedDollyTeamsInterval) ?? null
-	const dollyTeamsDistribution = toTeamDistributionForInterval(
+	const dollyTeamsView = buildMonthlyDistributionView(
 		dollyTeamsMonthlyPoints,
 		selectedDollyTeamsInterval,
 	)
@@ -254,55 +268,28 @@ export const useDashboardData = () => {
 		},
 	)
 	const dollyTeamsDistributionChartOptions = createMonthlyTeamDistributionChartOptions(
-		dollyTeamsDistribution,
+		dollyTeamsView.distribution,
 		'Antall medlemmer',
 	)
 
-	useEffect(() => {
-		if (dollyTeamsIntervalOptions.length === 0) {
-			setSelectedDollyTeamsInterval('')
-			return
-		}
-		const selectedExists = dollyTeamsIntervalOptions.some(
-			(option) => option.value === selectedDollyTeamsInterval,
-		)
-		if (!selectedExists) {
-			setSelectedDollyTeamsInterval(dollyTeamsIntervalOptions.at(-1)!.value)
-		}
-	}, [dollyTeamsIntervalOptions, selectedDollyTeamsInterval])
+	useAutoSelectLatestInterval(
+		dollyTeamsView.intervalOptions,
+		selectedDollyTeamsInterval,
+		setSelectedDollyTeamsInterval,
+	)
 
 	// --- Teams ---
 	const monthlyTeamPoints = toMonthlyTeamPoints(activeDashboardTeams)
 	const filteredMonthlyTeamPoints = filterMonthlyTeamPoints(monthlyTeamPoints, monthScope)
-	const monthlyIntervalOptions = toMonthlyIntervalOptions(monthlyTeamPoints)
-	const teamYearOptions = [
-		...new Set(monthlyIntervalOptions.map((option) => option.value.slice(0, 4))),
-	].sort((a, b) => a.localeCompare(b))
-	const selectedTeamYear = selectedInterval.slice(0, 4)
-	const teamMonthOptions = monthlyIntervalOptions
-		.filter((option) => option.value.startsWith(`${selectedTeamYear}-`))
-		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
-	const selectedMonthlyPoint =
-		monthlyTeamPoints.find((point) => point.interval === selectedInterval) ?? null
-	const teamDistribution = toTeamDistributionForInterval(monthlyTeamPoints, selectedInterval)
+	const teamView = buildMonthlyDistributionView(monthlyTeamPoints, selectedInterval)
 	const monthlyTrendChartOptions = createMonthlyTeamTrendChartOptions(
 		toMonthlyTrendData(filteredMonthlyTeamPoints),
 	)
-	const monthlyDistributionChartOptions =
-		createMonthlyTeamDistributionChartOptions(teamDistribution)
+	const monthlyDistributionChartOptions = createMonthlyTeamDistributionChartOptions(
+		teamView.distribution,
+	)
 
-	useEffect(() => {
-		if (monthlyIntervalOptions.length === 0) {
-			setSelectedInterval('')
-			return
-		}
-		const selectedExists = monthlyIntervalOptions.some(
-			(option) => option.value === selectedInterval,
-		)
-		if (!selectedExists) {
-			setSelectedInterval(monthlyIntervalOptions.at(-1)!.value)
-		}
-	}, [monthlyIntervalOptions, selectedInterval])
+	useAutoSelectLatestInterval(teamView.intervalOptions, selectedInterval, setSelectedInterval)
 
 	const applyQuickRange = (quickRangeValue: string) => {
 		const toDateValue = format(quickRangeAnchorDate, 'yyyy-MM-dd')
@@ -391,19 +378,17 @@ export const useDashboardData = () => {
 		organisasjonMonthScope,
 		onOrganisasjonMonthScopeChange: setOrganisasjonMonthScope,
 		organisasjonMonthlyTrendChartOptions,
-		organisasjonYearOptions,
-		selectedOrganisasjonYear,
-		organisasjonMonthOptions,
-		onSelectedOrganisasjonYearChange: (year: string) => {
-			const lastOption = organisasjonIntervalOptions.findLast((option) =>
-				option.value.startsWith(`${year}-`),
-			)
-			if (lastOption) setSelectedOrganisasjonInterval(lastOption.value)
-		},
+		organisasjonYearOptions: organisasjonView.yearOptions,
+		selectedOrganisasjonYear: organisasjonView.selectedYear,
+		organisasjonMonthOptions: organisasjonView.monthOptions,
+		onSelectedOrganisasjonYearChange: makeYearChangeHandler(
+			organisasjonView.intervalOptions,
+			setSelectedOrganisasjonInterval,
+		),
 		selectedOrganisasjonInterval,
 		onSelectedOrganisasjonIntervalChange: setSelectedOrganisasjonInterval,
-		selectedOrganisasjonPoint,
-		organisasjonDistribution,
+		selectedOrganisasjonPoint: organisasjonView.selectedPoint,
+		organisasjonDistribution: organisasjonView.distribution,
 		organisasjonDistributionChartOptions,
 
 		// Dolly teams section
@@ -411,19 +396,17 @@ export const useDashboardData = () => {
 		dollyTeamsMonthScope,
 		onDollyTeamsMonthScopeChange: setDollyTeamsMonthScope,
 		dollyTeamsMonthlyTrendChartOptions,
-		dollyTeamsYearOptions,
-		selectedDollyTeamsYear,
-		dollyTeamsMonthOptions,
-		onSelectedDollyTeamsYearChange: (year: string) => {
-			const lastOption = dollyTeamsIntervalOptions.findLast((option) =>
-				option.value.startsWith(`${year}-`),
-			)
-			if (lastOption) setSelectedDollyTeamsInterval(lastOption.value)
-		},
+		dollyTeamsYearOptions: dollyTeamsView.yearOptions,
+		selectedDollyTeamsYear: dollyTeamsView.selectedYear,
+		dollyTeamsMonthOptions: dollyTeamsView.monthOptions,
+		onSelectedDollyTeamsYearChange: makeYearChangeHandler(
+			dollyTeamsView.intervalOptions,
+			setSelectedDollyTeamsInterval,
+		),
 		selectedDollyTeamsInterval,
 		onSelectedDollyTeamsIntervalChange: setSelectedDollyTeamsInterval,
-		selectedDollyTeamsPoint,
-		dollyTeamsDistribution,
+		selectedDollyTeamsPoint: dollyTeamsView.selectedPoint,
+		dollyTeamsDistribution: dollyTeamsView.distribution,
 		dollyTeamsDistributionChartOptions,
 
 		// Teams section
@@ -431,19 +414,14 @@ export const useDashboardData = () => {
 		monthScope,
 		onMonthScopeChange: setMonthScope,
 		monthlyTrendChartOptions,
-		teamYearOptions,
-		selectedTeamYear,
-		teamMonthOptions,
-		onSelectedTeamYearChange: (year: string) => {
-			const lastOption = monthlyIntervalOptions.findLast((option) =>
-				option.value.startsWith(`${year}-`),
-			)
-			if (lastOption) setSelectedInterval(lastOption.value)
-		},
+		teamYearOptions: teamView.yearOptions,
+		selectedTeamYear: teamView.selectedYear,
+		teamMonthOptions: teamView.monthOptions,
+		onSelectedTeamYearChange: makeYearChangeHandler(teamView.intervalOptions, setSelectedInterval),
 		selectedTeamInterval: selectedInterval,
 		onSelectedTeamIntervalChange: setSelectedInterval,
-		selectedMonthlyPoint,
-		teamDistribution,
+		selectedMonthlyPoint: teamView.selectedPoint,
+		teamDistribution: teamView.distribution,
 		monthlyDistributionChartOptions,
 	}
 }

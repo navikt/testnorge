@@ -22,6 +22,7 @@ const initAccessibilityModule =
 initAccessibilityModule?.(Highcharts)
 
 Highcharts.setOptions({
+	palette: { colorScheme: 'light' },
 	xAxis: {
 		labels: { style: { color: CHART_TEXT_COLOR, fontSize: '12px' } },
 		title: { style: { color: CHART_TEXT_COLOR } },
@@ -55,7 +56,7 @@ export default () => {
 			<VStack gap={{ xs: 'space-16', md: 'space-24' }}>
 				<Box>
 					<h1>Dashboard</h1>
-					<p>Statistikk for syntetisering av identer og bruk av Dolly.</p>
+					<p>Statistikk for syntetisering av personer og bruk av Dolly.</p>
 				</Box>
 
 				{isDevDashboardMode && (

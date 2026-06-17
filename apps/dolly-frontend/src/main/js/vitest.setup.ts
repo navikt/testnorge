@@ -1,4 +1,5 @@
 import { cleanup } from '@testing-library/react'
+import { act } from 'react'
 import * as matchers from '@testing-library/jest-dom/matchers'
 import { test as testBase } from 'vitest'
 import { worker } from './__tests__/mocks/browser.ts'

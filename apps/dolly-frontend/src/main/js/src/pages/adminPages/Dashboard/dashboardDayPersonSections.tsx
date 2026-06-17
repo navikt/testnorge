@@ -92,7 +92,7 @@ export const PreviousDaySection = ({
 				<>
 					<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
 						<DashboardKpiCard
-							label="Identer opprettet/gjenopprettet"
+							label="Personer opprettet/gjenopprettet"
 							value={previousDaySummary.nyeInklGjenopprettede}
 						/>
 						{previousDaySummary.totaltFeil === 0 ? (
