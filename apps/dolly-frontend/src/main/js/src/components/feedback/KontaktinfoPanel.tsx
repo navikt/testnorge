@@ -53,20 +53,25 @@ export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 				<Button size="small" onClick={closePanel} icon={<ChevronDownIcon title="Lukk" />} />
 			</Header>
 			<p>
-				{`Team Dolly er tilgjengelige på ${bankIdBruker ? '' : 'Slack (#dolly), '}e-post (dolly@nav.no), og via kontaktskjema.`}
+				{`Team Dolly er tilgjengelige på Slack (${bankIdBruker ? 'for alle i offentlig sektor: #ext-dolly-syntetiske-data' : '#dolly'}), e-post (dolly@nav.no), og via kontaktskjema.`}
 			</p>
 			<VStack gap="space-12">
-				{!bankIdBruker && (
-					<a href={'https://nav-it.slack.com/archives/CA3P9NGA2'} target="_blank">
-						<StyledButton
-							iconPosition="left"
-							icon={<Icon kind="slack" fill="#2176d4" />}
-							onClick={closePanel}
-						>
-							Gå til Slack-kanal
-						</StyledButton>
-					</a>
-				)}
+				<a
+					href={
+						bankIdBruker
+							? 'https://offentlig-paas-no.slack.com/archives/C0B2BAXKJKV'
+							: 'https://nav-it.slack.com/archives/CA3P9NGA2'
+					}
+					target="_blank"
+				>
+					<StyledButton
+						iconPosition="left"
+						icon={<Icon kind="slack" fill="#2176d4" />}
+						onClick={closePanel}
+					>
+						Gå til Slack-kanal
+					</StyledButton>
+				</a>
 				<a href={'mailto:dolly@nav.no'}>
 					<StyledButton
 						iconPosition="left"

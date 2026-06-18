@@ -110,20 +110,10 @@ consumers:
     namespace: dolly
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-sykemelding-api:
-    name: testnav-sykemelding-api
-    namespace: dolly
-    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-organisasjon-service:
     name: testnav-organisasjon-service
     namespace: dolly
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local
-    cluster: dev-gcp
-  testnav-sykemelding-proxy:
-    name: testnav-sykemelding-proxy
-    namespace: dolly
-    url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-arbeidsplassencv-proxy:
     name: testnav-arbeidsplassencv-proxy
@@ -155,4 +145,14 @@ consumers:
     namespace: dolly
     url: http://testnav-nom-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
+  teamkatalog:
+    name: team-catalog-backend
+    namespace: org
+    url: https://teamkatalog-api.intern.nav.no
+    cluster: prod-gcp
+  altinn3-tilgang-service:
+    name: testnav-altinn3-tilgang-service-prod
+    namespace: dolly
+    url: https://testnav-altinn3-tilgang-service.nav.no
+    cluster: prod-gcp
     

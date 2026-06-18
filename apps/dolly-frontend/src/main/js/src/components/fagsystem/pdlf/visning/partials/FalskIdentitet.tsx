@@ -45,6 +45,8 @@ export const FalskIdentitet = ({ data }) => {
 								rettIdentitetVedOpplysninger.statsborgerskap.join(', ')
 							}
 						/>
+						<TitleValue title="Master" value={enhet.metadata?.master || enhet.master} />
+						<TitleValue title="ID" value={enhet.id} />
 					</Fragment>
 				)}
 			</div>

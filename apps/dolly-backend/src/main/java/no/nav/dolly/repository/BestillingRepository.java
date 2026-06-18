@@ -1,7 +1,11 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.projection.BestillingerFragment;
+import no.nav.dolly.domain.projection.DollyTeamFragment;
+import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
+import no.nav.dolly.domain.projection.TeamFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -131,4 +135,72 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Integer> stopAllUnfinished();
 
     Flux<Bestilling> findByIdIn(List<Long> id);
+
+    @Query("""
+            select count(*) personer,
+                   b.sist_oppdatert::date dato,
+                   case
+                      when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
+                      when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
+                      when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
+                      else 'NYBESTILLING'
+                   end as gjenopprettStatus,
+                   case
+                      when lower(bp.pdl_person_status) not like 'synkronisering%' then 'FEIL'
+                      when lower(bp.pdl_forvalter_status) like '%feil%' then 'FEIL'
+                      when lower(bp.pdl_ordre_status) like '%feil%' then 'FEIL'
+                      else 'OK'
+                   end as pdlStatus,
+                   case
+                      when lower(bp.pensjonforvalter_status) like '%feil%' then 'FEIL'
+                      when lower(bp.aareg_status) like '%feil%' then 'FEIL'
+                      when lower(bp.arenaforvalter_status) like '%feil%' then 'FEIL'
+                      when lower(bp.instdata_status) like '%feil%' then 'FEIL'
+                      when lower(bp.inntektsstub_status) like '%feil%' then 'FEIL'
+                      when lower(bp.inntektsmelding_status) like '%feil%' then 'FEIL'
+                      when lower(bp.sigrunstub_status) like '%feil%' then 'FEIL'
+                      when lower(bp.dokarkiv_status) like '%feil%' then 'FEIL'
+                      when lower(bp.feil) like '%feil%' then 'FEIL'
+                      else 'OK'
+                   end as annenStatus
+            from bestilling b
+            join bestilling_progress bp on b.id = bp.bestilling_id
+            group by dato, gjenopprettStatus, pdlStatus, annenStatus
+            order by dato desc
+            """)
+    Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
+
+
+    @Query("""
+            select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval, br.epost
+            from bestilling b
+            join bruker br on br.id = b.bruker_id
+            and br.brukertype = 'AZURE'
+            and br.epost is not null
+            group by interval, br.epost
+            order by interval desc;
+            """)
+    Flux<TeamFragment> findBestillingerForTeamsOrderBySistOppdatert();
+
+    @Query("""
+            select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval, br.bruker_id brukerId
+            from bestilling b
+            join bruker br on br.id = b.bruker_id
+            and br.brukertype = 'BANKID'
+            group by interval, brukerId
+            order by interval desc;
+            """)
+    Flux<OrganisasjonFragment> findBestillingerForOrganisasjonerOrderBySistOppdatert();
+
+    @Query("""
+            select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval,
+                   t.navn || '|' || coalesce(t.beskrivelse, '') || '|' || t.bruker_id informasjon
+            from bestilling b
+            join bruker br on br.id = b.bruker_id
+            join team t on t.bruker_id = br.id
+            and br.brukertype = 'TEAM'
+            group by interval, informasjon
+            order by interval desc;
+            """)
+    Flux<DollyTeamFragment> findBestillingerForDollyTeamsOrderBySistOppdatert();
 }

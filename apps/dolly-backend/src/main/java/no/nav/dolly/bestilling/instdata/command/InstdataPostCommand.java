@@ -39,12 +39,12 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                 .toBodilessEntity()
                 .map(resultat -> InstdataResponse.builder()
                         .personident(instdata.getNorskident())
-                        .instdata(instdata)
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .environments(List.of(miljoe))
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable), instdata, List.of(miljoe)));
+                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable),
+                        instdata.getNorskident(), List.of(miljoe)));
     }
 }

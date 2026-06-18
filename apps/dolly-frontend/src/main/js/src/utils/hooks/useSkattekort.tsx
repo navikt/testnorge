@@ -1,7 +1,9 @@
 import useSWR from 'swr'
-import axios from 'axios'
+import { postFetcher } from '@/api'
 
-const skattekortBaseUrl = '/testnav-dolly-proxy/skattekort/api/v1/person'
+const skattekortUrl = (miljoe: string) => `/testnav-dolly-proxy/skattekort/${miljoe}/api/v1/person`
+
+const SKATTEKORT_MILJOER = ['q1', 'q2']
 
 interface SkattekortResponse {
 	utstedtDato?: string
@@ -68,29 +70,35 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 	},
 }
 
+const fetchSkattekortFromMiljoe = async (miljoe: string, fnr: string) =>
+	postFetcher(`${skattekortUrl(miljoe)}/hent-skattekort`, { fnr })
+
+interface MiljoSkattekortData {
+	miljo: string
+	data: SkattekortResponse[]
+}
+
 export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) => {
 	const shouldFetch = Boolean(ident && harSkattekortBestilling)
 
-	const { data, isLoading, error } = useSWR<SkattekortResponse[], Error>(
-		shouldFetch ? [`${skattekortBaseUrl}/hent-skattekort`, ident] : null,
-		async ([url, fnr]: [string, string]) => {
-			try {
-				const res = await axios.post(
-					url,
-					{ fnr },
-					{
-						headers: {
-							'Content-Type': 'application/json',
-						},
-					},
-				)
-				return res.data
-			} catch (e: unknown) {
-				if (axios.isAxiosError(e) && e.response?.status === 404) {
-					return null
-				}
-				throw e
+	const { data, isLoading, error } = useSWR<MiljoSkattekortData[], Error>(
+		shouldFetch ? ['skattekort-alle-miljoer', ident] : null,
+		async ([, fnr]: [string, string]) => {
+			const results = await Promise.allSettled(
+				SKATTEKORT_MILJOER.map(async (miljoe) => {
+					const miljoData = await fetchSkattekortFromMiljoe(miljoe, fnr)
+					return { miljo: miljoe, data: miljoData } as MiljoSkattekortData
+				}),
+			)
+			const fulfilled = results
+				.filter((r): r is PromiseFulfilledResult<MiljoSkattekortData> => r.status === 'fulfilled')
+				.map((r) => r.value)
+			const rejected = results.filter((r) => r.status === 'rejected')
+
+			if (fulfilled.length === 0 && rejected.length > 0) {
+				throw (rejected[0] as PromiseRejectedResult).reason
 			}
+			return fulfilled
 		},
 		{ errorRetryCount: 0, revalidateOnFocus: false },
 	)

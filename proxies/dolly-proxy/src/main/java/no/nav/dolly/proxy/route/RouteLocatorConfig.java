@@ -32,6 +32,7 @@ class RouteLocatorConfig {
     private final Saf saf;
     private final Sigrunstub sigrunstub;
     private final Skjermingsregister skjermingsregister;
+    private final Sykemelding sykemelding;
     private final Udistub udistub;
 
     @Bean("dollyProxyRouteLocator")
@@ -63,7 +64,8 @@ class RouteLocatorConfig {
                 .route("inst", inst.build())
                 .route("kelvin-aap", kelvinAap.build())
                 .route("kontoregister", kontoregister.build())
-                .route("skattekort", skattekort.build())
+                .route("skattekort-q1", skattekort.build(Skattekort.SpecialCase.Q1))
+                .route("skattekort-q2", skattekort.build(Skattekort.SpecialCase.Q2))
                 .route("krrstub", krrstub.build())
                 .route("medl", medl.build())
                 .route("norg2", norg2.build())
@@ -81,8 +83,8 @@ class RouteLocatorConfig {
                 .route("saf-q4", saf.build(Saf.SpecialCase.Q4))
                 .route("sigrunstub", sigrunstub.build())
                 .route("skjermingsregister", skjermingsregister.build())
+                .route("sykemelding", sykemelding.build())
                 .route("udistub", udistub.build())
                 .build();
     }
-
 }

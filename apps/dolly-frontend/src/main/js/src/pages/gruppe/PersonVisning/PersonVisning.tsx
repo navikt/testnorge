@@ -7,6 +7,7 @@ import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
+import { HendelseIdPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/HendelseIdPersonMiljoeInfo'
 import { PdlfVisning } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
@@ -31,7 +32,6 @@ import {
 	useArenaData,
 	useDokarkivData,
 	useHistarkData,
-	useInstData,
 	usePensjonsavtaleData,
 	usePoppData,
 	useTpDataForhold,
@@ -55,6 +55,7 @@ import {
 	harInntektsmeldingBestilling,
 	harInntektstubBestilling,
 	harInstBestilling,
+	harKdiBestilling,
 	harKelvinAapBestilling,
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
@@ -116,6 +117,8 @@ import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
+import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
+import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -253,6 +256,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harInstBestilling(bestillingerFagsystemer),
 	)
 
+	const { loading: loadingKdiData, kdiData } = useKdiData(
+		ident.ident,
+		harKdiBestilling(bestillingerFagsystemer),
+	)
+
 	const { loading: loadingArbeidssoekerregisteret, data: arbeidssoekerregisteretData } =
 		useArbeidssoekerregistrering(
 			ident.ident,
@@ -363,6 +371,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 		uforetrygdData,
 		brregstub: data?.brregstub,
 		instData,
+		kdiData,
 		yrkesskadeData,
 		arbeidsplassencvData,
 		arbeidsplassencvError,
@@ -385,83 +394,38 @@ const PersonVisning = (props: PersonVisningProps) => {
 	const { inntektstub, brregstub, krrstub } = data
 
 	const manglerFagsystemdata = (): boolean => {
-		const checks: Array<{ condition: boolean; reason: string }> = [
-			{
-				condition: Array.isArray(krrstub) && krrstub.length === 0,
-				reason: 'Krrstub mangler data',
-			},
-			{
-				condition:
-					harInntektstubBestilling(bestillingerFagsystemer) &&
-					(!inntektstub || (Array.isArray(inntektstub) && inntektstub.length === 0)),
-				reason: 'Inntektstub mangler data',
-			},
-			{
-				condition: !!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
-				reason: 'Aareg mangler data',
-			},
-			{
-				condition: !!(poppData && sjekkManglerPensjonData(poppData)),
-				reason: 'Pensjon (POPP) mangler data',
-			},
-			{
-				condition: !!(tpDataForhold && sjekkManglerTpData(tpDataForhold)),
-				reason: 'Tjenestepensjon mangler data',
-			},
-			{
-				condition: !!(apData && sjekkManglerApData(apData)),
-				reason: 'Alderspensjon mangler data',
-			},
-			{
-				condition: !!(uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)),
-				reason: 'Uføretrygd mangler data',
-			},
-			{
-				condition: !!(brregstub && sjekkManglerBrregData(brregstub)),
-				reason: 'Brreg mangler data',
-			},
-			{
-				condition: !!(instData && sjekkManglerInstData(instData)),
-				reason: 'Inst mangler data',
-			},
-			{
-				condition: !!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
-				reason: 'Yrkesskade mangler data eller feilet',
-			},
-			{
-				condition: !!(
-					(udistub && sjekkManglerUdiData(udistub)) ||
-					(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
-				),
-				reason: 'UDI mangler data eller feilet',
-			},
-			{
-				condition: !!(
-					(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
-					(harMedlBestilling(bestillingerFagsystemer) &&
-						medl &&
-						Array.isArray(medl) &&
-						medl.length === 0)
-				),
-				reason: 'MEDL mangler data eller feilet',
-			},
-			{
-				condition: !!(
-					harArbeidsplassenBestilling(bestillingerFagsystemer) &&
-					!arbeidsplassencvData &&
-					arbeidsplassencvError
-				),
-				reason: 'Arbeidsplassen CV mangler data eller feilet',
-			},
+		const checks: boolean[] = [
+			Array.isArray(krrstub) && krrstub.length === 0,
+			harInntektstubBestilling(bestillingerFagsystemer) &&
+				(!inntektstub || (Array.isArray(inntektstub) && inntektstub.length === 0)),
+			!!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
+			!!(poppData && sjekkManglerPensjonData(poppData)),
+			!!(tpDataForhold && sjekkManglerTpData(tpDataForhold)),
+			!!(apData && sjekkManglerApData(apData)),
+			!!(uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)),
+			!!(brregstub && sjekkManglerBrregData(brregstub)),
+			!!(instData && sjekkManglerInstData(instData)),
+			!!(kdiData && sjekkManglerKdiData(kdiData)),
+			!!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
+			!!(
+				(udistub && sjekkManglerUdiData(udistub)) ||
+				(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
+			),
+			!!(
+				(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
+				(harMedlBestilling(bestillingerFagsystemer) &&
+					medl &&
+					Array.isArray(medl) &&
+					medl.length === 0)
+			),
+			!!(
+				harArbeidsplassenBestilling(bestillingerFagsystemer) &&
+				!arbeidsplassencvData &&
+				arbeidsplassencvError
+			),
 		]
 
-		for (const { condition, reason } of checks) {
-			if (condition) {
-				console.warn('manglerFagsystemdata:', reason)
-				return true
-			}
-		}
-		return false
+		return checks.some(Boolean)
 	}
 
 	const pdlRelatertPerson = () => {
@@ -540,7 +504,8 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingArbeidsplassencvData ||
 		loadingArenaData ||
 		loadingApData ||
-		loadingSkattekort
+		loadingSkattekort ||
+		loadingKdiData
 
 	return (
 		<ErrorBoundary>
@@ -572,7 +537,10 @@ const PersonVisning = (props: PersonVisningProps) => {
 									personData.alderspensjon = apData
 								}
 								if (skattekortData) {
-									personData.skattekort = skattekortData
+									personData.skattekort = skattekortData.flatMap((m: any) => m.data || [])
+								}
+								if (kdiData) {
+									personData.instdataKdi = kdiData
 								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
@@ -652,10 +620,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<SigrunstubPensjonsgivendeVisning
 					data={sigrunstubPensjonsgivendeInntekt}
 					loading={loadingSigrunstubPensjonsgivendeInntekt}
+					harBestilling={harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer)}
 				/>
 				<SigrunstubSummertSkattegrunnlagVisning
 					data={sigrunstubSummertSkattegrunnlag}
 					loading={loadingSigrunstubSummertSkattegrunnlag}
+					harBestilling={harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer)}
 				/>
 				<InntektstubVisning
 					liste={inntektstub}
@@ -755,6 +725,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
+				<KdiVisning
+					data={kdiData}
+					loading={loadingKdiData}
+					harKdiBestilling={harKdiBestilling(bestillingerFagsystemer)}
+				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<MedlVisning data={medl} timedOutFagsystemer={timedOutFagsystemer} />
 				<UdiVisning
@@ -785,6 +760,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 					ident={ident.ident}
 					miljoe={tilgjengeligMiljoe || ''}
 				/>
+				<HendelseIdPersonMiljoeInfo ident={ident.ident} relatertePersoner={relatertePersoner} />
 				<TidligereBestillinger ids={ident.bestillingId} erOrg={false} />
 				<BeskrivelseConnector ident={ident} closeModal={() => {}} />
 				{isMalModalOpen && (

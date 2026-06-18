@@ -97,7 +97,8 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kelvin-aap", () -> wireMockServer.baseUrl());
         registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.skattekort", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.skattekort-q1", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.skattekort-q2", () -> wireMockServer.baseUrl());
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.medl", () -> wireMockServer.baseUrl());
         registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
@@ -111,6 +112,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.saf", () -> wireMockServer.baseUrl());
         registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.sykemelding", () -> wireMockServer.baseUrl());
         registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
     }
 
@@ -503,8 +505,9 @@ class RouteLocatorConfigTest {
 
     }
 
-    @Test
-    void testSkattekort() {
+    @ParameterizedTest
+    @ValueSource(strings = { "q1", "q2" })
+    void testSkattekort(String env) {
 
         var downstreamPath = "/api/v1/testdata";
         var responseBody = "Success from mocked skattekort";
@@ -517,7 +520,7 @@ class RouteLocatorConfigTest {
 
         webClient
                 .get()
-                .uri("/skattekort" + downstreamPath)
+                .uri("/skattekort/%s/%s".formatted(env, downstreamPath))
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("text/plain")
@@ -848,6 +851,56 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
+
+    }
+
+    @Test
+    void testSykemeldingGet() {
+
+        var downstreamPath = "/api/v1/sykmelding";
+        var responseBody = "Success from mocked sykemelding";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/sykemelding" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
+
+    }
+
+    @Test
+    void testSykemeldingPost() {
+
+        var downstreamPath = "/api/v1/sykmelding";
+        var responseBody = "{\"id\": \"sykemelding-123\"}";
+
+        wireMockServer.stubFor(post(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(responseBody)));
+
+        webClient
+                .post()
+                .uri("/sykemelding" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("application/json")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }

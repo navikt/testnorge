@@ -69,6 +69,7 @@ export const rootPaths = [
 	'pensjonforvalter',
 	'inntektstub',
 	'instdata',
+	'instdataKdi',
 	'krrstub',
 	'kelvinAap',
 	'arenaforvalter',

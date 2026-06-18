@@ -93,7 +93,7 @@ export default () => {
 							false,
 						)}
 					>
-						Logg inn med NAV epost
+						Logg inn med Nav-e-post
 					</NavButton>
 					<NavButton
 						data-testid={TestComponentSelectors.BUTTON_LOGIN_BANKID}

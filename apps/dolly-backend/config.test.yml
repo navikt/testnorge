@@ -20,6 +20,7 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-idporten
         - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend
@@ -35,10 +36,6 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
-        - application: testnav-sykemelding-api-dev
-        - application: testnav-synt-sykemelding-api
-        - application: testnav-synt-sykemelding-api-dev
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api-dev
         - application: etterlatte-testdata
@@ -47,10 +44,17 @@ spec:
           namespace: nais-system
         - application: testnav-yrkesskade-proxy
         - application: testnav-nom-proxy
-        - application: testnav-sykemelding-proxy
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
+        - application: team-catalog-backend
+          namespace: org
+          cluster: prod-gcp
+        - application: testnav-altinn3-tilgang-service-prod
+          namespace: dolly
+          cluster: prod-gcp
       external:
+        - host: teamkatalog-api.intern.nav.no
+        - host: testnav-altinn3-tilgang-service.nav.no
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io

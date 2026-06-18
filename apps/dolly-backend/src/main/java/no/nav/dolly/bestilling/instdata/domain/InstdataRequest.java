@@ -14,5 +14,7 @@ import java.util.List;
 public class InstdataRequest {
 
     private String personident;
+    private String norskident;
+    private String environment;
     private List<String> environments;
 }

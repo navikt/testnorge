@@ -3,7 +3,13 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Alert } from '@navikt/ds-react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { arrayToString, codeToNorskLabel, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import {
+	arrayToString,
+	codeToNorskLabel,
+	formatDate,
+	oversettBoolean,
+	showLabel,
+} from '@/utils/DataFormatter'
 import React from 'react'
 import { KelvinAapVisningTypes } from '@/components/fagsystem/kelvin/initialValues'
 
@@ -22,6 +28,9 @@ export const KelvinAapVisning = ({
 
 	const manglerFagsystemdata = harKelvinAapBestilling && !data
 
+	const soeknad = data?.soeknad
+	const andreUtbetalinger = soeknad?.andreUtbetalinger
+
 	return (
 		<div>
 			<SubOverskrift label="Kelvin AAP-ytelse" iconKind="arena" isWarning={manglerFagsystemdata} />
@@ -36,44 +45,46 @@ export const KelvinAapVisning = ({
 						<TitleValue title="Behandlingsstatus" value={codeToNorskLabel(data.behandlingStatus)} />
 						<TitleValue title="Ferdig" value={oversettBoolean(data.ferdig)} />
 					</div>
-					{data.soeknad && (
+					{soeknad && (
 						<>
 							<h4 style={{ width: '100%', marginTop: '0' }}>Generelt</h4>
 							<div className="person-visning_content">
-								<TitleValue title="Er student" value={oversettBoolean(data.soeknad.erStudent)} />
+								<TitleValue title="Søknadsdato" value={formatDate(soeknad?.soeknadsdato)} />
+								<TitleValue
+									title="Automatisk meldekort"
+									value={oversettBoolean(soeknad?.automatiskMeldekort)}
+								/>
+								<TitleValue title="Er student" value={oversettBoolean(soeknad?.erStudent)} />
 								<TitleValue
 									title="Har medlemskap i folketrygden"
-									value={oversettBoolean(data.soeknad.harMedlemskap)}
+									value={oversettBoolean(soeknad?.harMedlemskap)}
 								/>
 								<TitleValue
 									title="Har yrkesskade"
-									value={oversettBoolean(data.soeknad.harYrkesskade)}
+									value={oversettBoolean(soeknad?.harYrkesskade)}
 								/>
 							</div>
 						</>
 					)}
-					{data.soeknad?.andreUtbetalinger && (
+					{andreUtbetalinger && (
 						<>
 							<h4 style={{ width: '100%', marginTop: '0' }}>
-								Andre ytelser/utbetalinger (samordning)
+								Andre ytelser/utbetalinger (informasjon fra bruker)
 							</h4>
 							<div className="person-visning_content">
 								<TitleValue
 									title="Stønad"
 									value={arrayToString(
-										data.soeknad.andreUtbetalinger.stoenad?.map((stoenad) =>
+										andreUtbetalinger?.stoenad?.map((stoenad) =>
 											showLabel('kelvinAapStoenad', stoenad),
 										),
 									)}
 								/>
 								<TitleValue
 									title="Hvem betaler (AFP)"
-									value={data.soeknad.andreUtbetalinger.afp?.hvemBetaler}
+									value={andreUtbetalinger?.afp?.hvemBetaler}
 								/>
-								<TitleValue
-									title="Lønn"
-									value={showLabel('jaNei', data.soeknad.andreUtbetalinger.loenn)}
-								/>
+								<TitleValue title="Lønn" value={showLabel('jaNei', andreUtbetalinger?.loenn)} />
 							</div>
 						</>
 					)}

@@ -35,6 +35,22 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 		),
 	)
 
+export const postFetcher = (url, body, headers = { 'Content-Type': 'application/json' }) =>
+	axios
+		.post(url, body, { headers: headers })
+		.then((res) => {
+			if (res.status === 404) {
+				return null
+			}
+			return res.data
+		})
+		.catch((reason) => {
+			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
+				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
+			}
+			throw new Error(`Henting av data fra ${url} feilet.`)
+		})
+
 export const multiFetcherArena = (miljoUrlListe, headers = null) =>
 	Promise.all(
 		miljoUrlListe?.map((obj) =>
@@ -133,7 +149,7 @@ export const identpoolFetcher = (url, body) =>
 			throw new Error(error.message)
 		})
 
-export const fetcher = (url, headers?, timeout = 10000) =>
+export const fetcher = (url, headers?, timeout = 15000) =>
 	axios
 		.get(url, { headers: headers, timeout: timeout })
 		.then((res) => {

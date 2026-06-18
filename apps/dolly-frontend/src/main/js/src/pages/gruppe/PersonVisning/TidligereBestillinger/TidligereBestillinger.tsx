@@ -12,27 +12,33 @@ const NavigerTilBestillingButton = styled(Button)`
 
 export const TidligereBestillinger = ({ ids, erOrg }) => {
 	const dispatch = useDispatch()
+	const bestillingIds =
+		ids
+			?.filter((id) => id !== null && id !== undefined && String(id).trim().length > 0)
+			?.map((numId) => numId.toString()) || []
+
+	if (bestillingIds.length === 0) {
+		return null
+	}
 
 	return (
 		<div className="tidligere-bestilling-panel">
-			<h4>{`Bestilling-ID${ids.length > 1 ? 'er' : ''}`}</h4>
-			{ids
-				.map((numId) => numId.toString())
-				.map((id) =>
-					erOrg ? (
-						<p key={id}>{id}</p>
-					) : (
-						<NavigerTilBestillingButton
-							data-testid={TestComponentSelectors.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
-							key={id}
-							onClick={() => {
-								dispatch(navigerTilBestilling(id))
-							}}
-						>
-							{id}
-						</NavigerTilBestillingButton>
-					),
-				)}
+			<h4>{`Bestilling-ID${bestillingIds.length > 1 ? 'er' : ''}`}</h4>
+			{bestillingIds.map((id) =>
+				erOrg ? (
+					<p key={id}>{id}</p>
+				) : (
+					<NavigerTilBestillingButton
+						data-testid={TestComponentSelectors.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
+						key={id}
+						onClick={() => {
+							dispatch(navigerTilBestilling(id))
+						}}
+					>
+						{id}
+					</NavigerTilBestillingButton>
+				),
+			)}
 		</div>
 	)
 }

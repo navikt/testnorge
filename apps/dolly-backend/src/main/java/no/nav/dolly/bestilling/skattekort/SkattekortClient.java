@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -45,6 +46,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class SkattekortClient implements ClientRegister {
 
+    public static final Set<String> MILJOER_SUPPORTED = Set.of("q1", "q2");
+    private static final Set<String> DEFAULT_MILJOER = Set.of("q2");
+
     private final SkattekortConsumer skattekortConsumer;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
@@ -57,12 +61,28 @@ public class SkattekortClient implements ClientRegister {
         if (isNull(bestilling.getSkattekort()) || bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty()) {
             return Mono.empty();
         } else if (!isValidateOK(bestilling)) {
-            return oppdaterStatus(progress, "Avvik: Validering feilet: Trekkode er ikke gyldig");
+            var filteredMiljoer = bestilling.getEnvironments().stream()
+                    .filter(MILJOER_SUPPORTED::contains)
+                    .collect(Collectors.toSet());
+            var miljoer = filteredMiljoer.isEmpty() ? DEFAULT_MILJOER : filteredMiljoer;
+            return oppdaterStatus(progress, miljoer.stream()
+                    .map(miljo -> "%s:Avvik: Validering feilet: Trekkode er ikke gyldig".formatted(miljo))
+                    .collect(Collectors.joining(",")));
         }
 
-        return oppdaterStatus(progress, getInfoVenter(SKATTEKORT.name()))
-                .flatMap(updatedProgress -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
-                        .flatMap(arbeidsgiver -> sendSkattekortForArbeidstaker(arbeidsgiver, dollyPerson))
+        var filteredMiljoer = bestilling.getEnvironments().stream()
+                .filter(MILJOER_SUPPORTED::contains)
+                .collect(Collectors.toSet());
+
+        var miljoer = filteredMiljoer.isEmpty() ? DEFAULT_MILJOER : filteredMiljoer;
+
+        return oppdaterStatus(progress, miljoer.stream()
+                .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SKATTEKORT.name())))
+                .collect(Collectors.joining(",")))
+                .flatMap(updatedProgress -> Flux.fromIterable(miljoer)
+                        .flatMap(miljoe -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
+                                .flatMap(arbeidsgiver -> sendSkattekortForArbeidstaker(arbeidsgiver, dollyPerson, miljoe))
+                                .collect(Collectors.joining(",")))
                         .collect(Collectors.joining(","))
                         .flatMap(resultat -> {
                             if (isNotBlank(resultat)) {
@@ -76,21 +96,22 @@ public class SkattekortClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        Flux.fromIterable(identer)
-                .flatMap(ident -> skattekortConsumer.hentSkattekort(SkattekortHentRequest.builder().fnr(ident).build())
-                        .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort()))
-                        .flatMap(skattekort -> {
-                            val context = MappingContextUtils.getMappingContext();
-                            context.setProperty("ident", ident);
+        Flux.fromIterable(MILJOER_SUPPORTED)
+                .flatMap(miljoe -> Flux.fromIterable(identer)
+                        .flatMap(ident -> skattekortConsumer.hentSkattekort(SkattekortHentRequest.builder().fnr(ident).build(), miljoe)
+                                .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort()))
+                                .flatMap(skattekort -> {
+                                    val context = MappingContextUtils.getMappingContext();
+                                    context.setProperty("ident", ident);
 
-                            val request = mapperFacade.map(skattekort, SkattekortRequest.class, context);
-                            return skattekortConsumer.sendSkattekort(request);
-                        }))
+                                    val request = mapperFacade.map(skattekort, SkattekortRequest.class, context);
+                                    return skattekortConsumer.sendSkattekort(request, miljoe);
+                                })))
                 .collectList()
                 .subscribe(skattekorts -> log.info("Slettet skattekort for identer: {}", identer));
     }
 
-    private Mono<String> sendSkattekortForArbeidstaker(ArbeidstakerSkatt arbeidstaker, DollyPerson dollyPerson) {
+    private Mono<String> sendSkattekortForArbeidstaker(ArbeidstakerSkatt arbeidstaker, DollyPerson dollyPerson, String miljoe) {
 
         val context = MappingContextUtils.getMappingContext();
         context.setProperty("ident", dollyPerson.getIdent());
@@ -98,10 +119,10 @@ public class SkattekortClient implements ClientRegister {
         return Flux.fromIterable(arbeidstaker.getArbeidstaker())
                 .map(skattekortmelding ->
                         mapperFacade.map(skattekortmelding, SkattekortRequest.class, context))
-                .flatMap(request -> skattekortConsumer.sendSkattekort(request)
+                .flatMap(request -> skattekortConsumer.sendSkattekort(request, miljoe)
                         .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
-                                dollyPerson.getIdent())))
-                .onErrorResume(throwable -> Mono.just("xxxx|%s".formatted(throwable.getMessage())))
+                                dollyPerson.getIdent(), miljoe)))
+                .onErrorResume(throwable -> Mono.just("%s:%s".formatted(miljoe, throwable.getMessage())))
                 .collect(Collectors.joining(","));
     }
 
@@ -147,15 +168,14 @@ public class SkattekortClient implements ClientRegister {
                 UFOERETRYGD_FRA_NAV.equals(trekkode);
     }
 
-    private String formatStatus(SkattekortResponse response, Integer year, String ident) {
+    private String formatStatus(SkattekortResponse response, Integer year, String ident, String miljoe) {
 
-        val prefix = year + "|";
         if (response.getStatus().is2xxSuccessful()) {
-            return prefix + "Skattekort lagret";
+            return "%s:OK".formatted(miljoe);
         } else {
-            log.error("Feil ved innsending av skattekort for person: {}, inntektsaar: {}: {}",
-                    ident, year, response.getFeilmelding());
-            return prefix + errorStatusDecoder.getStatusMessage(response.getFeilmelding());
+            log.error("Feil ved innsending av skattekort for person: {}, miljoe: {}, inntektsaar: {}: {}",
+                    ident, miljoe, year, response.getFeilmelding());
+            return "%s:%s".formatted(miljoe, errorStatusDecoder.getStatusMessage(response.getFeilmelding()));
         }
     }
 

@@ -1,0 +1,23 @@
+name: dolly-auth-local
+
+on:
+  push:
+    paths:
+      - plugins/**
+      - .nais/dolly-auth-local.yml
+      - .github/workflows/app.dolly-auth-local.yml
+
+jobs:
+  deploy:
+    name: Deploy dolly-auth-local
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: nais/deploy/actions/deploy@fa754451577294aae42872a69b888b3470478ec1 # v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: ".nais/dolly-auth-local.yml"

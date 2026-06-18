@@ -14,7 +14,7 @@ import java.util.Set;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARBEIDSSOEKERREGISTERET;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

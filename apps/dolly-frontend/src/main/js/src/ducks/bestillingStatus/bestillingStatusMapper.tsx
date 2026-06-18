@@ -33,7 +33,7 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [System]) => {
 	}
 
 	const addOpprettedeIdenter = (system: System) =>
-		system.statuser?.flatMap((status) => {
+		(system.statuser || []).flatMap((status) => {
 			if (status?.identer) {
 				return status.identer
 			} else {

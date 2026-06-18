@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-const POLL_INTERVAL_MS = 60_000
+const POLL_INTERVAL_MS = 2 * 60_000
 
 const getCurrentCommitHash = (): string => {
 	try {

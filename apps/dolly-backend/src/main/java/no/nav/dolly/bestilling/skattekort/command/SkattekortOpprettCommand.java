@@ -21,20 +21,21 @@ import static java.time.Duration.ofSeconds;
 @Slf4j
 public class SkattekortOpprettCommand implements Callable<Mono<SkattekortResponse>> {
 
-    private static final String OPPRETT_SKATTEKORT_URL = "/skattekort/api/v1/person/opprett";
+    private static final String OPPRETT_SKATTEKORT_URL = "/skattekort/{miljoe}/api/v1/person/opprett";
 
     private final WebClient webClient;
     private final SkattekortRequest request;
+    private final String miljoe;
     private final String token;
 
     @Override
     public Mono<SkattekortResponse> call() {
 
-        log.info("Sender skattekort til Sokos: {}", Json.pretty(request));
+        log.info("Sender skattekort til Sokos miljoe {}: {}", miljoe, Json.pretty(request));
 
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder.path(OPPRETT_SKATTEKORT_URL).build())
+                .uri(uriBuilder -> uriBuilder.path(OPPRETT_SKATTEKORT_URL).build(miljoe))
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
@@ -47,9 +48,9 @@ public class SkattekortOpprettCommand implements Callable<Mono<SkattekortRespons
                 .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
                         .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
                                 responseException.getStatusCode().is5xxServerError())
-                        .onRetryExhaustedThrow(((retryBackoffSpec, lastSignal) ->
+                        .onRetryExhaustedThrow(((_, lastSignal) ->
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(throwable ->
-                    SkattekortResponse.of(WebClientError.describe(throwable)));
+                        SkattekortResponse.of(WebClientError.describe(throwable)));
     }
 }

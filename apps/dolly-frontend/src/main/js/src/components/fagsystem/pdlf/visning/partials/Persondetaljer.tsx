@@ -46,6 +46,7 @@ const NavnVisning = ({ navn, showMaster }) => {
 			<TitleValue title="Etternavn" value={navn.etternavn} />
 			<TitleValue title="Navn gyldig f.o.m." value={formatDate(navn.gyldigFraOgMed)} />
 			<TitleValue title="Master" value={navn.master} hidden={!showMaster} />
+			<TitleValue title="ID" value={navn.id} hidden={!showMaster} />
 		</>
 	)
 }
@@ -209,12 +210,7 @@ export const Persondetaljer = ({
 
 										return (
 											<VisningRedigerbar
-												dataVisning={
-													<NavnVisning
-														navn={redigertNavn ? redigertNavn : navn}
-														showMaster={true}
-													/>
-												}
+												dataVisning={<NavnVisning navn={redigertNavn || navn} showMaster={true} />}
 												initialValues={{ navn: navn }}
 												redigertAttributt={redigertNavn && { navn: redigertNavn }}
 												path="navn"

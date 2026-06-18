@@ -35,6 +35,7 @@ export const TelefonnummerLes = ({ telefonnummerData, idx }: TelefonnummerTypes)
 				title="Master"
 				value={telefonnummerData.metadata?.master || telefonnummerData.master}
 			/>
+			<TitleValue title="ID" value={telefonnummerData.id} />
 		</div>
 	)
 }

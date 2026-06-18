@@ -235,4 +235,25 @@ export default class DollyEndpoints {
 	static lagreSoek(soekType: string) {
 		return `${uri}/soek?soekType=${soekType}`
 	}
+
+	static dashboardPersoner() {
+		return `${uri}/dashboard/personer`
+	}
+
+	static dashboardTeams() {
+		return `${uri}/dashboard/teams`
+	}
+
+	static dashboardOrganisasjoner() {
+		return `${uri}/dashboard/organisasjoner`
+	}
+
+	static dashboardDollyTeams() {
+		return `${uri}/dashboard/dollyteams`
+	}
+
+	static hendelseId(ident: string, relatertIdent?: string) {
+		const base = `${uri}/hendelseid/ident/${ident}`
+		return relatertIdent ? `${base}?relatertIdent=${relatertIdent}` : base
+	}
 }

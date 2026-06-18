@@ -31,6 +31,7 @@ class WebClientAutoConfiguration {
 
     private static JsonMapper createDefaultJsonMapper() {
         return JsonMapper.builder()
+                .findAndAddModules()
                 .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
@@ -88,7 +89,7 @@ class WebClientAutoConfiguration {
                                 .option(EpollChannelOption.TCP_KEEPIDLE, 300)
                                 .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                 .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                .responseTimeout(Duration.ofSeconds(10))
+                                .responseTimeout(Duration.ofSeconds(15))
                 ))
                 .build();
 
