@@ -4,14 +4,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
+import no.nav.dolly.domain.dto.DashboardOversiktDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.service.DashboardService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import tools.jackson.databind.JsonNode;
+
+import java.time.Month;
 
 @RequestMapping("/api/v1/dashboard")
 @RestController
@@ -27,11 +31,27 @@ public class DashboardController {
         return dashboardService.getPersonerStatus();
     }
 
-    @GetMapping(value = "/feil")
-    @Operation(description = "Henter feilstatus for personer opprettet.")
-    public Flux<JsonNode> getDashboardFeil() {
+    @GetMapping(value = "/feil/detaljert")
+    @Operation(description = "Henter detaljert feilstatus for personer opprettet.")
+    public Flux<JsonNode> getDashboardFeilDetaljert(@RequestParam int year,
+                                                    @RequestParam Month month,
+                                                    @RequestParam int day) {
 
-        return dashboardService.getFeilstatus();
+        return dashboardService.getFeilstatusDetaljert(year, month, day);
+    }
+
+    @GetMapping(value = "/feil/summert")
+    @Operation(description = "Henter summert feilstatus for personer opprettet.")
+    public Flux<JsonNode> getDashboardFeil(@RequestParam int year, @RequestParam Month month) {
+
+        return dashboardService.getFeilstatusSummert(year, month);
+    }
+
+    @GetMapping(value = "/oversikt")
+    @Operation(description = "Henter tilgjengelige perioder.")
+    public Flux<DashboardOversiktDTO> getDashboardFeilOversikt() {
+
+        return dashboardService.getPerioderOversikt();
     }
 
     @GetMapping(value = "/teams")

@@ -54,7 +54,7 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
     Mono<BestillingProgress> findByIdAndLock(@Param("id") Long id);
 
     @Query("""
-           SELECT distinct column_name
+           SELECT DISTINCT column_name
            FROM information_schema.columns
            WHERE table_name = 'bestilling_progress'
            AND column_name LIKE '%status%'

@@ -11,14 +11,15 @@ import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.dolly.domain.dto.BestillingProgressDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
+import no.nav.dolly.domain.dto.DashboardOversiktDTO;
 import no.nav.dolly.domain.dto.DashboardPersonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
+import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
@@ -31,16 +32,17 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
+import java.time.Month;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DashboardService {
 
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
+    private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident", "master");
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
     private final BestillingRepository bestillingRepository;
@@ -207,45 +210,154 @@ public class DashboardService {
     }
 
     private static DashboardDollyTeamsDTO.Entry toDollyTeamEntry(DollyTeamFragment fragment,
-                                                                  Map<String, Long> oppslag) {
+                                                                 Map<String, Long> oppslag) {
 
         var info = fragment.getInformasjon().split("\\|");
         return new DashboardDollyTeamsDTO.Entry(info[0], info[1], toIntExact(oppslag.get(info[2])));
     }
 
-    public Flux<JsonNode> getFeilstatus() {
+    public Flux<JsonNode> getFeilstatusSummert(int year, Month month) {
 
+        var filter = "%4d-%02d".formatted(year, month.getValue());
         return bestillingProgressRepository.findStatusColumns()
                 .reduce(new StringBuilder(), (StringBuilder sb, String column) ->
                         sb.append(" or lower(bp.")
-                        .append(column)
-                        .append(") like '%feil%'"))
-                .map(query -> new StringBuilder("select b.sist_oppdatert, bp.* " +
-                                                "from bestilling b " +
-                                                "join bestilling_progress bp on bp.bestilling_id = b.id " +
-                                                "where ")
-                        .append(query.substring(4))
-                        .append(" order by b.sist_oppdatert desc")
-                        .toString())
+                                .append(column)
+                                .append(") like '%feil%'"))
+                .map(kolonner -> "select b.sist_oppdatert::date bestilling_dato, bp.* " +
+                                 "from bestilling b " +
+                                 "join bestilling_progress bp on bp.bestilling_id = b.id " +
+                                 "where to_char(b.sist_oppdatert, 'YYYY-MM') = :range " +
+                                 "and (" +
+                                 kolonner.substring(4) +
+                                 ") order by bestilling_dato")
                 .flatMapMany(query -> entityTemplate.getDatabaseClient()
                         .sql(query)
+                        .bind("range", filter)
                         .map((row, metadata) -> entityTemplate.getConverter()
                                 .read(BestillingProgressDTO.class, row, metadata))
                         .all())
-                .sort(Comparator.comparing(BestillingProgressDTO::getBestillingId).reversed())
-                .map(BestillingProgressDTO::toString)
-                .flatMap(this::toJson);
+                .groupBy(BestillingProgressDTO::getBestillingDato)
+                .flatMap(Flux::collectList)
+                .flatMap(this::tilFeilstatusSummert);
     }
 
-    private Mono<JsonNode> toJson(String json) {
+    public Flux<JsonNode> getFeilstatusDetaljert(int year, Month month, int day) {
 
-        try {
-            return isNotBlank(json) ?
-                    Mono.just(jsonMapper.readTree(json)) :
-                    Mono.empty();
-        } catch (JacksonException e) {
-            log.error("Feil ved parsing av JSON string: {}", json, e);
-            return Mono.empty();
+        var filter = "%4d-%02d-%02d".formatted(year, month.getValue(), day);
+        return bestillingProgressRepository.findStatusColumns()
+                .reduce(new StringBuilder(), (StringBuilder sb, String column) ->
+                        sb.append(" or lower(bp.")
+                                .append(column)
+                                .append(") like '%feil%'"))
+                .map(kolonner -> "select b.sist_oppdatert, bp.* " +
+                                 "from bestilling b " +
+                                 "join bestilling_progress bp on bp.bestilling_id = b.id " +
+                                 "where to_char(b.sist_oppdatert, 'YYYY-MM-DD') = :range " +
+                                 "and (" +
+                                 kolonner.substring(4) +
+                                 ") order by b.sist_oppdatert")
+                .flatMapMany(query -> entityTemplate.getDatabaseClient()
+                        .sql(query)
+                        .bind("range", filter)
+                        .map((row, metadata) -> entityTemplate.getConverter()
+                                .read(BestillingProgressDTO.class, row, metadata))
+                        .all())
+                .sort(Comparator.comparing(BestillingProgressDTO::getSistOppdatert))
+                .flatMap(this::tilFeilJson);
+    }
+
+    private Mono<JsonNode> tilFeilstatusSummert(List<BestillingProgressDTO> bestillingProgressDTOS) {
+
+        var resultat = new AtomicReference<>(new HashMap<>());
+        bestillingProgressDTOS.forEach(progress -> {
+            var kilde = (ObjectNode) jsonMapper.valueToTree(progress);
+
+            for (var navn : kilde.propertyNames()) {
+                var verdi = kilde.get(navn);
+                if (!IDENTITETSFELT.contains(navn)) {
+                    if ("bestillingDato".equals(navn)) {
+                        resultat.get().putIfAbsent(navn, verdi);
+                    } else if (verdi.isString() && verdi.asString().toLowerCase().contains("feil")) {
+                        if (resultat.get().containsKey(navn)) {
+                            var teller = (Integer) resultat.get().get(navn);
+                            resultat.get().put(navn, teller + 1);
+                        } else {
+                            resultat.get().put(navn, 1);
+                        }
+                    }
+                }
+            }
+        });
+        return Flux.fromIterable(resultat.get().entrySet())
+                .collect(Collectors.toMap(entry -> {
+                            if (((String) entry.getKey()).contains("Status")) {
+                                return ((String) entry.getKey())
+                                        .replace("Status", "Feil");
+                            } else if (entry.getKey().equals("feil")) {
+                                return "andreFeil";
+                            } else {
+                                return entry.getKey();
+                            }
+                        }
+                        , Map.Entry::getValue))
+                .flatMap(summert -> summert.isEmpty() ? Mono.empty() :
+                        Mono.just(jsonMapper.valueToTree(summert)));
+    }
+
+    private Mono<JsonNode> tilFeilJson(BestillingProgressDTO progress) {
+
+        var kilde = (ObjectNode) jsonMapper.valueToTree(progress);
+        var resultat = jsonMapper.createObjectNode();
+
+        for (var navn : kilde.propertyNames()) {
+            var verdi = kilde.get(navn);
+            if (IDENTITETSFELT.contains(navn)) {
+                resultat.set(navn, verdi);
+            } else if (verdi.isString() && verdi.asString().toLowerCase().contains("feil")) {
+                resultat.set(navn, tilJsonEllerTekst(verdi));
+            }
         }
+        return Mono.just(resultat);
+    }
+
+    private JsonNode tilJsonEllerTekst(JsonNode verdi) {
+
+        var tekst = verdi.asString().trim();
+        if (tekst.startsWith("{") || tekst.startsWith("[")) {
+            try {
+                return jsonMapper.readTree(tekst);
+            } catch (JacksonException e) {
+                log.debug("Statusfelt er ikke gyldig JSON – beholdes som tekst", e);
+            }
+        }
+        return verdi;
+    }
+
+    public Flux<DashboardOversiktDTO> getPerioderOversikt() {
+
+        return bestillingRepository.findByAvailIntervals()
+                .groupBy(OversiktFragment::getMaaned)
+                .flatMap(Flux::collectList)
+                .map(fragmenter -> DashboardOversiktDTO.builder()
+                        .aarManed(fragmenter.getFirst().getMaaned())
+                        .aar(Integer.parseInt(fragmenter.getFirst().getMaaned().substring(0, 4)))
+                        .maaned(Month.of(Integer.parseInt(fragmenter.getFirst().getMaaned().substring(5))))
+                        .totaltAntallPersoner(fragmenter.stream()
+                                .map(OversiktFragment::getAntall)
+                                .mapToInt(Long::intValue)
+                                .sum())
+                        .nye(fragmenter.stream()
+                                .filter(fragment -> "NYBESTILLING".equals(fragment.getGjenopprettstatus()))
+                                .map(OversiktFragment::getAntall)
+                                .mapToInt(Long::intValue)
+                                .sum())
+                        .gjenopprettede(fragmenter.stream()
+                                .filter(fragment -> "GJENOPPRETTING".equals(fragment.getGjenopprettstatus()))
+                                .map(OversiktFragment::getAntall)
+                                .mapToInt(Long::intValue)
+                                .sum())
+                        .build())
+                .sort(Comparator.comparing(DashboardOversiktDTO::getAarManed).reversed());
     }
 }
