@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -58,6 +59,11 @@ public class ArbeidssoekerregisteretClient implements ClientRegister {
         return transactionHelperService.persister(progress,
                     BestillingProgress::getArbeidssoekerregisteretStatus,
                     BestillingProgress::setArbeidssoekerregisteretStatus, status);
+    }
+
+    public Mono<HttpStatus> stoppArbeidssoekerregisteret(String ident) {
+
+        return arbeidssoekerregisteretConsumer.deleteArbeidssokerregisteret(ident);
     }
 
     @Override

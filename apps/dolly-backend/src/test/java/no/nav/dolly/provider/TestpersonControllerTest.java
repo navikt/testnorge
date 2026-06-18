@@ -1,10 +1,12 @@
 package no.nav.dolly.provider;
 
 
+import no.nav.dolly.bestilling.arbeidssoekerregisteret.ArbeidssoekerregisteretClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -22,6 +24,9 @@ class TestpersonControllerTest extends AbstractControllerTest {
 
     @MockitoBean
     private PdlDataConsumer pdlDataConsumer;
+
+    @MockitoBean
+    private ArbeidssoekerregisteretClient arbeidssoekerregisteretClient;
 
     @Test
     @DisplayName("Sletter Testident fra Testgruppe")
@@ -60,5 +65,24 @@ class TestpersonControllerTest extends AbstractControllerTest {
                 .expectBody()
                 .jsonPath("$.message")
                 .value(message -> assertThat(message).asString().contains("Testperson med ident " + id + " ble ikke funnet"));
+    }
+
+    @Test
+    @DisplayName("Stopper Arbeidssøkerregistrering for Testident")
+    void stopArbeidssoekerregisteret() {
+
+        var ident = "12345678901";
+
+        when(arbeidssoekerregisteretClient.stoppArbeidssoekerregisteret(ident)).thenReturn(Mono.just(HttpStatus.NO_CONTENT));
+
+        webTestClient
+                .delete()
+                .uri("/api/v1/ident/{ident}/arbeidssoekerregisteret", ident)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$")
+                .value(value -> assertThat(value.toString()).contains("NO_CONTENT"));
     }
 }
