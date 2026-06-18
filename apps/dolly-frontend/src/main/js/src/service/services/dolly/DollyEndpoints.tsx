@@ -251,4 +251,9 @@ export default class DollyEndpoints {
 	static dashboardDollyTeams() {
 		return `${uri}/dashboard/dollyteams`
 	}
+
+	static hendelseId(ident: string, relatertIdent?: string) {
+		const base = `${uri}/hendelseid/ident/${ident}`
+		return relatertIdent ? `${base}?relatertIdent=${relatertIdent}` : base
+	}
 }
