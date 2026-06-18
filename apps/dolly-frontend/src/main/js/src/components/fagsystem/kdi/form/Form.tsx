@@ -108,12 +108,11 @@ export const KdiForm = () => {
 		() =>
 			meldingstyper
 				.flatMap(({ key, header, Form }) =>
-					fieldArrays[key].fields.map((field: any, idx: number) => ({
+					fieldArrays[key].fields.map((_field: any, idx: number) => ({
 						...formMethods.getValues(`instdataKdi.${key}[${idx}]`),
 						key,
 						header,
 						Form,
-						fieldId: field.id,
 						idx,
 					})),
 				)
@@ -164,7 +163,7 @@ export const KdiForm = () => {
 				<ErrorBoundary>
 					<Kategori title={'KDI-meldinger'}>
 						<DollyFieldArrayWrapper>
-							{meldinger.map(({ key, header, Form, fieldId, idx }, meldingNr) => {
+							{meldinger.map(({ key, header, Form, idx }, meldingNr) => {
 								const hendelse = formMethods.getValues(`instdataKdi.${key}[${idx}]`)
 								const meldingId = formMethods.getValues(`instdataKdi.${key}[${idx}].meldingId`)
 								const hendelseId = formMethods.getValues(`instdataKdi.${key}[${idx}].hendelseId`)
@@ -177,7 +176,7 @@ export const KdiForm = () => {
 
 								return (
 									<DollyFaBlokk
-										key={fieldId}
+										key={`${key}-${idx}`}
 										idx={idx}
 										number={meldingNr + 1}
 										header={header}
