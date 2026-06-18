@@ -3,6 +3,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { ProgressBar } from '@navikt/ds-react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Icon from '@/components/ui/icon/Icon'
+import DollySpinner from '@/components/ui/loading/DollySpinner'
 
 import './BestillingProgresjon.less'
 import { useBestillingStream } from '@/utils/hooks/useBestillingStream'
@@ -72,12 +73,15 @@ export const BestillingProgresjon = ({
 	}, [bestillingStatus])
 
 	useEffect(() => {
-		if (!sistOppdatert) return
-		const elapsed = (Date.now() - new Date(sistOppdatert).getTime()) / 1000
-		const grense = erOrganisasjon ? SECONDS_BEFORE_WARNING_ORG : SECONDS_BEFORE_WARNING
-		if (elapsed > grense) {
+		if (!sistOppdatert || timedOut) return
+		const grense = (erOrganisasjon ? SECONDS_BEFORE_WARNING_ORG : SECONDS_BEFORE_WARNING) * 1000
+		const remaining = grense - (Date.now() - new Date(sistOppdatert).getTime())
+		if (remaining <= 0) {
 			setTimedOut(true)
+			return
 		}
+		const timeoutId = setTimeout(() => setTimedOut(true), remaining)
+		return () => clearTimeout(timeoutId)
 	}, [sistOppdatert, erOrganisasjon])
 
 	useEffect(() => {
@@ -167,8 +171,19 @@ export const BestillingProgresjon = ({
 				</h5>
 				<span>{isFerdig ? 'Ferdigstiller bestilling' : progress.text}</span>
 			</div>
-			<div style={{ marginTop: '10px' }}>
+			<div style={{ position: 'relative', marginTop: '10px' }}>
 				<ProgressBar value={progress.percent} size="small" aria-label="Bestillingsfremgang" />
+				<div
+					style={{
+						position: 'absolute',
+						top: '50%',
+						left: `${progress.percent}%`,
+						transform: 'translate(-50%, -50%) scaleX(-1)',
+						pointerEvents: 'none',
+					}}
+				>
+					<DollySpinner size={50} label="" />
+				</div>
 			</div>
 			<div className="cancel-container">
 				{timedOut && !erOrganisasjon && (
