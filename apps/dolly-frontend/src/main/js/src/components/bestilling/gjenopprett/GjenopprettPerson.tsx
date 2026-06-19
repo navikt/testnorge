@@ -87,14 +87,12 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 	const bestillingerSamlet = getBestillingerSamlet()
 
 	return (
-		<>
-			<GjenopprettModal
-				environments={bestilteMiljoer}
-				submitForm={handleSubmit}
-				title={`Gjenopprett person: ${ident.ident}`}
-				bestilling={bestillingerSamlet}
-				bestilteMiljoer={bestilteMiljoer}
-			/>
-		</>
+		<GjenopprettModal
+			environments={bestilteMiljoer}
+			submitForm={handleSubmit}
+			title={`Gjenopprett person: ${ident.ident}`}
+			bestilling={bestillingerSamlet}
+			bestilteMiljoer={bestilteMiljoer}
+		/>
 	)
 }

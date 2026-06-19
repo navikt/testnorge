@@ -12,7 +12,6 @@ import { DollyApi } from '@/service/Api'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
-	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
@@ -79,21 +78,19 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				</div>
 			)}
 
-			{/*TODO: Fix gjenopprett av organisasjoner ogsaa*/}
 			{erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
-					<Button
-						onClick={openGjenopprettModal}
-						kind="synchronize"
+					<GjenopprettConnector
+						bestilling={bestilling}
+						brukerId={brukerId}
+						brukertype={brukertype}
 						disabled={!bestilling.ferdig}
 						title={
 							!bestilling.ferdig
 								? 'Bestillingen kan ikke gjenopprettes før den er ferdig'
 								: undefined
 						}
-					>
-						GJENOPPRETT
-					</Button>
+					/>
 					<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
 						OPPRETT MAL
 					</Button>

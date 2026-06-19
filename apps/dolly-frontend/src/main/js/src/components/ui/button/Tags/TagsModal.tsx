@@ -43,8 +43,6 @@ export const TagsModal = ({ gruppeId, eksisterendeTags }: Props) => {
 		}
 	}
 
-	//TODO: Er det mulig aa vise tags label istedenfor value?
-
 	return (
 		<>
 			<Button
