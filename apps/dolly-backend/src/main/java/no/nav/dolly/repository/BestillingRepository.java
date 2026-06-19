@@ -145,14 +145,10 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                       when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
                       when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
                       else 'NYBESTILLING'
-                   end as gjenopprettStatus,
-                   case
-                      when b.pdl_import is not null then true
-                      else false
-                   end as testnorgeIdent
+                   end as gjenopprettStatus
             from bestilling b
             join bestilling_progress bp on b.id = bp.bestilling_id
-            group by dato, gjenopprettStatus, testnorgeIdent
+            group by dato, gjenopprettStatus
             order by dato desc
             """)
     Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
