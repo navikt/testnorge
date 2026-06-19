@@ -16,6 +16,4 @@ public class BestillingerFragment {
     private LocalDate dato;
     private Long personer;
     private String gjenopprettstatus;
-    private String pdlstatus;
-    private String annenstatus;
 }

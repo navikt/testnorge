@@ -17,6 +17,4 @@ public class DashboardPersonerDTO {
     private Long personerTotalt;
     private Long nye;
     private Long gjenopprettede;
-    private Long pdlFeil;
-    private Long andreFeil;
 }

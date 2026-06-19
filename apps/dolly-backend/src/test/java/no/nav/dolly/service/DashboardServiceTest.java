@@ -76,8 +76,8 @@ class DashboardServiceTest {
 
     @Test
     void shouldSumPersonerTotaltForSingleDate() {
-        var f1 = fragment(DATE_1, 5L, "NYBESTILLING", "OK", "OK");
-        var f2 = fragment(DATE_1, 3L, "NYBESTILLING", "OK", "OK");
+        var f1 = fragment(DATE_1, 5L, "NYBESTILLING");
+        var f2 = fragment(DATE_1, 3L, "NYBESTILLING");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(f1, f2));
 
         StepVerifier.create(dashboardService.getPersonerStatus())
@@ -90,8 +90,8 @@ class DashboardServiceTest {
 
     @Test
     void shouldCountNyeByGjenopprettstatusNYBESTILLING() {
-        var nybestilling = fragment(DATE_1, 4L, "NYBESTILLING", "OK", "OK");
-        var gjenoppretting = fragment(DATE_1, 2L, "GJENOPPRETTING", "OK", "OK");
+        var nybestilling = fragment(DATE_1, 4L, "NYBESTILLING");
+        var gjenoppretting = fragment(DATE_1, 2L, "GJENOPPRETTING");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(nybestilling, gjenoppretting));
 
         StepVerifier.create(dashboardService.getPersonerStatus())
@@ -103,30 +103,9 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldCountPdlFeilByPdlstatusFEIL() {
-        var feil = fragment(DATE_1, 3L, "NYBESTILLING", "FEIL", "OK");
-        var ok = fragment(DATE_1, 2L, "NYBESTILLING", "OK", "OK");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(feil, ok));
-
-        StepVerifier.create(dashboardService.getPersonerStatus())
-                .assertNext(dto -> assertThat(dto.getPdlFeil()).isEqualTo(3L))
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldCountAndreFeilByAnnenstatusFEIL() {
-        var feil = fragment(DATE_1, 7L, "NYBESTILLING", "OK", "FEIL");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(feil));
-
-        StepVerifier.create(dashboardService.getPersonerStatus())
-                .assertNext(dto -> assertThat(dto.getAndreFeil()).isEqualTo(7L))
-                .verifyComplete();
-    }
-
-    @Test
     void shouldGroupFragmentsByDateIntoSeparateDtos() {
-        var d1 = fragment(DATE_1, 10L, "NYBESTILLING", "OK", "OK");
-        var d2 = fragment(DATE_2, 5L, "NYBESTILLING", "OK", "OK");
+        var d1 = fragment(DATE_1, 10L, "NYBESTILLING");
+        var d2 = fragment(DATE_2, 5L, "NYBESTILLING");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(d1, d2));
 
         StepVerifier.create(dashboardService.getPersonerStatus())
@@ -137,8 +116,8 @@ class DashboardServiceTest {
 
     @Test
     void shouldSortPersonerStatusByDateDescending() {
-        var d1 = fragment(DATE_1, 1L, "NYBESTILLING", "OK", "OK");
-        var d2 = fragment(DATE_2, 1L, "NYBESTILLING", "OK", "OK");
+        var d1 = fragment(DATE_1, 1L, "NYBESTILLING");
+        var d2 = fragment(DATE_2, 1L, "NYBESTILLING");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(d1, d2));
 
         StepVerifier.create(dashboardService.getPersonerStatus())
@@ -149,15 +128,13 @@ class DashboardServiceTest {
 
     @Test
     void shouldProduceZeroCountsWhenNoMatchingStatuses() {
-        var f = fragment(DATE_1, 5L, "UKJENT", "UKJENT", "UKJENT");
+        var f = fragment(DATE_1, 5L, "UKJENT");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(f));
 
         StepVerifier.create(dashboardService.getPersonerStatus())
                 .assertNext(dto -> {
                     assertThat(dto.getNye()).isZero();
                     assertThat(dto.getGjenopprettede()).isZero();
-                    assertThat(dto.getPdlFeil()).isZero();
-                    assertThat(dto.getAndreFeil()).isZero();
                 })
                 .verifyComplete();
     }
@@ -619,15 +596,11 @@ class DashboardServiceTest {
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private static BestillingerFragment fragment(LocalDate dato, Long personer,
-                                                  String gjenopprettstatus,
-                                                  String pdlstatus,
-                                                  String annenstatus) {
+                                                  String gjenopprettstatus) {
         return BestillingerFragment.builder()
                 .dato(dato)
                 .personer(personer)
                 .gjenopprettstatus(gjenopprettstatus)
-                .pdlstatus(pdlstatus)
-                .annenstatus(annenstatus)
                 .build();
     }
 

@@ -147,30 +147,15 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                       else 'NYBESTILLING'
                    end as gjenopprettStatus,
                    case
-                      when lower(bp.pdl_person_status) not like 'synkronisering%' then 'FEIL'
-                      when lower(bp.pdl_forvalter_status) like '%feil%' then 'FEIL'
-                      when lower(bp.pdl_ordre_status) like '%feil%' then 'FEIL'
-                      else 'OK'
-                   end as pdlStatus,
-                   case
-                      when lower(bp.pensjonforvalter_status) like '%feil%' then 'FEIL'
-                      when lower(bp.aareg_status) like '%feil%' then 'FEIL'
-                      when lower(bp.arenaforvalter_status) like '%feil%' then 'FEIL'
-                      when lower(bp.instdata_status) like '%feil%' then 'FEIL'
-                      when lower(bp.inntektsstub_status) like '%feil%' then 'FEIL'
-                      when lower(bp.inntektsmelding_status) like '%feil%' then 'FEIL'
-                      when lower(bp.sigrunstub_status) like '%feil%' then 'FEIL'
-                      when lower(bp.dokarkiv_status) like '%feil%' then 'FEIL'
-                      when lower(bp.feil) like '%feil%' then 'FEIL'
-                      else 'OK'
-                   end as annenStatus
+                      when b.pdl_import is not null then true
+                      else false
+                   end as testnorgeIdent
             from bestilling b
             join bestilling_progress bp on b.id = bp.bestilling_id
-            group by dato, gjenopprettStatus, pdlStatus, annenStatus
+            group by dato, gjenopprettStatus, testnorgeIdent
             order by dato desc
             """)
     Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
-
 
     @Query("""
             select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval, br.epost

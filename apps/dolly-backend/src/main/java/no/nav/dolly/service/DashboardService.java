@@ -82,8 +82,6 @@ public class DashboardService {
                                         .mapToLong(BestillingerFragment::getPersoner).sum())
                                 .nye(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "NYBESTILLING"))
                                 .gjenopprettede(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "GJENOPPRETTING"))
-                                .pdlFeil(sumByStatus(fragmentliste, BestillingerFragment::getPdlstatus, "FEIL"))
-                                .andreFeil(sumByStatus(fragmentliste, BestillingerFragment::getAnnenstatus, "FEIL"))
                                 .build())
                 .sort(Comparator.comparing(DashboardPersonerDTO::getDato).reversed());
     }
@@ -182,8 +180,8 @@ public class DashboardService {
                                 .read(BestillingProgressDTO.class, row, metadata))
                         .all())
                 .groupBy(BestillingProgressDTO::getBestillingDato)
-                .flatMap(Flux::collectList)
-                .flatMap(this::tilFeilstatusSummert);
+                .concatMap(Flux::collectList)
+                .concatMap(this::tilFeilstatusSummert);
     }
 
     public Flux<JsonNode> getFeilstatusDetaljert(int year, Month month, int day) {
@@ -237,8 +235,8 @@ public class DashboardService {
     }
 
     private static long sumByStatus(List<BestillingerFragment> fragments,
-                                    Function<BestillingerFragment, String> statusGetter,
-                                    String value) {
+                                    Function<BestillingerFragment, Object> statusGetter,
+                                    Object value) {
 
         return fragments.stream()
                 .filter(f -> value.equals(statusGetter.apply(f)))
