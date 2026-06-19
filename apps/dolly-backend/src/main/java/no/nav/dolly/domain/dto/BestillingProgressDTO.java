@@ -37,7 +37,7 @@ public class BestillingProgressDTO implements Serializable {
     private String fullmaktStatus;
     private String histarkStatus;
     private String inntektsmeldingStatus;
-    private String inntektstubStatus;
+    private String inntektsstubStatus;
     private String instdataStatus;
     private String kelvinAapStatus;
     private String kontoregisterStatus;
