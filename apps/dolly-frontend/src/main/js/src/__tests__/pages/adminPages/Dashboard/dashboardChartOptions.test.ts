@@ -1,9 +1,9 @@
 import {
+	createFeilSummertChartOptions,
 	createMonthlyTeamDistributionChartOptions,
 	createMonthlyTeamTrendChartOptions,
 	createPersonTrendChartOptions,
 	createPreviousDayChartOptions,
-	createPreviousDayErrorBreakdownChartOptions,
 } from '@/pages/adminPages/Dashboard/dashboardChartOptions'
 import type Highcharts from 'highcharts'
 
@@ -16,8 +16,6 @@ describe('dashboardChartOptions', () => {
 				personerTotalt: 10,
 				nye: 5,
 				gjenopprettede: 2,
-				pdlFeil: 1,
-				andreFeil: 0,
 			},
 		])
 
@@ -33,19 +31,16 @@ describe('dashboardChartOptions', () => {
 		).toEqual([-45])
 		expect(options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.min : undefined).toBe(0)
 		const series = options.series as Highcharts.SeriesLineOptions[]
-		expect(series[2].color).toBe('var(--ax-danger-700)')
-		expect(series[3].color).toBe('var(--ax-warning-700)')
-		expect(series[4].name).toBe('Personer totalt')
-		expect(series[4].visible).toBe(false)
-		expect(series[4].data).toEqual([10])
-		expect(series[5].name).toBe('Feil totalt')
-		expect(series[5].visible).toBe(false)
-		expect(series[5].data).toEqual([1])
+		expect(series).toHaveLength(3)
+		expect(series[0].name).toBe('Nye')
+		expect(series[1].name).toBe('Gjenopprettede')
+		expect(series[2].name).toBe('Personer totalt')
+		expect(series[2].visible).toBe(false)
+		expect(series[2].data).toEqual([10])
 	})
 
 	it('should honor persisted visibility for total series in person trend chart', () => {
 		const onPersonerTotaltVisibilityChange = vi.fn()
-		const onFeilTotaltVisibilityChange = vi.fn()
 		const options = createPersonTrendChartOptions(
 			[
 				{
@@ -54,29 +49,20 @@ describe('dashboardChartOptions', () => {
 					personerTotalt: 10,
 					nye: 5,
 					gjenopprettede: 2,
-					pdlFeil: 1,
-					andreFeil: 0,
 				},
 			],
 			{
 				personerTotaltVisible: true,
-				feilTotaltVisible: true,
 				onPersonerTotaltVisibilityChange,
-				onFeilTotaltVisibilityChange,
 			},
 		)
 		const series = options.series as Highcharts.SeriesLineOptions[]
 
-		expect(series[4].visible).toBe(true)
-		expect(series[5].visible).toBe(true)
-		series[4].events?.hide?.call({} as never)
-		series[4].events?.show?.call({} as never)
-		series[5].events?.hide?.call({} as never)
-		series[5].events?.show?.call({} as never)
+		expect(series[2].visible).toBe(true)
+		series[2].events?.hide?.call({} as never)
+		series[2].events?.show?.call({} as never)
 		expect(onPersonerTotaltVisibilityChange).toHaveBeenNthCalledWith(1, false)
 		expect(onPersonerTotaltVisibilityChange).toHaveBeenNthCalledWith(2, true)
-		expect(onFeilTotaltVisibilityChange).toHaveBeenNthCalledWith(1, false)
-		expect(onFeilTotaltVisibilityChange).toHaveBeenNthCalledWith(2, true)
 	})
 
 	it('should create yesterday comparison chart with two key metrics', () => {
@@ -120,37 +106,45 @@ describe('dashboardChartOptions', () => {
 		).toBe(0)
 	})
 
-	it('should create yesterday error breakdown as pie data', () => {
-		const options = createPreviousDayErrorBreakdownChartOptions(5, 2)
-		const pieSeries = options.series?.[0] as Highcharts.SeriesPieOptions
-		const data = pieSeries.data as Array<{
-			name: string
-			y: number
-			color?: string
-			custom?: { actualY?: number }
-		}>
+	it('should create stacked feil-per-day chart with one series per fagsystem and day-click wiring', () => {
+		const onDayClick = vi.fn()
+		const options = createFeilSummertChartOptions(
+			[
+				{
+					dag: 3,
+					dato: '2026-06-03',
+					datoVisning: '03.06.2026',
+					total: 4,
+					perFagsystem: { pdlPersonFeil: 3, andreFeil: 1 },
+				},
+				{
+					dag: 7,
+					dato: '2026-06-07',
+					datoVisning: '07.06.2026',
+					total: 2,
+					perFagsystem: { pdlPersonFeil: 2, andreFeil: 0 },
+				},
+			],
+			['pdlPersonFeil', 'andreFeil'],
+			onDayClick,
+		)
 
-		expect(options.chart?.type).toBe('pie')
-		expect(options.chart?.height).toBe(300)
+		const series = options.series as Highcharts.SeriesColumnOptions[]
+		expect(series).toHaveLength(2)
+		expect(series[0].data).toEqual([3, 2])
+		expect(series[1].data).toEqual([1, 0])
 		expect(
-			options.plotOptions?.pie && !Array.isArray(options.plotOptions.pie)
-				? options.plotOptions.pie.size
-				: undefined,
-		).toBe('74%')
-		expect(data).toEqual([
-			{ name: 'PDL-feil', y: 5, color: 'var(--ax-danger-700)', custom: { actualY: 5 } },
-			{ name: 'Andre feil', y: 2, color: 'var(--ax-warning-700)', custom: { actualY: 2 } },
-		])
-	})
+			options.xAxis && !Array.isArray(options.xAxis) ? options.xAxis.categories : undefined,
+		).toEqual(['03', '07'])
+		expect(
+			options.plotOptions?.column?.stacking === 'normal' ||
+				options.plotOptions?.series?.stacking === 'normal',
+		).toBe(true)
 
-	it('should preserve zero-value error labels in donut data', () => {
-		const options = createPreviousDayErrorBreakdownChartOptions(1, 0)
-		const pieSeries = options.series?.[0] as Highcharts.SeriesPieOptions
-		const data = pieSeries.data as Array<{ y: number; custom?: { actualY?: number } }>
-
-		expect(data[0].custom?.actualY).toBe(1)
-		expect(data[1].custom?.actualY).toBe(0)
-		expect(data[1].y).toBeGreaterThan(0)
+		const clickHandler = options.plotOptions?.column?.point?.events?.click
+		expect(typeof clickHandler).toBe('function')
+		clickHandler?.call({ index: 1 } as never, {} as never)
+		expect(onDayClick).toHaveBeenCalledWith(7)
 	})
 
 	it('should create monthly teams trend chart with two series', () => {

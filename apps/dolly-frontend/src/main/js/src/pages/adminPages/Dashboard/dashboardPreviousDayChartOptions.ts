@@ -1,11 +1,6 @@
 import { type Options } from 'highcharts'
-import {
-	BAR_COLUMN_PLOT_OPTIONS,
-	ERROR_PRIMARY_COLOR,
-	ERROR_SECONDARY_COLOR,
-	TOOLTIP_OPTIONS,
-	withBaseChart,
-} from './dashboardChartBase'
+import { BAR_COLUMN_PLOT_OPTIONS, TOOLTIP_OPTIONS, withBaseChart } from './dashboardChartBase'
+import { type FeilGruppe } from './dashboardFeilUtils'
 
 export const createPreviousDayChartOptions = ({
 	nye,
@@ -66,52 +61,53 @@ export const createPreviousDayChartOptions = ({
 	],
 })
 
-export const createPreviousDayErrorBreakdownChartOptions = (
-	pdlFeil: number,
-	andreFeil: number,
-): Options => ({
-	...withBaseChart(
-		'Donutdiagram som viser fordeling av gårsdagens feil mellom PDL-feil og andre feil.',
-		{ type: 'pie', height: 300, spacing: [16, 16, 8, 16] },
-	),
-	legend: { enabled: false },
-	tooltip: { ...TOOLTIP_OPTIONS, pointFormat: '<b>{point.y}</b> ({point.percentage:.1f}%)' },
-	plotOptions: {
-		pie: {
-			size: '74%',
-			minSize: 220,
-			center: ['50%', '50%'],
-			innerSize: '55%',
-			dataLabels: {
-				enabled: true,
-				allowOverlap: true,
-				formatter: function () {
-					const point = this.point as { name?: string; custom?: { actualY?: number }; y?: number }
-					const value = point.custom?.actualY ?? point.y ?? 0
-					return `${point.name}: ${value}`
+export const createPreviousDayFeilDonutChartOptions = (feilGrupper: FeilGruppe[]): Options => {
+	const errorColors = [
+		'var(--ax-danger-700)',
+		'var(--ax-danger-600)',
+		'var(--ax-danger-500)',
+		'var(--ax-warning-700)',
+		'var(--ax-warning-600)',
+		'var(--ax-warning-500)',
+		'var(--ax-meta-orange-700)',
+		'var(--ax-meta-orange-600)',
+		'var(--ax-meta-red-700)',
+		'var(--ax-meta-red-600)',
+	]
+
+	const data = feilGrupper.map((gruppe, index) => ({
+		name: gruppe.label,
+		y: gruppe.rader.length,
+		color: errorColors[index % errorColors.length],
+	}))
+
+	return {
+		...withBaseChart(
+			'Sirkeldiagram som viser feilfordeling per fagsystem for siste hverdag.',
+			{ type: 'pie', height: 400, margin: [0, 0, 0, 0] },
+		),
+		plotOptions: {
+			pie: {
+				dataLabels: {
+					enabled: true,
+					format: '<b>{point.name}</b>: {point.y}',
+					style: { fontSize: '12px' },
 				},
+				innerSize: '50%',
+				depth: 45,
 			},
 		},
-	},
-	series: [
-		{
-			type: 'pie',
-			borderColor: 'white',
-			name: 'Feil',
-			data: [
-				{
-					name: 'PDL-feil',
-					y: pdlFeil === 0 ? 0.0001 : pdlFeil,
-					custom: { actualY: pdlFeil },
-					color: ERROR_PRIMARY_COLOR,
-				},
-				{
-					name: 'Andre feil',
-					y: andreFeil === 0 ? 0.0001 : andreFeil,
-					custom: { actualY: andreFeil },
-					color: ERROR_SECONDARY_COLOR,
-				},
-			],
+		tooltip: {
+			...TOOLTIP_OPTIONS,
+			shared: false,
+			pointFormat: '<b>{point.name}:</b> {point.y}',
 		},
-	],
-})
+		series: [
+			{
+				type: 'pie',
+				name: 'Feil',
+				data,
+			},
+		],
+	}
+}

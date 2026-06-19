@@ -10,8 +10,6 @@ export const CHART_COLORS = [
 	'var(--ax-meta-purple-700)',
 	'var(--ax-info-700)',
 ]
-export const ERROR_PRIMARY_COLOR = 'var(--ax-danger-700)'
-export const ERROR_SECONDARY_COLOR = 'var(--ax-warning-700)'
 
 const BASE_CHART_CONFIG: Options['chart'] = {
 	backgroundColor: 'transparent',

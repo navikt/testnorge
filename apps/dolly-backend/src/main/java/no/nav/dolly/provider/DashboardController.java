@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import java.util.Map;
+
 @RequestMapping("/api/v1/dashboard")
 @RestController
 @RequiredArgsConstructor
@@ -45,5 +47,12 @@ public class DashboardController {
     public Flux<DashboardDollyTeamsDTO> getDashboardDollyTeams() {
 
         return dashboardService.getDollyTeamsStatus();
+    }
+
+    @GetMapping(value = "/oversikt")
+    @Operation(description = "Henter oversikt over år og måneder hvor det finnes persondata.")
+    public Flux<Map<String, Object>> getDashboardOversikt() {
+
+        return dashboardService.getOversikt();
     }
 }

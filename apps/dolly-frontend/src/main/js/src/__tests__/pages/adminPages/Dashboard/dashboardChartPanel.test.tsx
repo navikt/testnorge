@@ -11,15 +11,11 @@ const makePoints = (count: number, base: number): PersonTrendPoint[] =>
 		personerTotalt: base * 10 + index,
 		nye: base + index,
 		gjenopprettede: base + index + 1,
-		pdlFeil: index,
-		andreFeil: index + 1,
 	}))
 
 const visibilityOptions = {
 	personerTotaltVisible: false,
-	feilTotaltVisible: false,
 	onPersonerTotaltVisibilityChange: () => undefined,
-	onFeilTotaltVisibilityChange: () => undefined,
 }
 
 const optionsFor = (count: number, base: number) =>

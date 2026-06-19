@@ -1,11 +1,5 @@
 import { type Options, type SeriesLineOptions } from 'highcharts'
-import {
-	ERROR_PRIMARY_COLOR,
-	ERROR_SECONDARY_COLOR,
-	ROTATED_CATEGORY_LABELS,
-	TOOLTIP_OPTIONS,
-	withBaseChart,
-} from './dashboardChartBase'
+import { ROTATED_CATEGORY_LABELS, TOOLTIP_OPTIONS, withBaseChart } from './dashboardChartBase'
 import { MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
 
 const createLineTrendChartOptions = ({
@@ -30,9 +24,7 @@ const createLineTrendChartOptions = ({
 
 type PersonTrendVisibilityOptions = {
 	personerTotaltVisible?: boolean
-	feilTotaltVisible?: boolean
 	onPersonerTotaltVisibilityChange?: (visible: boolean) => void
-	onFeilTotaltVisibilityChange?: (visible: boolean) => void
 }
 
 export const createPersonTrendChartOptions = (
@@ -41,7 +33,7 @@ export const createPersonTrendChartOptions = (
 ): Options =>
 	createLineTrendChartOptions({
 		description:
-			'Linjediagram med daglig utvikling av nye, gjenopprettede, PDL-feil og andre feil i valgt periode.',
+			'Linjediagram med daglig utvikling av nye og gjenopprettede personer i valgt periode.',
 		categories: personTrendData.map((point) => point.datoVisning),
 		legend: {
 			enabled: true,
@@ -59,34 +51,12 @@ export const createPersonTrendChartOptions = (
 			},
 			{
 				type: 'line',
-				name: 'PDL-feil',
-				data: personTrendData.map((point) => point.pdlFeil),
-				color: ERROR_PRIMARY_COLOR,
-			},
-			{
-				type: 'line',
-				name: 'Andre feil',
-				data: personTrendData.map((point) => point.andreFeil),
-				color: ERROR_SECONDARY_COLOR,
-			},
-			{
-				type: 'line',
 				name: 'Personer totalt',
 				data: personTrendData.map((point) => point.personerTotalt),
 				visible: visibilityOptions?.personerTotaltVisible ?? false,
 				events: {
 					show: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(true),
 					hide: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(false),
-				},
-			},
-			{
-				type: 'line',
-				name: 'Feil totalt',
-				data: personTrendData.map((point) => point.pdlFeil + point.andreFeil),
-				visible: visibilityOptions?.feilTotaltVisible ?? false,
-				events: {
-					show: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(true),
-					hide: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(false),
 				},
 			},
 		],

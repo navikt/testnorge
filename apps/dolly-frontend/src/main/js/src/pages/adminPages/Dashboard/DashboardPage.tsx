@@ -4,6 +4,7 @@ import {
 	PersonAnalysisSection,
 	PreviousDaySection,
 } from '@/pages/adminPages/Dashboard/dashboardDayPersonSections'
+import { DashboardFeilSection } from '@/pages/adminPages/Dashboard/dashboardFeilSection'
 import {
 	MonthlyTeamDistributionSection,
 	MonthlyTeamTrendSection,
@@ -76,7 +77,9 @@ export default () => {
 					previousDayPeriodData={d.previousDayPeriodData}
 					previousDaySummary={d.previousDaySummary}
 					previousDayChartOptions={d.previousDayChartOptions}
-					previousDayErrorBreakdownChartOptions={d.previousDayErrorBreakdownChartOptions}
+					selectedDayFeilGrupper={d.selectedDayFeilGrupper}
+					selectedDayFeilCount={d.selectedDayFeilCount}
+					loadingSelectedDayFeil={d.loadingSelectedDayFeil}
 					isLoading={d.loadingDashboardPersoner && !d.mockModeEnabled}
 				/>
 
@@ -96,6 +99,26 @@ export default () => {
 					personTrendChartOptions={d.personTrendChartOptions}
 				/>
 
+				<DashboardFeilSection
+					yearOptions={d.feilYearOptions}
+					selectedYear={d.selectedFeilYear}
+					onSelectedYearChange={d.onSelectedFeilYearChange}
+					monthOptions={d.feilMonthOptions}
+					selectedInterval={d.selectedFeilInterval}
+					onSelectedIntervalChange={d.onSelectedFeilIntervalChange}
+					punkterLength={d.feilDagerMedFeil}
+					feilTotalt={d.feilTotalt}
+					dagerMedFeil={d.feilDagerMedFeil}
+					feilSummertChartOptions={d.feilSummertChartOptions}
+					loadingSummert={d.loadingFeilSummert}
+					selectedDay={d.selectedFeilDay}
+					selectedDayLabel={d.feilSelectedDayLabel}
+					onClearSelectedDay={() => d.onSelectedFeilDayChange(null)}
+					feilGrupper={d.feilGrupper}
+					feilDetaljertCount={d.feilDetaljertCount}
+					loadingDetaljert={d.loadingFeilDetaljert}
+				/>
+
 				{d.isAnyLoading && (
 					<Box aria-busy="true" aria-live="polite">
 						<Loader size="xlarge" title="Laster dashboard-data..." />
@@ -105,6 +128,11 @@ export default () => {
 				{d.dashboardPersonerError && (
 					<Alert variant="error">
 						Klarte ikke å hente persondata: {d.dashboardPersonerError.message}
+					</Alert>
+				)}
+				{d.selectedDayFeilError && (
+					<Alert variant="error">
+						Klarte ikke å hente feil for valgt dag: {d.selectedDayFeilError.message}
 					</Alert>
 				)}
 				{d.dashboardTeamsError && (
@@ -120,6 +148,16 @@ export default () => {
 				{d.dashboardDollyTeamsError && (
 					<Alert variant="error">
 						Klarte ikke å hente dolly team-data: {d.dashboardDollyTeamsError.message}
+					</Alert>
+				)}
+				{d.feilSummertError && (
+					<Alert variant="error">
+						Klarte ikke å hente feildata: {d.feilSummertError.message}
+					</Alert>
+				)}
+				{d.feilDetaljertError && (
+					<Alert variant="error">
+						Klarte ikke å hente detaljerte feil: {d.feilDetaljertError.message}
 					</Alert>
 				)}
 

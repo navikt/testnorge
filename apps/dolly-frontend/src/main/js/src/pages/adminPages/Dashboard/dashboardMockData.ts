@@ -2,10 +2,139 @@ import { format, subDays, subMonths } from 'date-fns'
 import {
 	type DashboardDollyTeamEntryDTO,
 	type DashboardDollyTeamsDTO,
+	type DashboardFeilDetaljertRad,
+	type DashboardFeilSummertRad,
 	type DashboardOrganisasjonerDTO,
+	type DashboardOversiktDTO,
 	type DashboardPersonerDTO,
 	type DashboardTeamsDTO,
 } from '@/utils/hooks/useDashboard'
+
+const ENGLISH_MONTHS = [
+	'JANUARY',
+	'FEBRUARY',
+	'MARCH',
+	'APRIL',
+	'MAY',
+	'JUNE',
+	'JULY',
+	'AUGUST',
+	'SEPTEMBER',
+	'OCTOBER',
+	'NOVEMBER',
+	'DECEMBER',
+]
+
+const FEIL_FAGSYSTEMER: {
+	statusFelt: string
+	feilNokkel: string
+	verdi: () => string | Record<string, unknown>
+}[] = [
+	{
+		statusFelt: 'pdlPersonStatus',
+		feilNokkel: 'pdlPersonFeil',
+		verdi: () => 'Feilet mot PDL person: tidsavbrudd mot baktjeneste',
+	},
+	{
+		statusFelt: 'pdlOrdreStatus',
+		feilNokkel: 'pdlOrdreFeil',
+		verdi: () => ({ status: 'ERROR', melding: 'Ordre avvist av PDL', kilde: 'pdl-forvalter' }),
+	},
+	{
+		statusFelt: 'aaregStatus',
+		feilNokkel: 'aaregFeil',
+		verdi: () => 'Arbeidsforhold kunne ikke opprettes',
+	},
+	{
+		statusFelt: 'dokarkivStatus',
+		feilNokkel: 'dokarkivFeil',
+		verdi: () => 'Dokument ble ikke journalført',
+	},
+	{
+		statusFelt: 'feil',
+		feilNokkel: 'andreFeil',
+		verdi: () => 'Ukjent feil ved gjennomføring av bestilling',
+	},
+]
+
+const MASTER_VERDIER = ['PDL', 'TPS', 'DOLLY']
+
+const pickSubset = <T,>(items: T[], min: number, max: number): T[] => {
+	const count = Math.floor(Math.random() * (max - min + 1)) + min
+	return [...items].sort(() => Math.random() - 0.5).slice(0, Math.min(count, items.length))
+}
+
+const buildFeilMockData = (): {
+	feilOversikt: DashboardOversiktDTO[]
+	feilByInterval: Record<string, DashboardFeilSummertRad[]>
+	feilDetaljertByDate: Record<string, DashboardFeilDetaljertRad[]>
+} => {
+	const feilOversikt: DashboardOversiktDTO[] = []
+	const feilByInterval: Record<string, DashboardFeilSummertRad[]> = {}
+	const feilDetaljertByDate: Record<string, DashboardFeilDetaljertRad[]> = {}
+	let bestillingIdCounter = 900000
+
+	for (let monthOffset = 0; monthOffset < 24; monthOffset += 1) {
+		const monthDate = subMonths(new Date(), monthOffset)
+		const aar = monthDate.getFullYear()
+		const maanedIndex = monthDate.getMonth()
+		const interval = format(monthDate, 'yyyy-MM')
+		const daysInMonth = new Date(aar, maanedIndex + 1, 0).getDate()
+		const isCurrentMonth = monthOffset === 0
+		const maxDay = isCurrentMonth ? new Date().getDate() : daysInMonth
+
+		const nye = Math.floor(Math.random() * 400) + 100
+		const gjenopprettede = Math.floor(Math.random() * 200) + 50
+		feilOversikt.push({
+			aar,
+			maaned: ENGLISH_MONTHS[maanedIndex],
+			totaltAntallPersoner: nye + gjenopprettede,
+			nye,
+			gjenopprettede,
+		})
+
+		const summertRader: DashboardFeilSummertRad[] = []
+		const feilDays = pickSubset(
+			Array.from({ length: maxDay }, (_, i) => i + 1),
+			3,
+			Math.min(18, maxDay),
+		).sort((a, b) => a - b)
+
+		feilDays.forEach((day) => {
+			const datoKey = `${interval}-${String(day).padStart(2, '0')}`
+			const antallBestillinger = Math.floor(Math.random() * 7) + 1
+			const summert: DashboardFeilSummertRad = { bestillingDato: datoKey }
+			const detaljertRader: DashboardFeilDetaljertRad[] = []
+
+			for (let i = 0; i < antallBestillinger; i += 1) {
+				const valgteFagsystemer = pickSubset(FEIL_FAGSYSTEMER, 1, 3)
+				const bestillingId = bestillingIdCounter
+				bestillingIdCounter += 1
+				const ident = String(Math.floor(Math.random() * 9_000_000_000_0) + 1_000_000_000_0)
+				const rad: DashboardFeilDetaljertRad = {
+					sistOppdatert: `${datoKey}T${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(
+						Math.floor(Math.random() * 60),
+					).padStart(2, '0')}:00`,
+					bestillingId,
+					ident,
+					master: MASTER_VERDIER[Math.floor(Math.random() * MASTER_VERDIER.length)],
+				}
+				valgteFagsystemer.forEach((fagsystem) => {
+					rad[fagsystem.statusFelt] = fagsystem.verdi()
+					summert[fagsystem.feilNokkel] = (Number(summert[fagsystem.feilNokkel]) || 0) + 1
+				})
+				detaljertRader.push(rad)
+			}
+
+			summertRader.push(summert)
+			feilDetaljertByDate[datoKey] = detaljertRader
+		})
+
+		feilByInterval[interval] = summertRader
+	}
+
+	return { feilOversikt, feilByInterval, feilDetaljertByDate }
+}
 
 export const createDashboardMockData = (
 	cycle: number,
@@ -14,6 +143,9 @@ export const createDashboardMockData = (
 	dashboardTeams: DashboardTeamsDTO[]
 	dashboardOrganisasjoner: DashboardOrganisasjonerDTO[]
 	dashboardDollyTeams: DashboardDollyTeamsDTO[]
+	feilOversikt: DashboardOversiktDTO[]
+	feilByInterval: Record<string, DashboardFeilSummertRad[]>
+	feilDetaljertByDate: Record<string, DashboardFeilDetaljertRad[]>
 } => {
 	const zeroFeilMode = Math.abs(cycle) % 5 === 0
 
@@ -325,5 +457,15 @@ export const createDashboardMockData = (
 		}
 	})
 
-	return { dashboardPersoner, dashboardTeams, dashboardOrganisasjoner, dashboardDollyTeams }
+	const { feilOversikt, feilByInterval, feilDetaljertByDate } = buildFeilMockData()
+
+	return {
+		dashboardPersoner,
+		dashboardTeams,
+		dashboardOrganisasjoner,
+		dashboardDollyTeams,
+		feilOversikt,
+		feilByInterval,
+		feilDetaljertByDate,
+	}
 }

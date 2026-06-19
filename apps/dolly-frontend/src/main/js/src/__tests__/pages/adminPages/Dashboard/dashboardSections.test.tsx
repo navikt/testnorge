@@ -58,7 +58,7 @@ describe('dashboard sections', () => {
 		expect(screen.getByText('Månedlig trend for unike brukere og antall teams')).toBeInTheDocument()
 	})
 
-	it('should render svg zero-state when there are no errors for the selected day', () => {
+	it('should render person KPI and chart for the selected day period', () => {
 		render(
 			<PreviousDaySection
 				selectedDayDisplayLabel="05.06.2026–07.06.2026"
@@ -93,16 +93,14 @@ describe('dashboard sections', () => {
 					},
 				]}
 				previousDaySummary={{
-					personerTotalt: 4,
 					nye: 3,
 					gjenopprettede: 1,
-					pdlFeil: 0,
-					andreFeil: 0,
 					nyeInklGjenopprettede: 4,
-					totaltFeil: 0,
 				}}
 				previousDayChartOptions={{}}
-				previousDayErrorBreakdownChartOptions={{}}
+				selectedDayFeilGrupper={[]}
+				selectedDayFeilCount={0}
+				loadingSelectedDayFeil={false}
 			/>,
 		)
 
@@ -110,10 +108,9 @@ describe('dashboard sections', () => {
 			screen.getByRole('heading', { name: /Statistikk for siste hverdag \+ helg/ }),
 		).toBeInTheDocument()
 		expect(screen.getByRole('button', { name: 'Siste hverdag + helg' })).toBeInTheDocument()
-		expect(
-			screen.getByRole('img', { name: 'Ingen feil registrert for valgt dag' }),
-		).toBeInTheDocument()
-		expect(screen.getByText(/Ingen feil observert, hurra!/)).toBeInTheDocument()
+		expect(screen.getByText('Personer opprettet/gjenopprettet')).toBeInTheDocument()
+		expect(screen.getByText('Opprettet og gjenopprettet for valgt dag')).toBeInTheDocument()
+		expect(screen.getByText('Ingen feil registrert for valgt periode.')).toBeInTheDocument()
 	})
 
 	it('should render single-day label on non-monday days', () => {
@@ -135,16 +132,14 @@ describe('dashboard sections', () => {
 					},
 				]}
 				previousDaySummary={{
-					personerTotalt: 4,
 					nye: 3,
 					gjenopprettede: 1,
-					pdlFeil: 0,
-					andreFeil: 0,
 					nyeInklGjenopprettede: 4,
-					totaltFeil: 0,
 				}}
 				previousDayChartOptions={{}}
-				previousDayErrorBreakdownChartOptions={{}}
+				selectedDayFeilGrupper={[]}
+				selectedDayFeilCount={0}
+				loadingSelectedDayFeil={false}
 			/>,
 		)
 
@@ -152,5 +147,56 @@ describe('dashboard sections', () => {
 			screen.getByRole('heading', { name: /Statistikk for siste hverdag/ }),
 		).toBeInTheDocument()
 		expect(screen.getByRole('button', { name: 'Siste hverdag' })).toBeInTheDocument()
+	})
+
+	it('should render feil groups for the selected day period', () => {
+		render(
+			<PreviousDaySection
+				selectedDayDisplayLabel="08.06.2026"
+				selectedDayPeriodTitle="Siste hverdag"
+				selectedDayButtonLabel="Siste hverdag"
+				selectedDayScope="YESTERDAY"
+				onSelectedDayScopeChange={vi.fn()}
+				previousDayPeriodData={[
+					{
+						dato: '2026-06-08',
+						personerTotalt: 4,
+						nye: 3,
+						gjenopprettede: 1,
+						pdlFeil: 0,
+						andreFeil: 0,
+					},
+				]}
+				previousDaySummary={{
+					nye: 3,
+					gjenopprettede: 1,
+					nyeInklGjenopprettede: 4,
+				}}
+				previousDayChartOptions={{}}
+				selectedDayFeilGrupper={[
+					{
+						feilNokkel: 'pdlForvalterFeil',
+						label: 'PDL Forvalter',
+						rader: [
+							{
+								ident: '12345678901',
+								bestillingId: 1,
+								sistOppdatert: '2026-06-08T10:00:00',
+								master: 'PDL',
+								verdi: 'Teknisk feil mot PDL',
+							},
+						],
+					},
+				]}
+				selectedDayFeilCount={1}
+				loadingSelectedDayFeil={false}
+			/>,
+		)
+
+		expect(screen.getByRole('heading', { name: 'Feil registrert 08.06.2026' })).toBeInTheDocument()
+		expect(screen.getByText('PDL Forvalter (1)')).toBeInTheDocument()
+		expect(
+			screen.getByText('1 bestilling(er) med feil, fordelt over 1 fagsystem.'),
+		).toBeInTheDocument()
 	})
 })

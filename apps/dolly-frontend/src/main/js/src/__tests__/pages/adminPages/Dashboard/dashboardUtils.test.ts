@@ -95,8 +95,6 @@ describe('dashboardUtils', () => {
 		expect(trend[0].personerTotalt).toBe(10)
 		expect(trend[0].nye).toBe(4)
 		expect(trend[0].gjenopprettede).toBe(1)
-		expect(trend[0].pdlFeil).toBe(0)
-		expect(trend[0].andreFeil).toBe(2)
 	})
 
 	it('should fill missing days in selected period with zero values', () => {

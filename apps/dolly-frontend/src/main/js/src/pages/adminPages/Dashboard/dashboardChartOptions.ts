@@ -3,7 +3,5 @@ export {
 	createMonthlyTeamTrendChartOptions,
 	createPersonTrendChartOptions,
 } from './dashboardTrendChartOptions'
-export {
-	createPreviousDayChartOptions,
-	createPreviousDayErrorBreakdownChartOptions,
-} from './dashboardPreviousDayChartOptions'
+export { createPreviousDayChartOptions } from './dashboardPreviousDayChartOptions'
+export { createFeilSummertChartOptions } from './dashboardFeilChartOptions'

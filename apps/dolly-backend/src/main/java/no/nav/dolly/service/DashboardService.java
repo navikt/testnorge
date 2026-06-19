@@ -150,6 +150,56 @@ public class DashboardService {
                 .sort(Comparator.comparing(DashboardDollyTeamsDTO::getInterval).reversed());
     }
 
+    public Flux<Map<String, Object>> getOversikt() {
+
+        return getPersonerStatus()
+                .collect(Collectors.toMap(
+                        person -> {
+                            var date = person.getDato();
+                            return (Object) (Integer) (date.getYear() * 100 + date.getMonthValue());
+                        },
+                        person -> person,
+                        (existing, replacement) -> existing
+                ))
+                .flatMapMany(dataByMonth -> {
+                    var today = java.time.LocalDate.now();
+                    var result = new java.util.ArrayList<Map<String, Object>>();
+                    
+                    // Generate all months from 2020-01 to today
+                    var currentDate = java.time.LocalDate.of(2020, 1, 1);
+                    while (!currentDate.isAfter(today)) {
+                        int monthKey = currentDate.getYear() * 100 + currentDate.getMonthValue();
+                        var monthData = dataByMonth.get(monthKey);
+                        
+                        var entry = Map.<String, Object>of(
+                                "aar", (Object) currentDate.getYear(),
+                                "maaned", String.format("%02d", currentDate.getMonthValue())
+                        );
+                        
+                        if (monthData != null) {
+                            var mutableEntry = new java.util.HashMap<>(entry);
+                            mutableEntry.put("totaltAntallPersoner", monthData.getPersonerTotalt());
+                            mutableEntry.put("nye", monthData.getNye());
+                            mutableEntry.put("gjenopprettede", monthData.getGjenopprettede());
+                            result.add(mutableEntry);
+                        } else {
+                            result.add(entry);
+                        }
+                        
+                        currentDate = currentDate.plusMonths(1);
+                    }
+                    
+                    // Sort descending (newest first)
+                    result.sort((m1, m2) -> {
+                        int val1 = ((Integer) m1.get("aar")) * 100 + Integer.parseInt((String) m1.get("maaned"));
+                        int val2 = ((Integer) m2.get("aar")) * 100 + Integer.parseInt((String) m2.get("maaned"));
+                        return Integer.compare(val2, val1);
+                    });
+                    
+                    return Flux.fromIterable(result);
+                });
+    }
+
     private static long sumByStatus(List<BestillingerFragment> fragments,
                                     Function<BestillingerFragment, String> statusGetter,
                                     String value) {

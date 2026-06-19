@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 import { format, isValid, parseISO, subDays, subYears } from 'date-fns'
-import { useDashboard } from '@/utils/hooks/useDashboard'
+import {
+	useDashboard,
+	useDashboardFeilDetaljert,
+	useDashboardFeilForDager,
+	useDashboardFeilSummert,
+} from '@/utils/hooks/useDashboard'
 import {
 	asNumber,
 	fillMissingPersonDays,
@@ -20,11 +25,18 @@ import {
 	withinDateRange,
 } from './dashboardUtils'
 import {
+	type FeilPeriodeOption,
+	monthNumberToName,
+	toFeilGrupper,
+	toFeilPeriodeOptions,
+	toFeilSummertView,
+} from './dashboardFeilUtils'
+import {
+	createFeilSummertChartOptions,
 	createMonthlyTeamDistributionChartOptions,
 	createMonthlyTeamTrendChartOptions,
 	createPersonTrendChartOptions,
 	createPreviousDayChartOptions,
-	createPreviousDayErrorBreakdownChartOptions,
 } from './dashboardChartOptions'
 import { createDashboardMockData } from './dashboardMockData'
 
@@ -85,12 +97,28 @@ const makeYearChangeHandler =
 		if (lastOption) setSelectedInterval(lastOption.value)
 	}
 
+const buildFeilPeriodView = (periodeOptions: FeilPeriodeOption[], selectedInterval: string) => {
+	const intervalOptions = periodeOptions.map((option) => ({
+		value: option.interval,
+		label: option.intervalVisning,
+	}))
+	const yearOptions = [...new Set(intervalOptions.map((option) => option.value.slice(0, 4)))].sort(
+		(a, b) => a.localeCompare(b),
+	)
+	const selectedYear = selectedInterval.slice(0, 4)
+	const monthOptions = intervalOptions
+		.filter((option) => option.value.startsWith(`${selectedYear}-`))
+		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
+	return { intervalOptions, yearOptions, selectedYear, monthOptions }
+}
+
 export const useDashboardData = () => {
 	const {
 		dashboardPersoner,
 		dashboardTeams,
 		dashboardOrganisasjoner,
 		dashboardDollyTeams,
+		dashboardOversikt,
 		loadingDashboardPersoner,
 		loadingDashboardTeams,
 		loadingDashboardOrganisasjoner,
@@ -99,6 +127,7 @@ export const useDashboardData = () => {
 		dashboardTeamsError,
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
+		dashboardOversiktError,
 		reloadDashboard,
 	} = useDashboard()
 
@@ -117,22 +146,24 @@ export const useDashboardData = () => {
 	const [selectedInterval, setSelectedInterval] = useState('')
 	const [selectedOrganisasjonInterval, setSelectedOrganisasjonInterval] = useState('')
 	const [selectedDollyTeamsInterval, setSelectedDollyTeamsInterval] = useState('')
+	const [selectedFeilInterval, setSelectedFeilInterval] = useState('')
+	const [selectedFeilDay, setSelectedFeilDay] = useState<number | null>(null)
 	const [selectedDayScope, setSelectedDayScope] = useState<
 		typeof DAY_SCOPE_YESTERDAY | typeof DAY_SCOPE_TODAY
 	>(DAY_SCOPE_YESTERDAY)
 	const [personerTotaltVisible, setPersonerTotaltVisible] = useState(false)
-	const [feilTotaltVisible, setFeilTotaltVisible] = useState(false)
 	const [mockModeEnabled, setMockModeEnabled] = useState(false)
 	const [mockData, setMockData] = useState(() => createDashboardMockData(0))
 
-	const activeDashboardPersoner = mockModeEnabled ? mockData.dashboardPersoner : dashboardPersoner
-	const activeDashboardTeams = mockModeEnabled ? mockData.dashboardTeams : dashboardTeams
+	const activeDashboardPersoner = mockModeEnabled ? mockData.dashboardPersoner : dashboardPersoner ?? []
+	const activeDashboardTeams = mockModeEnabled ? mockData.dashboardTeams : dashboardTeams ?? []
 	const activeDashboardOrganisasjoner = mockModeEnabled
 		? mockData.dashboardOrganisasjoner
-		: dashboardOrganisasjoner
+		: dashboardOrganisasjoner ?? []
 	const activeDashboardDollyTeams = mockModeEnabled
 		? mockData.dashboardDollyTeams
-		: dashboardDollyTeams
+		: dashboardDollyTeams ?? []
+	const activeDashboardOversikt = mockModeEnabled ? mockData.feilOversikt : dashboardOversikt ?? []
 
 	const latestAvailableDateValue = activeDashboardPersoner
 		.map((personData) => personData.dato)
@@ -168,33 +199,38 @@ export const useDashboardData = () => {
 		(acc, personData) => {
 			acc.nye += asNumber(personData.nye)
 			acc.gjenopprettede += asNumber(personData.gjenopprettede)
-			acc.pdlFeil += asNumber(personData.pdlFeil)
-			acc.andreFeil += asNumber(personData.andreFeil)
 			return acc
 		},
 		{
 			nye: 0,
 			gjenopprettede: 0,
-			pdlFeil: 0,
-			andreFeil: 0,
 			nyeInklGjenopprettede: 0,
-			totaltFeil: 0,
 		},
 	)
 	const previousDaySummaryWithTotals = {
 		...previousDaySummary,
 		nyeInklGjenopprettede: previousDaySummary.nye + previousDaySummary.gjenopprettede,
-		totaltFeil: previousDaySummary.pdlFeil + previousDaySummary.andreFeil,
 	}
 
 	const previousDayChartOptions = createPreviousDayChartOptions({
 		nye: previousDaySummaryWithTotals.nye,
 		gjenopprettede: previousDaySummaryWithTotals.gjenopprettede,
 	})
-	const previousDayErrorBreakdownChartOptions = createPreviousDayErrorBreakdownChartOptions(
-		previousDaySummaryWithTotals.pdlFeil,
-		previousDaySummaryWithTotals.andreFeil,
+
+	const selectedDayFeilDager = selectedDayDates.flatMap((dato) => {
+		const parsed = parseISO(dato)
+		const month = monthNumberToName(parsed.getMonth() + 1)
+		return month ? [{ year: parsed.getFullYear(), month, day: parsed.getDate() }] : []
+	})
+
+	const { feilForDager, loadingFeilForDager, feilForDagerError } = useDashboardFeilForDager(
+		mockModeEnabled ? [] : selectedDayFeilDager,
 	)
+	const activeSelectedDayFeil = mockModeEnabled
+		? selectedDayDates.flatMap((dato) => mockData.feilDetaljertByDate[dato] ?? [])
+		: feilForDager
+	const selectedDayFeilGrupper = toFeilGrupper(activeSelectedDayFeil)
+	const selectedDayFeilCount = new Set(activeSelectedDayFeil.map((rad) => rad.bestillingId)).size
 
 	const filteredPersoner = activeDashboardPersoner
 		.filter((personData) => withinDateRange(personData.dato, fraDato, tilDato))
@@ -206,19 +242,15 @@ export const useDashboardData = () => {
 			acc.personerTotalt += asNumber(personData.personerTotalt)
 			acc.nye += asNumber(personData.nye)
 			acc.gjenopprettede += asNumber(personData.gjenopprettede)
-			acc.pdlFeil += asNumber(personData.pdlFeil)
-			acc.andreFeil += asNumber(personData.andreFeil)
 			return acc
 		},
-		{ personerTotalt: 0, nye: 0, gjenopprettede: 0, pdlFeil: 0, andreFeil: 0 },
+		{ personerTotalt: 0, nye: 0, gjenopprettede: 0 },
 	)
 
 	const personTrendData = toPersonTrendData(completeFilteredPersoner)
 	const personTrendChartOptions = createPersonTrendChartOptions(personTrendData, {
 		personerTotaltVisible,
-		feilTotaltVisible,
 		onPersonerTotaltVisibilityChange: setPersonerTotaltVisible,
-		onFeilTotaltVisibilityChange: setFeilTotaltVisible,
 	})
 
 	// --- Organisasjoner ---
@@ -291,6 +323,58 @@ export const useDashboardData = () => {
 
 	useAutoSelectLatestInterval(teamView.intervalOptions, selectedInterval, setSelectedInterval)
 
+	// --- Feil (måned → dag drilldown) ---
+	const feilPeriodeOptions = toFeilPeriodeOptions(activeDashboardOversikt)
+	const feilView = buildFeilPeriodView(feilPeriodeOptions, selectedFeilInterval)
+	const selectedFeilPeriode = feilPeriodeOptions.find(
+		(option) => option.interval === selectedFeilInterval,
+	)
+	const feilYear = selectedFeilPeriode?.aar ?? null
+	const feilMonthName = selectedFeilPeriode?.maanedNavn ?? null
+
+	const { feilSummert, loadingFeilSummert, feilSummertError } = useDashboardFeilSummert(
+		mockModeEnabled ? null : feilYear,
+		mockModeEnabled ? null : feilMonthName,
+	)
+	const { feilDetaljert, loadingFeilDetaljert, feilDetaljertError } = useDashboardFeilDetaljert(
+		mockModeEnabled ? null : feilYear,
+		mockModeEnabled ? null : feilMonthName,
+		mockModeEnabled ? null : selectedFeilDay,
+	)
+
+	const activeFeilSummert = mockModeEnabled
+		? (mockData.feilByInterval[selectedFeilInterval] ?? [])
+		: feilSummert
+	const activeFeilDetaljert = mockModeEnabled
+		? (mockData.feilDetaljertByDate[
+				selectedFeilDay !== null
+					? `${selectedFeilInterval}-${String(selectedFeilDay).padStart(2, '0')}`
+					: ''
+			] ?? [])
+		: feilDetaljert
+
+	const feilSummertView = toFeilSummertView(activeFeilSummert)
+	const feilSummertChartOptions = createFeilSummertChartOptions(
+		feilSummertView.punkter,
+		feilSummertView.fagsystemNokler,
+		setSelectedFeilDay,
+	)
+	const feilGrupper = toFeilGrupper(activeFeilDetaljert)
+	const selectedFeilPunkt =
+		selectedFeilDay !== null
+			? (feilSummertView.punkter.find((punkt) => punkt.dag === selectedFeilDay) ?? null)
+			: null
+
+	useAutoSelectLatestInterval(
+		feilView.intervalOptions,
+		selectedFeilInterval,
+		setSelectedFeilInterval,
+	)
+
+	useEffect(() => {
+		setSelectedFeilDay(null)
+	}, [selectedFeilInterval])
+
 	const applyQuickRange = (quickRangeValue: string) => {
 		const toDateValue = format(quickRangeAnchorDate, 'yyyy-MM-dd')
 		const fromDateValue =
@@ -351,7 +435,10 @@ export const useDashboardData = () => {
 		previousDayPeriodData,
 		previousDaySummary: previousDaySummaryWithTotals,
 		previousDayChartOptions,
-		previousDayErrorBreakdownChartOptions,
+		selectedDayFeilGrupper,
+		selectedDayFeilCount,
+		loadingSelectedDayFeil: loadingFeilForDager && !mockModeEnabled,
+		selectedDayFeilError: mockModeEnabled ? undefined : feilForDagerError,
 
 		// Person analysis section
 		selectedQuickRange,
@@ -423,5 +510,31 @@ export const useDashboardData = () => {
 		selectedMonthlyPoint: teamView.selectedPoint,
 		teamDistribution: teamView.distribution,
 		monthlyDistributionChartOptions,
+
+		// Feil section
+		feilYearOptions: feilView.yearOptions,
+		selectedFeilYear: feilView.selectedYear,
+		feilMonthOptions: feilView.monthOptions,
+		onSelectedFeilYearChange: makeYearChangeHandler(
+			feilView.intervalOptions,
+			setSelectedFeilInterval,
+		),
+		selectedFeilInterval,
+		onSelectedFeilIntervalChange: setSelectedFeilInterval,
+		feilPeriodeVisning: selectedFeilPeriode?.intervalVisning ?? '',
+		feilSummertChartOptions,
+		feilDagerMedFeil: feilSummertView.punkter.length,
+		feilTotalt: feilSummertView.punkter.reduce((sum, punkt) => sum + punkt.total, 0),
+		hasFeilData: feilSummertView.punkter.length > 0,
+		loadingFeilSummert: loadingFeilSummert && !mockModeEnabled,
+		feilSummertError: mockModeEnabled ? undefined : feilSummertError,
+		selectedFeilDay,
+		selectedFeilPunkt,
+		feilSelectedDayLabel: selectedFeilPunkt?.datoVisning ?? '',
+		onSelectedFeilDayChange: setSelectedFeilDay,
+		feilGrupper,
+		feilDetaljertCount: new Set(activeFeilDetaljert.map((rad) => rad.bestillingId)).size,
+		loadingFeilDetaljert: loadingFeilDetaljert && !mockModeEnabled,
+		feilDetaljertError: mockModeEnabled ? undefined : feilDetaljertError,
 	}
 }

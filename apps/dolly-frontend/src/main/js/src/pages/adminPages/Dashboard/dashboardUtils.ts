@@ -13,8 +13,6 @@ export type PersonTrendPoint = {
 	personerTotalt: number
 	nye: number
 	gjenopprettede: number
-	pdlFeil: number
-	andreFeil: number
 }
 
 export type MonthlyTeamPoint = {
@@ -268,8 +266,6 @@ export const toPersonTrendData = (personer: DashboardPersonerDTO[]): PersonTrend
 		personerTotalt: asNumber(personData.personerTotalt),
 		nye: asNumber(personData.nye),
 		gjenopprettede: asNumber(personData.gjenopprettede),
-		pdlFeil: asNumber(personData.pdlFeil),
-		andreFeil: asNumber(personData.andreFeil),
 	}))
 
 export const toMonthlyTrendData = (points: MonthlyTeamPoint[]): MonthlyTrendPoint[] =>
