@@ -297,6 +297,15 @@ const selectOptions = {
 		{ value: 'FO', label: 'Fengsel' },
 	],
 
+	// INST KDI
+	kdiKategori: [
+		{ value: 'Boetesoning', label: 'Bøtesoning' },
+		{ value: 'ForegrepetSoning', label: 'Foregrepet soning' },
+		{ value: 'Forvaring', label: 'Forvaring' },
+		{ value: 'Ubetinget', label: 'Ubetinget' },
+		{ value: 'Varetekt', label: 'Varetekt' },
+	],
+
 	// UDI
 	oppholdsstatus: [
 		{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },
