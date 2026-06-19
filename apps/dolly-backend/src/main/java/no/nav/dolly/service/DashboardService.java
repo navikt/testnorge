@@ -25,6 +25,7 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -315,23 +316,63 @@ public class DashboardService {
             if (IDENTITETSFELT.contains(navn)) {
                 resultat.set(navn, verdi);
             } else if (verdi.isString() && verdi.asString().toLowerCase().contains("feil")) {
-                resultat.set(navn, tilJsonEllerTekst(verdi));
+                resultat.set(navn, tilJsonEllerTekst(verdi, navn));
             }
         }
         return Mono.just(resultat);
     }
 
-    private JsonNode tilJsonEllerTekst(JsonNode verdi) {
+    private JsonNode tilJsonEllerTekst(JsonNode json, String navn) {
 
-        var tekst = verdi.asString().trim();
-        if (tekst.startsWith("{") || tekst.startsWith("[")) {
+        var verdi = json.asString().trim();
+        if (verdi.startsWith("{") || verdi.startsWith("[")) {
             try {
-                return jsonMapper.readTree(tekst);
+                if (!"pdlOrdreStatus".equals(navn)) {
+                    return jsonMapper.readTree(verdi);
+                } else {
+                    var ordreRespons = jsonMapper.readValue(verdi, OrdreResponseDTO.class);
+                    var feilRespons = getFeil(ordreRespons);
+                    var responsTekst = jsonMapper.writeValueAsString(feilRespons);
+                    return jsonMapper.readTree(responsTekst);
+                }
             } catch (JacksonException e) {
                 log.debug("Statusfelt er ikke gyldig JSON – beholdes som tekst", e);
             }
         }
-        return verdi;
+        return json;
+    }
+
+    private static OrdreResponseDTO getFeil(OrdreResponseDTO response) {
+
+        return OrdreResponseDTO.builder()
+                .hovedperson(getError(response.getHovedperson()))
+                .relasjoner(response.getRelasjoner().stream()
+                        .map(DashboardService::getError)
+                        .toList())
+                .build();
+    }
+
+    private static OrdreResponseDTO.PersonHendelserDTO getError(OrdreResponseDTO.PersonHendelserDTO hendelser) {
+
+        return OrdreResponseDTO.PersonHendelserDTO.builder()
+                .ident(hendelser.getIdent())
+                .ordrer(hendelser.getOrdrer().stream()
+                        .filter(status -> status.getHendelser().stream()
+                                .anyMatch(hendelse -> isNotBlank(hendelse.getError())))
+                        .map(status -> OrdreResponseDTO.PdlStatusDTO.builder()
+                                .ident(status.getIdent())
+                                .infoElement(status.getInfoElement())
+                                .hendelser(status.getHendelser().stream()
+                                        .filter(hendelse -> isNotBlank(hendelse.getError()))
+                                        .map(hendelse -> OrdreResponseDTO.HendelseDTO.builder()
+                                                .id(hendelse.getId())
+                                                .status(hendelse.getStatus())
+                                                .error(hendelse.getError())
+                                                .build())
+                                        .toList())
+                                .build())
+                        .toList())
+                .build();
     }
 
     public Flux<DashboardOversiktDTO> getPerioderOversikt() {
