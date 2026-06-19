@@ -14,6 +14,7 @@ import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
+import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
@@ -27,6 +28,7 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -425,6 +427,26 @@ class DashboardServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldSkipOrganisasjonFragmentsWithNoBrukerserviceMatch() {
+        when(altinn3TilgangServiceConsumer.getOrganisasjoner()).thenReturn(Flux.empty());
+        when(brukerServiceConsumer.getAlleBrukere()).thenReturn(Flux.just(
+                BrukerDTO.builder().id("kjent").organisasjonsnummer("123456789").build()
+        ));
+        when(bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert())
+                .thenReturn(Flux.just(
+                        organisasjonFragment(INTERVAL_1, "kjent"),
+                        organisasjonFragment(INTERVAL_1, "ukjent")
+                ));
+
+        StepVerifier.create(dashboardService.getOrganisasjonerStatus())
+                .assertNext(dto -> {
+                    assertThat(dto.getOrganisasjoner()).hasSize(1);
+                    assertThat(dto.getTotaltAntallOrganisasjoner()).isEqualTo(1);
+                })
+                .verifyComplete();
+    }
+
     // ── getDollyTeamsStatus ──────────────────────────────────────────────────
 
     @Test
@@ -528,6 +550,72 @@ class DashboardServiceTest {
         assertThat(results.get(1).getInterval()).isEqualTo(INTERVAL_1);
     }
 
+    // ── getPerioderOversikt ──────────────────────────────────────────────────
+
+    @Test
+    void shouldReturnEmptyPerioderWhenNoIntervals() {
+        when(bestillingRepository.findByAvailIntervals()).thenReturn(Flux.empty());
+
+        StepVerifier.create(dashboardService.getPerioderOversikt())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldParseAarManedIntoAarAndMaaned() {
+        when(bestillingRepository.findByAvailIntervals()).thenReturn(Flux.just(
+                oversiktFragment("2024-03", 10L, "NYBESTILLING")
+        ));
+
+        StepVerifier.create(dashboardService.getPerioderOversikt())
+                .assertNext(dto -> {
+                    assertThat(dto.getAarManed()).isEqualTo("2024-03");
+                    assertThat(dto.getAar()).isEqualTo(2024);
+                    assertThat(dto.getMaaned()).isEqualTo(Month.MARCH);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSumTotaltAntallPersonerForSamePeriod() {
+        when(bestillingRepository.findByAvailIntervals()).thenReturn(Flux.just(
+                oversiktFragment("2024-01", 5L, "NYBESTILLING"),
+                oversiktFragment("2024-01", 3L, "GJENOPPRETTING")
+        ));
+
+        StepVerifier.create(dashboardService.getPerioderOversikt())
+                .assertNext(dto -> assertThat(dto.getTotaltAntallPersoner()).isEqualTo(8))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSumNyeAndGjenopprettedeByGjenopprettstatus() {
+        when(bestillingRepository.findByAvailIntervals()).thenReturn(Flux.just(
+                oversiktFragment("2024-01", 4L, "NYBESTILLING"),
+                oversiktFragment("2024-01", 2L, "GJENOPPRETTING"),
+                oversiktFragment("2024-01", 1L, "UKJENT")
+        ));
+
+        StepVerifier.create(dashboardService.getPerioderOversikt())
+                .assertNext(dto -> {
+                    assertThat(dto.getNye()).isEqualTo(4);
+                    assertThat(dto.getGjenopprettede()).isEqualTo(2);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSortPerioderOversiktByAarManedDescending() {
+        when(bestillingRepository.findByAvailIntervals()).thenReturn(Flux.just(
+                oversiktFragment("2024-01", 1L, "NYBESTILLING"),
+                oversiktFragment("2024-02", 1L, "NYBESTILLING")
+        ));
+
+        StepVerifier.create(dashboardService.getPerioderOversikt())
+                .assertNext(dto -> assertThat(dto.getAarManed()).isEqualTo("2024-02"))
+                .assertNext(dto -> assertThat(dto.getAarManed()).isEqualTo("2024-01"))
+                .verifyComplete();
+    }
+
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private static BestillingerFragment fragment(LocalDate dato, Long personer,
@@ -561,6 +649,14 @@ class DashboardServiceTest {
         return DollyTeamFragment.builder()
                 .interval(interval)
                 .informasjon(navn + "|" + beskrivelse + "|" + brukerid)
+                .build();
+    }
+
+    private static OversiktFragment oversiktFragment(String maaned, Long antall, String gjenopprettstatus) {
+        return OversiktFragment.builder()
+                .maaned(maaned)
+                .antall(antall)
+                .gjenopprettstatus(gjenopprettstatus)
                 .build();
     }
 }

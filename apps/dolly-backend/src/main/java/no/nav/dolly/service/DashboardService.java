@@ -37,13 +37,15 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 import java.time.Month;
+import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -98,8 +100,7 @@ public class DashboardService {
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getInterval)
                         .flatMap(Flux::collectList)
-                        .flatMap(fragments -> Mono.just(
-                                Tuples.of(groupFragmentsByTeam(fragments, teams), fragments.getFirst().getInterval()))))
+                        .map(fragments -> Tuples.of(groupFragmentsByTeam(fragments, teams), fragments.getFirst().getInterval())))
                 .map(tuple ->
                         DashboardTeamsDTO.builder()
                                 .interval(tuple.getT2())
@@ -125,8 +126,7 @@ public class DashboardService {
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()
                         .groupBy(OrganisasjonFragment::getInterval)
                         .flatMap(Flux::collectList)
-                        .flatMap(fragments -> Mono.just(
-                                Tuples.of(groupFragmentsByOrganisasjon(fragments, oppslag.getT2()), fragments.getFirst().getInterval())))
+                        .map(fragments -> Tuples.of(groupFragmentsByOrganisasjon(fragments, oppslag.getT2()), fragments.getFirst().getInterval()))
                         .map(tuple -> DashboardOrganisasjonerDTO.builder()
                                 .interval(tuple.getT2())
                                 .organisasjoner(tuple.getT1().entrySet().stream()
@@ -194,7 +194,9 @@ public class DashboardService {
         var grouped = new HashMap<String, Set<String>>();
         fragments.forEach(fragment -> {
             var orgNummer = brukerToOrgnummer.get(fragment.getBrukerid());
-            grouped.computeIfAbsent(orgNummer, _ -> new HashSet<>()).add(fragment.getBrukerid());
+            if (Objects.nonNull(orgNummer)) {
+                grouped.computeIfAbsent(orgNummer, _ -> new HashSet<>()).add(fragment.getBrukerid());
+            }
         });
         return grouped;
     }
@@ -220,18 +222,12 @@ public class DashboardService {
     public Flux<JsonNode> getFeilstatusSummert(int year, Month month) {
 
         var filter = "%4d-%02d".formatted(year, month.getValue());
-        return bestillingProgressRepository.findStatusColumns()
-                .reduce(new StringBuilder(), (StringBuilder sb, String column) ->
-                        sb.append(" or lower(bp.")
-                                .append(column)
-                                .append(") like '%feil%'"))
-                .map(kolonner -> "select b.sist_oppdatert::date bestilling_dato, bp.* " +
-                                 "from bestilling b " +
-                                 "join bestilling_progress bp on bp.bestilling_id = b.id " +
-                                 "where to_char(b.sist_oppdatert, 'YYYY-MM') = :range " +
-                                 "and (" +
-                                 kolonner.substring(4) +
-                                 ") order by bestilling_dato")
+        return buildFeilWhereFragment()
+                .map(feilFilter -> "select b.sist_oppdatert::date bestilling_dato, bp.* " +
+                                   "from bestilling b " +
+                                   "join bestilling_progress bp on bp.bestilling_id = b.id " +
+                                   "where to_char(b.sist_oppdatert, 'YYYY-MM') = :range " +
+                                   "and (" + feilFilter + ") order by bestilling_dato")
                 .flatMapMany(query -> entityTemplate.getDatabaseClient()
                         .sql(query)
                         .bind("range", filter)
@@ -246,18 +242,12 @@ public class DashboardService {
     public Flux<JsonNode> getFeilstatusDetaljert(int year, Month month, int day) {
 
         var filter = "%4d-%02d-%02d".formatted(year, month.getValue(), day);
-        return bestillingProgressRepository.findStatusColumns()
-                .reduce(new StringBuilder(), (StringBuilder sb, String column) ->
-                        sb.append(" or lower(bp.")
-                                .append(column)
-                                .append(") like '%feil%'"))
-                .map(kolonner -> "select b.sist_oppdatert, bp.* " +
-                                 "from bestilling b " +
-                                 "join bestilling_progress bp on bp.bestilling_id = b.id " +
-                                 "where to_char(b.sist_oppdatert, 'YYYY-MM-DD') = :range " +
-                                 "and (" +
-                                 kolonner.substring(4) +
-                                 ") order by b.sist_oppdatert")
+        return buildFeilWhereFragment()
+                .map(feilFilter -> "select b.sist_oppdatert, bp.* " +
+                                   "from bestilling b " +
+                                   "join bestilling_progress bp on bp.bestilling_id = b.id " +
+                                   "where to_char(b.sist_oppdatert, 'YYYY-MM-DD') = :range " +
+                                   "and (" + feilFilter + ") order by b.sist_oppdatert")
                 .flatMapMany(query -> entityTemplate.getDatabaseClient()
                         .sql(query)
                         .bind("range", filter)
@@ -268,9 +258,16 @@ public class DashboardService {
                 .flatMap(this::tilFeilJson);
     }
 
+    private Mono<String> buildFeilWhereFragment() {
+        return bestillingProgressRepository.findStatusColumns()
+                .reduce(new StringJoiner(" or "), (joiner, column) ->
+                        joiner.add("lower(bp." + column + ") like '%feil%'"))
+                .map(StringJoiner::toString);
+    }
+
     private Mono<JsonNode> tilFeilstatusSummert(List<BestillingProgressDTO> bestillingProgressDTOS) {
 
-        var resultat = new AtomicReference<>(new HashMap<>());
+        Map<String, Object> resultat = new HashMap<>();
         bestillingProgressDTOS.forEach(progress -> {
             var kilde = (ObjectNode) jsonMapper.valueToTree(progress);
 
@@ -278,32 +275,26 @@ public class DashboardService {
                 var verdi = kilde.get(navn);
                 if (!IDENTITETSFELT.contains(navn)) {
                     if ("bestillingDato".equals(navn)) {
-                        resultat.get().putIfAbsent(navn, verdi);
+                        resultat.putIfAbsent(navn, verdi);
                     } else if (verdi.isString() && verdi.asString().toLowerCase().contains("feil")) {
-                        if (resultat.get().containsKey(navn)) {
-                            var teller = (Integer) resultat.get().get(navn);
-                            resultat.get().put(navn, teller + 1);
-                        } else {
-                            resultat.get().put(navn, 1);
-                        }
+                        resultat.merge(navn, 1, (existing, _) -> (Integer) existing + 1);
                     }
                 }
             }
         });
-        return Flux.fromIterable(resultat.get().entrySet())
+        var summert = resultat.entrySet().stream()
                 .collect(Collectors.toMap(entry -> {
-                            if (((String) entry.getKey()).contains("Status")) {
-                                return ((String) entry.getKey())
-                                        .replace("Status", "Feil");
-                            } else if (entry.getKey().equals("feil")) {
+                            var key = entry.getKey();
+                            if (key.contains("Status")) {
+                                return key.replace("Status", "Feil");
+                            } else if ("feil".equals(key)) {
                                 return "andreFeil";
                             } else {
-                                return entry.getKey();
+                                return key;
                             }
-                        }
-                        , Map.Entry::getValue))
-                .flatMap(summert -> summert.isEmpty() ? Mono.empty() :
-                        Mono.just(jsonMapper.valueToTree(summert)));
+                        },
+                        Map.Entry::getValue));
+        return summert.isEmpty() ? Mono.empty() : Mono.just(jsonMapper.valueToTree(summert));
     }
 
     private Mono<JsonNode> tilFeilJson(BestillingProgressDTO progress) {
@@ -380,25 +371,29 @@ public class DashboardService {
         return bestillingRepository.findByAvailIntervals()
                 .groupBy(OversiktFragment::getMaaned)
                 .flatMap(Flux::collectList)
-                .map(fragmenter -> DashboardOversiktDTO.builder()
-                        .aarManed(fragmenter.getFirst().getMaaned())
-                        .aar(Integer.parseInt(fragmenter.getFirst().getMaaned().substring(0, 4)))
-                        .maaned(Month.of(Integer.parseInt(fragmenter.getFirst().getMaaned().substring(5))))
-                        .totaltAntallPersoner(fragmenter.stream()
-                                .map(OversiktFragment::getAntall)
-                                .mapToInt(Long::intValue)
-                                .sum())
-                        .nye(fragmenter.stream()
-                                .filter(fragment -> "NYBESTILLING".equals(fragment.getGjenopprettstatus()))
-                                .map(OversiktFragment::getAntall)
-                                .mapToInt(Long::intValue)
-                                .sum())
-                        .gjenopprettede(fragmenter.stream()
-                                .filter(fragment -> "GJENOPPRETTING".equals(fragment.getGjenopprettstatus()))
-                                .map(OversiktFragment::getAntall)
-                                .mapToInt(Long::intValue)
-                                .sum())
-                        .build())
+                .map(fragmenter -> {
+                    var aarManed = fragmenter.getFirst().getMaaned();
+                    var yearMonth = YearMonth.parse(aarManed);
+                    return DashboardOversiktDTO.builder()
+                            .aarManed(aarManed)
+                            .aar(yearMonth.getYear())
+                            .maaned(yearMonth.getMonth())
+                            .totaltAntallPersoner(fragmenter.stream()
+                                    .map(OversiktFragment::getAntall)
+                                    .mapToInt(Long::intValue)
+                                    .sum())
+                            .nye(fragmenter.stream()
+                                    .filter(fragment -> "NYBESTILLING".equals(fragment.getGjenopprettstatus()))
+                                    .map(OversiktFragment::getAntall)
+                                    .mapToInt(Long::intValue)
+                                    .sum())
+                            .gjenopprettede(fragmenter.stream()
+                                    .filter(fragment -> "GJENOPPRETTING".equals(fragment.getGjenopprettstatus()))
+                                    .map(OversiktFragment::getAntall)
+                                    .mapToInt(Long::intValue)
+                                    .sum())
+                            .build();
+                })
                 .sort(Comparator.comparing(DashboardOversiktDTO::getAarManed).reversed());
     }
 }
