@@ -118,7 +118,7 @@ export const FeilGrupperVisning = ({
 )
 
 export const DashboardFeilSection = ({
-	title = 'Feil per dag i valgt måned',
+	title = 'Feil per måned og dag',
 	yearOptions,
 	selectedYear,
 	onSelectedYearChange,
@@ -198,7 +198,7 @@ export const DashboardFeilSection = ({
 								<DashboardKpiCard label="Dager med feil" value={dagerMedFeil} />
 							</HGrid>
 							<BodyShort size="small" textColor="subtle">
-								Klikk en dag i diagrammet for å se detaljerte feil per fagsystem.
+								Dager i diagrammet kan åpnes for å se detaljerte feil per fagsystem.
 							</BodyShort>
 							<DashboardChartPanel
 								options={feilSummertChartOptions}

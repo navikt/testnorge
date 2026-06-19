@@ -42,6 +42,15 @@ export const createFeilSummertChartOptions = (
 			shared: true,
 			headerFormat: '<b>{point.key}</b><br/>',
 			pointFormat: '{series.name}: <b>{point.y}</b><br/>',
+			formatter: function () {
+				if (!this.points) return ''
+				const header = `<b>${this.points[0]?.key}</b><br/>`
+				const lines = this.points
+					.filter((point) => point.y > 0)
+					.map((point) => `${point.series.name}: <b>${point.y}</b>`)
+					.join('<br/>')
+				return lines ? header + lines : header + 'Ingen feil'
+			},
 		},
 		plotOptions: {
 			column: {
