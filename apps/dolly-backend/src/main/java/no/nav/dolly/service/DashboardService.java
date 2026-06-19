@@ -199,7 +199,6 @@ public class DashboardService {
                         .map((row, metadata) -> entityTemplate.getConverter()
                                 .read(BestillingProgressDTO.class, row, metadata))
                         .all())
-                .sort(Comparator.comparing(BestillingProgressDTO::getSistOppdatert))
                 .flatMap(this::tilFeilJson);
     }
 
@@ -291,7 +290,8 @@ public class DashboardService {
         return bestillingProgressRepository.findStatusColumns()
                 .reduce(new StringJoiner(" or "), (joiner, column) ->
                         joiner.add("lower(bp." + column + ") like '%feil%'"))
-                .map(StringJoiner::toString);
+                .map(StringJoiner::toString)
+                .map(s -> s.isBlank() ? "false" : s);
     }
 
     private Mono<JsonNode> tilFeilstatusSummert(List<BestillingProgressDTO> bestillingProgressDTOS) {
@@ -300,16 +300,16 @@ public class DashboardService {
         bestillingProgressDTOS.forEach(progress -> {
             var kilde = (ObjectNode) jsonMapper.valueToTree(progress);
 
-            for (var navn : kilde.propertyNames()) {
+            kilde.propertyNames().forEach(navn -> {
                 var verdi = kilde.get(navn);
                 if (!IDENTITETSFELT.contains(navn)) {
                     if ("bestillingDato".equals(navn)) {
                         resultat.putIfAbsent(navn, verdi);
                     } else if (verdi.isString() && verdi.asString().toLowerCase().contains("feil")) {
-                        resultat.merge(navn, 1, (existing, _) -> (Integer) existing + 1);
+                        resultat.merge(navn, 1, (existing, one) -> (Integer) existing + (Integer) one);
                     }
                 }
-            }
+            });
         });
         var summert = resultat.entrySet().stream()
                 .collect(Collectors.toMap(entry -> {
@@ -331,14 +331,14 @@ public class DashboardService {
         var kilde = (ObjectNode) jsonMapper.valueToTree(progress);
         var resultat = jsonMapper.createObjectNode();
 
-        for (var navn : kilde.propertyNames()) {
+        kilde.propertyNames().forEach(navn -> {
             var verdi = kilde.get(navn);
             if (IDENTITETSFELT.contains(navn)) {
                 resultat.set(navn, verdi);
             } else if (verdi.isString() && verdi.asString().toLowerCase().contains("feil")) {
                 resultat.set(navn, tilJsonEllerTekst(verdi, navn));
             }
-        }
+        });
         return Mono.just(resultat);
     }
 
