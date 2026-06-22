@@ -195,20 +195,20 @@ export const PersonAnalysisSection = ({
 					Oppdater data
 				</Button>
 			</HGrid>
-            <HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
-                <DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
-                <DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
-                <DashboardKpiCard label="Nye personer" value={summary.nye} />
-                <DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
-                <DashboardKpiCard label="Feil totalt" value={summary.pdlFeil + summary.andreFeil} />
-            </HGrid>
-            {personTrendDataLength === 0 ? (
-                <Alert variant="info" inline>
-                    Ingen persondata i valgt periode.
-                </Alert>
-            ) : (
-                <DashboardChartPanel options={personTrendChartOptions} ariaLabel="Personer per dag" />
-            )}
+			<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
+				<DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
+				<DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
+				<DashboardKpiCard label="Nye personer" value={summary.nye} />
+				<DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
+				<DashboardKpiCard label="Feil totalt" value={summary.pdlFeil + summary.andreFeil} />
+			</HGrid>
+			{personTrendDataLength === 0 ? (
+				<Alert variant="info" inline>
+					Ingen persondata i valgt periode.
+				</Alert>
+			) : (
+				<DashboardChartPanel options={personTrendChartOptions} ariaLabel="Personer per dag" />
+			)}
 		</VStack>
 	</DashboardSectionCard>
 )
