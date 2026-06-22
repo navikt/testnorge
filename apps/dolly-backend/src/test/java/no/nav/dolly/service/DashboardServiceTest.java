@@ -657,7 +657,7 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldSkipRowsWithNoFeilValues() {
+    void shouldNotEmitFeilKeysWhenAllStatusesAreOk() {
         var dto = BestillingProgressDTO.builder()
                 .bestillingDato(DATE_1)
                 .aaregStatus("OK")
@@ -665,6 +665,10 @@ class DashboardServiceTest {
         setupFeilStatusMocks(Flux.just(dto));
 
         StepVerifier.create(dashboardService.getFeilstatusSummert(2024, Month.JANUARY))
+                .assertNext(json -> {
+                    assertThat(json.has("aaregFeil")).isFalse();
+                    assertThat(json.has("andreFeil")).isFalse();
+                })
                 .verifyComplete();
     }
 
