@@ -165,20 +165,20 @@ class DashboardServiceTest {
         when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(d1, d2));
 
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
-                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
                 .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_1))
+                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
                 .verifyComplete();
     }
 
     @Test
-    void shouldSortBestillingerStatusByDateDescending() {
+    void shouldSortBestillingerStatusByDateAscending() {
         var d1 = fragment(DATE_1, 1L, "NYBESTILLING");
         var d2 = fragment(DATE_2, 1L, "NYBESTILLING");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(d1, d2));
 
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
-                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
                 .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_1))
+                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
                 .verifyComplete();
     }
 
