@@ -21,15 +21,18 @@ spring:
     oauth2:
       client:
         registration:
-          aad:
+          entra:
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
-            scope: openid, offline_access,  ${AZURE_APP_CLIENT_ID}/.default
+            scope: openid
             client-id: ${AZURE_APP_CLIENT_ID}
-            client-secret: nada
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
         provider:
-          aad:
+          entra:
             issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+            authorization-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/authorize
+            token-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/token
+            jwk-set-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/discovery/v2.0/keys
 
 consumers:
   testnav-altinn3-tilgang-service:

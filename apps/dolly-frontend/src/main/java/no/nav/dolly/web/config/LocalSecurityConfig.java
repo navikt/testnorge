@@ -41,6 +41,8 @@ class LocalSecurityConfig {
                                 "/internal/**",
                                 "/oauth2/callback",
                                 "/oauth2/logout",
+                                "/oauth2/authorization",
+                                "/oauth2/authorization/entra",
                                 LOGIN,
                                 LOGOUT
                         ).permitAll()
