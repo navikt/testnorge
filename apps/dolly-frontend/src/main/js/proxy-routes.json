@@ -2,9 +2,6 @@
 	"/api": {
 		"changeOrigin": false
 	},
-	"/oauth2/authorization/entra": {
-		"changeOrigin": false
-	},
 	"/oauth2/authorization/aad": {
 		"changeOrigin": false
 	},
@@ -12,9 +9,6 @@
 		"changeOrigin": false
 	},
 	"/login/oauth2/code/aad": {
-		"changeOrigin": false
-	},
-	"/login/oauth2/code/entra": {
 		"changeOrigin": false
 	},
 	"/login/oauth2/code/idporten": {
