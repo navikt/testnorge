@@ -17,7 +17,7 @@ export default function DollyInfostripePage() {
 			<CreateInfostripeForm />
 			{loading && (
 				<div data-testid={TestComponentSelectors.LOADING_INFOSTRIPER}>
-					<Loading label="Laster infostriper ..." />
+					<Loading label="Laster infostriper ..." panel />
 				</div>
 			)}
 			{error && <Alert variant="warning">{`Feil ved henting av data: ${error.message}`}</Alert>}
