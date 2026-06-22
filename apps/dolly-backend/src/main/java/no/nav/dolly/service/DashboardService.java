@@ -21,6 +21,7 @@ import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
+import no.nav.dolly.domain.resultset.BAFeilkoder;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
@@ -35,6 +36,7 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 import java.time.Month;
 import java.time.YearMonth;
@@ -47,6 +49,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
@@ -59,16 +62,17 @@ public class DashboardService {
 
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
     private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident", "master");
+    private static final Pattern AAREG_KODE = Pattern.compile("BA\\d{2,3}");
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
-    private final BestillingRepository bestillingRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
+    private final BestillingRepository bestillingRepository;
     private final BrukerRepository brukerRepository;
     private final BrukerServiceConsumer brukerServiceConsumer;
-    private final R2dbcEntityTemplate entityTemplate;
     private final JsonMapper jsonMapper;
-    private final TeamkatalogConsumer teamkatalogConsumer;
+    private final R2dbcEntityTemplate entityTemplate;
     private final TeamRepository teamRepository;
+    private final TeamkatalogConsumer teamkatalogConsumer;
 
     public Flux<DashboardPersonerDTO> getPersonerStatus() {
 
@@ -344,8 +348,9 @@ public class DashboardService {
 
     private JsonNode tilJsonEllerTekst(JsonNode json, String navn) {
 
-        var verdi = json.asString().trim();
-        if (verdi.startsWith("{") || verdi.startsWith("[")) {
+        var verdi = lookupAaregKode(json.asString().trim()
+                .replace("=", ":"));
+          if (verdi.startsWith("{") || verdi.startsWith("[")) {
             try {
                 if (!"pdlOrdreStatus".equals(navn)) {
                     return jsonMapper.readTree(verdi);
@@ -359,7 +364,15 @@ public class DashboardService {
                 log.debug("Statusfelt er ikke gyldig JSON – beholdes som tekst", e);
             }
         }
-        return json;
+        return new StringNode(verdi);
+    }
+
+    private static String lookupAaregKode(String status) {
+
+        var matcher = AAREG_KODE.matcher(status);
+        return matcher.find() ?
+                status.replace(matcher.group(), BAFeilkoder.valueOf(matcher.group()).getBeskrivelse()) :
+                status;
     }
 
     private static OrdreResponseDTO getFeil(OrdreResponseDTO response) {
