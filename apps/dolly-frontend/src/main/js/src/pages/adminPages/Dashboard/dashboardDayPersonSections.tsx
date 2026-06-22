@@ -5,10 +5,10 @@ import {
 	Heading,
 	HGrid,
 	HStack,
-	Skeleton,
 	TextField,
 	VStack,
 } from '@navikt/ds-react'
+import DollySpinner from '@/components/ui/loading/DollySpinner'
 import { type Options } from 'highcharts'
 import {
 	DashboardChartPanel,
@@ -77,13 +77,7 @@ export const PreviousDaySection = ({
 				]}
 			/>
 			{isLoading ? (
-				<VStack gap="space-12">
-					<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
-						<Skeleton variant="rectangle" height="80px" />
-						<Skeleton variant="rectangle" height="80px" />
-					</HGrid>
-					<Skeleton variant="rectangle" height="320px" />
-				</VStack>
+				<DollySpinner size={120} label="Laster statistikk..." />
 			) : previousDayPeriodData.length === 0 ? (
 				<Alert variant="info" inline>
 					Ingen data tilgjengelig for valgt dag.
@@ -201,20 +195,20 @@ export const PersonAnalysisSection = ({
 					Oppdater data
 				</Button>
 			</HGrid>
-			<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
-				<DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
-				<DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
-				<DashboardKpiCard label="Nye personer" value={summary.nye} />
-				<DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
-				<DashboardKpiCard label="Feil totalt" value={summary.pdlFeil + summary.andreFeil} />
-			</HGrid>
-			{personTrendDataLength === 0 ? (
-				<Alert variant="info" inline>
-					Ingen persondata i valgt periode.
-				</Alert>
-			) : (
-				<DashboardChartPanel options={personTrendChartOptions} ariaLabel="Personer per dag" />
-			)}
+            <HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
+                <DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
+                <DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
+                <DashboardKpiCard label="Nye personer" value={summary.nye} />
+                <DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
+                <DashboardKpiCard label="Feil totalt" value={summary.pdlFeil + summary.andreFeil} />
+            </HGrid>
+            {personTrendDataLength === 0 ? (
+                <Alert variant="info" inline>
+                    Ingen persondata i valgt periode.
+                </Alert>
+            ) : (
+                <DashboardChartPanel options={personTrendChartOptions} ariaLabel="Personer per dag" />
+            )}
 		</VStack>
 	</DashboardSectionCard>
 )

@@ -77,6 +77,7 @@ export default () => {
 					summary={d.summary}
 					personTrendDataLength={d.personTrendDataLength}
 					personTrendChartOptions={d.personTrendChartOptions}
+					isLoading={d.loadingDashboardPersoner && !d.mockModeEnabled}
 				/>
 
 				{d.isAnyLoading && (
