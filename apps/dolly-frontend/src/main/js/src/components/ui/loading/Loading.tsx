@@ -33,8 +33,12 @@ export default ({ onlySpinner, size, className, label, panel, fullpage }: Loadin
 	}
 	if (label) {
 		return (
-			<div className={className ? className : 'inline-loading-container'}>
-				<Loader size="small" title={label} />
+			<div
+				className={className ? className : 'inline-loading-container'}
+				role="status"
+				aria-label={label}
+			>
+				<Loader size="small" aria-hidden />
 				<span className="inline-loading-label">{label}</span>
 			</div>
 		)
