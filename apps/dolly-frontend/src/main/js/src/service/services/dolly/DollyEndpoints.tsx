@@ -236,8 +236,8 @@ export default class DollyEndpoints {
 		return `${uri}/soek?soekType=${soekType}`
 	}
 
-	static dashboardPersoner() {
-		return `${uri}/dashboard/personer`
+	static dashboardBestillinger(year: number, month: string) {
+		return `${uri}/dashboard/bestillinger?year=${year}&month=${month}`
 	}
 
 	static dashboardTeams() {

@@ -2,13 +2,14 @@ import useSWR from 'swr'
 import { fetcher } from '@/api'
 import DollyEndpoints from '@/service/services/dolly/DollyEndpoints'
 
-export type DashboardPersonerDTO = {
+export type DashboardBestillingerDTO = {
 	dato: string
+	bestillinger: number
 	personerTotalt: number
 	nye: number
 	gjenopprettede: number
-	pdlFeil: number
-	andreFeil: number
+	navIdenter: number
+	testnorgeIdenter: number
 }
 
 export type DashboardTeamEntryDTO = {
@@ -77,13 +78,30 @@ export type DashboardFeilDetaljertRad = {
 } & Record<string, FeilVerdi>
 
 export const useDashboard = () => {
+	const currentDate = new Date()
+	const currentYear = currentDate.getFullYear()
+	const currentMonth = [
+		'JANUARY',
+		'FEBRUARY',
+		'MARCH',
+		'APRIL',
+		'MAY',
+		'JUNE',
+		'JULY',
+		'AUGUST',
+		'SEPTEMBER',
+		'OCTOBER',
+		'NOVEMBER',
+		'DECEMBER',
+	][currentDate.getMonth()]
+
 	const {
-		data: dashboardPersoner,
-		isLoading: loadingDashboardPersoner,
-		error: dashboardPersonerError,
-		mutate: mutateDashboardPersoner,
-	} = useSWR<DashboardPersonerDTO[], Error>(
-		DollyEndpoints.dashboardPersoner(),
+		data: dashboardBestillinger,
+		isLoading: loadingDashboardBestillinger,
+		error: dashboardBestillingerError,
+		mutate: mutateDashboardBestillinger,
+	} = useSWR<DashboardBestillingerDTO[], Error>(
+		DollyEndpoints.dashboardBestillinger(currentYear, currentMonth),
 		(url) => fetcher(url, null, 30000),
 		{
 			revalidateOnFocus: false,
@@ -141,24 +159,24 @@ export const useDashboard = () => {
 	})
 
 	return {
-		dashboardPersoner: dashboardPersoner ?? [],
+		dashboardBestillinger: dashboardBestillinger ?? [],
 		dashboardTeams: dashboardTeams ?? [],
 		dashboardOrganisasjoner: dashboardOrganisasjoner ?? [],
 		dashboardDollyTeams: dashboardDollyTeams ?? [],
 		dashboardOversikt: dashboardOversikt ?? [],
-		loadingDashboardPersoner,
+		loadingDashboardBestillinger,
 		loadingDashboardTeams,
 		loadingDashboardOrganisasjoner,
 		loadingDashboardDollyTeams,
 		loadingDashboardOversikt,
-		dashboardPersonerError,
+		dashboardBestillingerError,
 		dashboardTeamsError,
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
 		dashboardOversiktError,
 		reloadDashboard: () =>
 			Promise.all([
-				mutateDashboardPersoner(),
+				mutateDashboardBestillinger(),
 				mutateDashboardTeams(),
 				mutateDashboardOrganisasjoner(),
 				mutateDashboardDollyTeams(),
@@ -209,10 +227,10 @@ export const useDashboardFeilDetaljert = (
 	return { feilDetaljert: data ?? [], loadingFeilDetaljert, feilDetaljertError }
 }
 
-export const useDashboardFeilForDager = (
-	dager: { year: number; month: string; day: number }[],
-) => {
-	const urls = dager.map((dag) => DollyEndpoints.dashboardFeilDetaljert(dag.year, dag.month, dag.day))
+export const useDashboardFeilForDager = (dager: { year: number; month: string; day: number }[]) => {
+	const urls = dager.map((dag) =>
+		DollyEndpoints.dashboardFeilDetaljert(dag.year, dag.month, dag.day),
+	)
 	const shouldFetch = urls.length > 0
 	const {
 		data,
