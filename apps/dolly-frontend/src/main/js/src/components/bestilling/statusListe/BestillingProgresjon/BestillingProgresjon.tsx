@@ -80,9 +80,7 @@ export const BestillingProgresjon = ({
 			setTimedOut(true)
 			return
 		}
-		const timeoutId = setTimeout(() => setTimedOut(true), remaining)
-		return () => clearTimeout(timeoutId)
-	}, [sistOppdatert, erOrganisasjon])
+	}, [sistOppdatert, erOrganisasjon, timedOut])
 
 	useEffect(() => {
 		if (isFerdig && !hasFinished) {
