@@ -35,9 +35,9 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 		),
 	)
 
-export const postFetcher = (url, body) =>
+export const postFetcher = (url, body, headers = { 'Content-Type': 'application/json' }) =>
 	axios
-		.post(url, body, { headers: { 'Content-Type': 'application/json' } })
+		.post(url, body, { headers: headers })
 		.then((res) => {
 			if (res.status === 404) {
 				return null
