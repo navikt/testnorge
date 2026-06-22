@@ -150,9 +150,9 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                    bp.master as master
             from bestilling b
             join bestilling_progress bp on b.id = bp.bestilling_id
-            and to_char(b.sist_oppdatert, 'YYYY-DD') = :yearMonth
+            and to_char(b.sist_oppdatert, 'YYYY-MM') = :yearMonth
             group by dato, bestillingId, gjenopprettStatus, master
-            order by dato desc
+            order by dato
             """)
     Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert(String yearMonth);
 

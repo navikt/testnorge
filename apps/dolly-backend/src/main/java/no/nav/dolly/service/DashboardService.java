@@ -94,7 +94,7 @@ public class DashboardService {
                                 .navIdenter(sumByStatus(fragmentliste, BestillingerFragment::getMaster, "PDLF"))
                                 .testnorgeIdenter(sumByStatus(fragmentliste, BestillingerFragment::getMaster, "PDL"))
                                 .build())
-                .sort(Comparator.comparing(DashboardBestillingerDTO::getDato).reversed());
+                .sort(Comparator.comparing(DashboardBestillingerDTO::getDato));
     }
 
     public Flux<DashboardTeamsDTO> getTeamsStatus() {
@@ -357,7 +357,7 @@ public class DashboardService {
 
         var verdi = lookupAaregKode(json.asString().trim()
                 .replace("=", ":"));
-          if (verdi.startsWith("{") || verdi.startsWith("[")) {
+        if (verdi.startsWith("{") || verdi.startsWith("[")) {
             try {
                 if (!"pdlOrdreStatus".equals(navn)) {
                     return jsonMapper.readTree(verdi);
