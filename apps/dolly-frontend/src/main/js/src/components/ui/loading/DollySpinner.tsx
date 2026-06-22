@@ -3,8 +3,33 @@ import './DollySpinner.less'
 
 const FRAME_DURATION = 100; // ms per frame
 
+interface ShadowFrame {
+  cx: number
+  cy: number
+  rx: number
+  ry: number
+}
+
+interface Frame {
+  shadow: ShadowFrame
+  legs: string
+  bodyY: number
+  earOffset: number
+}
+
+interface SheepBodyProps {
+  bodyY: number
+  gradientIdL: string
+  gradientIdR: string
+}
+
+interface DollySpinnerProps {
+  size?: number
+  label?: string
+}
+
 // All 8 frames as inline SVG path data
-const frames = [
+const frames: Frame[] = [
   // Frame 1 - standing, legs down
   {
     shadow: { cx: 745.5, cy: 1168, rx: 395.5, ry: 90 },
@@ -104,7 +129,7 @@ const frames = [
 ];
 
 // The shared body/wool SVG paths (same across all frames, just translated)
-function SheepBody({ bodyY, gradientIdL, gradientIdR }) {
+function SheepBody({ bodyY, gradientIdL, gradientIdR }: SheepBodyProps) {
   return (
     <g transform={`translate(0, ${bodyY})`}>
       {/* Big wool body */}
@@ -184,7 +209,7 @@ function SheepBody({ bodyY, gradientIdL, gradientIdR }) {
   );
 }
 
-export default function DollySpinner({ size = 200, label = "Loading..." }) {
+export default function DollySpinner({ size = 200, label = "Loading..." }: DollySpinnerProps) {
   const id = useId();
   const gradientIdL = `${id}-bellyGradL`;
   const gradientIdR = `${id}-bellyGradR`;
