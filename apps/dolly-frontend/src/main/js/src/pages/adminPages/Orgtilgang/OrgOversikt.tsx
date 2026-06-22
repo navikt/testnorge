@@ -64,7 +64,7 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 				</Alert>
 			)}
 			{loading && (!organisasjonTilgang || organisasjonTilgang?.length === 0) && (
-				<Loading label="Laster organisasjoner ..." />
+				<Loading label="Laster organisasjoner ..." panel />
 			)}
 			{organisasjonTilgang?.length > 0 && (
 				<ErrorBoundary>

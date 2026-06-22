@@ -67,7 +67,7 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<Suspense fallback={<Loading label={'Laster kildedata...'} />}>
+					<Suspense fallback={<Loading label={'Laster kildedata...'} panel />}>
 						<PrettyCode language={'json'} codeString={kildedataPretty} wrapLongLines />
 					</Suspense>
 				</Tabs.Panel>
