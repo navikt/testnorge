@@ -12,7 +12,7 @@ import no.nav.dolly.domain.dto.BestillingProgressDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardOversiktDTO;
-import no.nav.dolly.domain.dto.DashboardPersonerDTO;
+import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.BestillingerFragment;
@@ -74,20 +74,27 @@ public class DashboardService {
     private final TeamRepository teamRepository;
     private final TeamkatalogConsumer teamkatalogConsumer;
 
-    public Flux<DashboardPersonerDTO> getPersonerStatus() {
+    public Flux<DashboardBestillingerDTO> getBestillingerStatus(int year, Month month) {
 
-        return bestillingRepository.findBestillingerOrderBySistOppdatert()
+        var interval = "%4d-%02d".formatted(year, month.getValue());
+        return bestillingRepository.findBestillingerOrderBySistOppdatert(interval)
                 .groupBy(BestillingerFragment::getDato)
                 .flatMap(Flux::collectList)
                 .map(fragmentliste ->
-                        DashboardPersonerDTO.builder()
+                        DashboardBestillingerDTO.builder()
                                 .dato(fragmentliste.getFirst().getDato())
+                                .bestillinger(fragmentliste.stream()
+                                        .mapToLong(BestillingerFragment::getBestillingid)
+                                        .distinct()
+                                        .count())
                                 .personerTotalt(fragmentliste.stream()
                                         .mapToLong(BestillingerFragment::getPersoner).sum())
                                 .nye(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "NYBESTILLING"))
                                 .gjenopprettede(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "GJENOPPRETTING"))
+                                .navIdenter(sumByStatus(fragmentliste, BestillingerFragment::getMaster, "PDLF"))
+                                .testnorgeIdenter(sumByStatus(fragmentliste, BestillingerFragment::getMaster, "PDL"))
                                 .build())
-                .sort(Comparator.comparing(DashboardPersonerDTO::getDato).reversed());
+                .sort(Comparator.comparing(DashboardBestillingerDTO::getDato).reversed());
     }
 
     public Flux<DashboardTeamsDTO> getTeamsStatus() {

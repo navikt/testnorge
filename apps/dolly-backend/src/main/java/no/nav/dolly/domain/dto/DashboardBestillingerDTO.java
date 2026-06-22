@@ -11,10 +11,13 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DashboardPersonerDTO {
+public class DashboardBestillingerDTO {
 
     private LocalDate dato;
+    private Long bestillinger;
     private Long personerTotalt;
     private Long nye;
     private Long gjenopprettede;
+    private Long navIdenter;
+    private Long testnorgeIdenter;
 }

@@ -15,5 +15,7 @@ public class BestillingerFragment {
 
     private LocalDate dato;
     private Long personer;
+    private Long bestillingid;
     private String gjenopprettstatus;
+    private String master;
 }

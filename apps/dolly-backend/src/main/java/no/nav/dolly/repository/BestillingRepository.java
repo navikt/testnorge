@@ -140,18 +140,21 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     @Query("""
             select count(*) personer,
                    b.sist_oppdatert::date dato,
+                   b.id bestillingId,
                    case
                       when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
                       when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
                       when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
                       else 'NYBESTILLING'
-                   end as gjenopprettStatus
+                   end as gjenopprettStatus,
+                   bp.master as master
             from bestilling b
             join bestilling_progress bp on b.id = bp.bestilling_id
-            group by dato, gjenopprettStatus
+            and to_char(b.sist_oppdatert, 'YYYY-DD') = :yearMonth
+            group by dato, bestillingId, gjenopprettStatus, master
             order by dato desc
             """)
-    Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
+    Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert(String yearMonth);
 
     @Query("""
             select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval, br.epost

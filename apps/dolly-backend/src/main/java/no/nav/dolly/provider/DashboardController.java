@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardOversiktDTO;
-import no.nav.dolly.domain.dto.DashboardPersonerDTO;
+import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.service.DashboardService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +24,11 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    @GetMapping(value = "/personer")
-    @Operation(description = "Henter status for personer levert (opprettet/importert og/eller gjenopprettet).")
-    public Flux<DashboardPersonerDTO> getDashboardPersoner() {
+    @GetMapping(value = "/bestillinger")
+    @Operation(description = "Henter antall bestillinger og personer levert (opprettet/importert og/eller gjenopprettet).")
+    public Flux<DashboardBestillingerDTO> getDashboardPersoner(@RequestParam int year, @RequestParam Month month) {
 
-        return dashboardService.getPersonerStatus();
+        return dashboardService.getBestillingerStatus(year, month);
     }
 
     @GetMapping(value = "/feil/detaljert")

@@ -6,6 +6,7 @@ import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
+import no.nav.dolly.domain.dto.BestillingProgressDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
@@ -16,6 +17,7 @@ import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
@@ -23,16 +25,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.r2dbc.core.RowsFetchSpec;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +58,7 @@ class DashboardServiceTest {
     private Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
 
     @Mock
-    private BrukerServiceConsumer brukerServiceConsumer;
+    private BestillingProgressRepository bestillingProgressRepository;
 
     @Mock
     private BestillingRepository bestillingRepository;
@@ -56,21 +67,40 @@ class DashboardServiceTest {
     private BrukerRepository brukerRepository;
 
     @Mock
-    private TeamkatalogConsumer teamkatalogConsumer;
+    private BrukerServiceConsumer brukerServiceConsumer;
+
+    @Spy
+    private JsonMapper jsonMapper = JsonMapper.builder().build();
+
+    @Mock
+    private R2dbcEntityTemplate entityTemplate;
 
     @Mock
     private TeamRepository teamRepository;
 
+    @Mock
+    private TeamkatalogConsumer teamkatalogConsumer;
+
+    @Mock
+    private DatabaseClient databaseClient;
+
+    @Mock
+    private DatabaseClient.GenericExecuteSpec executeSpec;
+
+    @SuppressWarnings("unchecked")
+    @Mock
+    private RowsFetchSpec<BestillingProgressDTO> fetchSpec;
+
     @InjectMocks
     private DashboardService dashboardService;
 
-    // ── getPersonerStatus ────────────────────────────────────────────────────
+    // ── getBestillingerStatus ────────────────────────────────────────────────
 
     @Test
     void shouldReturnEmptyWhenNoFragments() {
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.empty());
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.empty());
 
-        StepVerifier.create(dashboardService.getPersonerStatus())
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .verifyComplete();
     }
 
@@ -78,9 +108,9 @@ class DashboardServiceTest {
     void shouldSumPersonerTotaltForSingleDate() {
         var f1 = fragment(DATE_1, 5L, "NYBESTILLING");
         var f2 = fragment(DATE_1, 3L, "NYBESTILLING");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(f1, f2));
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(f1, f2));
 
-        StepVerifier.create(dashboardService.getPersonerStatus())
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getDato()).isEqualTo(DATE_1);
                     assertThat(dto.getPersonerTotalt()).isEqualTo(8L);
@@ -89,12 +119,24 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldCountNyeByGjenopprettstatusNYBESTILLING() {
+    void shouldCountDistinctBestillinger() {
+        var f1 = fragment(DATE_1, 2L, 10L, "NYBESTILLING", null);
+        var f2 = fragment(DATE_1, 3L, 10L, "NYBESTILLING", null);
+        var f3 = fragment(DATE_1, 1L, 11L, "NYBESTILLING", null);
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(f1, f2, f3));
+
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(dto.getBestillinger()).isEqualTo(2L))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCountNyeAndGjenopprettede() {
         var nybestilling = fragment(DATE_1, 4L, "NYBESTILLING");
         var gjenoppretting = fragment(DATE_1, 2L, "GJENOPPRETTING");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(nybestilling, gjenoppretting));
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(nybestilling, gjenoppretting));
 
-        StepVerifier.create(dashboardService.getPersonerStatus())
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getNye()).isEqualTo(4L);
                     assertThat(dto.getGjenopprettede()).isEqualTo(2L);
@@ -103,24 +145,38 @@ class DashboardServiceTest {
     }
 
     @Test
+    void shouldCountNavIdenterByMasterPDLF() {
+        var pdlf = fragment(DATE_1, 3L, 1L, "NYBESTILLING", "PDLF");
+        var pdl = fragment(DATE_1, 2L, 2L, "NYBESTILLING", "PDL");
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(pdlf, pdl));
+
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    assertThat(dto.getNavIdenter()).isEqualTo(3L);
+                    assertThat(dto.getTestnorgeIdenter()).isEqualTo(2L);
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void shouldGroupFragmentsByDateIntoSeparateDtos() {
         var d1 = fragment(DATE_1, 10L, "NYBESTILLING");
         var d2 = fragment(DATE_2, 5L, "NYBESTILLING");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(d1, d2));
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(d1, d2));
 
-        StepVerifier.create(dashboardService.getPersonerStatus())
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
                 .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_1))
                 .verifyComplete();
     }
 
     @Test
-    void shouldSortPersonerStatusByDateDescending() {
+    void shouldSortBestillingerStatusByDateDescending() {
         var d1 = fragment(DATE_1, 1L, "NYBESTILLING");
         var d2 = fragment(DATE_2, 1L, "NYBESTILLING");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(d1, d2));
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(d1, d2));
 
-        StepVerifier.create(dashboardService.getPersonerStatus())
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
                 .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_1))
                 .verifyComplete();
@@ -129,12 +185,14 @@ class DashboardServiceTest {
     @Test
     void shouldProduceZeroCountsWhenNoMatchingStatuses() {
         var f = fragment(DATE_1, 5L, "UKJENT");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert()).thenReturn(Flux.just(f));
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(f));
 
-        StepVerifier.create(dashboardService.getPersonerStatus())
+        StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getNye()).isZero();
                     assertThat(dto.getGjenopprettede()).isZero();
+                    assertThat(dto.getNavIdenter()).isZero();
+                    assertThat(dto.getTestnorgeIdenter()).isZero();
                 })
                 .verifyComplete();
     }
@@ -527,6 +585,89 @@ class DashboardServiceTest {
         assertThat(results.get(1).getInterval()).isEqualTo(INTERVAL_1);
     }
 
+    // ── getFeilstatusSummert ─────────────────────────────────────────────────
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Test
+    void shouldReturnEmptyFeilstatusSummertWhenNoStatusColumns() {
+        when(bestillingProgressRepository.findStatusColumns()).thenReturn(Flux.empty());
+        when(entityTemplate.getDatabaseClient()).thenReturn(databaseClient);
+        when(databaseClient.sql(anyString())).thenReturn(executeSpec);
+        when(executeSpec.bind(anyString(), any())).thenReturn(executeSpec);
+        doReturn(fetchSpec).when(executeSpec).map((BiFunction) any());
+        when(fetchSpec.all()).thenReturn(Flux.empty());
+
+        StepVerifier.create(dashboardService.getFeilstatusSummert(2024, Month.JANUARY))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRenameStatusKeyToFeilKey() {
+        var dto = BestillingProgressDTO.builder()
+                .bestillingDato(DATE_1)
+                .pdlForvalterStatus("FEIL: noe gikk galt")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusSummert(2024, Month.JANUARY))
+                .assertNext(json -> {
+                    assertThat(json.has("pdlForvalterFeil")).isTrue();
+                    assertThat(json.has("pdlForvalterStatus")).isFalse();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRenameFeilKeyToAndreFeil() {
+        var dto = BestillingProgressDTO.builder()
+                .bestillingDato(DATE_1)
+                .feil("FEIL: generell feil")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusSummert(2024, Month.JANUARY))
+                .assertNext(json -> {
+                    assertThat(json.has("andreFeil")).isTrue();
+                    assertThat(json.has("feil")).isFalse();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCountFeilOccurrencesPerDay() {
+        var dto1 = BestillingProgressDTO.builder().bestillingDato(DATE_1).aaregStatus("FEIL: første").build();
+        var dto2 = BestillingProgressDTO.builder().bestillingDato(DATE_1).aaregStatus("FEIL: andre").build();
+        setupFeilStatusMocks(Flux.just(dto1, dto2));
+
+        StepVerifier.create(dashboardService.getFeilstatusSummert(2024, Month.JANUARY))
+                .assertNext(json -> assertThat(json.get("aaregFeil").intValue()).isEqualTo(2))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldEmitOneJsonNodePerDistinctDateInAscendingOrder() {
+        var dto1 = BestillingProgressDTO.builder().bestillingDato(DATE_1).aaregStatus("FEIL: dag 1").build();
+        var dto2 = BestillingProgressDTO.builder().bestillingDato(DATE_2).krrstubStatus("FEIL: dag 2").build();
+        setupFeilStatusMocks(Flux.just(dto1, dto2));
+
+        StepVerifier.create(dashboardService.getFeilstatusSummert(2024, Month.JANUARY))
+                .assertNext(json -> assertThat(json.has("aaregFeil")).isTrue())
+                .assertNext(json -> assertThat(json.has("krrstubFeil")).isTrue())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSkipRowsWithNoFeilValues() {
+        var dto = BestillingProgressDTO.builder()
+                .bestillingDato(DATE_1)
+                .aaregStatus("OK")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusSummert(2024, Month.JANUARY))
+                .verifyComplete();
+    }
+
     // ── getPerioderOversikt ──────────────────────────────────────────────────
 
     @Test
@@ -597,10 +738,19 @@ class DashboardServiceTest {
 
     private static BestillingerFragment fragment(LocalDate dato, Long personer,
                                                   String gjenopprettstatus) {
+        return fragment(dato, personer, 1L, gjenopprettstatus, null);
+    }
+
+    private static BestillingerFragment fragment(LocalDate dato, Long personer,
+                                                  Long bestillingid,
+                                                  String gjenopprettstatus,
+                                                  String master) {
         return BestillingerFragment.builder()
                 .dato(dato)
                 .personer(personer)
+                .bestillingid(bestillingid)
                 .gjenopprettstatus(gjenopprettstatus)
+                .master(master)
                 .build();
     }
 
@@ -631,5 +781,16 @@ class DashboardServiceTest {
                 .antall(antall)
                 .gjenopprettstatus(gjenopprettstatus)
                 .build();
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void setupFeilStatusMocks(Flux<BestillingProgressDTO> dtos) {
+        when(bestillingProgressRepository.findStatusColumns())
+                .thenReturn(Flux.just("aareg_status", "krrstub_status", "pdl_forvalter_status", "feil"));
+        when(entityTemplate.getDatabaseClient()).thenReturn(databaseClient);
+        when(databaseClient.sql(anyString())).thenReturn(executeSpec);
+        when(executeSpec.bind(anyString(), any())).thenReturn(executeSpec);
+        doReturn(fetchSpec).when(executeSpec).map((BiFunction) any());
+        when(fetchSpec.all()).thenReturn(dtos);
     }
 }
