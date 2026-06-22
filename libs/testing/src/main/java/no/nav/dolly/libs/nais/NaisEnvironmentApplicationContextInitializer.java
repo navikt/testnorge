@@ -13,11 +13,10 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
     // Konfigurasjon for lokal kjøring er hentet herfra: https://github.com/navikt/localauth
 
-    private static final String APP_CLIENT_ID = "669db109-2dbb-4c4c-93cd-cbc6aa2ef1a4";
+    private static final String APP_CLIENT_ID = "3a974fc8-2295-4a7c-ba67-5b2603d07419";
     private static final String AUDIENCE = "3cbdd4cb-d048-420f-889e-2b32b7add652";
     private static final String LOCAL_AUTH = "https://dolly-auth-local.intern.dev.nav.no";
     private static final String PROVIDER_URL = "https://login.microsoftonline.com";
-    private static final String TENANT_ID = "nav.no";
     private static final String DUMMY = "dummy";
     private static final String FALSE = "false";
 
@@ -59,7 +58,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", APP_CLIENT_ID);
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", DUMMY);
         properties.putIfAbsent("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT", LOCAL_AUTH + "/entraid/oauth2/token");
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "%s/%s/v2.0".formatted(PROVIDER_URL, TENANT_ID));
+        properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", LOCAL_AUTH + "/entraid/oauth2/token");
         properties.putIfAbsent("JWT_SECRET", DUMMY);
         properties.putIfAbsent("MASKINPORTEN_CLIENT_ID", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
