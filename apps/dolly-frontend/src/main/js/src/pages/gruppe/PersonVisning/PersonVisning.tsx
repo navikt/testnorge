@@ -7,6 +7,7 @@ import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
+import { HendelseIdPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/HendelseIdPersonMiljoeInfo'
 import { PdlfVisning } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
@@ -31,7 +32,6 @@ import {
 	useArenaData,
 	useDokarkivData,
 	useHistarkData,
-	useInstData,
 	usePensjonsavtaleData,
 	usePoppData,
 	useTpDataForhold,
@@ -55,6 +55,7 @@ import {
 	harInntektsmeldingBestilling,
 	harInntektstubBestilling,
 	harInstBestilling,
+	harKdiBestilling,
 	harKelvinAapBestilling,
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
@@ -116,6 +117,8 @@ import { useTimedOutFagsystemer } from '@/utils/hooks/useTimedOutFagsystemer'
 import { usePdlForvalterPerson } from '@/utils/hooks/usePdlForvalter'
 import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
+import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
+import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -253,6 +256,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harInstBestilling(bestillingerFagsystemer),
 	)
 
+	const { loading: loadingKdiData, kdiData } = useKdiData(
+		ident.ident,
+		harKdiBestilling(bestillingerFagsystemer),
+	)
+
 	const { loading: loadingArbeidssoekerregisteret, data: arbeidssoekerregisteretData } =
 		useArbeidssoekerregistrering(
 			ident.ident,
@@ -363,6 +371,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 		uforetrygdData,
 		brregstub: data?.brregstub,
 		instData,
+		kdiData,
 		yrkesskadeData,
 		arbeidsplassencvData,
 		arbeidsplassencvError,
@@ -396,6 +405,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 			!!(uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)),
 			!!(brregstub && sjekkManglerBrregData(brregstub)),
 			!!(instData && sjekkManglerInstData(instData)),
+			!!(kdiData && sjekkManglerKdiData(kdiData)),
 			!!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
 			!!(
 				(udistub && sjekkManglerUdiData(udistub)) ||
@@ -494,7 +504,8 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingArbeidsplassencvData ||
 		loadingArenaData ||
 		loadingApData ||
-		loadingSkattekort
+		loadingSkattekort ||
+		loadingKdiData
 
 	return (
 		<ErrorBoundary>
@@ -527,6 +538,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 								}
 								if (skattekortData) {
 									personData.skattekort = skattekortData.flatMap((m: any) => m.data || [])
+								}
+								if (kdiData) {
+									personData.instdataKdi = kdiData
 								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
@@ -713,6 +727,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
+				<KdiVisning
+					data={kdiData}
+					loading={loadingKdiData}
+					harKdiBestilling={harKdiBestilling(bestillingerFagsystemer)}
+				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<MedlVisning data={medl} timedOutFagsystemer={timedOutFagsystemer} />
 				<UdiVisning
@@ -743,6 +762,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 					ident={ident.ident}
 					miljoe={tilgjengeligMiljoe || ''}
 				/>
+				<HendelseIdPersonMiljoeInfo ident={ident.ident} relatertePersoner={relatertePersoner} />
 				<TidligereBestillinger ids={ident.bestillingId} erOrg={false} />
 				<BeskrivelseConnector ident={ident} closeModal={() => {}} />
 				{isMalModalOpen && (

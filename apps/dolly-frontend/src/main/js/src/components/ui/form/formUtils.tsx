@@ -95,6 +95,7 @@ const getValgteAttributter = (values) => {
 		'yrkesskader',
 		'brregstub',
 		'instdata',
+		'instdataKdi',
 		'krrstub',
 		'udistub',
 		'dokarkiv',
