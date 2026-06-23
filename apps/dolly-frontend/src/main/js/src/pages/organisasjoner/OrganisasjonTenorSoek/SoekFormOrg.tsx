@@ -11,8 +11,9 @@ import { EnhetsregisteretArbeidsforhold } from '@/pages/organisasjoner/Organisas
 import { SamletReskontroinnsyn } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/SamletReskontroinnsyn'
 import { Tjenestepensjonsavtale } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import Loading from '@/components/ui/loading/Loading'
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
+
+const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -30,7 +31,6 @@ const Soekefelt = styled.div`
 `
 
 export const SoekFormOrg = ({ setRequest, mutate }: any) => {
-	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 	const isAdmin = useErDollyAdmin()
 
 	const formMethods = useForm({
@@ -212,7 +212,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 							</Table>
 						</Form>
 						{(devEnabled || isAdmin) && (
-							<Suspense fallback={<Loading label="Laster komponenter" />}>
+							<Suspense fallback={null}>
 								<DisplayFormState />
 							</Suspense>
 						)}
