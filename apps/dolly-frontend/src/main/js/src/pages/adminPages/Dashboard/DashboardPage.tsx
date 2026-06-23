@@ -10,7 +10,8 @@ import {
 	MonthlyTeamTrendSection,
 } from '@/pages/adminPages/Dashboard/dashboardMonthlySections'
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
-import { Alert, Box, Loader, VStack } from '@navikt/ds-react'
+import { Alert, Box, VStack } from '@navikt/ds-react'
+import DollySpinner from '@/components/ui/loading/DollySpinner'
 import Highcharts from 'highcharts'
 import HighchartsAccessibility from 'highcharts/modules/accessibility'
 import { CHART_TEXT_COLOR } from '@/pages/adminPages/Dashboard/dashboardChartBase'
@@ -93,13 +94,13 @@ export default () => {
 							isLoading={coreData.loadingDashboardBestillinger && !coreData.mockModeEnabled}
 						/>
 
-						<PersonAnalysisSection />
+						<PersonAnalysisSection isLoading={coreData.loadingDashboardPersoner && !coreData.mockModeEnabled} />
 
 						<DashboardFeilSection />
 
 						{coreData.isAnyLoading && (
 							<Box aria-busy="true" aria-live="polite">
-								<Loader size="xlarge" title="Laster dashboard-data..." />
+								<DollySpinner size={120} label="Laster dashboard-data..." />
 							</Box>
 						)}
 

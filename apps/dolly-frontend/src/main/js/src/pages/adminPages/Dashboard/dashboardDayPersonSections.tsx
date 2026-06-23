@@ -1,4 +1,15 @@
-import { Alert, Box, Heading, HGrid, Skeleton, TextField, VStack } from '@navikt/ds-react'
+import {
+	Alert,
+	BodyShort,
+	Button,
+	Heading,
+	HGrid,
+	HStack,
+	TextField,
+	VStack,
+} from '@navikt/ds-react'
+import DollySpinner from '@/components/ui/loading/DollySpinner'
+import { type Options } from 'highcharts'
 import {
 	DashboardChartPanel,
 	DashboardKpiCard,
@@ -111,10 +122,7 @@ export const PreviousDaySection = ({
 				]}
 			/>
 			{isLoading ? (
-				<VStack gap="space-12">
-					<Skeleton variant="rectangle" height="80px" />
-					<Skeleton variant="rectangle" height="320px" />
-				</VStack>
+				<DollySpinner size={120} label="Laster statistikk..." />
 			) : previousDayPeriodData.length === 0 ? (
 				<Alert variant="info" inline>
 					Ingen data tilgjengelig for valgt dag.

@@ -29,7 +29,7 @@ spec:
       rules:
         - application: dolly-backend-dev
         - application: dolly-frontend-dev
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-endringsmelding-frontend
         - application: testnav-faste-data-frontend
         - application: testnav-oversikt-frontend
