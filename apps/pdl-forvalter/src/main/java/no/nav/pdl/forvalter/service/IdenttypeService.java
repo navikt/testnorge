@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
@@ -23,6 +22,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.LocalDate.now;
@@ -50,8 +50,13 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                                                           "er fødsel mellom 1.1.1900 og dagens dato";
     private static final String VALIDATION_DATO_INTERVAL_INVALID = "Identtype ugyldig forespørsel: fødtFør kan ikke være tidligere " +
                                                                    "enn fødtEtter";
-    private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller BOST";
+    private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller NPID";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
+    private static final Map<Identtype, Integer> IDENT_PRIORITET = Map.of(
+            NPID, 0,
+            DNR,  1,
+            FNR,  2
+    );
 
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
@@ -126,7 +131,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
                     } else {
 
-                        val nyRequest = PersonRequestDTO.builder()
+                        var nyRequest = PersonRequestDTO.builder()
                                 .eksisterendeIdent(request.getEksisterendeIdent())
                                 .identtype(getIdenttype(request, person.getIdent()))
                                 .kjoenn(getKjoenn(request, person.getPerson()))
@@ -197,18 +202,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private Comparator<IdentRequestDTO> sortIdenter() {
 
-        return (ir1, ir2) -> {
-            if (ir1.getIdenttype() == (ir2.getIdenttype())) {
-                return 0;
-            } else if (ir1.getIdenttype() == NPID) {
-                return -1;
-            } else if (ir2.getIdenttype() == NPID) {
-                return 1;
-            } else if (ir1.getIdenttype() == DNR && ir2.getIdenttype() == FNR) {
-                return -1;
-            } else {
-                return 1;
-            }
-        };
+        return Comparator.comparingInt(ir ->
+                IDENT_PRIORITET.getOrDefault(ir.getIdenttype(), Integer.MAX_VALUE));
     }
 }
