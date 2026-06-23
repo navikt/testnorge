@@ -2,12 +2,13 @@ package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardOversiktDTO;
-import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.service.DashboardService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,8 @@ import reactor.core.publisher.Flux;
 import tools.jackson.databind.JsonNode;
 
 import java.time.Month;
+
+import static no.nav.dolly.config.CachingConfig.CACHE_DASHBOARD;
 
 @RequestMapping("/api/v1/dashboard")
 @RestController
@@ -47,6 +50,7 @@ public class DashboardController {
         return dashboardService.getFeilstatusSummert(year, month);
     }
 
+    @Cacheable(value = CACHE_DASHBOARD)
     @GetMapping(value = "/oversikt")
     @Operation(description = "Henter tilgjengelige perioder.")
     public Flux<DashboardOversiktDTO> getDashboardFeilOversikt() {
@@ -54,6 +58,7 @@ public class DashboardController {
         return dashboardService.getPerioderOversikt();
     }
 
+    @Cacheable(value = CACHE_DASHBOARD)
     @GetMapping(value = "/teams")
     @Operation(description = "Henter status per team i hht Teamkatalogen og antall unike personer som har bestilt. Gjelder AZURE-brukere.")
     public Flux<DashboardTeamsDTO> getDashboardTeams() {
@@ -61,6 +66,7 @@ public class DashboardController {
         return dashboardService.getTeamsStatus();
     }
 
+    @Cacheable(value = CACHE_DASHBOARD)
     @GetMapping(value = "/organisasjoner")
     @Operation(description = "Henter status per organisasjon med antall unike personer som har bestilt. Gjelder BANKID-brukere.")
     public Flux<DashboardOrganisasjonerDTO> getDashboardOrganisasjoner() {
@@ -68,6 +74,7 @@ public class DashboardController {
         return dashboardService.getOrganisasjonerStatus();
     }
 
+    @Cacheable(value = CACHE_DASHBOARD)
     @GetMapping(value = "/dollyteams")
     @Operation(description = "Henter status for bruk av Dolly-teams, og antall medlemmer per team. Gjelder TEAM-brukere.")
     public Flux<DashboardDollyTeamsDTO> getDashboardDollyTeams() {

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.concurrent.TimeUnit;
 
-@Configuration(enforceUniqueMethods = false)
+@Configuration
 @EnableCaching
 @SuppressWarnings("java:S3740")
 public class CachingConfig {
@@ -21,7 +21,7 @@ public class CachingConfig {
     public static final String CACHE_BESTILLING_MAL = "bestilling-mal";
     public static final String CACHE_BRUKER = "bruker";
     public static final String CACHE_GRUPPE = "gruppe";
-    public static final String CACHE_HELSEPERSONELL = "helsepersonell";
+    public static final String CACHE_DASHBOARD = "dashboard";
 
     @Bean
     @Profile({ "dev", "prod" })
@@ -32,7 +32,7 @@ public class CachingConfig {
                 CACHE_LEGACY_BESTILLING_MAL,
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
-                CACHE_HELSEPERSONELL
+                CACHE_DASHBOARD
         );
         caffeineCacheManager.setCaffeine(caffeine);
         caffeineCacheManager.setAsyncCacheMode(true);
