@@ -17,10 +17,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-auth-local
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: team-dolly-lokal-app
-        - application: dolly-auth-local
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend
